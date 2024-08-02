@@ -15,7 +15,7 @@ namespace SLIL
 {
     public partial class MainMenu : Form
     {
-        private const string current_version = "|1.0|";
+        private const string current_version = "|1.0.1|";
         public static string iniFolder = "config.ini";
         public static bool Language = true, sounds = true;
         private readonly TextureCache textureCache = new TextureCache();

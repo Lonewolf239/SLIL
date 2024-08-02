@@ -58,11 +58,15 @@ namespace SLIL
             this.chill_timer = new System.Windows.Forms.Timer(this.components);
             this.stage_timer = new System.Windows.Forms.Timer(this.components);
             this.respawn_timer = new System.Windows.Forms.Timer(this.components);
+            this.game_over_panel = new System.Windows.Forms.Panel();
+            this.exit_restart_btn = new System.Windows.Forms.Button();
+            this.restart_btn = new System.Windows.Forms.Button();
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
             this.shop_title_panel.SuspendLayout();
             this.pause_panel.SuspendLayout();
+            this.game_over_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // shop_panel
@@ -233,17 +237,15 @@ namespace SLIL
             // game_over_text
             // 
             this.game_over_text.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.game_over_text.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.game_over_text.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.game_over_text.Dock = System.Windows.Forms.DockStyle.Top;
             this.game_over_text.Font = new System.Drawing.Font("Consolas", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.game_over_text.ForeColor = System.Drawing.Color.White;
             this.game_over_text.Location = new System.Drawing.Point(0, 0);
             this.game_over_text.Name = "game_over_text";
-            this.game_over_text.Size = new System.Drawing.Size(454, 302);
+            this.game_over_text.Size = new System.Drawing.Size(454, 137);
             this.game_over_text.TabIndex = 2;
             this.game_over_text.Text = "GAME OVER";
             this.game_over_text.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.game_over_text.Visible = false;
             // 
             // raycast
             // 
@@ -305,15 +307,61 @@ namespace SLIL
             this.respawn_timer.Interval = 1000;
             this.respawn_timer.Tick += new System.EventHandler(this.Respawn_timer_Tick);
             // 
+            // game_over_panel
+            // 
+            this.game_over_panel.Controls.Add(this.exit_restart_btn);
+            this.game_over_panel.Controls.Add(this.restart_btn);
+            this.game_over_panel.Controls.Add(this.game_over_text);
+            this.game_over_panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.game_over_panel.Location = new System.Drawing.Point(0, 0);
+            this.game_over_panel.Name = "game_over_panel";
+            this.game_over_panel.Size = new System.Drawing.Size(454, 302);
+            this.game_over_panel.TabIndex = 6;
+            this.game_over_panel.Visible = false;
+            // 
+            // exit_restart_btn
+            // 
+            this.exit_restart_btn.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.exit_restart_btn.AutoSize = true;
+            this.exit_restart_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.exit_restart_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.exit_restart_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.exit_restart_btn.ForeColor = System.Drawing.Color.White;
+            this.exit_restart_btn.Location = new System.Drawing.Point(169, 187);
+            this.exit_restart_btn.Name = "exit_restart_btn";
+            this.exit_restart_btn.Size = new System.Drawing.Size(112, 41);
+            this.exit_restart_btn.TabIndex = 40;
+            this.exit_restart_btn.TabStop = false;
+            this.exit_restart_btn.Text = "ВЫЙТИ";
+            this.exit_restart_btn.UseVisualStyleBackColor = true;
+            this.exit_restart_btn.Click += new System.EventHandler(this.Exit_btn_Click);
+            // 
+            // restart_btn
+            // 
+            this.restart_btn.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.restart_btn.AutoSize = true;
+            this.restart_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.restart_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.restart_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.restart_btn.ForeColor = System.Drawing.Color.White;
+            this.restart_btn.Location = new System.Drawing.Point(126, 140);
+            this.restart_btn.Name = "restart_btn";
+            this.restart_btn.Size = new System.Drawing.Size(198, 41);
+            this.restart_btn.TabIndex = 39;
+            this.restart_btn.TabStop = false;
+            this.restart_btn.Text = "ПОВТОРИТЬ";
+            this.restart_btn.UseVisualStyleBackColor = true;
+            this.restart_btn.Click += new System.EventHandler(this.Restart_btn_Click);
+            // 
             // SLIL
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
             this.ClientSize = new System.Drawing.Size(454, 302);
+            this.Controls.Add(this.game_over_panel);
             this.Controls.Add(this.shop_panel);
             this.Controls.Add(this.pause_panel);
-            this.Controls.Add(this.game_over_text);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -338,6 +386,8 @@ namespace SLIL
             this.shop_title_panel.PerformLayout();
             this.pause_panel.ResumeLayout(false);
             this.pause_panel.PerformLayout();
+            this.game_over_panel.ResumeLayout(false);
+            this.game_over_panel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -369,5 +419,8 @@ namespace SLIL
         private TabPage weapon_shop_page;
         private TabPage pet_shop_page;
         private TabPage consumables_shop_page;
+        private Panel game_over_panel;
+        private Button restart_btn;
+        private Button exit_restart_btn;
     }
 }

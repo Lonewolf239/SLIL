@@ -378,6 +378,11 @@ namespace SLIL
                 pause_btn.Left = (Width - pause_btn.Width) / 2;
                 exit_btn.Left = (Width - exit_btn.Width) / 2;
             }
+            if (game_over_panel.Visible)
+            {
+                restart_btn.Left = (Width - restart_btn.Width) / 2;
+                exit_restart_btn.Left = (Width - exit_restart_btn.Width) / 2;
+            }
             shop_money.Text = $"$: {player.Money}";
             if (player.HP <= 0 && GameStarted)
                 GameOver(0);
@@ -1657,6 +1662,8 @@ namespace SLIL
             ShowMap = false;
         }
 
+        private void Restart_btn_Click(object sender, EventArgs e) => StartGame();
+
         private void SLIL_Shown(object sender, EventArgs e) => StartGame();
 
         private void Respawn_timer_Tick(object sender, EventArgs e)
@@ -2792,7 +2799,7 @@ namespace SLIL
             if (MainMenu.sounds)
                 step_sound_timer.Start();
             GameStarted = true;
-            game_over_text.Visible = false;
+            game_over_panel.Visible = false;
         }
 
         private void ToDefault()
@@ -2844,8 +2851,8 @@ namespace SLIL
             else if (win == 0)
             {
                 ToDefault();
-                game_over_text.Visible = true;
-                game_over_text.BringToFront();
+                game_over_panel.Visible = true;
+                game_over_panel.BringToFront();
                 if (MainMenu.sounds)
                     game_over.Play(Volume);
             }
