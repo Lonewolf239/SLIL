@@ -483,7 +483,23 @@ namespace SLIL
                 {
                     if (!open_shop)
                     {
-                        if (e.KeyCode == Bind.Run && playerDirection == Direction.FORWARD && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !reload_timer.Enabled && !chill_timer.Enabled)
+                        Keys runKey;
+                        switch (Bind.Run)
+                        {
+                            case Keys.ShiftKey:
+                                runKey = Keys.Shift;
+                                break;
+                            case Keys.ControlKey:
+                                runKey = Keys.Control;
+                                break;
+                            case Keys.Alt:
+                                runKey = Keys.Alt;
+                                break;
+                            default:
+                                runKey = Keys.Shift;
+                                break;
+                        }
+                        if (ModifierKeys.HasFlag(runKey) && playerDirection == Direction.FORWARD && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !reload_timer.Enabled && !chill_timer.Enabled)
                             playerMoveStyle = Direction.RUN;
                         if (e.KeyCode == Bind.Forward)
                             playerDirection = Direction.FORWARD;
