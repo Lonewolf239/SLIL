@@ -21,6 +21,7 @@ namespace SLIL
 {
     public partial class SLIL : Form
     {
+        private GameController Controller;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
         public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true, EnableAnimation = true;
@@ -147,7 +148,7 @@ namespace SLIL
         private readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit(), new Candy(), new Rainblower() };
         private readonly Pet[] PETS = { new SillyCat(0, 0, 0), new GreenGnome(0, 0, 0), new EnergyDrink(0, 0, 0), new Pyro(0, 0, 0) };
         public static readonly List<Entity> Entities = new List<Entity>();
-        private readonly Player player = new Player();
+        private Player player;
         private ConsolePanel console_panel;
         private readonly char[] impassibleCells  = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
@@ -168,6 +169,7 @@ namespace SLIL
             LOOK_SPEED = MainMenu.LOOK_SPEED;
             Volume = MainMenu.Volume;
             textureCache = textures;
+            player = new Player(1.5, 1.5, MAP_WIDTH);
             player.IsPetting = false;
             ost = new PlaySound[]
             {
@@ -1558,6 +1560,7 @@ namespace SLIL
                 tempY += playerWidth / 2 - (tempY % 1);
             player.X = tempX;
             player.Y = tempY;
+            game.
             if (MAP[(int)player.Y * MAP_WIDTH + (int)player.X] == 'F')
             {
                 GameOver(1);
