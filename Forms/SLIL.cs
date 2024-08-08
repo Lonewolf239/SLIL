@@ -144,7 +144,7 @@ namespace SLIL
         private bool open_shop = false, pressed_r = false, pressed_h = false;
         private Display display;
         private Bitmap map;
-        private readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit() };
+        private readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit(), new Candy(), new Rainblower() };
         private readonly Pet[] PETS = { new SillyCat(0, 0, 0), new GreenGnome(0, 0, 0), new EnergyDrink(0, 0, 0), new Pyro(0, 0, 0) };
         public static readonly List<Entity> Entities = new List<Entity>();
         private readonly Player player = new Player();
@@ -166,6 +166,7 @@ namespace SLIL
             ShowFPS = MainMenu.ShowFPS;
             ShowMiniMap = MainMenu.ShowMiniMap;
             LOOK_SPEED = MainMenu.LOOK_SPEED;
+            Volume = MainMenu.Volume;
             textureCache = textures;
             player.IsPetting = false;
             ost = new PlaySound[]
@@ -189,7 +190,7 @@ namespace SLIL
             {
                 if (Entities[i] is Pet)
                 {
-                    if ((Entities[i] as Pet).IsInstantAbility)
+                    if ((Entities[i] as Pet).IsInstantAbility != 0)
                     {
                         switch ((Entities[i] as Pet).GetPetAbility())
                         {
@@ -202,12 +203,16 @@ namespace SLIL
                                 player.MOVE_SPEED -= 0.15;
                                 player.RUN_SPEED -= 0.15;
                                 break;
+                            case 3: //Pyro
+                                player.CuteMode = false;
+                                CuteMode();
+                                break;
                         }
                     }
                     Entities.RemoveAt(i);
                 }
             }
-            if (pet.IsInstantAbility)
+            if (pet.IsInstantAbility != 0)
             {
                 switch (pet.GetPetAbility())
                 {
@@ -220,10 +225,43 @@ namespace SLIL
                         player.MOVE_SPEED += 0.15;
                         player.RUN_SPEED += 0.15;
                         break;
+                    case 3: //Pyro
+                        player.CuteMode = true;
+                        CuteMode();
+                        break;
+
                 }
             }
             player.PET = pet;
             UpdatePet();
+        }
+
+        private void CuteMode()
+        {
+            player.Guns.Clear();
+            shop_tab_control.Controls.Clear();
+            if (player.CuteMode)
+            {
+                GUNS[11].HasIt = true;
+                GUNS[12].HasIt = true;
+                player.Guns.Add(GUNS[11]);
+                player.Guns.Add(GUNS[12]);
+            }
+            else
+            {
+                shop_tab_control.Controls.Add(weapon_shop_page);
+                GUNS[11].HasIt = false;
+                GUNS[12].HasIt = false;
+                for(int i = 0; i < 11; i++)
+                {
+                    if (GUNS[i].HasIt)
+                        player.Guns.Add(GUNS[i]);
+                }
+            }
+            shop_tab_control.Controls.Add(pet_shop_page);
+            shop_tab_control.Controls.Add(consumables_shop_page);
+            TakeFlashlight(false);
+            ChangeWeapon(1);
         }
 
         private void UpdatePet()
@@ -314,7 +352,7 @@ namespace SLIL
             if (player.Invulnerable)
                 player.InvulnerableEnd();
             Pet playerPet = player.PET;
-            if (playerPet != null && !playerPet.IsInstantAbility)
+            if (playerPet != null && playerPet.IsInstantAbility != 1)
             {
                 if (playerPet.PetAbilityReloading)
                 {
@@ -329,6 +367,12 @@ namespace SLIL
                     {
                         case 0: //Silly Cat
                             player.HealHP(2);
+                            playerPet.AbilityTimer = 0;
+                            playerPet.PetAbilityReloading = true;
+                            break;
+                        case 3: //Pyro
+                            if (GUNS[12].AmmoCount + 15 <= GUNS[12].MaxAmmo)
+                                GUNS[12].AmmoCount += 15;
                             playerPet.AbilityTimer = 0;
                             playerPet.PetAbilityReloading = true;
                             break;
@@ -419,7 +463,7 @@ namespace SLIL
                     }
                     else if (player.GetCurrentGun() is Flashlight)
                         player.MoveStyle = 1;
-                    else if (player.GetCurrentGun() is Knife)
+                    else if (player.GetCurrentGun() is Knife || player.GetCurrentGun() is Rainblower)
                         player.MoveStyle = 2;
                     else if (player.GetCurrentGun() is Gnome)
                         player.MoveStyle = 6;
@@ -548,15 +592,20 @@ namespace SLIL
                                     if (!player.Guns.Contains(player.FirstAidKits[0]))
                                         player.Guns.Add(player.FirstAidKits[0]);
                                     player.PreviousGun = player.CurrentGun;
-                                    if (rand.NextDouble() <= player.CurseCureChance)
-                                    {
-                                        if (rand.NextDouble() <= 0.5)
-                                            player.FirstAidKits[0].Level = Levels.LV2;
-                                        else
-                                            player.FirstAidKits[0].Level = Levels.LV3;
-                                    }
+                                    if (player.CuteMode)
+                                        player.FirstAidKits[0].Level = Levels.LV4;
                                     else
-                                        player.FirstAidKits[0].Level = Levels.LV1;
+                                    {
+                                        if (rand.NextDouble() <= player.CurseCureChance)
+                                        {
+                                            if (rand.NextDouble() <= 0.5)
+                                                player.FirstAidKits[0].Level = Levels.LV2;
+                                            else
+                                                player.FirstAidKits[0].Level = Levels.LV3;
+                                        }
+                                        else
+                                            player.FirstAidKits[0].Level = Levels.LV1;
+                                    }
                                     ChangeWeapon(player.Guns.IndexOf(player.FirstAidKits[0]));
                                     player.GunState = 1;
                                     player.Aiming = false;
@@ -792,7 +841,7 @@ namespace SLIL
                                             }
                                             else
                                                 rays[stripe][y].TextureId = textures[i];
-                                            rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / (DEPTH + factor)) * 100)), 100));
+                                            rays[stripe][y].Blackout = 0;
                                             rays[stripe][y].TextureX = texX;
                                             rays[stripe][y].TextureY = texY;
                                             Color color = GetColorForPixel(rays[stripe][y]);
@@ -1127,7 +1176,7 @@ namespace SLIL
                                 }
                                 else
                                     rays[stripe][y].TextureId = textures[i];
-                                rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / (DEPTH + factor)) * 100)), 100));
+                                rays[stripe][y].Blackout = 0;
                                 rays[stripe][y].TextureX = texX;
                                 rays[stripe][y].TextureY = texY;
                                 Color color = GetColorForPixel(rays[stripe][y]);
@@ -1163,6 +1212,7 @@ namespace SLIL
                     }
                 }
             }
+            if (player.CuteMode) return;
             double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
             double ray_x = Math.Sin(rayA);
             double ray_y = Math.Cos(rayA);
@@ -1541,7 +1591,7 @@ namespace SLIL
                 shop_title.Text = "SHOP";
                 weapon_shop_page.Text = "Weapons";
                 pet_shop_page.Text = "Pets";
-                consumables_shop_page.Text = "Consumables";
+                consumables_shop_page.Text = "Other";
                 pause_text.Text = "PAUSE";
                 pause_btn.Text = "CONTINUE";
                 exit_btn.Text = "EXIT";
@@ -1828,7 +1878,7 @@ namespace SLIL
                                     else
                                         rays[stripe][y].TextureId = spriteInfo[i].Texture;
                                 }
-                                rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / (DEPTH + factor)) * 100)), 100));
+                                rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / (DEPTH + factor)) * 10)), 10) * 10);
                                 rays[stripe][y].TextureX = texX;
                                 rays[stripe][y].TextureY = texY;
                                 Color color = GetColorForPixel(rays[stripe][y]);
@@ -1907,7 +1957,7 @@ namespace SLIL
                 x = (int)WrapTexture((int)(pixel.TextureX * textureSize), textureSize);
                 y = (int)WrapTexture((int)(pixel.TextureY * textureSize), textureSize);
             }
-            Color color = textureCache.GetTextureColor(pixel.TextureId, x, y, pixel.Blackout);
+            Color color = textureCache.GetTextureColor(pixel.TextureId, x, y, pixel.Blackout, player.CuteMode);
             return color;
         }
 
@@ -2079,20 +2129,30 @@ namespace SLIL
             if (ShowFPS)
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[resolution], whiteBrush, SCREEN_WIDTH[resolution], 0, rightToLeft);
             graphicsWeapon.DrawString($"TIME LEFT: {space_0}{minutes}:{space_1}{seconds}", consolasFont[resolution], whiteBrush, 0, 0);
-            graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 108 + (110 * resolution), icon_size, icon_size);
+            if (!player.CuteMode)
+            {
+                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 108 + (110 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.first_aid, 2, 94 + (96 * resolution), icon_size, icon_size);
+            }
+            else
+            {
+                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 108 + (110 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.food_count, 2, 94 + (96 * resolution), icon_size, icon_size);
+            }
             graphicsWeapon.DrawImage(Properties.Resources.money, 2, 14 + (14 * resolution), icon_size, icon_size);
-            graphicsWeapon.DrawImage(Properties.Resources.first_aid, 2, 94 + (96 * resolution), icon_size, icon_size);
             graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 14 + (14 * resolution));
             graphicsWeapon.DrawString(player.HP.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 108 + (110 * resolution));
             graphicsWeapon.DrawString(medkit_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 94 + (98 * resolution));
-            if (!player.IsPetting && player.Guns.Count > 0 && !(player.GetCurrentGun() is FirstAidKit) && !(player.GetCurrentGun() is Flashlight) && !(player.GetCurrentGun() is Knife))
+            if (!player.IsPetting && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
-                if (player.GetCurrentGun().IsMagic)
+                if (player.GetCurrentGun().IsMagic || player.GetCurrentGun() is Rainblower)
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount + player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, 52 + (42 * resolution), 108 + (110 * resolution));
                 else
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount}/{player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, 52 + (42 * resolution), 108 + (110 * resolution));
                 if (player.GetCurrentGun().IsMagic)
                     graphicsWeapon.DrawImage(Properties.Resources.magic, 40 + (30 * resolution), 108 + (110 * resolution), icon_size, icon_size);
+                else if(player.GetCurrentGun() is Rainblower)
+                    graphicsWeapon.DrawImage(Properties.Resources.bubbles, 40 + (30 * resolution), 108 + (110 * resolution), icon_size, icon_size);
                 else
                 {
                     if (player.GetCurrentGun() is SniperRifle || player.GetCurrentGun() is AssaultRifle)
@@ -2103,7 +2163,7 @@ namespace SLIL
                         graphicsWeapon.DrawImage(Properties.Resources.bullet, 40 + (30 * resolution), 108 + (110 * resolution), icon_size, icon_size);
                 }
             }
-            if (!(player.GetCurrentGun() is SniperRifle) && !(player.GetCurrentGun() is Flashlight) && !(player.GetCurrentGun() is FirstAidKit))
+            if (player.GetCurrentGun().ShowScope)
             {
                 if (player.GetCurrentGun() is Shotgun)
                     graphicsWeapon.DrawImage(scope_shotgun[scope_type], WEAPON.Width / 4, WEAPON.Height / 4, WEAPON.Width / 2, WEAPON.Height / 2);
@@ -2268,14 +2328,14 @@ namespace SLIL
                 {
                     textureId = 7;
                     double d = (y + player.Look / 2) / (SCREEN_HEIGHT[resolution] / 2);
-                    blackout = (int)(Math.Min(Math.Max(0, d * 100), 100));
+                    blackout = (int)((Math.Min(Math.Max(0, Math.Round(d * 10)), 10) * 10));
                 }
                 else if (y >= mid && y <= floor && hit_window)
                 {
                     textureId = 2;
                     if (Math.Abs(y - mid) <= 10 / window_distance || is_window_bound)
                         textureId = 0;
-                    blackout = (int)(Math.Min(Math.Max(0, Math.Floor((window_distance / (DEPTH + factor)) * 100)), 100));
+                    blackout = (int)((Math.Min(Math.Max(0, Math.Floor((window_distance / (DEPTH + factor)) * 10)), 10) * 10));
                 }
                 else if ((y < mid || !hit_window) && y > ceiling && y < floor)
                 {
@@ -2284,13 +2344,13 @@ namespace SLIL
                         textureId = 3;
                     if (is_bound)
                         textureId = 0;
-                    blackout = (int)(Math.Min(Math.Max(0, Math.Floor((distance / (DEPTH + factor)) * 100)), 100));
+                    blackout = (int)((Math.Min(Math.Max(0, Math.Floor((distance / (DEPTH + factor)) * 10)), 10) * 10));
                 }
                 else if (y >= floor)
                 {
                     textureId = 6;
                     double d = 1 - (y - (SCREEN_HEIGHT[resolution] - player.Look) / 2) / (SCREEN_HEIGHT[resolution] / 2);
-                    blackout = (int)(Math.Min(Math.Max(0, d * 100), 100));
+                    blackout = (int)((Math.Min(Math.Max(0, Math.Round(d * 10)), 10) * 10));
                 }
                 result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId);
                 if (y < ceiling)
@@ -2469,7 +2529,7 @@ namespace SLIL
                 Dog enemy = new Dog(x, y, size);
                 Entities.Add(enemy);
             }
-            else if (dice > 0.65 && dice <= 0.85) // 20%
+            else if (dice > 0.65 && dice <= 0.85 && difficulty != 5) // 20%
             {
                 Bat enemy = new Bat(x, y, size);
                 Entities.Add(enemy);
@@ -2854,10 +2914,13 @@ namespace SLIL
                     tp.Play(Volume);
                 if (difficulty != 4)
                     player.Stage++;
-                for (int i = 0; i < player.Guns.Count; i++)
+                if (!player.CuteMode)
                 {
-                    if (player.Guns[i].MaxAmmoCount == 0)
-                        player.Guns[i].MaxAmmoCount = player.Guns[i].CartridgesClip;
+                    for (int i = 0; i < player.Guns.Count; i++)
+                    {
+                        if (player.Guns[i].MaxAmmoCount == 0)
+                            player.Guns[i].MaxAmmoCount = player.Guns[i].CartridgesClip;
+                    }
                 }
                 player.ChangeMoney(50 + (5 * player.EnemiesKilled));
                 GetFirstAidKit();

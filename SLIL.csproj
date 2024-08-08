@@ -149,6 +149,12 @@
     <Compile Include="UserControls\Display.Designer.cs">
       <DependentUpon>Display.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\PlayerPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PlayerPanel.Designer.cs">
+      <DependentUpon>PlayerPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\SLIL_ConsumablesShopInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -197,6 +203,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Display.resx">
       <DependentUpon>Display.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PlayerPanel.resx">
+      <DependentUpon>PlayerPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\SLIL_ConsumablesShopInterface.resx">
       <DependentUpon>SLIL_ConsumablesShopInterface.cs</DependentUpon>
@@ -830,6 +839,66 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\web.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gun_candy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gun_candy_shooted.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gun_rainblower.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gun_rainblower_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gun_rainblower_shooted.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\bubbles.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gun_candy_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\food_using_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\food_using_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\food_using_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\singleplayer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\multiplayer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\food_count.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\food_hp .png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\main_menu_background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_3_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_3_DEAD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\copy.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

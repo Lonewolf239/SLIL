@@ -234,7 +234,7 @@ namespace SLIL.Classes
         public int Cost { get; set; }
         public int Index { get; set; }
         public bool PetAbilityReloading { get; set; }
-        public bool IsInstantAbility { get; set; }
+        public int IsInstantAbility { get; set; }
         public int AbilityReloadTime { get; set; }
         public int AbilityTimer { get; set; }
         protected int PetAbility { get; set; }
@@ -254,7 +254,7 @@ namespace SLIL.Classes
 
         public Pet(double x, double y, int map_width) : base(x, y, map_width)
         {
-            IsInstantAbility = false;
+            IsInstantAbility = 0;
             HasStopAnimation = false;
             Stoped = false;
             detectionRange = 8.0;
@@ -405,7 +405,7 @@ namespace SLIL.Classes
             Descryption = new[] { "Увеличивает максимальное здоровье на 25", "Increases maximum health by 25" };
             Texture = 24;
             PetAbility = 1;
-            IsInstantAbility = true;
+            IsInstantAbility = 1;
             RespondsToFlashlight = true;
             base.SetAnimations(6, 1);
         }
@@ -424,7 +424,7 @@ namespace SLIL.Classes
             Descryption = new[] { "Увеличивает выносливость и скорость", "Increases endurance and speed" };
             Texture = 27;
             PetAbility = 2;
-            IsInstantAbility = true;
+            IsInstantAbility = 1;
             RespondsToFlashlight = false;
             base.AnimationsToStatic();
         }
@@ -445,10 +445,11 @@ namespace SLIL.Classes
             ShopIcon = Properties.Resources.pet_pyro_icon;
             Cost = 60;
             Name = new[] { "Подсератель", "Podseratel" };
-            Descryption = new[] { "Пока ничего не делает...", "Doesn't do anything yet..." };
+            Descryption = new[] { "Мир — это сказка...", "The world is a fairy tale..." };
             Texture = 31;
-            PetAbility = 3;
-            IsInstantAbility = true;
+            PetAbility = 99; //PetAbility = 3;
+            IsInstantAbility = 2;
+            AbilityReloadTime = 8;
             RespondsToFlashlight = true;
             base.SetAnimations(1, 0);
         }

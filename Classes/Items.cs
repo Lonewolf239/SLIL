@@ -31,6 +31,8 @@ namespace SLIL.Classes
         public bool IsMagic { get; set; }
         public bool CanShoot { get; set; }
         public bool CanAiming { get; set; }
+        public bool ShowAmmo { get; set; }
+        public bool ShowScope { get; set; }
         public FireTypes FireType { get; set; }
         public Levels Level { get; set; }
         public Image[] Icon { get; set; }
@@ -43,6 +45,8 @@ namespace SLIL.Classes
             IsMagic = false;
             CanAiming = false;
             CanShoot = true;
+            ShowAmmo = true;
+            ShowScope = true;
         }
 
         public virtual void SetDefault()
@@ -121,10 +125,14 @@ namespace SLIL.Classes
     public class Item : Gun
     {
         public string[] Description { get; set; }
+        public bool HasCuteDescription { get; set; }
 
         public Item() : base()
         {
             FireType = FireTypes.Single;
+            HasCuteDescription = false;
+            ShowScope = false;
+            ShowAmmo = false;
             AddToShop = false;
             CanShoot = false;
             CartridgesClip = 1;
@@ -162,6 +170,7 @@ namespace SLIL.Classes
     {
         public Knife() : base()
         {
+            ShowAmmo = false;
             AddToShop = false;
             HasIt = true;
             Name = new[] { "Нож", "Knife" };
@@ -186,6 +195,59 @@ namespace SLIL.Classes
 
         public override void SetDefault()
         {
+            Level = Levels.LV1;
+            ApplyUpdate();
+        }
+
+        public override bool CanUpdate() => false;
+    }
+
+    public class Candy : Knife
+    {
+        public Candy() : base()
+        {
+            HasIt = false;
+            Name = new[] { "Конфета", "Candy" };
+            Images = new[,] { { Properties.Resources.gun_candy, Properties.Resources.gun_candy_shooted, Properties.Resources.gun_candy_run } };
+            Sounds = new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } };
+        }
+    }
+
+    public class Rainblower : Gun
+    {
+        public Rainblower() : base()
+        {
+            AddToShop = false;
+            HasIt = false;
+            Name = new[] { "Радужигатель", "Rainblower" };
+            FireType = FireTypes.SemiAutomatic;
+            RechargeTime = 600;
+            CartridgesClip = 100;
+            MaxAmmoCount = 0;
+            MaxAmmo = 100;
+            FiringRange = 7;
+            MaxDamage = 3;
+            MinDamage = 2.75;
+            Recoil = 5;
+            FiringRate = 175;
+            BurstShots = 5;
+            RadiusSound = 6;
+            ReloadFrames = 1;
+            Icon = new[] { Properties.Resources.missing };
+            Images = new[,]
+            {                    
+                   { Properties.Resources.gun_rainblower, Properties.Resources.gun_rainblower_shooted, Properties.Resources.gun_rainblower_run },
+            };
+            Sounds = new[,]
+            {
+                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_1.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
+            };
+            AmmoCount = CartridgesClip;
+        }
+
+        public override void SetDefault()
+        {
+            HasIt = false;
             Level = Levels.LV1;
             ApplyUpdate();
         }
@@ -614,6 +676,7 @@ namespace SLIL.Classes
     {
         public SniperRifle() : base()
         {
+            ShowScope = false;
             AddToShop = true;
             HasIt = false;
             CanAiming = true;
@@ -752,25 +815,43 @@ namespace SLIL.Classes
         public FirstAidKit() : base()
         {
             HasIt = false;
-            Name = new[] { "Аптечка", "First Aid Kit" };
+            HaveLV4 = true;
+            HasCuteDescription = true;
+            Name = new[]
+            { 
+                "Аптечка", "First Aid Kit",
+                "Бобы", "Beans"
+            };
             GunCost = 50;
             RechargeTime = 980;
             MaxAmmo = 2;
             FiringRate = 150;
             ReloadFrames = 3;
-            Description = new[] { "Восстанавливает здоровье", "Restores health" };
-            Icon = new[] { Properties.Resources.medkit_icon };
+            Description = new[]
+            { 
+                "Восстанавливает здоровье",
+                "Restores health",
+                "Вкусный перекус",
+                "A tasty snack"
+            };
+            Icon = new[]
+            {
+                Properties.Resources.medkit_icon,
+                Properties.Resources.medkit_icon
+            };
             Images = new[,]
             {
                    { Properties.Resources.medkit, Properties.Resources.medkit, Properties.Resources.medkit_using_0, Properties.Resources.medkit_using_1, Properties.Resources.medkit_using_2, Properties.Resources.medkit_run },
                    { Properties.Resources.syringe, Properties.Resources.syringe, Properties.Resources.syringe_using_0, Properties.Resources.syringe_using_1, Properties.Resources.syringe_using_2, Properties.Resources.medkit_run },
-                   { Properties.Resources.hand, Properties.Resources.hand, Properties.Resources.hand_using_0, Properties.Resources.hand_using_1, Properties.Resources.hand_using_2, Properties.Resources.medkit_run }
+                   { Properties.Resources.hand, Properties.Resources.hand, Properties.Resources.hand_using_0, Properties.Resources.hand_using_1, Properties.Resources.hand_using_2, Properties.Resources.medkit_run },
+                   { Properties.Resources.food, Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2, Properties.Resources.medkit_run },
             };
             Sounds = new[,]
             {
                    { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("medkit_using.wav"), false), new PlaySound(null, false) },
                    { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("syringe_using.wav"), false), new PlaySound(null, false) },
                    { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("hand_using.wav"), false), new PlaySound(null, false) },
+                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("food_using.wav"), false), new PlaySound(null, false) }
             };
         }
 

@@ -14,6 +14,7 @@ namespace SLIL.UserControls
 
         public Item item;
         public int index = 0;
+        public int language = 0;
         public int width;
         public PlaySound buy;
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
@@ -23,10 +24,13 @@ namespace SLIL.UserControls
 
         private void SLIL_ConsumablesShopInterface_VisibleChanged(object sender, EventArgs e)
         {
+            language = index;
+            if (item.HasCuteDescription && player.CuteMode)
+                language += 2;
             Width = width;
             icon.Image = item.Icon[0];
-            descryption.Text = item.Description[index];
-            name.Text = item.Name[index];
+            descryption.Text = item.Description[language];
+            name.Text = item.Name[language];
             if (!item.HasIt)
                 buy_button.Text = $"{buy_text[0, index]} {item.GunCost}$";
             else

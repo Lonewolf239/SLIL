@@ -15,14 +15,46 @@ namespace SLIL
 {
     public partial class MainMenu : Form
     {
-        private const string current_version = "|1.0.1|";
+        private const string current_version = "|1.0.2|";
         public static string iniFolder = "config.ini";
         public static bool Language = true, sounds = true;
         private readonly TextureCache textureCache = new TextureCache();
         public static CGF_Reader CGFReader;
         private string SelectButtonName;
         private SLIL_Editor Editor;
-        private bool ChangeControlButton = false;
+        private bool ChangeControlButton = false, CanClose = false;
+        private readonly string[] en_changes =
+        {
+            "\t\t\tv1.0.2",
+            "_______________________________________________________________",
+            "• Fixed detection of the run key",
+            "• Some bugs fixed",
+            "\n",
+            "\t\t\tv1.0.1",
+            "_______________________________________________________________",
+            "• Fixed game over screen",
+            "\n",
+            "\t\t\tv1.0",
+            "_______________________________________________________________",
+            "• Game Release",
+            "• SLIL was separated from Mini-Games"
+        };
+        private readonly string[] ru_changes = new string[]
+        {
+            "\t\t\tv1.0.2",
+            "_______________________________________________________________",
+            "• Исправлено обнаружение клавиши бега",
+            "• Исправлены некоторые ошибки",
+            "\n",
+            "\t\t\tv1.0.1",
+            "_______________________________________________________________",
+            "• Исправлен экран окончания игры",
+            "\n",
+            "\t\t\tv1.0",
+            "_______________________________________________________________",
+            "• Релиз игры",
+            "• SLIL был отделен от Mini-Games"
+        };
         private readonly string[,] AboutDifficulty =
         {
             {
@@ -85,6 +117,7 @@ namespace SLIL
         public static int resolution = 0, scope_type = 0, scope_color = 0, difficulty = 2;
         public static bool hight_fps = true, ShowFPS = true, ShowMiniMap = true;
         public static double LOOK_SPEED = 6.5;
+        public static float Volume = 0.4f;
 
         public MainMenu()
         {
@@ -141,7 +174,17 @@ namespace SLIL
 
         private void Close_developers_Click(object sender, EventArgs e) => developers_panel.Visible = false;
 
-        private void MainMenu_FormClosing(object sender, FormClosingEventArgs e) => SaveSettings();
+        private void MainMenu_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!CanClose)
+            {
+                e.Cancel = true;
+                exit_panel.Visible = true;
+                exit_panel.BringToFront();
+                return;
+            }
+            SaveSettings();
+        }
 
         private void Close_settings_Click(object sender, EventArgs e)
         {
@@ -161,7 +204,11 @@ namespace SLIL
             exit_panel.Visible = false;
         }
 
-        private void Exit_yes_btn_Click(object sender, EventArgs e) => Application.Exit();
+        private void Exit_yes_btn_Click(object sender, EventArgs e)
+        {
+            CanClose = true;
+            Application.Exit();
+        }
 
         private bool Check_Language()
         {
@@ -291,6 +338,11 @@ namespace SLIL
             settings_panel.Location = buttons_panel.Location;
             press_any_btn_panel.Location = buttons_panel.Location;
             exit_panel.Location = buttons_panel.Location;
+            change_logs_panel.Location = buttons_panel.Location;
+            game_mode_panel.Location = buttons_panel.Location;
+            multiplayer_panel.Location = buttons_panel.Location;
+            host_panel.Location = buttons_panel.Location;
+            connect_panel.Location = buttons_panel.Location;
             exit_size_panel.Left = (exit_panel.Width - exit_size_panel.Width) / 2;
         }
 
@@ -299,7 +351,8 @@ namespace SLIL
             Language = INIReader.GetBool(iniFolder, "CONFIG", "language", Language);
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             update_on_off.Checked = INIReader.GetBool(iniFolder, "CONFIG", "auto_update", true);
-            LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 2.5);
+            LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 6.5);
+            Volume = INIReader.GetSingle(iniFolder, "SLIL", "volume", 0.4f);
             ShowFPS = INIReader.GetBool(iniFolder, "SLIL", "show_fps", true);
             ShowMiniMap = INIReader.GetBool(iniFolder, "SLIL", "show_minimap", true);
             scope_color = INIReader.GetInt(iniFolder, "SLIL", "scope_color", 0);
@@ -321,6 +374,8 @@ namespace SLIL
             BindControls["run"] = INIReader.GetKeys(iniFolder, "SLIL", "run", Keys.ShiftKey);
             if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10)
                 LOOK_SPEED = 6.5;
+            if (Volume < 0 || Volume > 1)
+                Volume = 0.4f;
             if (scope_color < 0 || scope_color > 8)
                 scope_color = 0;
             if (scope_type < 0 || scope_type > 4)
@@ -351,6 +406,7 @@ namespace SLIL
             scope_choice.Value = scope_type;
             scope_color_choice.Value = scope_color;
             sensitivity.Value = (int)(LOOK_SPEED * 100);
+            volume.Value = (int)(Volume * 100);
             if (hight_fps)
                 fps_label.Text = "FPS: 60";
             else
@@ -371,15 +427,24 @@ namespace SLIL
         {
             if (Language)
             {
+                nickname_label.Text = "Имя игрока:";
+                host_btn.Text = "Создать игру";
+                connect_game_btn.Text = "Присоединиться";
+                multiplayer_close.Text = "Назад";
+                close_host_btn.Text = "Назад";
+                start_multiplayer_game.Text = "Играть";
                 start_btn.Text = "Начать игру";
+                select_mode_btn.Text = "Выбрать";
+                close_game_mode_panel.Text = "Закрыть";
                 easy_btn.Text = "Легко";
                 normal_btn.Text = "Нормально";
                 hard_btn.Text = "Сложно";
                 very_hard_btn.Text = "Оч. сложно";
                 custom_btn.Text = "Редактор";
-                close_difficulty_panel.Text = "Закрыть";
+                close_difficulty_panel.Text = "Назад";
                 start_game_btn.Text = "Играть";
                 setting_btn.Text = "Настройки";
+                volume_label.Text = "Громкость";
                 about_developers_btn.Text = "О разработчиках";
                 bug_report_btn.Text = "Сообщить об ошибке";
                 exit_btn.Text = "Выйти из игры";
@@ -405,6 +470,7 @@ namespace SLIL
                 sensitivity_label.Text = "Чувствительность мыши";
                 clear_settings.Text = "Сбросить";
                 close_settings.Text = "Закрыть";
+                change_logs_close_btn.Text = "Закрыть";
                 press_any_btn_label.Text = "Нажмите любую кнопку или ESC для отмены";
                 screenshot_label.Text = "Скриншот";
                 fire_btn.Text = "ЛКМ";
@@ -424,14 +490,23 @@ namespace SLIL
             }
             else
             {
+                nickname_label.Text = "Player name:";
+                host_btn.Text = "Create game";
+                connect_game_btn.Text = "Join";
+                multiplayer_close.Text = "Back";
+                close_host_btn.Text = "Back";
+                start_multiplayer_game.Text = "Play";
                 start_btn.Text = "Start game";
+                select_mode_btn.Text = "Select";
+                close_game_mode_panel.Text = "Close";
                 easy_btn.Text = "Easy";
                 normal_btn.Text = "Normal";
                 hard_btn.Text = "Difficult";
                 very_hard_btn.Text = "Very difficult";
                 custom_btn.Text = "Editor";
-                close_difficulty_panel.Text = "Close";
+                close_difficulty_panel.Text = "Return";
                 start_game_btn.Text = "Play";
+                volume_label.Text = "Volume";
                 setting_btn.Text = "Settings";
                 about_developers_btn.Text = "About developers";
                 bug_report_btn.Text = "Report a bug";
@@ -458,6 +533,7 @@ namespace SLIL
                 sensitivity_label.Text = "Mouse sensitivity";
                 clear_settings.Text = "Reset";
                 close_settings.Text = "Close";
+                change_logs_close_btn.Text = "Close";
                 press_any_btn_label.Text = "Press any button or ESC to cancel";
                 screenshot_label.Text = "Screenshot";
                 fire_btn.Text = "LMB";
@@ -562,8 +638,8 @@ namespace SLIL
         private void Start_btn_Click(object sender, EventArgs e)
         {
             by.Focus();
-            difficulty_panel.Visible = true;
-            difficulty_panel.BringToFront();
+            game_mode_panel.Visible = true;
+            game_mode_panel.BringToFront();
         }
 
         private void Sounds_on_off_CheckedChanged(object sender, EventArgs e)
@@ -724,7 +800,7 @@ namespace SLIL
             }
         }
 
-        private void Sensitivity_Scroll(object sender, EventArgs e) => LOOK_SPEED = sensitivity.Value / 100;
+        private void Sensitivity_Scroll(object sender, EventArgs e) => LOOK_SPEED = (double)sensitivity.Value / 100;
 
         private void Show_minimap_CheckedChanged(object sender, EventArgs e)
         {
@@ -778,6 +854,7 @@ namespace SLIL
             scope_type = 0;
             scope_color = 0;
             LOOK_SPEED = 6.5;
+            Volume = 0.4f;
             BindControls.Clear();
             foreach (var kvp in ClassicBindControls)
                 BindControls.Add(kvp.Key, kvp.Value);
@@ -796,6 +873,7 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "SLIL", "scope_type", scope_type);
             INIReader.SetKey(iniFolder, "SLIL", "scope_color", scope_color);
             INIReader.SetKey(iniFolder, "SLIL", "look_speed", LOOK_SPEED);
+            INIReader.SetKey(iniFolder, "SLIL", "volume", Volume);
             INIReader.SetKey(iniFolder, "SLIL", "screenshot", BindControls["screenshot"]);
             INIReader.SetKey(iniFolder, "SLIL", "reloading", BindControls["reloading"]);
             INIReader.SetKey(iniFolder, "SLIL", "forward", BindControls["forward"]);
@@ -842,6 +920,7 @@ namespace SLIL
         private void Start_game_btn_Click(object sender, EventArgs e)
         {
             by.Focus();
+            game_mode_panel.Visible = false;
             if (difficulty != 4)
             {
                 SLIL form = new SLIL(textureCache);
@@ -859,6 +938,109 @@ namespace SLIL
                 Editor.FormClosing += EditorForm_FormClosing;
                 Editor.ShowDialog();
             }
+        }
+
+        private void Version_label_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                change_logs_panel.Visible = true;
+                change_logs_panel.BringToFront();
+            }
+        }
+
+        private void Changes_list_Enter(object sender, EventArgs e) => by.Focus();
+
+        private void Change_logs_panel_VisibleChanged(object sender, EventArgs e)
+        {
+            changes_list.Items.Clear();
+            if (Language)
+                changes_list.Items.AddRange(ru_changes);
+            else
+                changes_list.Items.AddRange(en_changes);
+        }
+
+        private void Change_logs_close_btn_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+            change_logs_panel.Visible = false;
+        }
+
+        private void Close_game_mode__panel_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+            game_mode_panel.Visible = false;
+        }
+
+        private void Select_mode_btn_Click(object sender, EventArgs e)
+        {
+            if (singleplayer.Checked)
+            {
+                difficulty_panel.Visible = true;
+                difficulty_panel.BringToFront();
+            }
+            else
+            {
+                multiplayer_panel.Visible = true;
+                multiplayer_panel.BringToFront();
+            }
+        }
+
+        private void Volume_Scroll(object sender, EventArgs e) => Volume = (float)volume.Value / 100;
+
+        private void Copy_ip_btn_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+            Clipboard.SetText(ip.Text);
+            if (Language)
+                MessageBox.Show("IP-адрес успешно скопирован в буфер обмена", "Копирование IP", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show("IP address successfully copied to clipboard", "IP Copying", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void Host_btn_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+            host_panel.Visible = true;
+            host_panel.BringToFront();
+        }
+
+        private void Close_host_btn_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+            host_panel.Visible = false;
+            players_panel.Controls.Clear();
+        }
+
+        private void Start_multiplayer_game_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+
+        }
+
+        private void Connect_game_btn_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+            ip_connect_input.Text = "000.000.000.000:0000";
+            connect_panel.Visible = true;
+            connect_panel.BringToFront();
+        }
+
+        private void Close_connect_btn_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+            connect_panel.Visible = false;
+        }
+
+        private void Connect_btn_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+        }
+
+        private void Multiplayer_close_Click(object sender, EventArgs e)
+        {
+            by.Focus();
+            multiplayer_panel.Visible = false;
         }
 
         private void EditorForm_FormClosing(object sender, FormClosingEventArgs e)

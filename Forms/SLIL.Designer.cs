@@ -137,7 +137,7 @@ namespace SLIL
             this.consumables_shop_page.Padding = new System.Windows.Forms.Padding(3);
             this.consumables_shop_page.Size = new System.Drawing.Size(446, 249);
             this.consumables_shop_page.TabIndex = 2;
-            this.consumables_shop_page.Text = "Расходники";
+            this.consumables_shop_page.Text = "Прочее";
             // 
             // shop_title_panel
             // 
@@ -355,18 +355,19 @@ namespace SLIL
             // 
             // SLIL
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
             this.ClientSize = new System.Drawing.Size(454, 302);
-            this.Controls.Add(this.game_over_panel);
             this.Controls.Add(this.shop_panel);
+            this.Controls.Add(this.game_over_panel);
             this.Controls.Add(this.pause_panel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "SLIL";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SLIL";
             this.TopMost = true;

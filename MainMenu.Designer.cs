@@ -71,6 +71,9 @@
             this.language_panel = new System.Windows.Forms.Panel();
             this.language_list = new System.Windows.Forms.ComboBox();
             this.language_label = new System.Windows.Forms.Label();
+            this.volume_panel = new System.Windows.Forms.Panel();
+            this.volume = new System.Windows.Forms.TrackBar();
+            this.volume_label = new System.Windows.Forms.Label();
             this.sound_panel = new System.Windows.Forms.Panel();
             this.sounds_on_off = new System.Windows.Forms.CheckBox();
             this.sounds_label = new System.Windows.Forms.Label();
@@ -161,7 +164,42 @@
             this.easy_btn = new System.Windows.Forms.RadioButton();
             this.difficulty_label = new System.Windows.Forms.Label();
             this.start_game_btn = new System.Windows.Forms.Button();
-            this.title = new System.Windows.Forms.Label();
+            this.change_logs_panel = new System.Windows.Forms.Panel();
+            this.change_logs_bottom = new System.Windows.Forms.Panel();
+            this.change_logs_close_btn = new System.Windows.Forms.Button();
+            this.change_logs_background = new System.Windows.Forms.Panel();
+            this.changes_list = new System.Windows.Forms.ListBox();
+            this.game_mode_panel = new System.Windows.Forms.Panel();
+            this.game_mode_background = new System.Windows.Forms.Panel();
+            this.select_mode_panel = new System.Windows.Forms.Panel();
+            this.singleplayer = new System.Windows.Forms.RadioButton();
+            this.multiplayer = new System.Windows.Forms.RadioButton();
+            this.close_game_mode_panel = new System.Windows.Forms.Button();
+            this.select_mode_btn = new System.Windows.Forms.Button();
+            this.multiplayer_panel = new System.Windows.Forms.Panel();
+            this.multiplayer_background = new System.Windows.Forms.Panel();
+            this.coming_soon_label = new System.Windows.Forms.Label();
+            this.connect_game_btn = new System.Windows.Forms.Button();
+            this.nickname = new System.Windows.Forms.TextBox();
+            this.nickname_label = new System.Windows.Forms.Label();
+            this.host_btn = new System.Windows.Forms.Button();
+            this.multiplayer_close = new System.Windows.Forms.Button();
+            this.host_panel = new System.Windows.Forms.Panel();
+            this.host_background = new System.Windows.Forms.Panel();
+            this.players_panel = new System.Windows.Forms.Panel();
+            this.top_panel = new System.Windows.Forms.Panel();
+            this.ip = new System.Windows.Forms.Label();
+            this.copy_ip_btn = new System.Windows.Forms.Button();
+            this.ip_label = new System.Windows.Forms.Label();
+            this.bottom_panel = new System.Windows.Forms.Panel();
+            this.start_multiplayer_game = new System.Windows.Forms.Button();
+            this.close_host_btn = new System.Windows.Forms.Button();
+            this.connect_panel = new System.Windows.Forms.Panel();
+            this.connect_background = new System.Windows.Forms.Panel();
+            this.connect_btn = new System.Windows.Forms.Button();
+            this.ip_connect_input = new System.Windows.Forms.TextBox();
+            this.ip_input_label = new System.Windows.Forms.Label();
+            this.close_connect_btn = new System.Windows.Forms.Button();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -178,6 +216,8 @@
             this.check_update_panel.SuspendLayout();
             this.update_panel.SuspendLayout();
             this.language_panel.SuspendLayout();
+            this.volume_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.volume)).BeginInit();
             this.sound_panel.SuspendLayout();
             this.video_settings.SuspendLayout();
             this.scope_color_panel.SuspendLayout();
@@ -213,6 +253,20 @@
             this.exit_size_panel.SuspendLayout();
             this.difficulty_panel.SuspendLayout();
             this.difficulty_background.SuspendLayout();
+            this.change_logs_panel.SuspendLayout();
+            this.change_logs_bottom.SuspendLayout();
+            this.change_logs_background.SuspendLayout();
+            this.game_mode_panel.SuspendLayout();
+            this.game_mode_background.SuspendLayout();
+            this.select_mode_panel.SuspendLayout();
+            this.multiplayer_panel.SuspendLayout();
+            this.multiplayer_background.SuspendLayout();
+            this.host_panel.SuspendLayout();
+            this.host_background.SuspendLayout();
+            this.top_panel.SuspendLayout();
+            this.bottom_panel.SuspendLayout();
+            this.connect_panel.SuspendLayout();
+            this.connect_background.SuspendLayout();
             this.SuspendLayout();
             // 
             // by
@@ -222,7 +276,7 @@
             this.by.Cursor = System.Windows.Forms.Cursors.Default;
             this.by.Font = new System.Drawing.Font("Lucida Handwriting", 12F, System.Drawing.FontStyle.Bold);
             this.by.ForeColor = System.Drawing.Color.White;
-            this.by.Location = new System.Drawing.Point(1128, 672);
+            this.by.Location = new System.Drawing.Point(1128, 840);
             this.by.Name = "by";
             this.by.Size = new System.Drawing.Size(111, 21);
             this.by.TabIndex = 43;
@@ -237,7 +291,7 @@
             this.developer_name.Cursor = System.Windows.Forms.Cursors.Help;
             this.developer_name.Font = new System.Drawing.Font("Lucida Handwriting", 12F, System.Drawing.FontStyle.Bold);
             this.developer_name.ForeColor = System.Drawing.Color.White;
-            this.developer_name.Location = new System.Drawing.Point(1105, 693);
+            this.developer_name.Location = new System.Drawing.Point(1105, 861);
             this.developer_name.Name = "developer_name";
             this.developer_name.Size = new System.Drawing.Size(134, 21);
             this.developer_name.TabIndex = 42;
@@ -248,11 +302,10 @@
             // start_btn
             // 
             this.start_btn.AutoSize = true;
-            this.start_btn.BackColor = System.Drawing.Color.Transparent;
-            this.start_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.start_btn.BackColor = System.Drawing.Color.Black;
             this.start_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.start_btn.ForeColor = System.Drawing.Color.White;
-            this.start_btn.Location = new System.Drawing.Point(29, 3);
+            this.start_btn.Location = new System.Drawing.Point(4, 3);
             this.start_btn.Name = "start_btn";
             this.start_btn.Size = new System.Drawing.Size(200, 49);
             this.start_btn.TabIndex = 44;
@@ -264,11 +317,10 @@
             // setting_btn
             // 
             this.setting_btn.AutoSize = true;
-            this.setting_btn.BackColor = System.Drawing.Color.Transparent;
-            this.setting_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.setting_btn.BackColor = System.Drawing.Color.Black;
             this.setting_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.setting_btn.ForeColor = System.Drawing.Color.White;
-            this.setting_btn.Location = new System.Drawing.Point(29, 58);
+            this.setting_btn.Location = new System.Drawing.Point(4, 58);
             this.setting_btn.Name = "setting_btn";
             this.setting_btn.Size = new System.Drawing.Size(184, 49);
             this.setting_btn.TabIndex = 45;
@@ -280,11 +332,10 @@
             // about_developers_btn
             // 
             this.about_developers_btn.AutoSize = true;
-            this.about_developers_btn.BackColor = System.Drawing.Color.Transparent;
-            this.about_developers_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.about_developers_btn.BackColor = System.Drawing.Color.Black;
             this.about_developers_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.about_developers_btn.ForeColor = System.Drawing.Color.White;
-            this.about_developers_btn.Location = new System.Drawing.Point(7, 113);
+            this.about_developers_btn.Location = new System.Drawing.Point(3, 113);
             this.about_developers_btn.Name = "about_developers_btn";
             this.about_developers_btn.Size = new System.Drawing.Size(277, 49);
             this.about_developers_btn.TabIndex = 46;
@@ -296,8 +347,7 @@
             // bug_report_btn
             // 
             this.bug_report_btn.AutoSize = true;
-            this.bug_report_btn.BackColor = System.Drawing.Color.Transparent;
-            this.bug_report_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bug_report_btn.BackColor = System.Drawing.Color.Black;
             this.bug_report_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.bug_report_btn.ForeColor = System.Drawing.Color.White;
             this.bug_report_btn.Location = new System.Drawing.Point(3, 168);
@@ -312,11 +362,10 @@
             // exit_btn
             // 
             this.exit_btn.AutoSize = true;
-            this.exit_btn.BackColor = System.Drawing.Color.Transparent;
-            this.exit_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.exit_btn.BackColor = System.Drawing.Color.Black;
             this.exit_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.exit_btn.ForeColor = System.Drawing.Color.White;
-            this.exit_btn.Location = new System.Drawing.Point(29, 223);
+            this.exit_btn.Location = new System.Drawing.Point(3, 223);
             this.exit_btn.Name = "exit_btn";
             this.exit_btn.Size = new System.Drawing.Size(229, 49);
             this.exit_btn.TabIndex = 48;
@@ -352,7 +401,7 @@
             this.developers_panel.BackColor = System.Drawing.Color.DarkGray;
             this.developers_panel.Controls.Add(this.close_developers_panel);
             this.developers_panel.Controls.Add(this.developers_background);
-            this.developers_panel.Location = new System.Drawing.Point(514, 12);
+            this.developers_panel.Location = new System.Drawing.Point(1016, 12);
             this.developers_panel.Name = "developers_panel";
             this.developers_panel.Size = new System.Drawing.Size(496, 282);
             this.developers_panel.TabIndex = 50;
@@ -370,8 +419,7 @@
             // close_developers
             // 
             this.close_developers.AutoSize = true;
-            this.close_developers.BackColor = System.Drawing.Color.Transparent;
-            this.close_developers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.close_developers.BackColor = System.Drawing.Color.Black;
             this.close_developers.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.close_developers.ForeColor = System.Drawing.Color.White;
             this.close_developers.Location = new System.Drawing.Point(343, 6);
@@ -420,8 +468,7 @@
             // koyo_hipolink
             // 
             this.koyo_hipolink.AutoSize = true;
-            this.koyo_hipolink.BackColor = System.Drawing.Color.Transparent;
-            this.koyo_hipolink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.koyo_hipolink.BackColor = System.Drawing.Color.Black;
             this.koyo_hipolink.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.koyo_hipolink.ForeColor = System.Drawing.Color.White;
             this.koyo_hipolink.Location = new System.Drawing.Point(6, 100);
@@ -471,8 +518,7 @@
             // qsvhu_telegram
             // 
             this.qsvhu_telegram.AutoSize = true;
-            this.qsvhu_telegram.BackColor = System.Drawing.Color.Transparent;
-            this.qsvhu_telegram.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.qsvhu_telegram.BackColor = System.Drawing.Color.Black;
             this.qsvhu_telegram.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.qsvhu_telegram.ForeColor = System.Drawing.Color.White;
             this.qsvhu_telegram.Location = new System.Drawing.Point(6, 100);
@@ -522,8 +568,7 @@
             // fatalan_git
             // 
             this.fatalan_git.AutoSize = true;
-            this.fatalan_git.BackColor = System.Drawing.Color.Transparent;
-            this.fatalan_git.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.fatalan_git.BackColor = System.Drawing.Color.Black;
             this.fatalan_git.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.fatalan_git.ForeColor = System.Drawing.Color.White;
             this.fatalan_git.Location = new System.Drawing.Point(6, 100);
@@ -565,8 +610,7 @@
             // github_lonewolf
             // 
             this.github_lonewolf.AutoSize = true;
-            this.github_lonewolf.BackColor = System.Drawing.Color.Transparent;
-            this.github_lonewolf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.github_lonewolf.BackColor = System.Drawing.Color.Black;
             this.github_lonewolf.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.github_lonewolf.ForeColor = System.Drawing.Color.White;
             this.github_lonewolf.Location = new System.Drawing.Point(267, 39);
@@ -581,8 +625,7 @@
             // telegram_lonewolf
             // 
             this.telegram_lonewolf.AutoSize = true;
-            this.telegram_lonewolf.BackColor = System.Drawing.Color.Transparent;
-            this.telegram_lonewolf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.telegram_lonewolf.BackColor = System.Drawing.Color.Black;
             this.telegram_lonewolf.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.telegram_lonewolf.ForeColor = System.Drawing.Color.White;
             this.telegram_lonewolf.Location = new System.Drawing.Point(131, 39);
@@ -597,8 +640,7 @@
             // web_site_lonewolf
             // 
             this.web_site_lonewolf.AutoSize = true;
-            this.web_site_lonewolf.BackColor = System.Drawing.Color.Transparent;
-            this.web_site_lonewolf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.web_site_lonewolf.BackColor = System.Drawing.Color.Black;
             this.web_site_lonewolf.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.web_site_lonewolf.ForeColor = System.Drawing.Color.White;
             this.web_site_lonewolf.Location = new System.Drawing.Point(6, 39);
@@ -664,6 +706,7 @@
             this.all_settings.Controls.Add(this.check_update_panel);
             this.all_settings.Controls.Add(this.update_panel);
             this.all_settings.Controls.Add(this.language_panel);
+            this.all_settings.Controls.Add(this.volume_panel);
             this.all_settings.Controls.Add(this.sound_panel);
             this.all_settings.ForeColor = System.Drawing.Color.White;
             this.all_settings.Location = new System.Drawing.Point(4, 33);
@@ -676,10 +719,9 @@
             // check_update_panel
             // 
             this.check_update_panel.BackColor = System.Drawing.Color.Black;
-            this.check_update_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.check_update_panel.Controls.Add(this.check_update_btn);
             this.check_update_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.check_update_panel.Location = new System.Drawing.Point(3, 105);
+            this.check_update_panel.Location = new System.Drawing.Point(3, 139);
             this.check_update_panel.Name = "check_update_panel";
             this.check_update_panel.Size = new System.Drawing.Size(476, 34);
             this.check_update_panel.TabIndex = 3;
@@ -688,9 +730,9 @@
             // 
             this.check_update_btn.AutoSize = true;
             this.check_update_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.check_update_btn.Location = new System.Drawing.Point(162, 0);
+            this.check_update_btn.Location = new System.Drawing.Point(164, 0);
             this.check_update_btn.Name = "check_update_btn";
-            this.check_update_btn.Size = new System.Drawing.Size(312, 32);
+            this.check_update_btn.Size = new System.Drawing.Size(312, 34);
             this.check_update_btn.TabIndex = 0;
             this.check_update_btn.TabStop = false;
             this.check_update_btn.Text = "Проверить наличие обновления";
@@ -699,10 +741,11 @@
             // 
             // update_panel
             // 
+            this.update_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.update_panel.Controls.Add(this.update_on_off);
             this.update_panel.Controls.Add(this.update_label);
             this.update_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.update_panel.Location = new System.Drawing.Point(3, 71);
+            this.update_panel.Location = new System.Drawing.Point(3, 105);
             this.update_panel.Name = "update_panel";
             this.update_panel.Size = new System.Drawing.Size(476, 34);
             this.update_panel.TabIndex = 2;
@@ -713,9 +756,9 @@
             this.update_on_off.Checked = true;
             this.update_on_off.CheckState = System.Windows.Forms.CheckState.Checked;
             this.update_on_off.Dock = System.Windows.Forms.DockStyle.Right;
-            this.update_on_off.Location = new System.Drawing.Point(406, 0);
+            this.update_on_off.Location = new System.Drawing.Point(404, 0);
             this.update_on_off.Name = "update_on_off";
-            this.update_on_off.Size = new System.Drawing.Size(70, 34);
+            this.update_on_off.Size = new System.Drawing.Size(70, 32);
             this.update_on_off.TabIndex = 1;
             this.update_on_off.TabStop = false;
             this.update_on_off.Text = "Вкл.";
@@ -728,7 +771,7 @@
             this.update_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.update_label.Location = new System.Drawing.Point(0, 0);
             this.update_label.Name = "update_label";
-            this.update_label.Size = new System.Drawing.Size(226, 34);
+            this.update_label.Size = new System.Drawing.Size(226, 32);
             this.update_label.TabIndex = 0;
             this.update_label.Text = "Авто-обновление";
             this.update_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -736,11 +779,10 @@
             // language_panel
             // 
             this.language_panel.BackColor = System.Drawing.Color.Black;
-            this.language_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.language_panel.Controls.Add(this.language_list);
             this.language_panel.Controls.Add(this.language_label);
             this.language_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.language_panel.Location = new System.Drawing.Point(3, 37);
+            this.language_panel.Location = new System.Drawing.Point(3, 71);
             this.language_panel.Name = "language_panel";
             this.language_panel.Size = new System.Drawing.Size(476, 34);
             this.language_panel.TabIndex = 1;
@@ -754,7 +796,7 @@
             this.language_list.Items.AddRange(new object[] {
             "Русский",
             "English"});
-            this.language_list.Location = new System.Drawing.Point(312, 0);
+            this.language_list.Location = new System.Drawing.Point(314, 0);
             this.language_list.Name = "language_list";
             this.language_list.Size = new System.Drawing.Size(162, 32);
             this.language_list.TabIndex = 2;
@@ -766,10 +808,44 @@
             this.language_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.language_label.Location = new System.Drawing.Point(0, 0);
             this.language_label.Name = "language_label";
-            this.language_label.Size = new System.Drawing.Size(226, 32);
+            this.language_label.Size = new System.Drawing.Size(226, 34);
             this.language_label.TabIndex = 0;
             this.language_label.Text = "Язык";
             this.language_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // volume_panel
+            // 
+            this.volume_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.volume_panel.Controls.Add(this.volume);
+            this.volume_panel.Controls.Add(this.volume_label);
+            this.volume_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.volume_panel.Location = new System.Drawing.Point(3, 37);
+            this.volume_panel.Name = "volume_panel";
+            this.volume_panel.Size = new System.Drawing.Size(476, 34);
+            this.volume_panel.TabIndex = 4;
+            // 
+            // volume
+            // 
+            this.volume.Dock = System.Windows.Forms.DockStyle.Right;
+            this.volume.Location = new System.Drawing.Point(370, 0);
+            this.volume.Maximum = 100;
+            this.volume.Name = "volume";
+            this.volume.Size = new System.Drawing.Size(104, 32);
+            this.volume.TabIndex = 6;
+            this.volume.TabStop = false;
+            this.volume.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.volume.Value = 40;
+            this.volume.Scroll += new System.EventHandler(this.Volume_Scroll);
+            // 
+            // volume_label
+            // 
+            this.volume_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.volume_label.Location = new System.Drawing.Point(0, 0);
+            this.volume_label.Name = "volume_label";
+            this.volume_label.Size = new System.Drawing.Size(226, 32);
+            this.volume_label.TabIndex = 0;
+            this.volume_label.Text = "Громкость";
+            this.volume_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // sound_panel
             // 
@@ -818,10 +894,10 @@
             this.video_settings.Controls.Add(this.show_fps_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 33);
+            this.video_settings.Location = new System.Drawing.Point(4, 22);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 183);
+            this.video_settings.Size = new System.Drawing.Size(482, 194);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
@@ -1052,10 +1128,10 @@
             this.control_settings.Controls.Add(this.screenshot_panel);
             this.control_settings.Controls.Add(this.sensitivity_panel);
             this.control_settings.ForeColor = System.Drawing.Color.White;
-            this.control_settings.Location = new System.Drawing.Point(4, 33);
+            this.control_settings.Location = new System.Drawing.Point(4, 22);
             this.control_settings.Name = "control_settings";
             this.control_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.control_settings.Size = new System.Drawing.Size(482, 183);
+            this.control_settings.Size = new System.Drawing.Size(482, 194);
             this.control_settings.TabIndex = 2;
             this.control_settings.Text = "Управление";
             // 
@@ -1562,8 +1638,7 @@
             // clear_settings
             // 
             this.clear_settings.AutoSize = true;
-            this.clear_settings.BackColor = System.Drawing.Color.Transparent;
-            this.clear_settings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.clear_settings.BackColor = System.Drawing.Color.Black;
             this.clear_settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.clear_settings.ForeColor = System.Drawing.Color.White;
             this.clear_settings.Location = new System.Drawing.Point(4, 6);
@@ -1578,8 +1653,7 @@
             // close_settings
             // 
             this.close_settings.AutoSize = true;
-            this.close_settings.BackColor = System.Drawing.Color.Transparent;
-            this.close_settings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.close_settings.BackColor = System.Drawing.Color.Black;
             this.close_settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.close_settings.ForeColor = System.Drawing.Color.White;
             this.close_settings.Location = new System.Drawing.Point(353, 6);
@@ -1593,15 +1667,17 @@
             // 
             // version_label
             // 
+            this.version_label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.version_label.AutoSize = true;
             this.version_label.BackColor = System.Drawing.Color.Transparent;
-            this.version_label.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.version_label.Cursor = System.Windows.Forms.Cursors.Help;
             this.version_label.ForeColor = System.Drawing.Color.White;
-            this.version_label.Location = new System.Drawing.Point(0, 699);
+            this.version_label.Location = new System.Drawing.Point(12, 861);
             this.version_label.Name = "version_label";
             this.version_label.Size = new System.Drawing.Size(104, 24);
             this.version_label.TabIndex = 52;
             this.version_label.Text = "[VERSION]";
+            this.version_label.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Version_label_MouseClick);
             // 
             // press_any_btn_panel
             // 
@@ -1639,7 +1715,7 @@
             // 
             this.exit_panel.BackColor = System.Drawing.Color.DarkGray;
             this.exit_panel.Controls.Add(this.exit_background);
-            this.exit_panel.Location = new System.Drawing.Point(1016, 297);
+            this.exit_panel.Location = new System.Drawing.Point(1016, 12);
             this.exit_panel.Name = "exit_panel";
             this.exit_panel.Size = new System.Drawing.Size(496, 282);
             this.exit_panel.TabIndex = 54;
@@ -1667,9 +1743,8 @@
             // exit_yes_btn
             // 
             this.exit_yes_btn.AutoSize = true;
-            this.exit_yes_btn.BackColor = System.Drawing.Color.Transparent;
+            this.exit_yes_btn.BackColor = System.Drawing.Color.Black;
             this.exit_yes_btn.Dock = System.Windows.Forms.DockStyle.Left;
-            this.exit_yes_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exit_yes_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.exit_yes_btn.ForeColor = System.Drawing.Color.White;
             this.exit_yes_btn.Location = new System.Drawing.Point(0, 0);
@@ -1684,9 +1759,8 @@
             // exit_no_btn
             // 
             this.exit_no_btn.AutoSize = true;
-            this.exit_no_btn.BackColor = System.Drawing.Color.Transparent;
+            this.exit_no_btn.BackColor = System.Drawing.Color.Black;
             this.exit_no_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.exit_no_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exit_no_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.exit_no_btn.ForeColor = System.Drawing.Color.White;
             this.exit_no_btn.Location = new System.Drawing.Point(203, 0);
@@ -1713,7 +1787,7 @@
             // 
             this.difficulty_panel.BackColor = System.Drawing.Color.DarkGray;
             this.difficulty_panel.Controls.Add(this.difficulty_background);
-            this.difficulty_panel.Location = new System.Drawing.Point(514, 297);
+            this.difficulty_panel.Location = new System.Drawing.Point(514, 12);
             this.difficulty_panel.Name = "difficulty_panel";
             this.difficulty_panel.Size = new System.Drawing.Size(496, 282);
             this.difficulty_panel.TabIndex = 55;
@@ -1738,8 +1812,7 @@
             // close_difficulty_panel
             // 
             this.close_difficulty_panel.AutoSize = true;
-            this.close_difficulty_panel.BackColor = System.Drawing.Color.Transparent;
-            this.close_difficulty_panel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.close_difficulty_panel.BackColor = System.Drawing.Color.Black;
             this.close_difficulty_panel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.close_difficulty_panel.ForeColor = System.Drawing.Color.White;
             this.close_difficulty_panel.Location = new System.Drawing.Point(10, 226);
@@ -1747,7 +1820,7 @@
             this.close_difficulty_panel.Size = new System.Drawing.Size(130, 41);
             this.close_difficulty_panel.TabIndex = 58;
             this.close_difficulty_panel.TabStop = false;
-            this.close_difficulty_panel.Text = "Закрыть";
+            this.close_difficulty_panel.Text = "Назад";
             this.close_difficulty_panel.UseVisualStyleBackColor = false;
             this.close_difficulty_panel.Click += new System.EventHandler(this.Close_difficulty_panel_Click);
             // 
@@ -1830,8 +1903,7 @@
             // 
             // start_game_btn
             // 
-            this.start_game_btn.BackColor = System.Drawing.Color.Transparent;
-            this.start_game_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.start_game_btn.BackColor = System.Drawing.Color.Black;
             this.start_game_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
             this.start_game_btn.ForeColor = System.Drawing.Color.White;
             this.start_game_btn.Location = new System.Drawing.Point(340, 226);
@@ -1843,32 +1915,469 @@
             this.start_game_btn.UseVisualStyleBackColor = false;
             this.start_game_btn.Click += new System.EventHandler(this.Start_game_btn_Click);
             // 
-            // title
+            // change_logs_panel
             // 
-            this.title.Dock = System.Windows.Forms.DockStyle.Top;
-            this.title.Font = new System.Drawing.Font("Modern No. 20", 71.99999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.title.ForeColor = System.Drawing.Color.White;
-            this.title.Location = new System.Drawing.Point(0, 0);
-            this.title.Name = "title";
-            this.title.Size = new System.Drawing.Size(1251, 100);
-            this.title.TabIndex = 56;
-            this.title.Text = "SLIL";
-            this.title.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.change_logs_panel.BackColor = System.Drawing.Color.DarkGray;
+            this.change_logs_panel.Controls.Add(this.change_logs_bottom);
+            this.change_logs_panel.Controls.Add(this.change_logs_background);
+            this.change_logs_panel.Location = new System.Drawing.Point(1016, 12);
+            this.change_logs_panel.Name = "change_logs_panel";
+            this.change_logs_panel.Size = new System.Drawing.Size(496, 282);
+            this.change_logs_panel.TabIndex = 57;
+            this.change_logs_panel.Visible = false;
+            this.change_logs_panel.VisibleChanged += new System.EventHandler(this.Change_logs_panel_VisibleChanged);
+            // 
+            // change_logs_bottom
+            // 
+            this.change_logs_bottom.BackColor = System.Drawing.Color.Black;
+            this.change_logs_bottom.Controls.Add(this.change_logs_close_btn);
+            this.change_logs_bottom.Location = new System.Drawing.Point(3, 223);
+            this.change_logs_bottom.Name = "change_logs_bottom";
+            this.change_logs_bottom.Size = new System.Drawing.Size(490, 56);
+            this.change_logs_bottom.TabIndex = 49;
+            // 
+            // change_logs_close_btn
+            // 
+            this.change_logs_close_btn.AutoSize = true;
+            this.change_logs_close_btn.BackColor = System.Drawing.Color.Black;
+            this.change_logs_close_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.change_logs_close_btn.ForeColor = System.Drawing.Color.White;
+            this.change_logs_close_btn.Location = new System.Drawing.Point(343, 6);
+            this.change_logs_close_btn.Name = "change_logs_close_btn";
+            this.change_logs_close_btn.Size = new System.Drawing.Size(130, 41);
+            this.change_logs_close_btn.TabIndex = 48;
+            this.change_logs_close_btn.TabStop = false;
+            this.change_logs_close_btn.Text = "Закрыть";
+            this.change_logs_close_btn.UseVisualStyleBackColor = false;
+            this.change_logs_close_btn.Click += new System.EventHandler(this.Change_logs_close_btn_Click);
+            // 
+            // change_logs_background
+            // 
+            this.change_logs_background.AutoScroll = true;
+            this.change_logs_background.BackColor = System.Drawing.Color.Black;
+            this.change_logs_background.Controls.Add(this.changes_list);
+            this.change_logs_background.Location = new System.Drawing.Point(3, 3);
+            this.change_logs_background.Name = "change_logs_background";
+            this.change_logs_background.Size = new System.Drawing.Size(490, 220);
+            this.change_logs_background.TabIndex = 45;
+            // 
+            // changes_list
+            // 
+            this.changes_list.BackColor = System.Drawing.Color.Black;
+            this.changes_list.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.changes_list.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.changes_list.ForeColor = System.Drawing.Color.White;
+            this.changes_list.FormattingEnabled = true;
+            this.changes_list.ItemHeight = 20;
+            this.changes_list.Location = new System.Drawing.Point(0, 0);
+            this.changes_list.Name = "changes_list";
+            this.changes_list.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.changes_list.Size = new System.Drawing.Size(490, 220);
+            this.changes_list.TabIndex = 1;
+            this.changes_list.TabStop = false;
+            this.changes_list.Enter += new System.EventHandler(this.Changes_list_Enter);
+            // 
+            // game_mode_panel
+            // 
+            this.game_mode_panel.BackColor = System.Drawing.Color.DarkGray;
+            this.game_mode_panel.Controls.Add(this.game_mode_background);
+            this.game_mode_panel.Location = new System.Drawing.Point(1016, 12);
+            this.game_mode_panel.Name = "game_mode_panel";
+            this.game_mode_panel.Size = new System.Drawing.Size(496, 282);
+            this.game_mode_panel.TabIndex = 58;
+            this.game_mode_panel.Visible = false;
+            // 
+            // game_mode_background
+            // 
+            this.game_mode_background.BackColor = System.Drawing.Color.Black;
+            this.game_mode_background.Controls.Add(this.select_mode_panel);
+            this.game_mode_background.Controls.Add(this.close_game_mode_panel);
+            this.game_mode_background.Controls.Add(this.select_mode_btn);
+            this.game_mode_background.Location = new System.Drawing.Point(3, 3);
+            this.game_mode_background.Name = "game_mode_background";
+            this.game_mode_background.Size = new System.Drawing.Size(490, 276);
+            this.game_mode_background.TabIndex = 45;
+            // 
+            // select_mode_panel
+            // 
+            this.select_mode_panel.Controls.Add(this.singleplayer);
+            this.select_mode_panel.Controls.Add(this.multiplayer);
+            this.select_mode_panel.Location = new System.Drawing.Point(95, 45);
+            this.select_mode_panel.Name = "select_mode_panel";
+            this.select_mode_panel.Size = new System.Drawing.Size(300, 125);
+            this.select_mode_panel.TabIndex = 59;
+            // 
+            // singleplayer
+            // 
+            this.singleplayer.Appearance = System.Windows.Forms.Appearance.Button;
+            this.singleplayer.BackgroundImage = global::SLIL.Properties.Resources.singleplayer;
+            this.singleplayer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.singleplayer.Checked = true;
+            this.singleplayer.Dock = System.Windows.Forms.DockStyle.Left;
+            this.singleplayer.ForeColor = System.Drawing.Color.White;
+            this.singleplayer.Location = new System.Drawing.Point(0, 0);
+            this.singleplayer.Name = "singleplayer";
+            this.singleplayer.Size = new System.Drawing.Size(125, 125);
+            this.singleplayer.TabIndex = 53;
+            this.singleplayer.TabStop = true;
+            this.singleplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.singleplayer.UseVisualStyleBackColor = false;
+            // 
+            // multiplayer
+            // 
+            this.multiplayer.Appearance = System.Windows.Forms.Appearance.Button;
+            this.multiplayer.BackgroundImage = global::SLIL.Properties.Resources.multiplayer;
+            this.multiplayer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.multiplayer.Dock = System.Windows.Forms.DockStyle.Right;
+            this.multiplayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.multiplayer.ForeColor = System.Drawing.Color.White;
+            this.multiplayer.Location = new System.Drawing.Point(175, 0);
+            this.multiplayer.Name = "multiplayer";
+            this.multiplayer.Size = new System.Drawing.Size(125, 125);
+            this.multiplayer.TabIndex = 54;
+            this.multiplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.multiplayer.UseVisualStyleBackColor = false;
+            // 
+            // close_game_mode_panel
+            // 
+            this.close_game_mode_panel.AutoSize = true;
+            this.close_game_mode_panel.BackColor = System.Drawing.Color.Black;
+            this.close_game_mode_panel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.close_game_mode_panel.ForeColor = System.Drawing.Color.White;
+            this.close_game_mode_panel.Location = new System.Drawing.Point(10, 226);
+            this.close_game_mode_panel.Name = "close_game_mode_panel";
+            this.close_game_mode_panel.Size = new System.Drawing.Size(130, 41);
+            this.close_game_mode_panel.TabIndex = 58;
+            this.close_game_mode_panel.TabStop = false;
+            this.close_game_mode_panel.Text = "Закрыть";
+            this.close_game_mode_panel.UseVisualStyleBackColor = false;
+            this.close_game_mode_panel.Click += new System.EventHandler(this.Close_game_mode__panel_Click);
+            // 
+            // select_mode_btn
+            // 
+            this.select_mode_btn.BackColor = System.Drawing.Color.Black;
+            this.select_mode_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.select_mode_btn.ForeColor = System.Drawing.Color.White;
+            this.select_mode_btn.Location = new System.Drawing.Point(340, 226);
+            this.select_mode_btn.Name = "select_mode_btn";
+            this.select_mode_btn.Size = new System.Drawing.Size(140, 41);
+            this.select_mode_btn.TabIndex = 45;
+            this.select_mode_btn.TabStop = false;
+            this.select_mode_btn.Text = "Выбрать";
+            this.select_mode_btn.UseVisualStyleBackColor = false;
+            this.select_mode_btn.Click += new System.EventHandler(this.Select_mode_btn_Click);
+            // 
+            // multiplayer_panel
+            // 
+            this.multiplayer_panel.BackColor = System.Drawing.Color.DarkGray;
+            this.multiplayer_panel.Controls.Add(this.multiplayer_background);
+            this.multiplayer_panel.Location = new System.Drawing.Point(12, 582);
+            this.multiplayer_panel.Name = "multiplayer_panel";
+            this.multiplayer_panel.Size = new System.Drawing.Size(496, 282);
+            this.multiplayer_panel.TabIndex = 59;
+            this.multiplayer_panel.Visible = false;
+            // 
+            // multiplayer_background
+            // 
+            this.multiplayer_background.BackColor = System.Drawing.Color.Black;
+            this.multiplayer_background.Controls.Add(this.coming_soon_label);
+            this.multiplayer_background.Controls.Add(this.connect_game_btn);
+            this.multiplayer_background.Controls.Add(this.nickname);
+            this.multiplayer_background.Controls.Add(this.nickname_label);
+            this.multiplayer_background.Controls.Add(this.host_btn);
+            this.multiplayer_background.Controls.Add(this.multiplayer_close);
+            this.multiplayer_background.Location = new System.Drawing.Point(3, 3);
+            this.multiplayer_background.Name = "multiplayer_background";
+            this.multiplayer_background.Size = new System.Drawing.Size(490, 276);
+            this.multiplayer_background.TabIndex = 45;
+            // 
+            // coming_soon_label
+            // 
+            this.coming_soon_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.coming_soon_label.ForeColor = System.Drawing.Color.White;
+            this.coming_soon_label.Location = new System.Drawing.Point(3, 3);
+            this.coming_soon_label.Name = "coming_soon_label";
+            this.coming_soon_label.Size = new System.Drawing.Size(484, 220);
+            this.coming_soon_label.TabIndex = 63;
+            this.coming_soon_label.Text = "COMING\r\nSOON";
+            this.coming_soon_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // connect_game_btn
+            // 
+            this.connect_game_btn.BackColor = System.Drawing.Color.Black;
+            this.connect_game_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.connect_game_btn.ForeColor = System.Drawing.Color.White;
+            this.connect_game_btn.Location = new System.Drawing.Point(125, 160);
+            this.connect_game_btn.Name = "connect_game_btn";
+            this.connect_game_btn.Size = new System.Drawing.Size(240, 41);
+            this.connect_game_btn.TabIndex = 62;
+            this.connect_game_btn.TabStop = false;
+            this.connect_game_btn.Text = "Присоединиться";
+            this.connect_game_btn.UseVisualStyleBackColor = false;
+            this.connect_game_btn.Click += new System.EventHandler(this.Connect_game_btn_Click);
+            // 
+            // nickname
+            // 
+            this.nickname.Location = new System.Drawing.Point(211, 35);
+            this.nickname.MaxLength = 24;
+            this.nickname.Name = "nickname";
+            this.nickname.Size = new System.Drawing.Size(217, 29);
+            this.nickname.TabIndex = 61;
+            this.nickname.TabStop = false;
+            this.nickname.Text = "Player";
+            // 
+            // nickname_label
+            // 
+            this.nickname_label.ForeColor = System.Drawing.Color.White;
+            this.nickname_label.Location = new System.Drawing.Point(6, 33);
+            this.nickname_label.Name = "nickname_label";
+            this.nickname_label.Size = new System.Drawing.Size(199, 34);
+            this.nickname_label.TabIndex = 60;
+            this.nickname_label.Text = "Имя игрока:";
+            this.nickname_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // host_btn
+            // 
+            this.host_btn.BackColor = System.Drawing.Color.Black;
+            this.host_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.host_btn.ForeColor = System.Drawing.Color.White;
+            this.host_btn.Location = new System.Drawing.Point(125, 100);
+            this.host_btn.Name = "host_btn";
+            this.host_btn.Size = new System.Drawing.Size(240, 41);
+            this.host_btn.TabIndex = 59;
+            this.host_btn.TabStop = false;
+            this.host_btn.Text = "Создать игру";
+            this.host_btn.UseVisualStyleBackColor = false;
+            this.host_btn.Click += new System.EventHandler(this.Host_btn_Click);
+            // 
+            // multiplayer_close
+            // 
+            this.multiplayer_close.AutoSize = true;
+            this.multiplayer_close.BackColor = System.Drawing.Color.Black;
+            this.multiplayer_close.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.multiplayer_close.ForeColor = System.Drawing.Color.White;
+            this.multiplayer_close.Location = new System.Drawing.Point(10, 226);
+            this.multiplayer_close.Name = "multiplayer_close";
+            this.multiplayer_close.Size = new System.Drawing.Size(130, 41);
+            this.multiplayer_close.TabIndex = 58;
+            this.multiplayer_close.TabStop = false;
+            this.multiplayer_close.Text = "Назад";
+            this.multiplayer_close.UseVisualStyleBackColor = false;
+            this.multiplayer_close.Click += new System.EventHandler(this.Multiplayer_close_Click);
+            // 
+            // host_panel
+            // 
+            this.host_panel.BackColor = System.Drawing.Color.DarkGray;
+            this.host_panel.Controls.Add(this.host_background);
+            this.host_panel.Location = new System.Drawing.Point(514, 297);
+            this.host_panel.Name = "host_panel";
+            this.host_panel.Size = new System.Drawing.Size(496, 282);
+            this.host_panel.TabIndex = 60;
+            this.host_panel.Visible = false;
+            // 
+            // host_background
+            // 
+            this.host_background.BackColor = System.Drawing.Color.Black;
+            this.host_background.Controls.Add(this.players_panel);
+            this.host_background.Controls.Add(this.top_panel);
+            this.host_background.Controls.Add(this.bottom_panel);
+            this.host_background.Location = new System.Drawing.Point(3, 3);
+            this.host_background.Name = "host_background";
+            this.host_background.Size = new System.Drawing.Size(490, 276);
+            this.host_background.TabIndex = 45;
+            // 
+            // players_panel
+            // 
+            this.players_panel.AutoScroll = true;
+            this.players_panel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.players_panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.players_panel.Location = new System.Drawing.Point(0, 56);
+            this.players_panel.Name = "players_panel";
+            this.players_panel.Size = new System.Drawing.Size(490, 164);
+            this.players_panel.TabIndex = 54;
+            // 
+            // top_panel
+            // 
+            this.top_panel.Controls.Add(this.ip);
+            this.top_panel.Controls.Add(this.copy_ip_btn);
+            this.top_panel.Controls.Add(this.ip_label);
+            this.top_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.top_panel.Location = new System.Drawing.Point(0, 0);
+            this.top_panel.Name = "top_panel";
+            this.top_panel.Size = new System.Drawing.Size(490, 56);
+            this.top_panel.TabIndex = 53;
+            // 
+            // ip
+            // 
+            this.ip.AutoEllipsis = true;
+            this.ip.Dock = System.Windows.Forms.DockStyle.Left;
+            this.ip.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ip.ForeColor = System.Drawing.Color.White;
+            this.ip.Location = new System.Drawing.Point(56, 0);
+            this.ip.Name = "ip";
+            this.ip.Size = new System.Drawing.Size(372, 56);
+            this.ip.TabIndex = 54;
+            this.ip.Text = "000.000.000.000:0000";
+            this.ip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // copy_ip_btn
+            // 
+            this.copy_ip_btn.BackColor = System.Drawing.Color.Black;
+            this.copy_ip_btn.BackgroundImage = global::SLIL.Properties.Resources.copy;
+            this.copy_ip_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.copy_ip_btn.Dock = System.Windows.Forms.DockStyle.Right;
+            this.copy_ip_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.copy_ip_btn.ForeColor = System.Drawing.Color.White;
+            this.copy_ip_btn.Location = new System.Drawing.Point(434, 0);
+            this.copy_ip_btn.Name = "copy_ip_btn";
+            this.copy_ip_btn.Size = new System.Drawing.Size(56, 56);
+            this.copy_ip_btn.TabIndex = 53;
+            this.copy_ip_btn.TabStop = false;
+            this.copy_ip_btn.UseVisualStyleBackColor = false;
+            this.copy_ip_btn.Click += new System.EventHandler(this.Copy_ip_btn_Click);
+            // 
+            // ip_label
+            // 
+            this.ip_label.AutoEllipsis = true;
+            this.ip_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.ip_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ip_label.ForeColor = System.Drawing.Color.White;
+            this.ip_label.Location = new System.Drawing.Point(0, 0);
+            this.ip_label.Name = "ip_label";
+            this.ip_label.Size = new System.Drawing.Size(56, 56);
+            this.ip_label.TabIndex = 52;
+            this.ip_label.Text = "IP:";
+            this.ip_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // bottom_panel
+            // 
+            this.bottom_panel.Controls.Add(this.start_multiplayer_game);
+            this.bottom_panel.Controls.Add(this.close_host_btn);
+            this.bottom_panel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.bottom_panel.Location = new System.Drawing.Point(0, 220);
+            this.bottom_panel.Name = "bottom_panel";
+            this.bottom_panel.Size = new System.Drawing.Size(490, 56);
+            this.bottom_panel.TabIndex = 55;
+            // 
+            // start_multiplayer_game
+            // 
+            this.start_multiplayer_game.BackColor = System.Drawing.Color.Black;
+            this.start_multiplayer_game.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.start_multiplayer_game.ForeColor = System.Drawing.Color.White;
+            this.start_multiplayer_game.Location = new System.Drawing.Point(340, 6);
+            this.start_multiplayer_game.Name = "start_multiplayer_game";
+            this.start_multiplayer_game.Size = new System.Drawing.Size(140, 41);
+            this.start_multiplayer_game.TabIndex = 60;
+            this.start_multiplayer_game.TabStop = false;
+            this.start_multiplayer_game.Text = "Играть";
+            this.start_multiplayer_game.UseVisualStyleBackColor = false;
+            this.start_multiplayer_game.Click += new System.EventHandler(this.Start_multiplayer_game_Click);
+            // 
+            // close_host_btn
+            // 
+            this.close_host_btn.AutoSize = true;
+            this.close_host_btn.BackColor = System.Drawing.Color.Black;
+            this.close_host_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.close_host_btn.ForeColor = System.Drawing.Color.White;
+            this.close_host_btn.Location = new System.Drawing.Point(10, 6);
+            this.close_host_btn.Name = "close_host_btn";
+            this.close_host_btn.Size = new System.Drawing.Size(130, 41);
+            this.close_host_btn.TabIndex = 59;
+            this.close_host_btn.TabStop = false;
+            this.close_host_btn.Text = "Назад";
+            this.close_host_btn.UseVisualStyleBackColor = false;
+            this.close_host_btn.Click += new System.EventHandler(this.Close_host_btn_Click);
+            // 
+            // connect_panel
+            // 
+            this.connect_panel.BackColor = System.Drawing.Color.DarkGray;
+            this.connect_panel.Controls.Add(this.connect_background);
+            this.connect_panel.Location = new System.Drawing.Point(514, 582);
+            this.connect_panel.Name = "connect_panel";
+            this.connect_panel.Size = new System.Drawing.Size(496, 282);
+            this.connect_panel.TabIndex = 61;
+            this.connect_panel.Visible = false;
+            // 
+            // connect_background
+            // 
+            this.connect_background.BackColor = System.Drawing.Color.Black;
+            this.connect_background.Controls.Add(this.connect_btn);
+            this.connect_background.Controls.Add(this.ip_connect_input);
+            this.connect_background.Controls.Add(this.ip_input_label);
+            this.connect_background.Controls.Add(this.close_connect_btn);
+            this.connect_background.Location = new System.Drawing.Point(3, 3);
+            this.connect_background.Name = "connect_background";
+            this.connect_background.Size = new System.Drawing.Size(490, 276);
+            this.connect_background.TabIndex = 45;
+            // 
+            // connect_btn
+            // 
+            this.connect_btn.BackColor = System.Drawing.Color.Black;
+            this.connect_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.connect_btn.ForeColor = System.Drawing.Color.White;
+            this.connect_btn.Location = new System.Drawing.Point(125, 114);
+            this.connect_btn.Name = "connect_btn";
+            this.connect_btn.Size = new System.Drawing.Size(240, 41);
+            this.connect_btn.TabIndex = 62;
+            this.connect_btn.TabStop = false;
+            this.connect_btn.Text = "Присоединиться";
+            this.connect_btn.UseVisualStyleBackColor = false;
+            this.connect_btn.Click += new System.EventHandler(this.Connect_btn_Click);
+            // 
+            // ip_connect_input
+            // 
+            this.ip_connect_input.Location = new System.Drawing.Point(211, 67);
+            this.ip_connect_input.MaxLength = 24;
+            this.ip_connect_input.Name = "ip_connect_input";
+            this.ip_connect_input.Size = new System.Drawing.Size(217, 29);
+            this.ip_connect_input.TabIndex = 61;
+            this.ip_connect_input.TabStop = false;
+            this.ip_connect_input.Text = "000.000.000.000:0000";
+            // 
+            // ip_input_label
+            // 
+            this.ip_input_label.ForeColor = System.Drawing.Color.White;
+            this.ip_input_label.Location = new System.Drawing.Point(6, 65);
+            this.ip_input_label.Name = "ip_input_label";
+            this.ip_input_label.Size = new System.Drawing.Size(199, 34);
+            this.ip_input_label.TabIndex = 60;
+            this.ip_input_label.Text = "IP игры:";
+            this.ip_input_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // close_connect_btn
+            // 
+            this.close_connect_btn.AutoSize = true;
+            this.close_connect_btn.BackColor = System.Drawing.Color.Black;
+            this.close_connect_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.close_connect_btn.ForeColor = System.Drawing.Color.White;
+            this.close_connect_btn.Location = new System.Drawing.Point(10, 226);
+            this.close_connect_btn.Name = "close_connect_btn";
+            this.close_connect_btn.Size = new System.Drawing.Size(130, 41);
+            this.close_connect_btn.TabIndex = 58;
+            this.close_connect_btn.TabStop = false;
+            this.close_connect_btn.Text = "Назад";
+            this.close_connect_btn.UseVisualStyleBackColor = false;
+            this.close_connect_btn.Click += new System.EventHandler(this.Close_connect_btn_Click);
             // 
             // MainMenu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(1251, 723);
-            this.Controls.Add(this.title);
-            this.Controls.Add(this.difficulty_panel);
+            this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ClientSize = new System.Drawing.Size(1251, 896);
+            this.Controls.Add(this.connect_panel);
+            this.Controls.Add(this.game_mode_panel);
+            this.Controls.Add(this.host_panel);
             this.Controls.Add(this.exit_panel);
+            this.Controls.Add(this.multiplayer_panel);
+            this.Controls.Add(this.change_logs_panel);
             this.Controls.Add(this.press_any_btn_panel);
-            this.Controls.Add(this.version_label);
-            this.Controls.Add(this.settings_panel);
             this.Controls.Add(this.developers_panel);
             this.Controls.Add(this.buttons_panel);
+            this.Controls.Add(this.difficulty_panel);
+            this.Controls.Add(this.version_label);
+            this.Controls.Add(this.settings_panel);
             this.Controls.Add(this.by);
             this.Controls.Add(this.developer_name);
             this.DoubleBuffered = true;
@@ -1907,6 +2416,9 @@
             this.check_update_panel.PerformLayout();
             this.update_panel.ResumeLayout(false);
             this.language_panel.ResumeLayout(false);
+            this.volume_panel.ResumeLayout(false);
+            this.volume_panel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.volume)).EndInit();
             this.sound_panel.ResumeLayout(false);
             this.video_settings.ResumeLayout(false);
             this.scope_color_panel.ResumeLayout(false);
@@ -1949,6 +2461,25 @@
             this.difficulty_panel.ResumeLayout(false);
             this.difficulty_background.ResumeLayout(false);
             this.difficulty_background.PerformLayout();
+            this.change_logs_panel.ResumeLayout(false);
+            this.change_logs_bottom.ResumeLayout(false);
+            this.change_logs_bottom.PerformLayout();
+            this.change_logs_background.ResumeLayout(false);
+            this.game_mode_panel.ResumeLayout(false);
+            this.game_mode_background.ResumeLayout(false);
+            this.game_mode_background.PerformLayout();
+            this.select_mode_panel.ResumeLayout(false);
+            this.multiplayer_panel.ResumeLayout(false);
+            this.multiplayer_background.ResumeLayout(false);
+            this.multiplayer_background.PerformLayout();
+            this.host_panel.ResumeLayout(false);
+            this.host_background.ResumeLayout(false);
+            this.top_panel.ResumeLayout(false);
+            this.bottom_panel.ResumeLayout(false);
+            this.bottom_panel.PerformLayout();
+            this.connect_panel.ResumeLayout(false);
+            this.connect_background.ResumeLayout(false);
+            this.connect_background.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2087,6 +2618,44 @@
         private System.Windows.Forms.RadioButton hard_btn;
         private System.Windows.Forms.RadioButton normal_btn;
         private System.Windows.Forms.Button close_difficulty_panel;
-        private System.Windows.Forms.Label title;
+        private System.Windows.Forms.Panel change_logs_panel;
+        private System.Windows.Forms.Panel change_logs_bottom;
+        private System.Windows.Forms.Button change_logs_close_btn;
+        private System.Windows.Forms.Panel change_logs_background;
+        private System.Windows.Forms.ListBox changes_list;
+        private System.Windows.Forms.Panel game_mode_panel;
+        private System.Windows.Forms.Panel game_mode_background;
+        private System.Windows.Forms.Button close_game_mode_panel;
+        private System.Windows.Forms.RadioButton multiplayer;
+        private System.Windows.Forms.RadioButton singleplayer;
+        private System.Windows.Forms.Button select_mode_btn;
+        private System.Windows.Forms.Panel select_mode_panel;
+        private System.Windows.Forms.Panel multiplayer_panel;
+        private System.Windows.Forms.Panel multiplayer_background;
+        private System.Windows.Forms.Button multiplayer_close;
+        private System.Windows.Forms.Button host_btn;
+        private System.Windows.Forms.Panel volume_panel;
+        private System.Windows.Forms.Label volume_label;
+        private System.Windows.Forms.TrackBar volume;
+        private System.Windows.Forms.Label nickname_label;
+        private System.Windows.Forms.TextBox nickname;
+        private System.Windows.Forms.Button connect_game_btn;
+        private System.Windows.Forms.Panel host_panel;
+        private System.Windows.Forms.Panel host_background;
+        private System.Windows.Forms.Label coming_soon_label;
+        private System.Windows.Forms.Panel top_panel;
+        private System.Windows.Forms.Button copy_ip_btn;
+        private System.Windows.Forms.Label ip_label;
+        private System.Windows.Forms.Label ip;
+        private System.Windows.Forms.Panel players_panel;
+        private System.Windows.Forms.Panel bottom_panel;
+        private System.Windows.Forms.Button close_host_btn;
+        private System.Windows.Forms.Button start_multiplayer_game;
+        private System.Windows.Forms.Panel connect_panel;
+        private System.Windows.Forms.Panel connect_background;
+        private System.Windows.Forms.Button connect_btn;
+        private System.Windows.Forms.TextBox ip_connect_input;
+        private System.Windows.Forms.Label ip_input_label;
+        private System.Windows.Forms.Button close_connect_btn;
     }
 }

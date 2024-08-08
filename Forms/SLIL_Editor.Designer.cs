@@ -244,7 +244,7 @@
             // SLIL_Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(399, 441);
             this.Controls.Add(this.accept_size_btn);
             this.Controls.Add(this.width);

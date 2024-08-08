@@ -25,6 +25,7 @@ namespace SLIL.Classes
         public double CurseCureChance { get; set; }
         public bool IsPetting { get; set; }
         public int Stage { get; set; }
+        public bool CuteMode { get; set; }
         public int EnemiesKilled { get; set; }
         public double MOVE_SPEED { get; set; }
         public double RUN_SPEED { get; set; }
@@ -55,6 +56,7 @@ namespace SLIL.Classes
                 MOVE_SPEED = 1.75;
                 RUN_SPEED = 2.25;
                 PET = null;
+                CuteMode = false;
             }
             EnemiesKilled = 0;
             Look = 0;
