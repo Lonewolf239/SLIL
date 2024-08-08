@@ -2,10 +2,10 @@
 
 namespace SLIL.Classes
 {
-    public class Player
+    public class Player : Entity
     {
-        public double X { get; set; }
-        public double Y { get; set; }
+        //public double X { get; set; }
+        //public double Y { get; set; }
         public double A { get; set; }
         public double Look { get; set; }
         public double HP { get; set; }
@@ -35,7 +35,7 @@ namespace SLIL.Classes
         public double MAX_HP { get; set; }
         public double MAX_STAMINE { get; set; }
 
-        public Player()
+        public Player(double x, double y, int map_width) : base(x, y, map_width)
         {
             Dead = true;
             SetDefault();
@@ -105,5 +105,9 @@ namespace SLIL.Classes
             else if (Money < 0)
                 Money = 0;
         }
+
+        protected override int GetTexture() => Texture;
+
+        protected override double GetEntityWidth() => 0.4;
     }
 }
