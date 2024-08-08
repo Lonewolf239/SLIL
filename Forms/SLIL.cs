@@ -2302,13 +2302,27 @@ namespace SLIL
                         break;
                 }
             }
-            double perpWallDist = distance * Math.Cos(deltaA);
+            double cosDeltaA = Math.Cos(deltaA);
+            double perpWallDist = distance * cosDeltaA;
             double ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / perpWallDist;
             double floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
             double mid = (ceiling + floor) / 2;
             bool get_texture = false, get_texture_window = false;
             int side = 0;
             double wallX = 0;
+            side = GetSide(distance, ray_x, ray_y);
+            if (side == 0)
+                wallX = player.X + distance * ray_x;
+            else
+                wallX = player.Y + distance * ray_y;
+            wallX -= Math.Floor(wallX);
+            int windowSide = GetSide(window_distance, ray_x, ray_y);
+            double windowX = 0;
+            if (windowSide == 0)
+                windowX = player.X + window_distance * ray_x;
+            else
+                windowX = player.Y + window_distance * ray_y;
+            windowX -= Math.Floor(windowX);
             for (int y = 0; y < SCREEN_HEIGHT[resolution]; y++)
             {
                 if (!GameStarted)
@@ -2316,7 +2330,7 @@ namespace SLIL
                 int blackout = 0, textureId = 1;
                 if (hit_window && y > mid)
                 {
-                    ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / (window_distance*Math.Cos(deltaA));
+                    ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / (window_distance*cosDeltaA);
                     floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
                 }
                 else
@@ -2357,7 +2371,7 @@ namespace SLIL
                 {
                     int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
                     double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
-                    rowDistance /= Math.Cos(deltaA);
+                    rowDistance /= cosDeltaA;
                     double floorX = player.X - rowDistance * ray_x;
                     double floorY = player.Y - rowDistance * ray_y;
                     if (floorX < 0) floorX = 0;
@@ -2370,7 +2384,7 @@ namespace SLIL
                 {
                     int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
                     double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
-                    rowDistance /= Math.Cos(deltaA);
+                    rowDistance /= cosDeltaA;
                     double floorX = player.X + rowDistance * ray_x;
                     double floorY = player.Y + rowDistance * ray_y;
                     if (floorX < 0) floorX = 0;
@@ -2386,14 +2400,10 @@ namespace SLIL
                         if (!get_texture_window)
                         {
                             get_texture_window = true;
-                            side = GetSide(window_distance, ray_x, ray_y);
+                            side = windowSide;
+                            wallX = windowX;
                             if (side == -1)
                                 result[y].TextureId = 0;
-                            if (side == 0)
-                                wallX = player.X + window_distance * ray_x;
-                            else
-                                wallX = player.Y + window_distance * ray_y;
-                            wallX -= Math.Floor(wallX);
                         }
                     }
                     else if (hit_door || hit_wall)
@@ -2401,14 +2411,8 @@ namespace SLIL
                         if (!get_texture)
                         {
                             get_texture = true;
-                            side = GetSide(distance, ray_x, ray_y);
                             if (side == -1)
                                 result[y].TextureId = 0;
-                            if (side == 0)
-                                wallX = player.X + distance * ray_x;
-                            else
-                                wallX = player.Y + distance * ray_y;
-                            wallX -= Math.Floor(wallX);
                         }
                     }
                     else
@@ -2427,7 +2431,7 @@ namespace SLIL
                 }
             }
             ZBuffer[x] = perpWallDist;
-                ZBufferWindow[x] = window_distance * Math.Cos(deltaA);
+            ZBufferWindow[x] = window_distance * Math.Cos(deltaA);
             return result;
         }
 
