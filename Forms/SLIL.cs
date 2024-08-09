@@ -2308,9 +2308,7 @@ namespace SLIL
                     mapX += stepX;
                     wallSide = 0;
                     if (!hit_window)
-                    {
                         windowSide = 0;
-                    }
                 }
                 else
                 {
@@ -2318,9 +2316,7 @@ namespace SLIL
                     mapY += stepY;
                     wallSide = 1;
                     if (!hit_window)
-                    {
                         windowSide = 1;
-                    }
                 }
                 if (wallSide == 0) distance = (sideDistX - deltaDistX) / cosDeltaA;
                 else distance = (sideDistY - deltaDistY) / cosDeltaA;
