@@ -83,6 +83,66 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap c_enemy_1 {
+            get {
+                object obj = ResourceManager.GetObject("c_enemy_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap c_enemy_1_1 {
+            get {
+                object obj = ResourceManager.GetObject("c_enemy_1_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap c_enemy_1_DEAD {
+            get {
+                object obj = ResourceManager.GetObject("c_enemy_1_DEAD", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap c_enemy_2 {
+            get {
+                object obj = ResourceManager.GetObject("c_enemy_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap c_enemy_2_1 {
+            get {
+                object obj = ResourceManager.GetObject("c_enemy_2_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap c_enemy_2_DEAD {
+            get {
+                object obj = ResourceManager.GetObject("c_enemy_2_DEAD", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap c_enemy_3 {
             get {
                 object obj = ResourceManager.GetObject("c_enemy_3", resourceCulture);
@@ -106,6 +166,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap c_enemy_3_DEAD {
             get {
                 object obj = ResourceManager.GetObject("c_enemy_3_DEAD", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap c_floor {
+            get {
+                object obj = ResourceManager.GetObject("c_floor", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2016,6 +2086,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap scope {
             get {
                 object obj = ResourceManager.GetObject("scope", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap scope_c_hit {
+            get {
+                object obj = ResourceManager.GetObject("scope_c_hit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

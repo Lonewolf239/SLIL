@@ -150,14 +150,8 @@ namespace SLIL
 
         private void Bug_report_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             Process.Start(new ProcessStartInfo("https://t.me/MiniGamesBugReport_BOT") { UseShellExecute = true });
-        }
-
-        private void Developer_name_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-                Process.Start(new ProcessStartInfo("https://github.com/Lonewolf239") { UseShellExecute = true });
         }
 
         private void Web_site_lonewolf_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://base-escape.ru") { UseShellExecute = true });
@@ -200,7 +194,7 @@ namespace SLIL
 
         private void Exit_no_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             exit_panel.Visible = false;
         }
 
@@ -637,14 +631,14 @@ namespace SLIL
 
         private void Start_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             game_mode_panel.Visible = true;
             game_mode_panel.BringToFront();
         }
 
         private void Sounds_on_off_CheckedChanged(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             sounds = sounds_on_off.Checked;
             if (sounds)
             {
@@ -664,21 +658,21 @@ namespace SLIL
 
         private void Language_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             Language = language_list.SelectedIndex == 0;
             SetLanguage();
         }
 
         private void Setting_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             settings_panel.Visible = true;
             settings_panel.BringToFront();
         }
 
         private void Update_on_off_CheckedChanged(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             if (update_on_off.Checked)
             {
                 if (Language)
@@ -697,13 +691,13 @@ namespace SLIL
 
         private void Check_update_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             Check_Update(false);
         }
 
         private void High_resolution_on_off_CheckedChanged(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             resolution = high_resolution_on_off.Checked ? 1 : 0;
             if (high_resolution_on_off.Checked)
             {
@@ -804,7 +798,7 @@ namespace SLIL
 
         private void Show_minimap_CheckedChanged(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             ShowMiniMap = show_minimap.Checked;
             if (ShowMiniMap)
             {
@@ -824,7 +818,7 @@ namespace SLIL
 
         private void Show_fps_on_off_CheckedChanged(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             ShowFPS = show_fps_on_off.Checked;
             if (ShowFPS)
             {
@@ -913,13 +907,13 @@ namespace SLIL
 
         private void Close_difficulty_panel_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             difficulty_panel.Visible = false;
         }
 
         private void Start_game_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             game_mode_panel.Visible = false;
             if (difficulty != 4)
             {
@@ -949,7 +943,7 @@ namespace SLIL
             }
         }
 
-        private void Changes_list_Enter(object sender, EventArgs e) => by.Focus();
+        private void Changes_list_Enter(object sender, EventArgs e) => lose_focus.Focus();
 
         private void Change_logs_panel_VisibleChanged(object sender, EventArgs e)
         {
@@ -962,13 +956,13 @@ namespace SLIL
 
         private void Change_logs_close_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             change_logs_panel.Visible = false;
         }
 
         private void Close_game_mode__panel_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             game_mode_panel.Visible = false;
         }
 
@@ -990,7 +984,7 @@ namespace SLIL
 
         private void Copy_ip_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             Clipboard.SetText(ip.Text);
             if (Language)
                 MessageBox.Show("IP-адрес успешно скопирован в буфер обмена", "Копирование IP", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1000,27 +994,27 @@ namespace SLIL
 
         private void Host_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             host_panel.Visible = true;
             host_panel.BringToFront();
         }
 
         private void Close_host_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             host_panel.Visible = false;
             players_panel.Controls.Clear();
         }
 
         private void Start_multiplayer_game_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
 
         }
 
         private void Connect_game_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             ip_connect_input.Text = "000.000.000.000:0000";
             connect_panel.Visible = true;
             connect_panel.BringToFront();
@@ -1028,18 +1022,18 @@ namespace SLIL
 
         private void Close_connect_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             connect_panel.Visible = false;
         }
 
         private void Connect_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
         }
 
         private void Multiplayer_close_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             multiplayer_panel.Visible = false;
         }
 
@@ -1082,7 +1076,7 @@ namespace SLIL
 
         private void About_developers_btn_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             developers_panel.Visible = true;
             developers_panel.BringToFront();
         }
@@ -1114,7 +1108,7 @@ namespace SLIL
 
         private void ChangeControl_Click(object sender, EventArgs e)
         {
-            by.Focus();
+            lose_focus.Focus();
             if (!ChangeControlButton)
             {
                 ChangeControlButton = true;

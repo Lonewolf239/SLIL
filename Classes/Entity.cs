@@ -447,7 +447,7 @@ namespace SLIL.Classes
             Name = new[] { "Подсератель", "Podseratel" };
             Descryption = new[] { "Мир — это сказка...", "The world is a fairy tale..." };
             Texture = 31;
-            PetAbility = 99; //PetAbility = 3;
+            PetAbility = 3;
             IsInstantAbility = 2;
             AbilityReloadTime = 8;
             RespondsToFlashlight = true;

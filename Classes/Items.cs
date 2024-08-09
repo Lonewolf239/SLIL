@@ -206,6 +206,7 @@ namespace SLIL.Classes
     {
         public Candy() : base()
         {
+            ShowScope = false;
             HasIt = false;
             Name = new[] { "Конфета", "Candy" };
             Images = new[,] { { Properties.Resources.gun_candy, Properties.Resources.gun_candy_shooted, Properties.Resources.gun_candy_run } };
@@ -217,6 +218,7 @@ namespace SLIL.Classes
     {
         public Rainblower() : base()
         {
+            ShowScope = false;
             AddToShop = false;
             HasIt = false;
             Name = new[] { "Радужигатель", "Rainblower" };

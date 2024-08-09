@@ -1,5 +1,4 @@
-﻿using SharpDX.Direct2D1;
-using SLIL.UserControls;
+﻿using SLIL.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1203,7 +1203,8 @@ namespace SLIL
                                         }
                                         else if (difficulty == 0 && player.GetCurrentGun().FireType == FireTypes.Single && !(player.GetCurrentGun() is Knife))
                                             creature.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
-                                        scope_hit = Properties.Resources.scope_hit;
+                                        if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
+                                        else scope_hit = Properties.Resources.scope_c_hit;
                                         return;
                                     }
                                     else 
@@ -2172,9 +2173,9 @@ namespace SLIL
                     graphicsWeapon.DrawImage(scope_shotgun[scope_type], WEAPON.Width / 4, WEAPON.Height / 4, WEAPON.Width / 2, WEAPON.Height / 2);
                 else
                     graphicsWeapon.DrawImage(scope[scope_type], WEAPON.Width / 4, WEAPON.Height / 4, WEAPON.Width / 2, WEAPON.Height / 2);
-                if (scope_hit != null)
-                    graphicsWeapon.DrawImage(scope_hit, WEAPON.Width / 4, WEAPON.Height / 4, WEAPON.Width / 2, WEAPON.Height / 2);
             }
+            if (scope_hit != null)
+                graphicsWeapon.DrawImage(scope_hit, WEAPON.Width / 4, WEAPON.Height / 4, WEAPON.Width / 2, WEAPON.Height / 2);
             if (ShowMiniMap)
             {
                 Bitmap mini_map = DrawMiniMap();

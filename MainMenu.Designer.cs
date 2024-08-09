@@ -29,8 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu));
-            this.by = new System.Windows.Forms.Label();
-            this.developer_name = new System.Windows.Forms.Label();
+            this.lose_focus = new System.Windows.Forms.Label();
             this.start_btn = new System.Windows.Forms.Button();
             this.setting_btn = new System.Windows.Forms.Button();
             this.about_developers_btn = new System.Windows.Forms.Button();
@@ -269,35 +268,18 @@
             this.connect_background.SuspendLayout();
             this.SuspendLayout();
             // 
-            // by
+            // lose_focus
             // 
-            this.by.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.by.BackColor = System.Drawing.Color.Transparent;
-            this.by.Cursor = System.Windows.Forms.Cursors.Default;
-            this.by.Font = new System.Drawing.Font("Lucida Handwriting", 12F, System.Drawing.FontStyle.Bold);
-            this.by.ForeColor = System.Drawing.Color.White;
-            this.by.Location = new System.Drawing.Point(1128, 840);
-            this.by.Name = "by";
-            this.by.Size = new System.Drawing.Size(111, 21);
-            this.by.TabIndex = 43;
-            this.by.Text = "By.";
-            this.by.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // developer_name
-            // 
-            this.developer_name.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.developer_name.AutoSize = true;
-            this.developer_name.BackColor = System.Drawing.Color.Transparent;
-            this.developer_name.Cursor = System.Windows.Forms.Cursors.Help;
-            this.developer_name.Font = new System.Drawing.Font("Lucida Handwriting", 12F, System.Drawing.FontStyle.Bold);
-            this.developer_name.ForeColor = System.Drawing.Color.White;
-            this.developer_name.Location = new System.Drawing.Point(1105, 861);
-            this.developer_name.Name = "developer_name";
-            this.developer_name.Size = new System.Drawing.Size(134, 21);
-            this.developer_name.TabIndex = 42;
-            this.developer_name.Text = "Lonewolf239";
-            this.developer_name.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.developer_name.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Developer_name_MouseClick);
+            this.lose_focus.BackColor = System.Drawing.Color.Transparent;
+            this.lose_focus.Cursor = System.Windows.Forms.Cursors.Default;
+            this.lose_focus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lose_focus.ForeColor = System.Drawing.Color.White;
+            this.lose_focus.Location = new System.Drawing.Point(0, 0);
+            this.lose_focus.Name = "lose_focus";
+            this.lose_focus.Size = new System.Drawing.Size(1, 1);
+            this.lose_focus.TabIndex = 43;
+            this.lose_focus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lose_focus.Visible = false;
             // 
             // start_btn
             // 
@@ -2378,8 +2360,7 @@
             this.Controls.Add(this.difficulty_panel);
             this.Controls.Add(this.version_label);
             this.Controls.Add(this.settings_panel);
-            this.Controls.Add(this.by);
-            this.Controls.Add(this.developer_name);
+            this.Controls.Add(this.lose_focus);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -2486,8 +2467,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.Label by;
-        private System.Windows.Forms.Label developer_name;
+        private System.Windows.Forms.Label lose_focus;
         private System.Windows.Forms.Button start_btn;
         private System.Windows.Forms.Button setting_btn;
         private System.Windows.Forms.Button about_developers_btn;
