@@ -130,36 +130,36 @@ namespace SLIL.Classes
         {
             //TODO: realization of enemy timer
             //enemy_timer.Stop();
-            GameStarted = false;
-            if (win == 1)
-            {
-                if (MainMenu.sounds)
-                    tp.Play(Volume);
-                if (difficulty != 4)
-                    player.Stage++;
-                if (!player.CuteMode)
-                {
-                    for (int i = 0; i < player.Guns.Count; i++)
-                    {
-                        if (player.Guns[i].MaxAmmoCount == 0)
-                            player.Guns[i].MaxAmmoCount = player.Guns[i].CartridgesClip;
-                    }
-                }
-                player.ChangeMoney(50 + (5 * player.EnemiesKilled));
-                GetFirstAidKit();
-                StartGame();
-                UpdatePet();
-            }
-            else if (win == 0)
-            {
-                ToDefault();
-                game_over_panel.Visible = true;
-                game_over_panel.BringToFront();
-                if (MainMenu.sounds)
-                    game_over.Play(Volume);
-            }
-            else
-                ToDefault();
+            //GameStarted = false;
+            //if (win == 1)
+            //{
+            //    if (MainMenu.sounds)
+            //        tp.Play(Volume);
+            //    if (difficulty != 4)
+            //        player.Stage++;
+            //    if (!player.CuteMode)
+            //    {
+            //        for (int i = 0; i < player.Guns.Count; i++)
+            //        {
+            //            if (player.Guns[i].MaxAmmoCount == 0)
+            //                player.Guns[i].MaxAmmoCount = player.Guns[i].CartridgesClip;
+            //        }
+            //    }
+            //    player.ChangeMoney(50 + (5 * player.EnemiesKilled));
+            //    GetFirstAidKit();
+            //    StartGame();
+            //    UpdatePet();
+            //}
+            //else if (win == 0)
+            //{
+            //    ToDefault();
+            //    game_over_panel.Visible = true;
+            //    game_over_panel.BringToFront();
+            //    if (MainMenu.sounds)
+            //        game_over.Play(Volume);
+            //}
+            //else
+            //    ToDefault();
         }
 
         public void MovePlayer(double dX, double dY, int playerID)

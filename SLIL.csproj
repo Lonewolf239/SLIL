@@ -96,6 +96,7 @@
     <Compile Include="Classes\BindControls.cs" />
     <Compile Include="Classes\ConvertBitmap.cs" />
     <Compile Include="Classes\Entity.cs" />
+    <Compile Include="Classes\GameController.cs" />
     <Compile Include="Classes\GameModel.cs" />
     <Compile Include="Classes\INIReader.cs" />
     <Compile Include="Classes\Items.cs" />

@@ -156,6 +156,7 @@ namespace SLIL
         public SLIL(TextureCache textures)
         {
             InitializeComponent();
+            Controller = new GameController();
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             difficulty = MainMenu.difficulty;
@@ -2238,6 +2239,51 @@ namespace SLIL
         private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow)
         {
             Pixel[] result = new Pixel[SCREEN_HEIGHT[resolution]];
+            double playerLook = player.Look;
+            double cameraX = 2 * x / (double)SCREEN_WIDTH[resolution] - 1; //x-coordinate in camera space
+            double dirX = Math.Sin(player.A);
+            double dirY = Math.Cos(player.A);
+            double planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
+            double planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
+            double rayDirX = dirX + planeX * cameraX;
+            double rayDirY = dirY + planeY * cameraX;
+            //which box of the map we're in
+            int mapX = (int)(player.X);
+            int mapY = (int)(player.Y);
+
+            //length of ray from current position to next x or y-side
+            double sideDistX;
+            double sideDistY;
+
+            //length of ray from one x or y-side to next x or y-side
+            double deltaDistX = (rayDirX == 0) ? 1e30 : Math.Abs(1 / rayDirX);
+            double deltaDistY = (rayDirY == 0) ? 1e30 : Math.Abs(1 / rayDirY);
+
+            //what direction to step in x or y-direction (either +1 or -1)
+            int stepX;
+            int stepY;
+
+            int wallSide = -1; //was a NS or a EW wall hit?
+            if (rayDirX < 0)
+            {
+                stepX = -1;
+                sideDistX = (player.X - mapX) * deltaDistX;
+            }
+            else
+            {
+                stepX = 1;
+                sideDistX = (mapX + 1.0 - player.X) * deltaDistX;
+            }
+            if (rayDirY < 0)
+            {
+                stepY = -1;
+                sideDistY = (player.Y - mapY) * deltaDistY;
+            }
+            else
+            {
+                stepY = 1;
+                sideDistY = (mapY + 1.0 - player.Y) * deltaDistY;
+            }
             int factor = player.Aiming ? 12 : 0;
             if (player.GetCurrentGun() is Flashlight)
                 factor = 8;
@@ -2252,77 +2298,98 @@ namespace SLIL
             double rayA = player.A + deltaA;
             double ray_x = Math.Sin(rayA);
             double ray_y = Math.Cos(rayA);
+            double cosDeltaA = Math.Cos(deltaA);
+            int windowSide = 0;
             while (raycast.Enabled && !hit_wall && !hit_door && distance < DEPTH + factor)
             {
-                distance += 0.01f;
+                if (sideDistX < sideDistY)
+                {
+                    sideDistX += deltaDistX;
+                    mapX += stepX;
+                    wallSide = 0;
+                    if (!hit_window)
+                    {
+                        windowSide = 0;
+                    }
+                }
+                else
+                {
+                    sideDistY += deltaDistY;
+                    mapY += stepY;
+                    wallSide = 1;
+                    if (!hit_window)
+                    {
+                        windowSide = 1;
+                    }
+                }
+                if (wallSide == 0) distance = (sideDistX - deltaDistX) / cosDeltaA;
+                else distance = (sideDistY - deltaDistY) / cosDeltaA;
                 if (!hit_window)
-                    window_distance += 0.01f;
-                int test_x = (int)(player.X + ray_x * distance);
-                int test_y = (int)(player.Y + ray_y * distance);
-                if (test_x < 0 || test_x >= (DEPTH + factor) + player.X || test_y < 0 || test_y >= (DEPTH + factor) + player.Y)
+                {
+                    if (wallSide == 0) window_distance = (sideDistX - deltaDistX) / cosDeltaA;
+                    else window_distance = (sideDistY - deltaDistY) / cosDeltaA;
+                }
+                if (mapX < 0 || mapX >= (DEPTH + factor) + player.X || mapY < 0 || mapY >= (DEPTH + factor) + player.Y || distance >= (DEPTH + factor))
                 {
                     hit_wall = true;
                     distance = (DEPTH + factor);
                     continue;
                 }
-                char test_wall = MAP[test_y * MAP_WIDTH + test_x];
+                char test_wall = MAP[mapY * MAP_WIDTH + mapX];
                 switch (test_wall)
                 {
                     case '#':
                         hit_wall = true;
-                        is_bound = CheckBound(test_x, test_y, ray_x, ray_y, distance);
-                        DISPLAYED_MAP[test_y * MAP_WIDTH + test_x] = '#';
+                        is_bound = CheckBound(mapX, mapY, ray_x, ray_y, distance * cosDeltaA);
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '#';
                         break;
                     case '=':
                         if (!hit_window)
                         {
                             hit_window = true;
-                            is_window_bound = CheckBound(test_x, test_y, ray_x, ray_y, window_distance);
-                            DISPLAYED_MAP[test_y * MAP_WIDTH + test_x] = '=';
+                            is_window_bound = CheckBound(mapX, mapY, ray_x, ray_y, window_distance * cosDeltaA);
+                            DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '=';
                         }
                         break;
                     case 'd':
                         hit_door = true;
-                        is_bound = CheckBound(test_x, test_y, ray_x, ray_y, distance);
-                        DISPLAYED_MAP[test_y * MAP_WIDTH + test_x] = 'D';
+                        is_bound = CheckBound(mapX, mapY, ray_x, ray_y, distance * cosDeltaA);
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'D';
                         break;
                     case 'D':
-                            DISPLAYED_MAP[test_y * MAP_WIDTH + test_x] = 'D';
+                            DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'D';
                         break;
                     case '$':
-                        DISPLAYED_MAP[test_y * MAP_WIDTH + test_x] = '$';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '$';
                         break;
                     case 'F':
-                        DISPLAYED_MAP[test_y * MAP_WIDTH + test_x] = 'F';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'F';
                         break;
                     case 'E':
-                        DISPLAYED_MAP[test_y * MAP_WIDTH + test_x] = 'E';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'E';
                         break;
                     case '.':
                     case '*':
-                        DISPLAYED_MAP[test_y * MAP_WIDTH + test_x] = '*';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '*';
                         break;
                 }
             }
-            double cosDeltaA = Math.Cos(deltaA);
             double perpWallDist = distance * cosDeltaA;
-            double ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / perpWallDist;
-            double floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
+            double ceiling = (SCREEN_HEIGHT[resolution] - playerLook) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / perpWallDist;
+            double floor = SCREEN_HEIGHT[resolution] - (ceiling + playerLook);
             double mid = (ceiling + floor) / 2;
             bool get_texture = false, get_texture_window = false;
             int side = 0;
             double wallX = 0;
-            side = GetSide(distance, ray_x, ray_y);
-            if (side == 0)
+            if (wallSide == 1)
                 wallX = player.X + distance * ray_x;
-            else
+            else if (wallSide == 0)
                 wallX = player.Y + distance * ray_y;
             wallX -= Math.Floor(wallX);
-            int windowSide = GetSide(window_distance, ray_x, ray_y);
             double windowX = 0;
-            if (windowSide == 0)
+            if (windowSide == 1)
                 windowX = player.X + window_distance * ray_x;
-            else
+            else if (windowSide == 0)
                 windowX = player.Y + window_distance * ray_y;
             windowX -= Math.Floor(windowX);
             for (int y = 0; y < SCREEN_HEIGHT[resolution]; y++)
@@ -2332,18 +2399,18 @@ namespace SLIL
                 int blackout = 0, textureId = 1;
                 if (hit_window && y > mid)
                 {
-                    ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / (window_distance*cosDeltaA);
-                    floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
+                    ceiling = (SCREEN_HEIGHT[resolution] - playerLook) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / (window_distance*cosDeltaA);
+                    floor = SCREEN_HEIGHT[resolution] - (ceiling + playerLook);
                 }
                 else
                 {
-                    ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / perpWallDist;
-                    floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
+                    ceiling = (SCREEN_HEIGHT[resolution] - playerLook) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / perpWallDist;
+                    floor = SCREEN_HEIGHT[resolution] - (ceiling + playerLook);
                 }
                 if (y <= ceiling)
                 {
                     textureId = 7;
-                    double d = (y + player.Look / 2) / (SCREEN_HEIGHT[resolution] / 2);
+                    double d = (y + playerLook / 2) / (SCREEN_HEIGHT[resolution] / 2);
                     blackout = (int)((Math.Min(Math.Max(0, Math.Round(d * 10)), 10) * 10));
                 }
                 else if (y >= mid && y <= floor && hit_window)
@@ -2365,13 +2432,13 @@ namespace SLIL
                 else if (y >= floor)
                 {
                     textureId = 6;
-                    double d = 1 - (y - (SCREEN_HEIGHT[resolution] - player.Look) / 2) / (SCREEN_HEIGHT[resolution] / 2);
+                    double d = 1 - (y - (SCREEN_HEIGHT[resolution] - playerLook) / 2) / (SCREEN_HEIGHT[resolution] / 2);
                     blackout = (int)((Math.Min(Math.Max(0, Math.Round(d * 10)), 10) * 10));
                 }
                 result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId);
                 if (y < ceiling)
                 {
-                    int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
+                    int p = y - (int)(SCREEN_HEIGHT[resolution] - playerLook) / 2;
                     double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
                     rowDistance /= cosDeltaA;
                     double floorX = player.X - rowDistance * ray_x;
@@ -2384,7 +2451,7 @@ namespace SLIL
                 }
                 else if (y >= floor)
                 {
-                    int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
+                    int p = y - (int)(SCREEN_HEIGHT[resolution] - playerLook) / 2;
                     double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
                     rowDistance /= cosDeltaA;
                     double floorX = player.X + rowDistance * ray_x;
@@ -2413,6 +2480,7 @@ namespace SLIL
                         if (!get_texture)
                         {
                             get_texture = true;
+                            side = wallSide;
                             if (side == -1)
                                 result[y].TextureId = 0;
                         }
@@ -2501,15 +2569,16 @@ namespace SLIL
             return -1;
         }
 
-        private bool CheckBound(int test_x, int test_y, double ray_x, double ray_y, double distance)
+        private bool CheckBound(int mapX, int mapY, double ray_x, double ray_y, double distance)
         {
+            return false;
             List<(double module, double cos)> bounds = new List<(double module, double cos)>();
             for (int tx = 0; tx < 2; tx++)
             {
                 for (int ty = 0; ty < 2; ty++)
                 {
-                    double vx = test_x + tx - player.X;
-                    double vy = test_y + ty - player.Y;
+                    double vx = mapX + tx - player.X;
+                    double vy = mapY + ty - player.Y;
                     double module_vector = Math.Sqrt(vx * vx + vy * vy);
                     double cos_a = ray_x * vx / module_vector + ray_y * vy / module_vector;
                     bounds.Add((module_vector, cos_a));

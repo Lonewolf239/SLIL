@@ -6,6 +6,7 @@ namespace SLIL.Classes
     {
         //public double X { get; set; }
         //public double Y { get; set; }
+        public int ID { get; set; }
         public double A { get; set; }
         public double Look { get; set; }
         public double HP { get; set; }
