@@ -29,6 +29,7 @@ namespace SLIL.Classes
         public int EnemiesKilled { get; set; }
         public double MOVE_SPEED { get; set; }
         public double RUN_SPEED { get; set; }
+        public readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit(), new Candy(), new Rainblower() };
         public readonly List<Gun> Guns = new List<Gun>();
         public readonly List<FirstAidKit> FirstAidKits = new List<FirstAidKit>();
         public Pet PET = null;
