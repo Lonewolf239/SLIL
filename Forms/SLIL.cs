@@ -2337,20 +2337,17 @@ namespace SLIL
                 {
                     case '#':
                         hit_wall = true;
-                        is_bound = CheckBound(mapX, mapY, ray_x, ray_y, distance * cosDeltaA);
                         DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '#';
                         break;
                     case '=':
                         if (!hit_window)
                         {
                             hit_window = true;
-                            is_window_bound = CheckBound(mapX, mapY, ray_x, ray_y, window_distance * cosDeltaA);
                             DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '=';
                         }
                         break;
                     case 'd':
                         hit_door = true;
-                        is_bound = CheckBound(mapX, mapY, ray_x, ray_y, distance * cosDeltaA);
                         DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'D';
                         break;
                     case 'D':
@@ -2379,16 +2376,18 @@ namespace SLIL
             int side = 0;
             double wallX = 0;
             if (wallSide == 1)
-                wallX = player.X + distance * ray_x;
+                wallX = player.X + perpWallDist * rayDirX;
             else if (wallSide == 0)
-                wallX = player.Y + distance * ray_y;
+                wallX = player.Y + perpWallDist * rayDirY;
             wallX -= Math.Floor(wallX);
             double windowX = 0;
             if (windowSide == 1)
-                windowX = player.X + window_distance * ray_x;
+                windowX = player.X + window_distance * rayDirX * cosDeltaA;
             else if (windowSide == 0)
-                windowX = player.Y + window_distance * ray_y;
+                windowX = player.Y + window_distance * rayDirY * cosDeltaA;
             windowX -= Math.Floor(windowX);
+            if(wallX > 0.925 || wallX < 0.075) is_bound = true;
+            if (windowX > 0.925 || windowX < 0.075) is_window_bound = true;
             for (int y = 0; y < SCREEN_HEIGHT[resolution]; y++)
             {
                 if (!GameStarted)
@@ -2437,9 +2436,8 @@ namespace SLIL
                 {
                     int p = y - (int)(SCREEN_HEIGHT[resolution] - playerLook) / 2;
                     double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
-                    rowDistance /= cosDeltaA;
-                    double floorX = player.X - rowDistance * ray_x;
-                    double floorY = player.Y - rowDistance * ray_y;
+                    double floorX = player.X - rowDistance * rayDirX;
+                    double floorY = player.Y - rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
                     result[y].TextureX = floorX % 1;
@@ -2450,9 +2448,8 @@ namespace SLIL
                 {
                     int p = y - (int)(SCREEN_HEIGHT[resolution] - playerLook) / 2;
                     double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
-                    rowDistance /= cosDeltaA;
-                    double floorX = player.X + rowDistance * ray_x;
-                    double floorY = player.Y + rowDistance * ray_y;
+                    double floorX = player.X + rowDistance * rayDirX;
+                    double floorY = player.Y + rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
                     result[y].TextureX = floorX % 1;
@@ -2564,28 +2561,6 @@ namespace SLIL
             else if (y >= y2_2 && y <= y1_2)
                 return 1;
             return -1;
-        }
-
-        private bool CheckBound(int mapX, int mapY, double ray_x, double ray_y, double distance)
-        {
-            return false;
-            List<(double module, double cos)> bounds = new List<(double module, double cos)>();
-            for (int tx = 0; tx < 2; tx++)
-            {
-                for (int ty = 0; ty < 2; ty++)
-                {
-                    double vx = mapX + tx - player.X;
-                    double vy = mapY + ty - player.Y;
-                    double module_vector = Math.Sqrt(vx * vx + vy * vy);
-                    double cos_a = ray_x * vx / module_vector + ray_y * vy / module_vector;
-                    bounds.Add((module_vector, cos_a));
-                }
-            }
-            bounds = bounds.OrderBy(v => v.module).ToList();
-            double bound_a = 0.03 / distance;
-            if (Math.Acos(bounds[0].cos) < bound_a || Math.Acos(bounds[1].cos) < bound_a || (Math.Acos(bounds[2].cos) < bound_a && distance + 0.1 >= bounds[2].module))
-                return true;
-            return false;
         }
 
         private void SpawnEnemis(int x, int y, int size)
