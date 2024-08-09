@@ -50,17 +50,17 @@ namespace SLIL.Classes
             Properties.Resources.door,
             Properties.Resources.shop_door,
             Properties.Resources.teleport,
-            Properties.Resources.floor,
+            Properties.Resources.c_floor,
             Properties.Resources.ceiling,
             Properties.Resources.enemy_0, //8
             Properties.Resources.enemy_0_1,
             Properties.Resources.enemy_0_DEAD,
-            Properties.Resources.enemy_1, //11
-            Properties.Resources.enemy_1_1,
-            Properties.Resources.enemy_1_DEAD,
-            Properties.Resources.enemy_2, //14
-            Properties.Resources.enemy_2_1,
-            Properties.Resources.enemy_2_DEAD,
+            Properties.Resources.c_enemy_1, //11
+            Properties.Resources.c_enemy_1_1,
+            Properties.Resources.c_enemy_1_DEAD,
+            Properties.Resources.c_enemy_2, //14
+            Properties.Resources.c_enemy_2_1,
+            Properties.Resources.c_enemy_2_DEAD,
             Properties.Resources.pet_cat_0, //17
             Properties.Resources.pet_cat_1,
             Properties.Resources.pet_cat_3,
@@ -95,7 +95,7 @@ namespace SLIL.Classes
             //bound
             Color.FromArgb(90, 80, 90),
             //dark
-            Color.FromArgb(150, 140, 150)
+            Color.Black
         };
         private readonly Color[,][,] textureColorCache;
         private readonly Color[,][,] textureCuteColorCache;

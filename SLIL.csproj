@@ -902,5 +902,29 @@
   <ItemGroup>
     <None Include="Images\copy.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_1_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_1_DEAD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_2_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_2_DEAD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_floor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\scope_c_hit.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
