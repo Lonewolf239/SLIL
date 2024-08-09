@@ -25,11 +25,13 @@ namespace SLIL.Classes
         private int MAP_WIDTH, MAP_HEIGHT;
         public StringBuilder CUSTOM_MAP = new StringBuilder();
         public int CUSTOM_X, CUSTOM_Y;
+
         public GameModel()
         {
             rand = new Random();
             difficulty = MainMenu.difficulty;
         }
+
         public void AddPet(Player player, int index)
         {
             Pet pet = PETS[index];
@@ -84,6 +86,7 @@ namespace SLIL.Classes
             player.PET = pet;
             UpdatePet(player);
         }
+
         private void CuteMode(Player player)
         {
             player.Guns.Clear();
@@ -107,6 +110,7 @@ namespace SLIL.Classes
             //TakeFlashlight(false);
             //ChangeWeapon(1);
         }
+
         private void UpdatePet(Player player)
         {
             bool doesPlayerExist = false;
@@ -126,6 +130,7 @@ namespace SLIL.Classes
             player.PET.SetNewParametrs(player.X + 0.1, player.Y + 0.1, MAP_WIDTH);
             Entities.Add(player.PET);
         }
+
         private void GameOver(int win)
         {
             //TODO: realization of enemy timer

@@ -167,7 +167,7 @@ namespace SLIL.Classes
 
         public Color GetTextureColor(int textureId, int x, int y, int blackout, bool cute)
         {
-            if(cute)
+            if (cute)
                 return textureCuteColorCache[textureId, blackout][x, y];
             return textureColorCache[textureId, blackout][x, y];
         }
