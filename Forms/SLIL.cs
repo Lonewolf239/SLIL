@@ -145,7 +145,6 @@ namespace SLIL
         private bool open_shop = false, pressed_r = false, pressed_h = false;
         private Display display;
         private Bitmap map;
-        private readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit(), new Candy(), new Rainblower() };
         private readonly Pet[] PETS = { new SillyCat(0, 0, 0), new GreenGnome(0, 0, 0), new EnergyDrink(0, 0, 0), new Pyro(0, 0, 0) };
         public static readonly List<Entity> Entities = new List<Entity>();
         private Player player;
@@ -244,20 +243,20 @@ namespace SLIL
             shop_tab_control.Controls.Clear();
             if (player.CuteMode)
             {
-                GUNS[11].HasIt = true;
-                GUNS[12].HasIt = true;
-                player.Guns.Add(GUNS[11]);
-                player.Guns.Add(GUNS[12]);
+                player.GUNS[11].HasIt = true;
+                player.GUNS[12].HasIt = true;
+                player.Guns.Add(player.GUNS[11]);
+                player.Guns.Add(player.GUNS[12]);
             }
             else
             {
                 shop_tab_control.Controls.Add(weapon_shop_page);
-                GUNS[11].HasIt = false;
-                GUNS[12].HasIt = false;
+                player.GUNS[11].HasIt = false;
+                player.GUNS[12].HasIt = false;
                 for(int i = 0; i < 11; i++)
                 {
-                    if (GUNS[i].HasIt)
-                        player.Guns.Add(GUNS[i]);
+                    if (player.GUNS[i].HasIt)
+                        player.Guns.Add(player.GUNS[i]);
                 }
             }
             shop_tab_control.Controls.Add(pet_shop_page);
@@ -373,8 +372,8 @@ namespace SLIL
                             playerPet.PetAbilityReloading = true;
                             break;
                         case 3: //Pyro
-                            if (GUNS[12].AmmoCount + 15 <= GUNS[12].MaxAmmo)
-                                GUNS[12].AmmoCount += 15;
+                            if (player.GUNS[12].AmmoCount + 15 <= player.GUNS[12].MaxAmmo)
+                                player.GUNS[12].AmmoCount += 15;
                             playerPet.AbilityTimer = 0;
                             playerPet.PetAbilityReloading = true;
                             break;
@@ -558,7 +557,7 @@ namespace SLIL
                         if (!shot_timer.Enabled && !reload_timer.Enabled)
                         {
                             int count = player.Guns.Count;
-                            if (player.Guns.Contains(GUNS[0]))
+                            if (player.Guns.Contains(player.GUNS[0]))
                                 count--;
                             if (e.KeyCode == Bind.Reloading)
                             {
@@ -937,16 +936,16 @@ namespace SLIL
 
         private void TakeFlashlight(bool change)
         {
-            if (player.Guns.Contains((Flashlight)GUNS[0]))
+            if (player.Guns.Contains((Flashlight)player.GUNS[0]))
             {
-                player.Guns.Remove((Flashlight)GUNS[0]);
+                player.Guns.Remove((Flashlight)player.GUNS[0]);
                 ChangeWeapon(player.PreviousGun);
             }
             else if (change)
             {
-                player.Guns.Add((Flashlight)GUNS[0]);
+                player.Guns.Add((Flashlight)player.GUNS[0]);
                 player.PreviousGun = player.CurrentGun;
-                ChangeWeapon(player.Guns.IndexOf((Flashlight)GUNS[0]));
+                ChangeWeapon(player.Guns.IndexOf((Flashlight)player.GUNS[0]));
             }
         }
 
@@ -1560,7 +1559,7 @@ namespace SLIL
                 tempY += playerWidth / 2 - (tempY % 1);
             player.X = tempX;
             player.Y = tempY;
-            game.
+            Controller.MovePlayer(tempX-player.X, tempY-player.Y);
             if (MAP[(int)player.Y * MAP_WIDTH + (int)player.X] == 'F')
             {
                 GameOver(1);
@@ -1601,12 +1600,12 @@ namespace SLIL
             }
             for (int i = WEAPONS_COUNT - 1; i >= 0; i--)
             {
-                if (GUNS[i].AddToShop)
+                if (player.GUNS[i].AddToShop)
                 {
                     SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
                     {
                         index = MainMenu.Language ? 0 : 1,
-                        weapon = GUNS[i],
+                        weapon = player.GUNS[i],
                         buy = buy,
                         player = player,
                         BackColor = shop_panel.BackColor,
@@ -1628,17 +1627,17 @@ namespace SLIL
                 };
                 pet_shop_page.Controls.Add(ShopInterface);
             }
-            for (int i = GUNS.Length - 1; i >= 0; i--)
+            for (int i = player.GUNS.Length - 1; i >= 0; i--)
             {
-                if (GUNS[i] is Item && !(GUNS[i] is Flashlight))
+                if (player.GUNS[i] is Item && !(player.GUNS[i] is Flashlight))
                 {
                     SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
                     {
                         index = MainMenu.Language ? 0 : 1,
-                        item = GUNS[i] as Item,
+                        item = player.GUNS[i] as Item,
                         buy = buy,
                         player = player,
-                        GUNS = GUNS,
+                        GUNS = player.GUNS,
                         BackColor = shop_panel.BackColor,
                         Dock = DockStyle.Top
                     };
@@ -1650,7 +1649,7 @@ namespace SLIL
                 Dock = DockStyle.Fill,
                 Visible = false,
                 player = player,
-                GUNS = GUNS,
+                GUNS = player.GUNS,
                 Entities = Entities
             };
             console_panel.Log("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
@@ -2750,8 +2749,8 @@ namespace SLIL
             }
             if (player.Guns.Count == 0)
             {
-                player.Guns.Add(GUNS[1]);
-                player.Guns.Add(GUNS[2]);
+                player.Guns.Add(player.GUNS[1]);
+                player.Guns.Add(player.GUNS[2]);
             }
             player.SetDefault();
             player.LevelUpdated = false;
@@ -2847,7 +2846,7 @@ namespace SLIL
         private void GetFirstAidKit()
         {
             if (player.FirstAidKits.Count == 0)
-                player.FirstAidKits.Add((FirstAidKit)GUNS[10]);
+                player.FirstAidKits.Add((FirstAidKit)player.GUNS[10]);
             player.FirstAidKits[0].AmmoCount = player.FirstAidKits[0].CartridgesClip;
             player.FirstAidKits[0].MaxAmmoCount = player.FirstAidKits[0].CartridgesClip;
             player.FirstAidKits[0].HasIt = true;
@@ -2894,8 +2893,8 @@ namespace SLIL
                 inDebug = 0;
                 difficulty = old_difficulty;
             }
-            for (int i = 0; i < GUNS.Length; i++)
-                GUNS[i].SetDefault();
+            for (int i = 0; i < player.GUNS.Length; i++)
+                player.GUNS[i].SetDefault();
         }
 
         private void GameOver(int win)

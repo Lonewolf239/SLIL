@@ -128,7 +128,8 @@ namespace SLIL.Classes
         }
         private void GameOver(int win)
         {
-            enemy_timer.Stop();
+            //TODO: realization of enemy timer
+            //enemy_timer.Stop();
             GameStarted = false;
             if (win == 1)
             {
@@ -159,6 +160,22 @@ namespace SLIL.Classes
             }
             else
                 ToDefault();
+        }
+
+        public void MovePlayer(double dX, double dY, int playerID)
+        {
+            for(int i = 0; i < Entities.Count; i++)
+            {
+                if (Entities[i] is Player)
+                {
+                    if ((Entities[i] as Player).ID == playerID)
+                    {
+                        Entities[i].X += dX;
+                        Entities[i].Y += dY;
+                        return;
+                    }
+                }
+            }
         }
     }
 }
