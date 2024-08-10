@@ -2062,7 +2062,7 @@
             // multiplayer_background
             // 
             this.multiplayer_background.BackColor = System.Drawing.Color.Black;
-            this.multiplayer_background.Controls.Add(this.coming_soon_label);
+            //this.multiplayer_background.Controls.Add(this.coming_soon_label);
             this.multiplayer_background.Controls.Add(this.connect_game_btn);
             this.multiplayer_background.Controls.Add(this.nickname);
             this.multiplayer_background.Controls.Add(this.nickname_label);

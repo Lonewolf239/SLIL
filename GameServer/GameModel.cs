@@ -1,6 +1,5 @@
 ﻿using MazeGenerator;
 using LiteNetLib.Utils;
-using SLIL.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,11 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using SharpDX.Direct2D1;
-using MazeGenerator.Enum;
 using System.Drawing;
-using System.Windows.Forms;
-using SharpDX.DXGI;
 
 namespace SLIL.Classes
 {
@@ -21,8 +16,7 @@ namespace SLIL.Classes
         private static StringBuilder MAP = new StringBuilder();
         private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##..=======........##..=.....=.....#..##..=....E=........##..=..====........##..=..=........d..##..=.E=...........##..====...........##........P.....=..##.................##.................##..............F..##.................##..===....#D#..#..##..=E=====#$#.#d=.##..===....###..=..##.................####################";
-        //private readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit(), new Candy(), new Rainblower() };
-        private readonly Pet[] PETS;
+        private Pet[] PETS;
         public static readonly List<Entity> Entities = new List<Entity>();
         private readonly char[] impassibleCells = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
@@ -33,8 +27,8 @@ namespace SLIL.Classes
         public StringBuilder CUSTOM_MAP = new StringBuilder();
         public int CUSTOM_X, CUSTOM_Y;
 
-        private static Timer RespawnTimer;
-        private static Timer EnemyTimer;
+        private static System.Timers.Timer RespawnTimer;
+        private static System.Timers.Timer EnemyTimer;
 
         public int MaxEntityID;
 
@@ -46,14 +40,14 @@ namespace SLIL.Classes
             MAP_WIDTH = 16;
             MAP_HEIGHT = 16;
             rand = new Random();
-            difficulty = MainMenu.difficulty;
+            difficulty = 2;
             InitMap();
-            RespawnTimer = new Timer();
+            RespawnTimer = new System.Timers.Timer(1000);
             RespawnTimer.Interval = 1000;
-            RespawnTimer.Tick += RespawnTimer_Tick;
-            EnemyTimer = new Timer();
+            RespawnTimer.Elapsed += RespawnTimer_Tick;
+            EnemyTimer = new System.Timers.Timer(100);
             EnemyTimer.Interval = 100;
-            EnemyTimer.Tick += EnemyTimer_Tick;
+            EnemyTimer.Elapsed += EnemyTimer_Tick;
         }
 
         public void StartGame()
@@ -81,16 +75,16 @@ namespace SLIL.Classes
         private void EnemyTimer_Tick(object sender, EventArgs e)
         {
             List<Player> playersList = new List<Player>();
-            foreach(Entity ent in Entities)
+            foreach (Entity ent in Entities)
             {
-                if(ent is Player) playersList.Add(ent as Player);
+                if (ent is Player) playersList.Add(ent as Player);
             }
             if (playersList.Count == 0) return;
             for (int i = 0; i < Entities.Count; i++)
             {
                 if (GameStarted)
                 {
-                    if(Entities[i] is Player) continue;
+                    if (Entities[i] is Player) continue;
                     var entity = Entities[i] as dynamic;
                     playersList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
                     Player player = playersList[0];
@@ -132,11 +126,11 @@ namespace SLIL.Classes
                     else if (entity is Pet)
                     {
                         Player owner = null;
-                        foreach(Entity ent in Entities)
+                        foreach (Entity ent in Entities)
                         {
-                            if(ent is Player)
+                            if (ent is Player)
                             {
-                                if((ent as Player).PET == entity)
+                                if ((ent as Player).PET == entity)
                                 {
                                     owner = (Player)ent;
                                     distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
@@ -395,7 +389,7 @@ namespace SLIL.Classes
 
         public void MovePlayer(double dX, double dY, int playerID)
         {
-            for(int i = 0; i < Entities.Count; i++)
+            for (int i = 0; i < Entities.Count; i++)
             {
                 if (Entities[i] is Player)
                 {
@@ -408,7 +402,7 @@ namespace SLIL.Classes
                 }
             }
         }
-        
+
         public void InitMap()
         {
             MAP.Clear();
@@ -451,11 +445,11 @@ namespace SLIL.Classes
                 return;
             }
             //if (!CUSTOM)
-            if(true)
+            if (true)
             {
                 Random random = new Random();
                 StringBuilder sb = new StringBuilder();
-                char[,] map = (new Maze()).GenerateCharMap((MAP_WIDTH-1)/3, (MAP_HEIGHT - 1) / 3, '#', '=', 'd', '.', 'F', 5);//MAX_SHOP_COUNT);
+                char[,] map = (new Maze()).GenerateCharMap((MAP_WIDTH - 1) / 3, (MAP_HEIGHT - 1) / 3, '#', '=', 'd', '.', 'F', 5);//MAX_SHOP_COUNT);
                 map[1, 1] = 'P';
                 List<int[]> shops = new List<int[]>();
                 for (int y = 0; y < map.GetLength(1); y++)
@@ -630,10 +624,6 @@ namespace SLIL.Classes
         {
             return MAP;
         }
-        public Pet[] GetPets()
-        {
-            return PETS;
-        }
         public int GetMapWidth()
         {
             return MAP_WIDTH;
@@ -646,6 +636,7 @@ namespace SLIL.Classes
         {
             return Entities;
         }
+
         public bool DealDamage(int ID, double damage, int attackerID)
         {
             Entity target = null;
@@ -655,7 +646,7 @@ namespace SLIL.Classes
                 if (entity.ID == ID) target = entity;
                 if (entity.ID == attackerID) attacker = entity;
             }
-            if (target is Player p) 
+            if (target is Player p)
             {
                 if (attacker is Player attackerPlayer && p.DealDamage(damage))
                 {
@@ -682,11 +673,23 @@ namespace SLIL.Classes
                     }
                 }
                 else if (attacker is Player attackerPlayer)
-                    if(difficulty == 0 && attackerPlayer.GetCurrentGun().FireType == FireTypes.Single && !(attackerPlayer.GetCurrentGun() is Knife))
+                    if (difficulty == 0 && attackerPlayer.GetCurrentGun().FireType == FireTypes.Single && !(attackerPlayer.GetCurrentGun() is Knife))
                         c.UpdateCoordinates(MAP.ToString(), attackerPlayer.X, attackerPlayer.Y);
                 return false;
             }
             return false;
+        }
+
+        public void RemovePlayer(int playerID)
+        {
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                if (Entities[i] is Player)
+                {
+                    if (Entities[i].ID == playerID) Entities.RemoveAt(i);
+                    return;
+                }
+            }
         }
 
         private void ResetDefault()
@@ -803,11 +806,6 @@ namespace SLIL.Classes
                 prev_ost = rand.Next(ost.Length - 2);
                 ChangeOst(prev_ost);
             }*/
-        }
-
-        public void AddHittingTheWall(double X, double Y) 
-        {
-            Entities.Add(new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID));
         }
     }
 }

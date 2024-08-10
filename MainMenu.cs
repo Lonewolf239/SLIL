@@ -1029,6 +1029,17 @@ namespace SLIL
         private void Connect_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
+            game_mode_panel.Visible = false;
+            try
+            {
+                SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]));
+                form.ShowDialog();
+                difficulty_panel.Visible = false;
+            }
+            catch
+            {
+                MessageBox.Show("Брат, впиши айпишник нормальный, ёбаный крот");
+            }
         }
 
         private void Multiplayer_close_Click(object sender, EventArgs e)

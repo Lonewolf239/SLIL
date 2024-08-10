@@ -8,7 +8,7 @@ namespace SLIL.Classes
 {
     public abstract class Entity : INetSerializable
     {
-        public int ID {  get; set; }
+        public int ID { get; set; }
         public int EntityID { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
@@ -250,7 +250,6 @@ namespace SLIL.Classes
         protected double detectionRange;
         public bool Stoped { get; set; }
         public bool HasStopAnimation { get; set; }
-        public Image ShopIcon;
         public string[] Name { get; set; }
         public string[] Descryption { get; set; }
         public int Cost { get; set; }
@@ -401,7 +400,6 @@ namespace SLIL.Classes
         public SillyCat(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
         {
             Index = 0;
-            ShopIcon = Properties.Resources.pet_cat_icon;
             Cost = 150;
             Name = new[] { "Глупый Кот", "Silly Cat" };
             Descryption = new[] { "Раз в 5 секунд восстанавливает 2 HP", "Restores 2 HP every 5 seconds" };
@@ -421,7 +419,6 @@ namespace SLIL.Classes
         public GreenGnome(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
         {
             Index = 1;
-            ShopIcon = Properties.Resources.pet_gnome_icon;
             Cost = 60;
             Name = new[] { "Зелёный Гном", "Green Gnome" };
             Descryption = new[] { "Увеличивает максимальное здоровье на 25", "Increases maximum health by 25" };
@@ -441,7 +438,6 @@ namespace SLIL.Classes
         public EnergyDrink(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
         {
             Index = 2;
-            ShopIcon = Properties.Resources.pet_energy_drink_icon;
             Cost = 60;
             Name = new[] { "Энергетик", "Energy Drink" };
             Descryption = new[] { "Увеличивает выносливость и скорость", "Increases endurance and speed" };
@@ -466,7 +462,6 @@ namespace SLIL.Classes
         public Pyro(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
         {
             Index = 3;
-            ShopIcon = Properties.Resources.pet_pyro_icon;
             Cost = 60;
             Name = new[] { "Подсератель", "Podseratel" };
             Descryption = new[] { "Мир — это сказка...", "The world is a fairy tale..." };
@@ -531,7 +526,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 1;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells() 
+        protected override char[] GetImpassibleCells()
         {
             return new char[] { '#', 'D', 'd', '=' };
         }
@@ -544,7 +539,7 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 35;
         protected override int GetMIN_DAMAGE() => 15;
 
-        public Man(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) 
+        public Man(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
         {
             DeathSound = 0;
             Texture = 8;
@@ -558,7 +553,7 @@ namespace SLIL.Classes
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
-            if(isPlayerVisible)
+            if (isPlayerVisible)
             {
                 double distance = 0;
                 double step = 0.01;
@@ -568,7 +563,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if(ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -585,7 +580,7 @@ namespace SLIL.Classes
             }
             if (stage == Stages.Chasing)
             {
-                if(!isPlayerVisible)
+                if (!isPlayerVisible)
                 {
                     stage = Stages.Roaming;
                     NumberOfMovesLeft = MovesInARow;

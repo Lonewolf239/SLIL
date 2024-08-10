@@ -1,7 +1,4 @@
-﻿using SharpDX.Direct2D1;
-using System.Collections.Generic;
-
-namespace SLIL.Classes
+﻿namespace SLIL.Classes
 {
     public class Player : Entity
     {
