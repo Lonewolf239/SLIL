@@ -1925,7 +1925,17 @@ namespace SLIL
         private Pixel[][] CastRaysParallel(double[] ZBuffer, double[] ZBufferWindow)
         {
             Pixel[][] rays = new Pixel[SCREEN_WIDTH[resolution]][];
-            Parallel.For(0, SCREEN_WIDTH[resolution], x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow));
+            int factor = player.Aiming ? 12 : 0;
+            if (player.GetCurrentGun() is Flashlight)
+                factor = 8;
+            double playerLook = player.Look;
+            double dirX = Math.Sin(player.A);
+            double dirY = Math.Cos(player.A);
+            double planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
+            double planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
+            int mapX = (int)(player.X);
+            int mapY = (int)(player.Y);
+            Parallel.For(0, SCREEN_WIDTH[resolution], x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, factor, playerLook, dirX, dirY, planeX, planeY, mapX, mapY));
             return rays;
         }
 
@@ -2237,22 +2247,12 @@ namespace SLIL
             return fps < 0 ? 0 : fps;
         }
 
-        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow)
+        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int factor, double playerLook, double dirX, double dirY, double planeX, double planeY, int mapX, int mapY)
         {
-            int factor = player.Aiming ? 12 : 0;
-            if (player.GetCurrentGun() is Flashlight)
-                factor = 8;
             Pixel[] result = new Pixel[SCREEN_HEIGHT[resolution]];
-            double playerLook = player.Look;
             double cameraX = 2 * x / (double)SCREEN_WIDTH[resolution] - 1;
-            double dirX = Math.Sin(player.A);
-            double dirY = Math.Cos(player.A);
-            double planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
-            double planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
             double rayDirX = dirX + planeX * cameraX;
             double rayDirY = dirY + planeY * cameraX;
-            int mapX = (int)(player.X);
-            int mapY = (int)(player.Y);
             double sideDistX;
             double sideDistY;
             double deltaDistX = (rayDirX == 0) ? 1e30 : Math.Abs(1 / rayDirX);
