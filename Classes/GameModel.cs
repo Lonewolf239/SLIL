@@ -208,18 +208,81 @@ namespace SLIL.Classes
             for (int i = 0; i < entCount; i++)
             {
                 int entityID = reader.GetInt();
-                int ID;
                 double entityX = reader.GetDouble();
                 double entityY = reader.GetDouble();
-                if(entityID == 0 && entityX % 1 != 0.5 && entityY % 1 != 0.5)
+                int ID = reader.GetInt();
+                
+                switch (entityID)
                 {
-                    ;
+                    case 0:
+                        tempEntities.Add(new Player(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 1:
+                        tempEntities.Add(new Man(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 2:
+                        tempEntities.Add(new Dog(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 3:
+                        tempEntities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 4:
+                        tempEntities.Add(new Bat(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 5:
+                        tempEntities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 6:
+                        tempEntities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 7:
+                        tempEntities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 8:
+                        tempEntities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 9:
+                        tempEntities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 10:
+                        tempEntities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 11:
+                        tempEntities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    case 12:
+                        tempEntities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
+                        break;
+                    default:
+                        break;
                 }
-                else if(entityID==0)
-                {
-                    ;
+            }
+            Entities = new List<Entity>(tempEntities);
+        }
+        public void Deserialize(NetDataReader reader, int playerID)
+        {
+            MAP = new StringBuilder(reader.GetString());
+            MAP_WIDTH = reader.GetInt();
+            MAP_HEIGHT = reader.GetInt();
+            int entCount = reader.GetInt();
+            List<Entity> tempEntities = new List<Entity>();
+            for (int i = 0; i < entCount; i++)
+            {
+                int entityID = reader.GetInt();
+                double entityX = reader.GetDouble();
+                double entityY = reader.GetDouble();
+                int ID = reader.GetInt();
+                if (ID == playerID) {
+                    foreach(Entity ent in Entities)
+                    {
+                        if(ent.ID == playerID)
+                        {
+                            tempEntities.Add(ent);
+                            break;
+                        }
+                    }
+                    continue;
                 }
-                ID = reader.GetInt();
                 switch (entityID)
                 {
                     case 0:

@@ -18,7 +18,7 @@ namespace SLIL.Classes
         private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##..=======........##..=.....=.....#..##..=....E=........##..=..====........##..=..=........d..##..=.E=...........##..====...........##........P.....=..##.................##.................##..............F..##.................##..===....#D#..#..##..=E=====#$#.#d=.##..===....###..=..##.................####################";
         private Pet[] PETS;
-        public static readonly List<Entity> Entities = new List<Entity>();
+        public List<Entity> Entities = new List<Entity>();
         private readonly char[] impassibleCells = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
         private bool GameStarted = false, CorrectExit = false;
@@ -148,7 +148,7 @@ namespace SLIL.Classes
                     }
                 }
             }
-            sendMessageFromGameCallback(0);
+            //sendMessageFromGameCallback(0);
         }
 
         private void RespawnTimer_Tick(object sender, EventArgs e)
@@ -183,7 +183,7 @@ namespace SLIL.Classes
                     }
                 }
             });
-            sendMessageFromGameCallback(0);
+            //sendMessageFromGameCallback(0);
         }
 
         public void Serialize(NetDataWriter writer)
@@ -198,65 +198,134 @@ namespace SLIL.Classes
             }
         }
 
+        /*        public void Deserialize(NetDataReader reader)
+                {
+                    MAP = new StringBuilder(reader.GetString());
+                    MAP_WIDTH = reader.GetInt();
+                    MAP_HEIGHT = reader.GetInt();
+                    int entCount = reader.GetInt();
+                    Entities.Clear();
+                    for (int i = 0; i < entCount; i++)
+                    {
+                        int entityID = reader.GetInt();
+                        int ID = -1;
+                        double entityX = reader.GetDouble();
+                        double entityY = reader.GetDouble();
+                        ID = reader.GetInt();
+                        switch (entityID)
+                        {
+                            case 0:
+                                Entities.Add(new Player(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 1:
+                                Entities.Add(new Man(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 2:
+                                Entities.Add(new Dog(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 3:
+                                Entities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 4:
+                                Entities.Add(new Bat(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 5:
+                                Entities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 6:
+                                Entities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 7:
+                                Entities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 8:
+                                Entities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 9:
+                                Entities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 10:
+                                Entities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 11:
+                                Entities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            case 12:
+                                Entities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }*/
         public void Deserialize(NetDataReader reader)
         {
             MAP = new StringBuilder(reader.GetString());
             MAP_WIDTH = reader.GetInt();
             MAP_HEIGHT = reader.GetInt();
             int entCount = reader.GetInt();
-            Entities.Clear();
+            List<Entity> tempEntities = new List<Entity>();
             for (int i = 0; i < entCount; i++)
             {
                 int entityID = reader.GetInt();
-                int ID = -1;
+                int ID;
                 double entityX = reader.GetDouble();
                 double entityY = reader.GetDouble();
+                if (entityID == 0 && entityX % 1 != 0.5 && entityY % 1 != 0.5)
+                {
+                    ;
+                }
+                else if (entityID == 0)
+                {
+                    ;
+                }
                 ID = reader.GetInt();
                 switch (entityID)
                 {
                     case 0:
-                        Entities.Add(new Player(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new Player(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 1:
-                        Entities.Add(new Man(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new Man(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 2:
-                        Entities.Add(new Dog(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new Dog(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 3:
-                        Entities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 4:
-                        Entities.Add(new Bat(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new Bat(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 5:
-                        Entities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 6:
-                        Entities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 7:
-                        Entities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 8:
-                        Entities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 9:
-                        Entities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 10:
-                        Entities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 11:
-                        Entities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 12:
-                        Entities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
+                        tempEntities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     default:
                         break;
                 }
             }
+            Entities = new List<Entity>(tempEntities);
         }
         public void AddPet(int playerID, int index)
         {
@@ -412,9 +481,8 @@ namespace SLIL.Classes
                 {
                     if ((Entities[i] as Player).ID == playerID)
                     {
-                        Entities[i].X += dX;
-                        Entities[i].Y += dY;
-                        Console.Write(Entities[i].X.ToString() + " " + Entities[i].Y.ToString() + "\n");
+                        Entities[i].X = dX;
+                        Entities[i].Y = dY;
                         return;
                     }
                 }

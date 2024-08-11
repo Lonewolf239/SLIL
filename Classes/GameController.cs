@@ -28,6 +28,7 @@ namespace SLIL.Classes
         }
         public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer)
         {
+            playerID = -1;
             Game = new GameModel();
             listener = new EventBasedNetListener();
             client = new NetManager(listener);
@@ -48,7 +49,9 @@ namespace SLIL.Classes
                 }
                 if (packetType == 0)
                 {
-                    Game.Deserialize(dataReader);
+                    if(playerID!=-1)
+                        Game.Deserialize(dataReader, playerID);
+                    else Game.Deserialize(dataReader);
                 }
                 dataReader.Recycle();
             };
@@ -56,8 +59,17 @@ namespace SLIL.Classes
             {
                 while (true)
                 {
+                    if (GetPlayer() != null)
+                    {
+                        NetDataWriter writer = new NetDataWriter();
+                        writer.Put(1);
+                        writer.Put(GetPlayer().X);
+                        writer.Put(GetPlayer().Y);
+                        writer.Put(playerID);
+                        peer.Send(writer, DeliveryMethod.Unreliable);
+                    }
                     client.PollEvents();
-                    Thread.Sleep(15);
+                    Thread.Sleep(10);
                 }
             }).Start();
         }
@@ -69,15 +81,15 @@ namespace SLIL.Classes
         internal void MovePlayer(double dX, double dY)
         {
             Game.MovePlayer(dX, dY, playerID);
-            if (peer != null)
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(1);
-                writer.Put(dX);
-                writer.Put(dY);
-                writer.Put(playerID);
-                peer.Send(writer, DeliveryMethod.Unreliable);
-            }
+            //if (peer != null)
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(1);
+            //    writer.Put(dX);
+            //    writer.Put(dY);
+            //    writer.Put(playerID);
+            //    peer.Send(writer, DeliveryMethod.Unreliable);
+            //}
         }
         internal void InitMap()
         {

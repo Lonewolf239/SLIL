@@ -33,15 +33,13 @@ listener.PeerConnectedEvent += peer =>
     peerPlayerIDs.Add(peer.Id, newPlayerId);
     writer.Put(newPlayerId);
     dispatcher.SerializeGame(writer);
-    server.SendToAll(writer, DeliveryMethod.Unreliable);
+    peer.Send(writer, DeliveryMethod.ReliableOrdered);
 };
 listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
 {
     Packet pack = new Packet();
     pack.Deserialize(dataReader);
     dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref server);
-    //int packetType = pack.PacketID;
-    NetDataWriter writer = new NetDataWriter();
 };
 listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
 {
@@ -58,7 +56,7 @@ listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
 while (true)
 {
     server.PollEvents();
-    //dispatcher.SendOutcomingMessage(0, ref server);
+    dispatcher.SendOutcomingMessage(0, ref server);
     Thread.Sleep(10);
 }
 server.Stop();

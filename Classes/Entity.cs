@@ -71,6 +71,10 @@ namespace SLIL.Classes
             this.X = reader.GetDouble();
             this.Y = reader.GetDouble();
             this.ID = reader.GetInt();
+            if (EntityID == 0)
+            {
+                Console.WriteLine("PlayerID: " + ID.ToString() + "; X = " + X.ToString() + "; Y = " + Y.ToString());
+            }
         }
 
         protected void AnimationsToStatic()

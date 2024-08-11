@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteNetLib;
 using System.Collections.Immutable;
+using System.Net.WebSockets;
 
 namespace GameServer
 {
@@ -32,7 +33,7 @@ namespace GameServer
             switch (packetID)
             {
                 case 0:
-                    Game.Deserialize(new NetDataReader(data));
+                    //Game.Deserialize(new NetDataReader(data));
                     break;
                 case 1:
                     NetDataReader dreader = new NetDataReader(data);
