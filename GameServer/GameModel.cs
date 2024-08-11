@@ -8,12 +8,13 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using GameServer;
 
 namespace SLIL.Classes
 {
     internal class GameModel : INetSerializable
     {
-        private static StringBuilder MAP = new StringBuilder();
+        private StringBuilder MAP = new StringBuilder();
         private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##..=======........##..=.....=.....#..##..=....E=........##..=..====........##..=..=........d..##..=.E=...........##..====...........##........P.....=..##.................##.................##..............F..##.................##..===....#D#..#..##..=E=====#$#.#d=.##..===....###..=..##.................####################";
         private Pet[] PETS;
@@ -30,11 +31,14 @@ namespace SLIL.Classes
         private static System.Timers.Timer RespawnTimer;
         private static System.Timers.Timer EnemyTimer;
 
+        SendMessageFromGameCallback sendMessageFromGameCallback;
+
         public int MaxEntityID;
 
-        public GameModel()
+        public GameModel(SendMessageFromGameCallback sendMessageFromGameCallback)
         {
-            Pet[] pets = { new SillyCat(0, 0, 0, ref MaxEntityID), new GreenGnome(0, 0, 0, ref MaxEntityID), new EnergyDrink(0, 0, 0, ref MaxEntityID), new Pyro(0, 0, 0, ref MaxEntityID) };
+            this.sendMessageFromGameCallback = sendMessageFromGameCallback;
+            Pet[] pets = { new SillyCat(0, 0, 0, 0), new GreenGnome(0, 0, 0, 0), new EnergyDrink(0, 0, 0, 0), new Pyro(0, 0, 0, 0) };
             PETS = pets;
             //MAP.Append(@"####################.................##..=======........##..=.....=.....#..##..=....E=........##..=..====........##..=..=........d..##..=.E=...........##..====...........##........P.....=..##.................##.................##..............F..##.................##..===....#D#..#..##..=E=====#$#.#d=.##..===....###..=..##.................####################");
             MAP_WIDTH = 16;
@@ -144,6 +148,7 @@ namespace SLIL.Classes
                     }
                 }
             }
+            sendMessageFromGameCallback(0);
         }
 
         private void RespawnTimer_Tick(object sender, EventArgs e)
@@ -178,6 +183,7 @@ namespace SLIL.Classes
                     }
                 }
             });
+            sendMessageFromGameCallback(0);
         }
 
         public void Serialize(NetDataWriter writer)
@@ -202,58 +208,69 @@ namespace SLIL.Classes
             for (int i = 0; i < entCount; i++)
             {
                 int entityID = reader.GetInt();
-                int pID = -1;
+                int ID = -1;
                 double entityX = reader.GetDouble();
                 double entityY = reader.GetDouble();
-                if (entityID == 0) pID = reader.GetInt();
+                ID = reader.GetInt();
                 switch (entityID)
                 {
                     case 0:
-                        Entities.Add(new Player(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new Player(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 1:
-                        Entities.Add(new Man(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new Man(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 2:
-                        Entities.Add(new Dog(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new Dog(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 3:
-                        Entities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 4:
-                        Entities.Add(new Bat(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new Bat(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 5:
-                        Entities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 6:
-                        Entities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 7:
-                        Entities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 8:
-                        Entities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 9:
-                        Entities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 10:
-                        Entities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 11:
-                        Entities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 12:
-                        Entities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        Entities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     default:
                         break;
                 }
             }
         }
-        public void AddPet(Player player, int index)
+        public void AddPet(int playerID, int index)
         {
+            Player player = null;
+            foreach (Entity ent in Entities)
+            {
+                if (ent is Player)
+                {
+                    if (ent.ID == playerID)
+                    {
+                        player = (Player)ent;
+                    }
+                }
+            }
             Pet pet = PETS[index];
             //foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true))
             //control.buy_button.Text = MainMenu.Language ? $"Купить ${control.pet.Cost}" : $"Buy ${control.pet.Cost}";
@@ -397,6 +414,7 @@ namespace SLIL.Classes
                     {
                         Entities[i].X += dX;
                         Entities[i].Y += dY;
+                        Console.Write(Entities[i].X.ToString() + " " + Entities[i].Y.ToString() + "\n");
                         return;
                     }
                 }

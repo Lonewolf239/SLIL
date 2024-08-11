@@ -41,8 +41,13 @@ namespace SLIL.Classes
 
         public Player(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
         {
-            ID = maxEntityID;
-            maxEntityID++;
+            Texture = 17;
+            base.SetAnimations(1, 0);
+            Dead = true;
+            SetDefault();
+        }
+        public Player(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
             Texture = 17;
             base.SetAnimations(1, 0);
             Dead = true;
@@ -79,6 +84,11 @@ namespace SLIL.Classes
             IsPetting = false;
             PreviousGun = CurrentGun = 1;
             STAMINE = MAX_STAMINE;
+            if (Guns.Count == 0)
+            {
+                Guns.Add(GUNS[1]);
+                Guns.Add(GUNS[2]);
+            }
         }
 
         public Gun GetCurrentGun() => Guns[CurrentGun];

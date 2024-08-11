@@ -42,12 +42,27 @@ namespace SLIL.Classes
             IntX = (int)x;
             IntY = (int)y;
         }
+        public Entity(double x, double y, int map_width, int maxEntityID)
+        {
+            ID = maxEntityID;
+            EntityID = this.GetEntityID();
+            Frames = 24;
+            Texture = this.GetTexture();
+            EntityWidth = this.GetEntityWidth();
+            RespondsToFlashlight = false;
+            Texture = this.GetTexture();
+            X = x;
+            Y = y;
+            IntX = (int)x;
+            IntY = (int)y;
+        }
 
         public void Serialize(NetDataWriter writer)
         {
             writer.Put(this.EntityID);
             writer.Put(this.X);
             writer.Put(this.Y);
+            writer.Put(ID);
         }
 
         public void Deserialize(NetDataReader reader)
@@ -55,6 +70,7 @@ namespace SLIL.Classes
             this.EntityID = reader.GetInt();
             this.X = reader.GetDouble();
             this.Y = reader.GetDouble();
+            this.ID = reader.GetInt();
         }
 
         protected void AnimationsToStatic()
@@ -124,6 +140,21 @@ namespace SLIL.Classes
         protected abstract double GetMove();
 
         public Creature(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
+        {
+            MAX_HP = this.GetMAX_HP();
+            MAX_MONEY = this.GetMAX_MONEY();
+            MIN_MONEY = this.GetMIN_MONEY();
+            MAX_DAMAGE = this.GetMAX_DAMAGE();
+            MIN_DAMAGE = this.GetMIN_DAMAGE();
+            ImpassibleCells = this.GetImpassibleCells();
+            MovesInARow = this.GetMovesInARow();
+            NumberOfMovesLeft = MovesInARow;
+            HP = MAX_HP;
+            A = rand.NextDouble();
+            MAP_WIDTH = map_width;
+            DeathSound = -1;
+        }
+        public Creature(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
             MAX_HP = this.GetMAX_HP();
             MAX_MONEY = this.GetMAX_MONEY();
@@ -218,6 +249,10 @@ namespace SLIL.Classes
         {
             CanHit = false;
         }
+        public Friend(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            CanHit = false;
+        }
     }
 
     public abstract class NPC : Friend
@@ -240,8 +275,10 @@ namespace SLIL.Classes
         public NPC(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
         {
             RespondsToFlashlight = false;
-            X += 0.5;
-            Y += 0.5;
+        }
+        public NPC(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            RespondsToFlashlight = false;
         }
     }
 
@@ -275,6 +312,13 @@ namespace SLIL.Classes
         protected override int GetMIN_DAMAGE() => 0;
 
         public Pet(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
+        {
+            IsInstantAbility = 0;
+            HasStopAnimation = false;
+            Stoped = false;
+            detectionRange = 8.0;
+        }
+        public Pet(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
             IsInstantAbility = 0;
             HasStopAnimation = false;
@@ -376,8 +420,14 @@ namespace SLIL.Classes
             TotalLifeTime = Frames;
             Animated = false;
             CurrentFrame = 0;
-            X += 0.5;
-            Y += 0.5;
+        }
+        public GameObject(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            Temporarily = false;
+            RespondsToFlashlight = false;
+            TotalLifeTime = Frames;
+            Animated = false;
+            CurrentFrame = 0;
         }
     }
 
@@ -394,11 +444,31 @@ namespace SLIL.Classes
             CanHit = true;
             Fast = false;
         }
+        public Enemy(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            stage = Stages.Roaming;
+            CanHit = true;
+            Fast = false;
+        }
     }
 
     public class SillyCat : Pet
     {
         public SillyCat(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
+        {
+            Index = 0;
+            ShopIcon = Properties.Resources.pet_cat_icon;
+            Cost = 150;
+            Name = new[] { "Глупый Кот", "Silly Cat" };
+            Descryption = new[] { "Раз в 5 секунд восстанавливает 2 HP", "Restores 2 HP every 5 seconds" };
+            Texture = 17;
+            PetAbility = 0;
+            AbilityReloadTime = 5;
+            HasStopAnimation = true;
+            RespondsToFlashlight = true;
+            base.SetAnimations(1, 0);
+        }
+        public SillyCat(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
             Index = 0;
             ShopIcon = Properties.Resources.pet_cat_icon;
@@ -431,6 +501,19 @@ namespace SLIL.Classes
             RespondsToFlashlight = true;
             base.SetAnimations(6, 1);
         }
+        public GreenGnome(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            Index = 1;
+            ShopIcon = Properties.Resources.pet_gnome_icon;
+            Cost = 60;
+            Name = new[] { "Зелёный Гном", "Green Gnome" };
+            Descryption = new[] { "Увеличивает максимальное здоровье на 25", "Increases maximum health by 25" };
+            Texture = 24;
+            PetAbility = 1;
+            IsInstantAbility = 1;
+            RespondsToFlashlight = true;
+            base.SetAnimations(6, 1);
+        }
         protected override int GetEntityID() => 6;
         public override int Interaction() => 2;
     }
@@ -451,7 +534,19 @@ namespace SLIL.Classes
             RespondsToFlashlight = false;
             base.AnimationsToStatic();
         }
-
+        public EnergyDrink(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            Index = 2;
+            ShopIcon = Properties.Resources.pet_energy_drink_icon;
+            Cost = 60;
+            Name = new[] { "Энергетик", "Energy Drink" };
+            Descryption = new[] { "Увеличивает выносливость и скорость", "Increases endurance and speed" };
+            Texture = 27;
+            PetAbility = 2;
+            IsInstantAbility = 1;
+            RespondsToFlashlight = false;
+            base.AnimationsToStatic();
+        }
         public override int Interaction() => 3;
     }
 
@@ -464,6 +559,20 @@ namespace SLIL.Classes
         }
 
         public Pyro(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
+        {
+            Index = 3;
+            ShopIcon = Properties.Resources.pet_pyro_icon;
+            Cost = 60;
+            Name = new[] { "Подсератель", "Podseratel" };
+            Descryption = new[] { "Мир — это сказка...", "The world is a fairy tale..." };
+            Texture = 31;
+            PetAbility = 3;
+            IsInstantAbility = 2;
+            AbilityReloadTime = 8;
+            RespondsToFlashlight = true;
+            base.SetAnimations(1, 0);
+        }
+        public Pyro(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
             Index = 3;
             ShopIcon = Properties.Resources.pet_pyro_icon;
@@ -490,12 +599,27 @@ namespace SLIL.Classes
             Animated = true;
             base.SetAnimations(1, 0);
         }
+        public Teleport(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            Texture = 34;
+            Animated = true;
+            base.SetAnimations(1, 0);
+        }
     }
 
     public class HittingTheWall : GameObject
     {
         protected override int GetEntityID() => 10;
         public HittingTheWall(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
+        {
+            Texture = 36;
+            LifeTime = 0;
+            TotalLifeTime = 4;
+            Temporarily = true;
+            Animated = true;
+            base.SetAnimations(2, 2);
+        }
+        public HittingTheWall(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
             Texture = 36;
             LifeTime = 0;
@@ -514,12 +638,23 @@ namespace SLIL.Classes
             Texture = 4;
             base.AnimationsToStatic();
         }
+        public ShopDoor(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            Texture = 4;
+            base.AnimationsToStatic();
+        }
     }
 
     public class ShopMan : NPC
     {
         protected override int GetEntityID() => 12;
         public ShopMan(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
+        {
+            Texture = 21;
+            RespondsToFlashlight = true;
+            base.AnimationsToStatic();
+        }
+        public ShopMan(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
             Texture = 21;
             RespondsToFlashlight = true;
@@ -545,6 +680,13 @@ namespace SLIL.Classes
         protected override int GetMIN_DAMAGE() => 15;
 
         public Man(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) 
+        {
+            DeathSound = 0;
+            Texture = 8;
+            detectionRange = 8;
+            base.SetAnimations(1, 0);
+        }
+        public Man(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
             DeathSound = 0;
             Texture = 8;
@@ -647,6 +789,14 @@ namespace SLIL.Classes
             Fast = true;
             base.SetAnimations(1, 0);
         }
+        public Dog(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            DeathSound = 1;
+            Texture = 11;
+            detectionRange = 8;
+            Fast = true;
+            base.SetAnimations(1, 0);
+        }
 
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
@@ -742,6 +892,13 @@ namespace SLIL.Classes
             detectionRange = 8;
             base.SetAnimations(2, 0);
         }
+        public Abomination(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+        {
+            DeathSound = 2;
+            Texture = 14;
+            detectionRange = 8;
+            base.SetAnimations(2, 0);
+        }
 
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
@@ -831,6 +988,14 @@ namespace SLIL.Classes
         protected override int GetMIN_DAMAGE() => 22;
 
         public Bat(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
+        {
+            DeathSound = 3;
+            Texture = 28;
+            detectionRange = 8;
+            Fast = true;
+            base.SetAnimations(1, 0);
+        }
+        public Bat(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
             DeathSound = 3;
             Texture = 28;

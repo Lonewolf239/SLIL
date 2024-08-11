@@ -2,14 +2,18 @@
 using LiteNetLib;
 using LiteNetLib.Utils;
 using GameServer;
-int sus = 0;
+using System.Reflection;
+
 NetPacketProcessor processor = new NetPacketProcessor();
-processor.RegisterNestedType<Player>(() => { return new Player(0,0,0,ref sus); });
-processor.RegisterNestedType<GameModel>(() => { return new GameModel(); });
+//processor.RegisterNestedType<Player>(() => { return new Player(0,0,0,0); });
+//processor.RegisterNestedType<GameModel>(() => { return new GameModel(null); });
 EventBasedNetListener listener = new EventBasedNetListener();
 NetManager server = new NetManager(listener);
 Dictionary<int, int> peerPlayerIDs = new Dictionary<int, int>();
 Dispatcher dispatcher = new Dispatcher();
+//SendOutcomingMessageDelegate sendOutcomingMessageHandle;
+//sendOutcomingMessageHandle = SendOutcomingMessageInvoker;
+//dispatcher.sendMessageDelegate = sendOutcomingMessageHandle;
 server.Start(9999 /* port */);
 
 listener.ConnectionRequestEvent += request =>
@@ -29,24 +33,32 @@ listener.PeerConnectedEvent += peer =>
     peerPlayerIDs.Add(peer.Id, newPlayerId);
     writer.Put(newPlayerId);
     dispatcher.SerializeGame(writer);
-    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+    server.SendToAll(writer, DeliveryMethod.Unreliable);
 };
 listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
 {
     Packet pack = new Packet();
     pack.Deserialize(dataReader);
     dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref server);
-    int packetType = dataReader.GetInt();
+    //int packetType = pack.PacketID;
     NetDataWriter writer = new NetDataWriter();
 };
 listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
 {
     dispatcher.RemovePlayer(peerPlayerIDs[peer.Id]);
     peerPlayerIDs.Remove(peer.Id);
+    Console.WriteLine("Closed connection: {0}", peer);
 };
+
+//void SendOutcomingMessageInvoker(int packetID)
+//{
+//    dispatcher.SendOutcomingMessage(packetID, ref server);
+//}
+
 while (true)
 {
     server.PollEvents();
-    Thread.Sleep(15);
+    //dispatcher.SendOutcomingMessage(0, ref server);
+    Thread.Sleep(10);
 }
 server.Stop();

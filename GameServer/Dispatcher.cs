@@ -10,12 +10,22 @@ using System.Collections.Immutable;
 
 namespace GameServer
 {
+    public delegate void SendOutcomingMessageDelegate(int packetID);
+    public delegate void SendMessageFromGameCallback(int packetID);
     internal class Dispatcher
     {
         private GameModel Game;
+        public SendOutcomingMessageDelegate sendMessageDelegate;
+        public SendMessageFromGameCallback sendMessageFromGameCallback;
         public Dispatcher()
         {
-            Game = new GameModel();
+            sendMessageFromGameCallback = SendMessageFromGameHandle;
+            Game = new GameModel(sendMessageFromGameCallback);
+            Game.StartGame();
+        }
+        public void SendMessageFromGameHandle(int packetID)
+        {
+            sendMessageDelegate(packetID);
         }
         public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server)
         {
@@ -27,7 +37,8 @@ namespace GameServer
                 case 1:
                     NetDataReader dreader = new NetDataReader(data);
                     Game.MovePlayer(dreader.GetDouble(), dreader.GetDouble(), dreader.GetInt());
-                    SendOutcomingMessage(0, ref server);
+                    //Console.WriteLine(Game.GetEntities().ToString());
+                    //SendOutcomingMessage(0, ref server);
                     break;
                 default:
                     break;
@@ -45,7 +56,7 @@ namespace GameServer
                 default:
                     break;
             }
-            server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+            server.SendToAll(writer, DeliveryMethod.Unreliable);
         }
         public int AddPlayer()
         {

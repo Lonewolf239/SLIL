@@ -18,11 +18,15 @@ namespace SLIL.Classes
         private NetManager client;
         private NetPacketProcessor processor;
         private NetPeer peer;
-        public GameController()
+        StartGameDelegate StartGameHandle;
+        InitPlayerDelegate InitPlayerHandle;
+        public GameController(StartGameDelegate startGame, InitPlayerDelegate initPlayer)
         {
             Game = new GameModel();
+            InitPlayerHandle = initPlayer;
+            StartGameHandle = startGame;
         }
-        public GameController(string adress, int port, StartGameDelegate startGame)
+        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer)
         {
             Game = new GameModel();
             listener = new EventBasedNetListener();
@@ -39,6 +43,8 @@ namespace SLIL.Classes
                 {
                     playerID = dataReader.GetInt();
                     Game.Deserialize(dataReader);
+                    //initPlayer();
+                    startGame();
                 }
                 if (packetType == 0)
                 {
@@ -56,15 +62,22 @@ namespace SLIL.Classes
             }).Start();
         }
 
+        ~GameController()
+        {
+            if (client != null) client.Stop();
+        }
         internal void MovePlayer(double dX, double dY)
         {
             Game.MovePlayer(dX, dY, playerID);
-            NetDataWriter writer = new NetDataWriter();
-            writer.Put(1);
-            writer.Put(dX);
-            writer.Put(dY);
-            writer.Put(playerID);
-            peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            if (peer != null)
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(1);
+                writer.Put(dX);
+                writer.Put(dY);
+                writer.Put(playerID);
+                peer.Send(writer, DeliveryMethod.Unreliable);
+            }
         }
         internal void InitMap()
         {
@@ -86,9 +99,9 @@ namespace SLIL.Classes
         {
             return Game.GetEntities();
         }
-        public void AddPet(Player player, int index)
+        public void AddPet(int index)
         {
-            Game.AddPet(player, index);
+            Game.AddPet(playerID, index);
         }
         public void AddPlayer()
         {
@@ -96,15 +109,16 @@ namespace SLIL.Classes
         }
         public Player GetPlayer()
         {
-            List<Entity> Entities = Game.GetEntities();
             Player player = null;
-            foreach (Entity ent in Entities)
+            List<Entity> Entities = Game.GetEntities();
+
+            for (int i = 0; i < Entities.Count; i++)
             {
-                if (ent is Player)
+                if (Entities[i] is Player)
                 {
-                    if ((ent as Player).ID == playerID)
+                    if ((Entities[i] as Player).ID == playerID)
                     {
-                        player = (Player)ent;
+                        player = (Player)Entities[i];
                     }
                 }
             }
@@ -113,6 +127,8 @@ namespace SLIL.Classes
         public void StartGame()
         {
             Game.StartGame();
+            InitPlayerHandle();
+            StartGameHandle();
         }
         public bool DealDamage(Entity ent, double damage)
         {
@@ -126,6 +142,16 @@ namespace SLIL.Classes
         public void AddHittingTheWall(double X, double Y)
         {
             Game.AddHittingTheWall(X, Y);
+        }
+
+        internal void ChangePlayerA(double v)
+        {
+            Game.ChangePlayerA(v, playerID);
+        }
+
+        internal void ChangePlayerLook(double lookDif)
+        {
+            Game.ChangePlayerLook(lookDif, playerID);
         }
     }
 }

@@ -20,6 +20,7 @@ using Play_Sound;
 namespace SLIL
 {
     public delegate void StartGameDelegate();
+    public delegate void InitPlayerDelegate();
     public partial class SLIL : Form
     {
         private GameController Controller;
@@ -146,20 +147,20 @@ namespace SLIL
         private bool open_shop = false, pressed_r = false, pressed_h = false;
         private Display display;
         private Bitmap map;
-        private Player player;
         private ConsolePanel console_panel;
         private readonly char[] impassibleCells  = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
         private bool GameStarted = false, CorrectExit = false;
 
         StartGameDelegate StartGameHandle;
+        InitPlayerDelegate InitPlayerHandle;
         public void StartGameInvoker()
         {
             if (this.InvokeRequired)
             {
-                this.Invoke((MethodInvoker)delegate
+                this.BeginInvoke((MethodInvoker)delegate
                 {
-                    this.StartGame();
+                        this.StartGame();
                 });
             }
             else
@@ -167,11 +168,29 @@ namespace SLIL
                 this.StartGame();
             }
         }
+        public void InitPlayerInvoker()
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    //player = Controller.GetPlayer();
+                    //player.IsPetting = false;
+                });
+            }
+            else
+            {
+                //player = Controller.GetPlayer();
+                //player.IsPetting = false;
+            }
+        }
 
         public SLIL(TextureCache textures)
         {
             InitializeComponent();
-            Controller = new GameController();
+            StartGameHandle = StartGameInvoker;
+            InitPlayerHandle = InitPlayerInvoker;
+            Controller = new GameController(StartGameHandle, InitPlayerHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             difficulty = MainMenu.difficulty;
@@ -185,8 +204,8 @@ namespace SLIL
             Volume = MainMenu.Volume;
             textureCache = textures; 
             Controller.AddPlayer();
-            player = Controller.GetPlayer();
-            player.IsPetting = false;
+            //player = Controller.GetPlayer();
+            //player.IsPetting = false;
             ost = new PlaySound[]
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
@@ -203,7 +222,8 @@ namespace SLIL
         {
             InitializeComponent();
             StartGameHandle = StartGameInvoker;
-            Controller = new GameController(adress, port, StartGameHandle);
+            InitPlayerHandle = InitPlayerInvoker;
+            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             difficulty = MainMenu.difficulty;
@@ -216,9 +236,6 @@ namespace SLIL
             LOOK_SPEED = MainMenu.LOOK_SPEED;
             Volume = MainMenu.Volume;
             textureCache = textures;
-            Controller.AddPlayer();
-            player = Controller.GetPlayer();
-            player.IsPetting = false;
             ost = new PlaySound[]
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
@@ -229,14 +246,13 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("soul_forge.wav"), true),
                 new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true)
             };
-            Controller.StartGame();
         }
 
         public void AddPet(int index)
         {
             foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true))
                 control.buy_button.Text = MainMenu.Language ? $"Купить ${control.pet.Cost}" : $"Buy ${control.pet.Cost}";
-            Controller.AddPet(player, index);
+            Controller.AddPet(index);
             //for (int i = 0; i < Entities.Count; i++)
             //{
             //    if (Entities[i] is Pet)
@@ -289,6 +305,7 @@ namespace SLIL
 
         private void CuteMode()
         {
+            Player player = Controller.GetPlayer();
             player.Guns.Clear();
             shop_tab_control.Controls.Clear();
             if (player.CuteMode)
@@ -319,6 +336,7 @@ namespace SLIL
 
         private void Shop_panel_VisibleChanged(object sender, EventArgs e)
         {
+            Player player = Controller.GetPlayer();
             if (player != null)
                 player.Look = 0;
             shop_panel.BringToFront();
@@ -391,6 +409,8 @@ namespace SLIL
 
         private void Time_remein_Tick(object sender, EventArgs e)
         {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
             seconds--;
             if (player.Invulnerable)
                 player.InvulnerableEnd();
@@ -439,6 +459,7 @@ namespace SLIL
 
         private void Status_refresh_Tick(object sender, EventArgs e)
         {
+            if (display == null) return;
             if (!raycast.Enabled && display.SCREEN != null)
                 display.SCREEN = null;
             bool shouldShowCursor = !GameStarted || open_shop || console_panel.Visible || (active && !GameStarted) || Paused;
@@ -470,6 +491,8 @@ namespace SLIL
                 restart_btn.Left = (Width - restart_btn.Width) / 2;
                 exit_restart_btn.Left = (Width - exit_restart_btn.Width) / 2;
             }
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
             shop_money.Text = $"$: {player.Money}";
             if (player.HP <= 0 && GameStarted)
                 GameOver(0);
@@ -586,7 +609,8 @@ namespace SLIL
                                 runKey = Keys.Shift;
                                 break;
                         }
-                        if (ModifierKeys.HasFlag(runKey) && playerDirection == Direction.FORWARD && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !reload_timer.Enabled && !chill_timer.Enabled)
+                        Player player = Controller.GetPlayer();
+                        if (player != null && ModifierKeys.HasFlag(runKey) && playerDirection == Direction.FORWARD && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !reload_timer.Enabled && !chill_timer.Enabled)
                             playerMoveStyle = Direction.RUN;
                         if (e.KeyCode == Bind.Forward)
                             playerDirection = Direction.FORWARD;
@@ -596,7 +620,7 @@ namespace SLIL
                             strafeDirection = Direction.LEFT;
                         if (e.KeyCode == Bind.Right)
                             strafeDirection = Direction.RIGHT;
-                        if (!shot_timer.Enabled && !reload_timer.Enabled)
+                        if (!shot_timer.Enabled && !reload_timer.Enabled && player!= null)
                         {
                             int count = player.Guns.Count;
                             if (player.Guns.Contains(player.GUNS[0]))
@@ -762,6 +786,7 @@ namespace SLIL
                     ShowMap = !ShowMap;
                     Activate();
                 }
+                Player player = Controller.GetPlayer();
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !player.IsPetting)
                 {
                     if (e.KeyCode == Bind.Flashlight)
@@ -980,6 +1005,7 @@ namespace SLIL
 
         private void TakeFlashlight(bool change)
         {
+            Player player = Controller.GetPlayer();
             if (player.Guns.Contains((Flashlight)player.GUNS[0]))
             {
                 player.Guns.Remove((Flashlight)player.GUNS[0]);
@@ -995,6 +1021,7 @@ namespace SLIL
 
         private void Display_Scroll(object sender, MouseEventArgs e)
         {
+            Player player = Controller.GetPlayer();
             if (GameStarted && !shot_timer.Enabled && !reload_timer.Enabled && !player.IsPetting)
             {
                 int new_gun = player.CurrentGun;
@@ -1025,6 +1052,7 @@ namespace SLIL
 
         private void ChangeWeapon(int new_gun)
         {
+            Player player = Controller.GetPlayer();
             if ((new_gun != player.CurrentGun || player.LevelUpdated) && player.Guns[new_gun].HasIt)
             {
                 if (MainMenu.sounds)
@@ -1046,6 +1074,7 @@ namespace SLIL
 
         private void Display_MouseDown(object sender, MouseEventArgs e)
         {
+            Player player = Controller.GetPlayer();
             if (GameStarted && player.CanShoot && !reload_timer.Enabled && !shot_timer.Enabled)
             {
                 if (player.GetCurrentGun().CanShoot && !player.IsPetting)
@@ -1104,6 +1133,7 @@ namespace SLIL
 
         private int GetAccurateSide(double distance, double rayX, double rayY)
         {
+            Player player = Controller.GetPlayer();
             double x1_1 = player.X, y1_1 = player.Y;
             double x2_1 = player.X + distance * rayX, y2_1 = player.Y + distance * rayY;
             int cellY = (int)y2_1;
@@ -1148,6 +1178,7 @@ namespace SLIL
             total_time = time;
             PlayerMove();
             ClearDisplayedMap();
+            Player player = Controller.GetPlayer();
             int factor = player.Aiming ? 12 : 0;
             if (player.GetCurrentGun() is Flashlight)
                 factor = 8;
@@ -1310,6 +1341,7 @@ namespace SLIL
                 if (GameStarted)
                 {
                     int index = 1;
+                    Player player = Controller.GetPlayer();
                     if (player.GetCurrentGun() is Shotgun && (player.GetCurrentGun().MaxAmmoCount == 0 || pressed_r))
                     {
                         if (player.GetCurrentGun().Level == Levels.LV1)
@@ -1360,6 +1392,7 @@ namespace SLIL
         {
             try
             {
+                Player player = Controller.GetPlayer();
                 if (burst_shots >= player.GetCurrentGun().BurstShots)
                     shot_timer.Stop();
                 else
@@ -1454,6 +1487,9 @@ namespace SLIL
 
         private void Stamina_timer_Tick(object sender, EventArgs e)
         {
+            Player player = Controller.GetPlayer();
+            //TODO:
+            if (player == null) return;
             if (playerMoveStyle == Direction.RUN && playerDirection == Direction.FORWARD && !player.Aiming && !reload_timer.Enabled)
             {
                 if (player.STAMINE <= 0)
@@ -1482,18 +1518,18 @@ namespace SLIL
                 double x = display.Width / 2, y = display.Height / 2;
                 double X = e.X - x, Y = e.Y - y;
                 double size = 1;
-                player.A -= (((X / x) / 10) * (LOOK_SPEED * size)) * scale;
-                player.Look += (((Y / y) * 30) * (LOOK_SPEED * size)) * scale;
-                if (player.Look < -360)
-                    player.Look = -360;
-                else if (player.Look > 360)
-                    player.Look = 360;
+                Controller.ChangePlayerA(-(((X / x) / 10) * (LOOK_SPEED * size)) * scale);
+                //player.A -= (((X / x) / 10) * (LOOK_SPEED * size)) * scale;
+                double LookDif = (((Y / y) * 30) * (LOOK_SPEED * size)) * scale;
+                Controller.ChangePlayerLook(LookDif);
                 Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
             }
         }
 
         private void PlayerMove()
         {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == 'P')
             {
                 Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '.';
@@ -1547,10 +1583,10 @@ namespace SLIL
                 tempY -= playerWidth / 2 - (1 - tempY % 1);
             if (impassibleCells.Contains(Controller.GetMap()[(int)(tempY - playerWidth / 2) * Controller.GetMapWidth() + (int)tempX]))
                 tempY += playerWidth / 2 - (tempY % 1);
+            if (tempX - player.X != 0 || tempY - player.Y != 0)
+                Controller.MovePlayer(tempX - player.X, tempY - player.Y);
             player.X = tempX;
             player.Y = tempY;
-            if(tempX - player.X != 0 || tempY - player.Y != 0)
-                Controller.MovePlayer(tempX-player.X, tempY-player.Y);
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == 'F')
             {
                 GameOver(1);
@@ -1559,6 +1595,7 @@ namespace SLIL
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == '.')
             {
                 //MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
+                DISPLAYED_MAP.Replace('P', '.');
                 DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
             }
         }
@@ -1579,83 +1616,12 @@ namespace SLIL
 
         private void SLIL_Load(object sender, EventArgs e)
         {
-            if (!MainMenu.Language)
-            {
-                shop_title.Text = "SHOP";
-                weapon_shop_page.Text = "Weapons";
-                pet_shop_page.Text = "Pets";
-                consumables_shop_page.Text = "Other";
-                pause_text.Text = "PAUSE";
-                pause_btn.Text = "CONTINUE";
-                exit_btn.Text = "EXIT";
-            }
-            for (int i = WEAPONS_COUNT - 1; i >= 0; i--)
-            {
-                if (player.GUNS[i].AddToShop)
-                {
-                    SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
-                    {
-                        index = MainMenu.Language ? 0 : 1,
-                        weapon = player.GUNS[i],
-                        buy = buy,
-                        player = player,
-                        BackColor = shop_panel.BackColor,
-                        Dock = DockStyle.Top
-                    };
-                    weapon_shop_page.Controls.Add(ShopInterface);
-                }
-            }
-            for (int i = Controller.GetPets().Length - 1; i >= 0; i--)
-            {
-                SLIL_PetShopInterface ShopInterface = new SLIL_PetShopInterface()
-                {
-                    index = MainMenu.Language ? 0 : 1,
-                    pet = Controller.GetPets()[i],
-                    buy = buy,
-                    player = player,
-                    BackColor = shop_panel.BackColor,
-                    Dock = DockStyle.Top
-                };
-                pet_shop_page.Controls.Add(ShopInterface);
-            }
-            for (int i = player.GUNS.Length - 1; i >= 0; i--)
-            {
-                if (player.GUNS[i] is Item && !(player.GUNS[i] is Flashlight))
-                {
-                    SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
-                    {
-                        index = MainMenu.Language ? 0 : 1,
-                        item = player.GUNS[i] as Item,
-                        buy = buy,
-                        player = player,
-                        GUNS = player.GUNS,
-                        BackColor = shop_panel.BackColor,
-                        Dock = DockStyle.Top
-                    };
-                    consumables_shop_page.Controls.Add(ShopInterface);
-                }
-            }
-            console_panel = new ConsolePanel()
-            {
-                Dock = DockStyle.Fill,
-                Visible = false,
-                player = player,
-                GUNS = player.GUNS,
-                Entities = Controller.GetEntities()
-            };
-            console_panel.Log("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
-            Controls.Add(console_panel);
-            display = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
-            display.MouseDown += new MouseEventHandler(Display_MouseDown);
-            display.MouseMove += new MouseEventHandler(Display_MouseMove);
-            display.MouseWheel += new MouseEventHandler(Display_Scroll);
-            Controls.Add(display);
-            UpdateBitmap();
-            Activate();
+
         }
 
         private void SLIL_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Player player = Controller.GetPlayer();
             if (!CorrectExit)
             {
                 e.Cancel = true;
@@ -1723,7 +1689,7 @@ namespace SLIL
 
         private void Restart_btn_Click(object sender, EventArgs e) => StartGame();
 
-        private void SLIL_Shown(object sender, EventArgs e) => StartGame();
+        //private void SLIL_Shown(object sender, EventArgs e) => StartGame();
 
         private void Respawn_timer_Tick(object sender, EventArgs e)
         {
@@ -1740,15 +1706,23 @@ namespace SLIL
             double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
             double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
             Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
-            DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow);
+            List<int> enemiesCoords;
+            DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out enemiesCoords);
+            foreach(int i in enemiesCoords)
+            {
+                DISPLAYED_MAP[i] = 'E';
+            }
             DrawRaysOnScreen(rays);
             DrawWeaponGraphics();
             UpdateDisplay();
             fps = CalculateFPS(elapsed_time);
         }
 
-        private void DrawSprites(ref Pixel[][] rays, ref double[] ZBuffer, ref double[] ZBufferWindow)
+        private void DrawSprites(ref Pixel[][] rays, ref double[] ZBuffer, ref double[] ZBufferWindow, out List<int> enemiesCoords)
         {
+            Player player = Controller.GetPlayer();
+            enemiesCoords = new List<int>();
+            if (player == null) return;
             int factor = player.Aiming ? 12 : 0;
             if (player.GetCurrentGun() is Flashlight)
                 factor = 8;
@@ -1757,8 +1731,9 @@ namespace SLIL
             double planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
             double planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
             double invDet = 1.0 / (planeX * dirY - dirX * planeY);
-            List<Entity> Entities = Controller.GetEntities();
-            int entityCount = Entities.Count;
+            Entity[] Entities = new Entity[Controller.GetEntities().Count];
+            Controller.GetEntities().CopyTo(Entities);
+            int entityCount = Entities.Length;
             var spriteInfo = new (int Order, double Distance, int Texture)[entityCount];
             for (int i = 0; i < entityCount; i++)
             {
@@ -1767,7 +1742,7 @@ namespace SLIL
                 spriteInfo[i] = (i, dx * dx + dy * dy, Entities[i].Texture);
             }
             Array.Sort(spriteInfo, (a, b) => b.Distance.CompareTo(a.Distance));
-            for (int i = 0; i < Entities.Count; i++)
+            for (int i = 0; i < Entities.Length; i++)
             {
                 if (Entities[i] is Player) {
                     if (Controller.GetPlayer().ID == (Entities[i] as Player).ID) continue;
@@ -1831,7 +1806,7 @@ namespace SLIL
                                         else
                                             rays[stripe][y].TextureId = spriteInfo[i].Texture;
                                         if (creature is Enemy)
-                                            DISPLAYED_MAP[Entities[spriteInfo[i].Order].IntY * Controller.GetMapWidth() + Entities[spriteInfo[i].Order].IntX] = 'E';
+                                            enemiesCoords.Add(Entities[spriteInfo[i].Order].IntY * Controller.GetMapWidth() + Entities[spriteInfo[i].Order].IntX);
                                     }
                                     else
                                     {
@@ -1839,6 +1814,25 @@ namespace SLIL
                                             rays[stripe][y].TextureId = spriteInfo[i].Texture + 3;
                                         else
                                             rays[stripe][y].TextureId = spriteInfo[i].Texture + 2;
+                                    }
+                                }
+                                else if (Entities[spriteInfo[i].Order] is Player)
+                                {
+                                    Player playerTar = Entities[spriteInfo[i].Order] as Player;
+                                    if (!playerTar.Dead)
+                                    {
+                                        if (EnableAnimation)
+                                        {
+                                            {
+                                                    rays[stripe][y].TextureId = playerTar.Animations[0][timeNow % playerTar.Frames];
+                                            }
+                                        }
+                                        else
+                                            rays[stripe][y].TextureId = spriteInfo[i].Texture;
+                                    }
+                                    else
+                                    {
+                                        rays[stripe][y].TextureId = spriteInfo[i].Texture + 2;
                                     }
                                 }
                                 else
@@ -1899,6 +1893,19 @@ namespace SLIL
         private Pixel[][] CastRaysParallel(double[] ZBuffer, double[] ZBufferWindow)
         {
             Pixel[][] rays = new Pixel[SCREEN_WIDTH[resolution]][];
+            Player player = Controller.GetPlayer();
+            if (player == null)
+            {
+                for(int i = 0; i< SCREEN_WIDTH[resolution]; i++)
+                {
+                    rays[i] = new Pixel[SCREEN_HEIGHT[resolution]];
+                    for(int j = 0; j < SCREEN_HEIGHT[resolution]; j++)
+                    {
+                        rays[i][j] = new Pixel(i, j, 100, 1, 1, 0);
+                    }
+                }
+                return rays;
+            }
             int factor = player.Aiming ? 12 : 0;
             if (player.GetCurrentGun() is Flashlight)
                 factor = 8;
@@ -1938,6 +1945,9 @@ namespace SLIL
 
         private Color GetColorForPixel(Pixel pixel)
         {
+            Player player = Controller.GetPlayer();
+            bool cute = false;
+            if (player != null) cute = player.CuteMode;
             int textureSize = 128;
             int x = 0, y = 0;
             if (pixel.TextureId >= 2)
@@ -1945,7 +1955,7 @@ namespace SLIL
                 x = (int)WrapTexture((int)(pixel.TextureX * textureSize), textureSize);
                 y = (int)WrapTexture((int)(pixel.TextureY * textureSize), textureSize);
             }
-            Color color = textureCache.GetTextureColor(pixel.TextureId, x, y, pixel.Blackout, player.CuteMode);
+            Color color = textureCache.GetTextureColor(pixel.TextureId, x, y, pixel.Blackout, cute);
             return color;
         }
 
@@ -1959,6 +1969,12 @@ namespace SLIL
 
         private void ClearDisplayedMap()
         {
+            Player player = Controller.GetPlayer();
+            if (player == null)
+            {
+                for (int i = 0; i < DISPLAYED_MAP.Length; i++) DISPLAYED_MAP[i] = '.';
+                return;
+            }
             int radius = 30;
             for (int y = Math.Max(0, (int)player.Y - radius); y < Math.Min(Controller.GetMapHeight(), (int)player.Y + radius + 1); y++)
             {
@@ -1973,6 +1989,7 @@ namespace SLIL
 
         private Bitmap DrawMiniMap()
         {
+            Player player = Controller.GetPlayer();
             int FACTOR = resolution == 1 ? 2 : 1;
             const int MINI_MAP_SIZE = 25;
             const int BORDER_SIZE = 1;
@@ -2084,6 +2101,8 @@ namespace SLIL
 
         private void DrawWeaponGraphics()
         {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
             if (ShowMap)
             {
                 graphicsWeapon.Clear(Color.Black);
@@ -2223,6 +2242,7 @@ namespace SLIL
 
         private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int factor, double playerLook, double dirX, double dirY, double planeX, double planeY, int mapX, int mapY)
         {
+            Player player = Controller.GetPlayer();
             Pixel[] result = new Pixel[SCREEN_HEIGHT[resolution]];
             double cameraX = 2 * x / (double)SCREEN_WIDTH[resolution] - 1;
             double rayDirX = dirX + planeX * cameraX;
@@ -2487,6 +2507,7 @@ namespace SLIL
 
         private int GetSide(double distance, double rayX, double rayY)
         {
+            Player player = Controller.GetPlayer();
             double x1_1 = player.X, y1_1 = player.Y;
             double x2_1 = player.X + distance * rayX, y2_1 = player.Y + distance * rayY;
             int cellY = (int)y2_1;
@@ -2531,7 +2552,7 @@ namespace SLIL
             DISPLAYED_MAP.Append(Controller.GetMap());
         }
 
-        private void ResetDefault()
+        private void ResetDefault(Player player)
         {
             map = null;
             display.SCREEN = null;
@@ -2542,13 +2563,13 @@ namespace SLIL
             int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
             Cursor.Position = new Point(x, y);
             seconds = 0;
-            if (!CUSTOM)
-                player.X = player.Y = 1.5d;
-            else
-            {
-                player.X = CUSTOM_X;
-                player.Y = CUSTOM_Y;
-            }
+            //if (!CUSTOM)
+            //    player.X = player.Y = 1.5d;
+            //else
+            //{
+            //    player.X = CUSTOM_X;
+            //    player.Y = CUSTOM_Y;
+            //}
             if (player.Guns.Count == 0)
             {
                 player.Guns.Add(player.GUNS[1]);
@@ -2647,6 +2668,7 @@ namespace SLIL
 
         private void GetFirstAidKit()
         {
+            Player player = Controller.GetPlayer();
             if (player.FirstAidKits.Count == 0)
                 player.FirstAidKits.Add((FirstAidKit)player.GUNS[10]);
             player.FirstAidKits[0].AmmoCount = player.FirstAidKits[0].CartridgesClip;
@@ -2656,7 +2678,81 @@ namespace SLIL
 
         private void StartGame()
         {
-            ResetDefault();
+            Player player = Controller.GetPlayer();
+            if (!MainMenu.Language)
+            {
+                shop_title.Text = "SHOP";
+                weapon_shop_page.Text = "Weapons";
+                pet_shop_page.Text = "Pets";
+                consumables_shop_page.Text = "Other";
+                pause_text.Text = "PAUSE";
+                pause_btn.Text = "CONTINUE";
+                exit_btn.Text = "EXIT";
+            }
+            for (int i = WEAPONS_COUNT - 1; i >= 0; i--)
+            {
+                if (player.GUNS[i].AddToShop)
+                {
+                    SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
+                    {
+                        index = MainMenu.Language ? 0 : 1,
+                        weapon = player.GUNS[i],
+                        buy = buy,
+                        player = player,
+                        BackColor = shop_panel.BackColor,
+                        Dock = DockStyle.Top
+                    };
+                    weapon_shop_page.Controls.Add(ShopInterface);
+                }
+            }
+            for (int i = Controller.GetPets().Length - 1; i >= 0; i--)
+            {
+                SLIL_PetShopInterface ShopInterface = new SLIL_PetShopInterface()
+                {
+                    index = MainMenu.Language ? 0 : 1,
+                    pet = Controller.GetPets()[i],
+                    buy = buy,
+                    player = player,
+                    BackColor = shop_panel.BackColor,
+                    Dock = DockStyle.Top
+                };
+                pet_shop_page.Controls.Add(ShopInterface);
+            }
+            for (int i = player.GUNS.Length - 1; i >= 0; i--)
+            {
+                if (player.GUNS[i] is Item && !(player.GUNS[i] is Flashlight))
+                {
+                    SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
+                    {
+                        index = MainMenu.Language ? 0 : 1,
+                        item = player.GUNS[i] as Item,
+                        buy = buy,
+                        player = player,
+                        GUNS = player.GUNS,
+                        BackColor = shop_panel.BackColor,
+                        Dock = DockStyle.Top
+                    };
+                    consumables_shop_page.Controls.Add(ShopInterface);
+                }
+            }
+            console_panel = new ConsolePanel()
+            {
+                Dock = DockStyle.Fill,
+                Visible = false,
+                player = player,
+                GUNS = player.GUNS,
+                Entities = Controller.GetEntities()
+            };
+            console_panel.Log("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
+            Controls.Add(console_panel);
+            display = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
+            display.MouseDown += new MouseEventHandler(Display_MouseDown);
+            display.MouseMove += new MouseEventHandler(Display_MouseMove);
+            display.MouseWheel += new MouseEventHandler(Display_Scroll);
+            Controls.Add(display);
+            UpdateBitmap();
+            Activate();
+            ResetDefault(player);
             InitMap();
             try
             {
@@ -2688,6 +2784,7 @@ namespace SLIL
 
         private void ToDefault()
         {
+            Player player = Controller.GetPlayer();
             player.Dead = true;
             player.SetDefault();
             if (inDebug == 1)
@@ -2701,6 +2798,7 @@ namespace SLIL
 
         private void GameOver(int win)
         {
+            Player player = Controller.GetPlayer();
             ost[ost_index]?.Stop();
             raycast.Stop();
             shot_timer.Stop();

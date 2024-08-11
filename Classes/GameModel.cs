@@ -18,12 +18,12 @@ namespace SLIL.Classes
 {
     internal class GameModel : INetSerializable
     {
-        private static StringBuilder MAP = new StringBuilder();
+        private StringBuilder MAP = new StringBuilder();
         private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##..=======........##..=.....=.....#..##..=....E=........##..=..====........##..=..=........d..##..=.E=...........##..====...........##........P.....=..##.................##.................##..............F..##.................##..===....#D#..#..##..=E=====#$#.#d=.##..===....###..=..##.................####################";
         //private readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit(), new Candy(), new Rainblower() };
         private readonly Pet[] PETS;
-        public static readonly List<Entity> Entities = new List<Entity>();
+        public List<Entity> Entities = new List<Entity>();
         private readonly char[] impassibleCells = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
         private bool GameStarted = false, CorrectExit = false;
@@ -40,7 +40,7 @@ namespace SLIL.Classes
 
         public GameModel()
         {
-            Pet[] pets = { new SillyCat(0, 0, 0, ref MaxEntityID), new GreenGnome(0, 0, 0, ref MaxEntityID), new EnergyDrink(0, 0, 0, ref MaxEntityID), new Pyro(0, 0, 0, ref MaxEntityID) };
+            Pet[] pets = { new SillyCat(0, 0, 0, 0), new GreenGnome(0, 0, 0, 0), new EnergyDrink(0, 0, 0, 0), new Pyro(0, 0, 0, 0) };
             PETS = pets;
             //MAP.Append(@"####################.................##..=======........##..=.....=.....#..##..=....E=........##..=..====........##..=..=........d..##..=.E=...........##..====...........##........P.....=..##.................##.................##..............F..##.................##..===....#D#..#..##..=E=====#$#.#d=.##..===....###..=..##.................####################");
             MAP_WIDTH = 16;
@@ -204,62 +204,82 @@ namespace SLIL.Classes
             MAP_WIDTH = reader.GetInt();
             MAP_HEIGHT = reader.GetInt();
             int entCount = reader.GetInt();
-            Entities.Clear();
+            List<Entity> tempEntities = new List<Entity>();
             for (int i = 0; i < entCount; i++)
             {
                 int entityID = reader.GetInt();
-                int pID = -1;
+                int ID;
                 double entityX = reader.GetDouble();
                 double entityY = reader.GetDouble();
-                if (entityID == 0) pID = reader.GetInt();
+                if(entityID == 0 && entityX % 1 != 0.5 && entityY % 1 != 0.5)
+                {
+                    ;
+                }
+                else if(entityID==0)
+                {
+                    ;
+                }
+                ID = reader.GetInt();
                 switch (entityID)
                 {
                     case 0:
-                        Entities.Add(new Player(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new Player(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 1:
-                        Entities.Add(new Man(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new Man(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 2:
-                        Entities.Add(new Dog(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new Dog(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 3:
-                        Entities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 4:
-                        Entities.Add(new Bat(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new Bat(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 5:
-                        Entities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 6:
-                        Entities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 7:
-                        Entities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 8:
-                        Entities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 9:
-                        Entities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 10:
-                        Entities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 11:
-                        Entities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     case 12:
-                        Entities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ref MaxEntityID));
+                        tempEntities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
                         break;
                     default:
                         break;
                 }
             }
+            Entities = new List<Entity>(tempEntities);
         }
-        public void AddPet(Player player, int index)
+        public void AddPet(int playerID, int index)
         {
+            Player player = null;
+            foreach(Entity ent in Entities)
+            {
+                if(ent is Player)
+                {
+                    if(ent.ID == playerID)
+                    {
+                        player = (Player)ent;
+                    }
+                }
+            }
             Pet pet = PETS[index];
             //foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true))
             //control.buy_button.Text = MainMenu.Language ? $"Купить ${control.pet.Cost}" : $"Buy ${control.pet.Cost}";
@@ -808,6 +828,34 @@ namespace SLIL.Classes
         public void AddHittingTheWall(double X, double Y) 
         {
             Entities.Add(new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID));
+        }
+
+        internal void ChangePlayerA(double v, int playerID)
+        {
+            foreach(Entity ent in Entities)
+            {
+                if(ent is Player p && ent.ID == playerID)
+                {
+                    p.A += v;
+                    return;
+                }
+            }
+        }
+
+        internal void ChangePlayerLook(double lookDif, int playerID)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent is Player p && ent.ID == playerID)
+                {
+                    p.Look += lookDif;
+                    if (p.Look < -360)
+                        p.Look = -360;
+                    else if (p.Look > 360)
+                        p.Look = 360;
+                    return;
+                }
+            }
         }
     }
 }

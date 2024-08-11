@@ -376,7 +376,7 @@ namespace SLIL
             this.Deactivate += new System.EventHandler(this.SLIL_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SLIL_FormClosing);
             this.Load += new System.EventHandler(this.SLIL_Load);
-            this.Shown += new System.EventHandler(this.SLIL_Shown);
+            //this.Shown += new System.EventHandler(this.SLIL_Shown);
             this.LocationChanged += new System.EventHandler(this.SLIL_LocationChanged);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SLIL_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SLIL_KeyUp);
