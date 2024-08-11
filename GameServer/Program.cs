@@ -14,6 +14,8 @@ Dispatcher dispatcher = new Dispatcher();
 //SendOutcomingMessageDelegate sendOutcomingMessageHandle;
 //sendOutcomingMessageHandle = SendOutcomingMessageInvoker;
 //dispatcher.sendMessageDelegate = sendOutcomingMessageHandle;
+server.UnsyncedEvents = true;
+server.UpdateTime = 1;
 server.Start(9999 /* port */);
 
 listener.ConnectionRequestEvent += request =>
@@ -39,7 +41,8 @@ listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) 
 {
     Packet pack = new Packet();
     pack.Deserialize(dataReader);
-    dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref server);
+    int playerIDFromPeer = peerPlayerIDs[fromPeer.Id];
+    dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref server, playerIDFromPeer);
 };
 listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
 {
@@ -57,6 +60,6 @@ while (true)
 {
     server.PollEvents();
     dispatcher.SendOutcomingMessage(0, ref server);
-    Thread.Sleep(10);
+    Thread.Sleep(40);
 }
 server.Stop();

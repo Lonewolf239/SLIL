@@ -32,6 +32,8 @@ namespace SLIL.Classes
             Game = new GameModel();
             listener = new EventBasedNetListener();
             client = new NetManager(listener);
+            client.UnsyncedEvents = true;
+            client.UpdateTime = 1;
             processor = new NetPacketProcessor();
             client.Start();
             client.Connect(adress, port, "SomeKey");
@@ -69,7 +71,7 @@ namespace SLIL.Classes
                         peer.Send(writer, DeliveryMethod.Unreliable);
                     }
                     client.PollEvents();
-                    Thread.Sleep(10);
+                    Thread.Sleep(1);
                 }
             }).Start();
         }

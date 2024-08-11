@@ -28,7 +28,7 @@ namespace GameServer
         {
             sendMessageDelegate(packetID);
         }
-        public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server)
+        public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server, int playerIDfromPeer)
         {
             switch (packetID)
             {
@@ -37,7 +37,11 @@ namespace GameServer
                     break;
                 case 1:
                     NetDataReader dreader = new NetDataReader(data);
-                    Game.MovePlayer(dreader.GetDouble(), dreader.GetDouble(), dreader.GetInt());
+                    double newX = dreader.GetDouble();
+                    double newY = dreader.GetDouble();
+                    int playerID = dreader.GetInt();
+                    //Console.WriteLine("Player ID = " + playerID.ToString() + "; X = " + newX.ToString() + "; Y = " + newY.ToString());
+                    Game.MovePlayer(newX, newY, playerIDfromPeer);
                     //Console.WriteLine(Game.GetEntities().ToString());
                     //SendOutcomingMessage(0, ref server);
                     break;

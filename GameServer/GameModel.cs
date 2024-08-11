@@ -477,14 +477,10 @@ namespace SLIL.Classes
         {
             for (int i = 0; i < Entities.Count; i++)
             {
-                if (Entities[i] is Player)
+                if (Entities[i].ID==playerID)
                 {
-                    if ((Entities[i] as Player).ID == playerID)
-                    {
-                        Entities[i].X = dX;
-                        Entities[i].Y = dY;
-                        return;
-                    }
+                    Entities[i].X = dX;
+                    Entities[i].Y = dY;
                 }
             }
         }
