@@ -2416,7 +2416,7 @@ namespace SLIL
                 {
                     textureId = 6;
                     double d = 1 - (y - (SCREEN_HEIGHT[resolution] - playerLook) / 2) / (SCREEN_HEIGHT[resolution] / 2);
-                    blackout = (int)((Math.Min(Math.Max(0, Math.Round(d * 10)), 10) * 10));
+                    blackout = (int)((Math.Min(Math.Max(0, Math.Round(d * 100)), 10)));
                 }
                 result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId);
                 if (y < ceiling)
