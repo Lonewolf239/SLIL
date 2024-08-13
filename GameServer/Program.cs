@@ -14,8 +14,8 @@ Dispatcher dispatcher = new Dispatcher();
 //SendOutcomingMessageDelegate sendOutcomingMessageHandle;
 //sendOutcomingMessageHandle = SendOutcomingMessageInvoker;
 //dispatcher.sendMessageDelegate = sendOutcomingMessageHandle;
-server.UnsyncedEvents = true;
-server.UpdateTime = 1;
+//server.UnsyncedEvents = true;
+//server.UpdateTime = 1;
 server.Start(9999 /* port */);
 
 listener.ConnectionRequestEvent += request =>
@@ -60,6 +60,6 @@ while (true)
 {
     server.PollEvents();
     dispatcher.SendOutcomingMessage(0, ref server);
-    Thread.Sleep(40);
+    Thread.Sleep(10);
 }
 server.Stop();

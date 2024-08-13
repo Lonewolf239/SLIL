@@ -28,7 +28,7 @@ namespace SLIL.UserControls
             if (item.HasCuteDescription && player.CuteMode)
                 language += 2;
             Width = width;
-            icon.Image = item.Icon[0];
+            icon.Image = SLIL.IconDict[item.GetType()][0];
             descryption.Text = item.Description[language];
             name.Text = item.Name[language];
             if (!item.HasIt)

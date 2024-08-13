@@ -61,6 +61,169 @@ namespace SLIL
         private int currentIndex = 0;
         private bool map_presed = false, active = true;
         private bool Paused = false;
+        public static readonly Dictionary<Type, Image[]> IconDict = new Dictionary<Type, Image[]>
+        {
+            { typeof(Flashlight), new[] { Properties.Resources.missing } },
+            { typeof(Knife), new[] { Properties.Resources.missing } },
+            { typeof(Candy), new[] { Properties.Resources.missing } },
+            { typeof(Rainblower), new[] { Properties.Resources.missing } },
+            { typeof(Pistol), new[]
+            {
+                    /*LV1:*/ Properties.Resources.gun_1_0_icon,
+                    /*LV2:*/ Properties.Resources.gun_1_1_icon,
+                    /*LV3:*/ Properties.Resources.gun_1_2_icon,
+                    /*LV4:*/ Properties.Resources.gun_1_3_icon
+            } },
+            { typeof(Shotgun), new[]
+            {
+                    /*LV1:*/ Properties.Resources.gun_0_0_icon,
+                    /*LV2:*/ Properties.Resources.gun_0_1_icon,
+                    /*LV3:*/ Properties.Resources.gun_0_2_icon,
+            } },
+            { typeof(SubmachineGun), new[]
+            {
+                    /*LV1:*/ Properties.Resources.gun_3_1_icon,
+                    /*LV2:*/ Properties.Resources.gun_3_2_icon,
+                    /*LV3:*/ Properties.Resources.gun_3_3_icon,
+            } },
+            { typeof(AssaultRifle), new[]
+            {
+                    /*LV1:*/ Properties.Resources.gun_4_1_icon,
+                    /*LV2:*/ Properties.Resources.gun_4_2_icon,
+                    /*LV3:*/ Properties.Resources.gun_4_3_icon,
+            } },
+            { typeof(SniperRifle), new[]
+            {
+                    Properties.Resources.gun_2_icon
+            } },
+            { typeof(Fingershot), new[] { Properties.Resources.missing } },
+            { typeof(TSPitW), new[] { Properties.Resources.missing } },
+            { typeof(Gnome), new[] { Properties.Resources.missing } },
+            { typeof(FirstAidKit), new[]
+            {
+                Properties.Resources.medkit_icon,
+                Properties.Resources.medkit_icon
+            } },
+        };
+        public static readonly Dictionary<Type, Image[,]> ImagesDict = new Dictionary<Type, Image[,]>
+        {
+            { typeof(Flashlight), new[,] { { Properties.Resources.flashlight, Properties.Resources.flashlight_run } } },
+            { typeof(Knife), new[,] { { Properties.Resources.knife, Properties.Resources.knife_hit, Properties.Resources.knife_run } } },
+            { typeof(Candy), new[,] { { Properties.Resources.gun_candy, Properties.Resources.gun_candy_shooted, Properties.Resources.gun_candy_run } } },
+            { typeof(Rainblower), new[,]
+            {
+                   { Properties.Resources.gun_rainblower, Properties.Resources.gun_rainblower_shooted, Properties.Resources.gun_rainblower_run },
+            } },
+            { typeof(Pistol), new[,]
+            {                    
+                   /*LV1:*/ { Properties.Resources.gun_1_0, Properties.Resources.gun_1_0_shooted, Properties.Resources.gun_1_0_reload, Properties.Resources.gun_1_0_reload, Properties.Resources.gun_1_0, Properties.Resources.gun_1_0_run, Properties.Resources.gun_1_0_run },
+                   /*LV2:*/ { Properties.Resources.gun_1_1, Properties.Resources.gun_1_1_shooted, Properties.Resources.gun_1_1_reload, Properties.Resources.gun_1_1_reload_empty, Properties.Resources.gun_1_1_empty, Properties.Resources.gun_1_1_run, Properties.Resources.gun_1_1_run_empty },
+                   /*LV3:*/ { Properties.Resources.gun_1_2, Properties.Resources.gun_1_2_shooted, Properties.Resources.gun_1_2_reload, Properties.Resources.gun_1_2_reload_empty, Properties.Resources.gun_1_2_empty, Properties.Resources.gun_1_2_run, Properties.Resources.gun_1_2_run_empty },
+                   /*LV4:*/ { Properties.Resources.gun_1_3, Properties.Resources.gun_1_3_shooted, Properties.Resources.gun_1_3_1_reload, Properties.Resources.gun_1_3_2_reload, Properties.Resources.gun_1_3, Properties.Resources.gun_1_3_run, Properties.Resources.gun_1_3_run },
+            } },
+            { typeof(Shotgun), new[,]
+            {
+                    /*LV1:*/ { Properties.Resources.gun_0_0, Properties.Resources.gun_0_0_shooted, Properties.Resources.gun_0_0_1_reload, Properties.Resources.gun_0_0_2_reload, Properties.Resources.gun_0_0_2_reload, Properties.Resources.gun_0_0_run },
+                    /*LV2:*/ { Properties.Resources.gun_0_1, Properties.Resources.gun_0_1_shooted, Properties.Resources.gun_0_1_pump, Properties.Resources.gun_0_1_1_reload, Properties.Resources.gun_0_1_2_reload, Properties.Resources.gun_0_1_run },
+                    /*LV3:*/ { Properties.Resources.gun_0_2, Properties.Resources.gun_0_2_shooted, Properties.Resources.gun_0_2_pump, Properties.Resources.gun_0_2_1_reload, Properties.Resources.gun_0_2_2_reload, Properties.Resources.gun_0_2_run },
+            } },
+            { typeof(SubmachineGun), new[,]
+            {
+                    /*LV1:*/ { Properties.Resources.gun_3_1, Properties.Resources.gun_3_1_shooted, Properties.Resources.gun_3_1_1_reload, Properties.Resources.gun_3_1_2_reload, Properties.Resources.gun_3_1_run},
+                    /*LV2:*/ { Properties.Resources.gun_3_2, Properties.Resources.gun_3_2_shooted, Properties.Resources.gun_3_2_1_reload, Properties.Resources.gun_3_2_2_reload, Properties.Resources.gun_3_2_run },
+                    /*LV3:*/ { Properties.Resources.gun_3_3, Properties.Resources.gun_3_3_shooted, Properties.Resources.gun_3_3_1_reload, Properties.Resources.gun_3_3_2_reload, Properties.Resources.gun_3_3_run }
+            } },
+            { typeof(AssaultRifle), new[,]
+            {
+                    /*LV1:*/ { Properties.Resources.gun_4_1, Properties.Resources.gun_4_1_shooted, Properties.Resources.gun_4_1_1_reload, Properties.Resources.gun_4_1_2_reload, Properties.Resources.gun_4_1_run },
+                    /*LV2:*/ { Properties.Resources.gun_4_2, Properties.Resources.gun_4_2_shooted, Properties.Resources.gun_4_2_1_reload, Properties.Resources.gun_4_2_2_reload, Properties.Resources.gun_4_2_run },
+                    /*LV3:*/ { Properties.Resources.gun_4_3, Properties.Resources.gun_4_3_shooted, Properties.Resources.gun_4_3_1_reload, Properties.Resources.gun_4_3_2_reload, Properties.Resources.gun_4_3_run }
+            } },
+            { typeof(SniperRifle), new[,]
+            {
+                    { Properties.Resources.gun_2, Properties.Resources.gun_2_shooted, Properties.Resources.gun_2_reload, Properties.Resources.gun_2_aiming, Properties.Resources.gun_2_run }
+            } },
+            { typeof(Fingershot), new[,]
+            {
+                   { Properties.Resources.gun_5, Properties.Resources.gun_5_shooted, Properties.Resources.gun_5_1_reload, Properties.Resources.gun_5_2_reload, Properties.Resources.gun_5_run, Properties.Resources.gun_5_run }
+            } },
+            { typeof(TSPitW), new[,]
+            {
+                   { Properties.Resources.gun_6, Properties.Resources.gun_6_shooted, Properties.Resources.gun_6_1_reload, Properties.Resources.gun_6_2_reload, Properties.Resources.gun_6_3_reload, Properties.Resources.gun_6 }
+            } },
+            { typeof(Gnome), new[,]
+            {
+                   { Properties.Resources.gun_gnome, Properties.Resources.gun_gnome_shooted,
+                    Properties.Resources.gun_gnome_reloading_0, Properties.Resources.gun_gnome_reloading_1,
+                    Properties.Resources.gun_gnome_reloading_2, Properties.Resources.gun_gnome_reloading_3,
+                    Properties.Resources.gun_gnome_run }
+            } },
+            { typeof(FirstAidKit), new[,]
+            {
+                   { Properties.Resources.medkit, Properties.Resources.medkit, Properties.Resources.medkit_using_0, Properties.Resources.medkit_using_1, Properties.Resources.medkit_using_2, Properties.Resources.medkit_run },
+                   { Properties.Resources.syringe, Properties.Resources.syringe, Properties.Resources.syringe_using_0, Properties.Resources.syringe_using_1, Properties.Resources.syringe_using_2, Properties.Resources.medkit_run },
+                   { Properties.Resources.hand, Properties.Resources.hand, Properties.Resources.hand_using_0, Properties.Resources.hand_using_1, Properties.Resources.hand_using_2, Properties.Resources.medkit_run },
+                   { Properties.Resources.food, Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2, Properties.Resources.medkit_run },
+            } },
+        };
+        public static readonly Dictionary<Type, PlaySound[,]> SoundsDict = new Dictionary<Type, PlaySound[,]>
+        {
+            { typeof(Flashlight), new[,] { { new PlaySound(null, false), } } },
+            { typeof(Knife), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } } },
+            { typeof(Candy), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } } },
+            { typeof(Rainblower),  new[,]
+            {
+                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_1.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
+            } },
+            { typeof(Pistol), new[,]
+            {
+                   /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2_reloading.wav"), false), new PlaySound(null, false) },
+                   /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_empty.wav"), false) },
+                   /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2_reloading.wav"), false), new PlaySound(null, false) },
+                   /*LV4:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_3_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_3_empty.wav"), false) },
+            } },
+            { typeof(Shotgun), new[,]
+            {
+                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_0_reloading.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
+                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_shell.wav"), false) },
+                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_shell.wav"), false) },
+            } },
+            { typeof(SubmachineGun), new[,]
+            {
+                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_3_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_empty.wav"), false) },
+                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_3_2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_empty.wav"), false) },
+                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_3_3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_3_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_empty.wav"), false) }
+            } },
+            { typeof(AssaultRifle), new[,]
+            {
+                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_empty.wav"), false) },
+                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_empty.wav"), false) },
+                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_4_3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_3_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_empty.wav"), false) }
+            } },
+            { typeof(SniperRifle), new[,]
+            {
+                    { new PlaySound(MainMenu.CGFReader.GetFile("gun_2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_2_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_2_aiming.wav"), false) }
+            } },
+            { typeof(Fingershot), new[,]
+            {
+                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_5.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_5_reloading.wav"), false), new PlaySound(null, false) }
+            } },
+            { typeof(TSPitW), new[,]
+            {
+                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_6.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_6_reloading.wav"), false), new PlaySound(null, false) }
+            } },
+            { typeof(Gnome), new[,]
+            {
+                   { new PlaySound(MainMenu.CGFReader.GetFile("fireball.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gnome_reloading.wav"), false), new PlaySound(null, false) }
+            } },
+            { typeof(FirstAidKit), new[,]
+            {
+                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("medkit_using.wav"), false), new PlaySound(null, false) },
+                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("syringe_using.wav"), false), new PlaySound(null, false) },
+                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("hand_using.wav"), false), new PlaySound(null, false) },
+                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("food_using.wav"), false), new PlaySound(null, false) }
+            } },
+        };
         private readonly PlaybackState playbackState = new PlaybackState();
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
@@ -165,7 +328,12 @@ namespace SLIL
             }
             else
             {
-                this.StartGame();
+                while (!this.IsHandleCreated) { }
+                //this.StartGame();
+                this.BeginInvoke((MethodInvoker)delegate
+                {
+                        this.StartGame();
+                });
             }
         }
         public void InitPlayerInvoker()
@@ -646,7 +814,7 @@ namespace SLIL
                                             sound = 3;
                                     }
                                     if (MainMenu.sounds)
-                                        player.GetCurrentGun().Sounds[player.GetCurrentGun().GetLevel(), sound].Play(Volume);
+                                        SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), sound].Play(Volume);
                                     reload_timer.Start();
                                 }
                             }
@@ -1086,7 +1254,7 @@ namespace SLIL
                             if (player.GetCurrentGun() is SniperRifle && !player.Aiming)
                                 return;
                             if (MainMenu.sounds)
-                                player.GetCurrentGun().Sounds[player.GetCurrentGun().GetLevel(), 0].Play(Volume);
+                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0].Play(Volume);
                             player.GunState = 1;
                             player.Aiming = false;
                             player.CanShoot = false;
@@ -1111,18 +1279,18 @@ namespace SLIL
                             if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
                                 return;
                             if (MainMenu.sounds)
-                                player.GetCurrentGun().Sounds[player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
                         }
                         else if (!(player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level == Levels.LV1) &&
                             !(player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level == Levels.LV1) && MainMenu.sounds)
-                            player.GetCurrentGun().Sounds[player.GetCurrentGun().GetLevel(), 2].Play(Volume);
+                            SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 2].Play(Volume);
                     }
                     else if (e.Button == MouseButtons.Right)
                     {
                         if (player.GetCurrentGun().CanAiming)
                         {
                             if (MainMenu.sounds)
-                                player.GetCurrentGun().Sounds[player.GetCurrentGun().GetLevel(), 3].Play(Volume);
+                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3].Play(Volume);
                             player.Aiming = !player.Aiming;
                             player.GunState = player.Aiming ? 3 : 0;
                         }
@@ -1377,7 +1545,7 @@ namespace SLIL
                         player.GunState++;
                     reload_frames++;
                     if (player.GetCurrentGun() is Shotgun && MainMenu.sounds)
-                        player.GetCurrentGun().Sounds[player.GetCurrentGun().GetLevel(), 3].Play(Volume);
+                        SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3].Play(Volume);
                 }
                 else
                 {
@@ -1418,7 +1586,7 @@ namespace SLIL
                             player.GunState = 3;
                         player.Aiming = false;
                         if (MainMenu.sounds)
-                            player.GetCurrentGun().Sounds[player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                            SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
                         reload_timer.Start();
                     }
                     else if (player.GetCurrentGun().AmmoCount <= 0)
@@ -1435,7 +1603,7 @@ namespace SLIL
                             else
                                 player.GunState = 3;
                             if (MainMenu.sounds)
-                                player.GetCurrentGun().Sounds[player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
                             reload_timer.Start();
                         }
                     }
@@ -1447,7 +1615,7 @@ namespace SLIL
                         {
                             player.GunState = 2;
                             if (MainMenu.sounds)
-                                player.GetCurrentGun().Sounds[player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
                             reload_timer.Start();
                         }
                         player.CanShoot = true;
@@ -1622,6 +1790,7 @@ namespace SLIL
         private void SLIL_FormClosing(object sender, FormClosingEventArgs e)
         {
             Player player = Controller.GetPlayer();
+            Controller.CloseConnection();
             if (!CorrectExit)
             {
                 e.Cancel = true;
@@ -1665,12 +1834,12 @@ namespace SLIL
             step = null;
             for (int i = 0; i < player.Guns.Count; i++)
             {
-                for (int j = 0; j < player.Guns[i].Sounds.GetLength(0); j++)
+                for (int j = 0; j < SoundsDict[player.Guns[i].GetType()].GetLength(0); j++)
                 {
-                    for (int k = 0; k < player.Guns[i].Sounds.GetLength(1); k++)
-                        player.Guns[i].Sounds[j, k]?.Dispose();
+                    for (int k = 0; k < SoundsDict[player.Guns[i].GetType()].GetLength(1); k++)
+                        SoundsDict[player.Guns[i].GetType()][j, k]?.Dispose();
                 }
-                player.Guns[i].Sounds = null;
+                //player.Guns[i].Sounds = null;
             }
             for (int i = 0; i < door.Length; i++)
                 door[i]?.Dispose();
@@ -2122,14 +2291,14 @@ namespace SLIL
             try
             {
                 if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-                else graphicsWeapon.DrawImage(player.GetCurrentGun().Images[player.GetCurrentGun().GetLevel(), player.GunState], 0, 0, WEAPON.Width, WEAPON.Height);
+                else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), player.GunState], 0, 0, WEAPON.Width, WEAPON.Height);
             }
             catch
             {
                 try
                 {
                     if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-                    else graphicsWeapon.DrawImage(player.GetCurrentGun().Images[player.GetCurrentGun().GetLevel(), 0], 0, 0, WEAPON.Width, WEAPON.Height);
+                    else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
                 catch { }
             }

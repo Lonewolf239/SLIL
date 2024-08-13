@@ -511,17 +511,17 @@ namespace SLIL.Classes
                     {
                         if (MAP[y * MAP_WIDTH + x] == 'F')
                         {
-                            Teleport teleport = new Teleport(x, y, MAP_WIDTH, ref MaxEntityID);
+                            Teleport teleport = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                             Entities.Add(teleport);
                         }
                         if (MAP[y * MAP_WIDTH + x] == 'D')
                         {
-                            ShopDoor shopDoor = new ShopDoor(x, y, MAP_WIDTH, ref MaxEntityID);
+                            ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                             Entities.Add(shopDoor);
                         }
                         if (MAP[y * MAP_WIDTH + x] == '$')
                         {
-                            ShopMan shopMan = new ShopMan(x, y, MAP_WIDTH, ref MaxEntityID);
+                            ShopMan shopMan = new ShopMan(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                             Entities.Add(shopMan);
                         }
                         if (MAP[y * MAP_WIDTH + x] == 'E')

@@ -35,9 +35,6 @@ namespace SLIL.Classes
         public bool ShowScope { get; set; }
         public FireTypes FireType { get; set; }
         public Levels Level { get; set; }
-        public Image[] Icon { get; set; }
-        public Image[,] Images { get; set; }
-        public PlaySound[,] Sounds { get; set; }
 
         public Gun()
         {
@@ -116,7 +113,6 @@ namespace SLIL.Classes
             Recoil = 50;
             RadiusSound = 0;
             BurstShots = 1;
-            Icon = new[] { Properties.Resources.missing };
         }
 
         public override bool CanUpdate() => false;
@@ -143,7 +139,6 @@ namespace SLIL.Classes
             BurstShots = 1;
             Description = null;
             AmmoCount = CartridgesClip;
-            Icon = new[] { Properties.Resources.missing };
         }
 
         public override bool CanUpdate() => false;
@@ -155,8 +150,6 @@ namespace SLIL.Classes
         {
             HasIt = true;
             Name = new[] { "Фонарик", "Flashlight" };
-            Images = new[,] { { Properties.Resources.flashlight, Properties.Resources.flashlight_run } };
-            Sounds = new[,] { { new PlaySound(null, false), } };
         }
 
         public override void SetDefault()
@@ -187,9 +180,6 @@ namespace SLIL.Classes
             BurstShots = 1;
             RadiusSound = 0;
             ReloadFrames = 1;
-            Icon = new[] { Properties.Resources.missing };
-            Images = new[,] { { Properties.Resources.knife, Properties.Resources.knife_hit, Properties.Resources.knife_run } };
-            Sounds = new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } };
             AmmoCount = CartridgesClip;
         }
 
@@ -209,8 +199,6 @@ namespace SLIL.Classes
             ShowScope = false;
             HasIt = false;
             Name = new[] { "Конфета", "Candy" };
-            Images = new[,] { { Properties.Resources.gun_candy, Properties.Resources.gun_candy_shooted, Properties.Resources.gun_candy_run } };
-            Sounds = new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } };
         }
     }
 
@@ -235,15 +223,6 @@ namespace SLIL.Classes
             BurstShots = 5;
             RadiusSound = 6;
             ReloadFrames = 1;
-            Icon = new[] { Properties.Resources.missing };
-            Images = new[,]
-            {                    
-                   { Properties.Resources.gun_rainblower, Properties.Resources.gun_rainblower_shooted, Properties.Resources.gun_rainblower_run },
-            };
-            Sounds = new[,]
-            {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_1.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
-            };
             AmmoCount = CartridgesClip;
         }
 
@@ -280,27 +259,6 @@ namespace SLIL.Classes
             BurstShots = 1;
             RadiusSound = 6;
             ReloadFrames = 1;
-            Icon = new[]
-            {
-                    /*LV1:*/ Properties.Resources.gun_1_0_icon,
-                    /*LV2:*/ Properties.Resources.gun_1_1_icon,
-                    /*LV3:*/ Properties.Resources.gun_1_2_icon,
-                    /*LV4:*/ Properties.Resources.gun_1_3_icon
-            };
-            Images = new[,]
-            {                    
-                   /*LV1:*/ { Properties.Resources.gun_1_0, Properties.Resources.gun_1_0_shooted, Properties.Resources.gun_1_0_reload, Properties.Resources.gun_1_0_reload, Properties.Resources.gun_1_0, Properties.Resources.gun_1_0_run, Properties.Resources.gun_1_0_run },
-                   /*LV2:*/ { Properties.Resources.gun_1_1, Properties.Resources.gun_1_1_shooted, Properties.Resources.gun_1_1_reload, Properties.Resources.gun_1_1_reload_empty, Properties.Resources.gun_1_1_empty, Properties.Resources.gun_1_1_run, Properties.Resources.gun_1_1_run_empty },
-                   /*LV3:*/ { Properties.Resources.gun_1_2, Properties.Resources.gun_1_2_shooted, Properties.Resources.gun_1_2_reload, Properties.Resources.gun_1_2_reload_empty, Properties.Resources.gun_1_2_empty, Properties.Resources.gun_1_2_run, Properties.Resources.gun_1_2_run_empty },
-                   /*LV4:*/ { Properties.Resources.gun_1_3, Properties.Resources.gun_1_3_shooted, Properties.Resources.gun_1_3_1_reload, Properties.Resources.gun_1_3_2_reload, Properties.Resources.gun_1_3, Properties.Resources.gun_1_3_run, Properties.Resources.gun_1_3_run },
-            };
-            Sounds = new[,]
-            {
-                   /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2_reloading.wav"), false), new PlaySound(null, false) },
-                   /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_empty.wav"), false) },
-                   /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2_reloading.wav"), false), new PlaySound(null, false) },
-                   /*LV4:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_3_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_3_empty.wav"), false) },
-            };
             AmmoCount = CartridgesClip;
         }
 
@@ -402,24 +360,6 @@ namespace SLIL.Classes
             BurstShots = 1;
             RadiusSound = 10;
             ReloadFrames = 2;
-            Icon = new[]
-            {
-                    /*LV1:*/ Properties.Resources.gun_0_0_icon,
-                    /*LV2:*/ Properties.Resources.gun_0_1_icon,
-                    /*LV3:*/ Properties.Resources.gun_0_2_icon,
-            };
-            Images = new[,]
-            {
-                    /*LV1:*/ { Properties.Resources.gun_0_0, Properties.Resources.gun_0_0_shooted, Properties.Resources.gun_0_0_1_reload, Properties.Resources.gun_0_0_2_reload, Properties.Resources.gun_0_0_2_reload, Properties.Resources.gun_0_0_run },
-                    /*LV2:*/ { Properties.Resources.gun_0_1, Properties.Resources.gun_0_1_shooted, Properties.Resources.gun_0_1_pump, Properties.Resources.gun_0_1_1_reload, Properties.Resources.gun_0_1_2_reload, Properties.Resources.gun_0_1_run },
-                    /*LV3:*/ { Properties.Resources.gun_0_2, Properties.Resources.gun_0_2_shooted, Properties.Resources.gun_0_2_pump, Properties.Resources.gun_0_2_1_reload, Properties.Resources.gun_0_2_2_reload, Properties.Resources.gun_0_2_run },
-            };
-            Sounds = new[,]
-            {
-                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_0_reloading.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
-                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_shell.wav"), false) },
-                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_shell.wav"), false) },
-            };
             AmmoCount = CartridgesClip;
         }
 
@@ -500,24 +440,6 @@ namespace SLIL.Classes
             BurstShots = 6;
             RadiusSound = 6;
             ReloadFrames = 2;
-            Icon = new[]
-            {
-                    /*LV1:*/ Properties.Resources.gun_3_1_icon,
-                    /*LV2:*/ Properties.Resources.gun_3_2_icon,
-                    /*LV3:*/ Properties.Resources.gun_3_3_icon,
-            };
-            Images = new[,]
-            {
-                    /*LV1:*/ { Properties.Resources.gun_3_1, Properties.Resources.gun_3_1_shooted, Properties.Resources.gun_3_1_1_reload, Properties.Resources.gun_3_1_2_reload, Properties.Resources.gun_3_1_run},
-                    /*LV2:*/ { Properties.Resources.gun_3_2, Properties.Resources.gun_3_2_shooted, Properties.Resources.gun_3_2_1_reload, Properties.Resources.gun_3_2_2_reload, Properties.Resources.gun_3_2_run },
-                    /*LV3:*/ { Properties.Resources.gun_3_3, Properties.Resources.gun_3_3_shooted, Properties.Resources.gun_3_3_1_reload, Properties.Resources.gun_3_3_2_reload, Properties.Resources.gun_3_3_run }
-            };
-            Sounds = new[,]
-            {
-                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_3_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_empty.wav"), false) },
-                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_3_2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_empty.wav"), false) },
-                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_3_3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_3_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_empty.wav"), false) }
-            };
             AmmoCount = CartridgesClip;
         }
 
@@ -598,24 +520,6 @@ namespace SLIL.Classes
             BurstShots = 3;
             RadiusSound = 13;
             ReloadFrames = 2;
-            Icon = new[]
-            {
-                    /*LV1:*/ Properties.Resources.gun_4_1_icon,
-                    /*LV2:*/ Properties.Resources.gun_4_2_icon,
-                    /*LV3:*/ Properties.Resources.gun_4_3_icon,
-            };
-            Images = new[,]
-            {
-                    /*LV1:*/ { Properties.Resources.gun_4_1, Properties.Resources.gun_4_1_shooted, Properties.Resources.gun_4_1_1_reload, Properties.Resources.gun_4_1_2_reload, Properties.Resources.gun_4_1_run },
-                    /*LV2:*/ { Properties.Resources.gun_4_2, Properties.Resources.gun_4_2_shooted, Properties.Resources.gun_4_2_1_reload, Properties.Resources.gun_4_2_2_reload, Properties.Resources.gun_4_2_run },
-                    /*LV3:*/ { Properties.Resources.gun_4_3, Properties.Resources.gun_4_3_shooted, Properties.Resources.gun_4_3_1_reload, Properties.Resources.gun_4_3_2_reload, Properties.Resources.gun_4_3_run }
-            };
-            Sounds = new[,]
-            {
-                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_empty.wav"), false) },
-                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_empty.wav"), false) },
-                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_4_3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_3_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_empty.wav"), false) }
-            };
             AmmoCount = CartridgesClip;
         }
 
@@ -698,19 +602,6 @@ namespace SLIL.Classes
             BurstShots = 1;
             RadiusSound = 20;
             ReloadFrames = 1;
-            Icon = new[]
-            {
-                    Properties.Resources.gun_2_icon
-            };
-            Images = new[,]
-            {
-                    { Properties.Resources.gun_2, Properties.Resources.gun_2_shooted, Properties.Resources.gun_2_reload, Properties.Resources.gun_2_aiming, Properties.Resources.gun_2_run }
-            };
-            Sounds = new[,]
-            {
-                    { new PlaySound(MainMenu.CGFReader.GetFile("gun_2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_2_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_2_aiming.wav"), false) }
-            };
-            AmmoCount = CartridgesClip;
         }
 
         public override bool CanUpdate() => false;
@@ -736,15 +627,6 @@ namespace SLIL.Classes
             BurstShots = 1;
             RadiusSound = 0;
             ReloadFrames = 2;
-            Icon = new[] { Properties.Resources.missing };
-            Images = new[,]
-            {
-                   { Properties.Resources.gun_5, Properties.Resources.gun_5_shooted, Properties.Resources.gun_5_1_reload, Properties.Resources.gun_5_2_reload, Properties.Resources.gun_5_run, Properties.Resources.gun_5_run }
-            };
-            Sounds = new[,]
-            {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_5.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_5_reloading.wav"), false), new PlaySound(null, false) }
-            };
             AmmoCount = CartridgesClip;
         }
 
@@ -771,15 +653,6 @@ namespace SLIL.Classes
             BurstShots = 1;
             RadiusSound = 0;
             ReloadFrames = 3;
-            Icon = new[] { Properties.Resources.missing };
-            Images = new[,]
-            {
-                   { Properties.Resources.gun_6, Properties.Resources.gun_6_shooted, Properties.Resources.gun_6_1_reload, Properties.Resources.gun_6_2_reload, Properties.Resources.gun_6_3_reload, Properties.Resources.gun_6 }
-            };
-            Sounds = new[,]
-            {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_6.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_6_reloading.wav"), false), new PlaySound(null, false) }
-            };
             AmmoCount = CartridgesClip;
         }
 
@@ -798,17 +671,6 @@ namespace SLIL.Classes
             MinDamage = 20;
             FiringRate = 650;
             ReloadFrames = 4;
-            Images = new[,]
-            {
-                   { Properties.Resources.gun_gnome, Properties.Resources.gun_gnome_shooted,
-                    Properties.Resources.gun_gnome_reloading_0, Properties.Resources.gun_gnome_reloading_1,
-                    Properties.Resources.gun_gnome_reloading_2, Properties.Resources.gun_gnome_reloading_3,
-                    Properties.Resources.gun_gnome_run }
-            };
-            Sounds = new[,]
-            {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("fireball.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gnome_reloading.wav"), false), new PlaySound(null, false) }
-            };
         }
     }
 
@@ -835,25 +697,6 @@ namespace SLIL.Classes
                 "Restores health",
                 "Вкусный перекус",
                 "A tasty snack"
-            };
-            Icon = new[]
-            {
-                Properties.Resources.medkit_icon,
-                Properties.Resources.medkit_icon
-            };
-            Images = new[,]
-            {
-                   { Properties.Resources.medkit, Properties.Resources.medkit, Properties.Resources.medkit_using_0, Properties.Resources.medkit_using_1, Properties.Resources.medkit_using_2, Properties.Resources.medkit_run },
-                   { Properties.Resources.syringe, Properties.Resources.syringe, Properties.Resources.syringe_using_0, Properties.Resources.syringe_using_1, Properties.Resources.syringe_using_2, Properties.Resources.medkit_run },
-                   { Properties.Resources.hand, Properties.Resources.hand, Properties.Resources.hand_using_0, Properties.Resources.hand_using_1, Properties.Resources.hand_using_2, Properties.Resources.medkit_run },
-                   { Properties.Resources.food, Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2, Properties.Resources.medkit_run },
-            };
-            Sounds = new[,]
-            {
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("medkit_using.wav"), false), new PlaySound(null, false) },
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("syringe_using.wav"), false), new PlaySound(null, false) },
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("hand_using.wav"), false), new PlaySound(null, false) },
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("food_using.wav"), false), new PlaySound(null, false) }
             };
         }
 

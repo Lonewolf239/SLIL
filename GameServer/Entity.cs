@@ -63,10 +63,7 @@ namespace SLIL.Classes
             writer.Put(this.X);
             writer.Put(this.Y);
             writer.Put(ID);
-            //if (EntityID == 0)
-            //{
-            //    Console.WriteLine("PlayerID: " + ID.ToString() + "; X = " + X.ToString() + "; Y = " + Y.ToString());
-            //}
+
         }
 
         public void Deserialize(NetDataReader reader)

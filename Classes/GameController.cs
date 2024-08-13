@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
+using System.IO.Ports;
 
 namespace SLIL.Classes
 {
@@ -32,8 +33,8 @@ namespace SLIL.Classes
             Game = new GameModel();
             listener = new EventBasedNetListener();
             client = new NetManager(listener);
-            client.UnsyncedEvents = true;
-            client.UpdateTime = 1;
+            //client.UnsyncedEvents = true;
+            //client.UpdateTime = 1;
             processor = new NetPacketProcessor();
             client.Start();
             client.Connect(adress, port, "SomeKey");
@@ -71,9 +72,14 @@ namespace SLIL.Classes
                         peer.Send(writer, DeliveryMethod.Unreliable);
                     }
                     client.PollEvents();
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                 }
             }).Start();
+        }
+
+        public void CloseConnection()
+        {
+            client.Stop();
         }
 
         ~GameController()
