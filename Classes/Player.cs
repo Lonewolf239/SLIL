@@ -4,8 +4,6 @@ namespace SLIL.Classes
 {
     public class Player : Entity
     {
-        //public double X { get; set; }
-        //public double Y { get; set; }
         public int ID { get; set; }
         public double A { get; set; }
         public double Look { get; set; }
@@ -15,7 +13,7 @@ namespace SLIL.Classes
         public double STAMINE { get; set; }
         public bool CanShoot { get; set; }
         public bool Aiming { get; set; }
-        public bool UseFirstMedKit { get; set; }
+        public bool UseItem { get; set; }
         public bool Dead { get; set; }
         public int Money { get; set; }
         public int CurrentGun { get; set; }
@@ -30,9 +28,22 @@ namespace SLIL.Classes
         public int EnemiesKilled { get; set; }
         public double MOVE_SPEED { get; set; }
         public double RUN_SPEED { get; set; }
-        public readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit(), new Candy(), new Rainblower() };
+        public double DEPTH { get; set; }
+        public int SelectedItem { get; set; }
+        public bool HasEffect { get; set; }
+        public int EffectTotalTime { get; set; }
+        public int EffectTimeRemaining { get; set; }
+        public bool Adrenaline { get; set; }
+        public readonly Gun[] GUNS =
+        {
+            new Flashlight(), new Knife(), new Pistol(),
+            new Shotgun(), new SubmachineGun(), new AssaultRifle(),
+            new SniperRifle(), new Fingershot(), new TSPitW(),
+            new Gnome(), new FirstAidKit(), new Candy(),
+            new Rainblower(), new Adrenalin()
+        };
         public readonly List<Gun> Guns = new List<Gun>();
-        public readonly List<FirstAidKit> FirstAidKits = new List<FirstAidKit>();
+        public readonly List<DisposableItem> DisposableItems = new List<DisposableItem>();
         public Pet PET = null;
         public double MAX_HP { get; set; }
         public double MAX_STAMINE { get; set; }
@@ -47,16 +58,21 @@ namespace SLIL.Classes
         {
             if (Dead)
             {
+                HasEffect = false;
+                Adrenaline = false;
                 MAX_HP = 100;
                 MAX_STAMINE = 650;
                 HP = MAX_HP;
                 Guns.Clear();
-                FirstAidKits.Clear();
+                for (int i = 0; i < DisposableItems.Count; i++)
+                    DisposableItems[i].SetDefault();
                 Money = 15;
                 CurseCureChance = 0.08;
                 Stage = 0;
                 MOVE_SPEED = 1.75;
                 RUN_SPEED = 2.25;
+                DEPTH = 8;
+                SelectedItem = 0;
                 PET = null;
                 CuteMode = false;
             }
@@ -68,7 +84,7 @@ namespace SLIL.Classes
             Invulnerable = false;
             TimeoutInvulnerable = 2;
             Aiming = false;
-            UseFirstMedKit = false;
+            UseItem = false;
             LevelUpdated = false;
             IsPetting = false;
             PreviousGun = CurrentGun = 1;
@@ -84,9 +100,50 @@ namespace SLIL.Classes
                 Invulnerable = false;
         }
 
+        public void GiveEffect(int index, bool standart_time, int time = 0)
+        {
+            StopEffect();
+            UseItem = false;
+            SelectedItem = index + 1;
+            if (SelectedItem == 1)
+            {
+                Adrenaline = true;
+                HasEffect = true;
+                if (standart_time)
+                    EffectTotalTime = 30;
+                else
+                    EffectTotalTime = time;
+                EffectTimeRemaining = EffectTotalTime;
+                MOVE_SPEED += 2.25;
+            }
+        }
+
+        public void SetEffect()
+        {
+            UseItem = false;
+            if (SelectedItem == 0) HealHP(rand.Next(40, 60));
+            else if (SelectedItem == 1)
+            {
+                Adrenaline = true;
+                HasEffect = true;
+                EffectTotalTime = 30;
+                EffectTimeRemaining = EffectTotalTime;
+                MOVE_SPEED += 2.25;
+            }
+        }
+
+        public void StopEffect()
+        {
+            HasEffect = false;
+            if (Adrenaline)
+            {
+                Adrenaline = false;
+                MOVE_SPEED -= 2.25;
+            }
+        }
+
         public void HealHP(int value)
         {
-            UseFirstMedKit = false;
             HP += value;
             if (HP > MAX_HP)
                 HP = MAX_HP;

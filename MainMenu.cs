@@ -10,21 +10,40 @@ using IniReader;
 using System.Net;
 using System.Diagnostics;
 using SLIL.Classes;
+using Play_Sound;
 
 namespace SLIL
 {
     public partial class MainMenu : Form
     {
-        private const string current_version = "|1.0.2|";
+        private const string current_version = "|1.1|";
         public static string iniFolder = "config.ini";
-        public static bool Language = true, sounds = true;
+        public static bool Language = true, sounds = true, ConsoleEnabled = false;
         private readonly TextureCache textureCache = new TextureCache();
         public static CGF_Reader CGFReader;
         private string SelectButtonName;
         private SLIL_Editor Editor;
         private bool ChangeControlButton = false, CanClose = false;
+        private readonly PlaySound[] ost;
+        private readonly PlaySound MainMenuTheme;
+        private readonly PlaySound[,] step;
+        private readonly PlaySound[,] DeathSounds;
+        private readonly PlaySound[,] CuteDeathSounds;
+        private readonly PlaySound game_over, draw, buy, hit, hungry, wall, tp, screenshot;
+        private readonly PlaySound[] door;
+        private readonly Pet[] PETS;
+        public static Player player;
         private readonly string[] en_changes =
         {
+            "\t\t\tv1.1",
+            "_______________________________________________________________",
+            "• Podseratel: Added ability",
+            "• Added new item: Adrenaline",
+            "• Improved optimization",
+            "• Difficulty rebalance",
+            "• Added music to main menu",
+            "• Fixed some bugs",
+            "\n",
             "\t\t\tv1.0.2",
             "_______________________________________________________________",
             "• Fixed detection of the run key",
@@ -39,8 +58,17 @@ namespace SLIL
             "• Game Release",
             "• SLIL was separated from Mini-Games"
         };
-        private readonly string[] ru_changes = new string[]
+        private readonly string[] ru_changes =
         {
+            "\t\t\tv1.1",
+            "_______________________________________________________________",
+            "• Подсератель: Добавлена ​​способность",
+            "• Добавлен новый предмет: Адреналин",
+            "• Улучшена оптимизация",
+            "• Ребаланс сложности",
+            "• Добавлена ​​музыка в главное меню",
+            "• Исправлены некоторые ошибки",
+            "\n",
             "\t\t\tv1.0.2",
             "_______________________________________________________________",
             "• Исправлено обнаружение клавиши бега",
@@ -59,9 +87,9 @@ namespace SLIL
         {
             {
                 // Очень сложно
-                "Начальное оружие: Пистолет 1 ур.\nВраги возрождаются каждые 60 секунд\nВраги более агрессивны",
-                // Сложно
                 "Начальное оружие: Пистолет 1 ур.\nВраги возрождаются каждые 60 секунд",
+                // Сложно
+                "Начальное оружие: Пистолет 1 ур.",
                 // Нормально
                 "Начальное оружие: Пистолет 2 ур.",
                 // Легко
@@ -71,9 +99,9 @@ namespace SLIL
             },
             {
                 // Очень сложно
-                "Starting weapon: Pistol Lv1\nEnemies respawn every 60 seconds\nEnemies are more aggressive",
-                // Сложно
                 "Starting weapon: Pistol Lv1\nEnemies respawn every 60 seconds",
+                // Сложно
+                "Starting weapon: Pistol Lv1",
                 // Нормально
                 "Starting weapon: Pistol Lv2",
                 // Легко
@@ -95,7 +123,8 @@ namespace SLIL
             { "show_map_0", Keys.M },
             { "show_map_1", Keys.Tab },
             { "flashlight", Keys.F },
-            { "medkit", Keys.H },
+            { "item", Keys.H },
+            { "select_item", Keys.Q },
             { "run", Keys.ShiftKey },
         };
         public static Dictionary<string, Keys> BindControls = new Dictionary<string, Keys>()
@@ -111,7 +140,8 @@ namespace SLIL
             { "show_map_0", Keys.M },
             { "show_map_1", Keys.Tab },
             { "flashlight", Keys.F },
-            { "medkit", Keys.H },
+            { "item", Keys.H },
+            { "select_item", Keys.Q },
             { "run", Keys.ShiftKey },
         };
         public static int resolution = 0, scope_type = 0, scope_color = 0, difficulty = 2;
@@ -146,6 +176,114 @@ namespace SLIL
                 else
                     Application.Exit();
             }
+            PETS = new Pet[] { new SillyCat(0, 0, 0), new GreenGnome(0, 0, 0), new EnergyDrink(0, 0, 0), new Pyro(0, 0, 0) };
+            player = new Player(1.5, 1.5, 15);
+            ost = new PlaySound[]
+            {
+                new PlaySound(CGFReader.GetFile("slil_ost_0.wav"), true),
+                new PlaySound(CGFReader.GetFile("slil_ost_1.wav"), true),
+                new PlaySound(CGFReader.GetFile("slil_ost_2.wav"), true),
+                new PlaySound(CGFReader.GetFile("slil_ost_3.wav"), true),
+                new PlaySound(CGFReader.GetFile("slil_ost_4.wav"), true),
+                new PlaySound(CGFReader.GetFile("soul_forge.wav"), true),
+                new PlaySound(CGFReader.GetFile("gnome.wav"), true),
+                new PlaySound(CGFReader.GetFile("cmode_ost.wav"), true)
+            };
+            MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
+            step = new PlaySound[,]
+            {
+                {
+                    new PlaySound(CGFReader.GetFile("step_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_2.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_3.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_4.wav"), false)
+                },
+                {
+                    new PlaySound(CGFReader.GetFile("step_run_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_run_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_run_2.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_run_3.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_run_4.wav"), false)
+                },
+                {
+                    new PlaySound(CGFReader.GetFile("step_c_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_c_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_c_2.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_c_3.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_c_4.wav"), false)
+                },
+                {
+                    new PlaySound(CGFReader.GetFile("step_run_c_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_run_c_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_run_c_2.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_run_c_3.wav"), false),
+                    new PlaySound(CGFReader.GetFile("step_run_c_4.wav"), false)
+                }
+            };
+            DeathSounds = new PlaySound[,]
+            {
+                //Zombie
+                {
+                    new PlaySound(CGFReader.GetFile("zombie_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("zombie_die_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("zombie_die_2.wav"), false)
+                },
+                //Dog
+                {
+                    new PlaySound(CGFReader.GetFile("dog_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("dog_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("dog_die_0.wav"), false)
+                },
+                //Abomination
+                {
+                    new PlaySound(CGFReader.GetFile("abomination_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("abomination_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("abomination_die_0.wav"), false)
+                },
+                //Bat
+                {
+                    new PlaySound(CGFReader.GetFile("bat_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("bat_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("bat_die_0.wav"), false)
+                }
+            };
+            CuteDeathSounds = new PlaySound[,]
+            {
+                //Zombie
+                {
+                    new PlaySound(CGFReader.GetFile("c_zombie_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("c_zombie_die_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("c_zombie_die_0.wav"), false)
+                },
+                //Dog
+                {
+                    new PlaySound(CGFReader.GetFile("c_dog_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("c_dog_die_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("c_dog_die_0.wav"), false)
+                },
+                //Abomination
+                {
+                    new PlaySound(CGFReader.GetFile("c_abomination_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("c_abomination_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("c_abomination_die_0.wav"), false)
+                },
+                //Bat
+                {
+                    new PlaySound(CGFReader.GetFile("c_bat_die_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("c_bat_die_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("c_bat_die_0.wav"), false)
+                }
+            };
+            game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
+            draw = new PlaySound(CGFReader.GetFile("draw.wav"), false);
+            buy = new PlaySound(CGFReader.GetFile("buy.wav"), false);
+            hit = new PlaySound(CGFReader.GetFile("hit_player.wav"), false);
+            hungry = new PlaySound(CGFReader.GetFile("hungry_player.wav"), false);
+            wall = new PlaySound(CGFReader.GetFile("wall_interaction.wav"), false);
+            tp = new PlaySound(CGFReader.GetFile("tp.wav"), false);
+            screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
+            door = new PlaySound[] { new PlaySound(CGFReader.GetFile("door_opened.wav"), false), new PlaySound(CGFReader.GetFile("door_closed.wav"), false) };
         }
 
         private void Bug_report_btn_Click(object sender, EventArgs e)
@@ -316,9 +454,7 @@ namespace SLIL
         private void MainMenu_Load(object sender, EventArgs e)
         {
             Activate();
-            if (Directory.Exists("sounds"))
-                Directory.Delete("sounds", true);
-            version_label.Text = $"v{current_version.Replace("|", "")}";
+            version_label.Text = $"v{current_version.Trim('|')}";
             Language = Check_Language();
             INIReader.CreateIniFileIfNotExist(iniFolder);
             GetGameParametrs();
@@ -338,11 +474,13 @@ namespace SLIL
             host_panel.Location = buttons_panel.Location;
             connect_panel.Location = buttons_panel.Location;
             exit_size_panel.Left = (exit_panel.Width - exit_size_panel.Width) / 2;
+            if (sounds) MainMenuTheme.Play(Volume);
         }
 
         private void GetGameParametrs()
         {
             Language = INIReader.GetBool(iniFolder, "CONFIG", "language", Language);
+            ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             update_on_off.Checked = INIReader.GetBool(iniFolder, "CONFIG", "auto_update", true);
             LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 6.5);
@@ -364,7 +502,8 @@ namespace SLIL
             BindControls["show_map_0"] = INIReader.GetKeys(iniFolder, "SLIL", "show_map_0", Keys.M);
             BindControls["show_map_1"] = INIReader.GetKeys(iniFolder, "SLIL", "show_map_1", Keys.Tab);
             BindControls["flashlight"] = INIReader.GetKeys(iniFolder, "SLIL", "flashlight", Keys.F);
-            BindControls["medkit"] = INIReader.GetKeys(iniFolder, "SLIL", "medkit", Keys.H);
+            BindControls["item"] = INIReader.GetKeys(iniFolder, "SLIL", "item", Keys.H);
+            BindControls["select_item"] = INIReader.GetKeys(iniFolder, "SLIL", "select_item", Keys.Q);
             BindControls["run"] = INIReader.GetKeys(iniFolder, "SLIL", "run", Keys.ShiftKey);
             if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10)
                 LOOK_SPEED = 6.5;
@@ -389,9 +528,11 @@ namespace SLIL
             show_map_0_btn.Text = BindControls["show_map_0"].ToString().Replace("Key", null).Replace("Return", "Enter");
             show_map_1_btn.Text = BindControls["show_map_1"].ToString().Replace("Key", null).Replace("Return", "Enter");
             flashlight_btn.Text = BindControls["flashlight"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            medkit_btn.Text = BindControls["medkit"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            item_btn.Text = BindControls["item"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            select_item_btn.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             run_btn.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
             language_list.SelectedIndex = Language ? 0 : 1;
+            console_btn.Checked = ConsoleEnabled;
             sounds_on_off.Checked = sounds;
             high_resolution_on_off.Checked = resolution == 1;
             show_fps_on_off.Checked = ShowFPS;
@@ -421,6 +562,7 @@ namespace SLIL
         {
             if (Language)
             {
+                console_label.Text = "Консоль разработчика";
                 nickname_label.Text = "Имя игрока:";
                 host_btn.Text = "Создать игру";
                 connect_game_btn.Text = "Присоединиться";
@@ -479,11 +621,13 @@ namespace SLIL
                 interaction_label.Text = "Взаимодействие";
                 show_map_label.Text = "Показать/скрыть карту";
                 flashlight_label.Text = "Фонарик";
-                medkit_label.Text = "Использовать аптечку";
+                medkit_label.Text = "Использовать предмет";
+                select_item_label.Text = "Выбрать предмет";
                 run_label.Text = "Бег (удерживать)";
             }
             else
             {
+                console_label.Text = "Developer console";
                 nickname_label.Text = "Player name:";
                 host_btn.Text = "Create game";
                 connect_game_btn.Text = "Join";
@@ -542,8 +686,23 @@ namespace SLIL
                 interaction_label.Text = "Interaction";
                 show_map_label.Text = "Show/hide map";
                 flashlight_label.Text = "Flashlight";
-                medkit_label.Text = "Use medkit";
+                medkit_label.Text = "Use item";
+                select_item_label.Text = "Select item";
                 run_label.Text = "Run (hold)";
+            }
+            if (ConsoleEnabled)
+            {
+                if (Language)
+                    console_btn.Text = "Вкл.";
+                else
+                    console_btn.Text = "On";
+            }
+            else
+            {
+                if (Language)
+                    console_btn.Text = "Откл.";
+                else
+                    console_btn.Text = "Off";
             }
             if (sounds)
             {
@@ -646,6 +805,7 @@ namespace SLIL
                     sounds_on_off.Text = "Вкл.";
                 else
                     sounds_on_off.Text = "On";
+                MainMenuTheme.Play(Volume);
             }
             else
             {
@@ -653,6 +813,27 @@ namespace SLIL
                     sounds_on_off.Text = "Откл.";
                 else
                     sounds_on_off.Text = "Off";
+                MainMenuTheme.Stop();
+            }
+        }
+
+        private void Console_btn_CheckedChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            ConsoleEnabled = console_btn.Checked;
+            if (ConsoleEnabled)
+            {
+                if (Language)
+                    console_btn.Text = "Вкл.";
+                else
+                    console_btn.Text = "On";
+            }
+            else
+            {
+                if (Language)
+                    console_btn.Text = "Откл.";
+                else
+                    console_btn.Text = "Off";
             }
         }
 
@@ -840,6 +1021,7 @@ namespace SLIL
         {
             Language = Check_Language();
             sounds = true;
+            ConsoleEnabled = false;
             update_on_off.Checked = true;
             resolution = 0;
             ShowFPS = true;
@@ -859,6 +1041,7 @@ namespace SLIL
         {
             INIReader.SetKey(iniFolder, "CONFIG", "sounds", sounds);
             INIReader.SetKey(iniFolder, "CONFIG", "language", Language);
+            INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             INIReader.SetKey(iniFolder, "CONFIG", "auto_update", update_on_off.Checked);
             INIReader.SetKey(iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
             INIReader.SetKey(iniFolder, "SLIL", "show_fps", ShowFPS);
@@ -879,7 +1062,8 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "SLIL", "show_map_0", BindControls["show_map_0"]);
             INIReader.SetKey(iniFolder, "SLIL", "show_map_1", BindControls["show_map_1"]);
             INIReader.SetKey(iniFolder, "SLIL", "flashlight", BindControls["flashlight"]);
-            INIReader.SetKey(iniFolder, "SLIL", "medkit", BindControls["medkit"]);
+            INIReader.SetKey(iniFolder, "SLIL", "item", BindControls["item"]);
+            INIReader.SetKey(iniFolder, "SLIL", "select_item", BindControls["select_item"]);
             INIReader.SetKey(iniFolder, "SLIL", "run", BindControls["run"]);
         }
 
@@ -917,8 +1101,26 @@ namespace SLIL
             game_mode_panel.Visible = false;
             if (difficulty != 4)
             {
-                SLIL form = new SLIL(textureCache);
+                if(sounds) MainMenuTheme.Stop();
+                SLIL form = new SLIL(textureCache)
+                {
+                    ost = ost,
+                    PETS = PETS,
+                    step = step,
+                    DeathSounds = DeathSounds,
+                    CuteDeathSounds = CuteDeathSounds,
+                    game_over = game_over,
+                    draw = draw,
+                    buy = buy,
+                    hit = hit,
+                    hungry = hungry,
+                    wall = wall,
+                    tp = tp,
+                    screenshot = screenshot,
+                    door = door,
+                };
                 form.ShowDialog();
+                if (sounds) MainMenuTheme.Play(Volume);
                 difficulty_panel.Visible = false;
             }
             else
@@ -980,7 +1182,11 @@ namespace SLIL
             }
         }
 
-        private void Volume_Scroll(object sender, EventArgs e) => Volume = (float)volume.Value / 100;
+        private void Volume_Scroll(object sender, EventArgs e)
+        {
+            Volume = (float)volume.Value / 100;
+            MainMenuTheme.SetVolume(Volume);
+        }
 
         private void Copy_ip_btn_Click(object sender, EventArgs e)
         {
@@ -1041,8 +1247,23 @@ namespace SLIL
         {
             if (Editor != null && Editor.OK)
             {
+                if (sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache)
                 {
+                    ost = ost,
+                    PETS = PETS,
+                    step = step,
+                    DeathSounds = DeathSounds,
+                    CuteDeathSounds = CuteDeathSounds,
+                    game_over = game_over,
+                    draw = draw,
+                    buy = buy,
+                    hit = hit,
+                    hungry = hungry,
+                    wall = wall,
+                    tp = tp,
+                    screenshot = screenshot,
+                    door = door,
                     CUSTOM = true,
                     CUSTOM_MAP = Editor.MAP,
                     CustomMazeHeight = (Editor.MazeHeight - 1) / 3,
@@ -1051,6 +1272,7 @@ namespace SLIL
                     CUSTOM_Y = SLIL_Editor.y
                 };
                 form.ShowDialog();
+                if (sounds) MainMenuTheme.Play(Volume);
                 Editor = null;
                 difficulty_panel.Visible = false;
             }

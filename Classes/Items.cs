@@ -149,6 +149,43 @@ namespace SLIL.Classes
         public override bool CanUpdate() => false;
     }
 
+    public class DisposableItem : Item
+    {
+        public bool HasLVMechanics { get; set; }
+        public Image CuteItemIcon { get; set; }
+        public Image ItemIcon { get; set; }
+
+        public DisposableItem() : base()
+        {
+            HasIt = false;
+            HaveLV4 = false;
+            HasCuteDescription = false;
+            HasLVMechanics = false;
+            RechargeTime = 980;
+            AmmoCount = 0;
+            MaxAmmoCount = 0;
+            MaxAmmo = 2;
+            FiringRate = 150;
+            ReloadFrames = 3;
+        }
+
+        public void AddItem()
+        {
+            AmmoCount = CartridgesClip;
+            MaxAmmoCount = CartridgesClip;
+            HasIt = true;
+        }
+
+        public override void SetDefault()
+        {
+            AmmoCount = 0;
+            MaxAmmoCount = 0;
+            HasIt = false;
+        }
+
+        public override bool CanUpdate() => false;
+    }
+
     public class Flashlight : Item
     {
         public Flashlight() : base()
@@ -206,11 +243,12 @@ namespace SLIL.Classes
     {
         public Candy() : base()
         {
+            FiringRate = 400;
             ShowScope = false;
             HasIt = false;
             Name = new[] { "Конфета", "Candy" };
             Images = new[,] { { Properties.Resources.gun_candy, Properties.Resources.gun_candy_shooted, Properties.Resources.gun_candy_run } };
-            Sounds = new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } };
+            Sounds = new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("candy.wav"), false) } };
         }
     }
 
@@ -227,11 +265,11 @@ namespace SLIL.Classes
             CartridgesClip = 100;
             MaxAmmoCount = 0;
             MaxAmmo = 100;
-            FiringRange = 7;
-            MaxDamage = 3;
-            MinDamage = 2.75;
+            FiringRange = 2.5;
+            MaxDamage = 3.75;
+            MinDamage = 3.5;
             Recoil = 5;
-            FiringRate = 175;
+            FiringRate = 125;
             BurstShots = 5;
             RadiusSound = 6;
             ReloadFrames = 1;
@@ -242,7 +280,7 @@ namespace SLIL.Classes
             };
             Sounds = new[,]
             {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_1.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
+                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_rainblower.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
             };
             AmmoCount = CartridgesClip;
         }
@@ -812,23 +850,20 @@ namespace SLIL.Classes
         }
     }
 
-    public class FirstAidKit : Item
+    public class FirstAidKit : DisposableItem
     {
         public FirstAidKit() : base()
         {
-            HasIt = false;
-            HaveLV4 = true;
+            HasLVMechanics = true;
             HasCuteDescription = true;
+            GunCost = 50;
+            ItemIcon = Properties.Resources.first_aid;
+            CuteItemIcon = Properties.Resources.food_count;
             Name = new[]
             { 
                 "Аптечка", "First Aid Kit",
                 "Бобы", "Beans"
             };
-            GunCost = 50;
-            RechargeTime = 980;
-            MaxAmmo = 2;
-            FiringRate = 150;
-            ReloadFrames = 3;
             Description = new[]
             { 
                 "Восстанавливает здоровье",
@@ -839,7 +874,7 @@ namespace SLIL.Classes
             Icon = new[]
             {
                 Properties.Resources.medkit_icon,
-                Properties.Resources.medkit_icon
+                Properties.Resources.food_icon
             };
             Images = new[,]
             {
@@ -856,7 +891,38 @@ namespace SLIL.Classes
                    { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("food_using.wav"), false), new PlaySound(null, false) }
             };
         }
+    }
 
-        public override bool CanUpdate() => false;
+    public class Adrenalin : DisposableItem
+    {
+        public Adrenalin() : base()
+        {
+            RechargeTime = 530;
+            GunCost = 50;
+            ItemIcon = Properties.Resources.adrenalin_count_icon;
+            CuteItemIcon = Properties.Resources.adrenalin_count_icon;
+            Name = new[]
+            {
+                "Адреналин", "Adrenalin"
+            };
+            Description = new[]
+            {
+                "Увеличивает скорость передвижения на 30 сек",
+                "Increases movement speed for 30 sec",
+            };
+            Icon = new[]
+            {
+                Properties.Resources.adrenalin_icon,
+                Properties.Resources.adrenalin_icon
+            };
+            Images = new[,]
+            {
+                   { Properties.Resources.adrenalin, Properties.Resources.adrenalin, Properties.Resources.adrenalin_using_0, Properties.Resources.adrenalin_using_1, Properties.Resources.adrenalin_using_2, Properties.Resources.medkit_run },
+            };
+            Sounds = new[,]
+            {
+                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("adrenalin_using.wav"), false), new PlaySound(null, false) }
+            };
+        }
     }
 }

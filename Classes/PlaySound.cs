@@ -28,7 +28,7 @@ namespace Play_Sound
                 else
                     playing.Init(loopStream);
             }
-            catch (Exception)
+            catch
             {
                 Dispose();
             }

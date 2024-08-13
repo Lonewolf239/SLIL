@@ -203,7 +203,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=' };
+            return new char[] { '#', 'D', 'd', '=', 'W' };
         }
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
@@ -504,7 +504,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() 
         {
-            return new char[] { '#', 'D', 'd', '=' };
+            return new char[] { '#', 'D', 'd', '=', 'W' };
         }
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 10;
@@ -598,7 +598,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=' };
+            return new char[] { '#', 'D', 'd', '=', 'W' };
         }
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 5;
@@ -693,7 +693,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=' };
+            return new char[] { '#', 'D', 'd', '=', 'W' };
         }
         protected override int GetMovesInARow() => 40;
         protected override int GetMAX_HP() => 20;
@@ -787,7 +787,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd' };
+            return new char[] { '#', 'D', 'd', 'W' };
         }
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 2;
