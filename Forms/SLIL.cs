@@ -317,7 +317,7 @@ namespace SLIL
 
         StartGameDelegate StartGameHandle;
         InitPlayerDelegate InitPlayerHandle;
-        public void StartGameInvoker()
+        public void StartGameInvokerSinglePlayer()
         {
             if (this.InvokeRequired && this.IsHandleCreated)
             {
@@ -330,6 +330,17 @@ namespace SLIL
             {
                 this.StartGame();
             }
+        }
+        public void StartGameInvokerMultiPlayer()
+        {
+            while (!this.IsHandleCreated)
+            {
+
+            }
+            this.BeginInvoke((MethodInvoker)delegate
+                {
+                        this.StartGame();
+                });
         }
         public void InitPlayerInvoker()
         {
@@ -351,7 +362,7 @@ namespace SLIL
         public SLIL(TextureCache textures)
         {
             InitializeComponent();
-            StartGameHandle = StartGameInvoker;
+            StartGameHandle = StartGameInvokerSinglePlayer;
             InitPlayerHandle = InitPlayerInvoker;
             Controller = new GameController(StartGameHandle, InitPlayerHandle);
             rand = new Random();
@@ -384,7 +395,7 @@ namespace SLIL
         public SLIL(TextureCache textures, string adress, int port)
         {
             InitializeComponent();
-            StartGameHandle = StartGameInvoker;
+            StartGameHandle = StartGameInvokerMultiPlayer;
             InitPlayerHandle = InitPlayerInvoker;
             Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle);
             rand = new Random();
