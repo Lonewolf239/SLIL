@@ -319,7 +319,7 @@ namespace SLIL
         InitPlayerDelegate InitPlayerHandle;
         public void StartGameInvoker()
         {
-            if (this.InvokeRequired)
+            if (this.InvokeRequired && this.IsHandleCreated)
             {
                 this.BeginInvoke((MethodInvoker)delegate
                 {
@@ -328,12 +328,7 @@ namespace SLIL
             }
             else
             {
-                while (!this.IsHandleCreated) { }
-                //this.StartGame();
-                this.BeginInvoke((MethodInvoker)delegate
-                {
-                        this.StartGame();
-                });
+                this.StartGame();
             }
         }
         public void InitPlayerInvoker()

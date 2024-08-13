@@ -79,7 +79,7 @@ namespace SLIL.Classes
 
         public void CloseConnection()
         {
-            client.Stop();
+            if(client!=null) client.Stop();
         }
 
         ~GameController()
