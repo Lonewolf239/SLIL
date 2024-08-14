@@ -17,6 +17,7 @@ namespace SLIL.UserControls
     {
         private static bool ImHonest = false;
         private int cheat_index = 0, color_index = 0;
+        private readonly Effect[] effects = { new Regeneration(), new Adrenaline(), new Protection() };
         private readonly List<string> previous_cheat = new List<string>();
         public List<Entity> Entities;
         public Player player;
@@ -137,9 +138,10 @@ namespace SLIL.UserControls
                                  "~│~ -IDDQD-       ~│~ Upgrade all weapons by one level            ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -EFFECTS-     ~│~ List of effects                             ~│~\n" +
+                                 "~│~ -EFALLGV-     ~│~ Give all effects                            ~│~\n" +
                                  "~│~ -EFCLEAR-     ~│~ Cleaning up effects                         ~│~\n" +
-                                 "~│~ -EFGIVE_-*X*    ~│~ Gives a certain effect                      ~│~\n" +
-                                 "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Gives a specific effect for Y seconds       ~│~\n" +
+                                 "~│~ -EFGIVE_-*X*    ~│~ Issue effect under X id                     ~│~\n" +
+                                 "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Issue effect under X id for Y seconds       ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -EGTRE-       ~│~ Issue first aid kits                        ~│~\n" +
                                  "~│~ -DHURF-       ~│~ Issue adrenaline                            ~│~\n" +
@@ -380,7 +382,7 @@ namespace SLIL.UserControls
                     {
                         show_date = false;
                         console.Text = null;
-                        message = "SLIL console *v1.2*\nType \"-help-\" for a list of commands...";
+                        message = "SLIL console *v1.3*\nType \"-help-\" for a list of commands...";
                         console.Refresh();
                     }
                     else if (cheat == "SLC")
@@ -528,7 +530,7 @@ namespace SLIL.UserControls
                                 color = foreColors[color_index];
                                 show_date = false;
                                 console.Text = null;
-                                message = "SLIL console *v1.2*\nType \"-help-\" for a list of commands...";
+                                message = "SLIL console *v1.3*\nType \"-help-\" for a list of commands...";
                                 console.Refresh();
                             }
                         }
@@ -544,31 +546,54 @@ namespace SLIL.UserControls
                         {
                             show_date = false;
                             message = "\n" +
-                                 "~┌───────┬─────────────┬─────────────────────────────┐~\n" +
-                                 "~│~ *Index* ~│~ *Effect*      ~│~ *Description*                 ~│~\n" +
-                                 "~├───────┼─────────────┼─────────────────────────────┤~\n" +
-                                 "~│~ *0*     ~│~ -Adrenaline-  ~│~ Increases movement speed    ~│~\n" +
-                                 "~└───────┴─────────────┴─────────────────────────────┘~";
+                                 "~┌─────┬──────────────────┬──────────────────────────────┐~\n" +
+                                 "~│~ *ID*  ~│~ *Effect*           ~│~ *Description*                  ~│~\n" +
+                                 "~├─────┼──────────────────┼──────────────────────────────┤~\n";
+                            for (int i = 0; i < effects.Length; i++)
+                            {
+                                string id = effects[i].ID.ToString().PadRight(4);
+                                string name = effects[i].Name.PadRight(17);
+                                string description = effects[i].Description.PadRight(29);
+                                message += $"~│~ *{id}*~│~ -{name}-~│~ {description}~│~\n";
+                            }
+                            message += "~└─────┴──────────────────┴──────────────────────────────┘~";
                         }
                         else if (cheat == "EFCLEAR")
                         {
-                            player.StopEffect();
+                            player.StopEffects();
                             message = "Effects have been cleared";
+                        }
+                        else if (cheat == "EFALLGV")
+                        {
+                            for (int i = 0; i < effects.Length; i++)
+                            {
+                                if (!player.EffectCheck(i))
+                                    player.GiveEffect(i, true);
+                            }
+                            message = $"All effects have been issued";
                         }
                         else if (cheat.StartsWith("EFGIVE_"))
                         {
                             try
                             {
                                 int x = Convert.ToInt32(cheat.Split('_')[1]);
-                                if (x >= 0 && x < 1)
+                                if (x >= 0 && x < effects.Length)
                                 {
-                                    player.GiveEffect(x, true);
-                                    message = $"The effect under index {x} is issued";
+                                    if (player.EffectCheck(x))
+                                    {
+                                        color = Color.Red;
+                                        message = $"You already have an effect under ID {x}";
+                                    }
+                                    else
+                                    {
+                                        player.GiveEffect(x, true);
+                                        message = $"The effect under ID {x} is issued";
+                                    }
                                 }
                                 else
                                 {
                                     color = Color.Red;
-                                    message = $"There is no effect under index {x}";
+                                    message = $"There is no effect under ID {x}";
                                 }
                             }
                             catch
@@ -583,7 +608,7 @@ namespace SLIL.UserControls
                             {
                                 int x = Convert.ToInt32(cheat.Split('_')[1]);
                                 int y = Convert.ToInt32(cheat.Split('_')[3]);
-                                if (x >= 0 && x < 1)
+                                if (x >= 0 && x < effects.Length)
                                 {
                                     if (y < 5 || y > 9999)
                                     {
@@ -593,13 +618,13 @@ namespace SLIL.UserControls
                                     else
                                     {
                                         player.GiveEffect(x, false, y);
-                                        message = $"Effect at index {x} was issued for {y} seconds";
+                                        message = $"Effect at ID {x} was issued for {y} seconds";
                                     }
                                 }
                                 else
                                 {
                                     color = Color.Red;
-                                    message = $"There is no effect under index {x}";
+                                    message = $"There is no effect under ID {x}";
                                 }
                             }
                             catch
@@ -934,7 +959,7 @@ namespace SLIL.UserControls
             if (console.Text.Length == console.MaxLength)
             {
                 console.Clear();
-                ConsoleAppendText("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", foreColors[color_index]);
+                ConsoleAppendText("SLIL console *v1.3*\nType \"-help-\" for a list of commands...", foreColors[color_index]);
                 ConsoleAppendText("*The console was cleared due to a buffer overflow*", foreColors[color_index]);
                 console.Refresh();
             }

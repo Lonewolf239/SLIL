@@ -292,7 +292,7 @@ namespace SLIL
                     soundIndices = soundIndices.OrderBy(x => rand.Next()).ToList();
                     currentIndex = 0;
                 }
-                int i = playerMoveStyle == Direction.RUN || player.Adrenaline ? 1 : 0;
+                int i = playerMoveStyle == Direction.RUN || player.Fast ? 1 : 0;
                 if (player.CuteMode)
                     i += 2;
                 int j = soundIndices[currentIndex];
@@ -307,11 +307,7 @@ namespace SLIL
             seconds--;
             if (player.Invulnerable)
                 player.InvulnerableEnd();
-            if (player.HasEffect)
-            {
-                player.EffectTimeRemaining--;
-                if (player.EffectTimeRemaining < 0) player.StopEffect();
-            }
+            player.UpdateEffectsTime();
             Pet playerPet = player.PET;
             if (playerPet != null && playerPet.IsInstantAbility != 1)
             {
@@ -332,8 +328,10 @@ namespace SLIL
                             playerPet.PetAbilityReloading = true;
                             break;
                         case 3: //Pyro
-                            if (player.GUNS[12].AmmoCount + 15 <= player.GUNS[12].MaxAmmo)
-                                player.GUNS[12].AmmoCount += 15;
+                            if (player.GUNS[12].AmmoCount + 10 <= player.GUNS[12].MaxAmmo)
+                                player.GUNS[12].AmmoCount += 10;
+                            else
+                                player.GUNS[12].AmmoCount = player.GUNS[12].MaxAmmo;
                             playerPet.AbilityTimer = 0;
                             playerPet.PetAbilityReloading = true;
                             break;
@@ -504,7 +502,7 @@ namespace SLIL
                                 runKey = Keys.Shift;
                                 break;
                         }
-                        if (ModifierKeys.HasFlag(runKey) && playerDirection == Direction.FORWARD && !player.Adrenaline && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !reload_timer.Enabled && !chill_timer.Enabled)
+                        if (ModifierKeys.HasFlag(runKey) && playerDirection == Direction.FORWARD && !player.Fast && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !reload_timer.Enabled && !chill_timer.Enabled)
                             playerMoveStyle = Direction.RUN;
                         if (e.KeyCode == Bind.Forward)
                             playerDirection = Direction.FORWARD;
@@ -548,8 +546,8 @@ namespace SLIL
                             {
                                 if (player.DisposableItems.Count > 0 && player.DisposableItems[player.SelectedItem].HasIt)
                                 {
-                                    if (player.SelectedItem == 0 && player.HP == player.MAX_HP) return;
-                                    if (player.SelectedItem == 1 && player.Adrenaline) return;
+                                    if (player.SelectedItem == 0 && player.EffectCheck(0) && player.HP == player.MAX_HP) return;
+                                    if (player.SelectedItem == 1 && player.EffectCheck(1)) return;
                                     TakeFlashlight(false);
                                     pressed_h = true;
                                     if (!player.Guns.Contains(player.DisposableItems[player.SelectedItem]))
@@ -1478,9 +1476,8 @@ namespace SLIL
                 double scale = 2.5;
                 double x = display.Width / 2, y = display.Height / 2;
                 double X = e.X - x, Y = e.Y - y;
-                double size = 1;
-                player.A -= (((X / x) / 10) * (LOOK_SPEED * size)) * scale;
-                player.Look += (((Y / y) * 30) * (LOOK_SPEED * size)) * scale;
+                player.A -= (((X / x) / 10) * LOOK_SPEED) * scale;
+                player.Look += (((Y / y) * 20) * LOOK_SPEED) * scale;
                 if (player.Look < -360)
                     player.Look = -360;
                 else if (player.Look > 360)
@@ -1639,7 +1636,7 @@ namespace SLIL
                 player = player,
                 Entities = Entities
             };
-            console_panel.Log("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
+            console_panel.Log("SLIL console *v1.3*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
             Controls.Add(console_panel);
             display = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
             display.MouseDown += new MouseEventHandler(Display_MouseDown);
@@ -2049,22 +2046,22 @@ namespace SLIL
             return map;
         }
 
-        private void DrawCircularProgressBar(Image effect_image, int icon_size)
+        private void DrawCircularProgressBar(Image effect_image, int icon_size, int index)
         {
             int diameter = icon_size;
-            int x = WEAPON.Width - icon_size - 4;
+            int x = WEAPON.Width - icon_size - 4 - ((icon_size + 4) * index);
             int y = WEAPON.Height - icon_size - 4;
-            graphicsWeapon.DrawImage(effect_image, x, y, icon_size, icon_size);
             RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
             using (Pen pen = new Pen(Color.FromArgb(104, 213, 248), 3))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
-            float sweepAngle = (float)player.EffectTimeRemaining / player.EffectTotalTime * 360;
+            float sweepAngle = (float)player.Effects[index].EffectTimeRemaining / player.Effects[index].EffectTotalTime * 360;
             using (Pen pen = new Pen(Color.FromArgb(90, 131, 182), 3))
             using (GraphicsPath path = new GraphicsPath())
             {
                 path.AddArc(circleRect, -90, sweepAngle);
                 graphicsWeapon.DrawPath(pen, path);
             }
+            graphicsWeapon.DrawImage(effect_image, x, y, icon_size, icon_size);
         }
 
         private void DrawWeaponGraphics()
@@ -2114,7 +2111,7 @@ namespace SLIL
             }
             graphicsWeapon.DrawImage(Properties.Resources.money, 2, 14 + (14 * resolution), icon_size, icon_size);
             graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 14 + (14 * resolution));
-            graphicsWeapon.DrawString(player.HP.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 108 + (110 * resolution));
+            graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 108 + (110 * resolution));
             graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 94 + (98 * resolution));
             if (!player.IsPetting && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
@@ -2166,11 +2163,10 @@ namespace SLIL
             }
             if (player.STAMINE < player.MAX_STAMINE)
                 graphicsWeapon.DrawLine(new Pen(Color.Lime, 2), 0, SCREEN_HEIGHT[resolution], (int)(player.STAMINE / player.MAX_STAMINE * SCREEN_WIDTH[resolution]), SCREEN_HEIGHT[resolution]);
-            if (player.HasEffect)
+            if (player.Effects.Count > 0)
             {
-                Image effect_image = null;
-                if (player.Adrenaline) effect_image = Properties.Resources.adrenalin_effect;
-                DrawCircularProgressBar(effect_image, icon_size);
+                for (int i = 0; i < player.Effects.Count; i++)
+                    DrawCircularProgressBar(player.Effects[i].Icon, icon_size, i);
             }
         }
 
@@ -2887,6 +2883,10 @@ namespace SLIL
         {
             player.Dead = true;
             player.SetDefault();
+            shop_tab_control.Controls.Clear();
+            shop_tab_control.Controls.Add(weapon_shop_page);
+            shop_tab_control.Controls.Add(pet_shop_page);
+            shop_tab_control.Controls.Add(consumables_shop_page);
             if (inDebug == 1)
             {
                 inDebug = 0;

@@ -2213,6 +2213,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap protection_effect {
+            get {
+                object obj = ResourceManager.GetObject("protection_effect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap random {
             get {
                 object obj = ResourceManager.GetObject("random", resourceCulture);
@@ -2226,6 +2236,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap red {
             get {
                 object obj = ResourceManager.GetObject("red", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap regeneration_effect {
+            get {
+                object obj = ResourceManager.GetObject("regeneration_effect", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

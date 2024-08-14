@@ -39,6 +39,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiteNetLib, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\LiteNetLib.1.2.0\lib\net471\LiteNetLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
@@ -95,6 +98,7 @@
     <Compile Include="CGF\Files.cs" />
     <Compile Include="Classes\BindControls.cs" />
     <Compile Include="Classes\ConvertBitmap.cs" />
+    <Compile Include="Classes\Effect.cs" />
     <Compile Include="Classes\Entity.cs" />
     <Compile Include="Classes\GameController.cs" />
     <Compile Include="Classes\GameModel.cs" />
@@ -976,6 +980,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\adrenalin_count_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\protection_effect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\regeneration_effect.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -183,7 +183,7 @@
             this.select_mode_btn = new System.Windows.Forms.Button();
             this.multiplayer_panel = new System.Windows.Forms.Panel();
             this.multiplayer_background = new System.Windows.Forms.Panel();
-            this.label1coming_soon_label = new System.Windows.Forms.Label();
+            this.coming_soon_label = new System.Windows.Forms.Label();
             this.connect_game_btn = new System.Windows.Forms.Button();
             this.nickname = new System.Windows.Forms.TextBox();
             this.nickname_label = new System.Windows.Forms.Label();
@@ -287,7 +287,6 @@
             this.lose_focus.Size = new System.Drawing.Size(1, 1);
             this.lose_focus.TabIndex = 43;
             this.lose_focus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lose_focus.Visible = false;
             // 
             // start_btn
             // 
@@ -2140,7 +2139,7 @@
             // multiplayer_background
             // 
             this.multiplayer_background.BackColor = System.Drawing.Color.Black;
-            this.multiplayer_background.Controls.Add(this.label1coming_soon_label);
+            this.multiplayer_background.Controls.Add(this.coming_soon_label);
             this.multiplayer_background.Controls.Add(this.connect_game_btn);
             this.multiplayer_background.Controls.Add(this.nickname);
             this.multiplayer_background.Controls.Add(this.nickname_label);
@@ -2151,16 +2150,16 @@
             this.multiplayer_background.Size = new System.Drawing.Size(490, 276);
             this.multiplayer_background.TabIndex = 45;
             // 
-            // label1coming_soon_label
+            // coming_soon_label
             // 
-            this.label1coming_soon_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1coming_soon_label.ForeColor = System.Drawing.Color.White;
-            this.label1coming_soon_label.Location = new System.Drawing.Point(3, 3);
-            this.label1coming_soon_label.Name = "label1coming_soon_label";
-            this.label1coming_soon_label.Size = new System.Drawing.Size(484, 220);
-            this.label1coming_soon_label.TabIndex = 63;
-            this.label1coming_soon_label.Text = "COMING\r\nSOON";
-            this.label1coming_soon_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.coming_soon_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.coming_soon_label.ForeColor = System.Drawing.Color.White;
+            this.coming_soon_label.Location = new System.Drawing.Point(3, 3);
+            this.coming_soon_label.Name = "coming_soon_label";
+            this.coming_soon_label.Size = new System.Drawing.Size(484, 220);
+            this.coming_soon_label.TabIndex = 63;
+            this.coming_soon_label.Text = "COMING\r\nSOON";
+            this.coming_soon_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // connect_game_btn
             // 
@@ -2716,7 +2715,7 @@
         private System.Windows.Forms.TextBox ip_connect_input;
         private System.Windows.Forms.Label ip_input_label;
         private System.Windows.Forms.Button close_connect_btn;
-        private System.Windows.Forms.Label label1coming_soon_label;
+        private System.Windows.Forms.Label coming_soon_label;
         private System.Windows.Forms.Panel select_item_panel;
         private System.Windows.Forms.Button select_item_btn;
         private System.Windows.Forms.Label select_item_label;

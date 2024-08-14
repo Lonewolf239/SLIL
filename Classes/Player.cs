@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using SharpDX.Direct2D1;
+using System.Collections.Generic;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace SLIL.Classes
 {
@@ -30,10 +32,8 @@ namespace SLIL.Classes
         public double RUN_SPEED { get; set; }
         public double DEPTH { get; set; }
         public int SelectedItem { get; set; }
-        public bool HasEffect { get; set; }
-        public int EffectTotalTime { get; set; }
-        public int EffectTimeRemaining { get; set; }
-        public bool Adrenaline { get; set; }
+        public bool Fast { get; set; }
+        public List<Effect> Effects = new List<Effect>();
         public readonly Gun[] GUNS =
         {
             new Flashlight(), new Knife(), new Pistol(),
@@ -58,11 +58,10 @@ namespace SLIL.Classes
         {
             if (Dead)
             {
-                HasEffect = false;
-                Adrenaline = false;
                 MAX_HP = 100;
                 MAX_STAMINE = 650;
                 HP = MAX_HP;
+                Effects.Clear();
                 Guns.Clear();
                 for (int i = 0; i < DisposableItems.Count; i++)
                     DisposableItems[i].SetDefault();
@@ -75,6 +74,7 @@ namespace SLIL.Classes
                 SelectedItem = 0;
                 PET = null;
                 CuteMode = false;
+                Fast = false;
             }
             EnemiesKilled = 0;
             Look = 0;
@@ -100,46 +100,99 @@ namespace SLIL.Classes
                 Invulnerable = false;
         }
 
+        public void UpdateEffectsTime()
+        {
+            if (Effects.Count == 0) return;
+            for (int i = Effects.Count - 1; i >= 0; i--)
+            {
+                if (Effects[i].ID == 0) HealHP(rand.Next(2, 6));
+                if (Effects[i].ReducingTimeRemaining())
+                {
+                    if (Effects[i].ID == 1)
+                    {
+                        Fast = false;
+                        MOVE_SPEED -= 1.5;
+                    }
+                    Effects.RemoveAt(i);
+                }
+            }
+        }
+
         public void GiveEffect(int index, bool standart_time, int time = 0)
         {
-            StopEffect();
             UseItem = false;
-            SelectedItem = index + 1;
-            if (SelectedItem == 1)
+            if (index == 0)
             {
-                Adrenaline = true;
-                HasEffect = true;
-                if (standart_time)
-                    EffectTotalTime = 30;
-                else
-                    EffectTotalTime = time;
-                EffectTimeRemaining = EffectTotalTime;
-                MOVE_SPEED += 2.25;
+                if (EffectCheck(0)) return;
+                Regeneration effect = new Regeneration();
+                if (!standart_time)
+                    effect.SetTotalTime(time);
+                effect.UpdateTimeRemaining();
+                Effects.Add(effect);
             }
+            else if (index == 1)
+            {
+                if (EffectCheck(1)) return;
+                Adrenaline effect = new Adrenaline();
+                if (!standart_time)
+                    effect.SetTotalTime(time);
+                effect.UpdateTimeRemaining();
+                Effects.Add(effect);
+                Fast = true;
+                MOVE_SPEED += 1.5;
+            }
+            else if (index == 2)
+            {
+                if (EffectCheck(2)) return;
+                Protection effect = new Protection();
+                if (!standart_time)
+                    effect.SetTotalTime(time);
+                effect.UpdateTimeRemaining();
+                Effects.Add(effect);
+            }
+        }
+
+        public bool EffectCheck(int id)
+        {
+            if (Effects.Count >= 4) return true;
+            for (int i = 0; i < Effects.Count; i++)
+                if (Effects[i].ID == id) return true;
+            return false;
         }
 
         public void SetEffect()
         {
             UseItem = false;
-            if (SelectedItem == 0) HealHP(rand.Next(40, 60));
+            if (SelectedItem == 0)
+            {
+                if (EffectCheck(0)) return;
+                Effects.Add(new Regeneration());
+            }
             else if (SelectedItem == 1)
             {
-                Adrenaline = true;
-                HasEffect = true;
-                EffectTotalTime = 30;
-                EffectTimeRemaining = EffectTotalTime;
-                MOVE_SPEED += 2.25;
+                if (EffectCheck(1)) return;
+                Effects.Add(new Adrenaline());
+                Fast = true;
+                MOVE_SPEED += 1.5;
+            }
+            else if (SelectedItem == 2)
+            {
+                if (EffectCheck(2)) return;
+                Effects.Add(new Protection());
             }
         }
 
-        public void StopEffect()
+        public void StopEffects()
         {
-            HasEffect = false;
-            if (Adrenaline)
+            for (int i = 0; i < Effects.Count; i++)
             {
-                Adrenaline = false;
-                MOVE_SPEED -= 2.25;
+                if (Effects[i].ID == 1)
+                {
+                    Fast = false;
+                    MOVE_SPEED -= 1.5;
+                }
             }
+            Effects.Clear();
         }
 
         public void HealHP(int value)
@@ -151,6 +204,7 @@ namespace SLIL.Classes
 
         public void DealDamage(double value)
         {
+            if (EffectCheck(2)) value *= 0.8;
             HP -= value;
             TimeoutInvulnerable = 2;
             Invulnerable = true;

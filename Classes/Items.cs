@@ -266,8 +266,8 @@ namespace SLIL.Classes
             MaxAmmoCount = 0;
             MaxAmmo = 100;
             FiringRange = 2.5;
-            MaxDamage = 3.75;
-            MinDamage = 3.5;
+            MaxDamage = 2.25;
+            MinDamage = 2;
             Recoil = 5;
             FiringRate = 125;
             BurstShots = 5;
@@ -898,7 +898,7 @@ namespace SLIL.Classes
         public Adrenalin() : base()
         {
             RechargeTime = 530;
-            GunCost = 50;
+            GunCost = 75;
             ItemIcon = Properties.Resources.adrenalin_count_icon;
             CuteItemIcon = Properties.Resources.adrenalin_count_icon;
             Name = new[]

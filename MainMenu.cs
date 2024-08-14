@@ -16,7 +16,7 @@ namespace SLIL
 {
     public partial class MainMenu : Form
     {
-        private const string current_version = "|1.1|";
+        private const string current_version = "|1.1.1|";
         public static string iniFolder = "config.ini";
         public static bool Language = true, sounds = true, ConsoleEnabled = false;
         private readonly TextureCache textureCache = new TextureCache();
@@ -35,6 +35,13 @@ namespace SLIL
         public static Player player;
         private readonly string[] en_changes =
         {
+            "\t\t\tv1.1.1",
+            "_______________________________________________________________",
+            "• Added 2 new effects: Regeneration and Protection",
+            "• Medkit has been reworked",
+            "• Podseratel and Adrenaline have been balanced",
+            "• Fixed some bugs",
+            "\n",
             "\t\t\tv1.1",
             "_______________________________________________________________",
             "• Podseratel: Added ability",
@@ -60,6 +67,13 @@ namespace SLIL
         };
         private readonly string[] ru_changes =
         {
+            "\t\t\tv1.1.1",
+            "_______________________________________________________________",
+            "• Добавлены 2 новых эффекта: Регенерация и Защита",
+            "• Аптечка была переработана",
+            "• Подсератель и Адреналин были сбалансированы",
+            "• Исправлены некоторые ошибки",
+            "\n",
             "\t\t\tv1.1",
             "_______________________________________________________________",
             "• Подсератель: Добавлена ​​способность",
