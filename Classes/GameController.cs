@@ -127,6 +127,12 @@ namespace SLIL.Classes
         {
             playerID = Game.AddPlayer();
         }
+
+        public (int, int) GetSecondsAndMinutes()
+        {
+            return Game.GetSecondsAndMinutes();
+        }
+
         public Player GetPlayer()
         {
             Player player = null;

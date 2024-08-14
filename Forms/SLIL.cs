@@ -52,7 +52,7 @@ namespace SLIL
         private readonly SolidBrush whiteBrush = new SolidBrush(Color.White);
         private readonly StringFormat rightToLeft = new StringFormat() { FormatFlags = StringFormatFlags.DirectionRightToLeft };
         private Graphics graphicsWeapon;
-        private int seconds, minutes, fps;
+        private int fps;
         private enum Direction { STOP, FORWARD, BACK, LEFT, RIGHT, WALK, RUN };
         private Direction playerDirection = Direction.STOP, strafeDirection = Direction.STOP, playerMoveStyle = Direction.WALK;
         private DateTime total_time = DateTime.Now;
@@ -567,55 +567,7 @@ namespace SLIL
 
         private void Time_remein_Tick(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
-            if (player == null) return;
-            seconds--;
-            if (player.Invulnerable)
-                player.InvulnerableEnd();
-            player.UpdateEffectsTime();
-            Pet playerPet = player.PET;
-            if (playerPet != null && playerPet.IsInstantAbility != 1)
-            {
-                if (playerPet.PetAbilityReloading)
-                {
-                    if (playerPet.AbilityTimer >= playerPet.AbilityReloadTime)
-                        playerPet.PetAbilityReloading = false;
-                    else
-                        playerPet.AbilityTimer++;
-                }
-                if (!playerPet.PetAbilityReloading)
-                {
-                    switch (playerPet.GetPetAbility())
-                    {
-                        case 0: //Silly Cat
-                            player.HealHP(2);
-                            playerPet.AbilityTimer = 0;
-                            playerPet.PetAbilityReloading = true;
-                            break;
-                        case 3: //Pyro
-                            if (player.GUNS[12].AmmoCount + 10 <= player.GUNS[12].MaxAmmo)
-                                player.GUNS[12].AmmoCount += 10;
-                            else
-                                player.GUNS[12].AmmoCount = player.GUNS[12].MaxAmmo;
-                            playerPet.AbilityTimer = 0;
-                            playerPet.PetAbilityReloading = true;
-                            break;
-                    }
-                }
-            }
-            if (seconds < 0)
-            {
-                if (minutes > 0)
-                {
-                    minutes--;
-                    seconds = 59;
-                }
-                else
-                {
-                    seconds = 0;
-                    GameOver(0);
-                }
-            }
+
         }
 
         private void Status_refresh_Tick(object sender, EventArgs e)
@@ -1465,7 +1417,7 @@ namespace SLIL
                                             }
                                         }
                                         else if (difficulty == 0 && player.GetCurrentGun().FireType == FireTypes.Single && !(player.GetCurrentGun() is Knife))
-                                            creature.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
+                                            creature.UpdateCoordinates(Controller.GetMap().ToString(), player.X, player.Y);
                                         if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
                                         else scope_hit = Properties.Resources.scope_c_hit;
                                         return;
@@ -1893,6 +1845,7 @@ namespace SLIL
             double invDet = 1.0 / (planeX * dirY - dirX * planeY);
             Entity[] Entities = new Entity[Controller.GetEntities().Count];
             Controller.GetEntities().CopyTo(Entities);
+            int mapWidth = Controller.GetMapWidth();
             int entityCount = Entities.Length;
             var spriteInfo = new (int Order, double Distance, int Texture)[entityCount];
             for (int i = 0; i < entityCount; i++)
@@ -1905,12 +1858,11 @@ namespace SLIL
             for (int i = 0; i < Entities.Length; i++)
             {
                 if (Entities[i] is Player) {
-                    if (Controller.GetPlayer().ID == (Entities[i] as Player).ID) continue;
+                    if (player.ID == (Entities[i] as Player).ID) continue;
                 }
                 double Distance = Math.Sqrt((player.X - Entities[spriteInfo[i].Order].X) * (player.X - Entities[spriteInfo[i].Order].X) + (player.Y - Entities[spriteInfo[i].Order].Y) * (player.Y - Entities[spriteInfo[i].Order].Y));
-                if (Distance > 22)
+                if (Distance > 22 || Distance == 0)
                     continue;
-                if (Distance == 0) Distance = 0.01;
                 double spriteX = Entities[spriteInfo[i].Order].X - player.X;
                 double spriteY = Entities[spriteInfo[i].Order].Y - player.Y;
                 double transformX = invDet * (dirY * spriteX - dirX * spriteY);
@@ -1966,7 +1918,7 @@ namespace SLIL
                                         else
                                             rays[stripe][y].TextureId = spriteInfo[i].Texture;
                                         if (creature is Enemy)
-                                            enemiesCoords.Add(Entities[spriteInfo[i].Order].IntY * Controller.GetMapWidth() + Entities[spriteInfo[i].Order].IntX);
+                                            enemiesCoords.Add(Entities[spriteInfo[i].Order].IntY * mapWidth + Entities[spriteInfo[i].Order].IntX);
                                     }
                                     else
                                     {
@@ -2290,6 +2242,8 @@ namespace SLIL
                 return;
             }
             string space_0 = "0", space_1 = "0";
+            int minutes = Controller.GetSecondsAndMinutes().Item1;
+            int seconds = Controller.GetSecondsAndMinutes().Item2;
             if (seconds > 9)
                 space_1 = "";
             if (minutes > 9)
@@ -2746,7 +2700,6 @@ namespace SLIL
             int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
             int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
             Cursor.Position = new Point(x, y);
-            seconds = 0;
             //if (!CUSTOM)
             //    player.X = player.Y = 1.5d;
             //else
@@ -2782,7 +2735,6 @@ namespace SLIL
             }
             else if (difficulty == 4)
             {
-                minutes = 9999;
                 MazeHeight = CustomMazeHeight;
                 MazeWidth = CustomMazeWidth;
                 enemy_count = 0.06;
@@ -2804,45 +2756,39 @@ namespace SLIL
                     MazeHeight = 7;
                     MazeWidth = 7;
                 }
-                minutes = 9999;
             }
             if (difficulty != 4 && difficulty != 5)
             {
                 if (player.Stage == 0)
                 {
-                    minutes = START_EASY;
                     MazeHeight = MazeWidth = 10;
                     MAX_SHOP_COUNT = 2;
                 }
                 else if (player.Stage == 1)
                 {
-                    minutes = START_NORMAL;
                     MazeHeight = MazeWidth = 15;
                     MAX_SHOP_COUNT = 4;
                 }
                 else if (player.Stage == 2)
                 {
-                    minutes = START_HARD;
                     MazeHeight = MazeWidth = 20;
                     MAX_SHOP_COUNT = 6;
                 }
                 else if (player.Stage == 3)
                 {
-                    minutes = START_VERY_HARD;
                     MazeHeight = MazeWidth = 25;
                     MAX_SHOP_COUNT = 8;
                 }
                 else
                 {
-                    minutes = START_VERY_HARD;
                     MazeHeight = MazeWidth = 25;
                     MAX_SHOP_COUNT = 8;
                 }
             }
             MAP_WIDTH = MazeWidth * 3 + 1;
             MAP_HEIGHT = MazeHeight * 3 + 1;
-            //map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
-            map = new Bitmap(MAP_WIDTH, MAP_HEIGHT);
+            map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
+            //map = new Bitmap(MAP_WIDTH, MAP_HEIGHT);
             if (MainMenu.sounds)
             {
                 if (!player.CuteMode)

@@ -29,12 +29,14 @@ namespace SLIL.Classes
         private bool GameStarted = false, CorrectExit = false;
         private readonly Random rand;
         private int difficulty;
+        private int seconds, minutes;
         private int MAP_WIDTH, MAP_HEIGHT;
         public StringBuilder CUSTOM_MAP = new StringBuilder();
         public int CUSTOM_X, CUSTOM_Y;
 
         private static Timer RespawnTimer;
         private static Timer EnemyTimer;
+        private static Timer TimeRemain;
 
         public int MaxEntityID;
 
@@ -54,6 +56,9 @@ namespace SLIL.Classes
             EnemyTimer = new Timer();
             EnemyTimer.Interval = 100;
             EnemyTimer.Tick += EnemyTimer_Tick;
+            TimeRemain = new Timer();
+            TimeRemain.Interval = 1000;
+            TimeRemain.Tick += TimeRemain_Tick;
         }
 
         public void StartGame()
@@ -61,6 +66,7 @@ namespace SLIL.Classes
             GameStarted = true;
             RespawnTimer.Start();
             EnemyTimer.Start();
+            TimeRemain.Start();
         }
 
         public int AddPlayer()
@@ -494,6 +500,136 @@ namespace SLIL.Classes
         
         public void InitMap()
         {
+            seconds = 0;
+            //if (!CUSTOM)
+            //    player.X = player.Y = 1.5d;
+            //else
+            //{
+            //    player.X = CUSTOM_X;
+            //    player.Y = CUSTOM_Y;
+            //}
+            double enemy_count = 0;
+            int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
+                if (difficulty == 0)
+                    enemy_count = 0.07;
+                else if (difficulty == 1)
+                    enemy_count = 0.065;
+                else if (difficulty == 2)
+                {
+                    enemy_count = 0.055;
+                }
+                else if (difficulty == 3)
+                {
+                    enemy_count = 0.045;
+                }
+                else if (difficulty == 4)
+                {
+                    minutes = 9999;
+                    MazeHeight = 7;//CustomMazeHeight;
+                    MazeWidth = 7;//CustomMazeWidth;
+                    enemy_count = 0.06;
+                    MAX_SHOP_COUNT = 5;
+                }
+                else
+                {
+                    //if (inDebug == 1)
+                    //{
+                    //    player.X = 9;
+                    //    player.Y = 9;
+                    //    MazeHeight = 6;
+                    //    MazeWidth = 6;
+                    //}
+                    //else if (inDebug == 2)
+                    //{
+                    //    player.X = 10.5;
+                    //    player.Y = 19.5;
+                    //    MazeHeight = 7;
+                    //    MazeWidth = 7;
+                }
+                minutes = 9999;
+                if (difficulty != 4 && difficulty != 5)
+                {
+                    minutes = 5;
+                    MazeHeight = MazeWidth = 10;
+                    MAX_SHOP_COUNT = 2;
+
+                }
+            foreach (Entity ent in Entities)
+            {
+                if (!(ent is Player player)) return;
+                if (difficulty == 0)
+                    enemy_count = 0.07;
+                else if (difficulty == 1)
+                    enemy_count = 0.065;
+                else if (difficulty == 2)
+                {
+                    enemy_count = 0.055;
+                }
+                else if (difficulty == 3)
+                {
+                    enemy_count = 0.045;
+                }
+                else if (difficulty == 4)
+                {
+                    minutes = 9999;
+                    MazeHeight = 7;//CustomMazeHeight;
+                    MazeWidth = 7;//CustomMazeWidth;
+                    enemy_count = 0.06;
+                    MAX_SHOP_COUNT = 5;
+                }
+                else
+                {
+                    //if (inDebug == 1)
+                    //{
+                    //    player.X = 9;
+                    //    player.Y = 9;
+                    //    MazeHeight = 6;
+                    //    MazeWidth = 6;
+                    //}
+                    //else if (inDebug == 2)
+                    //{
+                    //    player.X = 10.5;
+                    //    player.Y = 19.5;
+                    //    MazeHeight = 7;
+                    //    MazeWidth = 7;
+                }
+                minutes = 9999;
+                if (difficulty != 4 && difficulty != 5)
+                {
+                    if (player.Stage == 0)
+                    {
+                        minutes = 5;
+                        MazeHeight = MazeWidth = 10;
+                        MAX_SHOP_COUNT = 2;
+                    }
+                    else if (player.Stage == 1)
+                    {
+                        minutes = 10;
+                        MazeHeight = MazeWidth = 15;
+                        MAX_SHOP_COUNT = 4;
+                    }
+                    else if (player.Stage == 2)
+                    {
+                        minutes = 15;
+                        MazeHeight = MazeWidth = 20;
+                        MAX_SHOP_COUNT = 6;
+                    }
+                    else if (player.Stage == 3)
+                    {
+                        minutes = 20;
+                        MazeHeight = MazeWidth = 25;
+                        MAX_SHOP_COUNT = 8;
+                    }
+                    else
+                    {
+                        minutes = 20;
+                        MazeHeight = MazeWidth = 25;
+                        MAX_SHOP_COUNT = 8;
+                    }
+                }
+            }
+            MAP_WIDTH = MazeWidth * 3 + 1;
+            MAP_HEIGHT = MazeHeight * 3 + 1;
             MAP.Clear();
             if (difficulty == 5)
             {
@@ -538,7 +674,7 @@ namespace SLIL.Classes
             {
                 Random random = new Random();
                 StringBuilder sb = new StringBuilder();
-                char[,] map = (new Maze()).GenerateCharMap((MAP_WIDTH-1)/3, (MAP_HEIGHT - 1) / 3, '#', '=', 'd', '.', 'F', 5);//MAX_SHOP_COUNT);
+                char[,] map = (new Maze()).GenerateCharMap(MazeWidth, MazeHeight, '#', '=', 'd', '.', 'F', MAX_SHOP_COUNT);
                 map[1, 1] = 'P';
                 List<int[]> shops = new List<int[]>();
                 for (int y = 0; y < map.GetLength(1); y++)
@@ -612,35 +748,18 @@ namespace SLIL.Classes
                     {
                         if (map[x, y] == 'F')
                         {
-                            Teleport teleport = new Teleport(x, y, MAP_WIDTH, ref MaxEntityID);
+                            Teleport teleport = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                             Entities.Add(teleport);
                         }
                         if (map[x, y] == 'D')
                         {
-                            ShopDoor shopDoor = new ShopDoor(x, y, MAP_WIDTH, ref MaxEntityID);
+                            ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                             Entities.Add(shopDoor);
                         }
                         if (map[x, y] == '$')
                         {
-                            ShopMan shopMan = new ShopMan(x, y, MAP_WIDTH, ref MaxEntityID);
+                            ShopMan shopMan = new ShopMan(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                             Entities.Add(shopMan);
-                        }
-                        double enemy_count = 0.07;
-                        if (difficulty == 0)
-                            enemy_count = 0.07;
-                        else if (difficulty == 1)
-                            enemy_count = 0.065;
-                        else if (difficulty == 2)
-                        {
-                            enemy_count = 0.055;
-                        }
-                        else if (difficulty == 3)
-                        {
-                            enemy_count = 0.045;
-                        }
-                        else if (difficulty == 4)
-                        {
-                            enemy_count = 0.06;
                         }
                         if (map[x, y] == '.' && random.NextDouble() <= enemy_count && x > 5 && y > 5)
                             SpawnEnemis(x, y, MAP_WIDTH);
@@ -770,6 +889,61 @@ namespace SLIL.Classes
                 return false;
             }
             return false;
+        }
+
+        private void TimeRemain_Tick(object sender, EventArgs e)
+        {
+            seconds--;
+            if (seconds < 0)
+            {
+                if (minutes > 0)
+                {
+                    minutes--;
+                    seconds = 59;
+                }
+                else
+                {
+                    seconds = 0;
+                    GameOver(0);
+                }
+            }
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                if (!(Entities[i] is Player player)) continue;
+                if (player.Invulnerable)
+                    player.InvulnerableEnd();
+                player.UpdateEffectsTime();
+                Pet playerPet = player.PET;
+                if (playerPet != null && playerPet.IsInstantAbility != 1)
+                {
+                    if (playerPet.PetAbilityReloading)
+                    {
+                        if (playerPet.AbilityTimer >= playerPet.AbilityReloadTime)
+                            playerPet.PetAbilityReloading = false;
+                        else
+                            playerPet.AbilityTimer++;
+                    }
+                    if (!playerPet.PetAbilityReloading)
+                    {
+                        switch (playerPet.GetPetAbility())
+                        {
+                            case 0: //Silly Cat
+                                player.HealHP(2);
+                                playerPet.AbilityTimer = 0;
+                                playerPet.PetAbilityReloading = true;
+                                break;
+                            case 3: //Pyro
+                                if (player.GUNS[12].AmmoCount + 10 <= player.GUNS[12].MaxAmmo)
+                                    player.GUNS[12].AmmoCount += 10;
+                                else
+                                    player.GUNS[12].AmmoCount = player.GUNS[12].MaxAmmo;
+                                playerPet.AbilityTimer = 0;
+                                playerPet.PetAbilityReloading = true;
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         private void ResetDefault()
@@ -919,6 +1093,11 @@ namespace SLIL.Classes
                     return;
                 }
             }
+        }
+
+        internal (int, int) GetSecondsAndMinutes()
+        {
+            return (this.minutes, this.seconds);
         }
     }
 }
