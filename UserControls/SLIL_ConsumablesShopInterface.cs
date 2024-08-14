@@ -17,7 +17,7 @@ namespace SLIL.UserControls
         public int index = 0;
         public int language = 0;
         public int width;
-        public PlaySound buy;
+        public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
         private readonly string[,] buy_text = { { "Купить", "Buy" }, { "Уже есть", "Has already" } };

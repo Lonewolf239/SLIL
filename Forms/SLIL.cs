@@ -2827,7 +2827,6 @@ namespace SLIL
                     {
                         index = MainMenu.Language ? 0 : 1,
                         weapon = player.GUNS[i],
-                        buy = buy,
                         player = player,
                         BackColor = shop_panel.BackColor,
                         Dock = DockStyle.Top
@@ -2841,7 +2840,6 @@ namespace SLIL
                 {
                     index = MainMenu.Language ? 0 : 1,
                     pet = Controller.GetPets()[i],
-                    buy = buy,
                     player = player,
                     BackColor = shop_panel.BackColor,
                     Dock = DockStyle.Top
@@ -2856,7 +2854,6 @@ namespace SLIL
                     {
                         index = MainMenu.Language ? 0 : 1,
                         item = player.GUNS[i] as DisposableItem,
-                        buy = buy,
                         player = player,
                         //GUNS = player.GUNS,
                         BackColor = shop_panel.BackColor,
