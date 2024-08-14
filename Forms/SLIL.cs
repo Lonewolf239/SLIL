@@ -236,6 +236,16 @@ namespace SLIL
                    { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("adrenalin_using.wav"), false), new PlaySound(null, false) }
             } },
         };
+        public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
+        {
+            { typeof(FirstAidKit), Properties.Resources.first_aid },
+            { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
+        };
+        public static readonly Dictionary<Type, Image> CuteItemIconDict = new Dictionary<Type, Image>
+        {
+            { typeof(FirstAidKit), Properties.Resources.food_count },
+            { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
+        };
         private readonly PlaybackState playbackState = new PlaybackState();
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
@@ -2309,12 +2319,12 @@ namespace SLIL
             if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 108 + (110 * resolution), icon_size, icon_size);
-                graphicsWeapon.DrawImage(player.DisposableItems[player.SelectedItem].ItemIcon, 2, 94 + (96 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 94 + (96 * resolution), icon_size, icon_size);
             }
             else
             {
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 108 + (110 * resolution), icon_size, icon_size);
-                graphicsWeapon.DrawImage(player.DisposableItems[player.SelectedItem].CuteItemIcon, 2, 94 + (96 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 94 + (96 * resolution), icon_size, icon_size);
             }
             graphicsWeapon.DrawImage(Properties.Resources.money, 2, 14 + (14 * resolution), icon_size, icon_size);
             graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 14 + (14 * resolution));

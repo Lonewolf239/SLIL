@@ -147,8 +147,6 @@ namespace SLIL.Classes
     public class DisposableItem : Item
     {
         public bool HasLVMechanics { get; set; }
-        public Image CuteItemIcon { get; set; }
-        public Image ItemIcon { get; set; }
 
         public DisposableItem() : base()
         {
@@ -719,8 +717,6 @@ namespace SLIL.Classes
             HasLVMechanics = true;
             HasCuteDescription = true;
             GunCost = 50;
-            ItemIcon = Properties.Resources.first_aid;
-            CuteItemIcon = Properties.Resources.food_count;
             Name = new[]
             { 
                 "Аптечка", "First Aid Kit",
@@ -742,8 +738,6 @@ namespace SLIL.Classes
         {
             RechargeTime = 530;
             GunCost = 75;
-            ItemIcon = Properties.Resources.adrenalin_count_icon;
-            CuteItemIcon = Properties.Resources.adrenalin_count_icon;
             Name = new[]
             {
                 "Адреналин", "Adrenalin"
