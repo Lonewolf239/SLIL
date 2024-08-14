@@ -36,7 +36,7 @@ namespace SLIL
                 string[] MAP = map.Split(':');
                 maze_height = Convert.ToInt32(MAP[0]);
                 maze_width = Convert.ToInt32(MAP[1]);
-                if (MAP[2].Any(c => c != '.' && c != '#' && c != '=' && c != 'D' && c != 'd' && c != 'F' && c != 'P' && c != 'E' && c != '$'))
+                if (MAP[2].Any(c => c != '.' && c != '#' && c != '=' && c != 'D' && c != 'd' && c != 'F' && c != 'P' && c != 'E' && c != '$' && c != 'W'))
                 {
                     if (MainMenu.Language)
                         MessageBox.Show("Строка содержит недопустимые символы.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -107,7 +107,7 @@ namespace SLIL
                 Text = "Editor";
                 about.Text = "Elements:";
                 elements.Items.Clear();
-                string[] div = { "Player", "Wall", "Door", "Window", "Finish", "Shop", "Enemy" };
+                string[] div = { "Player", "Wall", "Door", "Window", "Finish", "Shop", "Enemy", "Invisible wall" };
                 elements.Items.AddRange(div);
             }
             old_MazeHeight = MazeHeight;
@@ -220,6 +220,8 @@ namespace SLIL
                         MAP.Append("F");
                     else if (panels[i, j].BackColor == Color.Pink)
                         MAP.Append("$");
+                    else if (panels[i, j].BackColor == Color.Purple)
+                        MAP.Append("W");
                     else if (panels[i, j].BackColor == Color.Red)
                     {
                         MAP.Append("P");
@@ -449,6 +451,8 @@ namespace SLIL
                     }
                     else if (index == 6)
                         panel.BackColor = Color.Navy;
+                    else if (index == 7)
+                        panel.BackColor = Color.Purple;
                 }
             }
             else

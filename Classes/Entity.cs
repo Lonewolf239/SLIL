@@ -2,7 +2,6 @@
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 
 namespace SLIL.Classes
 {
@@ -19,7 +18,7 @@ namespace SLIL.Classes
         public int[][] Animations { get; set; }
         public bool RespondsToFlashlight { get; set; }
         public int Frames { get; set; }
-        protected readonly Random rand = new Random();
+        protected readonly Random rand;
 
         protected abstract int GetEntityID();
 
@@ -32,6 +31,7 @@ namespace SLIL.Classes
             ID = maxEntityID;
             maxEntityID++;
             EntityID = this.GetEntityID();
+            rand = new Random();
             Frames = 24;
             Texture = this.GetTexture();
             EntityWidth = this.GetEntityWidth();
@@ -264,7 +264,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=' };
+            return new char[] { '#', 'D', 'd', '=', 'W' };
         }
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
@@ -464,10 +464,10 @@ namespace SLIL.Classes
             ShopIcon = Properties.Resources.pet_cat_icon;
             Cost = 150;
             Name = new[] { "Глупый Кот", "Silly Cat" };
-            Descryption = new[] { "Раз в 5 секунд восстанавливает 2 HP", "Restores 2 HP every 5 seconds" };
+            Descryption = new[] { "Раз в 8 секунд восстанавливает 2 HP", "Restores 2 HP every 8 seconds" };
             Texture = 17;
             PetAbility = 0;
-            AbilityReloadTime = 5;
+            AbilityReloadTime = 8;
             HasStopAnimation = true;
             RespondsToFlashlight = true;
             base.SetAnimations(1, 0);
@@ -580,13 +580,13 @@ namespace SLIL.Classes
         {
             Index = 3;
             ShopIcon = Properties.Resources.pet_pyro_icon;
-            Cost = 60;
+            Cost = 666;
             Name = new[] { "Подсератель", "Podseratel" };
             Descryption = new[] { "Мир — это сказка...", "The world is a fairy tale..." };
             Texture = 31;
             PetAbility = 3;
             IsInstantAbility = 2;
-            AbilityReloadTime = 8;
+            AbilityReloadTime = 15;
             RespondsToFlashlight = true;
             base.SetAnimations(1, 0);
         }
@@ -672,7 +672,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() 
         {
-            return new char[] { '#', 'D', 'd', '=' };
+            return new char[] { '#', 'D', 'd', '=', 'W' };
         }
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 10;
@@ -774,7 +774,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=' };
+            return new char[] { '#', 'D', 'd', '=', 'W' };
         }
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 5;
@@ -878,7 +878,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=' };
+            return new char[] { '#', 'D', 'd', '=', 'W' };
         }
         protected override int GetMovesInARow() => 40;
         protected override int GetMAX_HP() => 20;
@@ -980,7 +980,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd' };
+            return new char[] { '#', 'D', 'd', 'W' };
         }
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 2;

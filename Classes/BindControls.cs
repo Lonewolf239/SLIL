@@ -16,7 +16,8 @@ namespace SLIL.Classes
         public Keys Show_map_0 { get; set; }
         public Keys Show_map_1 { get; set; }
         public Keys Flashlight { get; set; }
-        public Keys Medkit { get; set; }
+        public Keys Item { get; set; }
+        public Keys SelectItem { get; set; }
         public Keys Run { get; set; }
 
         public BindControls(Dictionary<string, Keys> BindControls)
@@ -32,7 +33,8 @@ namespace SLIL.Classes
             Show_map_0 = BindControls["show_map_0"];
             Show_map_1 = BindControls["show_map_1"];
             Flashlight = BindControls["flashlight"];
-            Medkit = BindControls["medkit"];
+            Item = BindControls["item"];
+            SelectItem = BindControls["select_item"];
             Run = BindControls["run"];
         }
     }

@@ -811,4 +811,61 @@
   <data name="scope_c_hit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\scope_c_hit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="c_ceiling" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_ceiling.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_wall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_wall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="food_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\food_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_enemy_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_enemy_0_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_0_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_enemy_0_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_0_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_door" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_door.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_shop_door" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_shop_door.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin_using_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_using_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin_using_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_using_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin_using_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_using_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_teleport_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_teleport_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_teleport_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_teleport_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin_count_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_count_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="protection_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\protection_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="regeneration_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\regeneration_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

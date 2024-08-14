@@ -17,9 +17,9 @@ namespace SLIL.UserControls
     {
         private static bool ImHonest = false;
         private int cheat_index = 0, color_index = 0;
+        private readonly Effect[] effects = { new Regeneration(), new Adrenaline(), new Protection() };
         private readonly List<string> previous_cheat = new List<string>();
         public List<Entity> Entities;
-        public Gun[] GUNS;
         public Player player;
         private readonly Dictionary<string, Color> colorMap = new Dictionary<string, Color>
         {
@@ -41,14 +41,7 @@ namespace SLIL.UserControls
             InitializeComponent();
         }
 
-        private void GetFirstAidKit()
-        {
-            if (player.FirstAidKits.Count == 0)
-                player.FirstAidKits.Add((FirstAidKit)GUNS[10]);
-            player.FirstAidKits[0].AmmoCount = player.FirstAidKits[0].CartridgesClip;
-            player.FirstAidKits[0].MaxAmmoCount = player.FirstAidKits[0].CartridgesClip;
-            player.FirstAidKits[0].HasIt = true;
-        }
+        private void GetItem(int index) => player.DisposableItems[index].AddItem();
 
         private void Command_input_KeyDown(object sender, KeyEventArgs e)
         {
@@ -113,7 +106,7 @@ namespace SLIL.UserControls
                     else if (cheat == "SOUL_FORGE")
                     {
                         message += $"Now the track Soul Forge *AI* is playing.\nSong link: https://suno.com/song/28b30489-c22d-400b-8537-ee1ddfb492ac";
-                        SLIL.ChangeOst(5);
+                        SLIL.ChangeOst(Parent.FindForm() as SLIL, 5);
                     }
                     else if (cheat == "CHEATS")
                     {
@@ -144,7 +137,14 @@ namespace SLIL.UserControls
                                  "~│~ -FYTLG-       ~│~ Maximum amount of ammunition                ~│~\n" +
                                  "~│~ -IDDQD-       ~│~ Upgrade all weapons by one level            ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
+                                 "~│~ -EFFECTS-     ~│~ List of effects                             ~│~\n" +
+                                 "~│~ -EFALLGV-     ~│~ Give all effects                            ~│~\n" +
+                                 "~│~ -EFCLEAR-     ~│~ Cleaning up effects                         ~│~\n" +
+                                 "~│~ -EFGIVE_-*X*    ~│~ Issue effect under X id                     ~│~\n" +
+                                 "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Issue effect under X id for Y seconds       ~│~\n" +
+                                 "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -EGTRE-       ~│~ Issue first aid kits                        ~│~\n" +
+                                 "~│~ -DHURF-       ~│~ Issue adrenaline                            ~│~\n" +
                                  "~│~ -GKIFK-       ~│~ Issue 999 HP                                ~│~\n" +
                                  "~│~ -KILL-        ~│~ Kill a player                               ~│~\n" +
                                  "~│~ -LPFJY-       ~│~ Cause 99 damage                             ~│~\n" +
@@ -183,7 +183,7 @@ namespace SLIL.UserControls
                             {
                                 message += $"Now the track slil_ost_{x} is playing.";
                                 SLIL.prev_ost = x;
-                                SLIL.ChangeOst(x);
+                                SLIL.ChangeOst(Parent.FindForm() as SLIL, x);
                             }
                             else
                             {
@@ -204,9 +204,9 @@ namespace SLIL.UserControls
                         sb.AppendLine("~|~      *Weapon Name*      ~|~");
                         sb.AppendLine("~|───────────────────────|~");
                         int maxLength = 21;
-                        for (int i = 0; i < GUNS.Length; i++)
+                        for (int i = 0; i < player.GUNS.Length; i++)
                         {
-                            string paddedName = GUNS[i].Name[1].PadRight(maxLength);
+                            string paddedName = player.GUNS[i].Name[1].PadRight(maxLength);
                             sb.AppendLine($"~|~ -{paddedName}- ~|~");
                         }
                         sb.AppendLine("~|───────────────────────|~");
@@ -323,7 +323,7 @@ namespace SLIL.UserControls
                     {
                         string name = cheat.Split('_')[1];
                         Gun selected = null;
-                        foreach (Gun gun in GUNS)
+                        foreach (Gun gun in player.GUNS)
                         {
                             if (gun.Name[1].ToLower() == name.ToLower())
                             {
@@ -382,7 +382,7 @@ namespace SLIL.UserControls
                     {
                         show_date = false;
                         console.Text = null;
-                        message = "SLIL console *v1.2*\nType \"-help-\" for a list of commands...";
+                        message = "SLIL console *v1.3*\nType \"-help-\" for a list of commands...";
                         console.Refresh();
                     }
                     else if (cheat == "SLC")
@@ -431,7 +431,7 @@ namespace SLIL.UserControls
                             {
                                 message += $"Current volume is now {x}. *Default: 0,4*";
                                 SLIL.Volume = x;
-                                SLIL.SetVolume();
+                                SLIL.SetVolume(Parent.FindForm() as SLIL);
                             }
                             else
                             {
@@ -530,7 +530,7 @@ namespace SLIL.UserControls
                                 color = foreColors[color_index];
                                 show_date = false;
                                 console.Text = null;
-                                message = "SLIL console *v1.2*\nType \"-help-\" for a list of commands...";
+                                message = "SLIL console *v1.3*\nType \"-help-\" for a list of commands...";
                                 console.Refresh();
                             }
                         }
@@ -540,242 +540,348 @@ namespace SLIL.UserControls
                             message = "Incorrect data entered! X is not a number.";
                         }
                     }
-                    else if (cheat == "CAT" && !ImHonest)
+                    else if (!ImHonest)
                     {
-                        if (!(player.PET is SillyCat))
+                        if (cheat == "EFFECTS")
                         {
-                            message += "Pet \"Silly cat\" has been issued.";
-                            (Parent.FindForm() as SLIL).AddPet(0);
-                        }
-                        else
-                        {
-                            color = Color.Red;
-                            message = "Code not applied! You already have \"Silly cat\".";
-                        }
-                    }
-                    else if (cheat == "GNOME" && !ImHonest)
-                    {
-                        if (!(player.PET is GreenGnome))
-                        {
-                            message += "Pet \"Wizard Gnome\" has been issued.";
-                            (Parent.FindForm() as SLIL).AddPet(1);
-                        }
-                        else
-                        {
-                            color = Color.Red;
-                            message = "Code not applied! You already have \"Wizard Gnome\".";
-                        }
-                    }
-                    else if (cheat == "ENERGY" && !ImHonest)
-                    {
-                        if (!(player.PET is EnergyDrink))
-                        {
-                            message += "Pet \"Energy Drink\" has been issued.";
-                            (Parent.FindForm() as SLIL).AddPet(2);
-                        }
-                        else
-                        {
-                            color = Color.Red;
-                            message = "Code not applied! You already have \"Energy Drink\".";
-                        }
-                    }
-                    else if (cheat == "ILOVEFURRY" && !ImHonest)
-                    {
-                        if (!(player.PET is Pyro))
-                        {
-                            message += "Pet \"Podseratel\" has been issued.";
-                            (Parent.FindForm() as SLIL).AddPet(3);
-                        }
-                        else
-                        {
-                            color = Color.Red;
-                            message = "Code not applied! You already have \"Podseratel\".";
-                        }
-                    }
-                    else if (cheat.StartsWith("CCHANC_") && !ImHonest)
-                    {
-                        double x = 0.08;
-                        bool error = false;
-                        try
-                        {
-                            x = Convert.ToDouble(cheat.Split('_')[1].Replace('.', ','));
-                        }
-                        catch
-                        {
-                            error = true;
-                        }
-                        if (error || x < 0 || x > 1)
-                        {
-                            color = Color.Red;
-                            message = "Incorrect range specified! Instead of X, enter a number between 0 and 1.";
-                        }
-                        else
-                        {
-                            message += $"Set chance of curse healing to {x * 100:0.##}% *Default: 8%*";
-                            player.CurseCureChance = x;
-                        }
-                    }
-                    else if (cheat.StartsWith("MONEY_") && !ImHonest)
-                    {
-                        try
-                        {
-                            int x = Convert.ToInt32(cheat.Split('_')[1]);
-                            message += $"The amount of money has been changed to {x}";
-                            player.ChangeMoney(x);
-                        }
-                        catch
-                        {
-                            color = Color.Red;
-                            message = "Incorrect data entered! X is not a number.";
-                        }
-                    }
-                    else if (cheat.StartsWith("STAMIN_") && !ImHonest)
-                    {
-                        try
-                        {
-                            int x = Convert.ToInt32(cheat.Split('_')[1]);
-                            if (x >= 100 && x <= 5000)
+                            show_date = false;
+                            message = "\n" +
+                                 "~┌─────┬──────────────────┬──────────────────────────────┐~\n" +
+                                 "~│~ *ID*  ~│~ *Effect*           ~│~ *Description*                  ~│~\n" +
+                                 "~├─────┼──────────────────┼──────────────────────────────┤~\n";
+                            for (int i = 0; i < effects.Length; i++)
                             {
-                                message += $"Player stamina is now {x}. *Default: 650*";
-                                player.MAX_STAMINE = x;
-                                player.STAMINE = x;
+                                string id = effects[i].ID.ToString().PadRight(4);
+                                string name = effects[i].Name.PadRight(17);
+                                string description = effects[i].Description.PadRight(29);
+                                message += $"~│~ *{id}*~│~ -{name}-~│~ {description}~│~\n";
+                            }
+                            message += "~└─────┴──────────────────┴──────────────────────────────┘~";
+                        }
+                        else if (cheat == "EFCLEAR")
+                        {
+                            player.StopEffects();
+                            message = "Effects have been cleared";
+                        }
+                        else if (cheat == "EFALLGV")
+                        {
+                            for (int i = 0; i < effects.Length; i++)
+                            {
+                                if (!player.EffectCheck(i))
+                                    player.GiveEffect(i, true);
+                            }
+                            message = $"All effects have been issued";
+                        }
+                        else if (cheat.StartsWith("EFGIVE_"))
+                        {
+                            try
+                            {
+                                int x = Convert.ToInt32(cheat.Split('_')[1]);
+                                if (x >= 0 && x < effects.Length)
+                                {
+                                    if (player.EffectCheck(x))
+                                    {
+                                        color = Color.Red;
+                                        message = $"You already have an effect under ID {x}";
+                                    }
+                                    else
+                                    {
+                                        player.GiveEffect(x, true);
+                                        message = $"The effect under ID {x} is issued";
+                                    }
+                                }
+                                else
+                                {
+                                    color = Color.Red;
+                                    message = $"There is no effect under ID {x}";
+                                }
+                            }
+                            catch
+                            {
+                                color = Color.Red;
+                                message = "Incorrect data entered! X is not a number.";
+                            }
+                        }
+                        else if (cheat.StartsWith("EFG_") && cheat.Contains("_TM_"))
+                        {
+                            try
+                            {
+                                int x = Convert.ToInt32(cheat.Split('_')[1]);
+                                int y = Convert.ToInt32(cheat.Split('_')[3]);
+                                if (x >= 0 && x < effects.Length)
+                                {
+                                    if (y < 5 || y > 9999)
+                                    {
+                                        color = Color.Red;
+                                        message = "Incorrect value! Y must be in the range from 5 to 9999.";
+                                    }
+                                    else
+                                    {
+                                        player.GiveEffect(x, false, y);
+                                        message = $"Effect at ID {x} was issued for {y} seconds";
+                                    }
+                                }
+                                else
+                                {
+                                    color = Color.Red;
+                                    message = $"There is no effect under ID {x}";
+                                }
+                            }
+                            catch
+                            {
+                                color = Color.Red;
+                                message = "Incorrect data entered! X or Y is not a number.";
+                            }
+                        }
+                        else if (cheat == "CAT")
+                        {
+                            if (!(player.PET is SillyCat))
+                            {
+                                message += "Pet \"Silly cat\" has been issued.";
+                                (Parent.FindForm() as SLIL).AddPet(0);
                             }
                             else
                             {
                                 color = Color.Red;
-                                message = "Incorrect range specified! Instead of X, enter a number between 100 and 5000.";
+                                message = "Code not applied! You already have \"Silly cat\".";
                             }
                         }
-                        catch
+                        else if (cheat == "GNOME")
                         {
-                            color = Color.Red;
-                            message = "Incorrect data entered! X is not a number.";
-                        }
-                    }
-                    else if (cheat == "KILL" && !ImHonest)
-                    {
-                        show_message = false;
-                        player.HP = 0;
-                    }
-                    else if (cheat == "BEFWK" && !ImHonest)
-                    {
-                        if (player.Guns.Count < 6)
-                        {
-                            for (int i = 0; i < GUNS.Length; i++)
+                            if (!(player.PET is GreenGnome))
                             {
-                                if (GUNS[i].AddToShop)
+                                message += "Pet \"Wizard Gnome\" has been issued.";
+                                (Parent.FindForm() as SLIL).AddPet(1);
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You already have \"Wizard Gnome\".";
+                            }
+                        }
+                        else if (cheat == "ENERGY")
+                        {
+                            if (!(player.PET is EnergyDrink))
+                            {
+                                message += "Pet \"Energy Drink\" has been issued.";
+                                (Parent.FindForm() as SLIL).AddPet(2);
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You already have \"Energy Drink\".";
+                            }
+                        }
+                        else if (cheat == "ILOVEFURRY")
+                        {
+                            if (!(player.PET is Pyro))
+                            {
+                                message += "Pet \"Podseratel\" has been issued.";
+                                (Parent.FindForm() as SLIL).AddPet(3);
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You already have \"Podseratel\".";
+                            }
+                        }
+                        else if (cheat.StartsWith("CCHANC_"))
+                        {
+                            double x = 0.08;
+                            bool error = false;
+                            try
+                            {
+                                x = Convert.ToDouble(cheat.Split('_')[1].Replace('.', ','));
+                            }
+                            catch
+                            {
+                                error = true;
+                            }
+                            if (error || x < 0 || x > 1)
+                            {
+                                color = Color.Red;
+                                message = "Incorrect range specified! Instead of X, enter a number between 0 and 1.";
+                            }
+                            else
+                            {
+                                message += $"Set chance of curse healing to {x * 100:0.##}% *Default: 8%*";
+                                player.CurseCureChance = x;
+                            }
+                        }
+                        else if (cheat.StartsWith("MONEY_"))
+                        {
+                            try
+                            {
+                                int x = Convert.ToInt32(cheat.Split('_')[1]);
+                                message += $"The amount of money has been changed to {x}";
+                                player.ChangeMoney(x);
+                            }
+                            catch
+                            {
+                                color = Color.Red;
+                                message = "Incorrect data entered! X is not a number.";
+                            }
+                        }
+                        else if (cheat.StartsWith("STAMIN_"))
+                        {
+                            try
+                            {
+                                int x = Convert.ToInt32(cheat.Split('_')[1]);
+                                if (x >= 100 && x <= 5000)
                                 {
-                                    GUNS[i].MaxAmmoCount = GUNS[i].MaxAmmo;
-                                    GUNS[i].HasIt = true;
-                                    if (!player.Guns.Contains(GUNS[i]))
-                                        player.Guns.Add(GUNS[i]);
+                                    message += $"Player stamina is now {x}. *Default: 650*";
+                                    player.MAX_STAMINE = x;
+                                    player.STAMINE = x;
+                                }
+                                else
+                                {
+                                    color = Color.Red;
+                                    message = "Incorrect value! X must be in the range from 100 to 5000.";
                                 }
                             }
-                            message += "All weapons have been issued.";
+                            catch
+                            {
+                                color = Color.Red;
+                                message = "Incorrect data entered! X is not a number.";
+                            }
                         }
-                        else
+                        else if (cheat == "KILL")
                         {
-                            color = Color.Red;
-                            message = "Code not applied! You already have all the weapons.";
+                            show_message = false;
+                            player.HP = 0;
                         }
-                    }
-                    else if (cheat == "IDDQD" && !ImHonest)
-                    {
-                        bool can_do_it = false;
-                        for (int i = 0; i < player.Guns.Count; i++)
+                        else if (cheat == "BEFWK")
                         {
-                            if (player.Guns[i].CanUpdate())
-                                can_do_it = true;
+                            if (player.Guns.Count < 6)
+                            {
+                                for (int i = 0; i < player.GUNS.Length; i++)
+                                {
+                                    if (player.GUNS[i].AddToShop)
+                                    {
+                                        player.GUNS[i].MaxAmmoCount = player.GUNS[i].MaxAmmo;
+                                        player.GUNS[i].HasIt = true;
+                                        if (!player.Guns.Contains(player.GUNS[i]))
+                                            player.Guns.Add(player.GUNS[i]);
+                                    }
+                                }
+                                message += "All weapons have been issued.";
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You already have all the weapons.";
+                            }
                         }
-                        if (can_do_it)
+                        else if (cheat == "IDDQD")
+                        {
+                            bool can_do_it = false;
+                            for (int i = 0; i < player.Guns.Count; i++)
+                            {
+                                if (player.Guns[i].CanUpdate())
+                                    can_do_it = true;
+                            }
+                            if (can_do_it)
+                            {
+                                for (int i = 0; i < player.Guns.Count; i++)
+                                    player.Guns[i].LevelUpdate();
+                                player.LevelUpdated = true;
+                                message += "All weapon levels increased by one.";
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You have already pumped all your weapons to the maximum.";
+                            }
+                        }
+                        else if (cheat == "FYTLG")
                         {
                             for (int i = 0; i < player.Guns.Count; i++)
-                                player.Guns[i].LevelUpdate();
-                            player.LevelUpdated = true;
-                            message += "All weapon levels increased by one.";
+                            {
+                                if (player.GUNS[i].AddToShop)
+                                    player.Guns[i].MaxAmmoCount = player.Guns[i].MaxAmmo;
+                            }
+                            message += "Maximum ammunition provided.";
+                        }
+                        else if (cheat == "SOTLG")
+                        {
+                            player.Money = 9999;
+                            message += "Maximum money granted.";
+                        }
+                        else if (cheat == "YHRII")
+                        {
+                            if (!player.GUNS[7].HasIt)
+                            {
+                                player.GUNS[7].HasIt = true;
+                                player.GUNS[7].MaxAmmoCount = player.GUNS[7].MaxAmmo;
+                                if (!player.Guns.Contains(player.GUNS[7]))
+                                    player.Guns.Add(player.GUNS[7]);
+                                message += "\"Fingershot\" issued.";
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You already have \"Fingershot\".";
+                            }
+                        }
+                        else if (cheat == "BIGGUY")
+                        {
+                            if (!player.GUNS[8].HasIt)
+                            {
+                                player.GUNS[8].HasIt = true;
+                                player.GUNS[8].MaxAmmoCount = player.GUNS[8].MaxAmmo;
+                                if (!player.Guns.Contains(player.GUNS[8]))
+                                    player.Guns.Add(player.GUNS[8]);
+                                message += "\"The Smallest Pistol in the World\" has been issued.";
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You already have \"The Smallest Pistol in the World\"";
+                            }
+                        }
+                        else if (cheat == "IMGNOME")
+                        {
+                            if (!player.GUNS[9].HasIt)
+                            {
+                                player.GUNS[9].HasIt = true;
+                                player.GUNS[9].MaxAmmoCount = player.GUNS[9].MaxAmmo;
+                                if (!player.Guns.Contains(player.GUNS[9]))
+                                    player.Guns.Add(player.GUNS[9]);
+                                message += "\"Wizard Gnome\" has been issued.";
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You already have \"Wizard Gnome\"";
+                            }
+                        }
+                        else if (cheat == "GKIFK")
+                        {
+                            player.HP = 999;
+                            message += "Maximum HP granted.";
+                        }
+                        else if (cheat == "EGTRE")
+                        {
+                            GetItem(0);
+                            message += "First aid kits issued.";
+                        }
+                        else if (cheat == "DHURF")
+                        {
+                            GetItem(1);
+                            message += "Adrenaline issued.";
+                        }
+                        else if (cheat == "LPFJY")
+                        {
+                            player.HP = 1;
+                            message += "Health reduced by 99.";
                         }
                         else
                         {
+                            previous_cheat.Remove(cheat);
+                            cheat_index = previous_cheat.Count - 1;
                             color = Color.Red;
-                            message = "Code not applied! You have already pumped all your weapons to the maximum.";
+                            message = $"Unknown command: {cheat}";
                         }
-                    }
-                    else if (cheat == "FYTLG" && !ImHonest)
-                    {
-                        for (int i = 0; i < player.Guns.Count; i++)
-                        {
-                            if (GUNS[i].AddToShop)
-                                player.Guns[i].MaxAmmoCount = player.Guns[i].MaxAmmo;
-                        }
-                        message += "Maximum ammunition provided.";
-                    }
-                    else if (cheat == "SOTLG" && !ImHonest)
-                    {
-                        player.Money = 9999;
-                        message += "Maximum money granted.";
-                    }
-                    else if (cheat == "YHRII" && !ImHonest)
-                    {
-                        if (!GUNS[7].HasIt)
-                        {
-                            GUNS[7].HasIt = true;
-                            GUNS[7].MaxAmmoCount = GUNS[7].MaxAmmo;
-                            if (!player.Guns.Contains(GUNS[7]))
-                                player.Guns.Add(GUNS[7]);
-                            message += "\"Fingershot\" issued.";
-                        }
-                        else
-                        {
-                            color = Color.Red;
-                            message = "Code not applied! You already have \"Fingershot\".";
-                        }
-                    }
-                    else if (cheat == "BIGGUY" && !ImHonest)
-                    {
-                        if (!GUNS[8].HasIt)
-                        {
-                            GUNS[8].HasIt = true;
-                            GUNS[8].MaxAmmoCount = GUNS[8].MaxAmmo;
-                            if (!player.Guns.Contains(GUNS[8]))
-                                player.Guns.Add(GUNS[8]);
-                            message += "\"The Smallest Pistol in the World\" has been issued.";
-                        }
-                        else
-                        {
-                            color = Color.Red;
-                            message = "Code not applied! You already have \"The Smallest Pistol in the World\"";
-                        }
-                    }
-                    else if (cheat == "IMGNOME" && !ImHonest)
-                    {
-                        if (!GUNS[9].HasIt)
-                        {
-                            GUNS[9].HasIt = true;
-                            GUNS[9].MaxAmmoCount = GUNS[9].MaxAmmo;
-                            if (!player.Guns.Contains(GUNS[9]))
-                                player.Guns.Add(GUNS[9]);
-                            message += "\"Wizard Gnome\" has been issued.";
-                        }
-                        else
-                        {
-                            color = Color.Red;
-                            message = "Code not applied! You already have \"Wizard Gnome\"";
-                        }
-                    }
-                    else if (cheat == "GKIFK" && !ImHonest)
-                    {
-                        player.HP = 999;
-                        message += "Maximum HP granted.";
-                    }
-                    else if (cheat == "EGTRE" && !ImHonest)
-                    {
-                        GetFirstAidKit();
-                        message += "First aid kits issued.";
-                    }
-                    else if (cheat == "LPFJY" && !ImHonest)
-                    {
-                        player.HP = 1;
-                        message += "Health reduced by 99.";
                     }
                     else
                     {
@@ -853,7 +959,7 @@ namespace SLIL.UserControls
             if (console.Text.Length == console.MaxLength)
             {
                 console.Clear();
-                ConsoleAppendText("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", foreColors[color_index]);
+                ConsoleAppendText("SLIL console *v1.3*\nType \"-help-\" for a list of commands...", foreColors[color_index]);
                 ConsoleAppendText("*The console was cleared due to a buffer overflow*", foreColors[color_index]);
                 console.Refresh();
             }

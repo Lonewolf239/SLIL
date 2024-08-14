@@ -338,7 +338,7 @@ namespace SLIL.Classes
                 if(ent is Player)
                 {
                     if(ent.ID == playerID)
-                    {
+        {
                         player = (Player)ent;
                     }
                 }

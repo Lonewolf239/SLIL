@@ -101,6 +101,7 @@
     <Compile Include="CGF\Files.cs" />
     <Compile Include="Classes\BindControls.cs" />
     <Compile Include="Classes\ConvertBitmap.cs" />
+    <Compile Include="Classes\Effect.cs" />
     <Compile Include="Classes\Entity.cs" />
     <Compile Include="Classes\GameController.cs" />
     <Compile Include="Classes\GameModel.cs" />
@@ -931,6 +932,63 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\scope_c_hit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_ceiling.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_wall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\food_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_0_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_0_DEAD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_door.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_shop_door.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_using_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_using_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_using_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_teleport_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_teleport_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_effect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_count_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\protection_effect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\regeneration_effect.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -142,7 +142,8 @@
             "Окно",
             "Финиш",
             "Магазин",
-            "Враг"});
+            "Враг",
+            "Невидимая стена"});
             this.elements.Location = new System.Drawing.Point(12, 332);
             this.elements.Name = "elements";
             this.elements.Size = new System.Drawing.Size(187, 32);
@@ -243,7 +244,6 @@
             // 
             // SLIL_Editor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(399, 441);
             this.Controls.Add(this.accept_size_btn);
