@@ -76,7 +76,6 @@ namespace SLIL
                     try
                     {
                         complete = true;
-                        Close();
                         Process.Start(new ProcessStartInfo(downloadsPath) { UseShellExecute = true });
                         Application.Exit();
                     }

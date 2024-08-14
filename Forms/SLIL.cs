@@ -546,7 +546,7 @@ namespace SLIL
                             {
                                 if (player.DisposableItems.Count > 0 && player.DisposableItems[player.SelectedItem].HasIt)
                                 {
-                                    if (player.SelectedItem == 0 && player.EffectCheck(0) && player.HP == player.MAX_HP) return;
+                                    if (player.SelectedItem == 0 && (player.EffectCheck(0) || player.HP == player.MAX_HP)) return;
                                     if (player.SelectedItem == 1 && player.EffectCheck(1)) return;
                                     TakeFlashlight(false);
                                     pressed_h = true;

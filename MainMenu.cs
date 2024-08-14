@@ -16,7 +16,7 @@ namespace SLIL
 {
     public partial class MainMenu : Form
     {
-        private const string current_version = "|1.1.1|";
+        private const string current_version = "|1.1.1a|";
         public static string iniFolder = "config.ini";
         public static bool Language = true, sounds = true, ConsoleEnabled = false;
         private readonly TextureCache textureCache = new TextureCache();
@@ -35,6 +35,10 @@ namespace SLIL
         public static Player player;
         private readonly string[] en_changes =
         {
+            "\t\t\tv1.1.1a",
+            "_______________________________________________________________",
+            "• Critical error fixed",
+            "\n",
             "\t\t\tv1.1.1",
             "_______________________________________________________________",
             "• Added 2 new effects: Regeneration and Protection",
@@ -67,6 +71,10 @@ namespace SLIL
         };
         private readonly string[] ru_changes =
         {
+            "\t\t\tv1.1.1a",
+            "_______________________________________________________________",
+            "• Исправлена ​​критическая ошибка",
+            "\n",
             "\t\t\tv1.1.1",
             "_______________________________________________________________",
             "• Добавлены 2 новых эффекта: Регенерация и Защита",
