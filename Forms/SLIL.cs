@@ -103,6 +103,11 @@ namespace SLIL
                 Properties.Resources.medkit_icon,
                 Properties.Resources.medkit_icon
             } },
+            { typeof(Adrenalin), new[]
+            {
+                Properties.Resources.adrenalin_icon,
+                Properties.Resources.adrenalin_icon
+            } },
         };
         public static readonly Dictionary<Type, Image[,]> ImagesDict = new Dictionary<Type, Image[,]>
         {
@@ -164,6 +169,10 @@ namespace SLIL
                    { Properties.Resources.hand, Properties.Resources.hand, Properties.Resources.hand_using_0, Properties.Resources.hand_using_1, Properties.Resources.hand_using_2, Properties.Resources.medkit_run },
                    { Properties.Resources.food, Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2, Properties.Resources.medkit_run },
             } },
+            { typeof(Adrenalin), new[,]
+            {
+                   { Properties.Resources.adrenalin, Properties.Resources.adrenalin, Properties.Resources.adrenalin_using_0, Properties.Resources.adrenalin_using_1, Properties.Resources.adrenalin_using_2, Properties.Resources.medkit_run },
+            } },
         };
         public static readonly Dictionary<Type, PlaySound[,]> SoundsDict = new Dictionary<Type, PlaySound[,]>
         {
@@ -221,6 +230,10 @@ namespace SLIL
                    { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("syringe_using.wav"), false), new PlaySound(null, false) },
                    { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("hand_using.wav"), false), new PlaySound(null, false) },
                    { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("food_using.wav"), false), new PlaySound(null, false) }
+            } },
+            { typeof(Adrenalin), new[,]
+            {
+                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("adrenalin_using.wav"), false), new PlaySound(null, false) }
             } },
         };
         private readonly PlaybackState playbackState = new PlaybackState();
@@ -523,6 +536,8 @@ namespace SLIL
 
         private async void Step_sound_timer_Tick(object sender, EventArgs e)
         {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
             if ((playerDirection != Direction.STOP || strafeDirection != Direction.STOP) && !player.Aiming && !playbackState.IsPlaying)
             {
                 if (currentIndex >= soundIndices.Count)
@@ -2236,6 +2251,8 @@ namespace SLIL
 
         private void DrawCircularProgressBar(Image effect_image, int icon_size, int index)
         {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
             int diameter = icon_size;
             int x = WEAPON.Width - icon_size - 4 - ((icon_size + 4) * index);
             int y = WEAPON.Height - icon_size - 4;
@@ -2479,7 +2496,7 @@ namespace SLIL
                         DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '#';
                         break;
                     case '=':
-                        if (!hit_window)
+                        if (!hit_window) {
                             hit_window = true;
                             DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '=';
                         }
@@ -2846,7 +2863,7 @@ namespace SLIL
                 pause_btn.Text = "CONTINUE";
                 exit_btn.Text = "EXIT";
             }
-            for (int i = WEAPONS_COUNT - 1; i >= 0; i--)
+            for (int i = player.GUNS.Length - 1; i >= 0; i--)
             {
                 if (player.GUNS[i].AddToShop)
                 {
@@ -2882,10 +2899,10 @@ namespace SLIL
                     SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
                     {
                         index = MainMenu.Language ? 0 : 1,
-                        item = player.GUNS[i] as Item,
+                        item = player.GUNS[i] as DisposableItem,
                         buy = buy,
                         player = player,
-                        GUNS = player.GUNS,
+                        //GUNS = player.GUNS,
                         BackColor = shop_panel.BackColor,
                         Dock = DockStyle.Top
                     };
@@ -2897,7 +2914,7 @@ namespace SLIL
                 Dock = DockStyle.Fill,
                 Visible = false,
                 player = player,
-                GUNS = player.GUNS,
+                //GUNS = player.GUNS,
                 Entities = Controller.GetEntities()
             };
             console_panel.Log("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);

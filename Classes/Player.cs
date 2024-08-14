@@ -53,6 +53,8 @@ namespace SLIL.Classes
 
         public Player(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
         {
+            DisposableItems.Add((FirstAidKit)GUNS[10]);
+            DisposableItems.Add((Adrenalin)GUNS[13]);
             Texture = 17;
             base.SetAnimations(1, 0);
             Dead = true;
@@ -60,6 +62,8 @@ namespace SLIL.Classes
         }
         public Player(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
+            DisposableItems.Add((FirstAidKit)GUNS[10]);
+            DisposableItems.Add((Adrenalin)GUNS[13]);
             Texture = 17;
             base.SetAnimations(1, 0);
             Dead = true;

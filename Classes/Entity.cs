@@ -46,6 +46,7 @@ namespace SLIL.Classes
         {
             ID = maxEntityID;
             EntityID = this.GetEntityID();
+            rand = new Random();
             Frames = 24;
             Texture = this.GetTexture();
             EntityWidth = this.GetEntityWidth();

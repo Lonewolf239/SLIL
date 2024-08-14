@@ -198,8 +198,8 @@ namespace SLIL
                 else
                     Application.Exit();
             }
-            PETS = new Pet[] { new SillyCat(0, 0, 0), new GreenGnome(0, 0, 0), new EnergyDrink(0, 0, 0), new Pyro(0, 0, 0) };
-            player = new Player(1.5, 1.5, 15);
+            //PETS = new Pet[] { new SillyCat(0, 0, 0, 0), new GreenGnome(0, 0, 0), new EnergyDrink(0, 0, 0), new Pyro(0, 0, 0) };
+            //player = new Player(1.5, 1.5, 15);
             ost = new PlaySound[]
             {
                 new PlaySound(CGFReader.GetFile("slil_ost_0.wav"), true),
@@ -1127,7 +1127,7 @@ namespace SLIL
                 SLIL form = new SLIL(textureCache)
                 {
                     ost = ost,
-                    PETS = PETS,
+                    //PETS = PETS,
                     step = step,
                     DeathSounds = DeathSounds,
                     CuteDeathSounds = CuteDeathSounds,
@@ -1277,7 +1277,7 @@ namespace SLIL
                 SLIL form = new SLIL(textureCache)
                 {
                     ost = ost,
-                    PETS = PETS,
+                    //PETS = PETS,
                     step = step,
                     DeathSounds = DeathSounds,
                     CuteDeathSounds = CuteDeathSounds,
