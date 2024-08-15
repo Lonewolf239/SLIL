@@ -356,6 +356,7 @@ namespace SLIL
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
             Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle);
+            Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             difficulty = MainMenu.difficulty;
@@ -368,6 +369,46 @@ namespace SLIL
             LOOK_SPEED = MainMenu.LOOK_SPEED;
             Volume = MainMenu.Volume;
             textureCache = textures;
+            //player = Controller.GetPlayer();
+            //player.IsPetting = false;
+            ost = new PlaySound[]
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_1.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_2.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_3.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_4.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("soul_forge.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true)
+            };
+            Controller.StartGame();
+        }
+        public SLIL(TextureCache textures, bool custom, StringBuilder customMap, int mazeWidth, int mazeHeight, int customX, int customY)
+        {
+            InitializeComponent();
+            StartGameHandle = StartGameInvokerSinglePlayer;
+            StopGameHandle = StopGameInvoker;
+            InitPlayerHandle = InitPlayerInvoker;
+            Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle);
+            rand = new Random();
+            Bind = new BindControls(MainMenu.BindControls);
+            difficulty = MainMenu.difficulty;
+            resolution = MainMenu.resolution;
+            scope_type = MainMenu.scope_type;
+            scope_color = MainMenu.scope_color;
+            hight_fps = MainMenu.hight_fps;
+            ShowFPS = MainMenu.ShowFPS;
+            ShowMiniMap = MainMenu.ShowMiniMap;
+            LOOK_SPEED = MainMenu.LOOK_SPEED;
+            Volume = MainMenu.Volume;
+            textureCache = textures;
+            CUSTOM = custom;
+            CUSTOM_MAP = customMap;
+            CustomMazeWidth = mazeWidth;
+            CustomMazeHeight = mazeHeight;
+            CUSTOM_X = customX;
+            CUSTOM_Y = customY;
+            Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
             //player = Controller.GetPlayer();
             //player.IsPetting = false;
             ost = new PlaySound[]
@@ -1862,10 +1903,10 @@ namespace SLIL
                 spriteInfo[i] = (i, dx * dx + dy * dy, Entities[i].Texture);
             }
             Array.Sort(spriteInfo, (a, b) => b.Distance.CompareTo(a.Distance));
-            for (int i = 0; i < Entities.Length; i++)
+            for (int i = 0; i < spriteInfo.Length; i++)
             {
-                if (Entities[i] is Player) {
-                    if (player.ID == (Entities[i] as Player).ID) continue;
+                if (Entities[spriteInfo[i].Order] is Player) {
+                    if (player.ID == (Entities[spriteInfo[i].Order] as Player).ID) continue;
                 }
                 double Distance = Math.Sqrt((player.X - Entities[spriteInfo[i].Order].X) * (player.X - Entities[spriteInfo[i].Order].X) + (player.Y - Entities[spriteInfo[i].Order].Y) * (player.Y - Entities[spriteInfo[i].Order].Y));
                 if (Distance > 22 || Distance == 0)

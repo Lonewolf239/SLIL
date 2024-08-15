@@ -1274,7 +1274,7 @@ namespace SLIL
             if (Editor != null && Editor.OK)
             {
                 if (sounds) MainMenuTheme.Stop();
-                SLIL form = new SLIL(textureCache)
+                SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3,(Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
                 {
                     ost = ost,
                     //PETS = PETS,
@@ -1290,12 +1290,6 @@ namespace SLIL
                     tp = tp,
                     screenshot = screenshot,
                     door = door,
-                    CUSTOM = true,
-                    CUSTOM_MAP = Editor.MAP,
-                    CustomMazeHeight = (Editor.MazeHeight - 1) / 3,
-                    CustomMazeWidth = (Editor.MazeWidth - 1) / 3,
-                    CUSTOM_X = SLIL_Editor.x,
-                    CUSTOM_Y = SLIL_Editor.y
                 };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(Volume);

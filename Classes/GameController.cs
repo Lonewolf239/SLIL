@@ -207,5 +207,9 @@ namespace SLIL.Classes
         {
             Game.StopGame(win);
         }
+        public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, int customX, int customY)
+        {
+            Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);
+        }
     }
 }

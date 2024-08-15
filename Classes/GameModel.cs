@@ -31,8 +31,10 @@ namespace SLIL.Classes
         private int difficulty;
         private int seconds, minutes;
         private int MAP_WIDTH, MAP_HEIGHT;
-        public StringBuilder CUSTOM_MAP = new StringBuilder();
-        public int CUSTOM_X, CUSTOM_Y;
+        private bool CUSTOM = false;
+        private int CustomMazeHeight, CustomMazeWidth;
+        private StringBuilder CUSTOM_MAP = new StringBuilder();
+        private int CUSTOM_X, CUSTOM_Y;
 
         StopGameDelegate StopGameHandle;
         SetPlayerIDDelegate SetPlayerID;
@@ -193,6 +195,16 @@ namespace SLIL.Classes
                     }
                 }
             });
+        }
+
+        public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, int customX, int customY)
+        {
+            CUSTOM = custom;
+            CustomMazeWidth = CustomWidth;
+            CustomMazeHeight = CustomHeight;
+            CUSTOM_MAP = new StringBuilder(CustomMap);
+            CUSTOM_X = customX; 
+            CUSTOM_Y = customY;
         }
 
         public void Serialize(NetDataWriter writer)
@@ -487,6 +499,7 @@ namespace SLIL.Classes
                 RespawnTimer.Stop();
                 TimeRemain.Stop();
                 Entities.Clear();
+                MaxEntityID = 0;
             }
             else
             {
@@ -494,6 +507,7 @@ namespace SLIL.Classes
                 RespawnTimer.Stop();
                 TimeRemain.Stop();
                 Entities.Clear();
+                MaxEntityID = 0;
             }
             StopGameHandle(win);
         }
@@ -526,13 +540,6 @@ namespace SLIL.Classes
         public void InitMap()
         {
             seconds = 0;
-            //if (!CUSTOM)
-            //    player.X = player.Y = 1.5d;
-            //else
-            //{
-            //    player.X = CUSTOM_X;
-            //    player.Y = CUSTOM_Y;
-            //}
             double enemy_count = 0;
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
                 if (difficulty == 0)
@@ -550,8 +557,8 @@ namespace SLIL.Classes
                 else if (difficulty == 4)
                 {
                     minutes = 9999;
-                    MazeHeight = 7;//CustomMazeHeight;
-                    MazeWidth = 7;//CustomMazeWidth;
+                    MazeHeight = CustomMazeHeight;
+                    MazeWidth = CustomMazeWidth;
                     enemy_count = 0.06;
                     MAX_SHOP_COUNT = 5;
                 }
@@ -597,8 +604,8 @@ namespace SLIL.Classes
                 else if (difficulty == 4)
                 {
                     minutes = 9999;
-                    MazeHeight = 7;//CustomMazeHeight;
-                    MazeWidth = 7;//CustomMazeWidth;
+                    MazeHeight = CustomMazeHeight;
+                    MazeWidth = CustomMazeWidth;
                     enemy_count = 0.06;
                     MAX_SHOP_COUNT = 5;
                 }
@@ -694,8 +701,7 @@ namespace SLIL.Classes
                 }
                 return;
             }
-            //if (!CUSTOM)
-            if(true)
+            if (!CUSTOM)
             {
                 Random random = new Random();
                 StringBuilder sb = new StringBuilder();
@@ -794,7 +800,7 @@ namespace SLIL.Classes
                 MAP = sb;
             }
             else
-            {/*
+            {
                 MAP.Append(CUSTOM_MAP);
                 for (int x = 0; x < CustomMazeWidth * 3 + 1; x++)
                 {
@@ -802,17 +808,17 @@ namespace SLIL.Classes
                     {
                         if (MAP[y * (CustomMazeWidth * 3 + 1) + x] == 'F')
                         {
-                            Teleport teleport = new Teleport(x, y, CustomMazeWidth * 3 + 1);
+                            Teleport teleport = new Teleport(x + 0.5, y + 0.5, CustomMazeWidth * 3 + 1, ref MaxEntityID);
                             Entities.Add(teleport);
                         }
                         if (MAP[y * (CustomMazeWidth * 3 + 1) + x] == 'D')
                         {
-                            ShopDoor shopDoor = new ShopDoor(x, y, CustomMazeWidth * 3 + 1);
+                            ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, CustomMazeWidth * 3 + 1, ref MaxEntityID);
                             Entities.Add(shopDoor);
                         }
                         if (MAP[y * (CustomMazeWidth * 3 + 1) + x] == '$')
                         {
-                            ShopMan shopMan = new ShopMan(x, y, CustomMazeWidth * 3 + 1);
+                            ShopMan shopMan = new ShopMan(x + 0.5, y + 0.5, CustomMazeWidth * 3 + 1, ref MaxEntityID);
                             Entities.Add(shopMan);
                         }
                         if (MAP[y * (CustomMazeWidth * 3 + 1) + x] == 'E')
@@ -821,7 +827,7 @@ namespace SLIL.Classes
                             MAP[y * (CustomMazeWidth * 3 + 1) + x] = '.';
                         }
                     }
-                }*/
+                }
             }
             for (int i = 0; i < MAP.Length; i++)
             {
@@ -830,7 +836,13 @@ namespace SLIL.Classes
             }
             foreach(Entity ent in Entities)
             {
-                if(!(ent is Player player)) continue;                
+                if(!(ent is Player player)) continue;
+                if (CUSTOM)
+                {
+                    player.X = CUSTOM_X;
+                    player.Y = CUSTOM_Y;
+                    continue;
+                }
                 bool OK = false;
                 double X = 3, Y = 3;
                 while (!OK)
