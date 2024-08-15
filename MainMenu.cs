@@ -200,17 +200,6 @@ namespace SLIL
             }
             //PETS = new Pet[] { new SillyCat(0, 0, 0, 0), new GreenGnome(0, 0, 0), new EnergyDrink(0, 0, 0), new Pyro(0, 0, 0) };
             //player = new Player(1.5, 1.5, 15);
-            ost = new PlaySound[]
-            {
-                new PlaySound(CGFReader.GetFile("slil_ost_0.wav"), true),
-                new PlaySound(CGFReader.GetFile("slil_ost_1.wav"), true),
-                new PlaySound(CGFReader.GetFile("slil_ost_2.wav"), true),
-                new PlaySound(CGFReader.GetFile("slil_ost_3.wav"), true),
-                new PlaySound(CGFReader.GetFile("slil_ost_4.wav"), true),
-                new PlaySound(CGFReader.GetFile("soul_forge.wav"), true),
-                new PlaySound(CGFReader.GetFile("gnome.wav"), true),
-                new PlaySound(CGFReader.GetFile("cmode_ost.wav"), true)
-            };
             MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
             step = new PlaySound[,]
             {
@@ -1126,7 +1115,6 @@ namespace SLIL
                 if(sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache)
                 {
-                    ost = ost,
                     //PETS = PETS,
                     step = step,
                     DeathSounds = DeathSounds,
@@ -1276,7 +1264,6 @@ namespace SLIL
                 if (sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3,(Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
                 {
-                    ost = ost,
                     //PETS = PETS,
                     step = step,
                     DeathSounds = DeathSounds,

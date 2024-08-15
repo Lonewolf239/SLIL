@@ -106,7 +106,7 @@ namespace SLIL.UserControls
                     else if (cheat == "SOUL_FORGE")
                     {
                         message += $"Now the track Soul Forge *AI* is playing.\nSong link: https://suno.com/song/28b30489-c22d-400b-8537-ee1ddfb492ac";
-                        SLIL.ChangeOst(Parent.FindForm() as SLIL, 5);
+                        SLIL.ChangeOst(5);
                     }
                     else if (cheat == "CHEATS")
                     {
@@ -183,7 +183,7 @@ namespace SLIL.UserControls
                             {
                                 message += $"Now the track slil_ost_{x} is playing.";
                                 SLIL.prev_ost = x;
-                                SLIL.ChangeOst(Parent.FindForm() as SLIL, x);
+                                SLIL.ChangeOst(x);
                             }
                             else
                             {
@@ -431,7 +431,7 @@ namespace SLIL.UserControls
                             {
                                 message += $"Current volume is now {x}. *Default: 0,4*";
                                 SLIL.Volume = x;
-                                SLIL.SetVolume(Parent.FindForm() as SLIL);
+                                SLIL.SetVolume();
                             }
                             else
                             {

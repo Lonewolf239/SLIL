@@ -251,7 +251,17 @@ namespace SLIL
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
         public PlaySound[,] step;
-        public PlaySound[] ost;
+        public static PlaySound[] ost = new PlaySound[]
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_1.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_2.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_3.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_4.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("soul_forge.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true),
+                new PlaySound(MainMenu.CGFReader.GetFile("cmode_ost.wav"), true)
+            };
         public PlaySound[,] DeathSounds;
         public PlaySound[,] CuteDeathSounds;
         public PlaySound game_over, draw, buy, hit, hungry, wall, tp, screenshot;
@@ -369,18 +379,6 @@ namespace SLIL
             LOOK_SPEED = MainMenu.LOOK_SPEED;
             Volume = MainMenu.Volume;
             textureCache = textures;
-            //player = Controller.GetPlayer();
-            //player.IsPetting = false;
-            ost = new PlaySound[]
-            {
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_1.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_2.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_3.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_4.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("soul_forge.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true)
-            };
             Controller.StartGame();
         }
         public SLIL(TextureCache textures, bool custom, StringBuilder customMap, int mazeWidth, int mazeHeight, int customX, int customY)
@@ -409,18 +407,6 @@ namespace SLIL
             CUSTOM_X = customX;
             CUSTOM_Y = customY;
             Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
-            //player = Controller.GetPlayer();
-            //player.IsPetting = false;
-            ost = new PlaySound[]
-            {
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_1.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_2.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_3.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_4.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("soul_forge.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true)
-            };
             Controller.StartGame();
         }
         public SLIL(TextureCache textures, string adress, int port)
@@ -507,7 +493,7 @@ namespace SLIL
             if (player.CuteMode)
             {
                 prev_ost = ost_index;
-                ChangeOst(this, 7);
+                ChangeOst(7);
                 player.DEPTH = 10;
                 player.GUNS[11].HasIt = true;
                 player.GUNS[12].HasIt = true;
@@ -517,7 +503,7 @@ namespace SLIL
             else
             {
                 prev_ost = rand.Next(ost.Length - 3);
-                ChangeOst(this, prev_ost);
+                ChangeOst(prev_ost);
                 player.DEPTH = 8;
                 shop_tab_control.Controls.Add(weapon_shop_page);
                 player.GUNS[11].HasIt = false;
@@ -546,7 +532,7 @@ namespace SLIL
 
         private void Stage_timer_Tick(object sender, EventArgs e) => stage_timer.Stop();
 
-        public static void SetVolume(SLIL slil) => slil.ost[ost_index].SetVolume(Volume);
+        public static void SetVolume() => ost[ost_index].SetVolume(Volume);
 
         public void ShowShop()
         {
@@ -631,13 +617,13 @@ namespace SLIL
             slil.StartGame();
         }
 
-        public static void ChangeOst(SLIL slil, int index)
+        public static void ChangeOst(int index)
         {
             if (!MainMenu.sounds)
                 return;
-            slil.ost[ost_index]?.Stop();
+            ost[ost_index]?.Stop();
             ost_index = index;
-            slil.ost[ost_index].LoopPlay(Volume);
+            ost[ost_index].LoopPlay(Volume);
         }
 
         private async void Step_sound_timer_Tick(object sender, EventArgs e)
@@ -1290,16 +1276,16 @@ namespace SLIL
                 if (player.GetCurrentGun() is Gnome)
                 {
                     prev_ost = ost_index;
-                    ChangeOst(this, 6);
+                    ChangeOst(6);
                 }
                 else if (prev_ost != ost_index)
                 {
                     if (player.CuteMode)
                     {
                         if (ost_index != 7)
-                            ChangeOst(this, 7);
+                            ChangeOst(7);
                     }
-                    else ChangeOst(this, prev_ost);
+                    else ChangeOst(prev_ost);
                 }
             }
         }
@@ -2800,13 +2786,6 @@ namespace SLIL
             int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
             int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
             Cursor.Position = new Point(x, y);
-            //if (!CUSTOM)
-            //    player.X = player.Y = 1.5d;
-            //else
-            //{
-            //    player.X = CUSTOM_X;
-            //    player.Y = CUSTOM_Y;
-            //}
             if (player.Guns.Count == 0)
             {
                 player.Guns.Add(player.GUNS[1]);
@@ -2894,9 +2873,9 @@ namespace SLIL
                 if (!player.CuteMode)
                 {
                     prev_ost = rand.Next(ost.Length - 3);
-                    ChangeOst(this, prev_ost);
+                    ChangeOst(prev_ost);
                 }
-                else ChangeOst(this, 7);
+                else ChangeOst(7);
             }
         }
 
@@ -2936,7 +2915,7 @@ namespace SLIL
             Activate();
             ResetDefault(player);
             InitMap();
-            try
+            /*try
             {
                 if (Controller.GetMap()[(int)(player.Y + 2) * Controller.GetMapWidth() + (int)player.X] == '.')
                     player.A = 0;
@@ -2950,7 +2929,7 @@ namespace SLIL
             catch
             {
                 player.A = 0;
-            }
+            }*/
             stage_timer.Stop();
             stage_timer.Start();
             raycast.Start();
@@ -2987,12 +2966,9 @@ namespace SLIL
 
         private void GameOver(int win)
         {
-            if (ost != null) 
+            foreach (PlaySound ostTrack in ost)
             {
-                foreach (PlaySound ostTrack in ost)
-                {
-                    ostTrack.Stop();
-                }
+                ostTrack.Stop();
             }
             raycast.Stop();
             shot_timer.Stop();
