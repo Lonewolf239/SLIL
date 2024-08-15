@@ -367,8 +367,7 @@ namespace SLIL
             ShowMiniMap = MainMenu.ShowMiniMap;
             LOOK_SPEED = MainMenu.LOOK_SPEED;
             Volume = MainMenu.Volume;
-            textureCache = textures; 
-            Controller.AddPlayer();
+            textureCache = textures;
             //player = Controller.GetPlayer();
             //player.IsPetting = false;
             ost = new PlaySound[]
@@ -530,6 +529,7 @@ namespace SLIL
         {
             pause_panel.Focus();
             GameOver(-1);
+            Controller.StopGame(-1);
             CorrectExit = true;
             Close();
         }
@@ -1738,13 +1738,13 @@ namespace SLIL
                 tempY += playerWidth / 2 - (tempY % 1);
             if (tempX - player.X != 0 || tempY - player.Y != 0)
                 Controller.MovePlayer(tempX - player.X, tempY - player.Y);
-            player.X = tempX;
-            player.Y = tempY;
-            if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == 'F')
-            {
-                GameOver(1);
-                return;
-            }
+            //player.X = tempX;
+            //player.Y = tempY;
+            //if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == 'F')
+            //{
+            //    GameOver(1);
+            //    return;
+            //}
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == '.')
             {
                 //MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
@@ -2692,9 +2692,14 @@ namespace SLIL
 
         private void InitMap()
         {
-            Controller.InitMap();
-            DISPLAYED_MAP.Clear(); 
-            DISPLAYED_MAP.Append(Controller.GetMap());
+            //Controller.InitMap();
+            DISPLAYED_MAP.Clear();
+            string DMAP = "";
+            for (int i = 0; i < Controller.GetMap().Length; i++)
+            {
+                DMAP += '.';
+            }
+            DISPLAYED_MAP.Append(DMAP);
         }
 
         private void ResetDefault(Player player)
@@ -2821,64 +2826,67 @@ namespace SLIL
                 pause_btn.Text = "CONTINUE";
                 exit_btn.Text = "EXIT";
             }
-            for (int i = player.GUNS.Length - 1; i >= 0; i--)
+            if (weapon_shop_page.Controls.Count == 0)
             {
-                if (player.GUNS[i].AddToShop)
+                for (int i = player.GUNS.Length - 1; i >= 0; i--)
                 {
-                    SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
+                    if (player.GUNS[i].AddToShop)
+                    {
+                        SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
+                        {
+                            index = MainMenu.Language ? 0 : 1,
+                            weapon = player.GUNS[i],
+                            player = player,
+                            BackColor = shop_panel.BackColor,
+                            Dock = DockStyle.Top
+                        };
+                        weapon_shop_page.Controls.Add(ShopInterface);
+                    }
+                }
+                for (int i = Controller.GetPets().Length - 1; i >= 0; i--)
+                {
+                    SLIL_PetShopInterface ShopInterface = new SLIL_PetShopInterface()
                     {
                         index = MainMenu.Language ? 0 : 1,
-                        weapon = player.GUNS[i],
+                        pet = Controller.GetPets()[i],
                         player = player,
                         BackColor = shop_panel.BackColor,
                         Dock = DockStyle.Top
                     };
-                    weapon_shop_page.Controls.Add(ShopInterface);
+                    pet_shop_page.Controls.Add(ShopInterface);
                 }
-            }
-            for (int i = Controller.GetPets().Length - 1; i >= 0; i--)
-            {
-                SLIL_PetShopInterface ShopInterface = new SLIL_PetShopInterface()
+                for (int i = player.GUNS.Length - 1; i >= 0; i--)
                 {
-                    index = MainMenu.Language ? 0 : 1,
-                    pet = Controller.GetPets()[i],
+                    if (player.GUNS[i] is Item && !(player.GUNS[i] is Flashlight))
+                    {
+                        SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
+                        {
+                            index = MainMenu.Language ? 0 : 1,
+                            item = player.GUNS[i] as DisposableItem,
+                            player = player,
+                            //GUNS = player.GUNS,
+                            BackColor = shop_panel.BackColor,
+                            Dock = DockStyle.Top
+                        };
+                        consumables_shop_page.Controls.Add(ShopInterface);
+                    }
+                }
+                console_panel = new ConsolePanel()
+                {
+                    Dock = DockStyle.Fill,
+                    Visible = false,
                     player = player,
-                    BackColor = shop_panel.BackColor,
-                    Dock = DockStyle.Top
+                    //GUNS = player.GUNS,
+                    Entities = Controller.GetEntities()
                 };
-                pet_shop_page.Controls.Add(ShopInterface);
+                console_panel.Log("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
+                Controls.Add(console_panel);
+                display = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
+                display.MouseDown += new MouseEventHandler(Display_MouseDown);
+                display.MouseMove += new MouseEventHandler(Display_MouseMove);
+                display.MouseWheel += new MouseEventHandler(Display_Scroll);
+                Controls.Add(display);
             }
-            for (int i = player.GUNS.Length - 1; i >= 0; i--)
-            {
-                if (player.GUNS[i] is Item && !(player.GUNS[i] is Flashlight))
-                {
-                    SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
-                    {
-                        index = MainMenu.Language ? 0 : 1,
-                        item = player.GUNS[i] as DisposableItem,
-                        player = player,
-                        //GUNS = player.GUNS,
-                        BackColor = shop_panel.BackColor,
-                        Dock = DockStyle.Top
-                    };
-                    consumables_shop_page.Controls.Add(ShopInterface);
-                }
-            }
-            console_panel = new ConsolePanel()
-            {
-                Dock = DockStyle.Fill,
-                Visible = false,
-                player = player,
-                //GUNS = player.GUNS,
-                Entities = Controller.GetEntities()
-            };
-            console_panel.Log("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
-            Controls.Add(console_panel);
-            display = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
-            display.MouseDown += new MouseEventHandler(Display_MouseDown);
-            display.MouseMove += new MouseEventHandler(Display_MouseMove);
-            display.MouseWheel += new MouseEventHandler(Display_Scroll);
-            Controls.Add(display);
             UpdateBitmap();
             Activate();
             ResetDefault(player);

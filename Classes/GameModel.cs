@@ -54,7 +54,6 @@ namespace SLIL.Classes
             MAP_HEIGHT = 16;
             rand = new Random();
             difficulty = MainMenu.difficulty;
-            InitMap();
             RespawnTimer = new Timer();
             RespawnTimer.Interval = 1000;
             RespawnTimer.Tick += RespawnTimer_Tick;
@@ -69,8 +68,8 @@ namespace SLIL.Classes
         public void StartGame()
         {
             difficulty = MainMenu.difficulty;
-            //if (Entities.Count == 0) SetPlayerID(AddPlayer());
-            InitMap();
+            if (Entities.Count == 0) SetPlayerID(AddPlayer());
+            if(MAP.Length == 0) InitMap();
             GameStarted = true;
             RespawnTimer.Start();
             EnemyTimer.Start();
@@ -84,16 +83,7 @@ namespace SLIL.Classes
 
         public int AddPlayer()
         {
-            bool OK = false;
-            double X = 3, Y = 3;
-            while (!OK)
-            {
-                X = rand.Next(1, MAP_WIDTH);
-                Y = rand.Next(1, MAP_HEIGHT);
-                if (MAP[(int)Y * MAP_WIDTH + (int)X] == '.') OK = true;
-            }
-            X += 0.5; Y += 0.5;
-            Entities.Add(new Player(X, Y, MAP_WIDTH, ref MaxEntityID));
+            Entities.Add(new Player(3, 3, MAP_WIDTH, ref MaxEntityID));
             return MaxEntityID - 1;
         }
 
@@ -465,11 +455,16 @@ namespace SLIL.Classes
             RespawnTimer.Stop();
             TimeRemain.Stop();
             GameStarted = false;
+            MAP.Clear();
             if (win == 1)
             {
-                foreach (Entity ent in Entities)
+                foreach (Entity ent in Entities.ToArray())
                 {
-                    if (!(ent is Player player)) continue;
+                    if (!(ent is Player player))
+                    {
+                        Entities.Remove(ent);
+                        continue;
+                    }
                     if (difficulty != 4)
                         player.Stage++;
                     if (!player.CuteMode)
@@ -495,7 +490,10 @@ namespace SLIL.Classes
             }
             else
             {
-                //ToDefault();
+                EnemyTimer.Stop();
+                RespawnTimer.Stop();
+                TimeRemain.Stop();
+                Entities.Clear();
             }
             StopGameHandle(win);
         }
@@ -505,6 +503,7 @@ namespace SLIL.Classes
 
         public void MovePlayer(double dX, double dY, int playerID)
         {
+            if(!GameStarted) return;
             for(int i = 0; i < Entities.Count; i++)
             {
                 if (Entities[i] is Player)
@@ -513,11 +512,11 @@ namespace SLIL.Classes
                     {
                         Entities[i].X += dX;
                         Entities[i].Y += dY;
-                    if (MAP[(int)Entities[i].X * MAP_WIDTH + (int)Entities[i].X] == 'F')
-                    {
-                        GameOver(1);
-                        return;
-                    }
+                        if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
+                        {
+                            GameOver(1);
+                            return;
+                        }
                         return;
                     }
                 }
@@ -582,7 +581,7 @@ namespace SLIL.Classes
                 }
             foreach (Entity ent in Entities)
             {
-                if (!(ent is Player player)) return;
+                if (!(ent is Player player)) continue;
                 if (difficulty == 0)
                     enemy_count = 0.07;
                 else if (difficulty == 1)
@@ -829,6 +828,21 @@ namespace SLIL.Classes
                 if (MAP[i] == 'o')
                     MAP[i] = 'd';
             }
+            foreach(Entity ent in Entities)
+            {
+                if(!(ent is Player player)) continue;                
+                bool OK = false;
+                double X = 3, Y = 3;
+                while (!OK)
+                {
+                    X = rand.Next(1, MAP_WIDTH);
+                    Y = rand.Next(1, MAP_HEIGHT);
+                    if (MAP[(int)Y * MAP_WIDTH + (int)X] == '.') OK = true;
+                }
+                X += 0.5; Y += 0.5;
+                player.X = X;
+                player.Y = Y;
+            };
         }
         private void SpawnEnemis(int x, int y, int size)
         {
@@ -1124,6 +1138,11 @@ namespace SLIL.Classes
         internal (int, int) GetSecondsAndMinutes()
         {
             return (this.minutes, this.seconds);
+        }
+
+        internal void StopGame(int win)
+        {
+            GameOver(win);
         }
     }
 }

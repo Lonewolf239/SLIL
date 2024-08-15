@@ -176,7 +176,7 @@ namespace SLIL.Classes
             if (!Game.IsGameStarted())
             {
                 Game.StartGame();
-                playerID = Game.AddPlayer();
+                //playerID = Game.AddPlayer();
             }
         }
         public bool DealDamage(Entity ent, double damage)
@@ -201,6 +201,11 @@ namespace SLIL.Classes
         internal void ChangePlayerLook(double lookDif)
         {
             Game.ChangePlayerLook(lookDif, playerID);
+        }
+
+        internal void StopGame(int win)
+        {
+            Game.StopGame(win);
         }
     }
 }
