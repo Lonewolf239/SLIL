@@ -1389,9 +1389,9 @@ namespace SLIL
             SortSpritesNotReversed(ref spriteOrder, ref spriteDistance, ref textures, Entities.Count);
             for (int i = 0; i < Entities.Count; i++)
             {
-                if (Entities[i] is Player)
+                if (Entities[spriteOrder[i]] is Player)
                 {
-                    if (Controller.GetPlayer().ID == (Entities[i] as Player).ID) continue;
+                    if (Controller.GetPlayer().ID == (Entities[spriteOrder[i]] as Player).ID) continue;
                 }
                 Entity entity = Entities[spriteOrder[i]];
                 Creature creature = null;
