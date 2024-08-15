@@ -554,6 +554,53 @@ namespace SLIL
             ShopInterface_panel.VerticalScroll.Value = 0;
             mouse_timer.Stop();
             time_remein.Stop();
+            weapon_shop_page.Controls.Clear();
+            pet_shop_page.Controls.Clear();
+            consumables_shop_page.Controls.Clear();
+            Player player = Controller.GetPlayer();
+            for (int i = player.GUNS.Length - 1; i >= 0; i--)
+            {
+                if (player.GUNS[i].AddToShop)
+                {
+                    SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
+                    {
+                        index = MainMenu.Language ? 0 : 1,
+                        weapon = player.GUNS[i],
+                        player = player,
+                        BackColor = shop_panel.BackColor,
+                        Dock = DockStyle.Top
+                    };
+                    weapon_shop_page.Controls.Add(ShopInterface);
+                }
+            }
+            for (int i = Controller.GetPets().Length - 1; i >= 0; i--)
+            {
+                SLIL_PetShopInterface ShopInterface = new SLIL_PetShopInterface()
+                {
+                    index = MainMenu.Language ? 0 : 1,
+                    pet = Controller.GetPets()[i],
+                    player = player,
+                    BackColor = shop_panel.BackColor,
+                    Dock = DockStyle.Top
+                };
+                pet_shop_page.Controls.Add(ShopInterface);
+            }
+            for (int i = player.GUNS.Length - 1; i >= 0; i--)
+            {
+            if (player.GUNS[i] is Item && !(player.GUNS[i] is Flashlight))
+            {
+                    SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
+                    {
+                        index = MainMenu.Language ? 0 : 1,
+                        item = player.GUNS[i] as DisposableItem,
+                        player = player,
+                        //GUNS = player.GUNS,
+                        BackColor = shop_panel.BackColor,
+                        Dock = DockStyle.Top
+                    };
+                    consumables_shop_page.Controls.Add(ShopInterface);
+                }
+            }
             shop_panel.BringToFront();
             shop_panel.Visible = true;
         }
@@ -2867,51 +2914,8 @@ namespace SLIL
                 pause_btn.Text = "CONTINUE";
                 exit_btn.Text = "EXIT";
             }
-            if (weapon_shop_page.Controls.Count == 0)
+            if (console_panel == null)
             {
-                for (int i = player.GUNS.Length - 1; i >= 0; i--)
-                {
-                    if (player.GUNS[i].AddToShop)
-                    {
-                        SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
-                        {
-                            index = MainMenu.Language ? 0 : 1,
-                            weapon = player.GUNS[i],
-                            player = player,
-                            BackColor = shop_panel.BackColor,
-                            Dock = DockStyle.Top
-                        };
-                        weapon_shop_page.Controls.Add(ShopInterface);
-                    }
-                }
-                for (int i = Controller.GetPets().Length - 1; i >= 0; i--)
-                {
-                    SLIL_PetShopInterface ShopInterface = new SLIL_PetShopInterface()
-                    {
-                        index = MainMenu.Language ? 0 : 1,
-                        pet = Controller.GetPets()[i],
-                        player = player,
-                        BackColor = shop_panel.BackColor,
-                        Dock = DockStyle.Top
-                    };
-                    pet_shop_page.Controls.Add(ShopInterface);
-                }
-                for (int i = player.GUNS.Length - 1; i >= 0; i--)
-                {
-                    if (player.GUNS[i] is Item && !(player.GUNS[i] is Flashlight))
-                    {
-                        SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
-                        {
-                            index = MainMenu.Language ? 0 : 1,
-                            item = player.GUNS[i] as DisposableItem,
-                            player = player,
-                            //GUNS = player.GUNS,
-                            BackColor = shop_panel.BackColor,
-                            Dock = DockStyle.Top
-                        };
-                        consumables_shop_page.Controls.Add(ShopInterface);
-                    }
-                }
                 console_panel = new ConsolePanel()
                 {
                     Dock = DockStyle.Fill,
