@@ -953,6 +953,7 @@ namespace SLIL
                     {
                         mouse_timer.Stop();
                         time_remein.Stop();
+                        console_panel.player = Controller.GetPlayer();
                         console_panel.command_input.Text = null;
                         console_panel.command_input.Focus();
                         console_panel.BringToFront();
