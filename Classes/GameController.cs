@@ -11,6 +11,7 @@ using System.IO.Ports;
 
 namespace SLIL.Classes
 {
+    public delegate void SetPlayerIDDelegate(int id);
     internal class GameController
     {
         private GameModel Game;
@@ -21,16 +22,22 @@ namespace SLIL.Classes
         private NetPeer peer;
         StartGameDelegate StartGameHandle;
         InitPlayerDelegate InitPlayerHandle;
-        public GameController(StartGameDelegate startGame, InitPlayerDelegate initPlayer)
+        StopGameDelegate StopGameHandle;
+        SetPlayerIDDelegate SetPlayerID;
+        public GameController(StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame)
         {
-            Game = new GameModel();
             InitPlayerHandle = initPlayer;
             StartGameHandle = startGame;
+            StopGameHandle = stopGame;
+            SetPlayerID = SetPlayerIDInvoker;
+            Game = new GameModel(StopGameHandle, SetPlayerID);
         }
-        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer)
+        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame)
         {
             playerID = -1;
-            Game = new GameModel();
+            StopGameHandle = stopGame;
+            SetPlayerID = SetPlayerIDInvoker;
+            Game = new GameModel(StopGameHandle, SetPlayerID);
             listener = new EventBasedNetListener();
             client = new NetManager(listener);
             //client.UnsyncedEvents = true;
@@ -119,6 +126,12 @@ namespace SLIL.Classes
         {
             return Game.GetEntities();
         }
+
+        public void SetPlayerIDInvoker(int id)
+        {
+            this.playerID = id;
+        }
+
         public void AddPet(int index)
         {
             Game.AddPet(playerID, index);
@@ -155,6 +168,14 @@ namespace SLIL.Classes
             Game.StartGame();
             InitPlayerHandle();
             StartGameHandle();
+        }
+        public void RestartGame()
+        {
+            if (!Game.IsGameStarted())
+            {
+                playerID = Game.AddPlayer();
+                Game.StartGame();
+            }
         }
         public bool DealDamage(Entity ent, double damage)
         {

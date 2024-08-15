@@ -20,6 +20,7 @@ using Play_Sound;
 namespace SLIL
 {
     public delegate void StartGameDelegate();
+    public delegate void StopGameDelegate(int win);
     public delegate void InitPlayerDelegate();
     public partial class SLIL : Form
     {
@@ -290,6 +291,7 @@ namespace SLIL
         private bool GameStarted = false, CorrectExit = false;
 
         StartGameDelegate StartGameHandle;
+        StopGameDelegate StopGameHandle;
         InitPlayerDelegate InitPlayerHandle;
         public void StartGameInvokerSinglePlayer()
         {
@@ -316,6 +318,20 @@ namespace SLIL
                         this.StartGame();
                 });
         }
+        public void StopGameInvoker(int win)
+        {
+            if (this.InvokeRequired && this.IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)delegate
+                {
+                        this.GameOver(win);
+                });
+            }
+            else
+            {
+                this.GameOver(win);
+            }
+        }
         public void InitPlayerInvoker()
         {
             if (this.InvokeRequired)
@@ -337,8 +353,9 @@ namespace SLIL
         {
             InitializeComponent();
             StartGameHandle = StartGameInvokerSinglePlayer;
+            StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
-            Controller = new GameController(StartGameHandle, InitPlayerHandle);
+            Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             difficulty = MainMenu.difficulty;
@@ -370,8 +387,9 @@ namespace SLIL
         {
             InitializeComponent();
             StartGameHandle = StartGameInvokerMultiPlayer;
+            StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
-            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle);
+            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle, StopGameHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             difficulty = MainMenu.difficulty;
@@ -384,16 +402,6 @@ namespace SLIL
             LOOK_SPEED = MainMenu.LOOK_SPEED;
             Volume = MainMenu.Volume;
             textureCache = textures;
-            ost = new PlaySound[]
-            {
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_1.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_2.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_3.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_4.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("soul_forge.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true)
-            };
         }
 
         public void AddPet(int index)
@@ -914,6 +922,7 @@ namespace SLIL
                     Activate();
                 }
                 Player player = Controller.GetPlayer();
+                if (player == null) return;
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !player.IsPetting)
                 {
                     if (e.KeyCode == Bind.Flashlight)
@@ -1766,7 +1775,6 @@ namespace SLIL
 
         private void SLIL_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Player player = Controller.GetPlayer();
             Controller.CloseConnection();
             if (!CorrectExit)
             {
@@ -1795,7 +1803,6 @@ namespace SLIL
                     ShopInterface.cant_pressed = null;
                 }
             }
-            player.Money = 15;
             ShowMap = false;
         }
 
@@ -2800,14 +2807,9 @@ namespace SLIL
             }
         }
 
-        private void GetFirstAidKit() {
-            Player player = Controller.GetPlayer();
-            if (player == null) return;
-            player.DisposableItems[0].AddItem();
-        }
-
         private void StartGame()
         {
+            Controller.RestartGame();
             Player player = Controller.GetPlayer();
             if (!MainMenu.Language)
             {
@@ -2908,13 +2910,15 @@ namespace SLIL
                 step_sound_timer.Start();
             GameStarted = true;
             game_over_panel.Visible = false;
+            display.BringToFront();
+            display.Focus();
         }
 
         private void ToDefault()
         {
-            Player player = Controller.GetPlayer();
-            player.Dead = true;
-            player.SetDefault();
+            //Player player = Controller.GetPlayer();
+            //player.Dead = true;
+            //player.SetDefault();
             shop_tab_control.Controls.Clear();
             shop_tab_control.Controls.Add(weapon_shop_page);
             shop_tab_control.Controls.Add(pet_shop_page);
@@ -2924,14 +2928,16 @@ namespace SLIL
                 inDebug = 0;
                 difficulty = old_difficulty;
             }
-            for (int i = 0; i < player.GUNS.Length; i++)
-                player.GUNS[i].SetDefault();
+            //for (int i = 0; i < player.GUNS.Length; i++)
+            //    player.GUNS[i].SetDefault();
         }
 
         private void GameOver(int win)
         {
-            Player player = Controller.GetPlayer();
-            ost[ost_index]?.Stop();
+            foreach(PlaySound ostTrack in ost)
+            {
+                ostTrack.Stop();
+            }
             raycast.Stop();
             shot_timer.Stop();
             reload_timer.Stop();
@@ -2951,18 +2957,6 @@ namespace SLIL
             {
                 if (MainMenu.sounds)
                     tp.Play(Volume);
-                if (difficulty != 4)
-                    player.Stage++;
-                if (!player.CuteMode)
-                {
-                    for (int i = 0; i < player.Guns.Count; i++)
-                    {
-                        if (player.Guns[i].MaxAmmoCount == 0)
-                            player.Guns[i].MaxAmmoCount = player.Guns[i].CartridgesClip;
-                    }
-                }
-                player.ChangeMoney(50 + (5 * player.EnemiesKilled));
-                GetFirstAidKit();
                 StartGame();
                 //UpdatePet();
             }

@@ -34,14 +34,19 @@ namespace SLIL.Classes
         public StringBuilder CUSTOM_MAP = new StringBuilder();
         public int CUSTOM_X, CUSTOM_Y;
 
+        StopGameDelegate StopGameHandle;
+        SetPlayerIDDelegate SetPlayerID;
+
         private static Timer RespawnTimer;
         private static Timer EnemyTimer;
         private static Timer TimeRemain;
 
         public int MaxEntityID;
 
-        public GameModel()
+        public GameModel(StopGameDelegate stopGame, SetPlayerIDDelegate setPlayerID)
         {
+            StopGameHandle = stopGame;
+            SetPlayerID = setPlayerID;
             Pet[] pets = { new SillyCat(0, 0, 0, 0), new GreenGnome(0, 0, 0, 0), new EnergyDrink(0, 0, 0, 0), new Pyro(0, 0, 0, 0) };
             PETS = pets;
             //MAP.Append(@"####################.................##..=======........##..=.....=.....#..##..=....E=........##..=..====........##..=..=........d..##..=.E=...........##..====...........##........P.....=..##.................##.................##..............F..##.................##..===....#D#..#..##..=E=====#$#.#d=.##..===....###..=..##.................####################");
@@ -63,10 +68,18 @@ namespace SLIL.Classes
 
         public void StartGame()
         {
+            difficulty = MainMenu.difficulty;
+            //if (Entities.Count == 0) SetPlayerID(AddPlayer());
+            InitMap();
             GameStarted = true;
             RespawnTimer.Start();
             EnemyTimer.Start();
             TimeRemain.Start();
+        }
+
+        public bool IsGameStarted()
+        {
+            return GameStarted;
         }
 
         public int AddPlayer()
@@ -448,38 +461,46 @@ namespace SLIL.Classes
 
         private void GameOver(int win)
         {
-            //TODO: realization of enemy timer
-            //enemy_timer.Stop();
-            //GameStarted = false;
-            //if (win == 1)
-            //{
-            //    if (MainMenu.sounds)
-            //        tp.Play(Volume);
-            //    if (difficulty != 4)
-            //        player.Stage++;
-            //    if (!player.CuteMode)
-            //    {
-            //        for (int i = 0; i < player.Guns.Count; i++)
-            //        {
-            //            if (player.Guns[i].MaxAmmoCount == 0)
-            //                player.Guns[i].MaxAmmoCount = player.Guns[i].CartridgesClip;
-            //        }
-            //    }
-            //    player.ChangeMoney(50 + (5 * player.EnemiesKilled));
-            //    GetFirstAidKit();
-            //    StartGame();
-            //    UpdatePet();
-            //}
-            //else if (win == 0)
-            //{
-            //    ToDefault();
-            //    game_over_panel.Visible = true;
-            //    game_over_panel.BringToFront();
-            //    if (MainMenu.sounds)
-            //        game_over.Play(Volume);
-            //}
-            //else
-            //    ToDefault();
+            EnemyTimer.Stop();
+            RespawnTimer.Stop();
+            TimeRemain.Stop();
+            GameStarted = false;
+            if (win == 1)
+            {
+                foreach (Entity ent in Entities)
+                {
+                    if (!(ent is Player player)) continue;
+                    if (difficulty != 4)
+                        player.Stage++;
+                    if (!player.CuteMode)
+                    {
+                        for (int i = 0; i < player.Guns.Count; i++)
+                        {
+                            if (player.Guns[i].MaxAmmoCount == 0)
+                                player.Guns[i].MaxAmmoCount = player.Guns[i].CartridgesClip;
+                        }
+                    }
+                    player.ChangeMoney(50 + (5 * player.EnemiesKilled));
+                    GetFirstAidKit(player);
+                    StartGame();
+                    UpdatePet(player);
+                }
+            }
+            else if (win == 0)
+            {
+                EnemyTimer.Stop();
+                RespawnTimer.Stop();
+                TimeRemain.Stop();
+                Entities.Clear();
+            }
+            else
+            {
+                //ToDefault();
+            }
+            StopGameHandle(win);
+        }
+        private void GetFirstAidKit(Player player) {
+            player.DisposableItems[0].AddItem();
         }
 
         public void MovePlayer(double dX, double dY, int playerID)
@@ -492,6 +513,11 @@ namespace SLIL.Classes
                     {
                         Entities[i].X += dX;
                         Entities[i].Y += dY;
+                    if (MAP[(int)Entities[i].X * MAP_WIDTH + (int)Entities[i].X] == 'F')
+                    {
+                        GameOver(1);
+                        return;
+                    }
                         return;
                     }
                 }
