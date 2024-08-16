@@ -1575,7 +1575,7 @@ namespace SLIL
                     if (test_wall == '#' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT[resolution] / 2 >= mid))
                     {
                         hit = true;
-                        int side = GetAccurateSide(distance, ray_x, ray_y);
+                        /*int side = GetAccurateSide(distance, ray_x, ray_y);
                         switch (side)
                         {
                             case 0:
@@ -1592,7 +1592,9 @@ namespace SLIL
                                 break;
                             default:
                                 break;
-                        }
+                        }*/
+                        distance -= 0.2;
+                        Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance);
                     }
                 }
             }
