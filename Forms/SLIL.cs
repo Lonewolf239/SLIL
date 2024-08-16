@@ -660,7 +660,7 @@ namespace SLIL
 
         public static void GoDebug(SLIL slil, int debug)
         {
-            slil.GameOver(-1);
+            slil.Controller.StopGame(-1);
             slil.inDebug = debug;
             difficulty = 5;
             slil.Controller.GoDebug(debug);
