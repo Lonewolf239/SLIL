@@ -2725,46 +2725,6 @@ namespace SLIL
             return SolveSLU(a1, b1, c1, a2, b2, c2);
         }
 
-        //private int GetSide(double distance, double rayX, double rayY)
-        //{
-        //    Player player = Controller.GetPlayer();
-        //    double x1_1 = player.X, y1_1 = player.Y;
-        //    double x2_1 = player.X + distance * rayX, y2_1 = player.Y + distance * rayY;
-        //    int cellY = (int)y2_1;
-        //    int cellX = (int)x2_1;
-        //    double x1_2, y1_2, x2_2, y2_2;
-        //    if (-rayY < 0)
-        //    {
-        //        x1_2 = cellX + 1; y1_2 = cellY; x2_2 = cellX; y2_2 = cellY;
-        //    }
-        //    else if (rayY < 0)
-        //    {
-        //        x1_2 = cellX; y1_2 = cellY + 1; x2_2 = cellX + 1; y2_2 = cellY + 1;
-        //    }
-        //    else if (-rayX < 0)
-        //    {
-        //        x1_2 = cellX; y1_2 = cellY; x2_2 = cellX; y2_2 = cellY + 1;
-        //    }
-        //    else
-        //    {
-        //        x1_2 = cellX + 1; y1_2 = cellY + 1; x2_2 = cellX + 1; y2_2 = cellY;
-        //    }
-        //    var intersectionPoint = SolveNotCanonical(x1_1, x2_1, y1_1, y2_1, x1_2, x2_2, y1_2, y2_2);
-        //    if (intersectionPoint == null)
-        //        return -1;
-        //    double x = intersectionPoint.Value.x;
-        //    double y = intersectionPoint.Value.y;
-        //    if (-rayY < 0 && x >= x2_2 && x <= x1_2)
-        //        return 0;
-        //    else if (rayY < 0 && x >= x1_2 && x <= x2_2)
-        //        return 0;
-        //    else if (-rayX < 0 && y >= y1_2 && y <= y2_2)
-        //        return 1;
-        //    else if (y >= y2_2 && y <= y1_2)
-        //        return 1;
-        //    return -1;
-        //}
-
         private void InitMap()
         {
             //Controller.InitMap();
