@@ -1,31 +1,27 @@
 ﻿using LiteNetLib.Utils;
 using LiteNetLib;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
-using System.IO.Ports;
-using Play_Sound;
 
 namespace SLIL.Classes
 {
     public delegate void SetPlayerIDDelegate(int id);
     internal class GameController
     {
-        private GameModel Game;
+        private readonly GameModel Game;
         public int playerID;
-        private EventBasedNetListener listener;
-        private NetManager client;
-        private NetPacketProcessor processor;
+        private readonly EventBasedNetListener listener;
+        private readonly NetManager client;
+        private readonly NetPacketProcessor processor;
         private NetPeer peer;
-        StartGameDelegate StartGameHandle;
-        InitPlayerDelegate InitPlayerHandle;
-        StopGameDelegate StopGameHandle;
-        PlaySoundDelegate PlaySoundHandle;
-        SetPlayerIDDelegate SetPlayerID;
+        private readonly StartGameDelegate StartGameHandle;
+        private readonly InitPlayerDelegate InitPlayerHandle;
+        private readonly StopGameDelegate StopGameHandle;
+        private readonly PlaySoundDelegate PlaySoundHandle;
+        private readonly SetPlayerIDDelegate SetPlayerID;
+
         public GameController(StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound)
         {
             InitPlayerHandle = initPlayer;
@@ -35,6 +31,7 @@ namespace SLIL.Classes
             SetPlayerID = SetPlayerIDInvoker;
             Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
         }
+
         public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound)
         {
             playerID = -1;
@@ -64,7 +61,7 @@ namespace SLIL.Classes
                 }
                 if (packetType == 0)
                 {
-                    if(playerID!=-1)
+                    if (playerID != -1)
                         Game.Deserialize(dataReader, playerID);
                     else Game.Deserialize(dataReader);
                 }
@@ -89,15 +86,10 @@ namespace SLIL.Classes
             }).Start();
         }
 
-        public void CloseConnection()
-        {
-            if(client!=null) client.Stop();
-        }
+        public void CloseConnection() => client?.Stop();
 
-        ~GameController()
-        {
-            if (client != null) client.Stop();
-        }
+        ~GameController() => client?.Stop();
+
         internal void MovePlayer(double dX, double dY)
         {
             Game.MovePlayer(dX, dY, playerID);
@@ -111,63 +103,43 @@ namespace SLIL.Classes
             //    peer.Send(writer, DeliveryMethod.Unreliable);
             //}
         }
+
         internal void InitMap()
         {
             //Game.InitMap();
         }
-        internal StringBuilder GetMap()
-        {
-            return Game.GetMap();
-        }
-        internal int GetMapWidth()
-        {
-            return Game.GetMapWidth();
-        }
-        internal int GetMapHeight()
-        {
-            return Game.GetMapHeight();
-        }
-        public List<Entity> GetEntities()
-        {
-            return Game.GetEntities();
-        }
 
-        public void SetPlayerIDInvoker(int id)
-        {
-            this.playerID = id;
-        }
+        internal StringBuilder GetMap() => Game.GetMap();
 
-        public void AddPet(int index)
-        {
-            Game.AddPet(playerID, index);
-        }
-        public void AddPlayer()
-        {
-            playerID = Game.AddPlayer();
-        }
+        internal int GetMapWidth() => Game.GetMapWidth();
 
-        public (int, int) GetSecondsAndMinutes()
-        {
-            return Game.GetSecondsAndMinutes();
-        }
+        internal int GetMapHeight() => Game.GetMapHeight();
+
+        public List<Entity> GetEntities() => Game.GetEntities();
+
+        public void SetPlayerIDInvoker(int id) => this.playerID = id;
+
+        public void AddPet(int index) => Game.AddPet(playerID, index);
+
+        public void AddPlayer() => playerID = Game.AddPlayer();
+
+        public (int, int) GetSecondsAndMinutes() => Game.GetSecondsAndMinutes();
 
         public Player GetPlayer()
         {
             Player player = null;
             List<Entity> Entities = Game.GetEntities();
-
             for (int i = 0; i < Entities.Count; i++)
             {
-                if (Entities[i] is Player)
+                if (Entities[i] is Player player1)
                 {
                     if ((Entities[i] as Player).ID == playerID)
-                    {
-                        player = (Player)Entities[i];
-                    }
+                        player = player1;
                 }
             }
             return player;
         }
+
         public void StartGame()
         {
             if (GetPlayer() == null) playerID = Game.AddPlayer();
@@ -175,6 +147,7 @@ namespace SLIL.Classes
             InitPlayerHandle();
             StartGameHandle();
         }
+
         public void RestartGame()
         {
             if (!Game.IsGameStarted())
@@ -183,37 +156,21 @@ namespace SLIL.Classes
                 //playerID = Game.AddPlayer();
             }
         }
-        public bool DealDamage(Entity ent, double damage)
-        {
-            return Game.DealDamage(ent.ID, damage, playerID);
-        }
-        public Pet[] GetPets()
-        {
-            return Game.GetPets();
-        }
 
-        public void AddHittingTheWall(double X, double Y)
-        {
-            Game.AddHittingTheWall(X, Y);
-        }
+        public void GoDebug(int debug) => Game.GoDebug(debug);
 
-        internal void ChangePlayerA(double v)
-        {
-            Game.ChangePlayerA(v, playerID);
-        }
+        public bool DealDamage(Entity ent, double damage) => Game.DealDamage(ent.ID, damage, playerID);
 
-        internal void ChangePlayerLook(double lookDif)
-        {
-            Game.ChangePlayerLook(lookDif, playerID);
-        }
+        public Pet[] GetPets() => Game.GetPets();
 
-        internal void StopGame(int win)
-        {
-            Game.StopGame(win);
-        }
-        public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, int customX, int customY)
-        {
-            Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);
-        }
+        public void AddHittingTheWall(double X, double Y) => Game.AddHittingTheWall(X, Y);
+
+        internal void ChangePlayerA(double v) => Game.ChangePlayerA(v, playerID);
+
+        internal void ChangePlayerLook(double lookDif) => Game.ChangePlayerLook(lookDif, playerID);
+
+        internal void StopGame(int win) => Game.StopGame(win);
+
+        public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, int customX, int customY) => Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);
     }
 }

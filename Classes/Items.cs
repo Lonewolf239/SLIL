@@ -744,8 +744,8 @@ namespace SLIL.Classes
             };
             Description = new[]
             {
-                "Увеличивает скорость передвижения на 30 сек",
-                "Increases movement speed for 30 sec",
+                "Увеличивает скорость передвижения на 20 сек",
+                "Increases movement speed for 20 sec",
             };
         }
     }

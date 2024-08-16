@@ -23,18 +23,18 @@ namespace SLIL
     public delegate void StopGameDelegate(int win);
     public delegate void InitPlayerDelegate();
     public delegate void PlaySoundDelegate(PlaySound sound);
+
     public partial class SLIL : Form
     {
-        private GameController Controller;
+        private readonly GameController Controller;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
         public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true, EnableAnimation = true;
-        public static int difficulty = 1, old_difficulty;
+        public static int difficulty = 1;
         private int inDebug = 0;
         public static double LOOK_SPEED = 2.5;
         public StringBuilder CUSTOM_MAP = new StringBuilder();
         public int CUSTOM_X, CUSTOM_Y;
-        private static readonly Maze MazeGenerator = new Maze();
         private readonly Random rand;
         private const int texWidth = 128;
         private readonly int[] SCREEN_HEIGHT = { 128, 128 * 2 }, SCREEN_WIDTH = { 228, 228 * 2 };
@@ -43,7 +43,6 @@ namespace SLIL
         private static int MazeHeight;
         private static int MazeWidth;
         private int MAP_WIDTH, MAP_HEIGHT;
-        private const int START_EASY = 5, START_NORMAL = 10, START_HARD = 15, START_VERY_HARD = 20;
         private const double FOV = Math.PI / 3;
         private double elapsed_time = 0;
         private static double enemy_count;
@@ -270,7 +269,7 @@ namespace SLIL
         public PlaySound game_over, draw, buy, wall, tp, screenshot;
         public PlaySound[] door;
         private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##..=======........##..=.....=.....#..##..=....E=........##..=..====........##..=..=........d..##..=.E=...........##..====...........##........P.....=..##.................##.................##..............F..##.................##..WWW....#D#..#..##..WEW====#$#.#d=.##..WWW....###..=..##.................####################";
+            debugMap = @"####################.................##..WWWWWWW........##..W.....W.....#..##..W....EW........##..W..WWWW........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##.................##.................##..............F..##.................##..WWW..=.#D#..#..##..WEW====#$#.#d=.##..WWW.=..###..=..##.................####################";
         public static float Volume = 0.4f;
         private static int MAX_SHOP_COUNT = 1;
         private int burst_shots = 0, reload_frames = 0;
@@ -302,11 +301,11 @@ namespace SLIL
         private readonly char[] impassibleCells  = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
         private bool GameStarted = false, CorrectExit = false;
+        private readonly StartGameDelegate StartGameHandle;
+        private readonly StopGameDelegate StopGameHandle;
+        private readonly InitPlayerDelegate InitPlayerHandle;
+        private readonly PlaySoundDelegate PlaySoundHandle;
 
-        StartGameDelegate StartGameHandle;
-        StopGameDelegate StopGameHandle;
-        InitPlayerDelegate InitPlayerHandle;
-        PlaySoundDelegate PlaySoundHandle;
         public void StartGameInvokerSinglePlayer()
         {
             if (this.InvokeRequired && this.IsHandleCreated)
@@ -588,7 +587,6 @@ namespace SLIL
             open_shop = true;
             ShopInterface_panel.VerticalScroll.Value = 0;
             mouse_timer.Stop();
-            time_remein.Stop();
             weapon_shop_page.Controls.Clear();
             pet_shop_page.Controls.Clear();
             consumables_shop_page.Controls.Clear();
@@ -625,8 +623,8 @@ namespace SLIL
             }
             for (int i = player.GUNS.Length - 1; i >= 0; i--)
             {
-            if (player.GUNS[i] is Item && !(player.GUNS[i] is Flashlight))
-            {
+                if (player.GUNS[i] is Item && !(player.GUNS[i] is Flashlight))
+                {
                     SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
                     {
                         index = MainMenu.Language ? 0 : 1,
@@ -664,8 +662,8 @@ namespace SLIL
         {
             slil.GameOver(-1);
             slil.inDebug = debug;
-            old_difficulty = difficulty;
             difficulty = 5;
+            slil.Controller.GoDebug(debug);
             slil.StartGame();
         }
 
@@ -697,11 +695,6 @@ namespace SLIL
                 if (completed)
                     currentIndex++;
             }
-        }
-
-        private void Time_remein_Tick(object sender, EventArgs e)
-        {
-
         }
 
         private void Status_refresh_Tick(object sender, EventArgs e)
@@ -808,7 +801,6 @@ namespace SLIL
                 if (open_shop)
                 {
                     open_shop = false;
-                    time_remein.Start();
                     mouse_timer.Start();
                     int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
                     int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
@@ -820,7 +812,6 @@ namespace SLIL
                     scope[scope_type] = GetScope(scope[scope_type]);
                     scope_shotgun[scope_type] = GetScope(scope_shotgun[scope_type]);
                     console_panel.Visible = false;
-                    time_remein.Start();
                     mouse_timer.Start();
                     console_panel.command_input.Text = null;
                     display.Focus();
@@ -1004,7 +995,6 @@ namespace SLIL
                     if (console_panel.Visible)
                     {
                         mouse_timer.Stop();
-                        time_remein.Stop();
                         console_panel.player = Controller.GetPlayer();
                         console_panel.command_input.Text = null;
                         console_panel.command_input.Focus();
@@ -1012,7 +1002,6 @@ namespace SLIL
                     }
                     else
                     {
-                        time_remein.Start();
                         mouse_timer.Start();
                         console_panel.command_input.Text = null;
                         display.Focus();
@@ -1054,166 +1043,166 @@ namespace SLIL
                 {
                     if (e.KeyCode == Bind.Flashlight)
                         TakeFlashlight(true);
-                }
-                if (e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1)
-                {
-                    double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
-                    double ray_x = Math.Sin(rayA);
-                    double ray_y = Math.Cos(rayA);
-                    double distance = 0;
-                    bool hit = false;
-                    while (raycast.Enabled && !hit && distance <= 1)
+                    if (e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1)
                     {
-                        distance += 0.1d;
-                        int x = (int)(player.X + ray_x * distance);
-                        int y = (int)(player.Y + ray_y * distance);
-                        char test_wall = Controller.GetMap()[y * Controller.GetMapWidth() + x];
-                        switch (test_wall)
+                        double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
+                        double ray_x = Math.Sin(rayA);
+                        double ray_y = Math.Cos(rayA);
+                        double distance = 0;
+                        bool hit = false;
+                        while (raycast.Enabled && !hit && distance <= 1)
                         {
-                            case '#':
-                            case '=':
-                            case 'F':
-                                hit = true;
-                                if (MainMenu.sounds)
-                                    wall.Play(Volume);
-                                break;
-                            case 'D':
-                                hit = true;
-                                ShowShop();
-                                break;
-                            case 'd':
-                                hit = true;
-                                if (MainMenu.sounds)
-                                    door[0].Play(Volume);
-                                Controller.GetMap()[y * Controller.GetMapWidth() + x] = 'o';
-                                break;
-                            case 'o':
-                                hit = true;
-                                if (distance < playerWidth || ((int)player.X == x && (int)player.Y == y))
-                                    break;
-                                if (MainMenu.sounds)
-                                    door[1].Play(Volume);
-                                Controller.GetMap()[y * Controller.GetMapWidth() + x] = 'd';
-                                break;
-                        }
-                    }
-                    if (hit)
-                        return;
-                    DateTime time = DateTime.Now;
-                    elapsed_time = (time - total_time).TotalSeconds;
-                    total_time = time;
-                    PlayerMove();
-                    ClearDisplayedMap();
-                    int factor = player.Aiming ? 12 : 0;
-                    if (player.GetCurrentGun() is Flashlight)
-                        factor = 8;
-                    double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
-                    double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
-                    Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
-                    List<Entity> Entities = Controller.GetEntities();
-                    int[] spriteOrder = new int[Entities.Count];
-                    double[] spriteDistance = new double[Entities.Count];
-                    int[] textures = new int[Entities.Count];
-                    for (int i = 0; i < Entities.Count; i++)
-                    {
-                        spriteOrder[i] = i;
-                        spriteDistance[i] = (player.X - Entities[i].X) * (player.X - Entities[i].X) + (player.Y - Entities[i].Y) * (player.Y - Entities[i].Y);
-                        textures[i] = Entities[i].Texture;
-                    }
-                    SortSpritesNotReversed(ref spriteOrder, ref spriteDistance, ref textures, Entities.Count);
-                    for (int i = 0; i < Entities.Count; i++)
-                    {
-                        Entity entity = Entities[spriteOrder[i]];
-                        if (!(entity is Enemy))
-                        {
-                            double spriteX = entity.X - player.X;
-                            double spriteY = entity.Y - player.Y;
-                            double dirX = Math.Sin(player.A);
-                            double dirY = Math.Cos(player.A);
-                            double planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
-                            double planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
-                            double invDet = 1.0 / (planeX * dirY - dirX * planeY);
-                            double transformX = invDet * (dirY * spriteX - dirX * spriteY);
-                            double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-                            int spriteScreenX = (int)((SCREEN_WIDTH[resolution] / 2) * (1 + transformX / transformY));
-                            double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
-                            if (Distance == 0) Distance = 0.01;
-                            double spriteTop = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / Distance;
-                            double spriteBottom = SCREEN_HEIGHT[resolution] - (spriteTop + player.Look);
-                            int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
-                            int drawStartY = (int)spriteTop;
-                            int drawEndY = (int)spriteBottom;
-                            int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
-                            int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
-                            int drawStartX = -spriteWidth / 2 + spriteScreenX;
-                            if (drawStartX < 0) drawStartX = 0;
-                            int drawEndX = spriteWidth / 2 + spriteScreenX;
-                            if (drawEndX >= SCREEN_WIDTH[resolution]) drawEndX = SCREEN_WIDTH[resolution];
-                            var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
-                            for (int stripe = drawStartX; stripe < drawEndX; stripe++)
+                            distance += 0.1d;
+                            int x = (int)(player.X + ray_x * distance);
+                            int y = (int)(player.Y + ray_y * distance);
+                            char test_wall = Controller.GetMap()[y * Controller.GetMapWidth() + x];
+                            switch (test_wall)
                             {
-                                int texWidth = 128;
-                                double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
-                                if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH[resolution] && transformY < ZBuffer[stripe])
+                                case '#':
+                                case '=':
+                                case 'F':
+                                    hit = true;
+                                    if (MainMenu.sounds)
+                                        wall.Play(Volume);
+                                    break;
+                                case 'D':
+                                    hit = true;
+                                    ShowShop();
+                                    break;
+                                case 'd':
+                                    hit = true;
+                                    if (MainMenu.sounds)
+                                        door[0].Play(Volume);
+                                    Controller.GetMap()[y * Controller.GetMapWidth() + x] = 'o';
+                                    break;
+                                case 'o':
+                                    hit = true;
+                                    if (distance < playerWidth || ((int)player.X == x && (int)player.Y == y))
+                                        break;
+                                    if (MainMenu.sounds)
+                                        door[1].Play(Volume);
+                                    Controller.GetMap()[y * Controller.GetMapWidth() + x] = 'd';
+                                    break;
+                            }
+                        }
+                        if (hit)
+                            return;
+                        DateTime time = DateTime.Now;
+                        elapsed_time = (time - total_time).TotalSeconds;
+                        total_time = time;
+                        PlayerMove();
+                        ClearDisplayedMap();
+                        int factor = player.Aiming ? 12 : 0;
+                        if (player.GetCurrentGun() is Flashlight)
+                            factor = 8;
+                        double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
+                        double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
+                        Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
+                        List<Entity> Entities = Controller.GetEntities();
+                        int[] spriteOrder = new int[Entities.Count];
+                        double[] spriteDistance = new double[Entities.Count];
+                        int[] textures = new int[Entities.Count];
+                        for (int i = 0; i < Entities.Count; i++)
+                        {
+                            spriteOrder[i] = i;
+                            spriteDistance[i] = (player.X - Entities[i].X) * (player.X - Entities[i].X) + (player.Y - Entities[i].Y) * (player.Y - Entities[i].Y);
+                            textures[i] = Entities[i].Texture;
+                        }
+                        SortSpritesNotReversed(ref spriteOrder, ref spriteDistance, ref textures, Entities.Count);
+                        for (int i = 0; i < Entities.Count; i++)
+                        {
+                            Entity entity = Entities[spriteOrder[i]];
+                            if (!(entity is Enemy))
+                            {
+                                double spriteX = entity.X - player.X;
+                                double spriteY = entity.Y - player.Y;
+                                double dirX = Math.Sin(player.A);
+                                double dirY = Math.Cos(player.A);
+                                double planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
+                                double planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
+                                double invDet = 1.0 / (planeX * dirY - dirX * planeY);
+                                double transformX = invDet * (dirY * spriteX - dirX * spriteY);
+                                double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
+                                int spriteScreenX = (int)((SCREEN_WIDTH[resolution] / 2) * (1 + transformX / transformY));
+                                double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
+                                if (Distance == 0) Distance = 0.01;
+                                double spriteTop = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / Distance;
+                                double spriteBottom = SCREEN_HEIGHT[resolution] - (spriteTop + player.Look);
+                                int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
+                                int drawStartY = (int)spriteTop;
+                                int drawEndY = (int)spriteBottom;
+                                int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
+                                int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
+                                int drawStartX = -spriteWidth / 2 + spriteScreenX;
+                                if (drawStartX < 0) drawStartX = 0;
+                                int drawEndX = spriteWidth / 2 + spriteScreenX;
+                                if (drawEndX >= SCREEN_WIDTH[resolution]) drawEndX = SCREEN_WIDTH[resolution];
+                                var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
+                                for (int stripe = drawStartX; stripe < drawEndX; stripe++)
                                 {
-                                    for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT[resolution]; y++)
+                                    int texWidth = 128;
+                                    double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
+                                    if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH[resolution] && transformY < ZBuffer[stripe])
                                     {
-                                        if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
-                                            continue;
-                                        double d = y - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
-                                        double texY = d / (drawEndY - drawStartY);
-                                        if (y == drawStartY) texY = 0;
-                                        if (rays[stripe].Length > y && y >= 0)
+                                        for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT[resolution]; y++)
                                         {
-                                            if (EnableAnimation)
+                                            if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
+                                                continue;
+                                            double d = y - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                                            double texY = d / (drawEndY - drawStartY);
+                                            if (y == drawStartY) texY = 0;
+                                            if (rays[stripe].Length > y && y >= 0)
                                             {
-                                                if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
-                                                    rays[stripe][y].TextureId = textures[i] + 2;
-                                                else
-                                                    rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
-                                            }
-                                            else
-                                                rays[stripe][y].TextureId = textures[i];
-                                            rays[stripe][y].Blackout = 0;
-                                            rays[stripe][y].TextureX = texX;
-                                            rays[stripe][y].TextureY = texY;
-                                            Color color = GetColorForPixel(rays[stripe][y]);
-                                            if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && player.GetCurrentGun().FiringRange >= Distance)
-                                            {
-                                                if (Distance <= 2)
+                                                if (EnableAnimation)
                                                 {
-                                                    switch (entity.Interaction())
-                                                    {
-                                                        case 1: //SillyCat
-                                                            if (player.IsPetting) break;
-                                                            player.IsPetting = true;
-                                                            new Thread(() =>
-                                                            {
-                                                                Thread.Sleep(2000);
-                                                                player.IsPetting = false;
-                                                            }).Start();
-                                                            break;
-                                                        case 2: //GreenGnome
-                                                            if (player.IsPetting) break;
-                                                            player.IsPetting = true;
-                                                            new Thread(() =>
-                                                            {
-                                                                Thread.Sleep(2000);
-                                                                player.IsPetting = false;
-                                                            }).Start();
-                                                            break;
-                                                        case 3: //EnergyDrink
-                                                            if (player.IsPetting) break;
-                                                            player.IsPetting = true;
-                                                            new Thread(() =>
-                                                            {
-                                                                Thread.Sleep(2000);
-                                                                player.IsPetting = false;
-                                                            }).Start();
-                                                            break;
-                                                    }
+                                                    if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
+                                                        rays[stripe][y].TextureId = textures[i] + 2;
+                                                    else
+                                                        rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
                                                 }
-                                                return;
+                                                else
+                                                    rays[stripe][y].TextureId = textures[i];
+                                                rays[stripe][y].Blackout = 0;
+                                                rays[stripe][y].TextureX = texX;
+                                                rays[stripe][y].TextureY = texY;
+                                                Color color = GetColorForPixel(rays[stripe][y]);
+                                                if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && player.GetCurrentGun().FiringRange >= Distance)
+                                                {
+                                                    if (Distance <= 2)
+                                                    {
+                                                        switch (entity.Interaction())
+                                                        {
+                                                            case 1: //SillyCat
+                                                                if (player.IsPetting) break;
+                                                                player.IsPetting = true;
+                                                                new Thread(() =>
+                                                                {
+                                                                    Thread.Sleep(2000);
+                                                                    player.IsPetting = false;
+                                                                }).Start();
+                                                                break;
+                                                            case 2: //GreenGnome
+                                                                if (player.IsPetting) break;
+                                                                player.IsPetting = true;
+                                                                new Thread(() =>
+                                                                {
+                                                                    Thread.Sleep(2000);
+                                                                    player.IsPetting = false;
+                                                                }).Start();
+                                                                break;
+                                                            case 3: //EnergyDrink
+                                                                if (player.IsPetting) break;
+                                                                player.IsPetting = true;
+                                                                new Thread(() =>
+                                                                {
+                                                                    Thread.Sleep(2000);
+                                                                    player.IsPetting = false;
+                                                                }).Start();
+                                                                break;
+                                                        }
+                                                    }
+                                                    return;
+                                                }
                                             }
                                         }
                                     }
@@ -1249,20 +1238,16 @@ namespace SLIL
             pause_panel.Visible = Paused;
             if (Paused)
             {
-                time_remein.Stop();
                 stamina_timer.Stop();
                 mouse_timer.Stop();
-                enemy_timer.Stop();
                 pause_panel.BringToFront();
                 ShowMap = false;
                 shop_panel.Visible = false;
             }
             else
             {
-                time_remein.Start();
                 stamina_timer.Start();
                 mouse_timer.Start();
-                enemy_timer.Start();
             }
         }
 
@@ -1739,11 +1724,6 @@ namespace SLIL
             catch { }
         }
 
-        private void Enemy_timer_Tick(object sender, EventArgs e)
-        {
-            
-        }
-
         private void SLIL_LocationChanged(object sender, EventArgs e)
         {
             strafeDirection = Direction.STOP;
@@ -1895,11 +1875,6 @@ namespace SLIL
             raycast.Interval = hight_fps ? 15 : 30;
         }
 
-        private void SLIL_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void SLIL_FormClosing(object sender, FormClosingEventArgs e)
         {
             Controller.CloseConnection();
@@ -1911,13 +1886,11 @@ namespace SLIL
                 return;
             }
             raycast.Stop();
-            time_remein.Stop();
             step_sound_timer.Stop();
             stamina_timer.Stop();
             mouse_timer.Stop();
             shot_timer.Stop();
             reload_timer.Stop();
-            enemy_timer.Stop();
             status_refresh.Stop();
             if (!isCursorVisible)
                 Cursor.Show();
@@ -1934,13 +1907,6 @@ namespace SLIL
         }
 
         private void Restart_btn_Click(object sender, EventArgs e) => StartGame();
-
-        //private void SLIL_Shown(object sender, EventArgs e) => StartGame();
-
-        private void Respawn_timer_Tick(object sender, EventArgs e)
-        {
-
-        }
 
         private void Raycast_Tick(object sender, EventArgs e)
         {
@@ -2594,10 +2560,8 @@ namespace SLIL
                         DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '#';
                         break;
                     case '=':
-                        if (!hit_window) {
-                            hit_window = true;
-                            DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '=';
-                        }
+                        hit_window = true;
+                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '=';
                         break;
                     case 'd':
                         hit_door = true;
@@ -2777,45 +2741,45 @@ namespace SLIL
             return SolveSLU(a1, b1, c1, a2, b2, c2);
         }
 
-        private int GetSide(double distance, double rayX, double rayY)
-        {
-            Player player = Controller.GetPlayer();
-            double x1_1 = player.X, y1_1 = player.Y;
-            double x2_1 = player.X + distance * rayX, y2_1 = player.Y + distance * rayY;
-            int cellY = (int)y2_1;
-            int cellX = (int)x2_1;
-            double x1_2, y1_2, x2_2, y2_2;
-            if (-rayY < 0)
-            {
-                x1_2 = cellX + 1; y1_2 = cellY; x2_2 = cellX; y2_2 = cellY;
-            }
-            else if (rayY < 0)
-            {
-                x1_2 = cellX; y1_2 = cellY + 1; x2_2 = cellX + 1; y2_2 = cellY + 1;
-            }
-            else if (-rayX < 0)
-            {
-                x1_2 = cellX; y1_2 = cellY; x2_2 = cellX; y2_2 = cellY + 1;
-            }
-            else
-            {
-                x1_2 = cellX + 1; y1_2 = cellY + 1; x2_2 = cellX + 1; y2_2 = cellY;
-            }
-            var intersectionPoint = SolveNotCanonical(x1_1, x2_1, y1_1, y2_1, x1_2, x2_2, y1_2, y2_2);
-            if (intersectionPoint == null)
-                return -1;
-            double x = intersectionPoint.Value.x;
-            double y = intersectionPoint.Value.y;
-            if (-rayY < 0 && x >= x2_2 && x <= x1_2)
-                return 0;
-            else if (rayY < 0 && x >= x1_2 && x <= x2_2)
-                return 0;
-            else if (-rayX < 0 && y >= y1_2 && y <= y2_2)
-                return 1;
-            else if (y >= y2_2 && y <= y1_2)
-                return 1;
-            return -1;
-        }
+        //private int GetSide(double distance, double rayX, double rayY)
+        //{
+        //    Player player = Controller.GetPlayer();
+        //    double x1_1 = player.X, y1_1 = player.Y;
+        //    double x2_1 = player.X + distance * rayX, y2_1 = player.Y + distance * rayY;
+        //    int cellY = (int)y2_1;
+        //    int cellX = (int)x2_1;
+        //    double x1_2, y1_2, x2_2, y2_2;
+        //    if (-rayY < 0)
+        //    {
+        //        x1_2 = cellX + 1; y1_2 = cellY; x2_2 = cellX; y2_2 = cellY;
+        //    }
+        //    else if (rayY < 0)
+        //    {
+        //        x1_2 = cellX; y1_2 = cellY + 1; x2_2 = cellX + 1; y2_2 = cellY + 1;
+        //    }
+        //    else if (-rayX < 0)
+        //    {
+        //        x1_2 = cellX; y1_2 = cellY; x2_2 = cellX; y2_2 = cellY + 1;
+        //    }
+        //    else
+        //    {
+        //        x1_2 = cellX + 1; y1_2 = cellY + 1; x2_2 = cellX + 1; y2_2 = cellY;
+        //    }
+        //    var intersectionPoint = SolveNotCanonical(x1_1, x2_1, y1_1, y2_1, x1_2, x2_2, y1_2, y2_2);
+        //    if (intersectionPoint == null)
+        //        return -1;
+        //    double x = intersectionPoint.Value.x;
+        //    double y = intersectionPoint.Value.y;
+        //    if (-rayY < 0 && x >= x2_2 && x <= x1_2)
+        //        return 0;
+        //    else if (rayY < 0 && x >= x1_2 && x <= x2_2)
+        //        return 0;
+        //    else if (-rayX < 0 && y >= y1_2 && y <= y2_2)
+        //        return 1;
+        //    else if (y >= y2_2 && y <= y1_2)
+        //        return 1;
+        //    return -1;
+        //}
 
         private void InitMap()
         {
@@ -2823,9 +2787,7 @@ namespace SLIL
             DISPLAYED_MAP.Clear();
             string DMAP = "";
             for (int i = 0; i < Controller.GetMap().Length; i++)
-            {
                 DMAP += '.';
-            }
             DISPLAYED_MAP.Append(DMAP);
         }
 
@@ -2956,7 +2918,7 @@ namespace SLIL
                     //GUNS = player.GUNS,
                     Entities = Controller.GetEntities()
                 };
-                console_panel.Log("SLIL console *v1.2*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
+                console_panel.Log("SLIL console *v1.3*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
                 Controls.Add(console_panel);
                 display = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
                 display.MouseDown += new MouseEventHandler(Display_MouseDown);
@@ -2986,11 +2948,8 @@ namespace SLIL
             stage_timer.Stop();
             stage_timer.Start();
             raycast.Start();
-            time_remein.Start();
             stamina_timer.Start();
             mouse_timer.Start();
-            enemy_timer.Start();
-            respawn_timer.Start();
             if (MainMenu.sounds)
                 step_sound_timer.Start();
             GameStarted = true;
@@ -3008,11 +2967,6 @@ namespace SLIL
             shop_tab_control.Controls.Add(weapon_shop_page);
             shop_tab_control.Controls.Add(pet_shop_page);
             shop_tab_control.Controls.Add(consumables_shop_page);
-            if (inDebug == 1)
-            {
-                inDebug = 0;
-                difficulty = old_difficulty;
-            }
             //for (int i = 0; i < player.GUNS.Length; i++)
             //    player.GUNS[i].SetDefault();
         }
@@ -3020,18 +2974,13 @@ namespace SLIL
         private void GameOver(int win)
         {
             foreach (PlaySound ostTrack in ost)
-            {
                 ostTrack.Stop();
-            }
             raycast.Stop();
             shot_timer.Stop();
             reload_timer.Stop();
-            time_remein.Stop();
             step_sound_timer.Stop();
             stamina_timer.Stop();
             mouse_timer.Stop();
-            enemy_timer.Stop();
-            respawn_timer.Stop();
             ShowMap = false;
             shop_panel.Visible = false;
             console_panel.Visible = false;

@@ -124,9 +124,6 @@
   <data name="pet_cat_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_cat_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="speed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\speed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="gun_1_0_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_0_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -312,9 +309,6 @@
   </data>
   <data name="teleport_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\teleport_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="red" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="language" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\language.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

@@ -1,6 +1,4 @@
-﻿using SharpDX.Direct2D1;
-using System.Collections.Generic;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+﻿using System.Collections.Generic;
 
 namespace SLIL.Classes
 {
@@ -60,6 +58,7 @@ namespace SLIL.Classes
             Dead = true;
             SetDefault();
         }
+
         public Player(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
         {
             DisposableItems.Add((FirstAidKit)GUNS[10]);

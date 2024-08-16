@@ -760,9 +760,6 @@
     <None Include="Images\random.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\red.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\reset.png" />
   </ItemGroup>
   <ItemGroup>
@@ -812,9 +809,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\shop_man_1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\speed.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\syringe.png" />
