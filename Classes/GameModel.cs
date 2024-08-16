@@ -288,6 +288,9 @@ namespace SLIL.Classes
                     case 12:
                         tempEntities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
                         break;
+                    case 13:
+                        tempEntities.Add(new PlayerDeadBody(entityX, entityY, MAP_WIDTH, ID));
+                        break;
                     default:
                         break;
                 }
@@ -501,7 +504,6 @@ namespace SLIL.Classes
                         }
                     }
                     player.ChangeMoney(50 + (5 * player.EnemiesKilled));
-                    GetFirstAidKit(player);
                     StartGame();
                     UpdatePet(player);
                 }
