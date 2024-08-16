@@ -268,7 +268,6 @@ namespace SLIL.Classes
         protected double detectionRange;
         public bool Stoped { get; set; }
         public bool HasStopAnimation { get; set; }
-        public Image ShopIcon;
         public string[] Name { get; set; }
         public string[] Descryption { get; set; }
         public int Cost { get; set; }
@@ -442,7 +441,6 @@ namespace SLIL.Classes
         private void Init()
         {
             Index = 0;
-            ShopIcon = Properties.Resources.pet_cat_icon;
             Cost = 150;
             Name = new[] { "Глупый Кот", "Silly Cat" };
             Descryption = new[] { "Раз в 5 секунд восстанавливает 2 HP", "Restores 2 HP every 5 seconds" };
@@ -465,7 +463,6 @@ namespace SLIL.Classes
         private void Init()
         {
             Index = 1;
-            ShopIcon = Properties.Resources.pet_gnome_icon;
             Cost = 60;
             Name = new[] { "Зелёный Гном", "Green Gnome" };
             Descryption = new[] { "Увеличивает максимальное здоровье на 25", "Increases maximum health by 25" };
@@ -487,7 +484,6 @@ namespace SLIL.Classes
         private void Init()
         {
             Index = 2;
-            ShopIcon = Properties.Resources.pet_energy_drink_icon;
             Cost = 60;
             Name = new[] { "Энергетик", "Energy Drink" };
             Descryption = new[] { "Увеличивает выносливость и скорость", "Increases endurance and speed" };
@@ -515,7 +511,6 @@ namespace SLIL.Classes
         private void Init()
         {
             Index = 3;
-            ShopIcon = Properties.Resources.pet_pyro_icon;
             Cost = 666;
             Name = new[] { "Подсератель", "Podseratel" };
             Descryption = new[] { "Мир — это сказка...", "The world is a fairy tale..." };

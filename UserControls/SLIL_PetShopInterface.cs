@@ -24,7 +24,7 @@ namespace SLIL.UserControls
         {
             Width = width;
             name.Text = pet.Name[index];
-            icon.Image = pet.ShopIcon;
+            icon.Image = SLIL.ShopImageDict[pet.GetType()];
             descryption.Text = pet.Descryption[index];
             descryption.Width = Width - descryption.Left - 20;
             if (player.PET != pet)

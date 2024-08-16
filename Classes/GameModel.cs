@@ -148,6 +148,7 @@ namespace SLIL.Classes
                                             PlaySoundHandle(SLIL.hit);
                                         if (player.HP <= 0)
                                         {
+                                            Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
                                             GameOver(0);
                                             return;
                                         }
@@ -605,12 +606,14 @@ namespace SLIL.Classes
                 else if (difficulty == 2)
                 {
                     enemy_count = 0.055;
-                    player.Guns[1].LevelUpdate();
+                    if(player.Stage == 0)
+                        player.Guns[1].LevelUpdate();
                 }
                 else if (difficulty == 3)
                 {
                     enemy_count = 0.045;
-                    player.Guns[1].LevelUpdate();
+                    if(player.Stage == 0)
+                        player.Guns[1].LevelUpdate();
                 }
                 else if (difficulty == 4)
                 {

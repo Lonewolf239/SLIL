@@ -242,6 +242,13 @@ namespace SLIL
             { typeof(FirstAidKit), Properties.Resources.food_count },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
         };
+        public static readonly Dictionary<Type, Image> ShopImageDict = new Dictionary<Type, Image>
+        {
+            { typeof(SillyCat), Properties.Resources.pet_cat_icon },
+            { typeof(GreenGnome), Properties.Resources.pet_gnome_icon },
+            { typeof(EnergyDrink), Properties.Resources.pet_energy_drink_icon },
+            { typeof(Pyro), Properties.Resources.pet_pyro_icon },
+        };
         private readonly PlaybackState playbackState = new PlaybackState();
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
