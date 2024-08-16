@@ -2536,6 +2536,9 @@ namespace SLIL
                 char test_wall = Controller.GetMap()[mapY * Controller.GetMapWidth() + mapX];
                 switch (test_wall)
                 {
+                    case 'W':
+                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'W';
+                        break;
                     case '#':
                         hit_wall = true;
                         DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '#';

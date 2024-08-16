@@ -86,7 +86,7 @@ namespace SLIL.Classes
             if (inDebug == 0) difficulty = SLIL.difficulty;
             else difficulty = 5;
             if (Entities.Count == 0) SetPlayerID(AddPlayer());
-            if (MAP.Length == 0 || difficulty == 5) InitMap();
+            if (MAP.Length == 0) InitMap();
             GameStarted = true;
             RespawnTimer.Start();
             EnemyTimer.Start();
@@ -853,8 +853,11 @@ namespace SLIL.Classes
                     player.Y = CUSTOM_Y;
                     continue;
                 }
-                player.X = 1.5;
-                player.Y = 1.5;
+                if (difficulty != 5)
+                {
+                    player.X = 1.5;
+                    player.Y = 1.5;
+                }
             };
         }
 
