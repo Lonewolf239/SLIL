@@ -1792,6 +1792,7 @@ namespace SLIL
                 Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '.';
                 DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '.';
             }
+            DISPLAYED_MAP.Replace('P', '.');
             double run = 1;
             if (playerMoveStyle == Direction.RUN && playerDirection == Direction.FORWARD)
                 run = player.RUN_SPEED;
@@ -1852,7 +1853,6 @@ namespace SLIL
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == '.')
             {
                 //MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
-                DISPLAYED_MAP.Replace('P', '.');
                 DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
             }
         }
