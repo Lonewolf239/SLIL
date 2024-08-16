@@ -603,9 +603,15 @@ namespace SLIL.Classes
                 else if (difficulty == 1)
                     enemy_count = 0.065;
                 else if (difficulty == 2)
+                {
                     enemy_count = 0.055;
+                    player.Guns[1].LevelUpdate();
+                }
                 else if (difficulty == 3)
+                {
                     enemy_count = 0.045;
+                    player.Guns[1].LevelUpdate();
+                }
                 else if (difficulty == 4)
                 {
                     minutes = 9999;
