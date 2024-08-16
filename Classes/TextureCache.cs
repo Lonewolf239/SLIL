@@ -44,6 +44,12 @@ namespace SLIL.Classes
             Properties.Resources.teleport_1,
             Properties.Resources.hit_0, //36
             Properties.Resources.hit_1,
+            Properties.Resources.player, //38
+            Properties.Resources.player_1,
+            Properties.Resources.player_stoped,
+            Properties.Resources.player_aiming,
+            Properties.Resources.player_shooted,
+            Properties.Resources.player_stoped, //43
         };
         private readonly Image[] cute_textures =
         {
@@ -83,6 +89,12 @@ namespace SLIL.Classes
             Properties.Resources.c_teleport_1,
             Properties.Resources.hit_0, //36
             Properties.Resources.hit_1,
+            Properties.Resources.player, //38
+            Properties.Resources.player_1,
+            Properties.Resources.player_stoped,
+            Properties.Resources.player_aiming,
+            Properties.Resources.player_shooted,
+            Properties.Resources.player_stoped, //43
         };
         private readonly Color[] COLORS =
         {

@@ -984,5 +984,20 @@
   <ItemGroup>
     <None Include="Images\regeneration_effect.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player_aiming.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player_shooted.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player_stoped.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

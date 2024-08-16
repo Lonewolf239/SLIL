@@ -2255,6 +2255,7 @@ namespace SLIL
         {
             switch (mapChar)
             {
+                case 'W': return Color.White;
                 case '#': return Color.Blue;
                 case '=': return Color.YellowGreen;
                 case 'P': return Color.Red;
@@ -2282,24 +2283,7 @@ namespace SLIL
                 {
                     int i = (y * data.Stride) + (x * bytesPerPixel);
                     char mapChar = DISPLAYED_MAP[y * Controller.GetMapWidth() + x];
-                    if (mapChar == '#')
-                        color = Color.Blue;
-                    else if (mapChar == '=')
-                        color = Color.YellowGreen;
-                    else if (mapChar == 'D' || mapChar == 'O')
-                        color = Color.FromArgb(255, 165, 0);
-                    else if (mapChar == '$')
-                        color = Color.Pink;
-                    else if (mapChar == 'F')
-                        color = Color.MediumVioletRed;
-                    else if (mapChar == 'P')
-                        color = Color.Red;
-                    else if (mapChar == '*')
-                        color = Color.FromArgb(255, 128, 128);
-                    else if (mapChar == 'E')
-                        color = Color.Cyan;
-                    else
-                        color = Color.Black;
+                    color = GetColorForMapChar(mapChar);
                     pixels[i] = color.B;
                     pixels[i + 1] = color.G;
                     pixels[i + 2] = color.R;
@@ -2789,7 +2773,15 @@ namespace SLIL
             string DMAP = "";
             for (int i = 0; i < Controller.GetMap().Length; i++)
                 DMAP += '.';
-            DISPLAYED_MAP.Append(DMAP);
+            if (difficulty < 5)
+                DISPLAYED_MAP.Append(DMAP);
+            else
+            {
+                if (inDebug == 1)
+                    DISPLAYED_MAP.Append(debugMap);
+                else if (inDebug == 2)
+                    DISPLAYED_MAP.Append(bossMap);
+            }
         }
 
         private void ResetDefault(Player player)
@@ -2931,7 +2923,7 @@ namespace SLIL
             Activate();
             ResetDefault(player);
             InitMap();
-            /*try
+            try
             {
                 if (Controller.GetMap()[(int)(player.Y + 2) * Controller.GetMapWidth() + (int)player.X] == '.')
                     player.A = 0;
@@ -2945,7 +2937,7 @@ namespace SLIL
             catch
             {
                 player.A = 0;
-            }*/
+            }
             stage_timer.Stop();
             stage_timer.Start();
             raycast.Start();

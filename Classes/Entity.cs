@@ -457,6 +457,20 @@ namespace SLIL.Classes
         }
     }
 
+    //TODO:
+    //texture 43
+    //public class PlayerDeadBody : 
+    //{
+    //    public PlayerDeadBody(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
+    //    {
+    //        Dead = false;
+    //    }
+    //    public PlayerDeadBody(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID)
+    //    {
+    //        Dead = false;
+    //    }
+    //}
+
     public class SillyCat : Pet
     {
         public SillyCat(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID)
