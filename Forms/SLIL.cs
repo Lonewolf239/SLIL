@@ -40,13 +40,8 @@ namespace SLIL
         private readonly int[] SCREEN_HEIGHT = { 128, 128 * 2 }, SCREEN_WIDTH = { 228, 228 * 2 };
         public static int resolution = 0;
         public static bool hight_fps = true;
-        private static int MazeHeight;
-        private static int MazeWidth;
-        private int MAP_WIDTH, MAP_HEIGHT;
         private const double FOV = Math.PI / 3;
         private double elapsed_time = 0;
-        private static double enemy_count;
-        private static StringBuilder MAP = new StringBuilder();
         private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
         private Bitmap SCREEN, WEAPON, BUFFER;
         private readonly Font[] consolasFont = { new Font("Consolas", 9.75F), new Font("Consolas", 16F), new Font("Consolas", 22F) };
@@ -271,7 +266,6 @@ namespace SLIL
         private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##..WWWWWWW........##..W.....W.....#..##..W....EW........##..W..WWWW........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##.................##.................##..............F..##.................##..WWW..=.#D#..#..##..WEW====#$#.#d=.##..WWW.=..###..=..##.................####################";
         public static float Volume = 0.4f;
-        private static int MAX_SHOP_COUNT = 1;
         private int burst_shots = 0, reload_frames = 0;
         public static int ost_index = 0;
         public static int prev_ost;
@@ -2806,76 +2800,6 @@ namespace SLIL
             open_shop = false;
             strafeDirection = playerDirection = Direction.STOP;
             playerMoveStyle = Direction.WALK;
-            if (difficulty == 0)
-                enemy_count = 0.07;
-            else if (difficulty == 1)
-                enemy_count = 0.065;
-            else if (difficulty == 2)
-            {
-                enemy_count = 0.055;
-                if (player.Guns[1].Level == Levels.LV1)
-                    player.Guns[1].LevelUpdate();
-            }
-            else if (difficulty == 3)
-            {
-                enemy_count = 0.045;
-                if (player.Guns[1].Level == Levels.LV1)
-                    player.Guns[1].LevelUpdate();
-            }
-            else if (difficulty == 4)
-            {
-                MazeHeight = CustomMazeHeight;
-                MazeWidth = CustomMazeWidth;
-                enemy_count = 0.06;
-                MAX_SHOP_COUNT = 5;
-            }
-            else
-            {
-                if (inDebug == 1)
-                {
-                    player.X = 9;
-                    player.Y = 9;
-                    MazeHeight = 6;
-                    MazeWidth = 6;
-                }
-                else if (inDebug == 2)
-                {
-                    player.X = 10.5;
-                    player.Y = 19.5;
-                    MazeHeight = 7;
-                    MazeWidth = 7;
-                }
-            }
-            if (difficulty != 4 && difficulty != 5)
-            {
-                if (player.Stage == 0)
-                {
-                    MazeHeight = MazeWidth = 10;
-                    MAX_SHOP_COUNT = 2;
-                }
-                else if (player.Stage == 1)
-                {
-                    MazeHeight = MazeWidth = 15;
-                    MAX_SHOP_COUNT = 4;
-                }
-                else if (player.Stage == 2)
-                {
-                    MazeHeight = MazeWidth = 20;
-                    MAX_SHOP_COUNT = 6;
-                }
-                else if (player.Stage == 3)
-                {
-                    MazeHeight = MazeWidth = 25;
-                    MAX_SHOP_COUNT = 8;
-                }
-                else
-                {
-                    MazeHeight = MazeWidth = 25;
-                    MAX_SHOP_COUNT = 8;
-                }
-            }
-            MAP_WIDTH = MazeWidth * 3 + 1;
-            MAP_HEIGHT = MazeHeight * 3 + 1;
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
             //map = new Bitmap(MAP_WIDTH, MAP_HEIGHT);
             if (MainMenu.sounds)
