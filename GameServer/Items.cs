@@ -143,6 +143,41 @@ namespace SLIL.Classes
         public override bool CanUpdate() => false;
     }
 
+    public class DisposableItem : Item
+    {
+        public bool HasLVMechanics { get; set; }
+
+        public DisposableItem() : base()
+        {
+            HasIt = false;
+            HaveLV4 = false;
+            HasCuteDescription = false;
+            HasLVMechanics = false;
+            RechargeTime = 980;
+            AmmoCount = 0;
+            MaxAmmoCount = 0;
+            MaxAmmo = 2;
+            FiringRate = 150;
+            ReloadFrames = 3;
+        }
+
+        public void AddItem()
+        {
+            AmmoCount = CartridgesClip;
+            MaxAmmoCount = CartridgesClip;
+            HasIt = true;
+        }
+
+        public override void SetDefault()
+        {
+            AmmoCount = 0;
+            MaxAmmoCount = 0;
+            HasIt = false;
+        }
+
+        public override bool CanUpdate() => false;
+    }
+
     public class Flashlight : Item
     {
         public Flashlight() : base()
@@ -195,6 +230,7 @@ namespace SLIL.Classes
     {
         public Candy() : base()
         {
+            FiringRate = 400;
             ShowScope = false;
             HasIt = false;
             Name = new[] { "Конфета", "Candy" };
@@ -214,11 +250,11 @@ namespace SLIL.Classes
             CartridgesClip = 100;
             MaxAmmoCount = 0;
             MaxAmmo = 100;
-            FiringRange = 7;
-            MaxDamage = 3;
-            MinDamage = 2.75;
+            FiringRange = 2.5;
+            MaxDamage = 2.25;
+            MinDamage = 2;
             Recoil = 5;
-            FiringRate = 175;
+            FiringRate = 125;
             BurstShots = 5;
             RadiusSound = 6;
             ReloadFrames = 1;
@@ -601,7 +637,6 @@ namespace SLIL.Classes
             BurstShots = 1;
             RadiusSound = 20;
             ReloadFrames = 1;
-            AmmoCount = CartridgesClip;
         }
 
         public override bool CanUpdate() => false;
@@ -674,32 +709,43 @@ namespace SLIL.Classes
         }
     }
 
-    public class FirstAidKit : Item
+    public class FirstAidKit : DisposableItem
     {
         public FirstAidKit() : base()
         {
-            HasIt = false;
-            HaveLV4 = true;
+            HasLVMechanics = true;
             HasCuteDescription = true;
+            GunCost = 50;
             Name = new[]
-            { 
+            {
                 "Аптечка", "First Aid Kit",
                 "Бобы", "Beans"
             };
-            GunCost = 50;
-            RechargeTime = 980;
-            MaxAmmo = 2;
-            FiringRate = 150;
-            ReloadFrames = 3;
             Description = new[]
-            { 
+            {
                 "Восстанавливает здоровье",
                 "Restores health",
                 "Вкусный перекус",
                 "A tasty snack"
             };
         }
+    }
 
-        public override bool CanUpdate() => false;
+    public class Adrenalin : DisposableItem
+    {
+        public Adrenalin() : base()
+        {
+            RechargeTime = 530;
+            GunCost = 75;
+            Name = new[]
+            {
+                "Адреналин", "Adrenalin"
+            };
+            Description = new[]
+            {
+                "Увеличивает скорость передвижения на 20 сек",
+                "Increases movement speed for 20 sec",
+            };
+        }
     }
 }

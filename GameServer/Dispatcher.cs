@@ -61,7 +61,7 @@ namespace GameServer
                 default:
                     break;
             }
-            server.SendToAll(writer, DeliveryMethod.Unreliable);
+            server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
         }
         public int AddPlayer()
         {
