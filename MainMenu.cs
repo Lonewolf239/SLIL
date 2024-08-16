@@ -1210,6 +1210,7 @@ namespace SLIL
         {
             lose_focus.Focus();
             game_mode_panel.Visible = false;
+            if (sounds) MainMenuTheme.Stop();
             SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]))
             {
                     DeathSounds = DeathSounds,
@@ -1223,6 +1224,7 @@ namespace SLIL
                     door = door,
             };
             form.ShowDialog();
+            if (sounds) MainMenuTheme.Play(Volume);
             difficulty_panel.Visible = false;
         }
 
