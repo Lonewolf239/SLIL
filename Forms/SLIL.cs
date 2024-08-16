@@ -22,6 +22,7 @@ namespace SLIL
     public delegate void StartGameDelegate();
     public delegate void StopGameDelegate(int win);
     public delegate void InitPlayerDelegate();
+    public delegate void PlaySoundDelegate(PlaySound sound);
     public partial class SLIL : Form
     {
         private GameController Controller;
@@ -250,6 +251,8 @@ namespace SLIL
         private readonly PlaybackState playbackState = new PlaybackState();
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
+        public static PlaySound hit = new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false);
+        public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
         public PlaySound[,] step;
         public static PlaySound[] ost = new PlaySound[]
             {
@@ -264,7 +267,7 @@ namespace SLIL
             };
         public PlaySound[,] DeathSounds;
         public PlaySound[,] CuteDeathSounds;
-        public PlaySound game_over, draw, buy, hit, hungry, wall, tp, screenshot;
+        public PlaySound game_over, draw, buy, wall, tp, screenshot;
         public PlaySound[] door;
         private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##..=======........##..=.....=.....#..##..=....E=........##..=..====........##..=..=........d..##..=.E=...........##..====...........##........P.....=..##.................##.................##..............F..##.................##..WWW....#D#..#..##..WEW====#$#.#d=.##..WWW....###..=..##.................####################";
@@ -303,6 +306,7 @@ namespace SLIL
         StartGameDelegate StartGameHandle;
         StopGameDelegate StopGameHandle;
         InitPlayerDelegate InitPlayerHandle;
+        PlaySoundDelegate PlaySoundHandle;
         public void StartGameInvokerSinglePlayer()
         {
             if (this.InvokeRequired && this.IsHandleCreated)
@@ -359,13 +363,35 @@ namespace SLIL
             }
         }
 
+        public void PlaySoundInvoker(PlaySound sound)
+        {
+            if (this.InvokeRequired && this.IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)delegate
+                {
+                    if (MainMenu.sounds)
+                    {
+                        sound.Play(Volume);
+                    }
+                });
+            }
+            else
+            {
+                if (MainMenu.sounds)
+                {
+                    sound.Play(Volume);
+                }
+            }
+        }
+
         public SLIL(TextureCache textures)
         {
             InitializeComponent();
             StartGameHandle = StartGameInvokerSinglePlayer;
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
-            Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle);
+            PlaySoundHandle = PlaySoundInvoker;
+            Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
             Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
@@ -387,7 +413,8 @@ namespace SLIL
             StartGameHandle = StartGameInvokerSinglePlayer;
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
-            Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle);
+            PlaySoundHandle = PlaySoundInvoker;
+            Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             difficulty = MainMenu.difficulty;
@@ -415,7 +442,8 @@ namespace SLIL
             StartGameHandle = StartGameInvokerMultiPlayer;
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
-            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle, StopGameHandle);
+            PlaySoundHandle = PlaySoundInvoker;
+            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             difficulty = MainMenu.difficulty;
@@ -435,6 +463,27 @@ namespace SLIL
             foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true))
                 control.buy_button.Text = MainMenu.Language ? $"Купить ${control.pet.Cost}" : $"Buy ${control.pet.Cost}";
             Controller.AddPet(index);
+            CuteMode();
+            Player player = Controller.GetPlayer();
+            weapon_shop_page.Controls.Clear();
+            if (!player.CuteMode)
+            {
+                for (int i = player.GUNS.Length - 1; i >= 0; i--)
+                {
+                    if (player.GUNS[i].AddToShop)
+                    {
+                        SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
+                        {
+                            index = MainMenu.Language ? 0 : 1,
+                            weapon = player.GUNS[i],
+                            player = player,
+                            BackColor = shop_panel.BackColor,
+                            Dock = DockStyle.Top
+                        };
+                        weapon_shop_page.Controls.Add(ShopInterface);
+                    }
+                }
+            }
             //for (int i = 0; i < Entities.Count; i++)
             //{
             //    if (Entities[i] is Pet)
@@ -488,23 +537,23 @@ namespace SLIL
         private void CuteMode()
         {
             Player player = Controller.GetPlayer();
-            player.Guns.Clear();
-            shop_tab_control.Controls.Clear();
+            //player.Guns.Clear();
+            //shop_tab_control.Controls.Clear();
             if (player.CuteMode)
             {
                 prev_ost = ost_index;
                 ChangeOst(7);
-                player.DEPTH = 10;
+                /*player.DEPTH = 10;
                 player.GUNS[11].HasIt = true;
                 player.GUNS[12].HasIt = true;
                 player.Guns.Add(player.GUNS[11]);
-                player.Guns.Add(player.GUNS[12]);
+                player.Guns.Add(player.GUNS[12]);*/
             }
             else
             {
                 prev_ost = rand.Next(ost.Length - 3);
                 ChangeOst(prev_ost);
-                player.DEPTH = 8;
+                /*player.DEPTH = 8;
                 shop_tab_control.Controls.Add(weapon_shop_page);
                 player.GUNS[11].HasIt = false;
                 player.GUNS[12].HasIt = false;
@@ -512,12 +561,12 @@ namespace SLIL
                 {
                     if (player.GUNS[i].HasIt)
                         player.Guns.Add(player.GUNS[i]);
-                }
+                }*/
             }
-            shop_tab_control.Controls.Add(pet_shop_page);
+            /*shop_tab_control.Controls.Add(pet_shop_page);
             shop_tab_control.Controls.Add(consumables_shop_page);
             TakeFlashlight(false);
-            ChangeWeapon(1);
+            ChangeWeapon(1);*/
         }
 
         private void Chill_timer_Tick(object sender, EventArgs e) => chill_timer.Stop();
@@ -544,19 +593,22 @@ namespace SLIL
             pet_shop_page.Controls.Clear();
             consumables_shop_page.Controls.Clear();
             Player player = Controller.GetPlayer();
-            for (int i = player.GUNS.Length - 1; i >= 0; i--)
+            if (!player.CuteMode)
             {
-                if (player.GUNS[i].AddToShop)
+                for (int i = player.GUNS.Length - 1; i >= 0; i--)
                 {
-                    SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
+                    if (player.GUNS[i].AddToShop)
                     {
-                        index = MainMenu.Language ? 0 : 1,
-                        weapon = player.GUNS[i],
-                        player = player,
-                        BackColor = shop_panel.BackColor,
-                        Dock = DockStyle.Top
-                    };
-                    weapon_shop_page.Controls.Add(ShopInterface);
+                        SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
+                        {
+                            index = MainMenu.Language ? 0 : 1,
+                            weapon = player.GUNS[i],
+                            player = player,
+                            BackColor = shop_panel.BackColor,
+                            Dock = DockStyle.Top
+                        };
+                        weapon_shop_page.Controls.Add(ShopInterface);
+                    }
                 }
             }
             for (int i = Controller.GetPets().Length - 1; i >= 0; i--)

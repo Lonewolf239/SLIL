@@ -37,6 +37,7 @@ namespace SLIL.Classes
         private int CUSTOM_X, CUSTOM_Y;
 
         StopGameDelegate StopGameHandle;
+        PlaySoundDelegate PlaySoundHandle;
         SetPlayerIDDelegate SetPlayerID;
 
         private static Timer RespawnTimer;
@@ -45,7 +46,7 @@ namespace SLIL.Classes
 
         public int MaxEntityID;
 
-        public GameModel(StopGameDelegate stopGame, SetPlayerIDDelegate setPlayerID)
+        public GameModel(StopGameDelegate stopGame, SetPlayerIDDelegate setPlayerID, PlaySoundDelegate playSound)
         {
             StopGameHandle = stopGame;
             SetPlayerID = setPlayerID;
@@ -65,6 +66,7 @@ namespace SLIL.Classes
             TimeRemain = new Timer();
             TimeRemain.Interval = 1000;
             TimeRemain.Tick += TimeRemain_Tick;
+            PlaySoundHandle = playSound;
         }
 
         public void StartGame()
@@ -130,6 +132,10 @@ namespace SLIL.Classes
                                     if (!player.Invulnerable)
                                     {
                                         player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
+                                        if (player.CuteMode)
+                                            PlaySoundHandle(SLIL.hungry);
+                                        else
+                                            PlaySoundHandle(SLIL.hit);
                                         if (player.HP <= 0)
                                         {
                                             GameOver(0);
@@ -359,12 +365,14 @@ namespace SLIL.Classes
                 if(ent is Player)
                 {
                     if(ent.ID == playerID)
-        {
+                    {
                         player = (Player)ent;
                     }
                 }
             }
             Pet pet = PETS[index];
+            pet.ID = MaxEntityID;
+            MaxEntityID++;
             //foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true))
             //control.buy_button.Text = MainMenu.Language ? $"Купить ${control.pet.Cost}" : $"Buy ${control.pet.Cost}";
             for (int i = 0; i < Entities.Count; i++)

@@ -29,7 +29,7 @@ namespace SLIL
         private readonly PlaySound[,] step;
         private readonly PlaySound[,] DeathSounds;
         private readonly PlaySound[,] CuteDeathSounds;
-        private readonly PlaySound game_over, draw, buy, hit, hungry, wall, tp, screenshot;
+        private readonly PlaySound game_over, draw, buy, wall, tp, screenshot;
         private readonly PlaySound[] door;
         private readonly Pet[] PETS;
         public static Player player;
@@ -289,8 +289,6 @@ namespace SLIL
             game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
             draw = new PlaySound(CGFReader.GetFile("draw.wav"), false);
             buy = new PlaySound(CGFReader.GetFile("buy.wav"), false);
-            hit = new PlaySound(CGFReader.GetFile("hit_player.wav"), false);
-            hungry = new PlaySound(CGFReader.GetFile("hungry_player.wav"), false);
             wall = new PlaySound(CGFReader.GetFile("wall_interaction.wav"), false);
             tp = new PlaySound(CGFReader.GetFile("tp.wav"), false);
             screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
@@ -1122,8 +1120,6 @@ namespace SLIL
                     game_over = game_over,
                     draw = draw,
                     buy = buy,
-                    hit = hit,
-                    hungry = hungry,
                     wall = wall,
                     tp = tp,
                     screenshot = screenshot,
@@ -1271,8 +1267,6 @@ namespace SLIL
                     game_over = game_over,
                     draw = draw,
                     buy = buy,
-                    hit = hit,
-                    hungry = hungry,
                     wall = wall,
                     tp = tp,
                     screenshot = screenshot,

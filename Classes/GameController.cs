@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO.Ports;
+using Play_Sound;
 
 namespace SLIL.Classes
 {
@@ -23,21 +24,24 @@ namespace SLIL.Classes
         StartGameDelegate StartGameHandle;
         InitPlayerDelegate InitPlayerHandle;
         StopGameDelegate StopGameHandle;
+        PlaySoundDelegate PlaySoundHandle;
         SetPlayerIDDelegate SetPlayerID;
-        public GameController(StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame)
+        public GameController(StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound)
         {
             InitPlayerHandle = initPlayer;
             StartGameHandle = startGame;
             StopGameHandle = stopGame;
+            PlaySoundHandle = playSound;
             SetPlayerID = SetPlayerIDInvoker;
-            Game = new GameModel(StopGameHandle, SetPlayerID);
+            Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
         }
-        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame)
+        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound)
         {
             playerID = -1;
             StopGameHandle = stopGame;
+            PlaySoundHandle = playSound;
             SetPlayerID = SetPlayerIDInvoker;
-            Game = new GameModel(StopGameHandle, SetPlayerID);
+            Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
             listener = new EventBasedNetListener();
             client = new NetManager(listener);
             //client.UnsyncedEvents = true;
