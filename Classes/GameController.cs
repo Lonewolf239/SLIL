@@ -56,7 +56,7 @@ namespace SLIL.Classes
                     playerID = dataReader.GetInt();
                     Game.Deserialize(dataReader);
                     //initPlayer();
-                    Game.StartGame();
+                    Game.StartGame(false);
                     startGame();
                 }
                 if (packetType == 0)
@@ -143,7 +143,7 @@ namespace SLIL.Classes
         public void StartGame()
         {
             if (GetPlayer() == null) playerID = Game.AddPlayer();
-            Game.StartGame();
+            Game.StartGame(true);
             InitPlayerHandle();
             StartGameHandle();
         }
@@ -152,7 +152,7 @@ namespace SLIL.Classes
         {
             if (!Game.IsGameStarted())
             {
-                Game.StartGame();
+                Game.StartGame(true);
                 //playerID = Game.AddPlayer();
             }
         }

@@ -81,16 +81,19 @@ namespace SLIL.Classes
             }
         }
 
-        public void StartGame()
+        public void StartGame(bool startTimers)
         {
             if (inDebug == 0) difficulty = SLIL.difficulty;
             else difficulty = 5;
             if (Entities.Count == 0) SetPlayerID(AddPlayer());
             if (MAP.Length == 0) InitMap();
             GameStarted = true;
-            RespawnTimer.Start();
-            EnemyTimer.Start();
-            TimeRemain.Start();
+            if (startTimers)
+            {
+                RespawnTimer.Start();
+                EnemyTimer.Start();
+                TimeRemain.Start();
+            }
         }
 
         public bool IsGameStarted() => GameStarted;
@@ -364,6 +367,9 @@ namespace SLIL.Classes
                     case 12:
                         tempEntities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
                         break;
+                    case 13:
+                        tempEntities.Add(new PlayerDeadBody(entityX, entityY, MAP_WIDTH, ID));
+                        break;
                     default:
                         break;
                 }
@@ -504,7 +510,7 @@ namespace SLIL.Classes
                         }
                     }
                     player.ChangeMoney(50 + (5 * player.EnemiesKilled));
-                    StartGame();
+                    StartGame(true);
                     UpdatePet(player);
                 }
             }
