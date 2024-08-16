@@ -65,6 +65,22 @@ namespace SLIL.Classes
             PlaySoundHandle = playSound;
         }
 
+        public void Pause(bool paused)
+        {
+            if (paused)
+            {
+                TimeRemain.Stop();
+                RespawnTimer.Stop();
+                EnemyTimer.Stop();
+            }
+            else
+            {
+                TimeRemain.Start();
+                RespawnTimer.Start();
+                EnemyTimer.Start();
+            }
+        }
+
         public void StartGame()
         {
             if (inDebug == 0) difficulty = SLIL.difficulty;

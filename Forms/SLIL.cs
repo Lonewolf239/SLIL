@@ -1249,6 +1249,7 @@ namespace SLIL
                 stamina_timer.Start();
                 mouse_timer.Start();
             }
+            Controller.Pause(Paused);
         }
 
         private void TakeFlashlight(bool change)

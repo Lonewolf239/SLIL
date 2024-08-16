@@ -157,6 +157,8 @@ namespace SLIL.Classes
             }
         }
 
+        public void Pause(bool paused) => Game.Pause(paused);
+
         public void GoDebug(int debug) => Game.GoDebug(debug);
 
         public bool DealDamage(Entity ent, double damage) => Game.DealDamage(ent.ID, damage, playerID);
