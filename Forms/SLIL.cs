@@ -254,7 +254,37 @@ namespace SLIL
         private readonly TextureCache textureCache;
         public static PlaySound hit = new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false);
         public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
-        public PlaySound[,] step;
+        public static PlaySound[,] step = new PlaySound[,]
+            {
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_4.wav"), false)
+                },
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_4.wav"), false)
+                },
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_4.wav"), false)
+                },
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_4.wav"), false)
+                }
+            };
         public static PlaySound[] ost = new PlaySound[]
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),

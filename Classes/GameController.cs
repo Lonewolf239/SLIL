@@ -161,7 +161,20 @@ namespace SLIL.Classes
 
         public void GoDebug(int debug) => Game.GoDebug(debug);
 
-        public bool DealDamage(Entity ent, double damage) => Game.DealDamage(ent.ID, damage, playerID);
+        public bool DealDamage(Entity ent, double damage)
+        {
+            if (peer != null)
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(5);
+                writer.Put(ent.ID);
+                writer.Put(damage);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+                return false;
+            }
+            else
+                return Game.DealDamage(ent.ID, damage, playerID); 
+        }
 
         public Pet[] GetPets() => Game.GetPets();
 
