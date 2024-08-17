@@ -234,7 +234,11 @@ namespace SLIL.Classes
             writer.Put(MAP_HEIGHT);
             writer.Put(Entities.Count);
             foreach (var entity in Entities)
+            {
+                writer.Put(entity.EntityID);
+                writer.Put(entity.ID);
                 entity.Serialize(writer);
+            }
         }
 
         public void Deserialize(NetDataReader reader)
@@ -247,52 +251,78 @@ namespace SLIL.Classes
             for (int i = 0; i < entCount; i++)
             {
                 int entityID = reader.GetInt();
-                double entityX = reader.GetDouble();
-                double entityY = reader.GetDouble();
                 int ID = reader.GetInt();
                 switch (entityID)
                 {
                     case 0:
-                        tempEntities.Add(new Player(entityX, entityY, MAP_WIDTH, ID));
+                        Player p = new Player(0, 0, MAP_WIDTH, ID);
+                        p.Deserialize(reader);
+                        tempEntities.Add(p);
                         break;
                     case 1:
-                        tempEntities.Add(new Man(entityX, entityY, MAP_WIDTH, ID));
+                        Man man = new Man(0, 0, MAP_WIDTH, ID);
+                        man.Deserialize(reader);
+                        tempEntities.Add(man);
                         break;
                     case 2:
-                        tempEntities.Add(new Dog(entityX, entityY, MAP_WIDTH, ID));
+                        Dog dog = new Dog(0, 0, MAP_WIDTH, ID);
+                        dog.Deserialize(reader);
+                        tempEntities.Add(dog);
                         break;
                     case 3:
-                        tempEntities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ID));
+                        Abomination abomination = new Abomination(0, 0, MAP_WIDTH, ID);
+                        abomination.Deserialize(reader);
+                        tempEntities.Add(abomination);
                         break;
                     case 4:
-                        tempEntities.Add(new Bat(entityX, entityY, MAP_WIDTH, ID));
+                        Bat bat = new Bat(0, 0, MAP_WIDTH, ID);
+                        bat.Deserialize(reader);
+                        tempEntities.Add(bat);
                         break;
                     case 5:
-                        tempEntities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ID));
+                        SillyCat sillyCat = new SillyCat(0, 0, MAP_WIDTH, ID);
+                        sillyCat.Deserialize(reader);
+                        tempEntities.Add(sillyCat);
                         break;
                     case 6:
-                        tempEntities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ID));
+                        GreenGnome greenGnome = new GreenGnome(0, 0, MAP_WIDTH, ID);
+                        greenGnome.Deserialize(reader);
+                        tempEntities.Add(greenGnome);
                         break;
                     case 7:
-                        tempEntities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ID));
+                        EnergyDrink energyDrink = new EnergyDrink(0, 0, MAP_WIDTH, ID);
+                        energyDrink.Deserialize(reader);
+                        tempEntities.Add(energyDrink);
                         break;
                     case 8:
-                        tempEntities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ID));
+                        Pyro pyro = new Pyro(0, 0, MAP_WIDTH, ID);
+                        pyro.Deserialize(reader);
+                        tempEntities.Add(pyro);
                         break;
                     case 9:
-                        tempEntities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ID));
+                        Teleport teleport = new Teleport(0, 0, MAP_WIDTH, ID);
+                        teleport.Deserialize(reader);
+                        tempEntities.Add(teleport);
                         break;
                     case 10:
-                        tempEntities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ID));
+                        HittingTheWall hittingTheWall = new HittingTheWall(0, 0, MAP_WIDTH, ID);
+                        hittingTheWall.Deserialize(reader);
+                        tempEntities.Add(hittingTheWall);
                         break;
                     case 11:
-                        tempEntities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ID));
+                        ShopDoor shopDoor = new ShopDoor(0, 0, MAP_WIDTH, ID);
+                        shopDoor.Deserialize(reader);
+                        tempEntities.Add(shopDoor);
                         break;
                     case 12:
-                        tempEntities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
+                        ShopMan shopMan = new ShopMan(0, 0, MAP_WIDTH, ID);
+                        shopMan.Deserialize(reader);
+                        tempEntities.Add(shopMan);
                         break;
                     case 13:
-                        tempEntities.Add(new PlayerDeadBody(entityX, entityY, MAP_WIDTH, ID));
+                        PlayerDeadBody playerDeadBody = new PlayerDeadBody(0, 0, MAP_WIDTH, ID);
+                        playerDeadBody.Deserialize(reader);
+                        tempEntities.Add(playerDeadBody);
                         break;
                     default:
                         break;
@@ -311,8 +341,6 @@ namespace SLIL.Classes
             for (int i = 0; i < entCount; i++)
             {
                 int entityID = reader.GetInt();
-                double entityX = reader.GetDouble();
-                double entityY = reader.GetDouble();
                 int ID = reader.GetInt();
                 if (ID == playerID)
                 {
@@ -320,7 +348,9 @@ namespace SLIL.Classes
                     {
                         if (ent.ID == playerID)
                         {
-                            tempEntities.Add(ent);
+                            Player player = ent as Player;
+                            player.Deserialize(reader, false);
+                            tempEntities.Add(player);
                             break;
                         }
                     }
@@ -329,46 +359,74 @@ namespace SLIL.Classes
                 switch (entityID)
                 {
                     case 0:
-                        tempEntities.Add(new Player(entityX, entityY, MAP_WIDTH, ID));
+                        Player p = new Player(0, 0, MAP_WIDTH, ID);
+                        p.Deserialize(reader);
+                        tempEntities.Add(p);
                         break;
                     case 1:
-                        tempEntities.Add(new Man(entityX, entityY, MAP_WIDTH, ID));
+                        Man man = new Man(0, 0, MAP_WIDTH, ID);
+                        man.Deserialize(reader);
+                        tempEntities.Add(man);
                         break;
                     case 2:
-                        tempEntities.Add(new Dog(entityX, entityY, MAP_WIDTH, ID));
+                        Dog dog = new Dog(0, 0, MAP_WIDTH, ID);
+                        dog.Deserialize(reader);
+                        tempEntities.Add(dog);
                         break;
                     case 3:
-                        tempEntities.Add(new Abomination(entityX, entityY, MAP_WIDTH, ID));
+                        Abomination abomination = new Abomination(0, 0, MAP_WIDTH, ID);
+                        abomination.Deserialize(reader);
+                        tempEntities.Add(abomination);
                         break;
                     case 4:
-                        tempEntities.Add(new Bat(entityX, entityY, MAP_WIDTH, ID));
+                        Bat bat = new Bat(0, 0, MAP_WIDTH, ID);
+                        bat.Deserialize(reader);
+                        tempEntities.Add(bat);
                         break;
                     case 5:
-                        tempEntities.Add(new SillyCat(entityX, entityY, MAP_WIDTH, ID));
+                        SillyCat sillyCat = new SillyCat(0, 0, MAP_WIDTH, ID);
+                        sillyCat.Deserialize(reader);
+                        tempEntities.Add(sillyCat);
                         break;
                     case 6:
-                        tempEntities.Add(new GreenGnome(entityX, entityY, MAP_WIDTH, ID));
+                        GreenGnome greenGnome = new GreenGnome(0, 0, MAP_WIDTH, ID);
+                        greenGnome.Deserialize(reader);
+                        tempEntities.Add(greenGnome);
                         break;
                     case 7:
-                        tempEntities.Add(new EnergyDrink(entityX, entityY, MAP_WIDTH, ID));
+                        EnergyDrink energyDrink = new EnergyDrink(0, 0, MAP_WIDTH, ID);
+                        energyDrink.Deserialize(reader);
+                        tempEntities.Add(energyDrink);
                         break;
                     case 8:
-                        tempEntities.Add(new Pyro(entityX, entityY, MAP_WIDTH, ID));
+                        Pyro pyro = new Pyro(0, 0, MAP_WIDTH, ID);
+                        pyro.Deserialize(reader);
+                        tempEntities.Add(pyro);
                         break;
                     case 9:
-                        tempEntities.Add(new Teleport(entityX, entityY, MAP_WIDTH, ID));
+                        Teleport teleport = new Teleport(0, 0, MAP_WIDTH, ID);
+                        teleport.Deserialize(reader);
+                        tempEntities.Add(teleport);
                         break;
                     case 10:
-                        tempEntities.Add(new HittingTheWall(entityX, entityY, MAP_WIDTH, ID));
+                        HittingTheWall hittingTheWall = new HittingTheWall(0, 0, MAP_WIDTH, ID);
+                        hittingTheWall.Deserialize(reader);
+                        tempEntities.Add(hittingTheWall);
                         break;
                     case 11:
-                        tempEntities.Add(new ShopDoor(entityX, entityY, MAP_WIDTH, ID));
+                        ShopDoor shopDoor = new ShopDoor(0, 0, MAP_WIDTH, ID);
+                        shopDoor.Deserialize(reader);
+                        tempEntities.Add(shopDoor);
                         break;
                     case 12:
-                        tempEntities.Add(new ShopMan(entityX, entityY, MAP_WIDTH, ID));
+                        ShopMan shopMan = new ShopMan(0, 0, MAP_WIDTH, ID);
+                        shopMan.Deserialize(reader);
+                        tempEntities.Add(shopMan);
                         break;
                     case 13:
-                        tempEntities.Add(new PlayerDeadBody(entityX, entityY, MAP_WIDTH, ID));
+                        PlayerDeadBody playerDeadBody = new PlayerDeadBody(0, 0, MAP_WIDTH, ID);
+                        playerDeadBody.Deserialize(reader);
+                        tempEntities.Add(playerDeadBody);
                         break;
                     default:
                         break;

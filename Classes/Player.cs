@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using LiteNetLib.Utils;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace SLIL.Classes
 {
@@ -51,6 +53,37 @@ namespace SLIL.Classes
 
         public Player(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => InitPlayer();
         public Player(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => InitPlayer();
+
+        public override void Serialize(NetDataWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Put(HP);
+            writer.Put(Dead);
+            writer.Put(Money);
+        }
+
+        public override void Deserialize(NetDataReader reader)
+        {
+            base.Deserialize(reader);
+            this.HP = reader.GetDouble();
+            this.Dead = reader.GetBool();
+            this.Money = reader.GetInt();
+        }
+
+        public void Deserialize(NetDataReader reader, bool updateCoordinates)
+        {
+            if (!updateCoordinates)
+            {
+                reader.GetDouble(); reader.GetDouble();
+                this.HP = reader.GetDouble();
+                this.Dead = reader.GetBool();
+                this.Money = reader.GetInt();
+            }
+            else
+            {
+                base.Deserialize(reader);
+            }
+        }
 
         private void InitPlayer()
         {

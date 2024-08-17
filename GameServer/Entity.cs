@@ -59,24 +59,16 @@ namespace SLIL.Classes
             IntY = (int)y;
         }
 
-        public void Serialize(NetDataWriter writer)
+        public virtual void Serialize(NetDataWriter writer)
         {
-            writer.Put(this.EntityID);
             writer.Put(this.X);
             writer.Put(this.Y);
-            writer.Put(ID);
         }
 
-        public void Deserialize(NetDataReader reader)
+        public virtual void Deserialize(NetDataReader reader)
         {
-            this.EntityID = reader.GetInt();
             this.X = reader.GetDouble();
             this.Y = reader.GetDouble();
-            this.ID = reader.GetInt();
-            if (EntityID == 0)
-            {
-                Console.WriteLine("PlayerID: " + ID.ToString() + "; X = " + X.ToString() + "; Y = " + Y.ToString());
-            }
         }
 
         protected void AnimationsToStatic()
@@ -148,6 +140,19 @@ namespace SLIL.Classes
         public Creature(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init(map_width);
         public Creature(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init(map_width);
 
+        public override void Serialize(NetDataWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Put(HP);
+            writer.Put(DEAD);
+        }
+
+        public override void Deserialize(NetDataReader reader)
+        {
+            base.Deserialize(reader);
+            this.HP = reader.GetDouble();
+            this.DEAD = reader.GetBool();
+        }
         private void Init(int map_width)
         {
             MAX_HP = this.GetMAX_HP();
