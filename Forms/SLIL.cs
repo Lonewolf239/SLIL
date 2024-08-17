@@ -1581,7 +1581,7 @@ namespace SLIL
                                         double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
                                         if (player.GetCurrentGun() is Shotgun)
                                             damage *= player.GetCurrentGun().FiringRange - Distance;
-                                        if (Controller.DealDamage(targetPlayer, damage))
+                                        if (Controller.DealDamage(targetPlayer, damage * 5))
                                         {
                                             if (MainMenu.sounds)
                                             {
