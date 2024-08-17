@@ -50,6 +50,9 @@ namespace GameServer
                     double damage = dreader.GetDouble();
                     Game.DealDamage(EntityID, damage, playerIDfromPeer);
                     break;
+                case 11:
+                    Game.AddPet(playerIDfromPeer, dreader.GetInt());
+                    break;
                 default:
                     break;
             }

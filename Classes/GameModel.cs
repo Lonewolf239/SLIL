@@ -499,6 +499,7 @@ namespace SLIL.Classes
             }
             player.PET = pet;
             UpdatePet(player);
+            player.Money -= pet.Cost;
         }
 
         private void CuteMode(Player player)

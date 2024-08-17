@@ -486,6 +486,7 @@ namespace SLIL.Classes
                 }
             }
             player.PET = pet;
+            player.Money -= pet.Cost;
             UpdatePet(player);
         }
 

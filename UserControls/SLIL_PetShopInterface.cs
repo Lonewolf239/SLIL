@@ -40,7 +40,6 @@ namespace SLIL.UserControls
             {
                 if (MainMenu.sounds)
                     buy.Play(SLIL.Volume);
-                player.ChangeMoney(-pet.Cost);
                 (Parent.FindForm() as SLIL).AddPet(pet.Index);
                 buy_button.Text = $"{buy_text[1, index]}";
             }

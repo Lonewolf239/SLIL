@@ -119,7 +119,18 @@ namespace SLIL.Classes
 
         public void SetPlayerIDInvoker(int id) => this.playerID = id;
 
-        public void AddPet(int index) => Game.AddPet(playerID, index);
+        public void AddPet(int index)
+        {
+            if(peer == null)
+                Game.AddPet(playerID, index);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(11);
+                writer.Put(index);
+                peer.Send(writer, DeliveryMethod.ReliableUnordered);
+            }
+        }
 
         public void AddPlayer() => playerID = Game.AddPlayer();
 
