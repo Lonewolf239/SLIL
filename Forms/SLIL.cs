@@ -1575,7 +1575,27 @@ namespace SLIL
                                         else scope_hit = Properties.Resources.scope_c_hit;
                                         return;
                                     }
-                                    else 
+                                    else if (entity is Player targetPlayer && entity.ID != player.ID)
+                                    {
+                                        if (targetPlayer.Dead) continue;
+                                        double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                        if (player.GetCurrentGun() is Shotgun)
+                                            damage *= player.GetCurrentGun().FiringRange - Distance;
+                                        if (Controller.DealDamage(targetPlayer, damage))
+                                        {
+                                            if (MainMenu.sounds)
+                                            {
+                                                //if (player.CuteMode)
+                                                //    CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                //else
+                                                //    DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                            }
+                                        }
+                                        if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
+                                        else scope_hit = Properties.Resources.scope_c_hit;
+                                        return;
+                                    }
+                                    else
                                         return;
                                 }
                             }
