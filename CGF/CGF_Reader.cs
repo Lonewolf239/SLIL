@@ -36,6 +36,7 @@ namespace CGFReader
                     throw ex;
                 }
             }
+            compressed_file.Clear();
         }
 
         public byte[] GetFile(string name)

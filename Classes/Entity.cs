@@ -163,7 +163,7 @@ namespace SLIL.Classes
             DeathSound = -1;
         }
 
-        public bool DealDamage(double damage)
+        public virtual bool DealDamage(double damage)
         {
             HP -= damage;
             if (HP <= 0)
@@ -542,6 +542,69 @@ namespace SLIL.Classes
             Texture = 34;
             Animated = true;
             base.SetAnimations(1, 0);
+        }
+    }
+
+    public abstract class Boxes : Creature
+    {
+        public bool Broken { get; set; }
+        public int AmmoType { get; set; }
+
+        protected override double GetEntityWidth() => 0.1;
+        protected override char[] GetImpassibleCells() => null;
+        protected override int GetMovesInARow() => 0;
+        protected override int GetMAX_HP() => 0;
+        protected override int GetTexture() => Texture;
+        protected override double GetMove() => 0;
+        protected override int GetMAX_MONEY() => 0;
+        protected override int GetMIN_MONEY() => 0;
+        protected override int GetMAX_DAMAGE() => 0;
+        protected override int GetMIN_DAMAGE() => 0;
+
+        public Boxes(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Boxes(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Broken = false;
+            CanHit = true;
+            HP = 2.5;
+        }
+
+        public void BreakTheBox()
+        {
+            Texture++;
+            AmmoType = rand.Next(0, 5);
+            base.AnimationsToStatic();
+        }
+
+        public override bool DealDamage(double damage)
+        {
+            if (!Broken)
+            {
+                HP -= damage;
+                if (HP <= 0)
+                    BreakTheBox();
+                return Broken;
+            }
+            return false;
+        }
+
+        public override void UpdateCoordinates(string map, double playerX, double playerY) { }
+    }
+
+    public class Box : Boxes
+    {
+        protected override int GetEntityID() => 14;
+
+        public Box(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Box(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 44;
+            DeathSound = 4;
+            base.AnimationsToStatic();
         }
     }
 

@@ -381,8 +381,6 @@ namespace SLIL.Classes
             Pet pet = PETS[index];
             pet.ID = MaxEntityID;
             MaxEntityID++;
-            //foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true))
-            //control.buy_button.Text = MainMenu.Language ? $"Купить ${control.pet.Cost}" : $"Buy ${control.pet.Cost}";
             for (int i = 0; i < Entities.Count; i++)
             {
                 if (Entities[i] is Pet)
@@ -426,7 +424,6 @@ namespace SLIL.Classes
                         player.CuteMode = true;
                         CuteMode(player);
                         break;
-
                 }
             }
             player.PET = pet;
@@ -436,6 +433,7 @@ namespace SLIL.Classes
         private void CuteMode(Player player)
         {
             player.Guns.Clear();
+            player.CurrentGun = 1;
             if (player.CuteMode)
             {
                 player.GUNS[11].HasIt = true;
@@ -453,8 +451,6 @@ namespace SLIL.Classes
                         player.Guns.Add(player.GUNS[i]);
                 }
             }
-            //TakeFlashlight(false);
-            //ChangeWeapon(1);
         }
 
         private void UpdatePet(Player player)

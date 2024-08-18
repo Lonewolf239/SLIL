@@ -174,10 +174,10 @@ namespace SLIL
         {
             { typeof(Flashlight), new[,] { { new PlaySound(null, false), } } },
             { typeof(Knife), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } } },
-            { typeof(Candy), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } } },
+            { typeof(Candy), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("candy.wav"), false) } } },
             { typeof(Rainblower),  new[,]
             {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_1.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
+                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_rainblower.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
             } },
             { typeof(Pistol), new[,]
             {
@@ -477,89 +477,21 @@ namespace SLIL
                     }
                 }
             }
-            //for (int i = 0; i < Entities.Count; i++)
-            //{
-            //    if (Entities[i] is Pet)
-            //    {
-            //        if ((Entities[i] as Pet).IsInstantAbility != 0)
-            //        {
-            //            switch ((Entities[i] as Pet).GetPetAbility())
-            //            {
-            //                case 1: //GreenGnome
-            //                    player.MAX_HP -= 25;
-            //                    player.HealHP(125);
-            //                    break;
-            //                case 2: //Energy Drink
-            //                    player.MAX_STAMINE -= 150;
-            //                    player.MOVE_SPEED -= 0.15;
-            //                    player.RUN_SPEED -= 0.15;
-            //                    break;
-            //                case 3: //Pyro
-            //                    player.CuteMode = false;
-            //                    CuteMode();
-            //                    break;
-            //            }
-            //        }
-            //        Entities.RemoveAt(i);
-            //    }
-            //}
-            //if (pet.IsInstantAbility != 0)
-            //{
-            //    switch (pet.GetPetAbility())
-            //    {
-            //        case 1: //GreenGnome
-            //            player.MAX_HP += 25;
-            //            player.HealHP(125);
-            //            break;
-            //        case 2: //Energy Drink
-            //            player.MAX_STAMINE += 150;
-            //            player.MOVE_SPEED += 0.15;
-            //            player.RUN_SPEED += 0.15;
-            //            break;
-            //        case 3: //Pyro
-            //            player.CuteMode = true;
-            //            CuteMode();
-            //            break;
-
-            //    }
-            //}
-            //player.PET = pet;
-            //UpdatePet();
         }
 
         private void CuteMode()
         {
             Player player = Controller.GetPlayer();
-            //player.Guns.Clear();
-            //shop_tab_control.Controls.Clear();
             if (player.CuteMode)
             {
                 prev_ost = ost_index;
                 ChangeOst(7);
-                /*player.DEPTH = 10;
-                player.GUNS[11].HasIt = true;
-                player.GUNS[12].HasIt = true;
-                player.Guns.Add(player.GUNS[11]);
-                player.Guns.Add(player.GUNS[12]);*/
             }
             else
             {
                 prev_ost = rand.Next(ost.Length - 3);
                 ChangeOst(prev_ost);
-                /*player.DEPTH = 8;
-                shop_tab_control.Controls.Add(weapon_shop_page);
-                player.GUNS[11].HasIt = false;
-                player.GUNS[12].HasIt = false;
-                for(int i = 0; i < 10; i++)
-                {
-                    if (player.GUNS[i].HasIt)
-                        player.Guns.Add(player.GUNS[i]);
-                }*/
             }
-            /*shop_tab_control.Controls.Add(pet_shop_page);
-            shop_tab_control.Controls.Add(consumables_shop_page);
-            TakeFlashlight(false);
-            ChangeWeapon(1);*/
         }
 
         private void Chill_timer_Tick(object sender, EventArgs e) => chill_timer.Stop();
@@ -1380,46 +1312,6 @@ namespace SLIL
                     }
                 }
             }
-        }
-
-        private int GetAccurateSide(double distance, double rayX, double rayY)
-        {
-            Player player = Controller.GetPlayer();
-            double x1_1 = player.X, y1_1 = player.Y;
-            double x2_1 = player.X + distance * rayX, y2_1 = player.Y + distance * rayY;
-            int cellY = (int)y2_1;
-            int cellX = (int)x2_1;
-            double x1_2, y1_2, x2_2, y2_2;
-            if (-rayY < 0)
-            {
-                x1_2 = cellX + 1; y1_2 = cellY; x2_2 = cellX; y2_2 = cellY;
-            }
-            else if (rayY < 0)
-            {
-                x1_2 = cellX; y1_2 = cellY + 1; x2_2 = cellX + 1; y2_2 = cellY + 1;
-            }
-            else if (-rayX < 0)
-            {
-                x1_2 = cellX; y1_2 = cellY; x2_2 = cellX; y2_2 = cellY + 1;
-            }
-            else
-            {
-                x1_2 = cellX + 1; y1_2 = cellY + 1; x2_2 = cellX + 1; y2_2 = cellY;
-            }
-            var intersectionPoint = SolveNotCanonical(x1_1, x2_1, y1_1, y2_1, x1_2, x2_2, y1_2, y2_2);
-            if (intersectionPoint == null)
-                return -1;
-            double x = intersectionPoint.Value.x;
-            double y = intersectionPoint.Value.y;
-            if (-rayY < 0 && x >= x2_2 && x <= x1_2)
-                return 0;
-            else if (rayY < 0 && x >= x1_2 && x <= x2_2)
-                return 1;
-            else if (-rayX < 0 && y >= y1_2 && y <= y2_2)
-                return 2;
-            else if (y >= y2_2 && y <= y1_2)
-                return 3;
-            return -1;
         }
 
         private void BulletRayCasting()

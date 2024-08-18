@@ -24,14 +24,12 @@ namespace SLIL
         private string SelectButtonName;
         private SLIL_Editor Editor;
         private bool ChangeControlButton = false, CanClose = false;
-        private readonly PlaySound[] ost;
         private readonly PlaySound MainMenuTheme;
         private readonly PlaySound[,] step;
         private readonly PlaySound[,] DeathSounds;
         private readonly PlaySound[,] CuteDeathSounds;
         private readonly PlaySound game_over, draw, buy, wall, tp, screenshot;
         private readonly PlaySound[] door;
-        private readonly Pet[] PETS;
         public static Player player;
         private readonly string[] en_changes =
         {
@@ -198,8 +196,6 @@ namespace SLIL
                 else
                     Application.Exit();
             }
-            //PETS = new Pet[] { new SillyCat(0, 0, 0, 0), new GreenGnome(0, 0, 0), new EnergyDrink(0, 0, 0), new Pyro(0, 0, 0) };
-            //player = new Player(1.5, 1.5, 15);
             MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
             step = new PlaySound[,]
             {
@@ -257,6 +253,12 @@ namespace SLIL
                     new PlaySound(CGFReader.GetFile("bat_die_0.wav"), false),
                     new PlaySound(CGFReader.GetFile("bat_die_0.wav"), false),
                     new PlaySound(CGFReader.GetFile("bat_die_0.wav"), false)
+                },
+                //Box
+                {
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false)
                 }
             };
             CuteDeathSounds = new PlaySound[,]
@@ -284,6 +286,12 @@ namespace SLIL
                     new PlaySound(CGFReader.GetFile("c_bat_die_0.wav"), false),
                     new PlaySound(CGFReader.GetFile("c_bat_die_1.wav"), false),
                     new PlaySound(CGFReader.GetFile("c_bat_die_0.wav"), false)
+                },
+                //Box
+                {
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false)
                 }
             };
             game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
