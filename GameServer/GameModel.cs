@@ -88,23 +88,35 @@ namespace SLIL.Classes
 
         public int AddPlayer()
         {
-            if(MAP.Length > 0)
+            if (MAP.Length > 0)
             {
                 double X = 3, Y = 3;
                 bool OK = false;
                 while (!OK)
                 {
-                    X = rand.Next(1, MAP_WIDTH-1);
-                    Y = rand.Next(1, MAP_HEIGHT-1);
-                    if(MAP[(int)Y * MAP_WIDTH + (int)X] == '.')
+                    X = rand.Next(1, MAP_WIDTH - 1);
+                    Y = rand.Next(1, MAP_HEIGHT - 1);
+                    if (MAP[(int)Y * MAP_WIDTH + (int)X] == '.')
                     {
                         OK = true;
                     }
                 }
-                Entities.Add(new Player(X+0.5, Y+0.5, MAP_WIDTH, ref MaxEntityID));
+                Player p = new Player(X + 0.5, Y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                if (difficulty == 3 || difficulty == 2)
+                {
+                    p.Guns[1].LevelUpdate();
+                }
+                Entities.Add(p);
             }
             else
-                Entities.Add(new Player(3, 3, MAP_WIDTH, ref MaxEntityID));
+            {
+                Player p = new Player(1.5, 1.5, MAP_WIDTH, ref MaxEntityID);
+                if (difficulty == 3 || difficulty == 2)
+                {
+                    p.Guns[1].LevelUpdate();
+                }
+                Entities.Add(p);
+            }
             return MaxEntityID - 1;
         }
 
@@ -1202,5 +1214,42 @@ namespace SLIL.Classes
         internal (int, int) GetSecondsAndMinutes() => (this.minutes, this.seconds);
 
         internal void StopGame(int win) => GameOver(win);
+
+        internal void AmmoCountDecrease(int playerID)
+        {
+            foreach(Entity entity in Entities)
+            {
+                if(entity.ID == playerID)
+                {
+                    Player player = entity as Player;
+                    player.GetCurrentGun().AmmoCount--;
+                    return;
+                }
+            }
+        }
+
+        internal void Reload(int playerID)
+        {
+            foreach(Entity entity in Entities)
+            {
+                if(entity.ID == playerID)
+                {
+                    Player player = entity as Player;
+                    player.GetCurrentGun().ReloadClip();
+                    return;
+                }
+            }
+        }
+        internal void ChangeWeapon(int playerID, int new_gun)
+        {
+            foreach (Entity entity in Entities) 
+            {
+                if (entity.ID == playerID)
+                {
+                    (entity as Player).CurrentGun = new_gun;
+                    return;
+                }
+            }
+        }
     }
 }

@@ -53,6 +53,15 @@ namespace GameServer
                 case 11:
                     Game.AddPet(playerIDfromPeer, dreader.GetInt());
                     break;
+                case 33:
+                    Game.AmmoCountDecrease(playerIDfromPeer);
+                    break;
+                case 34:
+                    Game.Reload(playerIDfromPeer);
+                    break;
+                case 35:
+                    Game.ChangeWeapon(playerIDfromPeer, dreader.GetInt());
+                    break;
                 default:
                     break;
             }

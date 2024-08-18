@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System;
 
 namespace SLIL.Classes
 {
@@ -198,5 +199,39 @@ namespace SLIL.Classes
         internal void StopGame(int win) => Game.StopGame(win);
 
         public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, int customX, int customY) => Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);
+
+        internal void AmmoCountDecrease()
+        {
+            if(peer == null) Game.AmmoCountDecrease(playerID);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(33);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal void ReloadClip()
+        {
+            if(peer == null) Game.ReloadClip(playerID);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(34);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal void ChangeWeapon(int new_gun)
+        {
+            if(peer == null) Game.ChangeWeapon(playerID, new_gun);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(35);
+                writer.Put(new_gun);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
     }
 }

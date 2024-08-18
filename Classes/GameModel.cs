@@ -1214,5 +1214,41 @@ namespace SLIL.Classes
         internal (int, int) GetSecondsAndMinutes() => (this.minutes, this.seconds);
 
         internal void StopGame(int win) => GameOver(win);
+
+        internal void AmmoCountDecrease(int playerID)
+        {
+            foreach(Entity entity in Entities)
+            {
+                if(entity.ID == playerID)
+                {
+                    (entity as Player).GetCurrentGun().AmmoCount--;
+                    return;
+                }
+            }
+        }
+
+        internal void ReloadClip(int playerID)
+        {
+            foreach(Entity entity in Entities)
+            {
+                if(entity.ID == playerID)
+                {
+                    (entity as Player).GetCurrentGun().ReloadClip();
+                    return;
+                }
+            }
+        }
+
+        internal void ChangeWeapon(int playerID, int new_gun)
+        {
+            foreach (Entity entity in Entities) 
+            {
+                if (entity.ID == playerID)
+                {
+                    (entity as Player).CurrentGun = new_gun;
+                    return;
+                }
+            }
+        }
     }
 }

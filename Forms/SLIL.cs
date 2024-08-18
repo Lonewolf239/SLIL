@@ -1338,7 +1338,8 @@ namespace SLIL
             {
                 if (MainMenu.sounds)
                     draw.Play(Volume);
-                player.CurrentGun = new_gun;
+                //player.CurrentGun = new_gun;
+                Controller.ChangeWeapon(new_gun);
                 player.GunState = 0;
                 player.Aiming = false;
                 reload_timer.Interval = player.GetCurrentGun().RechargeTime;
@@ -1684,7 +1685,8 @@ namespace SLIL
                         player.GunState = player.MoveStyle;
                         pressed_r = false;
                         player.CanShoot = true;
-                        player.GetCurrentGun().ReloadClip();
+                        //player.GetCurrentGun().ReloadClip();
+                        Controller.ReloadClip();
                         if (player.UseItem)
                             player.SetEffect();
                         reload_timer.Stop();
@@ -1720,7 +1722,12 @@ namespace SLIL
                     else
                         player.GunState = player.Aiming ? 3 : 0;
                     if (!(player.GetCurrentGun() is Knife))
-                        player.GetCurrentGun().AmmoCount--;
+                    {
+                        //TODO:
+                        //make packet for AmmoCount decreasing
+                        //player.GetCurrentGun().AmmoCount--;
+                        Controller.AmmoCountDecrease();
+                    }
                     if (player.GetCurrentGun().FireType != FireTypes.Single)
                     {
                         BulletRayCasting();
