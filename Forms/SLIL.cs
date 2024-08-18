@@ -1478,10 +1478,10 @@ namespace SLIL
                                         {
                                             if (MainMenu.sounds)
                                             {
-                                                //if (player.CuteMode)
-                                                //    CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
-                                                //else
-                                                //    DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                if (player.CuteMode)
+                                                    CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                else
+                                                    DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
                                             }
                                         }
                                         if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
@@ -2211,6 +2211,7 @@ namespace SLIL
                 case '#': return Color.Blue;
                 case '=': return Color.YellowGreen;
                 case 'P': return Color.Red;
+                case 'b': return Color.Brown;
                 case 'd':
                 case 'o':
                 case 'D':
@@ -2503,6 +2504,9 @@ namespace SLIL
                         hit_window = true;
                         DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '=';
                         break;
+                    case 'b':
+                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'b';
+                        break;
                     case 'd':
                         hit_door = true;
                         DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'D';
@@ -2525,7 +2529,6 @@ namespace SLIL
                         break;
                 }
             }
-            //double perpWallDist = distance * cosDeltaA;
             double ceiling = (SCREEN_HEIGHT[resolution] - playerLook) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / distance;
             double floor = SCREEN_HEIGHT[resolution] - (ceiling + playerLook);
             double mid = (ceiling + floor) / 2;
@@ -2654,31 +2657,6 @@ namespace SLIL
             ZBuffer[x] = distance;
             ZBufferWindow[x] = window_distance;
             return result;
-        }
-
-        private (double x, double y)? SolveSLU(double a1, double b1, double c1, double a2, double b2, double c2)
-        {
-            if (a1 == 0 && a2 == 0)
-                return null;
-            if (a1 == 0)
-                return ((c2 - b2 * (c1 / b1)) / a2, c1 / b1);
-            double det = a1 * b2 - a2 * b1;
-            if (Math.Abs(det) < 1e-10)
-                return null;
-            double y = (c2 * a1 - a2 * c1) / det;
-            double x = (c1 - b1 * y) / a1;
-            return (x, y);
-        }
-
-        private (double x, double y)? SolveNotCanonical(double x1, double x2, double y1, double y2, double x1_2, double x2_2, double y1_2, double y2_2)
-        {
-            double a1 = y1 - y2;
-            double b1 = x2 - x1;
-            double c1 = x1 * (y1 - y2) + y1 * (x2 - x1);
-            double a2 = y1_2 - y2_2;
-            double b2 = x2_2 - x1_2;
-            double c2 = x1_2 * (y1_2 - y2_2) + y1_2 * (x2_2 - x1_2);
-            return SolveSLU(a1, b1, c1, a2, b2, c2);
         }
 
         private void InitMap()

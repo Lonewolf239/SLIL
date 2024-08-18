@@ -1,14 +1,11 @@
 ﻿using LiteNetLib.Utils;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace SLIL.Classes
 {
     public class Player : Entity
     {
-        //public double X { get; set; }
-        //public double Y { get; set; }
-        //public int ID { get; set; }
+        public int DeathSound { get; set; }
         public string Name { get; set; }
         public double A { get; set; }
         public double Look { get; set; }
@@ -325,6 +322,7 @@ namespace SLIL.Classes
 
         private void InitPlayer()
         {
+            DeathSound = 5;
             DisposableItems.Add((FirstAidKit)GUNS[10]);
             DisposableItems.Add((Adrenalin)GUNS[13]);
             Texture = 38;

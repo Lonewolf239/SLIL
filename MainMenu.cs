@@ -25,7 +25,6 @@ namespace SLIL
         private SLIL_Editor Editor;
         private bool ChangeControlButton = false, CanClose = false;
         private readonly PlaySound MainMenuTheme;
-        private readonly PlaySound[,] step;
         private readonly PlaySound[,] DeathSounds;
         private readonly PlaySound[,] CuteDeathSounds;
         private readonly PlaySound game_over, draw, buy, wall, tp, screenshot;
@@ -228,6 +227,12 @@ namespace SLIL
                     new PlaySound(CGFReader.GetFile("break_box.wav"), false),
                     new PlaySound(CGFReader.GetFile("break_box.wav"), false),
                     new PlaySound(CGFReader.GetFile("break_box.wav"), false)
+                },
+                //Player
+                {
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false)
                 }
             };
             CuteDeathSounds = new PlaySound[,]
@@ -257,6 +262,12 @@ namespace SLIL
                     new PlaySound(CGFReader.GetFile("c_bat_die_0.wav"), false)
                 },
                 //Box
+                {
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box.wav"), false)
+                },
+                //Player
                 {
                     new PlaySound(CGFReader.GetFile("break_box.wav"), false),
                     new PlaySound(CGFReader.GetFile("break_box.wav"), false),
@@ -1090,7 +1101,6 @@ namespace SLIL
                 if(sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache)
                 {
-                    //PETS = PETS,
                     DeathSounds = DeathSounds,
                     CuteDeathSounds = CuteDeathSounds,
                     game_over = game_over,
@@ -1249,7 +1259,6 @@ namespace SLIL
                 if (sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3,(Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
                 {
-                    //PETS = PETS,
                     DeathSounds = DeathSounds,
                     CuteDeathSounds = CuteDeathSounds,
                     game_over = game_over,

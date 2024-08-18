@@ -2,13 +2,12 @@
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 
 namespace SLIL.Classes
 {
     public abstract class Entity : INetSerializable
     {
-        public int ID {  get; set; }
+        public int ID { get; set; }
         public int EntityID { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
@@ -153,6 +152,7 @@ namespace SLIL.Classes
             this.HP = reader.GetDouble();
             this.DEAD = reader.GetBool();
         }
+
         private void Init(int map_width)
         {
             MAX_HP = this.GetMAX_HP();
@@ -169,7 +169,7 @@ namespace SLIL.Classes
             DeathSound = -1;
         }
 
-        public bool DealDamage(double damage)
+        public virtual bool DealDamage(double damage)
         {
             HP -= damage;
             if (HP <= 0)
@@ -267,6 +267,8 @@ namespace SLIL.Classes
 
         public NPC(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => RespondsToFlashlight = false;
         public NPC(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => RespondsToFlashlight = false;
+
+        public override void UpdateCoordinates(string map, double playerX, double playerY) { }
     }
 
     public abstract class Pet : Friend
@@ -546,6 +548,54 @@ namespace SLIL.Classes
         }
     }
 
+    public abstract class Boxes : NPC
+    {
+        public int AmmoType { get; set; }
+
+        public Boxes(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Boxes(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            CanHit = true;
+            HP = 2.5;
+        }
+
+        public void BreakTheBox()
+        {
+            CanHit = false;
+            Texture++;
+            base.AnimationsToStatic();
+            AmmoType = rand.Next(1, 5);
+        }
+
+        public override bool DealDamage(double damage)
+        {
+            HP -= damage;
+            if (HP <= 0)
+            {
+                BreakTheBox();
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class Box : Boxes
+    {
+        protected override int GetEntityID() => 14;
+
+        public Box(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Box(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 44;
+            DeathSound = 4;
+            base.AnimationsToStatic();
+        }
+    }
+
     public class HittingTheWall : GameObject
     {
         protected override int GetEntityID() => 10;
@@ -595,7 +645,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 1;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells() 
+        protected override char[] GetImpassibleCells()
         {
             return new char[] { '#', 'D', 'd', '=', 'W' };
         }
@@ -624,7 +674,7 @@ namespace SLIL.Classes
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
-            if(isPlayerVisible)
+            if (isPlayerVisible)
             {
                 double distance = 0;
                 double step = 0.01;
@@ -634,7 +684,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if(ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -651,7 +701,7 @@ namespace SLIL.Classes
             }
             if (stage == Stages.Chasing)
             {
-                if(!isPlayerVisible)
+                if (!isPlayerVisible)
                 {
                     stage = Stages.Roaming;
                     NumberOfMovesLeft = MovesInARow;

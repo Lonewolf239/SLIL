@@ -137,12 +137,13 @@
             this.elements.FormattingEnabled = true;
             this.elements.Items.AddRange(new object[] {
             "Игрок",
+            "Враг",
             "Стена",
             "Дверь",
             "Окно",
             "Финиш",
             "Магазин",
-            "Враг",
+            "Ящик",
             "Невидимая стена"});
             this.elements.Location = new System.Drawing.Point(12, 332);
             this.elements.Name = "elements";
@@ -269,9 +270,9 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SLIL_Editor";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Редактор";
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.SLIL_Editor_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SLIL_Editor_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.height)).EndInit();

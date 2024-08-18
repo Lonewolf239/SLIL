@@ -10,11 +10,6 @@ namespace SLIL
 {
     public partial class SLIL_Editor : Form
     {
-        public SLIL_Editor()
-        {
-            InitializeComponent();
-        }
-
         public int MazeHeight, MazeWidth;
         private int old_MazeHeight;
         private int old_MazeWidth;
@@ -24,7 +19,14 @@ namespace SLIL
         private int finishCount = 0;
         public StringBuilder MAP;
         public bool OK = false;
-        private readonly Random rand = new Random();
+        private readonly Random rand;
+        private Panel panel;
+
+        public SLIL_Editor()
+        {
+            InitializeComponent();
+            rand = new Random();
+        }
 
         private void Import_btn_Click(object sender, EventArgs e)
         {
@@ -36,7 +38,7 @@ namespace SLIL
                 string[] MAP = map.Split(':');
                 maze_height = Convert.ToInt32(MAP[0]);
                 maze_width = Convert.ToInt32(MAP[1]);
-                if (MAP[2].Any(c => c != '.' && c != '#' && c != '=' && c != 'D' && c != 'd' && c != 'F' && c != 'P' && c != 'E' && c != '$' && c != 'W'))
+                if (MAP[2].Any(c => c != '.' && c != '#' && c != '=' && c != 'D' && c != 'd' && c != 'b' && c != 'F' && c != 'P' && c != 'E' && c != '$' && c != 'W'))
                 {
                     if (MainMenu.Language)
                         MessageBox.Show("Строка содержит недопустимые символы.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -165,6 +167,8 @@ namespace SLIL
                         }
                         else if (c == '$')
                             color = Color.Pink;
+                        else if (c == 'b')
+                            color = Color.Brown;
                         else if (c == 'E')
                             color = Color.Navy;
                     }
@@ -222,6 +226,8 @@ namespace SLIL
                         MAP.Append("$");
                     else if (panels[i, j].BackColor == Color.Purple)
                         MAP.Append("W");
+                    else if (panels[i, j].BackColor == Color.Brown)
+                        MAP.Append("b");
                     else if (panels[i, j].BackColor == Color.Red)
                     {
                         MAP.Append("P");
@@ -237,7 +243,7 @@ namespace SLIL
 
         private void Panels_MouseEnter(object sender, EventArgs e)
         {
-            Panel panel = sender as Panel;
+            panel = sender as Panel;
             panel.Focus();
         }
         
@@ -389,20 +395,7 @@ namespace SLIL
 
         private void SLIL_Editor_KeyDown(object sender, KeyEventArgs e)
         {
-            Panel panel = null;
             int x = 0, y = 0;
-            for (int i = 1; i < panels.GetLength(0) - 1; i++)
-            {
-                for (int j = 1; j < panels.GetLength(1) - 1; j++)
-                {
-                    if (panels[i, j].Focused)
-                    {
-                        panel = panels[i, j];
-                        x = i;
-                        y = j;
-                    }
-                }
-            }
             if (panel == null)
                 return;
             int index = elements.SelectedIndex;
@@ -416,17 +409,19 @@ namespace SLIL
                         playerExist = true;
                     }
                     else if (index == 1)
-                        panel.BackColor = Color.Black;
+                        panel.BackColor = Color.Navy;
                     else if (index == 2)
-                        panel.BackColor = Color.Orange;
+                        panel.BackColor = Color.Black;
                     else if (index == 3)
-                        panel.BackColor = Color.Blue;
+                        panel.BackColor = Color.Orange;
                     else if (index == 4)
+                        panel.BackColor = Color.Blue;
+                    else if (index == 5)
                     {
                         panel.BackColor = Color.Lime;
                         finishCount++;
                     }
-                    else if (index == 5)
+                    else if (index == 6)
                     {
                         panel.BackColor = Color.Pink;
                         for (int i = x - 1; i <= x + 1; i++)
@@ -449,9 +444,9 @@ namespace SLIL
                         else if (y >= 0 && y < panels.GetLength(0) && x >= 0 && x < panels.GetLength(1) - 2 && panels[x + 2, y].BackColor == Color.White)
                             panels[x + 1, y].BackColor = Color.DarkOrange;
                     }
-                    else if (index == 6)
-                        panel.BackColor = Color.Navy;
                     else if (index == 7)
+                        panel.BackColor = Color.Brown;
+                    else if (index == 8)
                         panel.BackColor = Color.Purple;
                 }
             }

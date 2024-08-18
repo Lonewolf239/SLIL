@@ -324,6 +324,11 @@ namespace SLIL.Classes
                         playerDeadBody.Deserialize(reader);
                         tempEntities.Add(playerDeadBody);
                         break;
+                    case 14:
+                        Box box = new Box(0, 0, MAP_WIDTH, ID);
+                        box.Deserialize(reader);
+                        tempEntities.Add(box);
+                        break;
                     default:
                         break;
                 }
@@ -427,6 +432,11 @@ namespace SLIL.Classes
                         PlayerDeadBody playerDeadBody = new PlayerDeadBody(0, 0, MAP_WIDTH, ID);
                         playerDeadBody.Deserialize(reader);
                         tempEntities.Add(playerDeadBody);
+                        break;
+                    case 14:
+                        Box box = new Box(0, 0, MAP_WIDTH, ID);
+                        box.Deserialize(reader);
+                        tempEntities.Add(box);
                         break;
                     default:
                         break;
@@ -618,6 +628,35 @@ namespace SLIL.Classes
             difficulty = 5;
         }
 
+        private Entity GetEntityForInitMap(char c, int x, int y)
+        {
+            Entity entity = null;
+            switch (c)
+            {
+                case 'F':
+                    Teleport teleport = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = teleport;
+                    break;
+                case 'D':
+                    ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = shopDoor;
+                    break;
+                case '$':
+                    ShopMan shopMan = new ShopMan(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = shopMan;
+                    break;
+                case 'b':
+                    Box box = new Box(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = box;
+                    break;
+                case 'E':
+                    SpawnEnemis(x, y, MAP_WIDTH);
+                    MAP[y * MAP_WIDTH + x] = '.';
+                    break;
+            }
+            return entity;
+        }
+
         public void InitMap()
         {
             seconds = 0;
@@ -751,26 +790,9 @@ namespace SLIL.Classes
                 {
                     for (int y = 0; y < MAP_HEIGHT; y++)
                     {
-                        if (MAP[y * MAP_WIDTH + x] == 'F')
-                        {
-                            Teleport teleport = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                            Entities.Add(teleport);
-                        }
-                        if (MAP[y * MAP_WIDTH + x] == 'D')
-                        {
-                            ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                            Entities.Add(shopDoor);
-                        }
-                        if (MAP[y * MAP_WIDTH + x] == '$')
-                        {
-                            ShopMan shopMan = new ShopMan(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                            Entities.Add(shopMan);
-                        }
-                        if (MAP[y * MAP_WIDTH + x] == 'E')
-                        {
-                            SpawnEnemis(x, y, MAP_WIDTH);
-                            MAP[y * MAP_WIDTH + x] = '.';
-                        }
+                        Entity entity = GetEntityForInitMap(MAP[y * MAP_WIDTH + x], x, y);
+                        if (entity != null)
+                            Entities.Add(entity);
                     }
                 }
             }
@@ -852,23 +874,14 @@ namespace SLIL.Classes
                     {
                         for (int x = 0; x < map.GetLength(0); x++)
                         {
-                            if (map[x, y] == 'F')
-                            {
-                                Teleport teleport = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                                Entities.Add(teleport);
-                            }
-                            if (map[x, y] == 'D')
-                            {
-                                ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                                Entities.Add(shopDoor);
-                            }
-                            if (map[x, y] == '$')
-                            {
-                                ShopMan shopMan = new ShopMan(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                                Entities.Add(shopMan);
-                            }
                             if (map[x, y] == '.' && random.NextDouble() <= enemy_count && x > 5 && y > 5)
                                 SpawnEnemis(x, y, MAP_WIDTH);
+                            else
+                            {
+                                Entity entity = GetEntityForInitMap(map[x, y], x, y);
+                                if (entity != null)
+                                    Entities.Add(entity);
+                            }
                             sb.Append(map[x, y]);
                         }
                     }
@@ -881,26 +894,9 @@ namespace SLIL.Classes
                     {
                         for (int y = 0; y < CustomMazeHeight * 3 + 1; y++)
                         {
-                            if (MAP[y * (CustomMazeWidth * 3 + 1) + x] == 'F')
-                            {
-                                Teleport teleport = new Teleport(x + 0.5, y + 0.5, CustomMazeWidth * 3 + 1, ref MaxEntityID);
-                                Entities.Add(teleport);
-                            }
-                            if (MAP[y * (CustomMazeWidth * 3 + 1) + x] == 'D')
-                            {
-                                ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, CustomMazeWidth * 3 + 1, ref MaxEntityID);
-                                Entities.Add(shopDoor);
-                            }
-                            if (MAP[y * (CustomMazeWidth * 3 + 1) + x] == '$')
-                            {
-                                ShopMan shopMan = new ShopMan(x + 0.5, y + 0.5, CustomMazeWidth * 3 + 1, ref MaxEntityID);
-                                Entities.Add(shopMan);
-                            }
-                            if (MAP[y * (CustomMazeWidth * 3 + 1) + x] == 'E')
-                            {
-                                SpawnEnemis(x, y, CustomMazeWidth * 3 + 1);
-                                MAP[y * (CustomMazeWidth * 3 + 1) + x] = '.';
-                            }
+                            Entity entity = GetEntityForInitMap(MAP[y * (CustomMazeWidth * 3 + 1) + x], x, y);
+                            if (entity != null)
+                                Entities.Add(entity);
                         }
                     }
                 }
@@ -995,6 +991,16 @@ namespace SLIL.Classes
                             multiplier = 1.5;
                         attackerPlayer.ChangeMoney(rand.Next((int)(c.MIN_MONEY * multiplier), (int)(c.MAX_MONEY * multiplier)));
                         attackerPlayer.EnemiesKilled++;
+                        if (target is Boxes)
+                        {
+                            int type = (target as Boxes).AmmoType;
+                            int count = attackerPlayer.Guns.Count;
+                            if (type >= count) type = rand.Next(1, count);
+                            int max = attackerPlayer.Guns[type].MaxAmmo;
+                            int ammo = attackerPlayer.Guns[type].CartridgesClip + attackerPlayer.Guns[type].MaxAmmoCount;
+                            if (ammo > max) ammo = max;
+                            attackerPlayer.Guns[type].MaxAmmoCount = ammo;
+                        }
                         return true;
                     }
                 }
