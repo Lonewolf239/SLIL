@@ -51,15 +51,27 @@ listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
     Console.WriteLine("Closed connection: {0}", peer);
 };
 
-//void SendOutcomingMessageInvoker(int packetID)
-//{
-//    dispatcher.SendOutcomingMessage(packetID, ref server);
-//}
+bool exit = false;
 
-while (true)
+new Thread(() =>
 {
-    server.PollEvents();
-    dispatcher.SendOutcomingMessage(0, ref server);
-    Thread.Sleep(10);
+    while (!exit)
+    {
+        server.PollEvents();
+        dispatcher.SendOutcomingMessage(0, ref server);
+        Thread.Sleep(10);
+    }
+}).Start();
+while(!exit)
+{
+    string command = Console.ReadLine();
+    switch (command)
+    {
+        case "stop":
+            server.Stop();
+            exit = true;
+            break;
+        default:
+            break;
+    }
 }
-server.Stop();

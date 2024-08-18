@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System;
 
 namespace SLIL.Classes
 {
@@ -56,7 +57,7 @@ namespace SLIL.Classes
                     playerID = dataReader.GetInt();
                     Game.Deserialize(dataReader);
                     //initPlayer();
-                    Game.StartGame();
+                    Game.StartGame(false);
                     startGame();
                 }
                 if (packetType == 0)
@@ -119,7 +120,18 @@ namespace SLIL.Classes
 
         public void SetPlayerIDInvoker(int id) => this.playerID = id;
 
-        public void AddPet(int index) => Game.AddPet(playerID, index);
+        public void AddPet(int index)
+        {
+            if(peer == null)
+                Game.AddPet(playerID, index);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(11);
+                writer.Put(index);
+                peer.Send(writer, DeliveryMethod.ReliableUnordered);
+            }
+        }
 
         public void AddPlayer() => playerID = Game.AddPlayer();
 
@@ -143,7 +155,7 @@ namespace SLIL.Classes
         public void StartGame()
         {
             if (GetPlayer() == null) playerID = Game.AddPlayer();
-            Game.StartGame();
+            Game.StartGame(true);
             InitPlayerHandle();
             StartGameHandle();
         }
@@ -152,7 +164,7 @@ namespace SLIL.Classes
         {
             if (!Game.IsGameStarted())
             {
-                Game.StartGame();
+                Game.StartGame(true);
                 //playerID = Game.AddPlayer();
             }
         }
@@ -161,7 +173,20 @@ namespace SLIL.Classes
 
         public void GoDebug(int debug) => Game.GoDebug(debug);
 
-        public bool DealDamage(Entity ent, double damage) => Game.DealDamage(ent.ID, damage, playerID);
+        public bool DealDamage(Entity ent, double damage)
+        {
+            if (peer != null)
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(5);
+                writer.Put(ent.ID);
+                writer.Put(damage);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+                return false;
+            }
+            else
+                return Game.DealDamage(ent.ID, damage, playerID); 
+        }
 
         public Pet[] GetPets() => Game.GetPets();
 
@@ -174,5 +199,39 @@ namespace SLIL.Classes
         internal void StopGame(int win) => Game.StopGame(win);
 
         public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, int customX, int customY) => Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);
+
+        internal void AmmoCountDecrease()
+        {
+            if(peer == null) Game.AmmoCountDecrease(playerID);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(33);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal void ReloadClip()
+        {
+            if(peer == null) Game.ReloadClip(playerID);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(34);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal void ChangeWeapon(int new_gun)
+        {
+            if(peer == null) Game.ChangeWeapon(playerID, new_gun);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(35);
+                writer.Put(new_gun);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
     }
 }

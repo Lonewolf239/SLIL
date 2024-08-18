@@ -24,7 +24,7 @@ namespace SLIL.UserControls
         {
             Width = width;
             name.Text = pet.Name[index];
-            icon.Image = pet.ShopIcon;
+            icon.Image = SLIL.ShopImageDict[pet.GetType()];
             descryption.Text = pet.Descryption[index];
             descryption.Width = Width - descryption.Left - 20;
             if (player.PET != pet)
@@ -40,7 +40,6 @@ namespace SLIL.UserControls
             {
                 if (MainMenu.sounds)
                     buy.Play(SLIL.Volume);
-                player.ChangeMoney(-pet.Cost);
                 (Parent.FindForm() as SLIL).AddPet(pet.Index);
                 buy_button.Text = $"{buy_text[1, index]}";
             }

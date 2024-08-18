@@ -1,13 +1,13 @@
-﻿using System.Drawing;
-using Play_Sound;
+﻿using LiteNetLib.Utils;
 
 namespace SLIL.Classes
 {
     public enum FireTypes { Single, SemiAutomatic }
     public enum Levels { LV1 = 0, LV2 = 1, LV3 = 2, LV4 = 3 }
 
-    public class Gun
+    public abstract class Gun : INetSerializable
     {
+        public int ItemID { get; set; }
         public string[] Name { get; set; }
         public int RechargeTime { get; set; }
         public int MaxAmmoCount { get; set; }
@@ -38,6 +38,7 @@ namespace SLIL.Classes
 
         public Gun()
         {
+            this.ItemID = this.GetItemID();
             Level = Levels.LV1;
             IsMagic = false;
             CanAiming = false;
@@ -45,6 +46,8 @@ namespace SLIL.Classes
             ShowAmmo = true;
             ShowScope = true;
         }
+
+        public abstract int GetItemID();
 
         public virtual void SetDefault()
         {
@@ -97,9 +100,38 @@ namespace SLIL.Classes
         }
 
         public virtual bool CanUpdate() => (!HaveLV4 && Level != Levels.LV3) || (HaveLV4 && Level != Levels.LV4);
+
+        public void Serialize(NetDataWriter writer)
+        {
+            writer.Put((int)this.Level);
+            writer.Put((int)this.AmmoCount);
+            writer.Put(this.MaxAmmoCount);
+        }
+
+        public void Deserialize(NetDataReader reader)
+        {
+            Levels level = (Levels)reader.GetInt();
+            if (level > this.Level)
+            {
+                while (this.Level != level)
+                {
+                    this.LevelUpdate();
+                }
+            }
+            else
+            {
+                while (this.Level != level)
+                {
+                    //TODO:
+                    //implement downgrading lol
+                }
+            }
+            this.AmmoCount = reader.GetInt();
+            this.MaxAmmoCount = reader.GetInt();
+        }
     }
 
-    public class Magic : Gun
+    public abstract class Magic : Gun
     {
         public Magic() : base()
         {
@@ -118,7 +150,7 @@ namespace SLIL.Classes
         public override bool CanUpdate() => false;
     }
 
-    public class Item : Gun
+    public abstract class Item : Gun
     {
         public string[] Description { get; set; }
         public bool HasCuteDescription { get; set; }
@@ -144,7 +176,7 @@ namespace SLIL.Classes
         public override bool CanUpdate() => false;
     }
 
-    public class DisposableItem : Item
+    public abstract class DisposableItem : Item
     {
         public bool HasLVMechanics { get; set; }
 
@@ -192,6 +224,7 @@ namespace SLIL.Classes
             Level = Levels.LV1;
             ApplyUpdate();
         }
+        public override int GetItemID() => 0;
     }
 
     public class Knife : Gun
@@ -225,6 +258,7 @@ namespace SLIL.Classes
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 1;
     }
 
     public class Candy : Knife
@@ -236,6 +270,7 @@ namespace SLIL.Classes
             HasIt = false;
             Name = new[] { "Конфета", "Candy" };
         }
+        public override int GetItemID() => 2;
     }
 
     public class Rainblower : Gun
@@ -270,6 +305,7 @@ namespace SLIL.Classes
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 3;
     }
 
     public class Pistol : Gun
@@ -370,6 +406,7 @@ namespace SLIL.Classes
             MaxAmmoCount = CartridgesClip * 3;
             base.ApplyUpdate();
         }
+        public override int GetItemID() => 4;
     }
 
     public class Shotgun : Gun
@@ -450,6 +487,7 @@ namespace SLIL.Classes
             MaxAmmoCount = CartridgesClip * 2;
             base.ApplyUpdate();
         }
+        public override int GetItemID() => 5;
     }
 
     public class SubmachineGun : Gun
@@ -530,6 +568,7 @@ namespace SLIL.Classes
             MaxAmmoCount = CartridgesClip * 1;
             base.ApplyUpdate();
         }
+        public override int GetItemID() => 6;
     }
 
     public class AssaultRifle : Gun
@@ -612,6 +651,7 @@ namespace SLIL.Classes
             }
             base.ApplyUpdate();
         }
+        public override int GetItemID() => 7;
     }
 
     public class SniperRifle : Gun
@@ -641,6 +681,7 @@ namespace SLIL.Classes
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 8;
     }
 
     public class Fingershot : Gun
@@ -667,6 +708,7 @@ namespace SLIL.Classes
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 9;
     }
 
     public class TSPitW : Gun
@@ -693,6 +735,7 @@ namespace SLIL.Classes
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 10;
     }
 
     public class Gnome : Magic
@@ -708,6 +751,7 @@ namespace SLIL.Classes
             FiringRate = 650;
             ReloadFrames = 4;
         }
+        public override int GetItemID() => 11;
     }
 
     public class FirstAidKit : DisposableItem
@@ -730,6 +774,7 @@ namespace SLIL.Classes
                 "A tasty snack"
             };
         }
+        public override int GetItemID() => 12;
     }
 
     public class Adrenalin : DisposableItem
@@ -748,5 +793,6 @@ namespace SLIL.Classes
                 "Increases movement speed for 20 sec",
             };
         }
+        public override int GetItemID() => 13;
     }
 }

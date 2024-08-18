@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using LiteNetLib.Utils;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace SLIL.Classes
 {
@@ -43,14 +45,283 @@ namespace SLIL.Classes
             new Gnome(), new FirstAidKit(), new Candy(),
             new Rainblower(), new Adrenalin()
         };
-        public readonly List<Gun> Guns = new List<Gun>();
-        public readonly List<DisposableItem> DisposableItems = new List<DisposableItem>();
+        public List<Gun> Guns = new List<Gun>();
+        public List<DisposableItem> DisposableItems = new List<DisposableItem>();
         public Pet PET = null;
         public double MAX_HP { get; set; }
         public double MAX_STAMINE { get; set; }
 
         public Player(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => InitPlayer();
         public Player(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => InitPlayer();
+
+        public override void Serialize(NetDataWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Put(HP);
+            writer.Put(Dead);
+            writer.Put(Money);
+            writer.Put(CurrentGun);
+            writer.Put(this.GUNS.Length);
+            foreach(Gun gun in this.GUNS)
+            {
+                writer.Put(gun.HasIt);
+            }
+            writer.Put(Guns.Count);
+            foreach(Gun gun in this.Guns)
+            {
+                writer.Put(gun.ItemID);
+                gun.Serialize(writer);
+            }
+            writer.Put(DisposableItems.Count);
+            foreach(DisposableItem item in this.DisposableItems)
+            {
+                writer.Put(item.ItemID);
+                item.Serialize(writer);
+            }
+        }
+
+        public override void Deserialize(NetDataReader reader)
+        {
+            base.Deserialize(reader);
+            this.HP = reader.GetDouble();
+            this.Dead = reader.GetBool();
+            this.Money = reader.GetInt();
+            this.CurrentGun = reader.GetInt();
+            int GUNSLength = reader.GetInt();
+            for(int i = 0; i < GUNSLength; i++)
+            {
+                this.GUNS[i].HasIt = reader.GetBool();
+            }
+            int GunsCount = reader.GetInt();
+            List<Gun> tempGuns = new List<Gun>();
+            for(int i = 0; i< GunsCount; i++)
+            {
+                int gunID = reader.GetInt();
+                switch (gunID)
+                {
+                    case 0:
+                        Flashlight flashlight = new Flashlight();
+                        flashlight.Deserialize(reader);
+                        tempGuns.Add(flashlight);
+                        break;
+                    case 1:
+                        Knife knife = new Knife();
+                        knife.Deserialize(reader);
+                        tempGuns.Add(knife);
+                        break;
+                    case 2:
+                        Candy candy = new Candy();
+                        candy.Deserialize(reader);
+                        tempGuns.Add(candy);
+                        break;
+                    case 3:
+                        Rainblower rainblower = new Rainblower();
+                        rainblower.Deserialize(reader);
+                        tempGuns.Add(rainblower);
+                        break;
+                    case 4:
+                        Pistol pistol = new Pistol();
+                        pistol.Deserialize(reader);
+                        tempGuns.Add(pistol);
+                        break;
+                    case 5:
+                        Shotgun shotgun = new Shotgun();
+                        shotgun.Deserialize(reader);
+                        tempGuns.Add(shotgun);
+                        break;
+                    case 6:
+                        SubmachineGun submachineGun = new SubmachineGun();
+                        submachineGun.Deserialize(reader);
+                        tempGuns.Add(submachineGun);
+                        break;
+                    case 7:
+                        AssaultRifle assaultRifle = new AssaultRifle();
+                        assaultRifle.Deserialize(reader);
+                        tempGuns.Add(assaultRifle);
+                        break;
+                    case 8:
+                        SniperRifle sniperRifle = new SniperRifle();
+                        sniperRifle.Deserialize(reader);
+                        tempGuns.Add(sniperRifle);
+                        break;
+                    case 9:
+                        Fingershot fingershot = new Fingershot();
+                        fingershot.Deserialize(reader);
+                        tempGuns.Add(fingershot);
+                        break;
+                    case 10:
+                        TSPitW tSPitW = new TSPitW();
+                        tSPitW.Deserialize(reader);
+                        tempGuns.Add(tSPitW);
+                        break;
+                    case 11:
+                        Gnome gnome = new Gnome();
+                        gnome.Deserialize(reader);
+                        tempGuns.Add(gnome);
+                        break;
+                    case 12:
+                        FirstAidKit firstAidKit = new FirstAidKit();
+                        firstAidKit.Deserialize(reader);
+                        tempGuns.Add(firstAidKit);
+                        break;
+                    case 13:
+                        Adrenalin adrenalin = new Adrenalin();
+                        adrenalin.Deserialize(reader);
+                        tempGuns.Add(adrenalin);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            int disposableItemsCount = reader.GetInt();
+            List<DisposableItem> tempDisposableItems = new List<DisposableItem>();
+            for(int i = 0; i < disposableItemsCount; i++)
+            {
+                int itemID = reader.GetInt();
+                switch (itemID)
+                {
+                    case 12:
+                        FirstAidKit firstAidKit = new FirstAidKit();
+                        firstAidKit.Deserialize(reader);
+                        tempDisposableItems.Add(firstAidKit);
+                        break;
+                    case 13:
+                        Adrenalin adrenalin = new Adrenalin();
+                        adrenalin.Deserialize(reader);
+                        tempDisposableItems.Add(adrenalin);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            Guns = tempGuns;
+            DisposableItems = tempDisposableItems;
+        }
+
+        public void Deserialize(NetDataReader reader, bool updateCoordinates)
+        {
+            if (!updateCoordinates)
+            {
+                reader.GetDouble(); reader.GetDouble();
+                this.HP = reader.GetDouble();
+                this.Dead = reader.GetBool();
+                this.Money = reader.GetInt();
+                this.CurrentGun = reader.GetInt();
+                int GUNSLength = reader.GetInt();
+                for(int i = 0; i < GUNSLength; i++)
+                {
+                    this.GUNS[i].HasIt = reader.GetBool();
+                }
+                int GunsCount = reader.GetInt();
+                List<Gun> tempGuns = new List<Gun>();
+                for(int i = 0; i< GunsCount; i++)
+                {
+                    int gunID = reader.GetInt();
+                    switch (gunID)
+                    {
+                        case 0:
+                            Flashlight flashlight = new Flashlight();
+                            flashlight.Deserialize(reader);
+                            tempGuns.Add(flashlight);
+                            break;
+                        case 1:
+                            Knife knife = new Knife();
+                            knife.Deserialize(reader);
+                            tempGuns.Add(knife);
+                            break;
+                        case 2:
+                            Candy candy = new Candy();
+                            candy.Deserialize(reader);
+                            tempGuns.Add(candy);
+                            break;
+                        case 3:
+                            Rainblower rainblower = new Rainblower();
+                            rainblower.Deserialize(reader);
+                            tempGuns.Add(rainblower);
+                            break;
+                        case 4:
+                            Pistol pistol = new Pistol();
+                            pistol.Deserialize(reader);
+                            tempGuns.Add(pistol);
+                            break;
+                        case 5:
+                            Shotgun shotgun = new Shotgun();
+                            shotgun.Deserialize(reader);
+                            tempGuns.Add(shotgun);
+                            break;
+                        case 6:
+                            SubmachineGun submachineGun = new SubmachineGun();
+                            submachineGun.Deserialize(reader);
+                            tempGuns.Add(submachineGun);
+                            break;
+                        case 7:
+                            AssaultRifle assaultRifle = new AssaultRifle();
+                            assaultRifle.Deserialize(reader);
+                            tempGuns.Add(assaultRifle);
+                            break;
+                        case 8:
+                            SniperRifle sniperRifle = new SniperRifle();
+                            sniperRifle.Deserialize(reader);
+                            tempGuns.Add(sniperRifle);
+                            break;
+                        case 9:
+                            Fingershot fingershot = new Fingershot();
+                            fingershot.Deserialize(reader);
+                            tempGuns.Add(fingershot);
+                            break;
+                        case 10:
+                            TSPitW tSPitW = new TSPitW();
+                            tSPitW.Deserialize(reader);
+                            tempGuns.Add(tSPitW);
+                            break;
+                        case 11:
+                            Gnome gnome = new Gnome();
+                            gnome.Deserialize(reader);
+                            tempGuns.Add(gnome);
+                            break;
+                        case 12:
+                            FirstAidKit firstAidKit = new FirstAidKit();
+                            firstAidKit.Deserialize(reader);
+                            tempGuns.Add(firstAidKit);
+                            break;
+                        case 13:
+                            Adrenalin adrenalin = new Adrenalin();
+                            adrenalin.Deserialize(reader);
+                            tempGuns.Add(adrenalin);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                int disposableItemsCount = reader.GetInt();
+                List<DisposableItem> tempDisposableItems = new List<DisposableItem>();
+                for(int i = 0; i < disposableItemsCount; i++)
+                {
+                    int itemID = reader.GetInt();
+                    switch (itemID)
+                    {
+                        case 12:
+                            FirstAidKit firstAidKit = new FirstAidKit();
+                            firstAidKit.Deserialize(reader);
+                            tempDisposableItems.Add(firstAidKit);
+                            break;
+                        case 13:
+                            Adrenalin adrenalin = new Adrenalin();
+                            adrenalin.Deserialize(reader);
+                            tempDisposableItems.Add(adrenalin);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                Guns = tempGuns;
+                DisposableItems = tempDisposableItems;
+            }
+            else
+            {
+                base.Deserialize(reader);
+            }
+        }
 
         private void InitPlayer()
         {

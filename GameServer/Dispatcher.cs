@@ -30,13 +30,13 @@ namespace GameServer
         }
         public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server, int playerIDfromPeer)
         {
+            NetDataReader dreader = new NetDataReader(data);
             switch (packetID)
             {
                 case 0:
                     //Game.Deserialize(new NetDataReader(data));
                     break;
                 case 1:
-                    NetDataReader dreader = new NetDataReader(data);
                     double newX = dreader.GetDouble();
                     double newY = dreader.GetDouble();
                     int playerID = dreader.GetInt();
@@ -44,6 +44,23 @@ namespace GameServer
                     Game.MovePlayer(newX, newY, playerIDfromPeer);
                     //Console.WriteLine(Game.GetEntities().ToString());
                     //SendOutcomingMessage(0, ref server);
+                    break;
+                case 5:
+                    int EntityID = dreader.GetInt();
+                    double damage = dreader.GetDouble();
+                    Game.DealDamage(EntityID, damage, playerIDfromPeer);
+                    break;
+                case 11:
+                    Game.AddPet(playerIDfromPeer, dreader.GetInt());
+                    break;
+                case 33:
+                    Game.AmmoCountDecrease(playerIDfromPeer);
+                    break;
+                case 34:
+                    Game.Reload(playerIDfromPeer);
+                    break;
+                case 35:
+                    Game.ChangeWeapon(playerIDfromPeer, dreader.GetInt());
                     break;
                 default:
                     break;
@@ -61,7 +78,7 @@ namespace GameServer
                 default:
                     break;
             }
-            server.SendToAll(writer, DeliveryMethod.Unreliable);
+            server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
         }
         public int AddPlayer()
         {

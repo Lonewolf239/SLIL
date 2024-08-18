@@ -1,12 +1,13 @@
-﻿using System.Drawing;
+﻿using LiteNetLib.Utils;
 
 namespace SLIL.Classes
 {
     public enum FireTypes { Single, SemiAutomatic }
     public enum Levels { LV1 = 0, LV2 = 1, LV3 = 2, LV4 = 3 }
 
-    public class Gun
+    public abstract class Gun : INetSerializable
     {
+        public int ItemID { get; set; }
         public string[] Name { get; set; }
         public int RechargeTime { get; set; }
         public int MaxAmmoCount { get; set; }
@@ -37,6 +38,7 @@ namespace SLIL.Classes
 
         public Gun()
         {
+            this.ItemID = this.GetItemID();
             Level = Levels.LV1;
             IsMagic = false;
             CanAiming = false;
@@ -44,6 +46,8 @@ namespace SLIL.Classes
             ShowAmmo = true;
             ShowScope = true;
         }
+
+        public abstract int GetItemID();
 
         public virtual void SetDefault()
         {
@@ -96,9 +100,38 @@ namespace SLIL.Classes
         }
 
         public virtual bool CanUpdate() => (!HaveLV4 && Level != Levels.LV3) || (HaveLV4 && Level != Levels.LV4);
+
+        public void Serialize(NetDataWriter writer)
+        {
+            writer.Put((int)this.Level);
+            writer.Put((int)this.AmmoCount);
+            writer.Put(this.MaxAmmoCount);
+        }
+
+        public void Deserialize(NetDataReader reader)
+        {
+            Levels level = (Levels)reader.GetInt();
+            if (level > this.Level)
+            {
+                while (this.Level != level)
+                {
+                    this.LevelUpdate();
+                }
+            }
+            else
+            {
+                while (this.Level != level)
+                {
+                    //TODO:
+                    //implement downgrading lol
+                }
+            }
+            this.AmmoCount = reader.GetInt();
+            this.MaxAmmoCount = reader.GetInt();
+        }
     }
 
-    public class Magic : Gun
+    public abstract class Magic : Gun
     {
         public Magic() : base()
         {
@@ -117,7 +150,7 @@ namespace SLIL.Classes
         public override bool CanUpdate() => false;
     }
 
-    public class Item : Gun
+    public abstract class Item : Gun
     {
         public string[] Description { get; set; }
         public bool HasCuteDescription { get; set; }
@@ -143,6 +176,41 @@ namespace SLIL.Classes
         public override bool CanUpdate() => false;
     }
 
+    public abstract class DisposableItem : Item
+    {
+        public bool HasLVMechanics { get; set; }
+
+        public DisposableItem() : base()
+        {
+            HasIt = false;
+            HaveLV4 = false;
+            HasCuteDescription = false;
+            HasLVMechanics = false;
+            RechargeTime = 980;
+            AmmoCount = 0;
+            MaxAmmoCount = 0;
+            MaxAmmo = 2;
+            FiringRate = 150;
+            ReloadFrames = 3;
+        }
+
+        public void AddItem()
+        {
+            AmmoCount = CartridgesClip;
+            MaxAmmoCount = CartridgesClip;
+            HasIt = true;
+        }
+
+        public override void SetDefault()
+        {
+            AmmoCount = 0;
+            MaxAmmoCount = 0;
+            HasIt = false;
+        }
+
+        public override bool CanUpdate() => false;
+    }
+
     public class Flashlight : Item
     {
         public Flashlight() : base()
@@ -156,6 +224,7 @@ namespace SLIL.Classes
             Level = Levels.LV1;
             ApplyUpdate();
         }
+        public override int GetItemID() => 0;
     }
 
     public class Knife : Gun
@@ -189,16 +258,19 @@ namespace SLIL.Classes
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 1;
     }
 
     public class Candy : Knife
     {
         public Candy() : base()
         {
+            FiringRate = 400;
             ShowScope = false;
             HasIt = false;
             Name = new[] { "Конфета", "Candy" };
         }
+        public override int GetItemID() => 2;
     }
 
     public class Rainblower : Gun
@@ -214,11 +286,11 @@ namespace SLIL.Classes
             CartridgesClip = 100;
             MaxAmmoCount = 0;
             MaxAmmo = 100;
-            FiringRange = 7;
-            MaxDamage = 3;
-            MinDamage = 2.75;
+            FiringRange = 2.5;
+            MaxDamage = 2.25;
+            MinDamage = 2;
             Recoil = 5;
-            FiringRate = 175;
+            FiringRate = 125;
             BurstShots = 5;
             RadiusSound = 6;
             ReloadFrames = 1;
@@ -233,6 +305,7 @@ namespace SLIL.Classes
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 3;
     }
 
     public class Pistol : Gun
@@ -333,6 +406,7 @@ namespace SLIL.Classes
             MaxAmmoCount = CartridgesClip * 3;
             base.ApplyUpdate();
         }
+        public override int GetItemID() => 4;
     }
 
     public class Shotgun : Gun
@@ -413,6 +487,7 @@ namespace SLIL.Classes
             MaxAmmoCount = CartridgesClip * 2;
             base.ApplyUpdate();
         }
+        public override int GetItemID() => 5;
     }
 
     public class SubmachineGun : Gun
@@ -493,6 +568,7 @@ namespace SLIL.Classes
             MaxAmmoCount = CartridgesClip * 1;
             base.ApplyUpdate();
         }
+        public override int GetItemID() => 6;
     }
 
     public class AssaultRifle : Gun
@@ -575,6 +651,7 @@ namespace SLIL.Classes
             }
             base.ApplyUpdate();
         }
+        public override int GetItemID() => 7;
     }
 
     public class SniperRifle : Gun
@@ -601,10 +678,10 @@ namespace SLIL.Classes
             BurstShots = 1;
             RadiusSound = 20;
             ReloadFrames = 1;
-            AmmoCount = CartridgesClip;
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 8;
     }
 
     public class Fingershot : Gun
@@ -631,6 +708,7 @@ namespace SLIL.Classes
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 9;
     }
 
     public class TSPitW : Gun
@@ -657,6 +735,7 @@ namespace SLIL.Classes
         }
 
         public override bool CanUpdate() => false;
+        public override int GetItemID() => 10;
     }
 
     public class Gnome : Magic
@@ -672,25 +751,21 @@ namespace SLIL.Classes
             FiringRate = 650;
             ReloadFrames = 4;
         }
+        public override int GetItemID() => 11;
     }
 
-    public class FirstAidKit : Item
+    public class FirstAidKit : DisposableItem
     {
         public FirstAidKit() : base()
         {
-            HasIt = false;
-            HaveLV4 = true;
+            HasLVMechanics = true;
             HasCuteDescription = true;
+            GunCost = 50;
             Name = new[]
             { 
                 "Аптечка", "First Aid Kit",
                 "Бобы", "Beans"
             };
-            GunCost = 50;
-            RechargeTime = 980;
-            MaxAmmo = 2;
-            FiringRate = 150;
-            ReloadFrames = 3;
             Description = new[]
             { 
                 "Восстанавливает здоровье",
@@ -699,7 +774,25 @@ namespace SLIL.Classes
                 "A tasty snack"
             };
         }
+        public override int GetItemID() => 12;
+    }
 
-        public override bool CanUpdate() => false;
+    public class Adrenalin : DisposableItem
+    {
+        public Adrenalin() : base()
+        {
+            RechargeTime = 530;
+            GunCost = 75;
+            Name = new[]
+            {
+                "Адреналин", "Adrenalin"
+            };
+            Description = new[]
+            {
+                "Увеличивает скорость передвижения на 20 сек",
+                "Increases movement speed for 20 sec",
+            };
+        }
+        public override int GetItemID() => 13;
     }
 }

@@ -197,37 +197,6 @@ namespace SLIL
                     Application.Exit();
             }
             MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
-            step = new PlaySound[,]
-            {
-                {
-                    new PlaySound(CGFReader.GetFile("step_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_2.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_3.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_4.wav"), false)
-                },
-                {
-                    new PlaySound(CGFReader.GetFile("step_run_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_run_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_run_2.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_run_3.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_run_4.wav"), false)
-                },
-                {
-                    new PlaySound(CGFReader.GetFile("step_c_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_c_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_c_2.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_c_3.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_c_4.wav"), false)
-                },
-                {
-                    new PlaySound(CGFReader.GetFile("step_run_c_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_run_c_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_run_c_2.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_run_c_3.wav"), false),
-                    new PlaySound(CGFReader.GetFile("step_run_c_4.wav"), false)
-                }
-            };
             DeathSounds = new PlaySound[,]
             {
                 //Zombie
@@ -1122,7 +1091,6 @@ namespace SLIL
                 SLIL form = new SLIL(textureCache)
                 {
                     //PETS = PETS,
-                    step = step,
                     DeathSounds = DeathSounds,
                     CuteDeathSounds = CuteDeathSounds,
                     game_over = game_over,
@@ -1250,8 +1218,21 @@ namespace SLIL
         {
             lose_focus.Focus();
             game_mode_panel.Visible = false;
-            SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]));
+            if (sounds) MainMenuTheme.Stop();
+            SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]))
+            {
+                    DeathSounds = DeathSounds,
+                    CuteDeathSounds = CuteDeathSounds,
+                    game_over = game_over,
+                    draw = draw,
+                    buy = buy,
+                    wall = wall,
+                    tp = tp,
+                    screenshot = screenshot,
+                    door = door,
+            };
             form.ShowDialog();
+            if (sounds) MainMenuTheme.Play(Volume);
             difficulty_panel.Visible = false;
         }
 
@@ -1269,7 +1250,6 @@ namespace SLIL
                 SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3,(Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
                 {
                     //PETS = PETS,
-                    step = step,
                     DeathSounds = DeathSounds,
                     CuteDeathSounds = CuteDeathSounds,
                     game_over = game_over,

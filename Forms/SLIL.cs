@@ -242,12 +242,49 @@ namespace SLIL
             { typeof(FirstAidKit), Properties.Resources.food_count },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
         };
+        public static readonly Dictionary<Type, Image> ShopImageDict = new Dictionary<Type, Image>
+        {
+            { typeof(SillyCat), Properties.Resources.pet_cat_icon },
+            { typeof(GreenGnome), Properties.Resources.pet_gnome_icon },
+            { typeof(EnergyDrink), Properties.Resources.pet_energy_drink_icon },
+            { typeof(Pyro), Properties.Resources.pet_pyro_icon },
+        };
         private readonly PlaybackState playbackState = new PlaybackState();
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
         public static PlaySound hit = new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false);
         public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
-        public PlaySound[,] step;
+        public static PlaySound[,] step = new PlaySound[,]
+            {
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_4.wav"), false)
+                },
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_4.wav"), false)
+                },
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_c_4.wav"), false)
+                },
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_4.wav"), false)
+                }
+            };
         public static PlaySound[] ost = new PlaySound[]
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
@@ -1233,7 +1270,8 @@ namespace SLIL
             {
                 if (MainMenu.sounds)
                     draw.Play(Volume);
-                player.CurrentGun = new_gun;
+                //player.CurrentGun = new_gun;
+                Controller.ChangeWeapon(new_gun);
                 player.GunState = 0;
                 player.Aiming = false;
                 reload_timer.Interval = player.GetCurrentGun().RechargeTime;
@@ -1430,7 +1468,27 @@ namespace SLIL
                                         else scope_hit = Properties.Resources.scope_c_hit;
                                         return;
                                     }
-                                    else 
+                                    else if (entity is Player targetPlayer && entity.ID != player.ID)
+                                    {
+                                        if (targetPlayer.Dead) continue;
+                                        double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                        if (player.GetCurrentGun() is Shotgun)
+                                            damage *= player.GetCurrentGun().FiringRange - Distance;
+                                        if (Controller.DealDamage(targetPlayer, damage * 5))
+                                        {
+                                            if (MainMenu.sounds)
+                                            {
+                                                //if (player.CuteMode)
+                                                //    CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                //else
+                                                //    DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                            }
+                                        }
+                                        if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
+                                        else scope_hit = Properties.Resources.scope_c_hit;
+                                        return;
+                                    }
+                                    else
                                         return;
                                 }
                             }
@@ -1519,7 +1577,8 @@ namespace SLIL
                         player.GunState = player.MoveStyle;
                         pressed_r = false;
                         player.CanShoot = true;
-                        player.GetCurrentGun().ReloadClip();
+                        //player.GetCurrentGun().ReloadClip();
+                        Controller.ReloadClip();
                         if (player.UseItem)
                             player.SetEffect();
                         reload_timer.Stop();
@@ -1555,7 +1614,12 @@ namespace SLIL
                     else
                         player.GunState = player.Aiming ? 3 : 0;
                     if (!(player.GetCurrentGun() is Knife))
-                        player.GetCurrentGun().AmmoCount--;
+                    {
+                        //TODO:
+                        //make packet for AmmoCount decreasing
+                        //player.GetCurrentGun().AmmoCount--;
+                        Controller.AmmoCountDecrease();
+                    }
                     if (player.GetCurrentGun().FireType != FireTypes.Single)
                     {
                         BulletRayCasting();
