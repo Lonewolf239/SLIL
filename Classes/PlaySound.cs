@@ -114,8 +114,8 @@ namespace Play_Sound
 
         public void Stop()
         {
-            playing.Stop();
-            file.Position = 0;
+            playing?.Stop();
+            if(file!=null) file.Position = 0;
         }
 
         public void Dispose()

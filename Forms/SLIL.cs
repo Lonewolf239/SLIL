@@ -2784,7 +2784,9 @@ namespace SLIL
         private void GameOver(int win)
         {
             foreach (PlaySound ostTrack in ost)
-                ostTrack.Stop();
+            {
+                ostTrack?.Stop();
+            }
             raycast.Stop();
             shot_timer.Stop();
             reload_timer.Stop();
