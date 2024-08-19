@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System;
+using SharpDX.Direct2D1;
 
 namespace SLIL.Classes
 {
@@ -230,6 +231,104 @@ namespace SLIL.Classes
                 NetDataWriter writer = new NetDataWriter();
                 writer.Put(35);
                 writer.Put(new_gun);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal bool IsMultiplayer() => peer != null;
+
+        internal void BuyAmmo(Gun weapon)
+        {
+            int weaponID = -1;
+            for(int i = 0; i<GetPlayer().Guns.Count; i++)
+            {
+                if (GetPlayer().Guns[i].GetType() == weapon.GetType())
+                {
+                    weaponID = i;
+                    break;
+                }
+            }
+            if (peer == null)
+            {
+                Game.BuyAmmo(playerID, weaponID);
+            }
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(36);
+                writer.Put(weaponID);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal void BuyWeapon(Gun weapon)
+        {
+            int weaponID = -1;
+            for(int i = 0; i<GetPlayer().GUNS.Length; i++)
+            {
+                if (GetPlayer().GUNS[i].GetType() == weapon.GetType())
+                {
+                    weaponID = i;
+                    break;
+                }
+            }
+            if (peer == null)
+            {
+                Game.BuyWeapon(playerID, weaponID);
+            }
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(37);
+                writer.Put(weaponID);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal void UpdateWeapon(Gun weapon)
+        {
+            int weaponID = -1;
+            for(int i = 0; i<GetPlayer().Guns.Count; i++)
+            {
+                if (GetPlayer().Guns[i].GetType() == weapon.GetType())
+                {
+                    weaponID = i;
+                    break;
+                }
+            }
+            if (peer == null)
+            {
+                Game.UpdateWeapon(playerID, weaponID);
+            }
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(38);
+                writer.Put(weaponID);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal void BuyConsumable(DisposableItem item)
+        {
+            int itemID = -1;
+            for(int i = 0; i<GetPlayer().GUNS.Length; i++)
+            {
+                if (GetPlayer().GUNS[i].GetType() == item.GetType())
+                {
+                    itemID = i;
+                    break;
+                }
+            }
+            if (peer == null)
+            {
+                Game.BuyConsumable(playerID, itemID);
+            }
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(39);
+                writer.Put(itemID);
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
         }

@@ -62,6 +62,18 @@ namespace GameServer
                 case 35:
                     Game.ChangeWeapon(playerIDfromPeer, dreader.GetInt());
                     break;
+                case 36:
+                    Game.BuyAmmo(playerIDfromPeer, dreader.GetInt());
+                    break;
+                case 37:
+                    Game.BuyWeapon(playerIDfromPeer, dreader.GetInt());
+                    break;
+                case 38:
+                    Game.UpdateWeapon(playerIDfromPeer, dreader.GetInt());
+                    break;
+                case 39:
+                    Game.BuyConsumable(playerIDfromPeer, dreader.GetInt());
+                    break;
                 default:
                     break;
             }

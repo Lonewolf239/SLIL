@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using SharpDX.Direct2D1;
 
 namespace SLIL.Classes
 {
@@ -1314,6 +1315,81 @@ namespace SLIL.Classes
                 if (entity.ID == playerID)
                 {
                     (entity as Player).CurrentGun = new_gun;
+                    return;
+                }
+            }
+        }
+
+        internal void BuyAmmo(int playerID, int weaponID)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    Gun weapon = p.Guns[weaponID];
+                    if (p.Money >= weapon.AmmoCost && weapon.MaxAmmoCount + weapon.AmmoCount <= weapon.MaxAmmo)
+                    {
+                        p.ChangeMoney(-weapon.AmmoCost);
+                        weapon.MaxAmmoCount += weapon.CartridgesClip;
+                    }
+                    return;
+                }
+            }
+        }
+
+        internal void BuyWeapon(int playerID, int weaponID)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    Gun weapon = p.GUNS[weaponID];
+                    if (p.Money >= weapon.GunCost)
+                    {
+                        p.ChangeMoney(-weapon.GunCost);
+                        weapon.SetDefault();
+                        weapon.HasIt = true;
+                        p.Guns.Add(weapon);
+                    }
+                    return;
+                }
+            }
+        }
+
+        internal void UpdateWeapon(int playerID, int weaponID)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    Gun weapon = p.Guns[weaponID];
+                    if (p.Money >= weapon.UpdateCost)
+                    {
+                        p.ChangeMoney(-weapon.UpdateCost);
+                        weapon.LevelUpdate();
+                        p.LevelUpdated = true;
+                    }
+                    return;
+                }
+            }
+        }
+
+        internal void BuyConsumable(int playerID, int itemID)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    DisposableItem item = p.GUNS[itemID] as DisposableItem;
+                    if (p.Money >= item.GunCost && !item.HasIt)
+                    {
+                        p.ChangeMoney(-item.GunCost);
+                        item.AddItem();
+                    }
                     return;
                 }
             }

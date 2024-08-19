@@ -1211,6 +1211,7 @@ namespace SLIL
 
         private void TakeFlashlight(bool change)
         {
+            if (Controller.IsMultiplayer()) return;
             Player player = Controller.GetPlayer();
             if (player.CuteMode) return;
             if (player.Guns.Contains((Flashlight)player.GUNS[0]))
@@ -2816,6 +2817,26 @@ namespace SLIL
             }
             else
                 ToDefault();
+        }
+
+        internal void BuyAmmo(Gun weapon)
+        {
+            Controller.BuyAmmo(weapon);
+        }
+
+        internal void BuyWeapon(Gun weapon)
+        {
+            Controller.BuyWeapon(weapon);
+        }
+
+        internal void UpdateWeapon(Gun weapon)
+        {
+            Controller.UpdateWeapon(weapon);
+        }
+
+        internal void BuyConsumable(DisposableItem item)
+        {
+            Controller.BuyConsumable(item);
         }
     }
 }

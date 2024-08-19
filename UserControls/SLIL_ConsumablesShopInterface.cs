@@ -44,9 +44,10 @@ namespace SLIL.UserControls
             {
                 if (MainMenu.sounds)
                     buy.Play(SLIL.Volume);
-                player.ChangeMoney(-item.GunCost);
+                //player.ChangeMoney(-item.GunCost);
+                (Parent.FindForm() as SLIL).BuyConsumable(item);
                 buy_button.Text = $"{buy_text[1, index]}";
-                item.AddItem();
+                //item.AddItem();
             }
             else if (MainMenu.sounds)
                 cant_pressed?.Play(SLIL.Volume);

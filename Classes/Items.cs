@@ -106,6 +106,7 @@ namespace SLIL.Classes
             writer.Put((int)this.Level);
             writer.Put((int)this.AmmoCount);
             writer.Put(this.MaxAmmoCount);
+            writer.Put(HasIt);
         }
 
         public void Deserialize(NetDataReader reader)
@@ -128,6 +129,7 @@ namespace SLIL.Classes
             }
             this.AmmoCount = reader.GetInt();
             this.MaxAmmoCount = reader.GetInt();
+            this.HasIt = reader.GetBool();
         }
     }
 
