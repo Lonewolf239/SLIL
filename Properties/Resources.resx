@@ -118,14 +118,17 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="pet_animation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\pet_animation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_4_2_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_2_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pet_cat_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_cat_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_1_0_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_1_0_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="gun_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pet_gnome_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_gnome_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -138,6 +141,9 @@
   </data>
   <data name="rifle_bullet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\rifle_bullet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gun_gnome_reloading_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_gnome_reloading_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_4_3_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_3_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -154,11 +160,14 @@
   <data name="floor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\floor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="gun_3_3_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_3_3_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="door" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\door.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_1_1_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_1_1_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="enemy_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\enemy_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pet_cat_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_cat_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -175,8 +184,11 @@
   <data name="scope_line" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\scope_line.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="c_enemy_3_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_3_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="c_enemy_3_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_3_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gun_4_3_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_4_3_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="enemy_3_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\enemy_3_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -184,8 +196,8 @@
   <data name="gun_0_0_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_0_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="enemy_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\enemy_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flashlight_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\flashlight_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_4_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -208,17 +220,20 @@
   <data name="gun_1_2_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_2_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_5_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_5_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="c_shop_door" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_shop_door.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_1_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="enemy_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\enemy_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="regeneration_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\regeneration_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="hit_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\hit_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pet_pyro_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\pet_pyro_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="medkit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\medkit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -235,23 +250,17 @@
   <data name="gun_6_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_6_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_3_2_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_3_2_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="player_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\player_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_1_0_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_0_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="pet_cat_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\pet_cat_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="import" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\import.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_1_1_reload_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_1_reload_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="pet_gnome_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\pet_gnome_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_0_1_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_1_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -268,6 +277,9 @@
   <data name="enemy_3_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\enemy_3_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="adrenalin_using_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_using_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_gnome_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_gnome_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -276,6 +288,9 @@
   </data>
   <data name="pet_cat_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_cat_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_1_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_1_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="scope_null" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\scope_null.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -292,6 +307,9 @@
   <data name="pet_pyro_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_pyro_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="random" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\random.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_4_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -304,20 +322,26 @@
   <data name="gun_rainblower" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\gun_rainblower.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="c_enemy_0_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_0_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="syringe_using_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\syringe_using_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="teleport_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\teleport_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="language" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\language.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="labyrinth" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\labyrinth.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pet_gnome_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_gnome_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_3_2_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_3_2_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_enemy_1_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_1_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="scope_dot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\scope_dot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -334,8 +358,8 @@
   <data name="gun_0_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="adrenalin_using_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_using_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_1_3_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_3_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -349,11 +373,20 @@
   <data name="reset" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\reset.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="labyrinth" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\labyrinth.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pet_cat_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\pet_cat_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player_aiming" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\player_aiming.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_ceiling" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_ceiling.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_0_1_pump" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_1_pump.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_1_1_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_1_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -376,6 +409,12 @@
   <data name="gun_2_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_2_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="box_broken" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\box_broken.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_floor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_floor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_1_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -388,8 +427,8 @@
   <data name="gun_1_1_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_1_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_gnome_reloading_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_gnome_reloading_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pet_gnome_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\pet_gnome_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_5_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_5_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -403,17 +442,17 @@
   <data name="gun_1_1_run_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_1_run_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\warning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="gun_gnome_reloading_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_gnome_reloading_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_4_2_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_2_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="telegram" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\telegram.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="gun_gnome_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_gnome_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gun_0_2_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_0_2_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="hp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\hp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -421,8 +460,8 @@
   <data name="enemy_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\enemy_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_1_2_reload_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_1_2_reload_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="knife_hit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\knife_hit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -433,17 +472,20 @@
   <data name="gun_gnome" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_gnome.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="first_aid" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\first_aid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\warning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="enemy_2_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\enemy_2_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="medkit_using_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\medkit_using_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_0_0_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_0_0_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="c_enemy_3_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_3_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="c_enemy_3_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_3_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="food_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\food_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player_stoped" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\player_stoped.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="food" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\food.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -451,14 +493,14 @@
   <data name="gun_1_3_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_3_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="adrenalin_count_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_count_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_1_2_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_2_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="main_menu_background" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\main_menu_background.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="flashlight_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\flashlight_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_3_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_3_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -468,6 +510,9 @@
   </data>
   <data name="gun_2_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_2_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\player_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_4_2_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_2_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -481,8 +526,14 @@
   <data name="gun_1_2_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_2_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="c_enemy_2_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_2_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_4_3_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_3_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gun_4_2_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_4_2_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="github" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\github.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -490,8 +541,8 @@
   <data name="gun_3_1_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_3_1_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_3_3_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_3_3_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="gun_1_1_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_1_1_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_4_3_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_3_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -508,8 +559,14 @@
   <data name="scope_shotgun" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\scope_shotgun.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="c_enemy_0_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_0_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_3_1_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_3_1_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="food_using_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\food_using_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_candy_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\gun_candy_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -529,17 +586,20 @@
   <data name="food_count" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\food_count.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="pet_energy_drink_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\pet_energy_drink_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_5_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_5_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="how_tp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\how_tp.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="setting" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\setting.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="c_wall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_wall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_0_0_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_0_0_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="telegram" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\telegram.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_0_1_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_1_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -547,11 +607,17 @@
   <data name="gun_4_2_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_2_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_3_1_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_3_1_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="gun_0_0_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_0_0_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="shop_door" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\shop_door.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="question" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\question.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="food_using_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\food_using_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -565,8 +631,8 @@
   <data name="pet_pyro_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_pyro_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="food_using_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\food_using_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="gun_candy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\gun_candy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_0_2_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_2_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -580,14 +646,17 @@
   <data name="gun_0_2_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_2_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="barrel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\barrel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="food_using_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\food_using_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="setting_pressed_btn" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\setting_pressed_btn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="enemy_1_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\enemy_1_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flashlight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\flashlight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="medkit_using_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\medkit_using_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -595,8 +664,17 @@
   <data name="gun_4_1_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_1_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="setting" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\setting.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="barrel_broken" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\barrel_broken.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_rainblower_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\gun_rainblower_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="player" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\player.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="enemy_0_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\enemy_0_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -604,8 +682,11 @@
   <data name="gun_rainblower_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\gun_rainblower_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_4_3_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_4_3_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="c_enemy_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_door" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_door.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="export" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\export.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -619,20 +700,23 @@
   <data name="gun_4_3_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_4_3_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="language" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\language.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gun_1_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_1_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="hand_using_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\hand_using_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="shop_man_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\shop_man_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_candy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\gun_candy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="gun_6_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_6_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pet_pyro_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\pet_pyro_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="protection_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\protection_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="teleport_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\teleport_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -640,14 +724,23 @@
   <data name="gun_5_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_5_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pet_energy_drink_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\pet_energy_drink_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="level_up" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\level_up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_1_2_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_1_2_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_0_2_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_0_2_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="bullet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\bullet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_2_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\enemy_2_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_enemy_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="adrenalin_using_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin_using_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -664,47 +757,65 @@
   <data name="multiplayer" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\multiplayer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="gun_3_2_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_3_2_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_enemy_2_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_2_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_teleport_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_teleport_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="gun_3_2_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_3_2_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_0_1_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_1_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="level_up" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\level_up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pet_gnome_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\pet_gnome_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_gnome_reloading_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_gnome_reloading_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="gun_5_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_5_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="money" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\money.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_4_2_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_4_2_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="gun_3_1_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_3_1_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="enemy_0_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\enemy_0_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_1_1_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gun_1_1_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="first_aid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\first_aid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pet_gnome_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\pet_gnome_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="adrenalin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\adrenalin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_0_1_2_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_1_2_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="bullet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\bullet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="scope_c_hit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\scope_c_hit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="pet_animation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\pet_animation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="c_enemy_1_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_1_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gun_1_2_reload_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_1_2_reload_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="c_teleport_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_teleport_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gun_1_0_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_1_0_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="syringe" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\syringe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="medkit_using_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\medkit_using_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="enemy_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\enemy_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="medkit_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\medkit_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -715,20 +826,23 @@
   <data name="pet_pyro_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_pyro_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flashlight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\flashlight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="hand_using_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\hand_using_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="done" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\done.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="c_enemy_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\c_enemy_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="pet_cat_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pet_cat_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="gun_0_2_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\gun_0_2_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gun_0_0_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gun_0_0_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="scope" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\scope.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -754,8 +868,8 @@
   <data name="knife" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\knife.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="random" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\random.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="box" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\box.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="setting_btn" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\setting_btn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -778,103 +892,7 @@
   <data name="enemy_1_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\enemy_1_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_enemy_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_enemy_1_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_1_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_enemy_1_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_1_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_enemy_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_enemy_2_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_2_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_enemy_2_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_2_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_floor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_floor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="scope_c_hit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\scope_c_hit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_ceiling" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_ceiling.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_wall" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_wall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="food_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\food_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_enemy_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_enemy_0_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_0_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_enemy_0_DEAD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_enemy_0_DEAD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_door" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_door.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_shop_door" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_shop_door.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="adrenalin" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\adrenalin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="adrenalin_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\adrenalin_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="adrenalin_using_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\adrenalin_using_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="adrenalin_using_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\adrenalin_using_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="adrenalin_using_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\adrenalin_using_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_teleport_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_teleport_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="c_teleport_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\c_teleport_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="adrenalin_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\adrenalin_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="adrenalin_count_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\adrenalin_count_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="protection_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\protection_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="regeneration_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\regeneration_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="player" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\player.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="player_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\player_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="player_aiming" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\player_aiming.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="player_shooted" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\player_shooted.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="player_stoped" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\player_stoped.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="selected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\selected.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

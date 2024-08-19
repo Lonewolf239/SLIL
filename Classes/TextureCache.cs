@@ -50,10 +50,10 @@ namespace SLIL.Classes
             Properties.Resources.player_aiming,
             Properties.Resources.player_shooted,
             Properties.Resources.player_stoped, //43
-            Properties.Resources.player_stoped, //44
-            Properties.Resources.player_1,
-            Properties.Resources.player_stoped, //46
-            Properties.Resources.player_1,
+            Properties.Resources.box, //44
+            Properties.Resources.box_broken,
+            Properties.Resources.barrel, //46
+            Properties.Resources.barrel_broken,
         };
         private readonly Image[] cute_textures =
         {
@@ -99,10 +99,10 @@ namespace SLIL.Classes
             Properties.Resources.player_aiming,
             Properties.Resources.player_shooted,
             Properties.Resources.player_stoped, //43
-            Properties.Resources.player_stoped, //44
-            Properties.Resources.player_1,
-            Properties.Resources.player_stoped, //46
-            Properties.Resources.player_1,
+            Properties.Resources.box, //44
+            Properties.Resources.box_broken,
+            Properties.Resources.barrel, //46
+            Properties.Resources.barrel_broken,
         };
         private readonly Color[] COLORS =
         {

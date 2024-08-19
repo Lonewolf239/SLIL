@@ -97,7 +97,7 @@ namespace SLIL
             { typeof(FirstAidKit), new[]
             {
                 Properties.Resources.medkit_icon,
-                Properties.Resources.medkit_icon
+                Properties.Resources.food_icon
             } },
             { typeof(Adrenalin), new[]
             {
@@ -286,22 +286,22 @@ namespace SLIL
                 }
             };
         public static PlaySound[] ost = new PlaySound[]
-            {
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_1.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_2.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_3.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_4.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("soul_forge.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true),
-                new PlaySound(MainMenu.CGFReader.GetFile("cmode_ost.wav"), true)
-            };
+        {
+            new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
+            new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_1.wav"), true),
+            new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_2.wav"), true),
+            new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_3.wav"), true),
+            new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_4.wav"), true),
+            new PlaySound(null, false),
+            new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true),
+            new PlaySound(MainMenu.CGFReader.GetFile("cmode_ost.wav"), true)
+        };
         public PlaySound[,] DeathSounds;
         public PlaySound[,] CuteDeathSounds;
         public PlaySound game_over, draw, buy, wall, tp, screenshot;
         public PlaySound[] door;
-        private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##..WWWWWWW........##..W.....W.....#..##..W....EW........##..W..WWWW........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##.................##.................##..............F..##.................##..WWW..=.#D#..#..##..WEW====#$#.#d=.##..WWW.=..###..=..##.................####################";
+        private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
+            debugMap = @"####################.................##..WWWW...........##..W..W..B..b..#..##..WE.W...........##..W..W...........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
         public static float Volume = 0.4f;
         private int burst_shots = 0, reload_frames = 0;
         public static int ost_index = 0;
@@ -490,41 +490,35 @@ namespace SLIL
 
         public void AddPet(int index)
         {
-            foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true))
+            foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true).Cast<SLIL_PetShopInterface>())
                 control.buy_button.Text = MainMenu.Language ? $"Купить ${control.pet.Cost}" : $"Buy ${control.pet.Cost}";
             Controller.AddPet(index);
             CuteMode();
             Player player = Controller.GetPlayer();
-            weapon_shop_page.Controls.Clear();
-            if (!player.CuteMode)
+            if (player.CuteMode && shop_tab_control.Controls.ContainsKey("weapon_shop_page"))
             {
-                for (int i = player.GUNS.Length - 1; i >= 0; i--)
-                {
-                    if (player.GUNS[i].AddToShop)
-                    {
-                        SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
-                        {
-                            index = MainMenu.Language ? 0 : 1,
-                            weapon = player.GUNS[i],
-                            player = player,
-                            BackColor = shop_panel.BackColor,
-                            Dock = DockStyle.Top
-                        };
-                        weapon_shop_page.Controls.Add(ShopInterface);
-                    }
-                }
+                shop_tab_control.Controls.Clear();
+                shop_tab_control.Controls.Add(pet_shop_page);
+                shop_tab_control.Controls.Add(consumables_shop_page);
+            }
+            else if (!shop_tab_control.Controls.ContainsKey("weapon_shop_page"))
+            {
+                shop_tab_control.Controls.Clear();
+                shop_tab_control.Controls.Add(weapon_shop_page);
+                shop_tab_control.Controls.Add(pet_shop_page);
+                shop_tab_control.Controls.Add(consumables_shop_page);
             }
         }
 
         private void CuteMode()
         {
             Player player = Controller.GetPlayer();
-            if (player.CuteMode)
+            if (player.CuteMode && ost_index != 7)
             {
                 prev_ost = ost_index;
                 ChangeOst(7);
             }
-            else
+            else if (ost_index == 7)
             {
                 prev_ost = rand.Next(ost.Length - 3);
                 ChangeOst(prev_ost);
@@ -2504,6 +2498,7 @@ namespace SLIL
                         hit_window = true;
                         DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '=';
                         break;
+                    case 'B':
                     case 'b':
                         DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'b';
                         break;
@@ -2661,7 +2656,6 @@ namespace SLIL
 
         private void InitMap()
         {
-            //Controller.InitMap();
             DISPLAYED_MAP.Clear();
             string DMAP = "";
             for (int i = 0; i < Controller.GetMap().Length; i++)

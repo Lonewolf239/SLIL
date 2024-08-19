@@ -1,26 +1,18 @@
 ﻿using MazeGenerator;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
 using GameServer;
 
 namespace SLIL.Classes
 {
     internal class GameModel : INetSerializable
     {
-        private StringBuilder MAP = new StringBuilder();
-        private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##..WWWWWWW........##..W.....W.....#..##..W....EW........##..W..WWWW........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##.................##.................##..............F..##.................##..WWW..=.#D#..#..##..WEW====#$#.#d=.##..WWW.=..###..=..##.................####################";
+        private StringBuilder MAP = new();
+        private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
+            debugMap = @"####################.................##..WWWW...........##..W..W..B..b..#..##..WE.W...........##..W..W...........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
         private int inDebug = 0;
-        //private readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit(), new Candy(), new Rainblower() };
         private readonly Pet[] PETS;
-        public List<Entity> Entities = new List<Entity>();
+        public List<Entity> Entities = [];
         private readonly char[] impassibleCells = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
@@ -30,7 +22,7 @@ namespace SLIL.Classes
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
         private int CustomMazeHeight, CustomMazeWidth;
-        private StringBuilder CUSTOM_MAP = new StringBuilder();
+        private StringBuilder CUSTOM_MAP = new();
         private int CUSTOM_X, CUSTOM_Y;
         private static System.Timers.Timer RespawnTimer;
         private static System.Timers.Timer EnemyTimer;

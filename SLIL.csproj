@@ -12,6 +12,22 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -158,6 +174,12 @@
     <Compile Include="UserControls\Display.Designer.cs">
       <DependentUpon>Display.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\EditorElementSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\EditorElementSelector.Designer.cs">
+      <DependentUpon>EditorElementSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PlayerPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -212,6 +234,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Display.resx">
       <DependentUpon>Display.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\EditorElementSelector.resx">
+      <DependentUpon>EditorElementSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\PlayerPanel.resx">
       <DependentUpon>PlayerPanel.cs</DependentUpon>
@@ -998,6 +1023,36 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\player_stoped.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\barrel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\barrel_broken.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\box.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\box_broken.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\selected.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

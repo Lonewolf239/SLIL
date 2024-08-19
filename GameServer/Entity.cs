@@ -451,10 +451,10 @@ namespace SLIL.Classes
             Index = 0;
             Cost = 150;
             Name = new[] { "Глупый Кот", "Silly Cat" };
-            Descryption = new[] { "Раз в 5 секунд восстанавливает 2 HP", "Restores 2 HP every 5 seconds" };
+            Descryption = new[] { "Раз в 8 секунд восстанавливает 2 HP", "Restores 2 HP every 8 seconds" };
             Texture = 17;
             PetAbility = 0;
-            AbilityReloadTime = 5;
+            AbilityReloadTime = 8;
             HasStopAnimation = true;
             RespondsToFlashlight = true;
             base.SetAnimations(1, 0);
@@ -550,13 +550,14 @@ namespace SLIL.Classes
 
     public abstract class Boxes : NPC
     {
-        public int AmmoType { get; set; }
+        public bool BoxWithMoney { get; set; }
 
         public Boxes(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Boxes(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
         private void Init()
         {
+            if (rand.NextDouble() <= 0.25) BoxWithMoney = true;
             CanHit = true;
             HP = 2.5;
         }
@@ -566,7 +567,6 @@ namespace SLIL.Classes
             CanHit = false;
             Texture++;
             base.AnimationsToStatic();
-            AmmoType = rand.Next(1, 5);
         }
 
         public override bool DealDamage(double damage)
@@ -591,6 +591,21 @@ namespace SLIL.Classes
         private void Init()
         {
             Texture = 44;
+            DeathSound = 4;
+            base.AnimationsToStatic();
+        }
+    }
+
+    public class Barrel : Boxes
+    {
+        protected override int GetEntityID() => 15;
+
+        public Barrel(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Barrel(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 46;
             DeathSound = 4;
             base.AnimationsToStatic();
         }

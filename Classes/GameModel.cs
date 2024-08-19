@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace SLIL.Classes
 {
     internal class GameModel : INetSerializable
     {
         private StringBuilder MAP = new StringBuilder();
-        private const string bossMap = "#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##..WWWWWWW........##..W.....W.....#..##..W....EW........##..W..WWWW........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##.................##.................##..............F..##.................##..WWW..=.#D#..#..##..WEW====#$#.#d=.##..WWW.=..###..=..##.................####################";
+        private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
+            debugMap = @"####################.................##..WWWW...........##..W..W..B..b..#..##..WE.W...........##..W..W...........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
         private int inDebug = 0;
-        //private readonly Gun[] GUNS = { new Flashlight(), new Knife(), new Pistol(), new Shotgun(), new SubmachineGun(), new AssaultRifle(), new SniperRifle(), new Fingershot(), new TSPitW(), new Gnome(), new FirstAidKit(), new Candy(), new Rainblower() };
         private readonly Pet[] PETS;
         public List<Entity> Entities = new List<Entity>();
         private readonly char[] impassibleCells = { '#', 'D', '=', 'd' };
@@ -329,6 +329,11 @@ namespace SLIL.Classes
                         box.Deserialize(reader);
                         tempEntities.Add(box);
                         break;
+                    case 15:
+                        Barrel barrel = new Barrel(0, 0, MAP_WIDTH, ID);
+                        barrel.Deserialize(reader);
+                        tempEntities.Add(barrel);
+                        break;
                     default:
                         break;
                 }
@@ -437,6 +442,11 @@ namespace SLIL.Classes
                         Box box = new Box(0, 0, MAP_WIDTH, ID);
                         box.Deserialize(reader);
                         tempEntities.Add(box);
+                        break;
+                    case 15:
+                        Barrel barrel = new Barrel(0, 0, MAP_WIDTH, ID);
+                        barrel.Deserialize(reader);
+                        tempEntities.Add(barrel);
                         break;
                     default:
                         break;
@@ -649,6 +659,10 @@ namespace SLIL.Classes
                     Box box = new Box(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = box;
                     break;
+                case 'B':
+                    Barrel barrel = new Barrel(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = barrel;
+                    break;
                 case 'E':
                     SpawnEnemis(x, y, MAP_WIDTH);
                     MAP[y * MAP_WIDTH + x] = '.';
@@ -853,22 +867,66 @@ namespace SLIL.Classes
                                     map[x, y] = '#';
                             }
                         }
-                        try
+                        bool spawned = false;
+                        if (shop_y >= 2 && shop_y < map.GetLength(0) - 2 && shop_x >= 0 && shop_x < map.GetLength(1) && map[shop_x, shop_y - 2] == '.')
                         {
-                            if (shop_x == 3 && shop_y == 1 && map[shop_x - 1, shop_y] == '.')
-                                map[shop_x - 1, shop_y] = 'D';
-                            else if (shop_x == 1 && shop_y == 3 && map[shop_x, shop_y - 1] == '.')
+                            try
+                            {
+                                if (!spawned)
+                                {
+                                    map[shop_x, shop_y - 1] = 'D';
+                                    spawned = true;
+                                }
+                            }
+                            catch { }
+                        }
+                        if (shop_y >= 0 && shop_y < map.GetLength(0) - 2 && shop_x >= 0 && shop_x < map.GetLength(1) && map[shop_x, shop_y + 2] == '.')
+                        {
+                            try
+                            {
+                                if (!spawned)
+                                {
+                                    map[shop_x, shop_y + 1] = 'D';
+                                    spawned = true;
+                                }
+                            }
+                            catch { }
+                        }
+                        if (shop_y >= 0 && shop_y < map.GetLength(0) && shop_x >= 2 && shop_x < map.GetLength(1) - 2 && map[shop_x - 2, shop_y] == '.')
+                        {
+                            try
+                            {
+                                if (!spawned)
+                                {
+                                    map[shop_x - 1, shop_y] = 'D';
+                                    spawned = true;
+                                }
+                            }
+                            catch { }
+                        }
+                        if (shop_y >= 0 && shop_y < map.GetLength(0) && shop_x >= 0 && shop_x < map.GetLength(1) - 2 && map[shop_x + 2, shop_y] == '.')
+                        {
+                            try
+                            {
+                                if (!spawned)
+                                {
+                                    map[shop_x + 1, shop_y] = 'D';
+                                    spawned = true;
+                                }
+                            }
+                            catch { }
+                        }
+                        if (!spawned)
+                        {
+                            if (shop_y - 1 > 0)
                                 map[shop_x, shop_y - 1] = 'D';
-                            else if (shop_y >= 2 && shop_y < map.GetLength(0) - 1 && shop_x >= 0 && shop_x < map.GetLength(1) && map[shop_x, shop_y - 2] == '.')
-                                map[shop_x, shop_y - 1] = 'D';
-                            else if (shop_y >= 0 && shop_y < map.GetLength(0) - 1 && shop_x >= 0 && shop_x < map.GetLength(1) && map[shop_x, shop_y + 2] == '.')
+                            if (shop_y + 1 < map.GetLength(0) - 1)
                                 map[shop_x, shop_y + 1] = 'D';
-                            else if (shop_y >= 0 && shop_y < map.GetLength(0) && shop_x >= 2 && shop_x < map.GetLength(1) - 1 && map[shop_x - 2, shop_y] == '.')
+                            if (shop_x - 1 > 0)
                                 map[shop_x - 1, shop_y] = 'D';
-                            else if (shop_y >= 0 && shop_y < map.GetLength(0) && shop_x >= 0 && shop_x < map.GetLength(1) - 1 && map[shop_x + 2, shop_y] == '.')
+                            if (shop_x + 1 < map.GetLength(1) - 1)
                                 map[shop_x + 1, shop_y] = 'D';
                         }
-                        catch { }
                     }
                     for (int y = 0; y < map.GetLength(1); y++)
                     {
@@ -991,15 +1049,23 @@ namespace SLIL.Classes
                             multiplier = 1.5;
                         attackerPlayer.ChangeMoney(rand.Next((int)(c.MIN_MONEY * multiplier), (int)(c.MAX_MONEY * multiplier)));
                         attackerPlayer.EnemiesKilled++;
-                        if (target is Boxes)
+                        if (target is Boxes && !attackerPlayer.CuteMode)
                         {
-                            int type = (target as Boxes).AmmoType;
-                            int count = attackerPlayer.Guns.Count;
-                            if (type >= count) type = rand.Next(1, count);
-                            int max = attackerPlayer.Guns[type].MaxAmmo;
-                            int ammo = attackerPlayer.Guns[type].CartridgesClip + attackerPlayer.Guns[type].MaxAmmoCount;
-                            if (ammo > max) ammo = max;
-                            attackerPlayer.Guns[type].MaxAmmoCount = ammo;
+                            if ((target as Boxes).BoxWithMoney)
+                                attackerPlayer.Money += rand.Next(5, 11);
+                            else
+                            {
+                                int count = attackerPlayer.Guns.Count;
+                                int type = rand.Next(1, count);
+                                int max = attackerPlayer.Guns[type].MaxAmmo;
+                                int ammo = attackerPlayer.Guns[type].CartridgesClip + attackerPlayer.Guns[type].MaxAmmoCount;
+                                if (ammo > max)
+                                {
+                                    ammo = max;
+                                    attackerPlayer.Money += rand.Next(5, 11);
+                                }
+                                attackerPlayer.Guns[type].MaxAmmoCount = ammo;
+                            }
                         }
                         return true;
                     }

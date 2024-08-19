@@ -224,9 +224,9 @@ namespace SLIL
                 },
                 //Box
                 {
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false)
+                    new PlaySound(CGFReader.GetFile("break_box_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box_2.wav"), false)
                 },
                 //Player
                 {
@@ -263,9 +263,9 @@ namespace SLIL
                 },
                 //Box
                 {
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false)
+                    new PlaySound(CGFReader.GetFile("break_box_0.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box_1.wav"), false),
+                    new PlaySound(CGFReader.GetFile("break_box_2.wav"), false)
                 },
                 //Player
                 {

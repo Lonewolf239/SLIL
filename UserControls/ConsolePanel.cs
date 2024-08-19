@@ -69,7 +69,6 @@ namespace SLIL.UserControls
                              "~│~ *Command*     ~│~ *Description*                                 ~│~\n" +
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -IMHONEST-    ~│~ Disable cheats                              ~│~\n" +
-                             "~│~ -SOUL_FORGE-  ~│~ Play Soul Forge V3 *AI* as background music   ~│~\n" +
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -FPS-         ~│~ Show/hide FPS                               ~│~\n" +
                              "~│~ -MINIMAP-     ~│~ Show/hide Minimap                           ~│~\n" +
@@ -102,11 +101,6 @@ namespace SLIL.UserControls
                         show_message = false;
                         SLIL slil = Parent.FindForm() as SLIL;
                         SLIL.GoDebug(slil, 2);
-                    }
-                    else if (cheat == "SOUL_FORGE")
-                    {
-                        message += $"Now the track Soul Forge *AI* is playing.\nSong link: https://suno.com/song/28b30489-c22d-400b-8537-ee1ddfb492ac";
-                        SLIL.ChangeOst(5);
                     }
                     else if (cheat == "CHEATS")
                     {
