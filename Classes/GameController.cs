@@ -74,7 +74,7 @@ namespace SLIL.Classes
             };
             new Thread(() =>
             {
-                while (true)
+                while (client.IsRunning)
                 {
                     if (GetPlayer() != null)
                     {
