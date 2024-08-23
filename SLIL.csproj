@@ -1054,5 +1054,17 @@
   <ItemGroup>
     <None Include="Images\selected.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\excellent_connection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\good_connection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\bad_connection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\no_connection.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

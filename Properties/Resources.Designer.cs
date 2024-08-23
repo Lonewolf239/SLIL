@@ -133,6 +133,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap bad_connection {
+            get {
+                object obj = ResourceManager.GetObject("bad_connection", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap barrel {
             get {
                 object obj = ResourceManager.GetObject("barrel", resourceCulture);
@@ -553,6 +563,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap excellent_connection {
+            get {
+                object obj = ResourceManager.GetObject("excellent_connection", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap export {
             get {
                 object obj = ResourceManager.GetObject("export", resourceCulture);
@@ -676,6 +696,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap github {
             get {
                 object obj = ResourceManager.GetObject("github", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap good_connection {
+            get {
+                object obj = ResourceManager.GetObject("good_connection", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2086,6 +2116,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap multiplayer {
             get {
                 object obj = ResourceManager.GetObject("multiplayer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap no_connection {
+            get {
+                object obj = ResourceManager.GetObject("no_connection", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

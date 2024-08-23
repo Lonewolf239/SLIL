@@ -8,6 +8,7 @@ using System.Windows.Forms;
 namespace SLIL.Classes
 {
     public delegate void SetPlayerIDDelegate(int id);
+
     internal class GameController
     {
         private readonly GameModel Game;
@@ -200,6 +201,8 @@ namespace SLIL.Classes
         internal void StopGame(int win) => Game.StopGame(win);
 
         public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, int customX, int customY) => Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);
+
+        public int GetPing() => peer.Ping;
 
         internal void AmmoCountDecrease()
         {

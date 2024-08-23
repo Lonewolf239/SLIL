@@ -18,7 +18,6 @@ namespace SLIL
     {
         private const string current_version = "|1.1.1a|";
         public static string iniFolder = "config.ini";
-        private bool ConsoleEnabledSaved = false;
         public static bool Language = true, sounds = true, ConsoleEnabled = false;
         private readonly TextureCache textureCache = new TextureCache();
         public static CGF_Reader CGFReader;
@@ -477,7 +476,6 @@ namespace SLIL
         {
             Language = INIReader.GetBool(iniFolder, "CONFIG", "language", Language);
             ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
-            ConsoleEnabledSaved = ConsoleEnabled;
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             update_on_off.Checked = INIReader.GetBool(iniFolder, "CONFIG", "auto_update", true);
             LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 6.5);
@@ -818,7 +816,6 @@ namespace SLIL
         {
             lose_focus.Focus();
             ConsoleEnabled = console_btn.Checked;
-            ConsoleEnabledSaved = ConsoleEnabled;
             if (ConsoleEnabled)
             {
                 if (Language)
@@ -1190,10 +1187,6 @@ namespace SLIL
                 MessageBox.Show("IP address successfully copied to clipboard", "IP Copying", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void Multiplayer_CheckedChanged(object sender, EventArgs e) => ConsoleEnabled = false;
-
-        private void Singleplayer_CheckedChanged(object sender, EventArgs e) => ConsoleEnabled = ConsoleEnabledSaved;
-
         private void Host_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
@@ -1235,14 +1228,14 @@ namespace SLIL
             if (sounds) MainMenuTheme.Stop();
             SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]))
             {
-                    DeathSounds = DeathSounds,
-                    CuteDeathSounds = CuteDeathSounds,
-                    game_over = game_over,
-                    draw = draw,
-                    buy = buy,
-                    wall = wall,
-                    tp = tp,
-                    screenshot = screenshot
+                DeathSounds = DeathSounds,
+                CuteDeathSounds = CuteDeathSounds,
+                game_over = game_over,
+                draw = draw,
+                buy = buy,
+                wall = wall,
+                tp = tp,
+                screenshot = screenshot
             };
             form.ShowDialog();
             if (sounds) MainMenuTheme.Play(Volume);

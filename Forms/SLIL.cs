@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using MazeGenerator;
 using System.Threading.Tasks;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -332,6 +331,13 @@ namespace SLIL
         private readonly char[] impassibleCells  = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
         private bool GameStarted = false, CorrectExit = false;
+        private readonly Image[] ConnectionIcons =
+        {
+            Properties.Resources.excellent_connection,
+            Properties.Resources.good_connection,
+            Properties.Resources.bad_connection,
+            Properties.Resources.no_connection
+        };
         private readonly StartGameDelegate StartGameHandle;
         private readonly StopGameDelegate StopGameHandle;
         private readonly InitPlayerDelegate InitPlayerHandle;
@@ -941,7 +947,7 @@ namespace SLIL
                         }
                     }
                 }
-                if (e.KeyCode == Keys.Oemtilde && !open_shop && MainMenu.ConsoleEnabled)
+                if (!Controller.IsMultiplayer() && e.KeyCode == Keys.Oemtilde && !open_shop && MainMenu.ConsoleEnabled)
                 {
                     console_panel.Visible = !console_panel.Visible;
                     ShowMap = false;
@@ -2267,7 +2273,7 @@ namespace SLIL
             int item_count = 0;
             if (player.DisposableItems.Count > 0)
                 item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].MaxAmmoCount;
-            int icon_size = resolution == 0 ? 14 : 28;
+            int icon_size = resolution == 0 ? 16 : 28;
             graphicsWeapon.Clear(Color.Transparent);
             try
             {
@@ -2295,8 +2301,20 @@ namespace SLIL
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 108 + (110 * resolution), icon_size, icon_size);
                 graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 94 + (96 * resolution), icon_size, icon_size);
             }
-            graphicsWeapon.DrawImage(Properties.Resources.money, 2, 2, icon_size, icon_size);
-            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 2);
+            int money_y = Controller.IsMultiplayer() ? 14 + (16 * resolution) : 2;
+            graphicsWeapon.DrawImage(Properties.Resources.money, 2, money_y, icon_size, icon_size);
+            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, money_y - 2);
+            if (Controller.IsMultiplayer())
+            {
+                int ping = Controller.GetPing();
+                int connection_status;
+                if (ping < 100) connection_status = 0;
+                else if (ping < 150) connection_status = 1;
+                else if (ping < 300) connection_status = 2;
+                else connection_status = 4;
+                graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, 0, icon_size, icon_size);
+                graphicsWeapon.DrawString($"{ping}ms", consolasFont[resolution], whiteBrush, icon_size + 2, 0);
+            }
             graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 108 + (110 * resolution));
             graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 94 + (98 * resolution));
             if (!player.IsPetting && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)

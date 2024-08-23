@@ -2082,7 +2082,6 @@
             this.singleplayer.TabStop = true;
             this.singleplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.singleplayer.UseVisualStyleBackColor = false;
-            this.singleplayer.CheckedChanged += new System.EventHandler(this.Singleplayer_CheckedChanged);
             // 
             // multiplayer
             // 
@@ -2098,7 +2097,6 @@
             this.multiplayer.TabIndex = 54;
             this.multiplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.multiplayer.UseVisualStyleBackColor = false;
-            this.multiplayer.CheckedChanged += new System.EventHandler(this.Multiplayer_CheckedChanged);
             // 
             // close_game_mode_panel
             // 
