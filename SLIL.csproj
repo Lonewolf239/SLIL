@@ -127,12 +127,6 @@
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\PlaySound.cs" />
     <Compile Include="Classes\TextureCache.cs" />
-    <Compile Include="Downloading.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Downloading.Designer.cs">
-      <DependentUpon>Downloading.cs</DependentUpon>
-    </Compile>
     <Compile Include="Loading.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -204,9 +198,6 @@
     <Compile Include="UserControls\SLIL_ShopInterface.Designer.cs">
       <DependentUpon>SLIL_ShopInterface.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Downloading.resx">
-      <DependentUpon>Downloading.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SLIL_Editor.resx">
       <DependentUpon>SLIL_Editor.cs</DependentUpon>
     </EmbeddedResource>

@@ -29,6 +29,7 @@ namespace SLIL
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
         public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true, EnableAnimation = true;
+        public bool inv_y = false, inv_x = false;
         public static int difficulty = 1;
         private int inDebug = 0;
         public static double LOOK_SPEED = 2.5;
@@ -54,7 +55,7 @@ namespace SLIL
         private List<int> soundIndices = new List<int> { 0, 1, 2, 3, 4 };
         private int currentIndex = 0;
         private bool map_presed = false, active = true;
-        private bool Paused = false;
+        private bool Paused = false, RunKeyPressed = false;
         public static readonly Dictionary<Type, Image[]> IconDict = new Dictionary<Type, Image[]>
         {
             { typeof(Flashlight), new[] { Properties.Resources.missing } },
@@ -102,6 +103,11 @@ namespace SLIL
             {
                 Properties.Resources.adrenalin_icon,
                 Properties.Resources.adrenalin_icon
+            } },
+            { typeof(Helmet), new[]
+            {
+                Properties.Resources.missing,
+                Properties.Resources.missing
             } },
         };
         public static readonly Dictionary<Type, Image[,]> ImagesDict = new Dictionary<Type, Image[,]>
@@ -168,6 +174,10 @@ namespace SLIL
             {
                    { Properties.Resources.adrenalin, Properties.Resources.adrenalin, Properties.Resources.adrenalin_using_0, Properties.Resources.adrenalin_using_1, Properties.Resources.adrenalin_using_2, Properties.Resources.medkit_run },
             } },
+            { typeof(Helmet), new[,]
+            {
+                   { Properties.Resources.food, Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2, Properties.Resources.medkit_run }
+            } },
         };
         public static readonly Dictionary<Type, PlaySound[,]> SoundsDict = new Dictionary<Type, PlaySound[,]>
         {
@@ -230,16 +240,22 @@ namespace SLIL
             {
                    { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("adrenalin_using.wav"), false), new PlaySound(null, false) }
             } },
+            { typeof(Helmet), new[,]
+            {
+                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("helmet_using.wav"), false), new PlaySound(null, false) }
+            } },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
             { typeof(FirstAidKit), Properties.Resources.first_aid },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
+            { typeof(Helmet), Properties.Resources.missing },
         };
         public static readonly Dictionary<Type, Image> CuteItemIconDict = new Dictionary<Type, Image>
         {
             { typeof(FirstAidKit), Properties.Resources.food_count },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
+            { typeof(Helmet), Properties.Resources.adrenalin_count_icon },
         };
         public static readonly Dictionary<Type, Image> ShopImageDict = new Dictionary<Type, Image>
         {
@@ -431,15 +447,7 @@ namespace SLIL
             Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
-            difficulty = MainMenu.difficulty;
-            resolution = MainMenu.resolution;
-            scope_type = MainMenu.scope_type;
-            scope_color = MainMenu.scope_color;
-            hight_fps = MainMenu.hight_fps;
-            ShowFPS = MainMenu.ShowFPS;
-            ShowMiniMap = MainMenu.ShowMiniMap;
-            LOOK_SPEED = MainMenu.LOOK_SPEED;
-            Volume = MainMenu.Volume;
+            SetParameters();
             textureCache = textures;
             Controller.StartGame();
         }
@@ -453,15 +461,7 @@ namespace SLIL
             Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
-            difficulty = MainMenu.difficulty;
-            resolution = MainMenu.resolution;
-            scope_type = MainMenu.scope_type;
-            scope_color = MainMenu.scope_color;
-            hight_fps = MainMenu.hight_fps;
-            ShowFPS = MainMenu.ShowFPS;
-            ShowMiniMap = MainMenu.ShowMiniMap;
-            LOOK_SPEED = MainMenu.LOOK_SPEED;
-            Volume = MainMenu.Volume;
+            SetParameters();
             textureCache = textures;
             CUSTOM = custom;
             CUSTOM_MAP = customMap;
@@ -482,6 +482,12 @@ namespace SLIL
             Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
+            SetParameters();
+            textureCache = textures;
+        }
+
+        private void SetParameters()
+        {
             difficulty = MainMenu.difficulty;
             resolution = MainMenu.resolution;
             scope_type = MainMenu.scope_type;
@@ -490,8 +496,9 @@ namespace SLIL
             ShowFPS = MainMenu.ShowFPS;
             ShowMiniMap = MainMenu.ShowMiniMap;
             LOOK_SPEED = MainMenu.LOOK_SPEED;
+            inv_x = MainMenu.inv_x;
+            inv_y = MainMenu.inv_y;
             Volume = MainMenu.Volume;
-            textureCache = textures;
         }
 
         public void AddPet(int index)
@@ -792,24 +799,9 @@ namespace SLIL
             {
                 if (!console_panel.Visible && !open_shop)
                 {
-                    Keys runKey;
-                    switch (Bind.Run)
-                    {
-                        case Keys.ShiftKey:
-                            runKey = Keys.Shift;
-                            break;
-                        case Keys.ControlKey:
-                            runKey = Keys.Control;
-                            break;
-                        case Keys.Alt:
-                            runKey = Keys.Alt;
-                            break;
-                        default:
-                            runKey = Bind.Run;
-                            break;
-                    }
                     Player player = Controller.GetPlayer();
-                    if (player != null && ModifierKeys.HasFlag(runKey) && playerDirection == Direction.FORWARD && !player.Fast && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !shot_timer.Enabled && !reload_timer.Enabled && !chill_timer.Enabled)
+                    if (e.KeyCode == Bind.Run) RunKeyPressed = true;
+                    if (player != null && RunKeyPressed && playerDirection == Direction.FORWARD && !player.Fast && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !shot_timer.Enabled && !reload_timer.Enabled && !chill_timer.Enabled)
                         playerMoveStyle = Direction.RUN;
                     if (e.KeyCode == Bind.Forward)
                         playerDirection = Direction.FORWARD;
@@ -852,8 +844,8 @@ namespace SLIL
                         {
                             if (player.DisposableItems.Count > 0 && player.DisposableItems[player.SelectedItem].HasIt)
                             {
-                                if (player.SelectedItem == 0 && (player.EffectCheck(0) || player.HP == player.MAX_HP)) return;
-                                if (player.SelectedItem == 1 && player.EffectCheck(1)) return;
+                                if (player.EffectCheck(player.GetEffectID())) return;
+                                if (player.SelectedItem == 0 && player.HP == player.MAX_HP) return;
                                 TakeFlashlight(false);
                                 pressed_h = true;
                                 if (!player.Guns.Contains(player.DisposableItems[player.SelectedItem]))
@@ -982,6 +974,7 @@ namespace SLIL
                 if (!chill_timer.Enabled)
                     chill_timer.Start();
             }
+            if (e.KeyCode == Bind.Run) RunKeyPressed = false;
             if (e.KeyCode == Bind.Forward || e.KeyCode == Bind.Back)
                 playerDirection = Direction.STOP;
             if (e.KeyCode == Bind.Left || e.KeyCode == Bind.Right)
@@ -1716,14 +1709,14 @@ namespace SLIL
         {
             if (GameStarted && active && !console_panel.Visible && !shop_panel.Visible)
             {
-                double scale = 2.5;
                 double x = display.Width / 2, y = display.Height / 2;
                 double X = e.X - x, Y = e.Y - y;
-                double size = 1;
-                Controller.ChangePlayerA(-(((X / x) / 10) * (LOOK_SPEED * size)) * scale);
-                //player.A -= (((X / x) / 10) * (LOOK_SPEED * size)) * scale;
-                double LookDif = (((Y / y) * 30) * (LOOK_SPEED * size)) * scale;
-                Controller.ChangePlayerLook(LookDif);
+                int invY = inv_y ? -1 : 1;
+                int invX = inv_x ? -1 : 1;
+                double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
+                double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
+                Controller.ChangePlayerA(A * invX);
+                Controller.ChangePlayerLook(Look * invY);
                 Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
             }
         }
@@ -1769,8 +1762,8 @@ namespace SLIL
                     newY += moveCos;
                     break;
                 case Direction.BACK:
-                    newX -= moveSin * 0.675;
-                    newY -= moveCos * 0.675;
+                    newX -= moveSin * 0.6;
+                    newY -= moveCos * 0.6;
                     break;
             }
             if (!(impassibleCells.Contains(Controller.GetMap()[(int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2)])
@@ -1789,18 +1782,8 @@ namespace SLIL
                 tempY += playerWidth / 2 - (tempY % 1);
             if (tempX - player.X != 0 || tempY - player.Y != 0)
                 Controller.MovePlayer(tempX - player.X, tempY - player.Y);
-            //player.X = tempX;
-            //player.Y = tempY;
-            //if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == 'F')
-            //{
-            //    GameOver(1);
-            //    return;
-            //}
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == '.')
-            {
-                //MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
                 DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
-            }
         }
 
         private void UpdateBitmap()
@@ -2240,7 +2223,7 @@ namespace SLIL
             return map;
         }
 
-        private void DrawCircularProgressBar(Image effect_image, int icon_size, int index)
+        private void DrawDurationEffect(Image effect_image, int icon_size, int index)
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
@@ -2248,10 +2231,10 @@ namespace SLIL
             int x = WEAPON.Width - icon_size - 4 - ((icon_size + 4) * index);
             int y = WEAPON.Height - icon_size - 4;
             RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
-            using (Pen pen = new Pen(Color.FromArgb(104, 213, 248), 3))
+            using (Pen pen = new Pen(Color.FromArgb(90, 131, 182), 1.75f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
             float sweepAngle = (float)player.Effects[index].EffectTimeRemaining / player.Effects[index].EffectTotalTime * 360;
-            using (Pen pen = new Pen(Color.FromArgb(90, 131, 182), 3))
+            using (Pen pen = new Pen(Color.FromArgb(104, 213, 248), 3))
             using (GraphicsPath path = new GraphicsPath())
             {
                 path.AddArc(circleRect, -90, sweepAngle);
@@ -2274,6 +2257,9 @@ namespace SLIL
             if (player.DisposableItems.Count > 0)
                 item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].MaxAmmoCount;
             int icon_size = resolution == 0 ? 16 : 28;
+            SizeF hpSize = graphicsWeapon.MeasureString(player.HP.ToString("0"), consolasFont[resolution]);
+            int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
+            int ammo_x = ammo_icon_x + icon_size;
             graphicsWeapon.Clear(Color.Transparent);
             try
             {
@@ -2293,17 +2279,17 @@ namespace SLIL
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[resolution], whiteBrush, SCREEN_WIDTH[resolution], 0, rightToLeft);
             if (!player.CuteMode)
             {
-                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 108 + (110 * resolution), icon_size, icon_size);
-                graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 94 + (96 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 110 + (110 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 92 + (92 * resolution), icon_size, icon_size);
             }
             else
             {
-                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 108 + (110 * resolution), icon_size, icon_size);
-                graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 94 + (96 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 110 + (110 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 92 + (92 * resolution), icon_size, icon_size);
             }
-            int money_y = Controller.IsMultiplayer() ? 14 + (16 * resolution) : 2;
+            int money_y = Controller.IsMultiplayer() ? 16 + (16 * resolution) : 2;
             graphicsWeapon.DrawImage(Properties.Resources.money, 2, money_y, icon_size, icon_size);
-            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, money_y - 2);
+            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, money_y);
             if (Controller.IsMultiplayer())
             {
                 int ping = Controller.GetPing();
@@ -2315,26 +2301,26 @@ namespace SLIL
                 graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, 0, icon_size, icon_size);
                 graphicsWeapon.DrawString($"{ping}ms", consolasFont[resolution], whiteBrush, icon_size + 2, 0);
             }
-            graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 108 + (110 * resolution));
-            graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 94 + (98 * resolution));
+            graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 110 + (110 * resolution));
+            graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 92 + (92 * resolution));
             if (!player.IsPetting && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
-                if (player.GetCurrentGun().IsMagic || player.GetCurrentGun() is Rainblower)
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount + player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, 52 + (42 * resolution), 108 + (110 * resolution));
+                if (player.GetCurrentGun().ShowAmmoAsNumber)
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount + player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 + (110 * resolution));
                 else
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount}/{player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, 52 + (42 * resolution), 108 + (110 * resolution));
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount}/{player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 + (110 * resolution));
                 if (player.GetCurrentGun().IsMagic)
-                    graphicsWeapon.DrawImage(Properties.Resources.magic, 40 + (30 * resolution), 108 + (110 * resolution), icon_size, icon_size);
+                    graphicsWeapon.DrawImage(Properties.Resources.magic, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
                 else if(player.GetCurrentGun() is Rainblower)
-                    graphicsWeapon.DrawImage(Properties.Resources.bubbles, 40 + (30 * resolution), 108 + (110 * resolution), icon_size, icon_size);
+                    graphicsWeapon.DrawImage(Properties.Resources.bubbles, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
                 else
                 {
                     if (player.GetCurrentGun() is SniperRifle || player.GetCurrentGun() is AssaultRifle)
-                        graphicsWeapon.DrawImage(Properties.Resources.rifle_bullet, 40 + (30 * resolution), 108 + (110 * resolution), icon_size, icon_size);
+                        graphicsWeapon.DrawImage(Properties.Resources.rifle_bullet, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
                     else if (player.GetCurrentGun() is Shotgun)
-                        graphicsWeapon.DrawImage(Properties.Resources.shell, 40 + (30 * resolution), 108 + (110 * resolution), icon_size, icon_size);
+                        graphicsWeapon.DrawImage(Properties.Resources.shell, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
                     else
-                        graphicsWeapon.DrawImage(Properties.Resources.bullet, 40 + (30 * resolution), 108 + (110 * resolution), icon_size, icon_size);
+                        graphicsWeapon.DrawImage(Properties.Resources.bullet, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
                 }
             }
             if (player.GetCurrentGun().ShowScope)
@@ -2370,7 +2356,7 @@ namespace SLIL
             if (player.Effects.Count > 0)
             {
                 for (int i = 0; i < player.Effects.Count; i++)
-                    DrawCircularProgressBar(player.Effects[i].Icon, icon_size, i);
+                    DrawDurationEffect(player.Effects[i].Icon, icon_size, i);
             }
         }
 

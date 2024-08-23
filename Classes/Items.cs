@@ -9,6 +9,7 @@ namespace SLIL.Classes
     {
         public int ItemID { get; set; }
         public string[] Name { get; set; }
+        public bool ShowAmmoAsNumber { get; set; }
         public int RechargeTime { get; set; }
         public int MaxAmmoCount { get; set; }
         public int CartridgesClip { get; set; }
@@ -40,6 +41,7 @@ namespace SLIL.Classes
         {
             this.ItemID = this.GetItemID();
             Level = Levels.LV1;
+            ShowAmmoAsNumber = false;
             IsMagic = false;
             CanAiming = false;
             CanShoot = true;
@@ -115,17 +117,7 @@ namespace SLIL.Classes
             if (level > this.Level)
             {
                 while (this.Level != level)
-                {
                     this.LevelUpdate();
-                }
-            }
-            else
-            {
-                while (this.Level != level)
-                {
-                    //TODO:
-                    //implement downgrading lol
-                }
             }
             this.AmmoCount = reader.GetInt();
             this.MaxAmmoCount = reader.GetInt();
@@ -139,6 +131,7 @@ namespace SLIL.Classes
         {
             AddToShop = false;
             HasIt = false;
+            ShowAmmoAsNumber = true;
             IsMagic = true;
             FireType = FireTypes.Single;
             CartridgesClip = 1;
@@ -180,6 +173,7 @@ namespace SLIL.Classes
 
     public abstract class DisposableItem : Item
     {
+        public int EffectID { get; set; }
         public bool HasLVMechanics { get; set; }
 
         public DisposableItem() : base()
@@ -282,6 +276,7 @@ namespace SLIL.Classes
             ShowScope = false;
             AddToShop = false;
             HasIt = false;
+            ShowAmmoAsNumber = true;
             Name = new[] { "Радужигатель", "Rainblower" };
             FireType = FireTypes.SemiAutomatic;
             RechargeTime = 600;
@@ -760,6 +755,7 @@ namespace SLIL.Classes
     {
         public FirstAidKit() : base()
         {
+            EffectID = 0;
             HasLVMechanics = true;
             HasCuteDescription = true;
             GunCost = 50;
@@ -783,6 +779,7 @@ namespace SLIL.Classes
     {
         public Adrenalin() : base()
         {
+            EffectID = 1;
             RechargeTime = 530;
             GunCost = 75;
             Name = new[]
@@ -796,5 +793,25 @@ namespace SLIL.Classes
             };
         }
         public override int GetItemID() => 13;
+    }
+
+    public class Helmet : DisposableItem
+    {
+        public Helmet() : base()
+        {
+            EffectID = 2;
+            RechargeTime = 530;
+            GunCost = 75;
+            Name = new[]
+            {
+                "Шлем", "Helmet"
+            };
+            Description = new[]
+            {
+                "Уменьшает получаемый урон на 20% в течение 2 минут",
+                "Reduces incoming damage by 20% for 2 minutes",
+            };
+        }
+        public override int GetItemID() => 14;
     }
 }

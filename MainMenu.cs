@@ -164,6 +164,7 @@ namespace SLIL
         };
         public static int resolution = 0, scope_type = 0, scope_color = 0, difficulty = 2;
         public static bool hight_fps = true, ShowFPS = true, ShowMiniMap = true;
+        public static bool inv_y = false, inv_x = false;
         public static double LOOK_SPEED = 6.5;
         public static float Volume = 0.4f;
 
@@ -182,14 +183,18 @@ namespace SLIL
                 }
                 if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {
-                    Hide();
-                    WindowState = FormWindowState.Minimized;
-                    Downloading _form = new Downloading
+                    if (!File.Exists("UpdateDownloader.exe"))
                     {
-                        update = false,
-                        language = Check_Language()
-                    };
-                    _form.ShowDialog();
+                        message = Language
+                            ? "UpdateDownloader.exe был удалён, переименован или перемещён. После закрытия этого сообщения он будет загружен снова."
+                            : "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
+                        string caption = Language ? "Ошибка" : "Error";
+                        MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                        DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
+                    }
+                    Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
+                    CanClose = true;
+                    Application.Exit();
                 }
                 else
                     Application.Exit();
@@ -279,6 +284,12 @@ namespace SLIL
             wall = new PlaySound(CGFReader.GetFile("wall_interaction.wav"), false);
             tp = new PlaySound(CGFReader.GetFile("tp.wav"), false);
             screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
+        }
+
+        private void DownloadFile(string url, string outputPath)
+        {
+            using (WebClient client = new WebClient())
+                client.DownloadFile(new Uri(url), outputPath);
         }
 
         private void Bug_report_btn_Click(object sender, EventArgs e)
@@ -420,14 +431,18 @@ namespace SLIL
                             }
                             if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
-                                Hide();
-                                WindowState = FormWindowState.Minimized;
-                                Downloading _form = new Downloading
+                                if (!File.Exists("UpdateDownloader.exe"))
                                 {
-                                    update = true,
-                                    language = Check_Language()
-                                };
-                                _form.ShowDialog();
+                                    message = Language
+                                        ? "UpdateDownloader.exe был удалён, переименован или перемещён. После закрытия этого сообщения он будет загружен снова."
+                                        : "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
+                                    string caption = Language ? "Ошибка" : "Error";
+                                    MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                                    DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
+                                }
+                                Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
+                                CanClose = true;
+                                Application.Exit();
                             }
                         }
                         else
@@ -479,6 +494,8 @@ namespace SLIL
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             update_on_off.Checked = INIReader.GetBool(iniFolder, "CONFIG", "auto_update", true);
             LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 6.5);
+            inv_y = INIReader.GetBool(iniFolder, "SlIL", "inv_y", false);
+            inv_x = INIReader.GetBool(iniFolder, "SlIL", "inv_x", false);
             Volume = INIReader.GetSingle(iniFolder, "SLIL", "volume", 0.4f);
             ShowFPS = INIReader.GetBool(iniFolder, "SLIL", "show_fps", true);
             ShowMiniMap = INIReader.GetBool(iniFolder, "SLIL", "show_minimap", true);
@@ -597,8 +614,12 @@ namespace SLIL
                 show_minimap_label.Text = "Отображать мини-карту";
                 scope_label.Text = "Прицел: " + GetScopeType();
                 scope_color_label.Text = "Цвет прицела: " + GetScopeColor();
-                control_settings.Text = "Управление";
+                controls_settings.Text = "Управление";
+                keyboard_settings.Text = "Клавиатура";
+                mouse_settings.Text = "Мышь";
                 sensitivity_label.Text = "Чувствительность мыши";
+                invert_y.Text = "Инвертировать ось Y";
+                invert_x.Text = "Инвертировать ось X";
                 clear_settings.Text = "Сбросить";
                 close_settings.Text = "Закрыть";
                 change_logs_close_btn.Text = "Закрыть";
@@ -662,8 +683,12 @@ namespace SLIL
                 show_minimap_label.Text = "Show minimap";
                 scope_label.Text = "Scope: " + GetScopeType();
                 scope_color_label.Text = "Scope color: " + GetScopeColor();
-                control_settings.Text = "Control";
+                controls_settings.Text = "Control";
+                keyboard_settings.Text = "Keyboard";
+                mouse_settings.Text = "Mouse";
                 sensitivity_label.Text = "Mouse sensitivity";
+                invert_y.Text = "Invert Y axis";
+                invert_x.Text = "Invert X axis";
                 clear_settings.Text = "Reset";
                 close_settings.Text = "Close";
                 change_logs_close_btn.Text = "Close";
@@ -768,6 +793,34 @@ namespace SLIL
                     show_minimap.Text = "Откл.";
                 else
                     show_minimap.Text = "Off";
+            }
+            if (inv_y)
+            {
+                if (Language)
+                    invert_y.Text = "Вкл.";
+                else
+                    invert_y.Text = "On";
+            }
+            else
+            {
+                if (Language)
+                    invert_y.Text = "Откл.";
+                else
+                    invert_y.Text = "Off";
+            }
+            if (inv_x)
+            {
+                if (Language)
+                    invert_x.Text = "Вкл.";
+                else
+                    invert_x.Text = "On";
+            }
+            else
+            {
+                if (Language)
+                    invert_x.Text = "Откл.";
+                else
+                    invert_x.Text = "Off";
             }
             difficulty_label.Text = AboutDifficulty[Language ? 0 : 1, difficulty];
             start_btn.Size = new Size(0, 0);
@@ -1045,6 +1098,8 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "SLIL", "scope_type", scope_type);
             INIReader.SetKey(iniFolder, "SLIL", "scope_color", scope_color);
             INIReader.SetKey(iniFolder, "SLIL", "look_speed", LOOK_SPEED);
+            INIReader.SetKey(iniFolder, "SLIL", "inv_y", inv_y);
+            INIReader.SetKey(iniFolder, "SLIL", "inv_x", inv_x);
             INIReader.SetKey(iniFolder, "SLIL", "volume", Volume);
             INIReader.SetKey(iniFolder, "SLIL", "screenshot", BindControls["screenshot"]);
             INIReader.SetKey(iniFolder, "SLIL", "reloading", BindControls["reloading"]);
@@ -1185,6 +1240,46 @@ namespace SLIL
                 MessageBox.Show("IP-адрес успешно скопирован в буфер обмена", "Копирование IP", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
                 MessageBox.Show("IP address successfully copied to clipboard", "IP Copying", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void Invert_y_CheckedChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            inv_y = invert_y.Checked;
+            if (inv_y)
+            {
+                if (Language)
+                    invert_y.Text = "Вкл.";
+                else
+                    invert_y.Text = "On";
+            }
+            else
+            {
+                if (Language)
+                    invert_y.Text = "Откл.";
+                else
+                    invert_y.Text = "Off";
+            }
+        }
+
+        private void Invert_x_CheckedChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            inv_x = invert_x.Checked;
+            if (inv_x)
+            {
+                if (Language)
+                    invert_x.Text = "Вкл.";
+                else
+                    invert_x.Text = "On";
+            }
+            else
+            {
+                if (Language)
+                    invert_x.Text = "Откл.";
+                else
+                    invert_x.Text = "Off";
+            }
         }
 
         private void Host_btn_Click(object sender, EventArgs e)

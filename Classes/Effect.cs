@@ -57,7 +57,7 @@ namespace SLIL.Classes
         public Protection() : base()
         {
             ID = 2;
-            EffectTotalTime = 60;
+            EffectTotalTime = 120;
             Name = "Protection";
             Description = "Reduces damage taken";
             Icon = Properties.Resources.protection_effect;

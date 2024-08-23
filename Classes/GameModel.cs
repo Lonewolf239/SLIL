@@ -1372,12 +1372,12 @@ namespace SLIL.Classes
             if (MAP[coordinate] == 'o')
             {
                 MAP[coordinate] = 'd';
-                PlaySoundHandle(SLIL.door[0]);
+                PlaySoundHandle(SLIL.door[1]);
             }
             else
             {
                 MAP[coordinate] = 'o';
-                PlaySoundHandle(SLIL.door[1]);
+                PlaySoundHandle(SLIL.door[0]);
             }
         }
     }

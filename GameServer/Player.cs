@@ -4,9 +4,6 @@ namespace SLIL.Classes
 {
     public class Player : Entity
     {
-        //public double X { get; set; }
-        //public double Y { get; set; }
-        //public int ID { get; set; }
         public string Name { get; set; }
         public double A { get; set; }
         public double Look { get; set; }
@@ -34,17 +31,17 @@ namespace SLIL.Classes
         public double DEPTH { get; set; }
         public int SelectedItem { get; set; }
         public bool Fast { get; set; }
-        public List<Effect> Effects = new List<Effect>();
+        public List<Effect> Effects = [];
         public readonly Gun[] GUNS =
         {
             new Flashlight(), new Knife(), new Pistol(),
             new Shotgun(), new SubmachineGun(), new AssaultRifle(),
             new SniperRifle(), new Fingershot(), new TSPitW(),
             new Gnome(), new FirstAidKit(), new Candy(),
-            new Rainblower(), new Adrenalin()
+            new Rainblower(), new Adrenalin(), new Helmet()
         };
-        public List<Gun> Guns = new List<Gun>();
-        public List<DisposableItem> DisposableItems = new List<DisposableItem>();
+        public List<Gun> Guns = [];
+        public List<DisposableItem> DisposableItems = [];
         public Pet PET = null;
         public double MAX_HP { get; set; }
         public double MAX_STAMINE { get; set; }
@@ -61,9 +58,7 @@ namespace SLIL.Classes
             writer.Put(CurrentGun);
             writer.Put(this.GUNS.Length);
             foreach(Gun gun in this.GUNS)
-            {
                 writer.Put(gun.HasIt);
-            }
             writer.Put(Guns.Count);
             foreach(Gun gun in this.Guns)
             {
@@ -87,106 +82,114 @@ namespace SLIL.Classes
             this.CurrentGun = reader.GetInt();
             int GUNSLength = reader.GetInt();
             for(int i = 0; i < GUNSLength; i++)
-            {
                 this.GUNS[i].HasIt = reader.GetBool();
-            }
             int GunsCount = reader.GetInt();
-            List<Gun> tempGuns = new List<Gun>();
+            List<Gun> tempGuns = [];
             for(int i = 0; i< GunsCount; i++)
             {
                 int gunID = reader.GetInt();
                 switch (gunID)
                 {
                     case 0:
-                        Flashlight flashlight = new Flashlight();
+                        Flashlight flashlight = new();
                         flashlight.Deserialize(reader);
                         tempGuns.Add(flashlight);
                         break;
                     case 1:
-                        Knife knife = new Knife();
+                        Knife knife = new();
                         knife.Deserialize(reader);
                         tempGuns.Add(knife);
                         break;
                     case 2:
-                        Candy candy = new Candy();
+                        Candy candy = new();
                         candy.Deserialize(reader);
                         tempGuns.Add(candy);
                         break;
                     case 3:
-                        Rainblower rainblower = new Rainblower();
+                        Rainblower rainblower = new();
                         rainblower.Deserialize(reader);
                         tempGuns.Add(rainblower);
                         break;
                     case 4:
-                        Pistol pistol = new Pistol();
+                        Pistol pistol = new();
                         pistol.Deserialize(reader);
                         tempGuns.Add(pistol);
                         break;
                     case 5:
-                        Shotgun shotgun = new Shotgun();
+                        Shotgun shotgun = new();
                         shotgun.Deserialize(reader);
                         tempGuns.Add(shotgun);
                         break;
                     case 6:
-                        SubmachineGun submachineGun = new SubmachineGun();
+                        SubmachineGun submachineGun = new();
                         submachineGun.Deserialize(reader);
                         tempGuns.Add(submachineGun);
                         break;
                     case 7:
-                        AssaultRifle assaultRifle = new AssaultRifle();
+                        AssaultRifle assaultRifle = new();
                         assaultRifle.Deserialize(reader);
                         tempGuns.Add(assaultRifle);
                         break;
                     case 8:
-                        SniperRifle sniperRifle = new SniperRifle();
+                        SniperRifle sniperRifle = new();
                         sniperRifle.Deserialize(reader);
                         tempGuns.Add(sniperRifle);
                         break;
                     case 9:
-                        Fingershot fingershot = new Fingershot();
+                        Fingershot fingershot = new();
                         fingershot.Deserialize(reader);
                         tempGuns.Add(fingershot);
                         break;
                     case 10:
-                        TSPitW tSPitW = new TSPitW();
+                        TSPitW tSPitW = new();
                         tSPitW.Deserialize(reader);
                         tempGuns.Add(tSPitW);
                         break;
                     case 11:
-                        Gnome gnome = new Gnome();
+                        Gnome gnome = new();
                         gnome.Deserialize(reader);
                         tempGuns.Add(gnome);
                         break;
                     case 12:
-                        FirstAidKit firstAidKit = new FirstAidKit();
+                        FirstAidKit firstAidKit = new();
                         firstAidKit.Deserialize(reader);
                         tempGuns.Add(firstAidKit);
                         break;
                     case 13:
-                        Adrenalin adrenalin = new Adrenalin();
+                        Adrenalin adrenalin = new();
                         adrenalin.Deserialize(reader);
                         tempGuns.Add(adrenalin);
+                        break;
+                    case 14:
+                        Helmet helmet = new();
+                        helmet.Deserialize(reader);
+                        tempGuns.Add(helmet);
                         break;
                     default:
                         break;
                 }
             }
             int disposableItemsCount = reader.GetInt();
-            List<DisposableItem> tempDisposableItems = new List<DisposableItem>();
+            List<DisposableItem> tempDisposableItems = [];
             for(int i = 0; i < disposableItemsCount; i++)
             {
                 int itemID = reader.GetInt();
                 switch (itemID)
                 {
                     case 12:
-                        FirstAidKit firstAidKit = new FirstAidKit();
+                        FirstAidKit firstAidKit = new();
                         firstAidKit.Deserialize(reader);
                         tempDisposableItems.Add(firstAidKit);
                         break;
                     case 13:
-                        Adrenalin adrenalin = new Adrenalin();
+                        Adrenalin adrenalin = new();
                         adrenalin.Deserialize(reader);
                         tempDisposableItems.Add(adrenalin);
+                        break;
+                    case 14:
+                        Helmet helmet = new();
+                        helmet.Deserialize(reader);
+                        tempDisposableItems.Add(helmet);
                         break;
                     default:
                         break;
@@ -200,6 +203,7 @@ namespace SLIL.Classes
         {
             DisposableItems.Add((FirstAidKit)GUNS[10]);
             DisposableItems.Add((Adrenalin)GUNS[13]);
+            DisposableItems.Add((Helmet)GUNS[14]);
             Texture = 38;
             base.SetAnimations(1, 0);
             Dead = true;
@@ -308,6 +312,8 @@ namespace SLIL.Classes
                 Effects.Add(effect);
             }
         }
+
+        public int GetEffectID() => DisposableItems[SelectedItem].EffectID;
 
         public bool EffectCheck(int id)
         {

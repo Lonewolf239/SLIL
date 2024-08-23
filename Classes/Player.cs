@@ -40,7 +40,7 @@ namespace SLIL.Classes
             new Shotgun(), new SubmachineGun(), new AssaultRifle(),
             new SniperRifle(), new Fingershot(), new TSPitW(),
             new Gnome(), new FirstAidKit(), new Candy(),
-            new Rainblower(), new Adrenalin()
+            new Rainblower(), new Adrenalin(), new Helmet()
         };
         public List<Gun> Guns = new List<Gun>();
         public List<DisposableItem> DisposableItems = new List<DisposableItem>();
@@ -60,9 +60,7 @@ namespace SLIL.Classes
             writer.Put(CurrentGun);
             writer.Put(this.GUNS.Length);
             foreach(Gun gun in this.GUNS)
-            {
                 writer.Put(gun.HasIt);
-            }
             writer.Put(Guns.Count);
             foreach(Gun gun in this.Guns)
             {
@@ -86,9 +84,7 @@ namespace SLIL.Classes
             this.CurrentGun = reader.GetInt();
             int GUNSLength = reader.GetInt();
             for(int i = 0; i < GUNSLength; i++)
-            {
                 this.GUNS[i].HasIt = reader.GetBool();
-            }
             int GunsCount = reader.GetInt();
             List<Gun> tempGuns = new List<Gun>();
             for(int i = 0; i< GunsCount; i++)
@@ -166,6 +162,11 @@ namespace SLIL.Classes
                         adrenalin.Deserialize(reader);
                         tempGuns.Add(adrenalin);
                         break;
+                    case 14:
+                        Helmet helmet = new Helmet();
+                        helmet.Deserialize(reader);
+                        tempGuns.Add(helmet);
+                        break;
                     default:
                         break;
                 }
@@ -187,6 +188,11 @@ namespace SLIL.Classes
                         adrenalin.Deserialize(reader);
                         tempDisposableItems.Add(adrenalin);
                         break;
+                    case 14:
+                        Helmet helmet = new Helmet();
+                        helmet.Deserialize(reader);
+                        tempDisposableItems.Add(helmet);
+                        break;
                     default:
                         break;
                 }
@@ -206,9 +212,7 @@ namespace SLIL.Classes
                 this.CurrentGun = reader.GetInt();
                 int GUNSLength = reader.GetInt();
                 for(int i = 0; i < GUNSLength; i++)
-                {
                     this.GUNS[i].HasIt = reader.GetBool();
-                }
                 int GunsCount = reader.GetInt();
                 List<Gun> tempGuns = new List<Gun>();
                 for(int i = 0; i< GunsCount; i++)
@@ -286,6 +290,11 @@ namespace SLIL.Classes
                             adrenalin.Deserialize(reader);
                             tempGuns.Add(adrenalin);
                             break;
+                        case 14:
+                            Helmet helmet = new Helmet();
+                            helmet.Deserialize(reader);
+                            tempGuns.Add(helmet);
+                            break;
                         default:
                             break;
                     }
@@ -307,6 +316,11 @@ namespace SLIL.Classes
                             adrenalin.Deserialize(reader);
                             tempDisposableItems.Add(adrenalin);
                             break;
+                        case 14:
+                            Helmet helmet = new Helmet();
+                            helmet.Deserialize(reader);
+                            tempDisposableItems.Add(helmet);
+                            break;
                         default:
                             break;
                     }
@@ -315,9 +329,7 @@ namespace SLIL.Classes
                 DisposableItems = tempDisposableItems;
             }
             else
-            {
                 base.Deserialize(reader);
-            }
         }
 
         private void InitPlayer()
@@ -325,6 +337,7 @@ namespace SLIL.Classes
             DeathSound = 5;
             DisposableItems.Add((FirstAidKit)GUNS[10]);
             DisposableItems.Add((Adrenalin)GUNS[13]);
+            DisposableItems.Add((Helmet)GUNS[14]);
             Texture = 38;
             base.SetAnimations(1, 0);
             Dead = true;
@@ -434,6 +447,8 @@ namespace SLIL.Classes
             }
         }
 
+        public int GetEffectID() => DisposableItems[SelectedItem].EffectID;
+
         public bool EffectCheck(int id)
         {
             if (Effects.Count >= 4) return true;
@@ -498,6 +513,7 @@ namespace SLIL.Classes
         protected override int GetTexture() => Texture;
 
         protected override double GetEntityWidth() => 0.4;
+
         public bool DealDamage(double damage)
         {
             if (EffectCheck(2)) damage *= 0.8;
