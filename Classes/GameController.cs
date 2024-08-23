@@ -60,9 +60,9 @@ namespace SLIL.Classes
                     startGame();
                 }
                 if (packetType == 1)
-                    PlaySoundHandle(SLIL.door[0]);
-                if (packetType == 2)
                     PlaySoundHandle(SLIL.door[1]);
+                if (packetType == 2)
+                    PlaySoundHandle(SLIL.door[0]);
                 if (packetType == 0)
                 {
                     if (playerID != -1)

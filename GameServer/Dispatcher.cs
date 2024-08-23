@@ -1,18 +1,12 @@
 ﻿using SLIL.Classes;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LiteNetLib;
-using System.Collections.Immutable;
-using System.Net.WebSockets;
 
 namespace GameServer
 {
     public delegate void SendOutcomingMessageDelegate(int packetID);
     public delegate void SendMessageFromGameCallback(int packetID);
+
     internal class Dispatcher
     {
         private GameModel Game;
@@ -26,10 +20,7 @@ namespace GameServer
             Game.StartGame();
         }
 
-        public void SendMessageFromGameHandle(int packetID)
-        {
-            sendMessageDelegate(packetID);
-        }
+        public void SendMessageFromGameHandle(int packetID) => sendMessageDelegate(packetID);
 
         public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server, int playerIDfromPeer)
         {
