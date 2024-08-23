@@ -444,11 +444,13 @@ namespace SLIL
             {
                 this.BeginInvoke((MethodInvoker)delegate
                 {
+                    this.CorrectExit = true;
                     this.Close();
                 });
             }
             else
             {
+                this.CorrectExit = true;
                 this.Close();
             }
         }
@@ -1823,13 +1825,13 @@ namespace SLIL
         private void SLIL_FormClosing(object sender, FormClosingEventArgs e)
         {
             Controller.CloseConnection();
-            /*if (!CorrectExit)
+            if (!CorrectExit)
             {
                 e.Cancel = true;
                 if (!Paused)
                     Pause();
                 return;
-            }*/
+            }
             raycast.Stop();
             step_sound_timer.Stop();
             stamina_timer.Stop();
