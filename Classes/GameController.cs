@@ -22,6 +22,7 @@ namespace SLIL.Classes
         private readonly StopGameDelegate StopGameHandle;
         private readonly PlaySoundDelegate PlaySoundHandle;
         private readonly SetPlayerIDDelegate SetPlayerID;
+        private readonly CloseFormDelegate CloseForm;
 
         public GameController(StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound)
         {
@@ -33,11 +34,12 @@ namespace SLIL.Classes
             Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
         }
 
-        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound)
+        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound, CloseFormDelegate closeForm)
         {
             playerID = -1;
             StopGameHandle = stopGame;
             PlaySoundHandle = playSound;
+            CloseForm = closeForm;
             SetPlayerID = SetPlayerIDInvoker;
             Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
             listener = new EventBasedNetListener();
@@ -71,6 +73,10 @@ namespace SLIL.Classes
                     else Game.Deserialize(dataReader);
                 }
                 dataReader.Recycle();
+            };
+            listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
+            {
+                CloseForm();
             };
             new Thread(() =>
             {

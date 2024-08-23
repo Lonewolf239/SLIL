@@ -22,6 +22,7 @@ namespace SLIL
     public delegate void StopGameDelegate(int win);
     public delegate void InitPlayerDelegate();
     public delegate void PlaySoundDelegate(PlaySound sound);
+    public delegate void CloseFormDelegate();
 
     public partial class SLIL : Form
     {
@@ -358,6 +359,7 @@ namespace SLIL
         private readonly StopGameDelegate StopGameHandle;
         private readonly InitPlayerDelegate InitPlayerHandle;
         private readonly PlaySoundDelegate PlaySoundHandle;
+        private readonly CloseFormDelegate CloseFormHandle;
 
         public void StartGameInvokerSinglePlayer()
         {
@@ -436,6 +438,21 @@ namespace SLIL
             }
         }
 
+        public void CloseFormInvoker()
+        {
+            if (this.InvokeRequired && this.IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)delegate
+                {
+                    this.Close();
+                });
+            }
+            else
+            {
+                this.Close();
+            }
+        }
+
         public SLIL(TextureCache textures)
         {
             InitializeComponent();
@@ -479,7 +496,8 @@ namespace SLIL
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
             PlaySoundHandle = PlaySoundInvoker;
-            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
+            CloseFormHandle = CloseFormInvoker;
+            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             SetParameters();
@@ -1669,6 +1687,7 @@ namespace SLIL
 
         private void Mouse_timer_Tick(object sender, EventArgs e)
         {
+            if (display == null) return;
             Rectangle displayRectangle = new Rectangle
             {
                 Location = display.PointToScreen(Point.Empty),
@@ -1804,13 +1823,13 @@ namespace SLIL
         private void SLIL_FormClosing(object sender, FormClosingEventArgs e)
         {
             Controller.CloseConnection();
-            if (!CorrectExit)
+            /*if (!CorrectExit)
             {
                 e.Cancel = true;
                 if (!Paused)
                     Pause();
                 return;
-            }
+            }*/
             raycast.Stop();
             step_sound_timer.Stop();
             stamina_timer.Stop();
