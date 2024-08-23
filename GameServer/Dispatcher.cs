@@ -18,16 +18,19 @@ namespace GameServer
         private GameModel Game;
         public SendOutcomingMessageDelegate sendMessageDelegate;
         public SendMessageFromGameCallback sendMessageFromGameCallback;
+
         public Dispatcher()
         {
             sendMessageFromGameCallback = SendMessageFromGameHandle;
             Game = new GameModel(sendMessageFromGameCallback);
             Game.StartGame();
         }
+
         public void SendMessageFromGameHandle(int packetID)
         {
             sendMessageDelegate(packetID);
         }
+
         public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server, int playerIDfromPeer)
         {
             NetDataReader dreader = new NetDataReader(data);
@@ -74,6 +77,9 @@ namespace GameServer
                 case 39:
                     Game.BuyConsumable(playerIDfromPeer, dreader.GetInt());
                     break;
+                case 40:
+                    Game.InteractingWithDoors(dreader.GetInt());
+                    break;
                 default:
                     break;
             }
@@ -92,17 +98,11 @@ namespace GameServer
             }
             server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
         }
-        public int AddPlayer()
-        {
-            return Game.AddPlayer();
-        }
-        public void RemovePlayer(int playerID)
-        {
-            Game.RemovePlayer(playerID);
-        }
-        public void SerializeGame(NetDataWriter writer)
-        {
-            Game.Serialize(writer);
-        }
+
+        public int AddPlayer() => Game.AddPlayer();
+
+        public void RemovePlayer(int playerID) => Game.RemovePlayer(playerID);
+
+        public void SerializeGame(NetDataWriter writer) => Game.Serialize(writer);
     }
 }

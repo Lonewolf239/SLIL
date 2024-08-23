@@ -1,16 +1,14 @@
-﻿using SLIL.Classes;
-using LiteNetLib;
+﻿using LiteNetLib;
 using LiteNetLib.Utils;
 using GameServer;
-using System.Reflection;
 
-NetPacketProcessor processor = new NetPacketProcessor();
+NetPacketProcessor processor = new();
 //processor.RegisterNestedType<Player>(() => { return new Player(0,0,0,0); });
 //processor.RegisterNestedType<GameModel>(() => { return new GameModel(null); });
-EventBasedNetListener listener = new EventBasedNetListener();
-NetManager server = new NetManager(listener);
-Dictionary<int, int> peerPlayerIDs = new Dictionary<int, int>();
-Dispatcher dispatcher = new Dispatcher();
+EventBasedNetListener listener = new();
+NetManager server = new(listener);
+Dictionary<int, int> peerPlayerIDs = [];
+Dispatcher dispatcher = new();
 //SendOutcomingMessageDelegate sendOutcomingMessageHandle;
 //sendOutcomingMessageHandle = SendOutcomingMessageInvoker;
 //dispatcher.sendMessageDelegate = sendOutcomingMessageHandle;
@@ -29,7 +27,7 @@ listener.ConnectionRequestEvent += request =>
 listener.PeerConnectedEvent += peer =>
 {
     Console.WriteLine("We got connection: {0}", peer);
-    NetDataWriter writer = new NetDataWriter();         
+    NetDataWriter writer = new();
     writer.Put(100);
     int newPlayerId = dispatcher.AddPlayer();
     peerPlayerIDs.Add(peer.Id, newPlayerId);
@@ -37,13 +35,15 @@ listener.PeerConnectedEvent += peer =>
     dispatcher.SerializeGame(writer);
     peer.Send(writer, DeliveryMethod.ReliableOrdered);
 };
+
 listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
 {
-    Packet pack = new Packet();
+    Packet pack = new();
     pack.Deserialize(dataReader);
     int playerIDFromPeer = peerPlayerIDs[fromPeer.Id];
     dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref server, playerIDFromPeer);
 };
+
 listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
 {
     dispatcher.RemovePlayer(peerPlayerIDs[peer.Id]);
@@ -62,6 +62,7 @@ new Thread(() =>
         Thread.Sleep(10);
     }
 }).Start();
+
 while(!exit)
 {
     string command = Console.ReadLine();

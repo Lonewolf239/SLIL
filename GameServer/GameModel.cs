@@ -18,7 +18,6 @@ namespace SLIL.Classes
         private bool GameStarted = false;
         private readonly Random rand;
         private int difficulty;
-        private int seconds, minutes;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
         private int CustomMazeHeight, CustomMazeWidth;
@@ -48,22 +47,6 @@ namespace SLIL.Classes
             TimeRemain.Elapsed += TimeRemain_Tick;
         }
 
-        public void Pause(bool paused)
-        {
-            if (paused)
-            {
-                TimeRemain.Stop();
-                RespawnTimer.Stop();
-                EnemyTimer.Stop();
-            }
-            else
-            {
-                TimeRemain.Start();
-                RespawnTimer.Start();
-                EnemyTimer.Start();
-            }
-        }
-
         public void StartGame()
         {
             if (inDebug == 0) difficulty = 3;
@@ -89,11 +72,9 @@ namespace SLIL.Classes
                     X = rand.Next(1, MAP_WIDTH - 1);
                     Y = rand.Next(1, MAP_HEIGHT - 1);
                     if (MAP[(int)Y * MAP_WIDTH + (int)X] == '.')
-                    {
                         OK = true;
-                    }
                 }
-                Player p = new Player(X + 0.5, Y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                Player p = new(X + 0.5, Y + 0.5, MAP_WIDTH, ref MaxEntityID);
                 if (difficulty == 3 || difficulty == 2)
                 {
                     p.Guns[1].LevelUpdate();
@@ -102,7 +83,7 @@ namespace SLIL.Classes
             }
             else
             {
-                Player p = new Player(1.5, 1.5, MAP_WIDTH, ref MaxEntityID);
+                Player p = new(1.5, 1.5, MAP_WIDTH, ref MaxEntityID);
                 if (difficulty == 3 || difficulty == 2)
                 {
                     p.Guns[1].LevelUpdate();
@@ -114,7 +95,7 @@ namespace SLIL.Classes
 
         private void EnemyTimer_Tick(object sender, EventArgs e)
         {
-            List<Player> playersList = new List<Player>();
+            List<Player> playersList = new();
             foreach (Entity ent in Entities)
             {
                 if (ent is Player) playersList.Add(ent as Player);
@@ -177,11 +158,11 @@ namespace SLIL.Classes
                         Player owner = null;
                         foreach (Entity ent in Entities)
                         {
-                            if (ent is Player)
+                            if (ent is Player player1)
                             {
                                 if ((ent as Player).PET == entity)
                                 {
-                                    owner = (Player)ent;
+                                    owner = player1;
                                     distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
                                 }
                             }
@@ -194,6 +175,7 @@ namespace SLIL.Classes
                 }
             }
         }
+
         public void RemovePlayer(int playerID)
         {
             for (int i = 0; i < Entities.Count; i++)
@@ -208,7 +190,7 @@ namespace SLIL.Classes
 
         private void RespawnTimer_Tick(object sender, EventArgs e)
         {
-            List<Player> playersList = new List<Player>();
+            List<Player> playersList = new();
             foreach (Entity ent in Entities)
             {
                 if (ent is Player) playersList.Add(ent as Player);
@@ -270,7 +252,7 @@ namespace SLIL.Classes
             MAP_WIDTH = reader.GetInt();
             MAP_HEIGHT = reader.GetInt();
             int entCount = reader.GetInt();
-            List<Entity> tempEntities = new List<Entity>();
+            List<Entity> tempEntities = new();
             for (int i = 0; i < entCount; i++)
             {
                 int entityID = reader.GetInt();
@@ -370,7 +352,7 @@ namespace SLIL.Classes
             MAP_WIDTH = reader.GetInt();
             MAP_HEIGHT = reader.GetInt();
             int entCount = reader.GetInt();
-            List<Entity> tempEntities = new List<Entity>();
+            List<Entity> tempEntities = new();
             for (int i = 0; i < entCount; i++)
             {
                 int entityID = reader.GetInt();
@@ -392,82 +374,82 @@ namespace SLIL.Classes
                 switch (entityID)
                 {
                     case 0:
-                        Player p = new Player(0, 0, MAP_WIDTH, ID);
+                        Player p = new(0, 0, MAP_WIDTH, ID);
                         p.Deserialize(reader);
                         tempEntities.Add(p);
                         break;
                     case 1:
-                        Man man = new Man(0, 0, MAP_WIDTH, ID);
+                        Man man = new(0, 0, MAP_WIDTH, ID);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
                         break;
                     case 2:
-                        Dog dog = new Dog(0, 0, MAP_WIDTH, ID);
+                        Dog dog = new(0, 0, MAP_WIDTH, ID);
                         dog.Deserialize(reader);
                         tempEntities.Add(dog);
                         break;
                     case 3:
-                        Abomination abomination = new Abomination(0, 0, MAP_WIDTH, ID);
+                        Abomination abomination = new(0, 0, MAP_WIDTH, ID);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
                         break;
                     case 4:
-                        Bat bat = new Bat(0, 0, MAP_WIDTH, ID);
+                        Bat bat = new(0, 0, MAP_WIDTH, ID);
                         bat.Deserialize(reader);
                         tempEntities.Add(bat);
                         break;
                     case 5:
-                        SillyCat sillyCat = new SillyCat(0, 0, MAP_WIDTH, ID);
+                        SillyCat sillyCat = new(0, 0, MAP_WIDTH, ID);
                         sillyCat.Deserialize(reader);
                         tempEntities.Add(sillyCat);
                         break;
                     case 6:
-                        GreenGnome greenGnome = new GreenGnome(0, 0, MAP_WIDTH, ID);
+                        GreenGnome greenGnome = new(0, 0, MAP_WIDTH, ID);
                         greenGnome.Deserialize(reader);
                         tempEntities.Add(greenGnome);
                         break;
                     case 7:
-                        EnergyDrink energyDrink = new EnergyDrink(0, 0, MAP_WIDTH, ID);
+                        EnergyDrink energyDrink = new(0, 0, MAP_WIDTH, ID);
                         energyDrink.Deserialize(reader);
                         tempEntities.Add(energyDrink);
                         break;
                     case 8:
-                        Pyro pyro = new Pyro(0, 0, MAP_WIDTH, ID);
+                        Pyro pyro = new(0, 0, MAP_WIDTH, ID);
                         pyro.Deserialize(reader);
                         tempEntities.Add(pyro);
                         break;
                     case 9:
-                        Teleport teleport = new Teleport(0, 0, MAP_WIDTH, ID);
+                        Teleport teleport = new(0, 0, MAP_WIDTH, ID);
                         teleport.Deserialize(reader);
                         tempEntities.Add(teleport);
                         break;
                     case 10:
-                        HittingTheWall hittingTheWall = new HittingTheWall(0, 0, MAP_WIDTH, ID);
+                        HittingTheWall hittingTheWall = new(0, 0, MAP_WIDTH, ID);
                         hittingTheWall.Deserialize(reader);
                         tempEntities.Add(hittingTheWall);
                         break;
                     case 11:
-                        ShopDoor shopDoor = new ShopDoor(0, 0, MAP_WIDTH, ID);
+                        ShopDoor shopDoor = new(0, 0, MAP_WIDTH, ID);
                         shopDoor.Deserialize(reader);
                         tempEntities.Add(shopDoor);
                         break;
                     case 12:
-                        ShopMan shopMan = new ShopMan(0, 0, MAP_WIDTH, ID);
+                        ShopMan shopMan = new(0, 0, MAP_WIDTH, ID);
                         shopMan.Deserialize(reader);
                         tempEntities.Add(shopMan);
                         break;
                     case 13:
-                        PlayerDeadBody playerDeadBody = new PlayerDeadBody(0, 0, MAP_WIDTH, ID);
+                        PlayerDeadBody playerDeadBody = new(0, 0, MAP_WIDTH, ID);
                         playerDeadBody.Deserialize(reader);
                         tempEntities.Add(playerDeadBody);
                         break;
                     case 14:
-                        Box box = new Box(0, 0, MAP_WIDTH, ID);
+                        Box box = new(0, 0, MAP_WIDTH, ID);
                         box.Deserialize(reader);
                         tempEntities.Add(box);
                         break;
                     case 15:
-                        Barrel barrel = new Barrel(0, 0, MAP_WIDTH, ID);
+                        Barrel barrel = new(0, 0, MAP_WIDTH, ID);
                         barrel.Deserialize(reader);
                         tempEntities.Add(barrel);
                         break;
@@ -551,23 +533,23 @@ namespace SLIL.Classes
             switch (c)
             {
                 case 'F':
-                    Teleport teleport = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    Teleport teleport = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = teleport;
                     break;
                 case 'D':
-                    ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    ShopDoor shopDoor = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = shopDoor;
                     break;
                 case '$':
-                    ShopMan shopMan = new ShopMan(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    ShopMan shopMan = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = shopMan;
                     break;
                 case 'b':
-                    Box box = new Box(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    Box box = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = box;
                     break;
                 case 'B':
-                    Barrel barrel = new Barrel(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    Barrel barrel = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = barrel;
                     break;
                 case 'E':
@@ -577,6 +559,7 @@ namespace SLIL.Classes
             }
             return entity;
         }
+
         private void CuteMode(Player player)
         {
             player.Guns.Clear();
@@ -699,7 +682,6 @@ namespace SLIL.Classes
 
         public void InitMap()
         {
-            seconds = 0;
             double enemy_count = 0;
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
             if (difficulty == 0)
@@ -712,7 +694,6 @@ namespace SLIL.Classes
                 enemy_count = 0.045;
             else if (difficulty == 4)
             {
-                minutes = 9999;
                 MazeHeight = CustomMazeHeight;
                 MazeWidth = CustomMazeWidth;
                 enemy_count = 0.06;
@@ -731,10 +712,8 @@ namespace SLIL.Classes
                     MazeWidth = 7;
                 }
             }
-            minutes = 9999;
             if (difficulty != 4 && difficulty != 5)
             {
-                minutes = 5;
                 MazeHeight = MazeWidth = 10;
                 MAX_SHOP_COUNT = 2;
             }
@@ -759,7 +738,6 @@ namespace SLIL.Classes
                 }
                 else if (difficulty == 4)
                 {
-                    minutes = 9999;
                     MazeHeight = CustomMazeHeight;
                     MazeWidth = CustomMazeWidth;
                     enemy_count = 0.06;
@@ -782,36 +760,30 @@ namespace SLIL.Classes
                         MazeWidth = 7;
                     }
                 }
-                minutes = 9999;
                 if (difficulty != 4 && difficulty != 5)
                 {
                     if (player.Stage == 0)
                     {
-                        minutes = 5;
                         MazeHeight = MazeWidth = 10;
                         MAX_SHOP_COUNT = 2;
                     }
                     else if (player.Stage == 1)
                     {
-                        minutes = 10;
                         MazeHeight = MazeWidth = 15;
                         MAX_SHOP_COUNT = 4;
                     }
                     else if (player.Stage == 2)
                     {
-                        minutes = 15;
                         MazeHeight = MazeWidth = 20;
                         MAX_SHOP_COUNT = 6;
                     }
                     else if (player.Stage == 3)
                     {
-                        minutes = 20;
                         MazeHeight = MazeWidth = 25;
                         MAX_SHOP_COUNT = 8;
                     }
                     else
                     {
-                        minutes = 20;
                         MazeHeight = MazeWidth = 25;
                         MAX_SHOP_COUNT = 8;
                     }
@@ -1106,20 +1078,6 @@ namespace SLIL.Classes
 
         private void TimeRemain_Tick(object sender, EventArgs e)
         {
-            seconds--;
-            if (seconds < 0)
-            {
-                if (minutes > 0)
-                {
-                    minutes--;
-                    seconds = 59;
-                }
-                else
-                {
-                    seconds = 0;
-                    GameOver(0);
-                }
-            }
             for (int i = 0; i < Entities.Count; i++)
             {
                 if (!(Entities[i] is Player player)) continue;
@@ -1170,7 +1128,6 @@ namespace SLIL.Classes
             int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
             int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
             Cursor.Position = new Point(x, y);
-            seconds = 0;
             if (!CUSTOM)
                 player.X = player.Y = 1.5d;
             else
@@ -1305,8 +1262,6 @@ namespace SLIL.Classes
             }
         }
 
-        internal (int, int) GetSecondsAndMinutes() => (this.minutes, this.seconds);
-
         internal void StopGame(int win) => GameOver(win);
 
         internal void AmmoCountDecrease(int playerID)
@@ -1334,6 +1289,7 @@ namespace SLIL.Classes
                 }
             }
         }
+
         internal void ChangeWeapon(int playerID, int new_gun)
         {
             foreach (Entity entity in Entities) 
@@ -1345,6 +1301,7 @@ namespace SLIL.Classes
                 }
             }
         }
+
         internal void BuyAmmo(int playerID, int weaponID)
         {
             foreach (Entity ent in Entities)
@@ -1362,6 +1319,7 @@ namespace SLIL.Classes
                 }
             }
         }
+
         internal void BuyWeapon(int playerID, int weaponID)
         {
             foreach (Entity ent in Entities)
@@ -1381,6 +1339,7 @@ namespace SLIL.Classes
                 }
             }
         }
+
         internal void UpdateWeapon(int playerID, int weaponID)
         {
             foreach (Entity ent in Entities)
@@ -1415,6 +1374,20 @@ namespace SLIL.Classes
                     }
                     return;
                 }
+            }
+        }
+
+        internal void InteractingWithDoors(int coordinate)
+        {
+            if (MAP[coordinate] == 'o')
+            {
+                MAP[coordinate] = 'd';
+                sendMessageFromGameCallback(1);
+            }
+            else
+            {
+                MAP[coordinate] = 'o';
+                sendMessageFromGameCallback(2);
             }
         }
     }

@@ -18,6 +18,7 @@ namespace SLIL
     {
         private const string current_version = "|1.1.1a|";
         public static string iniFolder = "config.ini";
+        private bool ConsoleEnabledSaved = false;
         public static bool Language = true, sounds = true, ConsoleEnabled = false;
         private readonly TextureCache textureCache = new TextureCache();
         public static CGF_Reader CGFReader;
@@ -28,7 +29,6 @@ namespace SLIL
         private readonly PlaySound[,] DeathSounds;
         private readonly PlaySound[,] CuteDeathSounds;
         private readonly PlaySound game_over, draw, buy, wall, tp, screenshot;
-        private readonly PlaySound[] door;
         public static Player player;
         private readonly string[] en_changes =
         {
@@ -280,7 +280,6 @@ namespace SLIL
             wall = new PlaySound(CGFReader.GetFile("wall_interaction.wav"), false);
             tp = new PlaySound(CGFReader.GetFile("tp.wav"), false);
             screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
-            door = new PlaySound[] { new PlaySound(CGFReader.GetFile("door_opened.wav"), false), new PlaySound(CGFReader.GetFile("door_closed.wav"), false) };
         }
 
         private void Bug_report_btn_Click(object sender, EventArgs e)
@@ -478,6 +477,7 @@ namespace SLIL
         {
             Language = INIReader.GetBool(iniFolder, "CONFIG", "language", Language);
             ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
+            ConsoleEnabledSaved = ConsoleEnabled;
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             update_on_off.Checked = INIReader.GetBool(iniFolder, "CONFIG", "auto_update", true);
             LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 6.5);
@@ -818,6 +818,7 @@ namespace SLIL
         {
             lose_focus.Focus();
             ConsoleEnabled = console_btn.Checked;
+            ConsoleEnabledSaved = ConsoleEnabled;
             if (ConsoleEnabled)
             {
                 if (Language)
@@ -1108,8 +1109,7 @@ namespace SLIL
                     buy = buy,
                     wall = wall,
                     tp = tp,
-                    screenshot = screenshot,
-                    door = door,
+                    screenshot = screenshot
                 };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(Volume);
@@ -1190,6 +1190,10 @@ namespace SLIL
                 MessageBox.Show("IP address successfully copied to clipboard", "IP Copying", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void Multiplayer_CheckedChanged(object sender, EventArgs e) => ConsoleEnabled = false;
+
+        private void Singleplayer_CheckedChanged(object sender, EventArgs e) => ConsoleEnabled = ConsoleEnabledSaved;
+
         private void Host_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
@@ -1238,8 +1242,7 @@ namespace SLIL
                     buy = buy,
                     wall = wall,
                     tp = tp,
-                    screenshot = screenshot,
-                    door = door,
+                    screenshot = screenshot
             };
             form.ShowDialog();
             if (sounds) MainMenuTheme.Play(Volume);
@@ -1266,8 +1269,7 @@ namespace SLIL
                     buy = buy,
                     wall = wall,
                     tp = tp,
-                    screenshot = screenshot,
-                    door = door,
+                    screenshot = screenshot
                 };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(Volume);

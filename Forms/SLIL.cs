@@ -299,7 +299,7 @@ namespace SLIL
         public PlaySound[,] DeathSounds;
         public PlaySound[,] CuteDeathSounds;
         public PlaySound game_over, draw, buy, wall, tp, screenshot;
-        public PlaySound[] door;
+        public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##..WWWW...........##..W..W..B..b..#..##..WE.W...........##..W..W...........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
         public static float Volume = 0.4f;
@@ -784,164 +784,160 @@ namespace SLIL
             }
             if (GameStarted && !Paused)
             {
-                if (!console_panel.Visible)
+                if (!console_panel.Visible && !open_shop)
                 {
-                    if (!open_shop)
+                    Keys runKey;
+                    switch (Bind.Run)
                     {
-                        Keys runKey;
-                        switch (Bind.Run)
+                        case Keys.ShiftKey:
+                            runKey = Keys.Shift;
+                            break;
+                        case Keys.ControlKey:
+                            runKey = Keys.Control;
+                            break;
+                        case Keys.Alt:
+                            runKey = Keys.Alt;
+                            break;
+                        default:
+                            runKey = Bind.Run;
+                            break;
+                    }
+                    Player player = Controller.GetPlayer();
+                    if (player != null && ModifierKeys.HasFlag(runKey) && playerDirection == Direction.FORWARD && !player.Fast && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !shot_timer.Enabled && !reload_timer.Enabled && !chill_timer.Enabled)
+                        playerMoveStyle = Direction.RUN;
+                    if (e.KeyCode == Bind.Forward)
+                        playerDirection = Direction.FORWARD;
+                    if (e.KeyCode == Bind.Back)
+                        playerDirection = Direction.BACK;
+                    if (e.KeyCode == Bind.Left)
+                        strafeDirection = Direction.LEFT;
+                    if (e.KeyCode == Bind.Right)
+                        strafeDirection = Direction.RIGHT;
+                    if (!shot_timer.Enabled && !reload_timer.Enabled && player != null)
+                    {
+                        int count = player.Guns.Count;
+                        if (player.Guns.Contains(player.GUNS[0])) count--;
+                        if (e.KeyCode == Bind.Reloading)
                         {
-                            case Keys.ShiftKey:
-                                runKey = Keys.Shift;
-                                break;
-                            case Keys.ControlKey:
-                                runKey = Keys.Control;
-                                break;
-                            case Keys.Alt:
-                                runKey = Keys.Alt;
-                                break;
-                            default:
-                                runKey = Keys.Shift;
-                                break;
-                        }
-                        Player player = Controller.GetPlayer();
-                        if (player != null && ModifierKeys.HasFlag(runKey) && playerDirection == Direction.FORWARD && !player.Fast && player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming && !reload_timer.Enabled && !chill_timer.Enabled)
-                            playerMoveStyle = Direction.RUN;
-                        if (e.KeyCode == Bind.Forward)
-                            playerDirection = Direction.FORWARD;
-                        if (e.KeyCode == Bind.Back)
-                            playerDirection = Direction.BACK;
-                        if (e.KeyCode == Bind.Left)
-                            strafeDirection = Direction.LEFT;
-                        if (e.KeyCode == Bind.Right)
-                            strafeDirection = Direction.RIGHT;
-                        if (!shot_timer.Enabled && !reload_timer.Enabled && player!= null)
-                        {
-                            int count = player.Guns.Count;
-                            if (player.Guns.Contains(player.GUNS[0]))
-                                count--;
-                            if (e.KeyCode == Bind.Reloading)
+                            if (player.GetCurrentGun().AmmoCount != player.GetCurrentGun().CartridgesClip && player.GetCurrentGun().MaxAmmoCount > 0)
                             {
-                                if (player.GetCurrentGun().AmmoCount != player.GetCurrentGun().CartridgesClip && player.GetCurrentGun().MaxAmmoCount > 0)
+                                pressed_r = true;
+                                player.CanShoot = false;
+                                player.Aiming = false;
+                                int sound = 1;
+                                if (!(player.GetCurrentGun() is Shotgun))
                                 {
-                                    pressed_r = true;
-                                    player.CanShoot = false;
-                                    player.Aiming = false;
-                                    int sound = 1;
-                                    if (!(player.GetCurrentGun() is Shotgun))
-                                    {
-                                        player.GunState = 2;
-                                        if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4 && player.GetCurrentGun().AmmoCount == 0)
-                                            player.GunState = 3;
-                                    }
-                                    else
-                                    {
+                                    player.GunState = 2;
+                                    if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4 && player.GetCurrentGun().AmmoCount == 0)
                                         player.GunState = 3;
-                                        if (player.GetCurrentGun().Level != Levels.LV1)
-                                            sound = 3;
-                                    }
-                                    if (MainMenu.sounds)
-                                        SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), sound].Play(Volume);
-                                    reload_timer.Start();
                                 }
-                            }
-                            if (e.KeyCode == Bind.Item)
-                            {
-                                if (player.DisposableItems.Count > 0 && player.DisposableItems[player.SelectedItem].HasIt)
+                                else
                                 {
-                                    if (player.SelectedItem == 0 && (player.EffectCheck(0) || player.HP == player.MAX_HP)) return;
-                                    if (player.SelectedItem == 1 && player.EffectCheck(1)) return;
-                                    TakeFlashlight(false);
-                                    pressed_h = true;
-                                    if (!player.Guns.Contains(player.DisposableItems[player.SelectedItem]))
-                                        player.Guns.Add(player.DisposableItems[player.SelectedItem]);
-                                    player.PreviousGun = player.CurrentGun;
-                                    if (player.DisposableItems[player.SelectedItem].HasLVMechanics)
-                                    {
-                                        if (player.CuteMode)
-                                            player.DisposableItems[player.SelectedItem].Level = Levels.LV4;
-                                        else
-                                        {
-                                            if (rand.NextDouble() <= player.CurseCureChance)
-                                            {
-                                                if (rand.NextDouble() <= 0.5)
-                                                    player.DisposableItems[player.SelectedItem].Level = Levels.LV2;
-                                                else
-                                                    player.DisposableItems[player.SelectedItem].Level = Levels.LV3;
-                                            }
-                                            else
-                                                player.DisposableItems[player.SelectedItem].Level = Levels.LV1;
-                                        }
-                                    }
-                                    else
-                                        player.DisposableItems[player.SelectedItem].Level = Levels.LV1;
-                                    ChangeWeapon(player.Guns.IndexOf(player.DisposableItems[player.SelectedItem]));
-                                    player.GunState = 1;
-                                    player.Aiming = false;
-                                    player.CanShoot = false;
-                                    player.UseItem = true;
-                                    burst_shots = 0;
-                                    shot_timer.Start();
-                                    pressed_h = false;
+                                    player.GunState = 3;
+                                    if (player.GetCurrentGun().Level != Levels.LV1)
+                                        sound = 3;
                                 }
+                                if (MainMenu.sounds)
+                                    SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), sound].Play(Volume);
+                                reload_timer.Start();
                             }
-                            if (e.KeyCode == Bind.SelectItem)
+                        }
+                        if (e.KeyCode == Bind.Item)
+                        {
+                            if (player.DisposableItems.Count > 0 && player.DisposableItems[player.SelectedItem].HasIt)
                             {
-                                int selected_item = player.SelectedItem;
-                                selected_item++;
-                                if (selected_item >= player.DisposableItems.Count) selected_item = 0;
-                                player.SelectedItem = selected_item;
-                            }
-                            if (e.KeyCode == Keys.D1)
-                            {
+                                if (player.SelectedItem == 0 && (player.EffectCheck(0) || player.HP == player.MAX_HP)) return;
+                                if (player.SelectedItem == 1 && player.EffectCheck(1)) return;
                                 TakeFlashlight(false);
-                                ChangeWeapon(0);
+                                pressed_h = true;
+                                if (!player.Guns.Contains(player.DisposableItems[player.SelectedItem]))
+                                    player.Guns.Add(player.DisposableItems[player.SelectedItem]);
+                                player.PreviousGun = player.CurrentGun;
+                                if (player.DisposableItems[player.SelectedItem].HasLVMechanics)
+                                {
+                                    if (player.CuteMode)
+                                        player.DisposableItems[player.SelectedItem].Level = Levels.LV4;
+                                    else
+                                    {
+                                        if (rand.NextDouble() <= player.CurseCureChance)
+                                        {
+                                            if (rand.NextDouble() <= 0.5)
+                                                player.DisposableItems[player.SelectedItem].Level = Levels.LV2;
+                                            else
+                                                player.DisposableItems[player.SelectedItem].Level = Levels.LV3;
+                                        }
+                                        else
+                                            player.DisposableItems[player.SelectedItem].Level = Levels.LV1;
+                                    }
+                                }
+                                else
+                                    player.DisposableItems[player.SelectedItem].Level = Levels.LV1;
+                                ChangeWeapon(player.Guns.IndexOf(player.DisposableItems[player.SelectedItem]));
+                                player.GunState = 1;
+                                player.Aiming = false;
+                                player.CanShoot = false;
+                                player.UseItem = true;
+                                burst_shots = 0;
+                                shot_timer.Start();
+                                pressed_h = false;
                             }
-                            if (e.KeyCode == Keys.D2 && count > 1)
-                            {
-                                TakeFlashlight(false);
-                                ChangeWeapon(1);
-                            }
-                            if (e.KeyCode == Keys.D3 && count > 2)
-                            {
-                                TakeFlashlight(false);
-                                ChangeWeapon(2);
-                            }
-                            if (e.KeyCode == Keys.D4 && count > 3)
-                            {
-                                TakeFlashlight(false);
-                                ChangeWeapon(3);
-                            }
-                            if (e.KeyCode == Keys.D5 && count > 4)
-                            {
-                                TakeFlashlight(false);
-                                ChangeWeapon(4);
-                            }
-                            if (e.KeyCode == Keys.D6 && count > 5)
-                            {
-                                TakeFlashlight(false);
-                                ChangeWeapon(5);
-                            }
-                            if (e.KeyCode == Keys.D7 && count > 6)
-                            {
-                                TakeFlashlight(false);
-                                ChangeWeapon(6);
-                            }
-                            if (e.KeyCode == Keys.D8 && count > 7)
-                            {
-                                TakeFlashlight(false);
-                                ChangeWeapon(7);
-                            }
-                            if (e.KeyCode == Keys.D9 && count > 8)
-                            {
-                                TakeFlashlight(false);
-                                ChangeWeapon(8);
-                            }
-                            if (e.KeyCode == Keys.D0 && count > 9)
-                            {
-                                TakeFlashlight(false);
-                                ChangeWeapon(9);
-                            }
+                        }
+                        if (e.KeyCode == Bind.SelectItem)
+                        {
+                            int selected_item = player.SelectedItem;
+                            selected_item++;
+                            if (selected_item >= player.DisposableItems.Count) selected_item = 0;
+                            player.SelectedItem = selected_item;
+                        }
+                        if (e.KeyCode == Keys.D1)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(0);
+                        }
+                        if (e.KeyCode == Keys.D2 && count > 1)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(1);
+                        }
+                        if (e.KeyCode == Keys.D3 && count > 2)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(2);
+                        }
+                        if (e.KeyCode == Keys.D4 && count > 3)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(3);
+                        }
+                        if (e.KeyCode == Keys.D5 && count > 4)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(4);
+                        }
+                        if (e.KeyCode == Keys.D6 && count > 5)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(5);
+                        }
+                        if (e.KeyCode == Keys.D7 && count > 6)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(6);
+                        }
+                        if (e.KeyCode == Keys.D8 && count > 7)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(7);
+                        }
+                        if (e.KeyCode == Keys.D9 && count > 8)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(8);
+                        }
+                        if (e.KeyCode == Keys.D0 && count > 9)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(9);
                         }
                     }
                 }
@@ -1028,30 +1024,23 @@ namespace SLIL
                                     break;
                                 case 'd':
                                     hit = true;
-                                    if (MainMenu.sounds)
-                                        door[0].Play(Volume);
-                                    Controller.GetMap()[y * Controller.GetMapWidth() + x] = 'o';
+                                    Controller.InteractingWithDoors(y * Controller.GetMapWidth() + x);
                                     break;
                                 case 'o':
                                     hit = true;
-                                    if (distance < playerWidth || ((int)player.X == x && (int)player.Y == y))
-                                        break;
-                                    if (MainMenu.sounds)
-                                        door[1].Play(Volume);
-                                    Controller.GetMap()[y * Controller.GetMapWidth() + x] = 'd';
+                                    if (distance < playerWidth || ((int)player.X == x && (int)player.Y == y)) break;
+                                    Controller.InteractingWithDoors(y * Controller.GetMapWidth() + x);
                                     break;
                             }
                         }
-                        if (hit)
-                            return;
+                        if (hit) return;
                         DateTime time = DateTime.Now;
                         elapsed_time = (time - total_time).TotalSeconds;
                         total_time = time;
                         PlayerMove();
                         ClearDisplayedMap();
                         int factor = player.Aiming ? 12 : 0;
-                        if (player.GetCurrentGun() is Flashlight)
-                            factor = 8;
+                        if (player.GetCurrentGun() is Flashlight) factor = 8;
                         double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
                         double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
                         Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
@@ -2206,6 +2195,7 @@ namespace SLIL
                 case '#': return Color.Blue;
                 case '=': return Color.YellowGreen;
                 case 'P': return Color.Red;
+                case 'B':
                 case 'b': return Color.Brown;
                 case 'd':
                 case 'o':
@@ -2274,13 +2264,6 @@ namespace SLIL
                 graphicsWeapon.DrawImage(DrawMap(), 0, 0, SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
                 return;
             }
-            string space_0 = "0", space_1 = "0";
-            int minutes = Controller.GetSecondsAndMinutes().Item1;
-            int seconds = Controller.GetSecondsAndMinutes().Item2;
-            if (seconds > 9)
-                space_1 = "";
-            if (minutes > 9)
-                space_0 = "";
             int item_count = 0;
             if (player.DisposableItems.Count > 0)
                 item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].MaxAmmoCount;
@@ -2302,7 +2285,6 @@ namespace SLIL
             }
             if (ShowFPS)
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[resolution], whiteBrush, SCREEN_WIDTH[resolution], 0, rightToLeft);
-            graphicsWeapon.DrawString($"TIME LEFT: {space_0}{minutes}:{space_1}{seconds}", consolasFont[resolution], whiteBrush, 0, 0);
             if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 108 + (110 * resolution), icon_size, icon_size);
@@ -2313,8 +2295,8 @@ namespace SLIL
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 108 + (110 * resolution), icon_size, icon_size);
                 graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 94 + (96 * resolution), icon_size, icon_size);
             }
-            graphicsWeapon.DrawImage(Properties.Resources.money, 2, 14 + (14 * resolution), icon_size, icon_size);
-            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 14 + (14 * resolution));
+            graphicsWeapon.DrawImage(Properties.Resources.money, 2, 2, icon_size, icon_size);
+            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 2);
             graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 108 + (110 * resolution));
             graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 94 + (98 * resolution));
             if (!player.IsPetting && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
@@ -2819,24 +2801,12 @@ namespace SLIL
                 ToDefault();
         }
 
-        internal void BuyAmmo(Gun weapon)
-        {
-            Controller.BuyAmmo(weapon);
-        }
+        internal void BuyAmmo(Gun weapon) => Controller.BuyAmmo(weapon);
 
-        internal void BuyWeapon(Gun weapon)
-        {
-            Controller.BuyWeapon(weapon);
-        }
+        internal void BuyWeapon(Gun weapon) => Controller.BuyWeapon(weapon);
 
-        internal void UpdateWeapon(Gun weapon)
-        {
-            Controller.UpdateWeapon(weapon);
-        }
+        internal void UpdateWeapon(Gun weapon) => Controller.UpdateWeapon(weapon);
 
-        internal void BuyConsumable(DisposableItem item)
-        {
-            Controller.BuyConsumable(item);
-        }
+        internal void BuyConsumable(DisposableItem item) => Controller.BuyConsumable(item);
     }
 }

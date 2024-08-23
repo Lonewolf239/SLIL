@@ -24,7 +24,6 @@ namespace SLIL.Classes
         private bool GameStarted = false;
         private readonly Random rand;
         private int difficulty;
-        private int seconds, minutes;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
         private int CustomMazeHeight, CustomMazeWidth;
@@ -674,7 +673,6 @@ namespace SLIL.Classes
 
         public void InitMap()
         {
-            seconds = 0;
             double enemy_count = 0;
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
             if (difficulty == 0)
@@ -687,7 +685,6 @@ namespace SLIL.Classes
                 enemy_count = 0.045;
             else if (difficulty == 4)
             {
-                minutes = 9999;
                 MazeHeight = CustomMazeHeight;
                 MazeWidth = CustomMazeWidth;
                 enemy_count = 0.06;
@@ -706,10 +703,8 @@ namespace SLIL.Classes
                     MazeWidth = 7;
                 }
             }
-            minutes = 9999;
             if (difficulty != 4 && difficulty != 5)
             {
-                minutes = 5;
                 MazeHeight = MazeWidth = 10;
                 MAX_SHOP_COUNT = 2;
             }
@@ -734,7 +729,6 @@ namespace SLIL.Classes
                 }
                 else if (difficulty == 4)
                 {
-                    minutes = 9999;
                     MazeHeight = CustomMazeHeight;
                     MazeWidth = CustomMazeWidth;
                     enemy_count = 0.06;
@@ -757,36 +751,30 @@ namespace SLIL.Classes
                         MazeWidth = 7;
                     }
                 }
-                minutes = 9999;
                 if (difficulty != 4 && difficulty != 5)
                 {
                     if (player.Stage == 0)
                     {
-                        minutes = 5;
                         MazeHeight = MazeWidth = 10;
                         MAX_SHOP_COUNT = 2;
                     }
                     else if (player.Stage == 1)
                     {
-                        minutes = 10;
                         MazeHeight = MazeWidth = 15;
                         MAX_SHOP_COUNT = 4;
                     }
                     else if (player.Stage == 2)
                     {
-                        minutes = 15;
                         MazeHeight = MazeWidth = 20;
                         MAX_SHOP_COUNT = 6;
                     }
                     else if (player.Stage == 3)
                     {
-                        minutes = 20;
                         MazeHeight = MazeWidth = 25;
                         MAX_SHOP_COUNT = 8;
                     }
                     else
                     {
-                        minutes = 20;
                         MazeHeight = MazeWidth = 25;
                         MAX_SHOP_COUNT = 8;
                     }
@@ -1081,20 +1069,6 @@ namespace SLIL.Classes
 
         private void TimeRemain_Tick(object sender, EventArgs e)
         {
-            seconds--;
-            if (seconds < 0)
-            {
-                if (minutes > 0)
-                {
-                    minutes--;
-                    seconds = 59;
-                }
-                else
-                {
-                    seconds = 0;
-                    GameOver(0);
-                }
-            }
             for (int i = 0; i < Entities.Count; i++)
             {
                 if (!(Entities[i] is Player player)) continue;
@@ -1280,8 +1254,6 @@ namespace SLIL.Classes
             }
         }
 
-        internal (int, int) GetSecondsAndMinutes() => (this.minutes, this.seconds);
-
         internal void StopGame(int win) => GameOver(win);
 
         internal void AmmoCountDecrease(int playerID)
@@ -1392,6 +1364,20 @@ namespace SLIL.Classes
                     }
                     return;
                 }
+            }
+        }
+
+        internal void InteractingWithDoors(int coordinate)
+        {
+            if (MAP[coordinate] == 'o')
+            {
+                MAP[coordinate] = 'd';
+                PlaySoundHandle(SLIL.door[0]);
+            }
+            else
+            {
+                MAP[coordinate] = 'o';
+                PlaySoundHandle(SLIL.door[1]);
             }
         }
     }

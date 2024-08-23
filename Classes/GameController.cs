@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using System;
-using SharpDX.Direct2D1;
 
 namespace SLIL.Classes
 {
@@ -61,6 +59,10 @@ namespace SLIL.Classes
                     Game.StartGame(false);
                     startGame();
                 }
+                if (packetType == 1)
+                    PlaySoundHandle(SLIL.door[0]);
+                if (packetType == 2)
+                    PlaySoundHandle(SLIL.door[1]);
                 if (packetType == 0)
                 {
                     if (playerID != -1)
@@ -123,7 +125,7 @@ namespace SLIL.Classes
 
         public void AddPet(int index)
         {
-            if(peer == null)
+            if (peer == null)
                 Game.AddPet(playerID, index);
             else
             {
@@ -135,8 +137,6 @@ namespace SLIL.Classes
         }
 
         public void AddPlayer() => playerID = Game.AddPlayer();
-
-        public (int, int) GetSecondsAndMinutes() => Game.GetSecondsAndMinutes();
 
         public Player GetPlayer()
         {
@@ -186,7 +186,7 @@ namespace SLIL.Classes
                 return false;
             }
             else
-                return Game.DealDamage(ent.ID, damage, playerID); 
+                return Game.DealDamage(ent.ID, damage, playerID);
         }
 
         public Pet[] GetPets() => Game.GetPets();
@@ -203,7 +203,7 @@ namespace SLIL.Classes
 
         internal void AmmoCountDecrease()
         {
-            if(peer == null) Game.AmmoCountDecrease(playerID);
+            if (peer == null) Game.AmmoCountDecrease(playerID);
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -214,7 +214,7 @@ namespace SLIL.Classes
 
         internal void ReloadClip()
         {
-            if(peer == null) Game.ReloadClip(playerID);
+            if (peer == null) Game.ReloadClip(playerID);
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -225,7 +225,7 @@ namespace SLIL.Classes
 
         internal void ChangeWeapon(int new_gun)
         {
-            if(peer == null) Game.ChangeWeapon(playerID, new_gun);
+            if (peer == null) Game.ChangeWeapon(playerID, new_gun);
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -240,7 +240,7 @@ namespace SLIL.Classes
         internal void BuyAmmo(Gun weapon)
         {
             int weaponID = -1;
-            for(int i = 0; i<GetPlayer().Guns.Count; i++)
+            for (int i = 0; i < GetPlayer().Guns.Count; i++)
             {
                 if (GetPlayer().Guns[i].GetType() == weapon.GetType())
                 {
@@ -249,9 +249,7 @@ namespace SLIL.Classes
                 }
             }
             if (peer == null)
-            {
                 Game.BuyAmmo(playerID, weaponID);
-            }
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -264,7 +262,7 @@ namespace SLIL.Classes
         internal void BuyWeapon(Gun weapon)
         {
             int weaponID = -1;
-            for(int i = 0; i<GetPlayer().GUNS.Length; i++)
+            for (int i = 0; i < GetPlayer().GUNS.Length; i++)
             {
                 if (GetPlayer().GUNS[i].GetType() == weapon.GetType())
                 {
@@ -273,9 +271,7 @@ namespace SLIL.Classes
                 }
             }
             if (peer == null)
-            {
                 Game.BuyWeapon(playerID, weaponID);
-            }
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -288,7 +284,7 @@ namespace SLIL.Classes
         internal void UpdateWeapon(Gun weapon)
         {
             int weaponID = -1;
-            for(int i = 0; i<GetPlayer().Guns.Count; i++)
+            for (int i = 0; i < GetPlayer().Guns.Count; i++)
             {
                 if (GetPlayer().Guns[i].GetType() == weapon.GetType())
                 {
@@ -297,9 +293,7 @@ namespace SLIL.Classes
                 }
             }
             if (peer == null)
-            {
                 Game.UpdateWeapon(playerID, weaponID);
-            }
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -312,7 +306,7 @@ namespace SLIL.Classes
         internal void BuyConsumable(DisposableItem item)
         {
             int itemID = -1;
-            for(int i = 0; i<GetPlayer().GUNS.Length; i++)
+            for (int i = 0; i < GetPlayer().GUNS.Length; i++)
             {
                 if (GetPlayer().GUNS[i].GetType() == item.GetType())
                 {
@@ -321,14 +315,25 @@ namespace SLIL.Classes
                 }
             }
             if (peer == null)
-            {
                 Game.BuyConsumable(playerID, itemID);
-            }
             else
             {
                 NetDataWriter writer = new NetDataWriter();
                 writer.Put(39);
                 writer.Put(itemID);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal void InteractingWithDoors(int coordinate)
+        {
+            if (peer == null)
+                Game.InteractingWithDoors(coordinate);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(40);
+                writer.Put(coordinate);
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
         }

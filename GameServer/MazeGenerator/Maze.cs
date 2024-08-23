@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MazeGenerator.Enum;
+﻿using MazeGenerator.Enum;
 
 namespace MazeGenerator
 {
     public class Maze
     {
-        private static readonly Random rand = new Random();
+        private static readonly Random rand = new();
         Room finishRoom = null;
 
         private List<Room> Generate(int width, int height)
         {
-            List<Room> rooms = new List<Room>();
-            Stack<Room> roomStack = new Stack<Room>();
+            List<Room> rooms = [];
+            Stack<Room> roomStack = new();
             var initialRoom = new Room { X = 0, Y = 0 };
             roomStack.Push(initialRoom);
             rooms.Add(initialRoom);
@@ -21,7 +18,7 @@ namespace MazeGenerator
             while (rooms.Count < height * width)
             {
                 Room currentRoom = roomStack.Peek();
-                List<Direction> availableDirections = new List<Direction>();
+                List<Direction> availableDirections = [];
                 if (currentRoom.X != 0 && !rooms.Any(r => r.X == currentRoom.X - 1 && r.Y == currentRoom.Y))
                     availableDirections.Add(Direction.Left);
                 if (currentRoom.X != width - 1 && !rooms.Any(r => r.X == currentRoom.X + 1 && r.Y == currentRoom.Y))

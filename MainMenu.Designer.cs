@@ -183,12 +183,12 @@
             this.select_mode_btn = new System.Windows.Forms.Button();
             this.multiplayer_panel = new System.Windows.Forms.Panel();
             this.multiplayer_background = new System.Windows.Forms.Panel();
-            this.coming_soon_label = new System.Windows.Forms.Label();
             this.connect_game_btn = new System.Windows.Forms.Button();
             this.nickname = new System.Windows.Forms.TextBox();
             this.nickname_label = new System.Windows.Forms.Label();
             this.host_btn = new System.Windows.Forms.Button();
             this.multiplayer_close = new System.Windows.Forms.Button();
+            this.coming_soon_label = new System.Windows.Forms.Label();
             this.host_panel = new System.Windows.Forms.Panel();
             this.host_background = new System.Windows.Forms.Panel();
             this.players_panel = new System.Windows.Forms.Panel();
@@ -921,10 +921,10 @@
             this.video_settings.Controls.Add(this.show_fps_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 33);
+            this.video_settings.Location = new System.Drawing.Point(4, 22);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 183);
+            this.video_settings.Size = new System.Drawing.Size(482, 194);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
@@ -1156,10 +1156,10 @@
             this.control_settings.Controls.Add(this.screenshot_panel);
             this.control_settings.Controls.Add(this.sensitivity_panel);
             this.control_settings.ForeColor = System.Drawing.Color.White;
-            this.control_settings.Location = new System.Drawing.Point(4, 33);
+            this.control_settings.Location = new System.Drawing.Point(4, 22);
             this.control_settings.Name = "control_settings";
             this.control_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.control_settings.Size = new System.Drawing.Size(482, 183);
+            this.control_settings.Size = new System.Drawing.Size(482, 194);
             this.control_settings.TabIndex = 2;
             this.control_settings.Text = "Управление";
             // 
@@ -2082,6 +2082,7 @@
             this.singleplayer.TabStop = true;
             this.singleplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.singleplayer.UseVisualStyleBackColor = false;
+            this.singleplayer.CheckedChanged += new System.EventHandler(this.Singleplayer_CheckedChanged);
             // 
             // multiplayer
             // 
@@ -2097,6 +2098,7 @@
             this.multiplayer.TabIndex = 54;
             this.multiplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.multiplayer.UseVisualStyleBackColor = false;
+            this.multiplayer.CheckedChanged += new System.EventHandler(this.Multiplayer_CheckedChanged);
             // 
             // close_game_mode_panel
             // 
@@ -2140,7 +2142,6 @@
             // multiplayer_background
             // 
             this.multiplayer_background.BackColor = System.Drawing.Color.Black;
-            //this.multiplayer_background.Controls.Add(this.coming_soon_label);
             this.multiplayer_background.Controls.Add(this.connect_game_btn);
             this.multiplayer_background.Controls.Add(this.nickname);
             this.multiplayer_background.Controls.Add(this.nickname_label);
@@ -2150,17 +2151,6 @@
             this.multiplayer_background.Name = "multiplayer_background";
             this.multiplayer_background.Size = new System.Drawing.Size(490, 276);
             this.multiplayer_background.TabIndex = 45;
-            // 
-            // coming_soon_label
-            // 
-            this.coming_soon_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.coming_soon_label.ForeColor = System.Drawing.Color.White;
-            this.coming_soon_label.Location = new System.Drawing.Point(3, 3);
-            this.coming_soon_label.Name = "coming_soon_label";
-            this.coming_soon_label.Size = new System.Drawing.Size(484, 220);
-            this.coming_soon_label.TabIndex = 63;
-            this.coming_soon_label.Text = "COMING\r\nSOON";
-            this.coming_soon_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // connect_game_btn
             // 
@@ -2224,6 +2214,17 @@
             this.multiplayer_close.Text = "Назад";
             this.multiplayer_close.UseVisualStyleBackColor = false;
             this.multiplayer_close.Click += new System.EventHandler(this.Multiplayer_close_Click);
+            // 
+            // coming_soon_label
+            // 
+            this.coming_soon_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.coming_soon_label.ForeColor = System.Drawing.Color.White;
+            this.coming_soon_label.Location = new System.Drawing.Point(3, 3);
+            this.coming_soon_label.Name = "coming_soon_label";
+            this.coming_soon_label.Size = new System.Drawing.Size(484, 220);
+            this.coming_soon_label.TabIndex = 63;
+            this.coming_soon_label.Text = "COMING\r\nSOON";
+            this.coming_soon_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // host_panel
             // 
@@ -2426,10 +2427,10 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1251, 896);
-            this.Controls.Add(this.connect_panel);
             this.Controls.Add(this.game_mode_panel);
-            this.Controls.Add(this.host_panel);
             this.Controls.Add(this.exit_panel);
+            this.Controls.Add(this.connect_panel);
+            this.Controls.Add(this.host_panel);
             this.Controls.Add(this.multiplayer_panel);
             this.Controls.Add(this.change_logs_panel);
             this.Controls.Add(this.press_any_btn_panel);
