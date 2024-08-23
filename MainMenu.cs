@@ -1262,6 +1262,36 @@ namespace SLIL
             }
         }
 
+        private void Ip_connect_input_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                ConnectToGame();
+            }
+        }
+
+        private void ConnectToGame()
+        {
+            if (ip_connect_input.Text == "000.000.000.000:0000") return;
+            game_mode_panel.Visible = false;
+            if (sounds) MainMenuTheme.Stop();
+            SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]))
+            {
+                DeathSounds = DeathSounds,
+                CuteDeathSounds = CuteDeathSounds,
+                game_over = game_over,
+                draw = draw,
+                buy = buy,
+                wall = wall,
+                tp = tp,
+                screenshot = screenshot
+            };
+            form.ShowDialog();
+            if (sounds) MainMenuTheme.Play(Volume);
+            difficulty_panel.Visible = false;
+        }
+
         private void Invert_x_CheckedChanged(object sender, EventArgs e)
         {
             lose_focus.Focus();
@@ -1319,22 +1349,7 @@ namespace SLIL
         private void Connect_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            game_mode_panel.Visible = false;
-            if (sounds) MainMenuTheme.Stop();
-            SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]))
-            {
-                DeathSounds = DeathSounds,
-                CuteDeathSounds = CuteDeathSounds,
-                game_over = game_over,
-                draw = draw,
-                buy = buy,
-                wall = wall,
-                tp = tp,
-                screenshot = screenshot
-            };
-            form.ShowDialog();
-            if (sounds) MainMenuTheme.Play(Volume);
-            difficulty_panel.Visible = false;
+            ConnectToGame();
         }
 
         private void Multiplayer_close_Click(object sender, EventArgs e)
