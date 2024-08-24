@@ -1,6 +1,5 @@
 ﻿using LiteNetLib.Utils;
 using System;
-using System.Drawing;
 using System.Linq;
 
 namespace SLIL.Classes
@@ -33,7 +32,6 @@ namespace SLIL.Classes
             EntityID = this.GetEntityID();
             rand = new Random();
             Frames = 24;
-            Texture = this.GetTexture();
             EntityWidth = this.GetEntityWidth();
             RespondsToFlashlight = false;
             Texture = this.GetTexture();
@@ -425,6 +423,58 @@ namespace SLIL.Classes
             stage = Stages.Roaming;
             CanHit = true;
             Fast = false;
+        }
+    }
+
+    public abstract class Rockets : NPC
+    {
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd' };
+
+        public Rockets(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => CanHit = false;
+        public Rockets(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => CanHit = false;
+
+        public void SetA(double value) => A = value;
+        public override void UpdateCoordinates(string map, double playerX, double playerY)
+        {
+            double move = this.GetMove();
+            double newX = X;
+            double newY = Y;
+            double tempX = X;
+            double tempY = Y;
+            newX += Math.Sin(A) * move;
+            newY += Math.Cos(A) * move;
+            if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                tempX = newX;
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                tempY = newY;
+            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                tempX -= EntityWidth / 2 - (1 - tempX % 1);
+            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                tempX += EntityWidth / 2 - (tempX % 1);
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                tempY -= EntityWidth / 2 - (1 - tempY % 1);
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                tempY += EntityWidth / 2 - (tempY % 1);
+            X = tempX;
+            Y = tempY;
+        }
+    }
+
+    public class RpgRocket : Rockets
+    {
+        protected override int GetEntityID() => 16;
+        protected override double GetEntityWidth() => 0.4;
+        protected override double GetMove() => 0.2;
+
+        public RpgRocket(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public RpgRocket(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 48;
+            base.SetAnimations(1, 0);
         }
     }
 

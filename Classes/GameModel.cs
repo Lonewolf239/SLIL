@@ -179,6 +179,11 @@ namespace SLIL.Classes
                         else
                             entity.Stoped = true;
                     }
+                    else if (entity is Rockets)
+                    {
+                        if (!entity.DEAD)
+                            entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
+                    }
                 }
             }
         }
@@ -334,6 +339,11 @@ namespace SLIL.Classes
                         barrel.Deserialize(reader);
                         tempEntities.Add(barrel);
                         break;
+                    case 16:
+                        RpgRocket rpgRocket = new RpgRocket(0, 0, MAP_WIDTH, ID);
+                        rpgRocket.Deserialize(reader);
+                        tempEntities.Add(rpgRocket);
+                        break;
                     default:
                         break;
                 }
@@ -447,6 +457,11 @@ namespace SLIL.Classes
                         Barrel barrel = new Barrel(0, 0, MAP_WIDTH, ID);
                         barrel.Deserialize(reader);
                         tempEntities.Add(barrel);
+                        break;
+                    case 16:
+                        RpgRocket rpgRocket = new RpgRocket(0, 0, MAP_WIDTH, ID);
+                        rpgRocket.Deserialize(reader);
+                        tempEntities.Add(rpgRocket);
                         break;
                     default:
                         break;
@@ -968,6 +983,18 @@ namespace SLIL.Classes
                     player.Y = 1.5;
                 }
             };
+        }
+
+        public void SpawnRockets(double x, double y, int id, double a)
+        {
+            Rockets rocket = null;
+            if (id == 0)
+                rocket = new RpgRocket(x, y, MAP_WIDTH, ref MaxEntityID);
+            if (rocket != null)
+            {
+                rocket.SetA(a);
+                Entities.Add(rocket);
+            }
         }
 
         private void SpawnEnemis(int x, int y, int size)

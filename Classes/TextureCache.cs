@@ -54,6 +54,8 @@ namespace SLIL.Classes
             Properties.Resources.box_broken,
             Properties.Resources.barrel, //46
             Properties.Resources.barrel_broken,
+            Properties.Resources.missing, //48
+            Properties.Resources.missing,
         };
         private readonly Image[] cute_textures =
         {
@@ -103,6 +105,8 @@ namespace SLIL.Classes
             Properties.Resources.box_broken,
             Properties.Resources.barrel, //46
             Properties.Resources.barrel_broken,
+            Properties.Resources.missing, //48
+            Properties.Resources.missing,
         };
         private readonly Color[] COLORS =
         {

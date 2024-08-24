@@ -460,8 +460,29 @@ namespace SLIL.Classes
             }
             else
             {
-                AmmoCount++;
-                MaxAmmoCount--;
+                int ammo = Level == Levels.LV3 ? 2 : 1;
+                if (AmmoCount + ammo >= CartridgesClip)
+                {
+                    MaxAmmoCount += AmmoCount;
+                    AmmoCount = CartridgesClip;
+                    MaxAmmoCount -= CartridgesClip;
+                }
+                else
+                {
+                    if (MaxAmmoCount - ammo < 0)
+                    {
+                        if (MaxAmmoCount - (ammo / 2) >= 0)
+                        {
+                            MaxAmmoCount -= ammo / 2;
+                            AmmoCount += ammo / 2;
+                        }
+                    }
+                    else
+                    {
+                        MaxAmmoCount -= ammo;
+                        AmmoCount += ammo;
+                    }
+                }
             }
         }
         protected override void ApplyUpdate()

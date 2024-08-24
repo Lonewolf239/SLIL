@@ -547,6 +547,7 @@ namespace SLIL
             Controller.AddPet(index);
             CuteMode();
             Player player = Controller.GetPlayer();
+            HideShop();
             if (player.CuteMode && shop_tab_control.Controls.ContainsKey("weapon_shop_page"))
             {
                 shop_tab_control.Controls.Clear();
@@ -650,6 +651,16 @@ namespace SLIL
             }
             shop_panel.BringToFront();
             shop_panel.Visible = true;
+        }
+
+        private void HideShop()
+        {
+            open_shop = false;
+            mouse_timer.Start();
+            int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
+            int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
+            Cursor.Position = new Point(x, y);
+            shop_panel.Visible = false;
         }
 
         private void SLIL_Activated(object sender, EventArgs e) => active = true;
@@ -775,15 +786,7 @@ namespace SLIL
         {
             if (e.KeyCode == Keys.Escape)
             {
-                if (open_shop)
-                {
-                    open_shop = false;
-                    mouse_timer.Start();
-                    int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
-                    int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
-                    Cursor.Position = new Point(x, y);
-                    shop_panel.Visible = false;
-                }
+                if (open_shop) HideShop();
                 else if (console_panel.Visible)
                 {
                     scope[scope_type] = GetScope(scope[scope_type]);
@@ -1341,183 +1344,182 @@ namespace SLIL
 
         private void BulletRayCasting()
         {
-            DateTime time = DateTime.Now;
-            elapsed_time = (time - total_time).TotalSeconds;
-            total_time = time;
-            PlayerMove();
-            ClearDisplayedMap();
-            Player player = Controller.GetPlayer();
             scope_hit = null;
-            double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
-            double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
-            Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
-            List<Entity> Entities = Controller.GetEntities();
-            int[] spriteOrder = new int[Entities.Count];
-            double[] spriteDistance = new double[Entities.Count];
-            int[] textures = new int[Entities.Count];
-            for (int i = 0; i < Entities.Count; i++)
+            Player player = Controller.GetPlayer();
+            if (player.GetCurrentGun() is RPG) Controller.SpawnRockets(player.X, player.Y, 0, player.A);
+            else
             {
-                spriteOrder[i] = i;
-                spriteDistance[i] = (player.X - Entities[i].X) * (player.X - Entities[i].X) + (player.Y - Entities[i].Y) * (player.Y - Entities[i].Y);
-                textures[i] = Entities[i].Texture;
-            }
-            SortSpritesNotReversed(ref spriteOrder, ref spriteDistance, ref textures, Entities.Count);
-            for (int i = 0; i < Entities.Count; i++)
-            {
-                if (Entities[spriteOrder[i]] is Player)
+                double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
+                double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
+                Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
+                List<Entity> Entities = Controller.GetEntities();
+                int[] spriteOrder = new int[Entities.Count];
+                double[] spriteDistance = new double[Entities.Count];
+                int[] textures = new int[Entities.Count];
+                for (int i = 0; i < Entities.Count; i++)
                 {
-                    if (Controller.GetPlayer().ID == (Entities[spriteOrder[i]] as Player).ID) continue;
+                    spriteOrder[i] = i;
+                    spriteDistance[i] = (player.X - Entities[i].X) * (player.X - Entities[i].X) + (player.Y - Entities[i].Y) * (player.Y - Entities[i].Y);
+                    textures[i] = Entities[i].Texture;
                 }
-                Entity entity = Entities[spriteOrder[i]];
-                Creature creature = null;
-                if (entity is Creature)
+                SortSpritesNotReversed(ref spriteOrder, ref spriteDistance, ref textures, Entities.Count);
+                for (int i = 0; i < Entities.Count; i++)
                 {
-                    creature = Entities[spriteOrder[i]] as Creature;
-                    if (!creature.CanHit)
-                        creature = null;
-                }
-                double spriteX = entity.X - player.X;
-                double spriteY = entity.Y - player.Y;
-                double transformX = invDet * (dirY * spriteX - dirX * spriteY);
-                double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-                int spriteScreenX = (int)((SCREEN_WIDTH[resolution] / 2) * (1 + transformX / transformY));
-                double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
-                double spriteTop = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / Distance;
-                double spriteBottom = SCREEN_HEIGHT[resolution] - (spriteTop + player.Look);
-                int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
-                int drawStartY = (int)spriteTop;
-                int drawEndY = (int)spriteBottom;
-                int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
-                int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
-                int drawStartX = -spriteWidth / 2 + spriteScreenX;
-                if (drawStartX < 0) drawStartX = 0;
-                int drawEndX = spriteWidth / 2 + spriteScreenX;
-                if (drawEndX >= SCREEN_WIDTH[resolution]) drawEndX = SCREEN_WIDTH[resolution];
-                var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
-                for (int stripe = drawStartX; stripe < drawEndX; stripe++)
-                {
-                    int texWidth = 128;
-                    double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
-                    if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH[resolution] && transformY < ZBuffer[stripe])
+                    if (Entities[spriteOrder[i]] is Player)
                     {
-                        for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT[resolution]; y++)
+                        if (Controller.GetPlayer().ID == (Entities[spriteOrder[i]] as Player).ID) continue;
+                    }
+                    Entity entity = Entities[spriteOrder[i]];
+                    Creature creature = null;
+                    if (entity is Creature)
+                    {
+                        creature = Entities[spriteOrder[i]] as Creature;
+                        if (!creature.CanHit)
+                            creature = null;
+                    }
+                    double spriteX = entity.X - player.X;
+                    double spriteY = entity.Y - player.Y;
+                    double transformX = invDet * (dirY * spriteX - dirX * spriteY);
+                    double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
+                    int spriteScreenX = (int)((SCREEN_WIDTH[resolution] / 2) * (1 + transformX / transformY));
+                    double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
+                    double spriteTop = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / Distance;
+                    double spriteBottom = SCREEN_HEIGHT[resolution] - (spriteTop + player.Look);
+                    int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
+                    int drawStartY = (int)spriteTop;
+                    int drawEndY = (int)spriteBottom;
+                    int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
+                    int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
+                    int drawStartX = -spriteWidth / 2 + spriteScreenX;
+                    if (drawStartX < 0) drawStartX = 0;
+                    int drawEndX = spriteWidth / 2 + spriteScreenX;
+                    if (drawEndX >= SCREEN_WIDTH[resolution]) drawEndX = SCREEN_WIDTH[resolution];
+                    var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
+                    for (int stripe = drawStartX; stripe < drawEndX; stripe++)
+                    {
+                        int texWidth = 128;
+                        double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
+                        if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH[resolution] && transformY < ZBuffer[stripe])
                         {
-                            if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
-                                continue;
-                            double d = y - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
-                            double texY = d / (drawEndY - drawStartY);
-                            if (y == drawStartY) texY = 0;
-                            if (rays[stripe].Length > y && y >= 0)
+                            for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT[resolution]; y++)
                             {
-                                if (EnableAnimation)
+                                if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
+                                    continue;
+                                double d = y - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                                double texY = d / (drawEndY - drawStartY);
+                                if (y == drawStartY) texY = 0;
+                                if (rays[stripe].Length > y && y >= 0)
                                 {
-                                    if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
-                                        rays[stripe][y].TextureId = textures[i] + 2;
-                                    else
-                                        rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
-                                }
-                                else
-                                    rays[stripe][y].TextureId = textures[i];
-                                rays[stripe][y].Blackout = 0;
-                                rays[stripe][y].TextureX = texX;
-                                rays[stripe][y].TextureY = texY;
-                                Color color = GetColorForPixel(rays[stripe][y]);
-                                if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && player.GetCurrentGun().FiringRange >= Distance)
-                                {
-                                    if (creature != null)
+                                    if (EnableAnimation)
                                     {
-                                        if (creature.DEAD)
-                                            continue;
-                                        double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                        if (player.GetCurrentGun() is Shotgun)
-                                            damage *= player.GetCurrentGun().FiringRange - Distance;
-                                        if (Controller.DealDamage(creature, damage))
-                                        {
-                                            if (MainMenu.sounds)
-                                            {
-                                                if (player.CuteMode)
-                                                    CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
-                                                else
-                                                    DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
-                                            }
-                                        }
-                                        else if (difficulty == 0 && player.GetCurrentGun().FireType == FireTypes.Single && !(player.GetCurrentGun() is Knife))
-                                            creature.UpdateCoordinates(Controller.GetMap().ToString(), player.X, player.Y);
-                                        if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
-                                        else scope_hit = Properties.Resources.scope_c_hit;
-                                        return;
-                                    }
-                                    else if (entity is Player targetPlayer && entity.ID != player.ID)
-                                    {
-                                        if (targetPlayer.Dead) continue;
-                                        double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                        if (player.GetCurrentGun() is Shotgun)
-                                            damage *= player.GetCurrentGun().FiringRange - Distance;
-                                        if (Controller.DealDamage(targetPlayer, damage * 5))
-                                        {
-                                            if (MainMenu.sounds)
-                                            {
-                                                if (player.CuteMode)
-                                                    CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
-                                                else
-                                                    DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
-                                            }
-                                        }
-                                        if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
-                                        else scope_hit = Properties.Resources.scope_c_hit;
-                                        return;
+                                        if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
+                                            rays[stripe][y].TextureId = textures[i] + 2;
+                                        else
+                                            rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
                                     }
                                     else
-                                        return;
+                                        rays[stripe][y].TextureId = textures[i];
+                                    rays[stripe][y].Blackout = 0;
+                                    rays[stripe][y].TextureX = texX;
+                                    rays[stripe][y].TextureY = texY;
+                                    Color color = GetColorForPixel(rays[stripe][y]);
+                                    if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && player.GetCurrentGun().FiringRange >= Distance)
+                                    {
+                                        if (creature != null)
+                                        {
+                                            if (creature.DEAD)
+                                                continue;
+                                            double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                            if (player.GetCurrentGun() is Shotgun)
+                                                damage *= player.GetCurrentGun().FiringRange - Distance;
+                                            if (Controller.DealDamage(creature, damage))
+                                            {
+                                                if (MainMenu.sounds)
+                                                {
+                                                    if (player.CuteMode)
+                                                        CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                    else
+                                                        DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                }
+                                            }
+                                            else if (difficulty == 0 && player.GetCurrentGun().FireType == FireTypes.Single && !(player.GetCurrentGun() is Knife))
+                                                creature.UpdateCoordinates(Controller.GetMap().ToString(), player.X, player.Y);
+                                            if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
+                                            else scope_hit = Properties.Resources.scope_c_hit;
+                                            return;
+                                        }
+                                        else if (entity is Player targetPlayer && entity.ID != player.ID)
+                                        {
+                                            if (targetPlayer.Dead) continue;
+                                            double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                            if (player.GetCurrentGun() is Shotgun)
+                                                damage *= player.GetCurrentGun().FiringRange - Distance;
+                                            if (Controller.DealDamage(targetPlayer, damage * 5))
+                                            {
+                                                if (MainMenu.sounds)
+                                                {
+                                                    if (player.CuteMode)
+                                                        CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                    else
+                                                        DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                }
+                                            }
+                                            if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
+                                            else scope_hit = Properties.Resources.scope_c_hit;
+                                            return;
+                                        }
+                                        else
+                                            return;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            if (player.CuteMode) return;
-            double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
-            double ray_x = Math.Sin(rayA);
-            double ray_y = Math.Cos(rayA);
-            double distance = 0;
-            bool hit = false;
-            scope_hit = null;
-            while (raycast.Enabled && !hit && distance < player.GetCurrentGun().FiringRange)
-            {
-                distance += 0.01d;
-                int test_x = (int)(player.X + ray_x * distance);
-                int test_y = (int)(player.Y + ray_y * distance);
-                if (test_x < 0 || test_x >= (player.DEPTH + factor) + player.X || test_y < 0 || test_y >= (player.DEPTH + factor) + player.Y)
-                    hit = true;
-                else
+                if (player.CuteMode) return;
+                double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
+                double ray_x = Math.Sin(rayA);
+                double ray_y = Math.Cos(rayA);
+                double distance = 0;
+                bool hit = false;
+                scope_hit = null;
+                while (raycast.Enabled && !hit && distance < player.GetCurrentGun().FiringRange)
                 {
-                    char test_wall = Controller.GetMap()[test_y * Controller.GetMapWidth() + test_x];
-                    double celling = (SCREEN_HEIGHT[resolution] - player.Look) / 2.25d - (SCREEN_HEIGHT[resolution] * FOV) / distance;
-                    double floor = SCREEN_HEIGHT[resolution] - (celling + player.Look);
-                    double mid = (celling + floor) / 2;
-                    if (test_wall == '#' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT[resolution] / 2 >= mid))
-                    {
+                    distance += 0.01d;
+                    int test_x = (int)(player.X + ray_x * distance);
+                    int test_y = (int)(player.Y + ray_y * distance);
+                    if (test_x < 0 || test_x >= (player.DEPTH + factor) + player.X || test_y < 0 || test_y >= (player.DEPTH + factor) + player.Y)
                         hit = true;
-                        /*int side = GetAccurateSide(distance, ray_x, ray_y);
-                        switch (side)
+                    else
+                    {
+                        char test_wall = Controller.GetMap()[test_y * Controller.GetMapWidth() + test_x];
+                        double celling = (SCREEN_HEIGHT[resolution] - player.Look) / 2.25d - (SCREEN_HEIGHT[resolution] * FOV) / distance;
+                        double floor = SCREEN_HEIGHT[resolution] - (celling + player.Look);
+                        double mid = (celling + floor) / 2;
+                        if (test_wall == '#' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT[resolution] / 2 >= mid))
                         {
-                            case 0:
-                                Controller.AddHittingTheWall(player.X + ray_x * distance - 0.5, player.Y + ray_y * distance - 0.2 - 0.5);
-                                break;
-                            case 1:
-                                Controller.AddHittingTheWall(player.X + ray_x * distance - 0.5, player.Y + ray_y * distance + 0.2 - 0.5);
-                                break;
-                            case 2:
-                                Controller.AddHittingTheWall(player.X + ray_x * distance - 0.2 - 0.5, player.Y + ray_y * distance - 0.5);
-                                break;
-                            case 3:
-                                Controller.AddHittingTheWall(player.X + ray_x * distance + 0.2 - 0.5, player.Y + ray_y * distance - 0.5);
-                                break;
-                            default:
-                                break;
-                        }*/
-                        distance -= 0.2;
-                        Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance);
+                            hit = true;
+                            /*int side = GetAccurateSide(distance, ray_x, ray_y);
+                            switch (side)
+                            {
+                                case 0:
+                                    Controller.AddHittingTheWall(player.X + ray_x * distance - 0.5, player.Y + ray_y * distance - 0.2 - 0.5);
+                                    break;
+                                case 1:
+                                    Controller.AddHittingTheWall(player.X + ray_x * distance - 0.5, player.Y + ray_y * distance + 0.2 - 0.5);
+                                    break;
+                                case 2:
+                                    Controller.AddHittingTheWall(player.X + ray_x * distance - 0.2 - 0.5, player.Y + ray_y * distance - 0.5);
+                                    break;
+                                case 3:
+                                    Controller.AddHittingTheWall(player.X + ray_x * distance + 0.2 - 0.5, player.Y + ray_y * distance - 0.5);
+                                    break;
+                                default:
+                                    break;
+                            }*/
+                            distance -= 0.2;
+                            Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance);
+                        }
                     }
                 }
             }
@@ -1529,6 +1531,7 @@ namespace SLIL
             player.GunState = player.MoveStyle;
             player.CanShoot = true;
             shotgun_pull_timer.Stop();
+            reload_frames = 0;
             if (player.GetCurrentGun().AmmoCount == 0)
                 reload_timer.Start();
         }
@@ -1558,7 +1561,7 @@ namespace SLIL
                             if (player.GetCurrentGun().MaxAmmoCount > 0)
                             {
                                 player.GunState = 3;
-                                reload_frames = -1;
+                                reload_frames = pressed_r ? -1 : 0;
                                 Controller.ReloadClip();
                             }
                             if (player.GetCurrentGun().MaxAmmoCount == 0 || player.GetCurrentGun().AmmoCount == player.GetCurrentGun().CartridgesClip)
@@ -2797,15 +2800,10 @@ namespace SLIL
 
         private void ToDefault()
         {
-            //Player player = Controller.GetPlayer();
-            //player.Dead = true;
-            //player.SetDefault();
             shop_tab_control.Controls.Clear();
             shop_tab_control.Controls.Add(weapon_shop_page);
             shop_tab_control.Controls.Add(pet_shop_page);
             shop_tab_control.Controls.Add(consumables_shop_page);
-            //for (int i = 0; i < player.GUNS.Length; i++)
-            //    player.GUNS[i].SetDefault();
         }
 
         private void GameOver(int win)

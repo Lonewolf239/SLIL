@@ -24,7 +24,7 @@ namespace GameServer
 
         public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server, int playerIDfromPeer)
         {
-            NetDataReader dreader = new NetDataReader(data);
+            NetDataReader dreader = new(data);
             switch (packetID)
             {
                 case 0:

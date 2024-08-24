@@ -339,6 +339,11 @@ namespace SLIL.Classes
                         barrel.Deserialize(reader);
                         tempEntities.Add(barrel);
                         break;
+                    case 16:
+                        RpgRocket rpgRocket = new(0, 0, MAP_WIDTH, ID);
+                        rpgRocket.Deserialize(reader);
+                        tempEntities.Add(rpgRocket);
+                        break;
                     default:
                         break;
                 }
@@ -452,6 +457,11 @@ namespace SLIL.Classes
                         Barrel barrel = new(0, 0, MAP_WIDTH, ID);
                         barrel.Deserialize(reader);
                         tempEntities.Add(barrel);
+                        break;
+                    case 16:
+                        RpgRocket rpgRocket = new(0, 0, MAP_WIDTH, ID);
+                        rpgRocket.Deserialize(reader);
+                        tempEntities.Add(rpgRocket);
                         break;
                     default:
                         break;

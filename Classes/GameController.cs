@@ -171,11 +171,10 @@ namespace SLIL.Classes
         public void RestartGame()
         {
             if (!Game.IsGameStarted())
-            {
                 Game.StartGame(true);
-                //playerID = Game.AddPlayer();
-            }
         }
+
+        public void SpawnRockets(double x, double y, int id, double a) => Game.SpawnRockets(x, y, id, a);
 
         public void Pause(bool paused) => Game.Pause(paused);
 
