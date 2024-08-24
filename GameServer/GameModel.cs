@@ -1016,8 +1016,8 @@ namespace SLIL.Classes
 
         public bool DealDamage(int ID, double damage, int attackerID)
         {
-            Entity target = null;
-            Entity attacker = null;
+            Entity? target = null;
+            Entity? attacker = null;
             foreach (Entity entity in Entities)
             {
                 if (entity.ID == ID) target = entity;
@@ -1047,10 +1047,10 @@ namespace SLIL.Classes
                             multiplier = 1.5;
                         attackerPlayer.ChangeMoney(rand.Next((int)(c.MIN_MONEY * multiplier), (int)(c.MAX_MONEY * multiplier)));
                         attackerPlayer.EnemiesKilled++;
-                        if (target is Boxes && !attackerPlayer.CuteMode)
+                        if (target is Boxes boxes && !attackerPlayer.CuteMode)
                         {
-                            if ((target as Boxes).BoxWithMoney)
-                                attackerPlayer.Money += rand.Next(5, 11);
+                            if (boxes.BoxWithMoney)
+                                attackerPlayer.ChangeMoney(rand.Next(5, 11));
                             else
                             {
                                 int count = attackerPlayer.Guns.Count;

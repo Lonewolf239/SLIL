@@ -73,12 +73,12 @@
             this.volume_panel = new System.Windows.Forms.Panel();
             this.volume = new System.Windows.Forms.TrackBar();
             this.volume_label = new System.Windows.Forms.Label();
-            this.sound_panel = new System.Windows.Forms.Panel();
-            this.sounds_on_off = new System.Windows.Forms.CheckBox();
-            this.sounds_label = new System.Windows.Forms.Label();
             this.console_panel = new System.Windows.Forms.Panel();
             this.console_btn = new System.Windows.Forms.CheckBox();
             this.console_label = new System.Windows.Forms.Label();
+            this.sound_panel = new System.Windows.Forms.Panel();
+            this.sounds_on_off = new System.Windows.Forms.CheckBox();
+            this.sounds_label = new System.Windows.Forms.Label();
             this.video_settings = new System.Windows.Forms.TabPage();
             this.scope_color_panel = new System.Windows.Forms.Panel();
             this.scope_color_choice = new System.Windows.Forms.TrackBar();
@@ -95,6 +95,9 @@
             this.show_fps_panel = new System.Windows.Forms.Panel();
             this.show_fps_on_off = new System.Windows.Forms.CheckBox();
             this.show_fps_label = new System.Windows.Forms.Label();
+            this.smoothing_panel = new System.Windows.Forms.Panel();
+            this.smoothing_list = new System.Windows.Forms.ComboBox();
+            this.smoothing_label = new System.Windows.Forms.Label();
             this.high_resolution_panel = new System.Windows.Forms.Panel();
             this.high_resolution_on_off = new System.Windows.Forms.CheckBox();
             this.high_resolution_label = new System.Windows.Forms.Label();
@@ -232,8 +235,8 @@
             this.language_panel.SuspendLayout();
             this.volume_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.volume)).BeginInit();
-            this.sound_panel.SuspendLayout();
             this.console_panel.SuspendLayout();
+            this.sound_panel.SuspendLayout();
             this.video_settings.SuspendLayout();
             this.scope_color_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scope_color_choice)).BeginInit();
@@ -243,6 +246,7 @@
             this.fps_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fps)).BeginInit();
             this.show_fps_panel.SuspendLayout();
+            this.smoothing_panel.SuspendLayout();
             this.high_resolution_panel.SuspendLayout();
             this.controls_settings.SuspendLayout();
             this.controls_tabcontrol.SuspendLayout();
@@ -725,7 +729,6 @@
             // check_update_panel
             // 
             this.check_update_panel.BackColor = System.Drawing.Color.Black;
-            this.check_update_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.check_update_panel.Controls.Add(this.check_update_btn);
             this.check_update_panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.check_update_panel.Location = new System.Drawing.Point(3, 173);
@@ -737,9 +740,9 @@
             // 
             this.check_update_btn.AutoSize = true;
             this.check_update_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.check_update_btn.Location = new System.Drawing.Point(145, 0);
+            this.check_update_btn.Location = new System.Drawing.Point(147, 0);
             this.check_update_btn.Name = "check_update_btn";
-            this.check_update_btn.Size = new System.Drawing.Size(312, 32);
+            this.check_update_btn.Size = new System.Drawing.Size(312, 34);
             this.check_update_btn.TabIndex = 0;
             this.check_update_btn.TabStop = false;
             this.check_update_btn.Text = "Проверить наличие обновления";
@@ -785,7 +788,6 @@
             // language_panel
             // 
             this.language_panel.BackColor = System.Drawing.Color.Black;
-            this.language_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.language_panel.Controls.Add(this.language_list);
             this.language_panel.Controls.Add(this.language_label);
             this.language_panel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -803,7 +805,7 @@
             this.language_list.Items.AddRange(new object[] {
             "Русский",
             "English"});
-            this.language_list.Location = new System.Drawing.Point(295, 0);
+            this.language_list.Location = new System.Drawing.Point(297, 0);
             this.language_list.Name = "language_list";
             this.language_list.Size = new System.Drawing.Size(162, 32);
             this.language_list.TabIndex = 2;
@@ -815,7 +817,7 @@
             this.language_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.language_label.Location = new System.Drawing.Point(0, 0);
             this.language_label.Name = "language_label";
-            this.language_label.Size = new System.Drawing.Size(226, 32);
+            this.language_label.Size = new System.Drawing.Size(226, 34);
             this.language_label.TabIndex = 0;
             this.language_label.Text = "Язык";
             this.language_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -853,43 +855,6 @@
             this.volume_label.Text = "Громкость";
             this.volume_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // sound_panel
-            // 
-            this.sound_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.sound_panel.Controls.Add(this.sounds_on_off);
-            this.sound_panel.Controls.Add(this.sounds_label);
-            this.sound_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sound_panel.Location = new System.Drawing.Point(3, 37);
-            this.sound_panel.Name = "sound_panel";
-            this.sound_panel.Size = new System.Drawing.Size(459, 34);
-            this.sound_panel.TabIndex = 0;
-            // 
-            // sounds_on_off
-            // 
-            this.sounds_on_off.Appearance = System.Windows.Forms.Appearance.Button;
-            this.sounds_on_off.Checked = true;
-            this.sounds_on_off.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.sounds_on_off.Dock = System.Windows.Forms.DockStyle.Right;
-            this.sounds_on_off.Location = new System.Drawing.Point(387, 0);
-            this.sounds_on_off.Name = "sounds_on_off";
-            this.sounds_on_off.Size = new System.Drawing.Size(70, 32);
-            this.sounds_on_off.TabIndex = 1;
-            this.sounds_on_off.TabStop = false;
-            this.sounds_on_off.Text = "Вкл.";
-            this.sounds_on_off.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.sounds_on_off.UseVisualStyleBackColor = false;
-            this.sounds_on_off.CheckedChanged += new System.EventHandler(this.Sounds_on_off_CheckedChanged);
-            // 
-            // sounds_label
-            // 
-            this.sounds_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.sounds_label.Location = new System.Drawing.Point(0, 0);
-            this.sounds_label.Name = "sounds_label";
-            this.sounds_label.Size = new System.Drawing.Size(226, 32);
-            this.sounds_label.TabIndex = 0;
-            this.sounds_label.Text = "Игровые звуки";
-            this.sounds_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // console_panel
             // 
             this.console_panel.Controls.Add(this.console_btn);
@@ -924,6 +889,42 @@
             this.console_label.Text = "Консоль разработчика";
             this.console_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // sound_panel
+            // 
+            this.sound_panel.Controls.Add(this.sounds_on_off);
+            this.sound_panel.Controls.Add(this.sounds_label);
+            this.sound_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.sound_panel.Location = new System.Drawing.Point(3, 37);
+            this.sound_panel.Name = "sound_panel";
+            this.sound_panel.Size = new System.Drawing.Size(459, 34);
+            this.sound_panel.TabIndex = 0;
+            // 
+            // sounds_on_off
+            // 
+            this.sounds_on_off.Appearance = System.Windows.Forms.Appearance.Button;
+            this.sounds_on_off.Checked = true;
+            this.sounds_on_off.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.sounds_on_off.Dock = System.Windows.Forms.DockStyle.Right;
+            this.sounds_on_off.Location = new System.Drawing.Point(389, 0);
+            this.sounds_on_off.Name = "sounds_on_off";
+            this.sounds_on_off.Size = new System.Drawing.Size(70, 34);
+            this.sounds_on_off.TabIndex = 1;
+            this.sounds_on_off.TabStop = false;
+            this.sounds_on_off.Text = "Вкл.";
+            this.sounds_on_off.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.sounds_on_off.UseVisualStyleBackColor = false;
+            this.sounds_on_off.CheckedChanged += new System.EventHandler(this.Sounds_on_off_CheckedChanged);
+            // 
+            // sounds_label
+            // 
+            this.sounds_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.sounds_label.Location = new System.Drawing.Point(0, 0);
+            this.sounds_label.Name = "sounds_label";
+            this.sounds_label.Size = new System.Drawing.Size(226, 34);
+            this.sounds_label.TabIndex = 0;
+            this.sounds_label.Text = "Игровые звуки";
+            this.sounds_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // video_settings
             // 
             this.video_settings.AutoScroll = true;
@@ -933,22 +934,22 @@
             this.video_settings.Controls.Add(this.show_minimap_panel);
             this.video_settings.Controls.Add(this.fps_panel);
             this.video_settings.Controls.Add(this.show_fps_panel);
+            this.video_settings.Controls.Add(this.smoothing_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 22);
+            this.video_settings.Location = new System.Drawing.Point(4, 33);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 194);
+            this.video_settings.Size = new System.Drawing.Size(482, 183);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
             // scope_color_panel
             // 
-            this.scope_color_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.scope_color_panel.Controls.Add(this.scope_color_choice);
             this.scope_color_panel.Controls.Add(this.scope_color_label);
             this.scope_color_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.scope_color_panel.Location = new System.Drawing.Point(3, 173);
+            this.scope_color_panel.Location = new System.Drawing.Point(3, 207);
             this.scope_color_panel.Name = "scope_color_panel";
             this.scope_color_panel.Size = new System.Drawing.Size(459, 34);
             this.scope_color_panel.TabIndex = 4;
@@ -956,10 +957,10 @@
             // scope_color_choice
             // 
             this.scope_color_choice.Dock = System.Windows.Forms.DockStyle.Right;
-            this.scope_color_choice.Location = new System.Drawing.Point(353, 0);
+            this.scope_color_choice.Location = new System.Drawing.Point(355, 0);
             this.scope_color_choice.Maximum = 8;
             this.scope_color_choice.Name = "scope_color_choice";
-            this.scope_color_choice.Size = new System.Drawing.Size(104, 32);
+            this.scope_color_choice.Size = new System.Drawing.Size(104, 34);
             this.scope_color_choice.TabIndex = 5;
             this.scope_color_choice.TabStop = false;
             this.scope_color_choice.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
@@ -970,7 +971,7 @@
             this.scope_color_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.scope_color_label.Location = new System.Drawing.Point(0, 0);
             this.scope_color_label.Name = "scope_color_label";
-            this.scope_color_label.Size = new System.Drawing.Size(325, 32);
+            this.scope_color_label.Size = new System.Drawing.Size(325, 34);
             this.scope_color_label.TabIndex = 2;
             this.scope_color_label.Text = "Цвет прицела: Зелёный";
             this.scope_color_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -981,7 +982,7 @@
             this.scope_panel.Controls.Add(this.scope_choice);
             this.scope_panel.Controls.Add(this.scope_label);
             this.scope_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.scope_panel.Location = new System.Drawing.Point(3, 139);
+            this.scope_panel.Location = new System.Drawing.Point(3, 173);
             this.scope_panel.Name = "scope_panel";
             this.scope_panel.Size = new System.Drawing.Size(459, 34);
             this.scope_panel.TabIndex = 3;
@@ -1010,11 +1011,10 @@
             // 
             // show_minimap_panel
             // 
-            this.show_minimap_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.show_minimap_panel.Controls.Add(this.show_minimap);
             this.show_minimap_panel.Controls.Add(this.show_minimap_label);
             this.show_minimap_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.show_minimap_panel.Location = new System.Drawing.Point(3, 105);
+            this.show_minimap_panel.Location = new System.Drawing.Point(3, 139);
             this.show_minimap_panel.Name = "show_minimap_panel";
             this.show_minimap_panel.Size = new System.Drawing.Size(459, 34);
             this.show_minimap_panel.TabIndex = 5;
@@ -1025,9 +1025,9 @@
             this.show_minimap.Checked = true;
             this.show_minimap.CheckState = System.Windows.Forms.CheckState.Checked;
             this.show_minimap.Dock = System.Windows.Forms.DockStyle.Right;
-            this.show_minimap.Location = new System.Drawing.Point(387, 0);
+            this.show_minimap.Location = new System.Drawing.Point(389, 0);
             this.show_minimap.Name = "show_minimap";
-            this.show_minimap.Size = new System.Drawing.Size(70, 32);
+            this.show_minimap.Size = new System.Drawing.Size(70, 34);
             this.show_minimap.TabIndex = 3;
             this.show_minimap.TabStop = false;
             this.show_minimap.Text = "Вкл.";
@@ -1040,7 +1040,7 @@
             this.show_minimap_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.show_minimap_label.Location = new System.Drawing.Point(0, 0);
             this.show_minimap_label.Name = "show_minimap_label";
-            this.show_minimap_label.Size = new System.Drawing.Size(288, 32);
+            this.show_minimap_label.Size = new System.Drawing.Size(288, 34);
             this.show_minimap_label.TabIndex = 2;
             this.show_minimap_label.Text = "Отображать мини-карту";
             this.show_minimap_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1051,7 +1051,7 @@
             this.fps_panel.Controls.Add(this.fps);
             this.fps_panel.Controls.Add(this.fps_label);
             this.fps_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fps_panel.Location = new System.Drawing.Point(3, 71);
+            this.fps_panel.Location = new System.Drawing.Point(3, 105);
             this.fps_panel.Name = "fps_panel";
             this.fps_panel.Size = new System.Drawing.Size(459, 34);
             this.fps_panel.TabIndex = 1;
@@ -1081,11 +1081,10 @@
             // 
             // show_fps_panel
             // 
-            this.show_fps_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.show_fps_panel.Controls.Add(this.show_fps_on_off);
             this.show_fps_panel.Controls.Add(this.show_fps_label);
             this.show_fps_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.show_fps_panel.Location = new System.Drawing.Point(3, 37);
+            this.show_fps_panel.Location = new System.Drawing.Point(3, 71);
             this.show_fps_panel.Name = "show_fps_panel";
             this.show_fps_panel.Size = new System.Drawing.Size(459, 34);
             this.show_fps_panel.TabIndex = 2;
@@ -1096,9 +1095,9 @@
             this.show_fps_on_off.Checked = true;
             this.show_fps_on_off.CheckState = System.Windows.Forms.CheckState.Checked;
             this.show_fps_on_off.Dock = System.Windows.Forms.DockStyle.Right;
-            this.show_fps_on_off.Location = new System.Drawing.Point(387, 0);
+            this.show_fps_on_off.Location = new System.Drawing.Point(389, 0);
             this.show_fps_on_off.Name = "show_fps_on_off";
-            this.show_fps_on_off.Size = new System.Drawing.Size(70, 32);
+            this.show_fps_on_off.Size = new System.Drawing.Size(70, 34);
             this.show_fps_on_off.TabIndex = 3;
             this.show_fps_on_off.TabStop = false;
             this.show_fps_on_off.Text = "Вкл.";
@@ -1111,10 +1110,48 @@
             this.show_fps_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.show_fps_label.Location = new System.Drawing.Point(0, 0);
             this.show_fps_label.Name = "show_fps_label";
-            this.show_fps_label.Size = new System.Drawing.Size(226, 32);
+            this.show_fps_label.Size = new System.Drawing.Size(226, 34);
             this.show_fps_label.TabIndex = 2;
             this.show_fps_label.Text = "Отображать FPS";
             this.show_fps_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // smoothing_panel
+            // 
+            this.smoothing_panel.Controls.Add(this.smoothing_list);
+            this.smoothing_panel.Controls.Add(this.smoothing_label);
+            this.smoothing_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.smoothing_panel.Location = new System.Drawing.Point(3, 37);
+            this.smoothing_panel.Name = "smoothing_panel";
+            this.smoothing_panel.Size = new System.Drawing.Size(459, 34);
+            this.smoothing_panel.TabIndex = 6;
+            // 
+            // smoothing_list
+            // 
+            this.smoothing_list.Dock = System.Windows.Forms.DockStyle.Right;
+            this.smoothing_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.smoothing_list.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.smoothing_list.FormattingEnabled = true;
+            this.smoothing_list.Items.AddRange(new object[] {
+            "Без сглаживания",
+            "По умолчанию",
+            "Высокое качество",
+            "Высокая скорость"});
+            this.smoothing_list.Location = new System.Drawing.Point(232, 0);
+            this.smoothing_list.Name = "smoothing_list";
+            this.smoothing_list.Size = new System.Drawing.Size(227, 32);
+            this.smoothing_list.TabIndex = 3;
+            this.smoothing_list.TabStop = false;
+            this.smoothing_list.SelectedIndexChanged += new System.EventHandler(this.Smoothing_list_SelectedIndexChanged);
+            // 
+            // smoothing_label
+            // 
+            this.smoothing_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.smoothing_label.Location = new System.Drawing.Point(0, 0);
+            this.smoothing_label.Name = "smoothing_label";
+            this.smoothing_label.Size = new System.Drawing.Size(226, 34);
+            this.smoothing_label.TabIndex = 2;
+            this.smoothing_label.Text = "Сглаживание";
+            this.smoothing_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // high_resolution_panel
             // 
@@ -1154,10 +1191,10 @@
             // 
             this.controls_settings.BackColor = System.Drawing.Color.Black;
             this.controls_settings.Controls.Add(this.controls_tabcontrol);
-            this.controls_settings.Location = new System.Drawing.Point(4, 22);
+            this.controls_settings.Location = new System.Drawing.Point(4, 33);
             this.controls_settings.Name = "controls_settings";
             this.controls_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.controls_settings.Size = new System.Drawing.Size(482, 194);
+            this.controls_settings.Size = new System.Drawing.Size(482, 183);
             this.controls_settings.TabIndex = 3;
             this.controls_settings.Text = "Управление";
             // 
@@ -1169,7 +1206,7 @@
             this.controls_tabcontrol.Location = new System.Drawing.Point(3, 3);
             this.controls_tabcontrol.Name = "controls_tabcontrol";
             this.controls_tabcontrol.SelectedIndex = 0;
-            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 188);
+            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 177);
             this.controls_tabcontrol.TabIndex = 0;
             // 
             // mouse_settings
@@ -1183,7 +1220,7 @@
             this.mouse_settings.Location = new System.Drawing.Point(4, 33);
             this.mouse_settings.Name = "mouse_settings";
             this.mouse_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.mouse_settings.Size = new System.Drawing.Size(468, 151);
+            this.mouse_settings.Size = new System.Drawing.Size(468, 140);
             this.mouse_settings.TabIndex = 0;
             this.mouse_settings.Text = "Мышь";
             // 
@@ -1224,7 +1261,6 @@
             // 
             // invert_y_panel
             // 
-            this.invert_y_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.invert_y_panel.Controls.Add(this.invert_y);
             this.invert_y_panel.Controls.Add(this.invert_y_label);
             this.invert_y_panel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -1238,9 +1274,9 @@
             this.invert_y.Appearance = System.Windows.Forms.Appearance.Button;
             this.invert_y.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.invert_y.Dock = System.Windows.Forms.DockStyle.Right;
-            this.invert_y.Location = new System.Drawing.Point(390, 0);
+            this.invert_y.Location = new System.Drawing.Point(392, 0);
             this.invert_y.Name = "invert_y";
-            this.invert_y.Size = new System.Drawing.Size(70, 32);
+            this.invert_y.Size = new System.Drawing.Size(70, 34);
             this.invert_y.TabIndex = 3;
             this.invert_y.TabStop = false;
             this.invert_y.Text = "Откл.";
@@ -1253,7 +1289,7 @@
             this.invert_y_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.invert_y_label.Location = new System.Drawing.Point(0, 0);
             this.invert_y_label.Name = "invert_y_label";
-            this.invert_y_label.Size = new System.Drawing.Size(265, 32);
+            this.invert_y_label.Size = new System.Drawing.Size(265, 34);
             this.invert_y_label.TabIndex = 2;
             this.invert_y_label.Text = "Инвертировать ось Y";
             this.invert_y_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1314,14 +1350,13 @@
             this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 151);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
             // run_panel
             // 
             this.run_panel.BackColor = System.Drawing.Color.Black;
-            this.run_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.run_panel.Controls.Add(this.run_label);
             this.run_panel.Controls.Add(this.run_btn);
             this.run_panel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -1335,7 +1370,7 @@
             this.run_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.run_label.Location = new System.Drawing.Point(0, 0);
             this.run_label.Name = "run_label";
-            this.run_label.Size = new System.Drawing.Size(306, 32);
+            this.run_label.Size = new System.Drawing.Size(306, 34);
             this.run_label.TabIndex = 0;
             this.run_label.Text = "Бег (удерживать)";
             this.run_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1343,9 +1378,9 @@
             // run_btn
             // 
             this.run_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.run_btn.Location = new System.Drawing.Point(360, 0);
+            this.run_btn.Location = new System.Drawing.Point(362, 0);
             this.run_btn.Name = "run_btn";
-            this.run_btn.Size = new System.Drawing.Size(83, 32);
+            this.run_btn.Size = new System.Drawing.Size(83, 34);
             this.run_btn.TabIndex = 2;
             this.run_btn.TabStop = false;
             this.run_btn.Text = "Shift";
@@ -1386,7 +1421,6 @@
             // 
             // medkit_panel
             // 
-            this.medkit_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.medkit_panel.Controls.Add(this.item_btn);
             this.medkit_panel.Controls.Add(this.medkit_label);
             this.medkit_panel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -1398,9 +1432,9 @@
             // item_btn
             // 
             this.item_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.item_btn.Location = new System.Drawing.Point(360, 0);
+            this.item_btn.Location = new System.Drawing.Point(362, 0);
             this.item_btn.Name = "item_btn";
-            this.item_btn.Size = new System.Drawing.Size(83, 32);
+            this.item_btn.Size = new System.Drawing.Size(83, 34);
             this.item_btn.TabIndex = 2;
             this.item_btn.TabStop = false;
             this.item_btn.Text = "H";
@@ -1412,7 +1446,7 @@
             this.medkit_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.medkit_label.Location = new System.Drawing.Point(0, 0);
             this.medkit_label.Name = "medkit_label";
-            this.medkit_label.Size = new System.Drawing.Size(267, 32);
+            this.medkit_label.Size = new System.Drawing.Size(267, 34);
             this.medkit_label.TabIndex = 0;
             this.medkit_label.Text = "Использовать предмет";
             this.medkit_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1452,7 +1486,6 @@
             // 
             // show_map_panel
             // 
-            this.show_map_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.show_map_panel.Controls.Add(this.show_map_0_btn);
             this.show_map_panel.Controls.Add(this.show_map_1_btn);
             this.show_map_panel.Controls.Add(this.show_map_label);
@@ -1465,9 +1498,9 @@
             // show_map_0_btn
             // 
             this.show_map_0_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.show_map_0_btn.Location = new System.Drawing.Point(277, 0);
+            this.show_map_0_btn.Location = new System.Drawing.Point(279, 0);
             this.show_map_0_btn.Name = "show_map_0_btn";
-            this.show_map_0_btn.Size = new System.Drawing.Size(83, 32);
+            this.show_map_0_btn.Size = new System.Drawing.Size(83, 34);
             this.show_map_0_btn.TabIndex = 3;
             this.show_map_0_btn.TabStop = false;
             this.show_map_0_btn.Text = "M";
@@ -1477,9 +1510,9 @@
             // show_map_1_btn
             // 
             this.show_map_1_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.show_map_1_btn.Location = new System.Drawing.Point(360, 0);
+            this.show_map_1_btn.Location = new System.Drawing.Point(362, 0);
             this.show_map_1_btn.Name = "show_map_1_btn";
-            this.show_map_1_btn.Size = new System.Drawing.Size(83, 32);
+            this.show_map_1_btn.Size = new System.Drawing.Size(83, 34);
             this.show_map_1_btn.TabIndex = 4;
             this.show_map_1_btn.TabStop = false;
             this.show_map_1_btn.Text = "Tab";
@@ -1491,7 +1524,7 @@
             this.show_map_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.show_map_label.Location = new System.Drawing.Point(0, 0);
             this.show_map_label.Name = "show_map_label";
-            this.show_map_label.Size = new System.Drawing.Size(267, 32);
+            this.show_map_label.Size = new System.Drawing.Size(267, 34);
             this.show_map_label.TabIndex = 0;
             this.show_map_label.Text = "Показать/скрыть карту";
             this.show_map_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1544,7 +1577,6 @@
             // 
             // right_panel
             // 
-            this.right_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.right_panel.Controls.Add(this.right_btn);
             this.right_panel.Controls.Add(this.right_label);
             this.right_panel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -1556,9 +1588,9 @@
             // right_btn
             // 
             this.right_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.right_btn.Location = new System.Drawing.Point(360, 0);
+            this.right_btn.Location = new System.Drawing.Point(362, 0);
             this.right_btn.Name = "right_btn";
-            this.right_btn.Size = new System.Drawing.Size(83, 32);
+            this.right_btn.Size = new System.Drawing.Size(83, 34);
             this.right_btn.TabIndex = 2;
             this.right_btn.TabStop = false;
             this.right_btn.Text = "D";
@@ -1570,7 +1602,7 @@
             this.right_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.right_label.Location = new System.Drawing.Point(0, 0);
             this.right_label.Name = "right_label";
-            this.right_label.Size = new System.Drawing.Size(227, 32);
+            this.right_label.Size = new System.Drawing.Size(227, 34);
             this.right_label.TabIndex = 0;
             this.right_label.Text = "Вправо";
             this.right_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1610,7 +1642,6 @@
             // 
             // back_panel
             // 
-            this.back_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.back_panel.Controls.Add(this.back_btn);
             this.back_panel.Controls.Add(this.back_label);
             this.back_panel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -1622,9 +1653,9 @@
             // back_btn
             // 
             this.back_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.back_btn.Location = new System.Drawing.Point(360, 0);
+            this.back_btn.Location = new System.Drawing.Point(362, 0);
             this.back_btn.Name = "back_btn";
-            this.back_btn.Size = new System.Drawing.Size(83, 32);
+            this.back_btn.Size = new System.Drawing.Size(83, 34);
             this.back_btn.TabIndex = 2;
             this.back_btn.TabStop = false;
             this.back_btn.Text = "S";
@@ -1636,7 +1667,7 @@
             this.back_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.back_label.Location = new System.Drawing.Point(0, 0);
             this.back_label.Name = "back_label";
-            this.back_label.Size = new System.Drawing.Size(227, 32);
+            this.back_label.Size = new System.Drawing.Size(227, 34);
             this.back_label.TabIndex = 0;
             this.back_label.Text = "Назад";
             this.back_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1677,7 +1708,6 @@
             // reloading_panel
             // 
             this.reloading_panel.BackColor = System.Drawing.Color.Black;
-            this.reloading_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.reloading_panel.Controls.Add(this.reloading_btn);
             this.reloading_panel.Controls.Add(this.reloading_label);
             this.reloading_panel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -1689,9 +1719,9 @@
             // reloading_btn
             // 
             this.reloading_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.reloading_btn.Location = new System.Drawing.Point(360, 0);
+            this.reloading_btn.Location = new System.Drawing.Point(362, 0);
             this.reloading_btn.Name = "reloading_btn";
-            this.reloading_btn.Size = new System.Drawing.Size(83, 32);
+            this.reloading_btn.Size = new System.Drawing.Size(83, 34);
             this.reloading_btn.TabIndex = 1;
             this.reloading_btn.TabStop = false;
             this.reloading_btn.Text = "R";
@@ -1703,7 +1733,7 @@
             this.reloading_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.reloading_label.Location = new System.Drawing.Point(0, 0);
             this.reloading_label.Name = "reloading_label";
-            this.reloading_label.Size = new System.Drawing.Size(226, 32);
+            this.reloading_label.Size = new System.Drawing.Size(226, 34);
             this.reloading_label.TabIndex = 0;
             this.reloading_label.Text = "Перезарядка";
             this.reloading_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1742,7 +1772,6 @@
             // fire_panel
             // 
             this.fire_panel.BackColor = System.Drawing.Color.Black;
-            this.fire_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.fire_panel.Controls.Add(this.fire_btn);
             this.fire_panel.Controls.Add(this.fire_label);
             this.fire_panel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -1754,9 +1783,9 @@
             // fire_btn
             // 
             this.fire_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.fire_btn.Location = new System.Drawing.Point(360, 0);
+            this.fire_btn.Location = new System.Drawing.Point(362, 0);
             this.fire_btn.Name = "fire_btn";
-            this.fire_btn.Size = new System.Drawing.Size(83, 32);
+            this.fire_btn.Size = new System.Drawing.Size(83, 34);
             this.fire_btn.TabIndex = 1;
             this.fire_btn.TabStop = false;
             this.fire_btn.Text = "ЛКМ";
@@ -1767,7 +1796,7 @@
             this.fire_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.fire_label.Location = new System.Drawing.Point(0, 0);
             this.fire_label.Name = "fire_label";
-            this.fire_label.Size = new System.Drawing.Size(226, 32);
+            this.fire_label.Size = new System.Drawing.Size(226, 34);
             this.fire_label.TabIndex = 0;
             this.fire_label.Text = "Выстрел";
             this.fire_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -2599,8 +2628,8 @@
             this.volume_panel.ResumeLayout(false);
             this.volume_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.volume)).EndInit();
-            this.sound_panel.ResumeLayout(false);
             this.console_panel.ResumeLayout(false);
+            this.sound_panel.ResumeLayout(false);
             this.video_settings.ResumeLayout(false);
             this.scope_color_panel.ResumeLayout(false);
             this.scope_color_panel.PerformLayout();
@@ -2613,6 +2642,7 @@
             this.fps_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fps)).EndInit();
             this.show_fps_panel.ResumeLayout(false);
+            this.smoothing_panel.ResumeLayout(false);
             this.high_resolution_panel.ResumeLayout(false);
             this.controls_settings.ResumeLayout(false);
             this.controls_tabcontrol.ResumeLayout(false);
@@ -2858,5 +2888,8 @@
         private System.Windows.Forms.Panel invert_x_panel;
         private System.Windows.Forms.CheckBox invert_x;
         private System.Windows.Forms.Label invert_x_label;
+        private System.Windows.Forms.Panel smoothing_panel;
+        private System.Windows.Forms.Label smoothing_label;
+        private System.Windows.Forms.ComboBox smoothing_list;
     }
 }

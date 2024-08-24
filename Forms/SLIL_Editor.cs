@@ -60,7 +60,7 @@ namespace SLIL
             //враг
              Color.Navy,
             //стена
-             Color.Black,
+             Color.Gray,
             //дверь
              Color.Orange,
             //окно
@@ -256,7 +256,7 @@ namespace SLIL
             {
                 for (int j = 0; j < max; j++)
                 {
-                    Color color = Color.Black;
+                    Color color = Color.Gray;
                     char c = map[i * min + j];
                     if (i != 0 && i != min - 1 && j != 0 && j != max - 1)
                     {
@@ -326,7 +326,7 @@ namespace SLIL
             {
                 for (int j = 0; j < panels.GetLength(1); j++)
                 {
-                    if (panels[i, j].BackColor == Color.Black)
+                    if (panels[i, j].BackColor == Color.Gray)
                         MAP.Append("#");
                     else if (panels[i, j].BackColor == Color.Blue)
                         MAP.Append("=");
@@ -531,7 +531,7 @@ namespace SLIL
                     else if (index == 1)
                         panel.BackColor = Color.Navy;
                     else if (index == 2)
-                        panel.BackColor = Color.Black;
+                        panel.BackColor = Color.Gray;
                     else if (index == 3)
                         panel.BackColor = Color.Orange;
                     else if (index == 4)
@@ -552,7 +552,7 @@ namespace SLIL
                                     continue;
                                 if (i == x_panel && j == y_panel)
                                     continue;
-                                panels[i, j].BackColor = Color.Black;
+                                panels[i, j].BackColor = Color.Gray;
                             }
                         }
                         bool spawned = false;

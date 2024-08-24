@@ -162,7 +162,7 @@ namespace SLIL
             { "select_item", Keys.Q },
             { "run", Keys.ShiftKey },
         };
-        public static int resolution = 0, scope_type = 0, scope_color = 0, difficulty = 2;
+        public static int resolution = 0, smoothing = 1, scope_type = 0, scope_color = 0, difficulty = 2;
         public static bool hight_fps = true, ShowFPS = true, ShowMiniMap = true;
         public static bool inv_y = false, inv_x = false;
         public static double LOOK_SPEED = 6.5;
@@ -284,6 +284,71 @@ namespace SLIL
             wall = new PlaySound(CGFReader.GetFile("wall_interaction.wav"), false);
             tp = new PlaySound(CGFReader.GetFile("tp.wav"), false);
             screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
+            AddSeparators();
+        }
+
+        private void AddSeparators()
+        {
+            all_settings.Controls.Clear();
+            all_settings.Controls.Add(check_update_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(update_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(language_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(volume_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(sound_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(console_panel);
+            video_settings.Controls.Clear();
+            video_settings.Controls.Add(scope_color_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(scope_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(show_minimap_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(fps_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(show_fps_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(smoothing_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(high_resolution_panel);
+            mouse_settings.Controls.Clear();
+            mouse_settings.Controls.Add(invert_x_panel);
+            mouse_settings.Controls.Add(new Separator());
+            mouse_settings.Controls.Add(invert_y_panel);
+            mouse_settings.Controls.Add(new Separator());
+            mouse_settings.Controls.Add(sensitivity_panel);
+            keyboard_settings.Controls.Clear();
+            keyboard_settings.Controls.Add(run_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(select_item_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(medkit_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(flashlight_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(show_map_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(interaction_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(right_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(left_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(back_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(forward_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(reloading_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(aim_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(fire_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(screenshot_panel);
         }
 
         private void DownloadFile(string url, string outputPath)
@@ -470,8 +535,7 @@ namespace SLIL
             GetGameParametrs();
             SetVisualSettings();
             SetLanguage();
-            if (update_on_off.Checked)
-                Check_Update(true);
+            if (update_on_off.Checked) Check_Update(true);
             buttons_panel.Location = new Point((Width - buttons_panel.Width) / 2, (Height - buttons_panel.Height) / 2 + 75);
             difficulty_panel.Location = buttons_panel.Location;
             developers_panel.Location = buttons_panel.Location;
@@ -502,6 +566,7 @@ namespace SLIL
             scope_color = INIReader.GetInt(iniFolder, "SLIL", "scope_color", 0);
             scope_type = INIReader.GetInt(iniFolder, "SLIL", "scope_type", 0);
             resolution = INIReader.GetBool(iniFolder, "SLIL", "hight_resolution", false) ? 1 : 0;
+            smoothing = INIReader.GetInt(iniFolder, "SLIL", "smoothing", 1);
             hight_fps = INIReader.GetBool(iniFolder, "SLIL", "hight_fps", true);
             BindControls["screenshot"] = INIReader.GetKeys(iniFolder, "SLIL", "screenshot", Keys.F12);
             BindControls["reloading"] = INIReader.GetKeys(iniFolder, "SLIL", "reloading", Keys.R);
@@ -517,6 +582,8 @@ namespace SLIL
             BindControls["item"] = INIReader.GetKeys(iniFolder, "SLIL", "item", Keys.H);
             BindControls["select_item"] = INIReader.GetKeys(iniFolder, "SLIL", "select_item", Keys.Q);
             BindControls["run"] = INIReader.GetKeys(iniFolder, "SLIL", "run", Keys.ShiftKey);
+            if (smoothing < 0 || smoothing > 3)
+                smoothing = 1;
             if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10)
                 LOOK_SPEED = 6.5;
             if (Volume < 0 || Volume > 1)
@@ -544,6 +611,7 @@ namespace SLIL
             select_item_btn.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             run_btn.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
             language_list.SelectedIndex = Language ? 0 : 1;
+            smoothing_list.SelectedIndex = smoothing;
             console_btn.Checked = ConsoleEnabled;
             sounds_on_off.Checked = sounds;
             high_resolution_on_off.Checked = resolution == 1;
@@ -572,8 +640,11 @@ namespace SLIL
 
         private void SetLanguage()
         {
+            smoothing_list.Items.Clear();
+            string[] smooth_list = { "Без сглаживания", "По умолчанию", "Высокое качество", "Высокая скорость" };
             if (Language)
             {
+                smoothing_label.Text = "Сглаживание";
                 console_label.Text = "Консоль разработчика";
                 nickname_label.Text = "Имя игрока:";
                 host_btn.Text = "Создать игру";
@@ -643,6 +714,8 @@ namespace SLIL
             }
             else
             {
+                smooth_list = new string[] { "No Antialiasing", "Default", "High Quality", "High Speed" };
+                smoothing_label.Text = "Smoothing";
                 console_label.Text = "Developer console";
                 nickname_label.Text = "Player name:";
                 host_btn.Text = "Create game";
@@ -822,6 +895,8 @@ namespace SLIL
                 else
                     invert_x.Text = "Off";
             }
+            smoothing_list.Items.AddRange(smooth_list);
+            smoothing_list.SelectedIndex = smoothing;
             difficulty_label.Text = AboutDifficulty[Language ? 0 : 1, difficulty];
             start_btn.Size = new Size(0, 0);
             setting_btn.Size = new Size(0, 0);
@@ -1092,6 +1167,7 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             INIReader.SetKey(iniFolder, "CONFIG", "auto_update", update_on_off.Checked);
             INIReader.SetKey(iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
+            INIReader.SetKey(iniFolder, "SLIL", "smoothing", smoothing);
             INIReader.SetKey(iniFolder, "SLIL", "show_fps", ShowFPS);
             INIReader.SetKey(iniFolder, "SLIL", "hight_fps", hight_fps);
             INIReader.SetKey(iniFolder, "SLIL", "show_minimap", ShowMiniMap);
@@ -1264,11 +1340,17 @@ namespace SLIL
 
         private void Ip_connect_input_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
                 ConnectToGame();
             }
+        }
+
+        private void Smoothing_list_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            smoothing = smoothing_list.SelectedIndex;
         }
 
         private void ConnectToGame()

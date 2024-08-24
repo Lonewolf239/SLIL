@@ -1041,7 +1041,7 @@ namespace SLIL.Classes
                         if (target is Boxes && !attackerPlayer.CuteMode)
                         {
                             if ((target as Boxes).BoxWithMoney)
-                                attackerPlayer.Money += rand.Next(5, 11);
+                                attackerPlayer.ChangeMoney(rand.Next(5, 11));
                             else
                             {
                                 int count = attackerPlayer.Guns.Count;

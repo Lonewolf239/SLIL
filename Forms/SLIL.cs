@@ -39,7 +39,14 @@ namespace SLIL
         private readonly Random rand;
         private const int texWidth = 128;
         private readonly int[] SCREEN_HEIGHT = { 128, 128 * 2 }, SCREEN_WIDTH = { 228, 228 * 2 };
-        public static int resolution = 0;
+        public static int resolution = 0, smoothing = 1;
+        private readonly SmoothingMode[] smoothingModes =
+        {
+            SmoothingMode.None,
+            SmoothingMode.AntiAlias,
+            SmoothingMode.HighQuality,
+            SmoothingMode.HighSpeed
+        };
         public static bool hight_fps = true;
         private const double FOV = Math.PI / 3;
         private double elapsed_time = 0;
@@ -50,6 +57,7 @@ namespace SLIL
         private readonly StringFormat rightToLeft = new StringFormat() { FormatFlags = StringFormatFlags.DirectionRightToLeft };
         private Graphics graphicsWeapon;
         private int fps;
+        private double planeX, planeY, dirX, dirY;
         private enum Direction { STOP, FORWARD, BACK, LEFT, RIGHT, WALK, RUN };
         private Direction playerDirection = Direction.STOP, strafeDirection = Direction.STOP, playerMoveStyle = Direction.WALK;
         private DateTime total_time = DateTime.Now;
@@ -107,8 +115,8 @@ namespace SLIL
             } },
             { typeof(Helmet), new[]
             {
-                Properties.Resources.missing,
-                Properties.Resources.missing
+                Properties.Resources.helmet_icon,
+                Properties.Resources.helmet_icon
             } },
         };
         public static readonly Dictionary<Type, Image[,]> ImagesDict = new Dictionary<Type, Image[,]>
@@ -166,18 +174,18 @@ namespace SLIL
             } },
             { typeof(FirstAidKit), new[,]
             {
-                   { Properties.Resources.medkit, Properties.Resources.medkit, Properties.Resources.medkit_using_0, Properties.Resources.medkit_using_1, Properties.Resources.medkit_using_2, Properties.Resources.medkit_run },
-                   { Properties.Resources.syringe, Properties.Resources.syringe, Properties.Resources.syringe_using_0, Properties.Resources.syringe_using_1, Properties.Resources.syringe_using_2, Properties.Resources.medkit_run },
-                   { Properties.Resources.hand, Properties.Resources.hand, Properties.Resources.hand_using_0, Properties.Resources.hand_using_1, Properties.Resources.hand_using_2, Properties.Resources.medkit_run },
-                   { Properties.Resources.food, Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2, Properties.Resources.medkit_run },
+                   { Properties.Resources.medkit, Properties.Resources.medkit, Properties.Resources.medkit_using_0, Properties.Resources.medkit_using_1, Properties.Resources.medkit_using_2, Properties.Resources.medkit },
+                   { Properties.Resources.syringe, Properties.Resources.syringe, Properties.Resources.syringe_using_0, Properties.Resources.syringe_using_1, Properties.Resources.syringe_using_2, Properties.Resources.syringe },
+                   { Properties.Resources.hand, Properties.Resources.hand, Properties.Resources.hand_using_0, Properties.Resources.hand_using_1, Properties.Resources.hand_using_2, Properties.Resources.hand },
+                   { Properties.Resources.food, Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2, Properties.Resources.food },
             } },
             { typeof(Adrenalin), new[,]
             {
-                   { Properties.Resources.adrenalin, Properties.Resources.adrenalin, Properties.Resources.adrenalin_using_0, Properties.Resources.adrenalin_using_1, Properties.Resources.adrenalin_using_2, Properties.Resources.medkit_run },
+                   { Properties.Resources.adrenalin, Properties.Resources.adrenalin, Properties.Resources.adrenalin_using_0, Properties.Resources.adrenalin_using_1, Properties.Resources.adrenalin_using_2, Properties.Resources.adrenalin },
             } },
             { typeof(Helmet), new[,]
             {
-                   { Properties.Resources.food, Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2, Properties.Resources.medkit_run }
+                   { Properties.Resources.helmet, Properties.Resources.helmet, Properties.Resources.helmet_using_0, Properties.Resources.helmet_using_1, Properties.Resources.helmet_using_2, Properties.Resources.helmet_using_3 }
             } },
         };
         public static readonly Dictionary<Type, PlaySound[,]> SoundsDict = new Dictionary<Type, PlaySound[,]>
@@ -510,6 +518,7 @@ namespace SLIL
         {
             difficulty = MainMenu.difficulty;
             resolution = MainMenu.resolution;
+            smoothing = MainMenu.smoothing;
             scope_type = MainMenu.scope_type;
             scope_color = MainMenu.scope_color;
             hight_fps = MainMenu.hight_fps;
@@ -1817,7 +1826,7 @@ namespace SLIL
             WEAPON = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             BUFFER = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             graphicsWeapon = Graphics.FromImage(WEAPON);
-            graphicsWeapon.SmoothingMode = SmoothingMode.AntiAlias;
+            graphicsWeapon.SmoothingMode = smoothingModes[smoothing];
             display.ResizeImage(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             raycast.Interval = hight_fps ? 15 : 30;
         }
@@ -1865,9 +1874,8 @@ namespace SLIL
             double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
             double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
             Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
-            List<int> enemiesCoords;
-            DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out enemiesCoords);
-            foreach(int i in enemiesCoords)
+            DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<int> enemiesCoords);
+            foreach (int i in enemiesCoords)
             {
                 DISPLAYED_MAP[i] = 'E';
             }
@@ -1883,12 +1891,7 @@ namespace SLIL
             enemiesCoords = new List<int>();
             if (player == null) return;
             int factor = player.Aiming ? 12 : 0;
-            if (player.GetCurrentGun() is Flashlight)
-                factor = 8;
-            double dirX = Math.Sin(player.A);
-            double dirY = Math.Cos(player.A);
-            double planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
-            double planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
+            if (player.GetCurrentGun() is Flashlight) factor = 8;
             double invDet = 1.0 / (planeX * dirY - dirX * planeY);
             Entity[] Entities = new Entity[Controller.GetEntities().Count];
             Controller.GetEntities().CopyTo(Entities);
@@ -1981,18 +1984,12 @@ namespace SLIL
                                     if (!playerTar.Dead)
                                     {
                                         if (EnableAnimation)
-                                        {
-                                            {
-                                                    rays[stripe][y].TextureId = playerTar.Animations[0][timeNow % playerTar.Frames];
-                                            }
-                                        }
+                                            rays[stripe][y].TextureId = playerTar.Animations[0][timeNow % playerTar.Frames];
                                         else
                                             rays[stripe][y].TextureId = spriteInfo[i].Texture;
                                     }
                                     else
-                                    {
                                         rays[stripe][y].TextureId = spriteInfo[i].Texture + 2;
-                                    }
                                 }
                                 else
                                 {
@@ -2068,14 +2065,13 @@ namespace SLIL
             int factor = player.Aiming ? 12 : 0;
             if (player.GetCurrentGun() is Flashlight)
                 factor = 8;
-            double playerLook = player.Look;
-            double dirX = Math.Sin(player.A);
-            double dirY = Math.Cos(player.A);
-            double planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
-            double planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
+            dirX = Math.Sin(player.A);
+            dirY = Math.Cos(player.A);
+            planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
+            planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
             int mapX = (int)(player.X);
             int mapY = (int)(player.Y);
-            Parallel.For(0, SCREEN_WIDTH[resolution], x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, factor, playerLook, dirX, dirY, planeX, planeY, mapX, mapY));
+            Parallel.For(0, SCREEN_WIDTH[resolution], x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, factor, mapX, mapY));
             return rays;
         }
 
@@ -2277,7 +2273,8 @@ namespace SLIL
             int item_count = 0;
             if (player.DisposableItems.Count > 0)
                 item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].MaxAmmoCount;
-            int icon_size = resolution == 0 ? 16 : 28;
+            int icon_size = resolution == 0 ? 16 : 32;
+            int size = resolution == 0 ? 1 : 2;
             SizeF hpSize = graphicsWeapon.MeasureString(player.HP.ToString("0"), consolasFont[resolution]);
             int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
             int ammo_x = ammo_icon_x + icon_size;
@@ -2296,19 +2293,21 @@ namespace SLIL
                 }
                 catch { }
             }
+            if(player.EffectCheck(2))
+                graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
             if (ShowFPS)
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[resolution], whiteBrush, SCREEN_WIDTH[resolution], 0, rightToLeft);
             if (!player.CuteMode)
             {
-                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 110 + (110 * resolution), icon_size, icon_size);
-                graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 92 + (92 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 110 * size, icon_size, icon_size);
+                graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 92 * size, icon_size, icon_size);
             }
             else
             {
-                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 110 + (110 * resolution), icon_size, icon_size);
-                graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 92 + (92 * resolution), icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 110 * size, icon_size, icon_size);
+                graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 92 * size, icon_size, icon_size);
             }
-            int money_y = Controller.IsMultiplayer() ? 16 + (16 * resolution) : 2;
+            int money_y = Controller.IsMultiplayer() ? 16 * size : 2;
             graphicsWeapon.DrawImage(Properties.Resources.money, 2, money_y, icon_size, icon_size);
             graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, money_y);
             if (Controller.IsMultiplayer())
@@ -2322,26 +2321,26 @@ namespace SLIL
                 graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, 0, icon_size, icon_size);
                 graphicsWeapon.DrawString($"{ping}ms", consolasFont[resolution], whiteBrush, icon_size + 2, 0);
             }
-            graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 110 + (110 * resolution));
-            graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 92 + (92 * resolution));
+            graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 110 * size);
+            graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 92 * size);
             if (!player.IsPetting && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount + player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 + (110 * resolution));
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount + player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 * size);
                 else
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount}/{player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 + (110 * resolution));
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount}/{player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 * size);
                 if (player.GetCurrentGun().IsMagic)
-                    graphicsWeapon.DrawImage(Properties.Resources.magic, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
+                    graphicsWeapon.DrawImage(Properties.Resources.magic, ammo_icon_x, 110 * size, icon_size, icon_size);
                 else if(player.GetCurrentGun() is Rainblower)
-                    graphicsWeapon.DrawImage(Properties.Resources.bubbles, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
+                    graphicsWeapon.DrawImage(Properties.Resources.bubbles, ammo_icon_x, 110 * size, icon_size, icon_size);
                 else
                 {
                     if (player.GetCurrentGun() is SniperRifle || player.GetCurrentGun() is AssaultRifle)
-                        graphicsWeapon.DrawImage(Properties.Resources.rifle_bullet, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
+                        graphicsWeapon.DrawImage(Properties.Resources.rifle_bullet, ammo_icon_x, 110 * size, icon_size, icon_size);
                     else if (player.GetCurrentGun() is Shotgun)
-                        graphicsWeapon.DrawImage(Properties.Resources.shell, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
+                        graphicsWeapon.DrawImage(Properties.Resources.shell, ammo_icon_x, 110 * size, icon_size, icon_size);
                     else
-                        graphicsWeapon.DrawImage(Properties.Resources.bullet, ammo_icon_x, 110 + (110 * resolution), icon_size, icon_size);
+                        graphicsWeapon.DrawImage(Properties.Resources.bullet, ammo_icon_x, 110 * size, icon_size, icon_size);
                 }
             }
             if (player.GetCurrentGun().ShowScope)
@@ -2357,7 +2356,7 @@ namespace SLIL
             {
                 Bitmap mini_map = DrawMiniMap();
                 int mini_map_top = ShowFPS ? 14 : 0;
-                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH[resolution] - mini_map.Width - 5, mini_map_top + (mini_map_top * resolution));
+                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH[resolution] - mini_map.Width - 5, mini_map_top * size);
                 mini_map.Dispose();
             }
             if (stage_timer.Enabled)
@@ -2370,14 +2369,19 @@ namespace SLIL
                 else if (difficulty == 4)
                     text = "STAGE: Custom";
                 SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[resolution + 1]);
-                graphicsWeapon.DrawString(text, consolasFont[resolution + 1], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 + (30 * resolution));
+                graphicsWeapon.DrawString(text, consolasFont[resolution + 1], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }
             if (player.STAMINE < player.MAX_STAMINE)
-                graphicsWeapon.DrawLine(new Pen(Color.Lime, 2), 0, SCREEN_HEIGHT[resolution], (int)(player.STAMINE / player.MAX_STAMINE * SCREEN_WIDTH[resolution]), SCREEN_HEIGHT[resolution]);
+                graphicsWeapon.DrawLine(new Pen(Color.Lime, 2 * size), 0, SCREEN_HEIGHT[resolution], (int)(player.STAMINE / player.MAX_STAMINE * SCREEN_WIDTH[resolution]), SCREEN_HEIGHT[resolution]);
             if (player.Effects.Count > 0)
             {
                 for (int i = 0; i < player.Effects.Count; i++)
                     DrawDurationEffect(player.Effects[i].Icon, icon_size, i);
+            }
+            if (resolution == 1)
+            {
+                graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
+                graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
             }
         }
 
@@ -2419,7 +2423,7 @@ namespace SLIL
             return fps < 0 ? 0 : fps;
         }
 
-        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int factor, double playerLook, double dirX, double dirY, double planeX, double planeY, int mapX, int mapY)
+        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int factor, int mapX, int mapY)
         {
             Player player = Controller.GetPlayer();
             Pixel[] result = new Pixel[SCREEN_HEIGHT[resolution]];
@@ -2532,8 +2536,8 @@ namespace SLIL
                         break;
                 }
             }
-            double ceiling = (SCREEN_HEIGHT[resolution] - playerLook) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / distance;
-            double floor = SCREEN_HEIGHT[resolution] - (ceiling + playerLook);
+            double ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / distance;
+            double floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
             double mid = (ceiling + floor) / 2;
             bool get_texture = false, get_texture_window = false;
             int side = 0;
@@ -2553,23 +2557,22 @@ namespace SLIL
             if (windowX > 0.97 || windowX < 0.03) is_window_bound = true;
             for (int y = 0; y < SCREEN_HEIGHT[resolution]; y++)
             {
-                if (!GameStarted)
-                    break;
+                if (!GameStarted) break;
                 int blackout = 0, textureId = 1;
                 if (hit_window && y > mid)
                 {
-                    ceiling = (SCREEN_HEIGHT[resolution] - playerLook) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / window_distance;
-                    floor = SCREEN_HEIGHT[resolution] - (ceiling + playerLook);
+                    ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / window_distance;
+                    floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
                 }
                 else
                 {
-                    ceiling = (SCREEN_HEIGHT[resolution] - playerLook) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / distance;
-                    floor = SCREEN_HEIGHT[resolution] - (ceiling + playerLook);
+                    ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / distance;
+                    floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
                 }
                 if (y <= ceiling)
                 {
                     textureId = 7;
-                    double d = (y + playerLook / 2) / (SCREEN_HEIGHT[resolution] / 2);
+                    double d = (y + player.Look / 2) / (SCREEN_HEIGHT[resolution] / 2);
                     blackout = (int)(Math.Min(Math.Max(0, d * 100), 100));
                 }
                 else if (y >= mid && y <= floor && hit_window)
@@ -2591,13 +2594,13 @@ namespace SLIL
                 else if (y >= floor)
                 {
                     textureId = 6;
-                    double d = 1 - (y - (SCREEN_HEIGHT[resolution] - playerLook) / 2) / (SCREEN_HEIGHT[resolution] / 2);
+                    double d = 1 - (y - (SCREEN_HEIGHT[resolution] - player.Look) / 2) / (SCREEN_HEIGHT[resolution] / 2);
                     blackout = (int)(Math.Min(Math.Max(0, d * 100), 100));
                 }
                 result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId);
                 if (y < ceiling)
                 {
-                    int p = y - (int)(SCREEN_HEIGHT[resolution] - playerLook) / 2;
+                    int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
                     double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
                     double floorX = player.X - rowDistance * rayDirX;
                     double floorY = player.Y - rowDistance * rayDirY;
@@ -2609,7 +2612,7 @@ namespace SLIL
                 }
                 else if (y >= floor)
                 {
-                    int p = y - (int)(SCREEN_HEIGHT[resolution] - playerLook) / 2;
+                    int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
                     double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
                     double floorX = player.X + rowDistance * rayDirX;
                     double floorY = player.Y + rowDistance * rayDirY;

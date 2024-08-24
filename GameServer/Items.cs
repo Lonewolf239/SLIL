@@ -800,6 +800,7 @@ namespace SLIL.Classes
         public Helmet() : base()
         {
             EffectID = 2;
+            ReloadFrames = 4;
             RechargeTime = 530;
             GunCost = 75;
             Name = new[]
