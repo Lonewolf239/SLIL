@@ -1081,5 +1081,23 @@
   <ItemGroup>
     <None Include="Images\helmet_icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_reload_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_shooted.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

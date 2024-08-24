@@ -73,12 +73,12 @@
             this.volume_panel = new System.Windows.Forms.Panel();
             this.volume = new System.Windows.Forms.TrackBar();
             this.volume_label = new System.Windows.Forms.Label();
-            this.console_panel = new System.Windows.Forms.Panel();
-            this.console_btn = new System.Windows.Forms.CheckBox();
-            this.console_label = new System.Windows.Forms.Label();
             this.sound_panel = new System.Windows.Forms.Panel();
             this.sounds_on_off = new System.Windows.Forms.CheckBox();
             this.sounds_label = new System.Windows.Forms.Label();
+            this.console_panel = new System.Windows.Forms.Panel();
+            this.console_btn = new System.Windows.Forms.CheckBox();
+            this.console_label = new System.Windows.Forms.Label();
             this.video_settings = new System.Windows.Forms.TabPage();
             this.scope_color_panel = new System.Windows.Forms.Panel();
             this.scope_color_choice = new System.Windows.Forms.TrackBar();
@@ -235,8 +235,8 @@
             this.language_panel.SuspendLayout();
             this.volume_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.volume)).BeginInit();
-            this.console_panel.SuspendLayout();
             this.sound_panel.SuspendLayout();
+            this.console_panel.SuspendLayout();
             this.video_settings.SuspendLayout();
             this.scope_color_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scope_color_choice)).BeginInit();
@@ -855,40 +855,6 @@
             this.volume_label.Text = "Громкость";
             this.volume_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // console_panel
-            // 
-            this.console_panel.Controls.Add(this.console_btn);
-            this.console_panel.Controls.Add(this.console_label);
-            this.console_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.console_panel.Location = new System.Drawing.Point(3, 3);
-            this.console_panel.Name = "console_panel";
-            this.console_panel.Size = new System.Drawing.Size(459, 34);
-            this.console_panel.TabIndex = 5;
-            // 
-            // console_btn
-            // 
-            this.console_btn.Appearance = System.Windows.Forms.Appearance.Button;
-            this.console_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.console_btn.Location = new System.Drawing.Point(389, 0);
-            this.console_btn.Name = "console_btn";
-            this.console_btn.Size = new System.Drawing.Size(70, 34);
-            this.console_btn.TabIndex = 1;
-            this.console_btn.TabStop = false;
-            this.console_btn.Text = "Откл.";
-            this.console_btn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.console_btn.UseVisualStyleBackColor = false;
-            this.console_btn.CheckedChanged += new System.EventHandler(this.Console_btn_CheckedChanged);
-            // 
-            // console_label
-            // 
-            this.console_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.console_label.Location = new System.Drawing.Point(0, 0);
-            this.console_label.Name = "console_label";
-            this.console_label.Size = new System.Drawing.Size(273, 34);
-            this.console_label.TabIndex = 0;
-            this.console_label.Text = "Консоль разработчика";
-            this.console_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // sound_panel
             // 
             this.sound_panel.Controls.Add(this.sounds_on_off);
@@ -925,6 +891,40 @@
             this.sounds_label.Text = "Игровые звуки";
             this.sounds_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // console_panel
+            // 
+            this.console_panel.Controls.Add(this.console_btn);
+            this.console_panel.Controls.Add(this.console_label);
+            this.console_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.console_panel.Location = new System.Drawing.Point(3, 3);
+            this.console_panel.Name = "console_panel";
+            this.console_panel.Size = new System.Drawing.Size(459, 34);
+            this.console_panel.TabIndex = 5;
+            // 
+            // console_btn
+            // 
+            this.console_btn.Appearance = System.Windows.Forms.Appearance.Button;
+            this.console_btn.Dock = System.Windows.Forms.DockStyle.Right;
+            this.console_btn.Location = new System.Drawing.Point(389, 0);
+            this.console_btn.Name = "console_btn";
+            this.console_btn.Size = new System.Drawing.Size(70, 34);
+            this.console_btn.TabIndex = 1;
+            this.console_btn.TabStop = false;
+            this.console_btn.Text = "Откл.";
+            this.console_btn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.console_btn.UseVisualStyleBackColor = false;
+            this.console_btn.CheckedChanged += new System.EventHandler(this.Console_btn_CheckedChanged);
+            // 
+            // console_label
+            // 
+            this.console_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.console_label.Location = new System.Drawing.Point(0, 0);
+            this.console_label.Name = "console_label";
+            this.console_label.Size = new System.Drawing.Size(273, 34);
+            this.console_label.TabIndex = 0;
+            this.console_label.Text = "Консоль разработчика";
+            this.console_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // video_settings
             // 
             this.video_settings.AutoScroll = true;
@@ -937,10 +937,10 @@
             this.video_settings.Controls.Add(this.smoothing_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 33);
+            this.video_settings.Location = new System.Drawing.Point(4, 22);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 183);
+            this.video_settings.Size = new System.Drawing.Size(482, 194);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
@@ -1191,10 +1191,10 @@
             // 
             this.controls_settings.BackColor = System.Drawing.Color.Black;
             this.controls_settings.Controls.Add(this.controls_tabcontrol);
-            this.controls_settings.Location = new System.Drawing.Point(4, 33);
+            this.controls_settings.Location = new System.Drawing.Point(4, 22);
             this.controls_settings.Name = "controls_settings";
             this.controls_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.controls_settings.Size = new System.Drawing.Size(482, 183);
+            this.controls_settings.Size = new System.Drawing.Size(482, 194);
             this.controls_settings.TabIndex = 3;
             this.controls_settings.Text = "Управление";
             // 
@@ -1206,7 +1206,7 @@
             this.controls_tabcontrol.Location = new System.Drawing.Point(3, 3);
             this.controls_tabcontrol.Name = "controls_tabcontrol";
             this.controls_tabcontrol.SelectedIndex = 0;
-            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 177);
+            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 188);
             this.controls_tabcontrol.TabIndex = 0;
             // 
             // mouse_settings
@@ -1220,7 +1220,7 @@
             this.mouse_settings.Location = new System.Drawing.Point(4, 33);
             this.mouse_settings.Name = "mouse_settings";
             this.mouse_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.mouse_settings.Size = new System.Drawing.Size(468, 140);
+            this.mouse_settings.Size = new System.Drawing.Size(468, 151);
             this.mouse_settings.TabIndex = 0;
             this.mouse_settings.Text = "Мышь";
             // 
@@ -1350,7 +1350,7 @@
             this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 151);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
@@ -2628,8 +2628,8 @@
             this.volume_panel.ResumeLayout(false);
             this.volume_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.volume)).EndInit();
-            this.console_panel.ResumeLayout(false);
             this.sound_panel.ResumeLayout(false);
+            this.console_panel.ResumeLayout(false);
             this.video_settings.ResumeLayout(false);
             this.scope_color_panel.ResumeLayout(false);
             this.scope_color_panel.PerformLayout();

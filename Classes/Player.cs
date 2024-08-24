@@ -40,7 +40,8 @@ namespace SLIL.Classes
             new Shotgun(), new SubmachineGun(), new AssaultRifle(),
             new SniperRifle(), new Fingershot(), new TSPitW(),
             new Gnome(), new FirstAidKit(), new Candy(),
-            new Rainblower(), new Adrenalin(), new Helmet()
+            new Rainblower(), new Adrenalin(), new Helmet(),
+            new RPG()
         };
         public List<Gun> Guns = new List<Gun>();
         public List<DisposableItem> DisposableItems = new List<DisposableItem>();

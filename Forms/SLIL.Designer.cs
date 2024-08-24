@@ -58,6 +58,7 @@ namespace SLIL
             this.game_over_panel = new System.Windows.Forms.Panel();
             this.exit_restart_btn = new System.Windows.Forms.Button();
             this.restart_btn = new System.Windows.Forms.Button();
+            this.shotgun_pull_timer = new System.Windows.Forms.Timer(this.components);
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -277,7 +278,7 @@ namespace SLIL
             // status_refresh
             // 
             this.status_refresh.Enabled = true;
-            this.status_refresh.Interval = 1;
+            this.status_refresh.Interval = 5;
             this.status_refresh.Tick += new System.EventHandler(this.Status_refresh_Tick);
             // 
             // chill_timer
@@ -335,6 +336,11 @@ namespace SLIL
             this.restart_btn.Text = "ПОВТОРИТЬ";
             this.restart_btn.UseVisualStyleBackColor = true;
             this.restart_btn.Click += new System.EventHandler(this.Restart_btn_Click);
+            // 
+            // shotgun_pull_timer
+            // 
+            this.shotgun_pull_timer.Interval = 350;
+            this.shotgun_pull_timer.Tick += new System.EventHandler(this.Shotgun_pull_timer_Tick);
             // 
             // SLIL
             // 
@@ -401,5 +407,6 @@ namespace SLIL
         private Panel game_over_panel;
         private Button restart_btn;
         private Button exit_restart_btn;
+        private Timer shotgun_pull_timer;
     }
 }

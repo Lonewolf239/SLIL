@@ -9,6 +9,8 @@ namespace SLIL.Classes
     {
         public int ItemID { get; set; }
         public string[] Name { get; set; }
+        public bool InMultiplayer { get; set; }
+        public bool CanRun { get; set; }
         public bool ShowAmmoAsNumber { get; set; }
         public int RechargeTime { get; set; }
         public int MaxAmmoCount { get; set; }
@@ -41,6 +43,8 @@ namespace SLIL.Classes
         {
             this.ItemID = this.GetItemID();
             Level = Levels.LV1;
+            CanRun = true;
+            InMultiplayer = true;
             ShowAmmoAsNumber = false;
             IsMagic = false;
             CanAiming = false;
@@ -58,7 +62,7 @@ namespace SLIL.Classes
             HasIt = false;
         }
 
-        public void ReloadClip()
+        public virtual void ReloadClip()
         {
             MaxAmmoCount += AmmoCount;
             AmmoCount = 0;
@@ -178,6 +182,7 @@ namespace SLIL.Classes
 
         public DisposableItem() : base()
         {
+            CanRun = false;
             HasIt = false;
             HaveLV4 = false;
             HasCuteDescription = false;
@@ -408,6 +413,8 @@ namespace SLIL.Classes
 
     public class Shotgun : Gun
     {
+        public int PullTime { get; set; }
+
         public Shotgun() : base()
         {
             AddToShop = true;
@@ -415,6 +422,7 @@ namespace SLIL.Classes
             HaveLV4 = false;
             Name = new[] { "Дробовик", "Shotgun" };
             FireType = FireTypes.Single;
+            PullTime = 1;
             UpdateCost = 30;
             GunCost = 35;
             AmmoCost = 12;
@@ -433,11 +441,35 @@ namespace SLIL.Classes
             AmmoCount = CartridgesClip;
         }
 
+        public override void ReloadClip()
+        {
+            if (Level == Levels.LV1)
+            {
+                MaxAmmoCount += AmmoCount;
+                AmmoCount = 0;
+                if (MaxAmmoCount >= CartridgesClip)
+                {
+                    AmmoCount = CartridgesClip;
+                    MaxAmmoCount -= CartridgesClip;
+                }
+                else
+                {
+                    AmmoCount = MaxAmmoCount;
+                    MaxAmmoCount = 0;
+                }
+            }
+            else
+            {
+                AmmoCount++;
+                MaxAmmoCount--;
+            }
+        }
         protected override void ApplyUpdate()
         {
             if (Level == Levels.LV1)
             {
                 UpdateCost = 30;
+                PullTime = 1;
                 RechargeTime = 425;
                 CartridgesClip = 2;
                 MaxAmmoCount = CartridgesClip;
@@ -453,7 +485,8 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV2)
             {
-                RechargeTime = 425;
+                PullTime = 500;
+                RechargeTime = 325;
                 CartridgesClip = 6;
                 MaxAmmoCount = CartridgesClip * 2;
                 MaxAmmo = CartridgesClip * 7;
@@ -468,7 +501,8 @@ namespace SLIL.Classes
             }
             else
             {
-                RechargeTime = 425;
+                PullTime = 300;
+                RechargeTime = 325;
                 CartridgesClip = 14;
                 MaxAmmoCount = CartridgesClip * 2;
                 MaxAmmo = CartridgesClip * 4;
@@ -687,6 +721,7 @@ namespace SLIL.Classes
         {
             AddToShop = false;
             HasIt = false;
+            InMultiplayer = false;
             Name = new[] { "Пальцестрел", "Fingershot" };
             FireType = FireTypes.Single;
             RechargeTime = 600;
@@ -712,8 +747,10 @@ namespace SLIL.Classes
     {
         public TSPitW() : base()
         {
+            CanRun = false;
             AddToShop = false;
             HasIt = false;
+            InMultiplayer = false;
             Name = new[] { "СМПвМ", "TSPitW" };
             FireType = FireTypes.Single;
             RechargeTime = 750;
@@ -739,6 +776,7 @@ namespace SLIL.Classes
     {
         public Gnome() : base()
         {
+            InMultiplayer = false;
             Name = new[] { "Гном-волшебник", "Wizard Gnome" };
             RechargeTime = 300;
             MaxAmmoCount = 99;
@@ -749,6 +787,37 @@ namespace SLIL.Classes
             ReloadFrames = 4;
         }
         public override int GetItemID() => 11;
+    }
+
+    public class RPG : Gun
+    {
+        public RPG() : base()
+        {
+            CanRun = false;
+            ShowScope = false;
+            AddToShop = true;
+            HasIt = false;
+            InMultiplayer = false;
+            Name = new[] { "RPG7", "RPG7" };
+            FireType = FireTypes.Single;
+            GunCost = 150;
+            AmmoCost = 50;
+            RechargeTime = 350;
+            CartridgesClip = 1;
+            MaxAmmoCount = 2;
+            MaxAmmo = CartridgesClip * 4;
+            FiringRange = 0;
+            MaxDamage = 0;
+            MinDamage = 0;
+            Recoil = 0;
+            FiringRate = 150;
+            BurstShots = 1;
+            RadiusSound = 20;
+            ReloadFrames = 3;
+        }
+
+        public override bool CanUpdate() => false;
+        public override int GetItemID() => 15;
     }
 
     public class FirstAidKit : DisposableItem
