@@ -1099,5 +1099,11 @@
   <ItemGroup>
     <None Include="Images\rpg_shooted.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_rocket_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_rocket_1.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

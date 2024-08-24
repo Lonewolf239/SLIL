@@ -561,7 +561,7 @@ namespace SLIL.Classes
             FiringRange = 8;
             MaxDamage = 2;
             MinDamage = 1.5;
-            Recoil = 35;
+            Recoil = 18;
             FiringRate = 50;
             BurstShots = 6;
             RadiusSound = 6;
@@ -581,7 +581,7 @@ namespace SLIL.Classes
                 FiringRange = 8;
                 MaxDamage = 2;
                 MinDamage = 1.5;
-                Recoil = 35;
+                Recoil = 18;
                 FiringRate = 50;
                 BurstShots = 6;
                 RadiusSound = 6;
