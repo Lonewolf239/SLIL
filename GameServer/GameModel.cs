@@ -95,10 +95,10 @@ namespace SLIL.Classes
 
         private void EnemyTimer_Tick(object sender, EventArgs e)
         {
-            List<Player> playersList = new();
+            List<Player> playersList = [];
             foreach (Entity ent in Entities)
             {
-                if (ent is Player) playersList.Add(ent as Player);
+                if (ent is Player) playersList.Add((Player)ent);
             }
             if (playersList.Count == 0) return;
             for (int i = 0; i < Entities.Count; i++)
@@ -116,29 +116,22 @@ namespace SLIL.Classes
                         entity.CurrentFrame++;
                         if (entity.LifeTime >= entity.TotalLifeTime)
                         {
-                            if(entity is RPGRocketExplosion rPGRocketExplosion)
+                            if (entity is RPGRocketExplosion rPGRocketExplosion)
                             {
-                                foreach(Entity ent in Entities)
+                                foreach (Entity ent in Entities)
                                 {
-                                    if(ent is NPC || ent is Player || ent is Enemy)
+                                    if (ent is NPC || ent is Player || ent is Enemy)
                                     {
-                                        double distanceSquared = (rPGRocketExplosion.X-ent.X)*(rPGRocketExplosion.X-ent.X)+(rPGRocketExplosion.Y-ent.Y)*(rPGRocketExplosion.Y-ent.Y);
+                                        if (ent is Creature creature && !creature.CanHit) continue;
+                                        double distanceSquared = (rPGRocketExplosion.X - ent.X) * (rPGRocketExplosion.X - ent.X) + (rPGRocketExplosion.Y - ent.Y) * (rPGRocketExplosion.Y - ent.Y);
                                         if (distanceSquared > 3) continue;
-                                        double damage = 1 / Math.Sqrt(distanceSquared);
-                                        if (ent is Player) damage *= 5;
-                                        if (damage > 50) damage = 50;
+                                        double damage = rand.Next(25, 50);
                                         if (ent is Player playerTarget)
-                                        {
                                             playerTarget.DealDamage(damage);
-                                        }
-                                        if(ent is NPC npc)
-                                        {
+                                        if (ent is NPC npc)
                                             npc.DealDamage(damage);
-                                        }
-                                        if(ent is Enemy enemy)
-                                        {
-                                            enemy.DealDamage(damage); 
-                                        }
+                                        if (ent is Enemy enemy)
+                                            enemy.DealDamage(damage);
                                     }
                                 }
                             }
@@ -181,20 +174,20 @@ namespace SLIL.Classes
                     }
                     else if (entity is Pet)
                     {
-                        Player owner = null;
+                        Player? owner = null;
                         foreach (Entity ent in Entities)
                         {
                             if (ent is Player player1)
                             {
-                                if ((ent as Player).PET == entity)
+                                if (((Player)ent).PET == entity)
                                 {
                                     owner = player1;
                                     distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
                                 }
                             }
                         }
-                        if (distance > 1 && !(owner.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight))
-                            entity.UpdateCoordinates(MAP.ToString(), owner.X, owner.Y);
+                        if (distance > 1 && !(owner?.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight))
+                            entity.UpdateCoordinates(MAP.ToString(), owner?.X, owner?.Y);
                         else
                             entity.Stoped = true;
                     }
@@ -202,7 +195,7 @@ namespace SLIL.Classes
                     {
                         if (!entity.DEAD)
                             entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
-                        char[] ImpassibleCells = { '#', 'D', 'd' };
+                        char[] ImpassibleCells = { '#', 'D', 'd', '=' };
                         double newX = entity.X + entity.GetMove() * Math.Sin(entity.A);
                         double newY = entity.Y + entity.GetMove() * Math.Cos(entity.A);
                         if (ImpassibleCells.Contains(MAP[(int)newY * MAP_WIDTH + (int)(newX + entity.EntityWidth / 2)])
@@ -217,6 +210,7 @@ namespace SLIL.Classes
                         foreach(Entity ent in Entities)
                         {
                             if (ent == entity) continue;
+                            if (ent is Creature creature && (creature.DEAD || !creature.CanHit)) continue;
                             if (Math.Sqrt((entity.X - ent.X) * (entity.X - ent.X) + (entity.Y - ent.Y) * (entity.Y - ent.Y)) < (entity.EntityWidth+ent.EntityWidth)*(entity.EntityWidth+ent.EntityWidth))
                             {
                                 Entities.Remove(entity);

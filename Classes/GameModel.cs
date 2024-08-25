@@ -127,29 +127,22 @@ namespace SLIL.Classes
                         entity.CurrentFrame++;
                         if (entity.LifeTime >= entity.TotalLifeTime)
                         {
-                            if(entity is RPGRocketExplosion rPGRocketExplosion)
+                            if (entity is RPGRocketExplosion rPGRocketExplosion)
                             {
-                                foreach(Entity ent in Entities)
+                                foreach (Entity ent in Entities)
                                 {
-                                    if(ent is NPC || ent is Player || ent is Enemy)
+                                    if (ent is NPC || ent is Player || ent is Enemy)
                                     {
-                                        double distanceSquared = (rPGRocketExplosion.X-ent.X)*(rPGRocketExplosion.X-ent.X)+(rPGRocketExplosion.Y-ent.Y)*(rPGRocketExplosion.Y-ent.Y);
+                                        if (ent is Creature creature && !creature.CanHit) continue;
+                                        double distanceSquared = (rPGRocketExplosion.X - ent.X) * (rPGRocketExplosion.X - ent.X) + (rPGRocketExplosion.Y - ent.Y) * (rPGRocketExplosion.Y - ent.Y);
                                         if (distanceSquared > 3) continue;
-                                        double damage = 1 / Math.Sqrt(distanceSquared);
-                                        if (ent is Player) damage *= 5;
-                                        if (damage > 50) damage = 50;
+                                        double damage = rand.Next(25, 50);
                                         if (ent is Player playerTarget)
-                                        {
                                             playerTarget.DealDamage(damage);
-                                        }
-                                        if(ent is NPC npc)
-                                        {
+                                        if (ent is NPC npc)
                                             npc.DealDamage(damage);
-                                        }
-                                        if(ent is Enemy enemy)
-                                        {
-                                            enemy.DealDamage(damage); 
-                                        }
+                                        if (ent is Enemy enemy)
+                                            enemy.DealDamage(damage);
                                     }
                                 }
                             }
@@ -209,7 +202,7 @@ namespace SLIL.Classes
                     {
                         if (!entity.DEAD)
                             entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
-                        char[] ImpassibleCells = { '#', 'D', 'd' };
+                        char[] ImpassibleCells = { '#', 'D', 'd', '=' };
                         double newX = entity.X + entity.GetMove() * Math.Sin(entity.A);
                         double newY = entity.Y + entity.GetMove() * Math.Cos(entity.A);
                         if (ImpassibleCells.Contains(MAP[(int)newY * MAP_WIDTH + (int)(newX + entity.EntityWidth / 2)])
@@ -224,7 +217,8 @@ namespace SLIL.Classes
                         foreach(Entity ent in Entities)
                         {
                             if (ent == entity) continue;
-                            if (Math.Sqrt((entity.X - ent.X) * (entity.X - ent.X) + (entity.Y - ent.Y) * (entity.Y - ent.Y)) < (entity.EntityWidth+ent.EntityWidth)*(entity.EntityWidth+ent.EntityWidth))
+                            if (ent is Creature creature && (creature.DEAD|| !creature.CanHit)) continue;
+                            if (Math.Sqrt((entity.X - ent.X) * (entity.X - ent.X) + (entity.Y - ent.Y) * (entity.Y - ent.Y)) < (entity.EntityWidth + ent.EntityWidth) * (entity.EntityWidth + ent.EntityWidth))
                             {
                                 Entities.Remove(entity);
                                 Entities.Add(new RPGRocketExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
