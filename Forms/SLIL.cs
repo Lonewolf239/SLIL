@@ -1671,6 +1671,10 @@ namespace SLIL
                         player.GunState = player.MoveStyle;
                         if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4)
                             player.GunState = 4;
+                        if(player.GetCurrentGun() is RPG)
+                        {
+                            player.GunState = 5;
+                        }
                         else if (player.GetCurrentGun() is Shotgun)
                         {
                             if (player.GetCurrentGun().Level == Levels.LV1 || player.GetCurrentGun().MaxAmmoCount == 0)
