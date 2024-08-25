@@ -563,6 +563,31 @@ namespace SLIL
             }
         }
 
+        public int GetPetCost(int index)
+        {
+            int cost = 0;
+            switch (index)
+            {
+                case 0:
+                    SillyCat cat = new SillyCat(0, 0, 0, 0);
+                    cost = cat.Cost;
+                    break;
+                case 1:
+                    GreenGnome gnome = new GreenGnome(0, 0, 0, 0);
+                    cost = gnome.Cost;
+                    break;
+                case 2:
+                    EnergyDrink drink = new EnergyDrink(0, 0, 0, 0);
+                    cost = drink.Cost;
+                    break;
+                case 3:
+                    Pyro pyro = new Pyro(0, 0, 0, 0);
+                    cost = pyro.Cost;
+                    break;
+            }
+            return cost;
+        }
+
         private void CuteMode()
         {
             Player player = Controller.GetPlayer();

@@ -632,6 +632,7 @@ namespace SLIL.UserControls
                             if (!(player.PET is SillyCat))
                             {
                                 message += "Pet \"Silly cat\" has been issued.";
+                                player.ChangeMoney((Parent.FindForm() as SLIL).GetPetCost(0));
                                 (Parent.FindForm() as SLIL).AddPet(0);
                             }
                             else
@@ -645,6 +646,7 @@ namespace SLIL.UserControls
                             if (!(player.PET is GreenGnome))
                             {
                                 message += "Pet \"Wizard Gnome\" has been issued.";
+                                player.ChangeMoney((Parent.FindForm() as SLIL).GetPetCost(1));
                                 (Parent.FindForm() as SLIL).AddPet(1);
                             }
                             else
@@ -658,6 +660,7 @@ namespace SLIL.UserControls
                             if (!(player.PET is EnergyDrink))
                             {
                                 message += "Pet \"Energy Drink\" has been issued.";
+                                player.ChangeMoney((Parent.FindForm() as SLIL).GetPetCost(2));
                                 (Parent.FindForm() as SLIL).AddPet(2);
                             }
                             else
@@ -671,6 +674,7 @@ namespace SLIL.UserControls
                             if (!(player.PET is Pyro))
                             {
                                 message += "Pet \"Podseratel\" has been issued.";
+                                player.ChangeMoney((Parent.FindForm() as SLIL).GetPetCost(3));
                                 (Parent.FindForm() as SLIL).AddPet(3);
                             }
                             else
