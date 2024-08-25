@@ -611,6 +611,7 @@ namespace SLIL
                     {
                         SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
                         {
+                            ParentForm = this,
                             index = MainMenu.Language ? 0 : 1,
                             weapon = player.GUNS[i],
                             player = player,
@@ -1292,6 +1293,10 @@ namespace SLIL
                 {
                     if (e.Button == MouseButtons.Left)
                     {
+                        reload_timer.Interval = player.GetCurrentGun().RechargeTime;
+                        shot_timer.Interval = player.GetCurrentGun().FiringRate;
+                        if (player.GetCurrentGun() is Shotgun)
+                            shotgun_pull_timer.Interval = (player.GetCurrentGun() as Shotgun).PullTime;
                         if (player.GetCurrentGun().MaxAmmoCount >= 0 && player.GetCurrentGun().AmmoCount > 0)
                         {
                             if (player.GetCurrentGun() is SniperRifle && !player.Aiming)
@@ -2849,5 +2854,7 @@ namespace SLIL
         internal void UpdateWeapon(Gun weapon) => Controller.UpdateWeapon(weapon);
 
         internal void BuyConsumable(DisposableItem item) => Controller.BuyConsumable(item);
+
+        internal Player GetPlayer() => Controller.GetPlayer();
     }
 }
