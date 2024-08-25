@@ -2493,6 +2493,26 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap rpg_explosion_0 {
+            get {
+                object obj = ResourceManager.GetObject("rpg_explosion_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rpg_explosion_1 {
+            get {
+                object obj = ResourceManager.GetObject("rpg_explosion_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap rpg_reload_0 {
             get {
                 object obj = ResourceManager.GetObject("rpg_reload_0", resourceCulture);

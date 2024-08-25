@@ -464,6 +464,7 @@ namespace SLIL.Classes
 
     public class RpgRocket : Rockets
     {
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=' };
         protected override int GetEntityID() => 16;
         protected override double GetEntityWidth() => 0.4;
         public override double GetMove() => 0.6;
@@ -490,12 +491,12 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 48;
+            Texture = 50;
             LifeTime = 0;
             TotalLifeTime = 4;
             Temporarily = true;
             Animated = true;
-            base.SetAnimations(1, 0);
+            base.SetAnimations(2, 2);
         }
     }
 

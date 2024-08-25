@@ -428,7 +428,7 @@ namespace SLIL.Classes
 
     public abstract class Rockets : NPC
     {
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd' };
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd'];
 
         public Rockets(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => CanHit = false;
         public Rockets(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => CanHit = false;
@@ -464,6 +464,7 @@ namespace SLIL.Classes
 
     public class RpgRocket : Rockets
     {
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', '='];
         protected override int GetEntityID() => 16;
         protected override double GetEntityWidth() => 0.4;
         public override double GetMove() => 0.6;
@@ -490,7 +491,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 48;
+            Texture = 50;
             LifeTime = 0;
             TotalLifeTime = 4;
             Temporarily = true;

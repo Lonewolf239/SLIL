@@ -7,10 +7,7 @@ namespace SLIL.UserControls
 {
     public partial class SLIL_PetShopInterface : UserControl
     {
-        public SLIL_PetShopInterface()
-        {
-            InitializeComponent();
-        }
+        public SLIL_PetShopInterface() => InitializeComponent();
 
         public Pet pet;
         public int index = 0;

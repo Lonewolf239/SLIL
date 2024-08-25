@@ -1105,5 +1105,11 @@
   <ItemGroup>
     <None Include="Images\rpg_rocket_1.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_explosion_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_explosion_1.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
