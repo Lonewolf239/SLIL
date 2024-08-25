@@ -1545,6 +1545,7 @@ namespace SLIL
                 {
                     int index = 1;
                     Player player = Controller.GetPlayer();
+                    if (player.GetCurrentGun().AmmoCount == 0 && player.GetCurrentGun().MaxAmmoCount == 0) reload_timer.Stop();
                     if (player.GetCurrentGun() is Shotgun && (player.GetCurrentGun().MaxAmmoCount == 0 || pressed_r))
                     {
                         if (player.GetCurrentGun().Level == Levels.LV1) index = 2;
@@ -1613,12 +1614,7 @@ namespace SLIL
                     else
                         player.GunState = player.Aiming ? 3 : 0;
                     if (!(player.GetCurrentGun() is Knife))
-                    {
-                        //TODO:
-                        //make packet for AmmoCount decreasing
-                        //player.GetCurrentGun().AmmoCount--;
                         Controller.AmmoCountDecrease();
-                    }
                     if (player.GetCurrentGun().FireType != FireTypes.Single)
                     {
                         BulletRayCasting();
@@ -1635,6 +1631,7 @@ namespace SLIL
                         player.Aiming = false;
                         if (MainMenu.sounds)
                             SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                        shot_timer.Stop();
                         reload_timer.Start();
                     }
                     else if (player.GetCurrentGun().AmmoCount <= 0)
@@ -1652,6 +1649,7 @@ namespace SLIL
                                 player.GunState = 3;
                             if (MainMenu.sounds)
                                 SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                            shot_timer.Stop();
                             shotgun_pull_timer.Start();
                         }
                     }
@@ -1664,6 +1662,7 @@ namespace SLIL
                             player.GunState = 2;
                             if (MainMenu.sounds)
                                 SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                            shot_timer.Stop();
                             shotgun_pull_timer.Start();
                         }
                         player.CanShoot = true;
@@ -1778,8 +1777,8 @@ namespace SLIL
                     newY += moveCos;
                     break;
                 case Direction.BACK:
-                    newX -= moveSin * 0.6;
-                    newY -= moveCos * 0.6;
+                    newX -= moveSin * 0.65;
+                    newY -= moveCos * 0.65;
                     break;
             }
             if (!(impassibleCells.Contains(Controller.GetMap()[(int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2)])

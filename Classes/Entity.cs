@@ -466,7 +466,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 16;
         protected override double GetEntityWidth() => 0.4;
-        protected override double GetMove() => 0.2;
+        protected override double GetMove() => 0.6;
 
         public RpgRocket(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public RpgRocket(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();

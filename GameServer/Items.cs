@@ -819,11 +819,11 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             InMultiplayer = false;
-            Name = new[] { "RPG7", "RPG7" };
+            Name = ["RPG7", "RPG7"];
             FireType = FireTypes.Single;
             GunCost = 150;
             AmmoCost = 50;
-            RechargeTime = 350;
+            RechargeTime = 440;
             CartridgesClip = 1;
             MaxAmmoCount = 2;
             MaxAmmo = CartridgesClip * 4;
@@ -831,7 +831,7 @@ namespace SLIL.Classes
             MaxDamage = 0;
             MinDamage = 0;
             Recoil = 0;
-            FiringRate = 150;
+            FiringRate = 460;
             BurstShots = 1;
             RadiusSound = 20;
             ReloadFrames = 3;
@@ -891,7 +891,7 @@ namespace SLIL.Classes
         {
             EffectID = 2;
             ReloadFrames = 4;
-            RechargeTime = 530;
+            RechargeTime = 1000;
             GunCost = 75;
             Name = new[]
             {
