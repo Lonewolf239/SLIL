@@ -108,7 +108,7 @@ namespace SLIL.UserControls
         {
             int cost = weapon.HasIt ? weapon.AmmoCost : weapon.GunCost;
             string ammo = weapon.HasIt ? $"{weapon.MaxAmmoCount}/{weapon.AmmoCount}" : "0/0";
-            weapon_name.Text = weapon.CanUpdate() ? weapon.Name[index] + $" {weapon.Level}" : weapon.Name[index];
+            weapon_name.Text = weapon.Upgradeable ? weapon.Name[index] + $" {weapon.Level}" : weapon.Name[index];
             weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
             ammo_count.Text = index == 0 ? $"Патроны: {ammo}" : $"Ammo: {ammo}";
             buy_button.Text = buy_text[index, weapon.HasIt ? 1 : 0] + $" ${cost}";

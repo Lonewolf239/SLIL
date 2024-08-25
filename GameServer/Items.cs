@@ -8,7 +8,8 @@ namespace SLIL.Classes
     public abstract class Gun : INetSerializable
     {
         public int ItemID { get; set; }
-        public string[] Name { get; set; }
+        public string[]? Name { get; set; }
+        public bool Upgradeable { get; set; }
         public bool InMultiplayer { get; set; }
         public bool CanRun { get; set; }
         public bool ShowAmmoAsNumber { get; set; }
@@ -41,6 +42,7 @@ namespace SLIL.Classes
 
         public Gun()
         {
+            Upgradeable = true;
             this.ItemID = this.GetItemID();
             Level = Levels.LV1;
             CanRun = true;
@@ -133,6 +135,7 @@ namespace SLIL.Classes
     {
         public Magic() : base()
         {
+            Upgradeable = false;
             AddToShop = false;
             HasIt = false;
             IsMagic = true;
@@ -151,11 +154,12 @@ namespace SLIL.Classes
 
     public abstract class Item : Gun
     {
-        public string[] Description { get; set; }
+        public string[]? Description { get; set; }
         public bool HasCuteDescription { get; set; }
 
         public Item() : base()
         {
+            Upgradeable = false;
             FireType = FireTypes.Single;
             HasCuteDescription = false;
             ShowScope = false;
@@ -182,6 +186,7 @@ namespace SLIL.Classes
 
         public DisposableItem() : base()
         {
+            Upgradeable = false;
             CanRun = false;
             HasIt = false;
             HaveLV4 = false;
@@ -232,6 +237,7 @@ namespace SLIL.Classes
     {
         public Knife() : base()
         {
+            Upgradeable = false;
             ShowAmmo = false;
             AddToShop = false;
             HasIt = true;
@@ -278,6 +284,7 @@ namespace SLIL.Classes
     {
         public Rainblower() : base()
         {
+            Upgradeable = false;
             ShowScope = false;
             AddToShop = false;
             HasIt = false;
@@ -698,6 +705,7 @@ namespace SLIL.Classes
     {
         public SniperRifle() : base()
         {
+            Upgradeable = false;
             ShowScope = false;
             AddToShop = true;
             HasIt = false;
@@ -728,6 +736,7 @@ namespace SLIL.Classes
     {
         public Fingershot() : base()
         {
+            Upgradeable = false;
             InMultiplayer = false;
             AddToShop = false;
             HasIt = false;
@@ -756,6 +765,7 @@ namespace SLIL.Classes
     {
         public TSPitW() : base()
         {
+            Upgradeable = false;
             InMultiplayer = false;
             CanRun = false;
             AddToShop = false;
@@ -802,6 +812,7 @@ namespace SLIL.Classes
     {
         public RPG() : base()
         {
+            Upgradeable = false;
             CanRun = false;
             ShowScope = false;
             AddToShop = true;
