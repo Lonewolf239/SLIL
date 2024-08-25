@@ -174,7 +174,19 @@ namespace SLIL.Classes
                 Game.StartGame(true);
         }
 
-        public void SpawnRockets(double x, double y, int id, double a) => Game.SpawnRockets(x, y, id, a);
+        public void SpawnRockets(double x, double y, int id, double a) { 
+            if(!IsMultiplayer()) Game.SpawnRockets(x, y, id, a);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(89);
+                writer.Put(x);
+                writer.Put(y);
+                writer.Put(id);
+                writer.Put(a);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
 
         public void Pause(bool paused) => Game.Pause(paused);
 

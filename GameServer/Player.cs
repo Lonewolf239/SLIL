@@ -166,6 +166,11 @@ namespace SLIL.Classes
                         helmet.Deserialize(reader);
                         tempGuns.Add(helmet);
                         break;
+                    case 15:
+                        RPG rpg = new RPG();
+                        rpg.Deserialize(reader);
+                        tempGuns.Add(rpg);
+                        break;
                     default:
                         break;
                 }

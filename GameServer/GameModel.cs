@@ -116,6 +116,32 @@ namespace SLIL.Classes
                         entity.CurrentFrame++;
                         if (entity.LifeTime >= entity.TotalLifeTime)
                         {
+                            if(entity is RPGRocketExplosion rPGRocketExplosion)
+                            {
+                                foreach(Entity ent in Entities)
+                                {
+                                    if(ent is NPC || ent is Player || ent is Enemy)
+                                    {
+                                        double distanceSquared = (rPGRocketExplosion.X-ent.X)*(rPGRocketExplosion.X-ent.X)+(rPGRocketExplosion.Y-ent.Y)*(rPGRocketExplosion.Y-ent.Y);
+                                        if (distanceSquared > 3) continue;
+                                        double damage = 1 / Math.Sqrt(distanceSquared);
+                                        if (ent is Player) damage *= 5;
+                                        if (damage > 50) damage = 50;
+                                        if (ent is Player playerTarget)
+                                        {
+                                            playerTarget.DealDamage(damage);
+                                        }
+                                        if(ent is NPC npc)
+                                        {
+                                            npc.DealDamage(damage);
+                                        }
+                                        if(ent is Enemy enemy)
+                                        {
+                                            enemy.DealDamage(damage); 
+                                        }
+                                    }
+                                }
+                            }
                             Entities.Remove(entity);
                             continue;
                         }
@@ -171,6 +197,33 @@ namespace SLIL.Classes
                             entity.UpdateCoordinates(MAP.ToString(), owner.X, owner.Y);
                         else
                             entity.Stoped = true;
+                    }
+                    else if (entity is Rockets rocket)
+                    {
+                        if (!entity.DEAD)
+                            entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
+                        char[] ImpassibleCells = { '#', 'D', 'd' };
+                        double newX = entity.X + entity.GetMove() * Math.Sin(entity.A);
+                        double newY = entity.Y + entity.GetMove() * Math.Cos(entity.A);
+                        if (ImpassibleCells.Contains(MAP[(int)newY * MAP_WIDTH + (int)(newX + entity.EntityWidth / 2)])
+                        || ImpassibleCells.Contains(MAP[(int)newY * MAP_WIDTH + (int)(newX - entity.EntityWidth / 2)])
+                        || ImpassibleCells.Contains(MAP[(int)(newY + entity.EntityWidth / 2) * MAP_WIDTH + (int)newX])
+                        || ImpassibleCells.Contains(MAP[(int)(newY - entity.EntityWidth / 2) * MAP_WIDTH + (int)newX]))
+                        {
+                            Entities.Remove(entity);
+                            Entities.Add(new RPGRocketExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                        }
+                        if (!Entities.Contains(entity)) continue;
+                        foreach(Entity ent in Entities)
+                        {
+                            if (ent == entity) continue;
+                            if (Math.Sqrt((entity.X - ent.X) * (entity.X - ent.X) + (entity.Y - ent.Y) * (entity.Y - ent.Y)) < (entity.EntityWidth+ent.EntityWidth)*(entity.EntityWidth+ent.EntityWidth))
+                            {
+                                Entities.Remove(entity);
+                                Entities.Add(new RPGRocketExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                                return;
+                            }
+                        }
                     }
                 }
             }
@@ -340,9 +393,14 @@ namespace SLIL.Classes
                         tempEntities.Add(barrel);
                         break;
                     case 16:
-                        RpgRocket rpgRocket = new(0, 0, MAP_WIDTH, ID);
+                        RpgRocket rpgRocket = new RpgRocket(0, 0, MAP_WIDTH, ID);
                         rpgRocket.Deserialize(reader);
                         tempEntities.Add(rpgRocket);
+                        break;
+                    case 17:
+                        RPGRocketExplosion rPGRocketExplosion = new RPGRocketExplosion(0, 0, MAP_WIDTH, ID);
+                        rPGRocketExplosion.Deserialize(reader);
+                        tempEntities.Add(rPGRocketExplosion);
                         break;
                     default:
                         break;
@@ -459,9 +517,14 @@ namespace SLIL.Classes
                         tempEntities.Add(barrel);
                         break;
                     case 16:
-                        RpgRocket rpgRocket = new(0, 0, MAP_WIDTH, ID);
+                        RpgRocket rpgRocket = new RpgRocket(0, 0, MAP_WIDTH, ID);
                         rpgRocket.Deserialize(reader);
                         tempEntities.Add(rpgRocket);
+                        break;
+                    case 17:
+                        RPGRocketExplosion rPGRocketExplosion = new RPGRocketExplosion(0, 0, MAP_WIDTH, ID);
+                        rPGRocketExplosion.Deserialize(reader);
+                        tempEntities.Add(rPGRocketExplosion);
                         break;
                     default:
                         break;
@@ -987,6 +1050,20 @@ namespace SLIL.Classes
                     player.Y = 1.5;
                 }
             };
+        }
+
+        public void SpawnRockets(double x, double y, int id, double a)
+        {
+            Rockets rocket = null;
+            if (id == 0)
+                rocket = new RpgRocket(x, y, MAP_WIDTH, ref MaxEntityID);
+            rocket.X += Math.Sin(a);// * rocket.GetMove();
+            rocket.Y += Math.Cos(a);// * rocket.GetMove();
+            if (rocket != null)
+            {
+                rocket.SetA(a);
+                Entities.Add(rocket);
+            }
         }
 
         private void SpawnEnemis(int x, int y, int size)

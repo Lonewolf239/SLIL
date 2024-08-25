@@ -2301,7 +2301,7 @@ namespace SLIL
                 else if (ping < 150) connection_status = 1;
                 else if (ping < 300) connection_status = 2;
                 else connection_status = 4;
-                graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, 0, icon_size, icon_size);
+                if(!(connection_status == 4)) graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, 0, icon_size, icon_size);
                 graphicsWeapon.DrawString($"{ping}ms", consolasFont[resolution], whiteBrush, icon_size + 2, 0);
             }
             graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 110 * size);
