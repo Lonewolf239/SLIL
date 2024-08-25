@@ -74,32 +74,32 @@ namespace SLIL
             { typeof(Rainblower), new[] { Properties.Resources.missing } },
             { typeof(Pistol), new[]
             {
-                    /*LV1:*/ Properties.Resources.gun_1_0_icon,
-                    /*LV2:*/ Properties.Resources.gun_1_1_icon,
-                    /*LV3:*/ Properties.Resources.gun_1_2_icon,
-                    /*LV4:*/ Properties.Resources.gun_1_3_icon
+                    /*LV1:*/ Properties.Resources.pistol_lv1_icon,
+                    /*LV2:*/ Properties.Resources.pistol_lv2_icon,
+                    /*LV3:*/ Properties.Resources.pistol_lv3_icon,
+                    /*LV4:*/ Properties.Resources.pistol_lv4_icon
             } },
             { typeof(Shotgun), new[]
             {
-                    /*LV1:*/ Properties.Resources.gun_0_0_icon,
-                    /*LV2:*/ Properties.Resources.gun_0_1_icon,
-                    /*LV3:*/ Properties.Resources.gun_0_2_icon,
+                    /*LV1:*/ Properties.Resources.shotgun_lv1_icon,
+                    /*LV2:*/ Properties.Resources.shotgun_lv2_icon,
+                    /*LV3:*/ Properties.Resources.shotgun_lv3_icon,
             } },
             { typeof(SubmachineGun), new[]
             {
-                    /*LV1:*/ Properties.Resources.gun_3_1_icon,
-                    /*LV2:*/ Properties.Resources.gun_3_2_icon,
-                    /*LV3:*/ Properties.Resources.gun_3_3_icon,
+                    /*LV1:*/ Properties.Resources.smg_lv1_icon,
+                    /*LV2:*/ Properties.Resources.smg_lv2_icon,
+                    /*LV3:*/ Properties.Resources.smg_lv3_icon,
             } },
             { typeof(AssaultRifle), new[]
             {
-                    /*LV1:*/ Properties.Resources.gun_4_1_icon,
-                    /*LV2:*/ Properties.Resources.gun_4_2_icon,
-                    /*LV3:*/ Properties.Resources.gun_4_3_icon,
+                    /*LV1:*/ Properties.Resources.rifle_lv1_icon,
+                    /*LV2:*/ Properties.Resources.rifle_lv2_icon,
+                    /*LV3:*/ Properties.Resources.rifle_lv3_icon,
             } },
             { typeof(SniperRifle), new[]
             {
-                    Properties.Resources.gun_2_icon
+                    Properties.Resources.sniper_icon
             } },
             { typeof(Fingershot), new[] { Properties.Resources.missing } },
             { typeof(TSPitW), new[] { Properties.Resources.missing } },
@@ -119,60 +119,60 @@ namespace SLIL
                 Properties.Resources.helmet_icon,
                 Properties.Resources.helmet_icon
             } },
-            { typeof(RPG), new[] { Properties.Resources.missing } },
+            { typeof(RPG), new[] { Properties.Resources.rpg_icon } },
         };
         public static readonly Dictionary<Type, Image[,]> ImagesDict = new Dictionary<Type, Image[,]>
         {
             { typeof(Flashlight), new[,] { { Properties.Resources.flashlight, Properties.Resources.flashlight_run } } },
             { typeof(Knife), new[,] { { Properties.Resources.knife, Properties.Resources.knife_hit, Properties.Resources.knife_run } } },
-            { typeof(Candy), new[,] { { Properties.Resources.gun_candy, Properties.Resources.gun_candy_shooted, Properties.Resources.gun_candy_run } } },
+            { typeof(Candy), new[,] { { Properties.Resources.candy, Properties.Resources.candy_shoot, Properties.Resources.candy_run } } },
             { typeof(Rainblower), new[,]
             {
-                   { Properties.Resources.gun_rainblower, Properties.Resources.gun_rainblower_shooted, Properties.Resources.gun_rainblower_run },
+                   { Properties.Resources.rainblower, Properties.Resources.rainblower_shoot, Properties.Resources.rainblower_run },
             } },
             { typeof(Pistol), new[,]
             {                    
-                   /*LV1:*/ { Properties.Resources.gun_1_0, Properties.Resources.gun_1_0_shooted, Properties.Resources.gun_1_0_reload, Properties.Resources.gun_1_0_reload, Properties.Resources.gun_1_0, Properties.Resources.gun_1_0_run, Properties.Resources.gun_1_0_run },
-                   /*LV2:*/ { Properties.Resources.gun_1_1, Properties.Resources.gun_1_1_shooted, Properties.Resources.gun_1_1_reload, Properties.Resources.gun_1_1_reload_empty, Properties.Resources.gun_1_1_empty, Properties.Resources.gun_1_1_run, Properties.Resources.gun_1_1_run_empty },
-                   /*LV3:*/ { Properties.Resources.gun_1_2, Properties.Resources.gun_1_2_shooted, Properties.Resources.gun_1_2_reload, Properties.Resources.gun_1_2_reload_empty, Properties.Resources.gun_1_2_empty, Properties.Resources.gun_1_2_run, Properties.Resources.gun_1_2_run_empty },
-                   /*LV4:*/ { Properties.Resources.gun_1_3, Properties.Resources.gun_1_3_shooted, Properties.Resources.gun_1_3_1_reload, Properties.Resources.gun_1_3_2_reload, Properties.Resources.gun_1_3, Properties.Resources.gun_1_3_run, Properties.Resources.gun_1_3_run },
+                   /*LV1:*/ { Properties.Resources.pistol_lv1, Properties.Resources.pistol_lv1_shoot, Properties.Resources.pistol_lv1_reload, Properties.Resources.pistol_lv1_reload, Properties.Resources.pistol_lv1, Properties.Resources.pistol_lv1_run, Properties.Resources.pistol_lv1_run },
+                   /*LV2:*/ { Properties.Resources.pistol_lv2, Properties.Resources.pistol_lv2_shoot, Properties.Resources.pistol_lv2_reload, Properties.Resources.pistol_lv2_reload_empty, Properties.Resources.pistol_lv2_empty, Properties.Resources.pistol_lv2_run, Properties.Resources.pistol_lv2_run_empty },
+                   /*LV3:*/ { Properties.Resources.pistol_lv3, Properties.Resources.pistol_lv3_shoot, Properties.Resources.pistol_lv3_reload, Properties.Resources.pistol_lv3_reload_empty, Properties.Resources.pistol_lv3_empty, Properties.Resources.pistol_lv3_run, Properties.Resources.pistol_lv3_run_empty },
+                   /*LV4:*/ { Properties.Resources.pistol_lv4, Properties.Resources.pistol_lv4_shoot, Properties.Resources.pistol_lv4_reload_0, Properties.Resources.pistol_lv4_reload_1, Properties.Resources.pistol_lv4, Properties.Resources.pistol_lv4_run, Properties.Resources.pistol_lv4_run },
             } },
             { typeof(Shotgun), new[,]
             {
-                    /*LV1:*/ { Properties.Resources.gun_0_0, Properties.Resources.gun_0_0_shooted, Properties.Resources.gun_0_0_1_reload, Properties.Resources.gun_0_0_2_reload, Properties.Resources.gun_0_0_2_reload, Properties.Resources.gun_0_0_run },
-                    /*LV2:*/ { Properties.Resources.gun_0_1, Properties.Resources.gun_0_1_shooted, Properties.Resources.gun_0_1_pump, Properties.Resources.gun_0_1_1_reload, Properties.Resources.gun_0_1_2_reload, Properties.Resources.gun_0_1_run },
-                    /*LV3:*/ { Properties.Resources.gun_0_2, Properties.Resources.gun_0_2_shooted, Properties.Resources.gun_0_2_pump, Properties.Resources.gun_0_2_1_reload, Properties.Resources.gun_0_2_2_reload, Properties.Resources.gun_0_2_run },
+                    /*LV1:*/ { Properties.Resources.shotgun_lv1, Properties.Resources.shotgun_lv1_shoot, Properties.Resources.shotgun_lv1_reload_0, Properties.Resources.shotgun_lv1_reload_1, Properties.Resources.shotgun_lv1_reload_1, Properties.Resources.shotgun_lv1_run },
+                    /*LV2:*/ { Properties.Resources.shotgun_lv2, Properties.Resources.shotgun_lv2_shoot, Properties.Resources.shotgun_lv2_pump, Properties.Resources.shotgun_lv2_reload_0, Properties.Resources.shotgun_lv2_reload_1, Properties.Resources.shotgun_lv2_run },
+                    /*LV3:*/ { Properties.Resources.shotgun_lv3, Properties.Resources.shotgun_lv3_shoot, Properties.Resources.shotgun_lv3_pump, Properties.Resources.shotgun_lv3_reload_0, Properties.Resources.shotgun_lv3_reload_1, Properties.Resources.shotgun_lv3_run },
             } },
             { typeof(SubmachineGun), new[,]
             {
-                    /*LV1:*/ { Properties.Resources.gun_3_1, Properties.Resources.gun_3_1_shooted, Properties.Resources.gun_3_1_1_reload, Properties.Resources.gun_3_1_2_reload, Properties.Resources.gun_3_1_run},
-                    /*LV2:*/ { Properties.Resources.gun_3_2, Properties.Resources.gun_3_2_shooted, Properties.Resources.gun_3_2_1_reload, Properties.Resources.gun_3_2_2_reload, Properties.Resources.gun_3_2_run },
-                    /*LV3:*/ { Properties.Resources.gun_3_3, Properties.Resources.gun_3_3_shooted, Properties.Resources.gun_3_3_1_reload, Properties.Resources.gun_3_3_2_reload, Properties.Resources.gun_3_3_run }
+                    /*LV1:*/ { Properties.Resources.smg_lv1, Properties.Resources.smg_lv1_shoot, Properties.Resources.smg_lv1_reload_0, Properties.Resources.smg_lv1_reload_1, Properties.Resources.smg_lv1_run },
+                    /*LV2:*/ { Properties.Resources.smg_lv2, Properties.Resources.smg_lv2_shoot, Properties.Resources.smg_lv2_reload_0, Properties.Resources.smg_lv2_reload_1, Properties.Resources.smg_lv2_run },
+                    /*LV3:*/ { Properties.Resources.smg_lv3, Properties.Resources.smg_lv3_shoot, Properties.Resources.smg_lv3_reload_0, Properties.Resources.smg_lv3_reload_1, Properties.Resources.smg_lv3_run }
             } },
             { typeof(AssaultRifle), new[,]
             {
-                    /*LV1:*/ { Properties.Resources.gun_4_1, Properties.Resources.gun_4_1_shooted, Properties.Resources.gun_4_1_1_reload, Properties.Resources.gun_4_1_2_reload, Properties.Resources.gun_4_1_run },
-                    /*LV2:*/ { Properties.Resources.gun_4_2, Properties.Resources.gun_4_2_shooted, Properties.Resources.gun_4_2_1_reload, Properties.Resources.gun_4_2_2_reload, Properties.Resources.gun_4_2_run },
-                    /*LV3:*/ { Properties.Resources.gun_4_3, Properties.Resources.gun_4_3_shooted, Properties.Resources.gun_4_3_1_reload, Properties.Resources.gun_4_3_2_reload, Properties.Resources.gun_4_3_run }
+                    /*LV1:*/ { Properties.Resources.rifle_lv1, Properties.Resources.rifle_lv1_shoot, Properties.Resources.rifle_lv1_reload_0, Properties.Resources.rifle_lv1_reload_1, Properties.Resources.rifle_lv1_run },
+                    /*LV2:*/ { Properties.Resources.rifle_lv2, Properties.Resources.rifle_lv2_shoot, Properties.Resources.rifle_lv2_reload_0, Properties.Resources.rifle_lv2_reload_1, Properties.Resources.rifle_lv2_run },
+                    /*LV3:*/ { Properties.Resources.rifle_lv3, Properties.Resources.rifle_lv3_shoot, Properties.Resources.rifle_lv3_reload_0, Properties.Resources.rifle_lv3_reload_1, Properties.Resources.rifle_lv3_run }
             } },
             { typeof(SniperRifle), new[,]
             {
-                    { Properties.Resources.gun_2, Properties.Resources.gun_2_shooted, Properties.Resources.gun_2_reload, Properties.Resources.gun_2_aiming, Properties.Resources.gun_2_run }
+                    { Properties.Resources.sniper, Properties.Resources.sniper_shoot, Properties.Resources.sniper_reload, Properties.Resources.sniper_aiming, Properties.Resources.sniper_run }
             } },
             { typeof(Fingershot), new[,]
             {
-                   { Properties.Resources.gun_5, Properties.Resources.gun_5_shooted, Properties.Resources.gun_5_1_reload, Properties.Resources.gun_5_2_reload, Properties.Resources.gun_5_run, Properties.Resources.gun_5_run }
+                   { Properties.Resources.fingershot, Properties.Resources.fingershot_shoot, Properties.Resources.fingershot_reload_0, Properties.Resources.fingershot_reload_1, Properties.Resources.fingershot_run, Properties.Resources.fingershot_run }
             } },
             { typeof(TSPitW), new[,]
             {
-                   { Properties.Resources.gun_6, Properties.Resources.gun_6_shooted, Properties.Resources.gun_6_1_reload, Properties.Resources.gun_6_2_reload, Properties.Resources.gun_6_3_reload, Properties.Resources.gun_6 }
+                   { Properties.Resources.TSPitW, Properties.Resources.TSPitW_shoot, Properties.Resources.TSPitW_reload_0, Properties.Resources.TSPitW_reload_1, Properties.Resources.TSPitW_reload_2, Properties.Resources.TSPitW }
             } },
             { typeof(Gnome), new[,]
             {
-                   { Properties.Resources.gun_gnome, Properties.Resources.gun_gnome_shooted,
-                    Properties.Resources.gun_gnome_reloading_0, Properties.Resources.gun_gnome_reloading_1,
-                    Properties.Resources.gun_gnome_reloading_2, Properties.Resources.gun_gnome_reloading_3,
-                    Properties.Resources.gun_gnome_run }
+                   { Properties.Resources.gnome, Properties.Resources.gnome_shoot,
+                    Properties.Resources.gnome_reload_0, Properties.Resources.gnome_reload_1,
+                    Properties.Resources.gnome_reload_2, Properties.Resources.gnome_reload_3,
+                    Properties.Resources.gnome_run }
             } },
             { typeof(FirstAidKit), new[,]
             {
