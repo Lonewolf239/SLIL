@@ -637,8 +637,8 @@ namespace SLIL.Classes
             MaxAmmoCount = CartridgesClip * 2;
             MaxAmmo = CartridgesClip * 4;
             FiringRange = 8;
-            MaxDamage = 3.25;
-            MinDamage = 2.75;
+            MaxDamage = 2.5;
+            MinDamage = 2;
             Recoil = 30;
             FiringRate = 100;
             BurstShots = 3;
