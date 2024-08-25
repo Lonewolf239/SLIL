@@ -29,7 +29,7 @@ namespace SLIL
         private readonly GameController Controller;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
-        public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true, EnableAnimation = true;
+        public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
         public bool inv_y = false, inv_x = false;
         public static int difficulty = 1;
         private int inDebug = 0;
@@ -636,7 +636,7 @@ namespace SLIL
                     {
                         SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
                         {
-                            ParentForm = this,
+                            ParentSLILForm = this,
                             index = MainMenu.Language ? 0 : 1,
                             weapon = player.GUNS[i],
                             player = player,
@@ -1130,15 +1130,10 @@ namespace SLIL
                                             if (y == drawStartY) texY = 0;
                                             if (rays[stripe].Length > y && y >= 0)
                                             {
-                                                if (EnableAnimation)
-                                                {
-                                                    if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
-                                                        rays[stripe][y].TextureId = textures[i] + 2;
-                                                    else
-                                                        rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
-                                                }
+                                                if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
+                                                    rays[stripe][y].TextureId = textures[i] + 2;
                                                 else
-                                                    rays[stripe][y].TextureId = textures[i];
+                                                    rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
                                                 rays[stripe][y].Blackout = 0;
                                                 rays[stripe][y].TextureX = texX;
                                                 rays[stripe][y].TextureY = texY;
@@ -1440,15 +1435,10 @@ namespace SLIL
                                 if (y == drawStartY) texY = 0;
                                 if (rays[stripe].Length > y && y >= 0)
                                 {
-                                    if (EnableAnimation)
-                                    {
-                                        if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
-                                            rays[stripe][y].TextureId = textures[i] + 2;
-                                        else
-                                            rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
-                                    }
+                                    if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
+                                        rays[stripe][y].TextureId = textures[i] + 2;
                                     else
-                                        rays[stripe][y].TextureId = textures[i];
+                                        rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
                                     rays[stripe][y].Blackout = 0;
                                     rays[stripe][y].TextureX = texX;
                                     rays[stripe][y].TextureY = texY;
@@ -1970,20 +1960,15 @@ namespace SLIL
                                     Creature creature = Entities[spriteInfo[i].Order] as Creature;
                                     if (!creature.DEAD)
                                     {
-                                        if (EnableAnimation)
-                                        {
-                                            if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && creature is Pet && (creature as Pet).Stoped && (creature as Pet).HasStopAnimation)
-                                                rays[stripe][y].TextureId = spriteInfo[i].Texture + 3;
-                                            else
-                                            {
-                                                if (player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight)
-                                                    rays[stripe][y].TextureId = spriteInfo[i].Texture + 2;
-                                                else
-                                                    rays[stripe][y].TextureId = creature.Animations[0][timeNow % creature.Frames];
-                                            }
-                                        }
+                                        if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && creature is Pet && (creature as Pet).Stoped && (creature as Pet).HasStopAnimation)
+                                            rays[stripe][y].TextureId = spriteInfo[i].Texture + 3;
                                         else
-                                            rays[stripe][y].TextureId = spriteInfo[i].Texture;
+                                        {
+                                            if (player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight)
+                                                rays[stripe][y].TextureId = spriteInfo[i].Texture + 2;
+                                            else
+                                                rays[stripe][y].TextureId = creature.Animations[0][timeNow % creature.Frames];
+                                        }
                                         if (creature is Enemy)
                                             enemiesCoords.Add(Entities[spriteInfo[i].Order].IntY * mapWidth + Entities[spriteInfo[i].Order].IntX);
                                     }
@@ -1999,12 +1984,7 @@ namespace SLIL
                                 {
                                     Player playerTar = Entities[spriteInfo[i].Order] as Player;
                                     if (!playerTar.Dead)
-                                    {
-                                        if (EnableAnimation)
-                                            rays[stripe][y].TextureId = playerTar.Animations[0][timeNow % playerTar.Frames];
-                                        else
-                                            rays[stripe][y].TextureId = spriteInfo[i].Texture;
-                                    }
+                                        rays[stripe][y].TextureId = playerTar.Animations[0][timeNow % playerTar.Frames];
                                     else
                                         rays[stripe][y].TextureId = spriteInfo[i].Texture + 2;
                                 }

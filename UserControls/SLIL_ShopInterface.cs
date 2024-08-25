@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using Play_Sound;
-using SharpDX.DirectWrite;
 using SLIL.Classes;
 
 namespace SLIL.UserControls
@@ -10,7 +9,7 @@ namespace SLIL.UserControls
     {
 
         public Timer UpdateTimer;
-        public SLIL ParentForm;
+        public SLIL ParentSLILForm;
 
         public SLIL_ShopInterface()
         {
@@ -28,7 +27,7 @@ namespace SLIL.UserControls
 
         private void UpdateTimer_Tick(object sender, EventArgs e)
         {
-            player = ParentForm.GetPlayer();
+            player = ParentSLILForm.GetPlayer();
             if (player == null)
             {
                 this.UpdateTimer.Stop();
@@ -62,7 +61,7 @@ namespace SLIL.UserControls
                 {
                     if (MainMenu.sounds)
                         buy.Play(SLIL.Volume);
-                    ParentForm.BuyAmmo(weapon);
+                    ParentSLILForm.BuyAmmo(weapon);
                     ammo_count.Text = index == 0 ? $"Патроны: {weapon.MaxAmmoCount}/{weapon.AmmoCount}" : $"Ammo: {weapon.MaxAmmoCount}/{weapon.AmmoCount}";
                 }
                 else if (MainMenu.sounds)
@@ -74,7 +73,7 @@ namespace SLIL.UserControls
                 {
                     if (MainMenu.sounds)
                         buy.Play(SLIL.Volume);
-                    ParentForm.BuyWeapon(weapon);
+                    ParentSLILForm.BuyWeapon(weapon);
                     buy_button.Text = buy_text[index, weapon.HasIt ? 1 : 0] + $" ${weapon.AmmoCost}";
                     ammo_count.Text = index == 0 ? $"Патроны: {weapon.MaxAmmoCount}/{weapon.AmmoCount}" : $"Ammo: {weapon.MaxAmmoCount}/{weapon.AmmoCount}";
                     update_button.Left = buy_button.Right + 6;
@@ -92,7 +91,7 @@ namespace SLIL.UserControls
             {
                 if (MainMenu.sounds)
                     buy.Play(SLIL.Volume);
-                ParentForm.UpdateWeapon(weapon);
+                ParentSLILForm.UpdateWeapon(weapon);
                 weapon_name.Text = weapon.Name[index] + $" {weapon.Level}";
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
                 update_button.Text = $"${weapon.UpdateCost}";

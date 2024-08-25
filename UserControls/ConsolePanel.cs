@@ -72,7 +72,6 @@ namespace SLIL.UserControls
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -FPS-         ~│~ Show/hide FPS                               ~│~\n" +
                              "~│~ -MINIMAP-     ~│~ Show/hide Minimap                           ~│~\n" +
-                             "~│~ -ANIMATION-   ~│~ Enable/disable enemy animation              ~│~\n" +
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -CLS-         ~│~ Clearing the console                        ~│~\n" +
                              "~│~ -SLS-         ~│~ Clear console history                       ~│~\n" +
@@ -139,6 +138,8 @@ namespace SLIL.UserControls
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -EGTRE-       ~│~ Issue first aid kits                        ~│~\n" +
                                  "~│~ -DHURF-       ~│~ Issue adrenaline                            ~│~\n" +
+                                 "~│~ -KVISE-       ~│~ Issue helmet                                ~│~\n" +
+                                 "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -GKIFK-       ~│~ Issue 999 HP                                ~│~\n" +
                                  "~│~ -KILL-        ~│~ Kill a player                               ~│~\n" +
                                  "~│~ -LPFJY-       ~│~ Cause 99 damage                             ~│~\n" +
@@ -407,14 +408,6 @@ namespace SLIL.UserControls
                             message += "Minimap enabled.";
                         else
                             message += "Minimap disabled.";
-                    }
-                    else if (cheat == "ANIMATION")
-                    {
-                        parent.EnableAnimation = !parent.EnableAnimation;
-                        if (parent.EnableAnimation)
-                            message += "Animation enabled.";
-                        else
-                            message += "Animation disabled.";
                     }
                     else if (cheat.StartsWith("VOL_"))
                     {
@@ -867,6 +860,11 @@ namespace SLIL.UserControls
                         {
                             GetItem(1);
                             message += "Adrenaline issued.";
+                        }
+                        else if (cheat == "KVISE")
+                        {
+                            GetItem(2);
+                            message += "Helmet issued.";
                         }
                         else if (cheat == "LPFJY")
                         {
