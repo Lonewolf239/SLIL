@@ -323,7 +323,7 @@ namespace SLIL.Classes
             AmmoCost = 5;
             RechargeTime = 600;
             CartridgesClip = 8;
-            MaxAmmoCount = CartridgesClip * 3;
+            MaxAmmoCount = CartridgesClip * 2;
             MaxAmmo = CartridgesClip * 6;
             FiringRange = 7;
             MaxDamage = 1.75;
@@ -349,7 +349,6 @@ namespace SLIL.Classes
                 UpdateCost = 20;
                 RechargeTime = 600;
                 CartridgesClip = 8;
-                MaxAmmoCount = CartridgesClip * 3;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 7;
                 MaxDamage = 1.75;
@@ -364,7 +363,6 @@ namespace SLIL.Classes
             {
                 RechargeTime = 350;
                 CartridgesClip = 12;
-                MaxAmmoCount = CartridgesClip * 3;
                 MaxAmmo = CartridgesClip * 7;
                 FiringRange = 8;
                 MaxDamage = 2.75;
@@ -379,7 +377,6 @@ namespace SLIL.Classes
             {
                 RechargeTime = 400;
                 CartridgesClip = 7;
-                MaxAmmoCount = CartridgesClip * 2;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 9;
                 MaxDamage = 3.45;
@@ -394,7 +391,6 @@ namespace SLIL.Classes
             {
                 RechargeTime = 400;
                 CartridgesClip = 6;
-                MaxAmmoCount = CartridgesClip * 2;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 9;
                 MaxDamage = 10.5;
@@ -405,7 +401,7 @@ namespace SLIL.Classes
                 RadiusSound = 10;
                 ReloadFrames = 2;
             }
-            MaxAmmoCount = CartridgesClip * 3;
+            MaxAmmoCount = CartridgesClip * 2;
             base.ApplyUpdate();
         }
         public override int GetItemID() => 4;
@@ -428,7 +424,7 @@ namespace SLIL.Classes
             AmmoCost = 12;
             RechargeTime = 425;
             CartridgesClip = 2;
-            MaxAmmoCount = CartridgesClip;
+            MaxAmmoCount = CartridgesClip * 2;
             MaxAmmo = CartridgesClip * 8;
             FiringRange = 4;
             MaxDamage = 3.5;
@@ -493,7 +489,6 @@ namespace SLIL.Classes
                 PullTime = 1;
                 RechargeTime = 425;
                 CartridgesClip = 2;
-                MaxAmmoCount = CartridgesClip;
                 MaxAmmo = CartridgesClip * 8;
                 FiringRange = 7;
                 MaxDamage = 3.5;
@@ -509,7 +504,6 @@ namespace SLIL.Classes
                 PullTime = 500;
                 RechargeTime = 325;
                 CartridgesClip = 6;
-                MaxAmmoCount = CartridgesClip * 2;
                 MaxAmmo = CartridgesClip * 7;
                 FiringRange = 6;
                 MaxDamage = 4.75;
@@ -525,7 +519,6 @@ namespace SLIL.Classes
                 PullTime = 300;
                 RechargeTime = 325;
                 CartridgesClip = 14;
-                MaxAmmoCount = CartridgesClip * 2;
                 MaxAmmo = CartridgesClip * 4;
                 FiringRange = 5;
                 MaxDamage = 6.25;
@@ -556,7 +549,7 @@ namespace SLIL.Classes
             AmmoCost = 18;
             RechargeTime = 375;
             CartridgesClip = 18;
-            MaxAmmoCount = CartridgesClip * 3;
+            MaxAmmoCount = CartridgesClip * 2;
             MaxAmmo = CartridgesClip * 3;
             FiringRange = 8;
             MaxDamage = 2;
@@ -576,7 +569,6 @@ namespace SLIL.Classes
                 UpdateCost = 40;
                 RechargeTime = 375;
                 CartridgesClip = 18;
-                MaxAmmoCount = CartridgesClip * 3;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 8;
                 MaxDamage = 2;
@@ -591,7 +583,6 @@ namespace SLIL.Classes
             {
                 RechargeTime = 350;
                 CartridgesClip = 30;
-                MaxAmmoCount = CartridgesClip * 3;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 8;
                 MaxDamage = 2.5;
@@ -606,7 +597,6 @@ namespace SLIL.Classes
             {
                 RechargeTime = 350;
                 CartridgesClip = 30;
-                MaxAmmoCount = CartridgesClip * 3;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 8;
                 MaxDamage = 2.7;
@@ -617,7 +607,7 @@ namespace SLIL.Classes
                 RadiusSound = 6;
                 ReloadFrames = 2;
             }
-            MaxAmmoCount = CartridgesClip * 1;
+            MaxAmmoCount = CartridgesClip * 2;
             base.ApplyUpdate();
         }
         public override int GetItemID() => 6;
@@ -658,7 +648,6 @@ namespace SLIL.Classes
                 FireType = FireTypes.SemiAutomatic;
                 RechargeTime = 700;
                 CartridgesClip = 30;
-                MaxAmmoCount = CartridgesClip * 3;
                 MaxAmmo = CartridgesClip * 5;
                 FiringRange = 8;
                 MaxDamage = 2.5;
@@ -674,7 +663,6 @@ namespace SLIL.Classes
                 FireType = FireTypes.SemiAutomatic;
                 RechargeTime = 450;
                 CartridgesClip = 30;
-                MaxAmmoCount = CartridgesClip * 3;
                 MaxAmmo = CartridgesClip * 5;
                 FiringRange = 8;
                 MaxDamage = 3.25;
@@ -690,7 +678,6 @@ namespace SLIL.Classes
                 FireType = FireTypes.Single;
                 RechargeTime = 400;
                 CartridgesClip = 20;
-                MaxAmmoCount = CartridgesClip * 2;
                 MaxAmmo = CartridgesClip * 4;
                 FiringRange = 8;
                 MaxDamage = 5.25;
@@ -701,6 +688,7 @@ namespace SLIL.Classes
                 RadiusSound = 13;
                 ReloadFrames = 2;
             }
+            MaxAmmoCount = CartridgesClip * 2;
             base.ApplyUpdate();
         }
         public override int GetItemID() => 7;
@@ -720,7 +708,7 @@ namespace SLIL.Classes
             AmmoCost = 30;
             RechargeTime = 850;
             CartridgesClip = 2;
-            MaxAmmoCount = 2;
+            MaxAmmoCount = CartridgesClip * 2;
             MaxAmmo = CartridgesClip * 4;
             FiringRange = 21;
             MaxDamage = 23;
@@ -825,7 +813,7 @@ namespace SLIL.Classes
             AmmoCost = 50;
             RechargeTime = 440;
             CartridgesClip = 1;
-            MaxAmmoCount = 2;
+            MaxAmmoCount = CartridgesClip * 2;
             MaxAmmo = CartridgesClip * 4;
             FiringRange = 0;
             MaxDamage = 0;
