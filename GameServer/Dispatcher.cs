@@ -71,6 +71,9 @@ namespace GameServer
                 case 40:
                     Game.InteractingWithDoors(dreader.GetInt());
                     break;
+                case 89:
+                    Game.SpawnRockets(dreader.GetDouble(), dreader.GetDouble(), dreader.GetInt(), dreader.GetDouble());
+                    break;
                 default:
                     break;
             }

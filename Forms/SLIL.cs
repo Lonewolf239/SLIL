@@ -636,6 +636,7 @@ namespace SLIL
                     {
                         SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
                         {
+                            ParentForm = this,
                             index = MainMenu.Language ? 0 : 1,
                             weapon = player.GUNS[i],
                             player = player,
@@ -1317,6 +1318,10 @@ namespace SLIL
                 {
                     if (e.Button == MouseButtons.Left)
                     {
+                        reload_timer.Interval = player.GetCurrentGun().RechargeTime;
+                        shot_timer.Interval = player.GetCurrentGun().FiringRate;
+                        if (player.GetCurrentGun() is Shotgun)
+                            shotgun_pull_timer.Interval = (player.GetCurrentGun() as Shotgun).PullTime;
                         if (player.GetCurrentGun().MaxAmmoCount >= 0 && player.GetCurrentGun().AmmoCount > 0)
                         {
                             if (player.GetCurrentGun() is SniperRifle && !player.Aiming)
@@ -2326,7 +2331,7 @@ namespace SLIL
                 else if (ping < 150) connection_status = 1;
                 else if (ping < 300) connection_status = 2;
                 else connection_status = 4;
-                graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, 0, icon_size, icon_size);
+                if(!(connection_status == 4)) graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, 0, icon_size, icon_size);
                 graphicsWeapon.DrawString($"{ping}ms", consolasFont[resolution], whiteBrush, icon_size + 2, 0);
             }
             graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 110 * size);
@@ -2874,5 +2879,7 @@ namespace SLIL
         internal void UpdateWeapon(Gun weapon) => Controller.UpdateWeapon(weapon);
 
         internal void BuyConsumable(DisposableItem item) => Controller.BuyConsumable(item);
+
+        internal Player GetPlayer() => Controller.GetPlayer();
     }
 }

@@ -818,7 +818,7 @@ namespace SLIL.Classes
             ShowScope = false;
             AddToShop = true;
             HasIt = false;
-            InMultiplayer = false;
+            InMultiplayer = true;
             Name = ["RPG7", "RPG7"];
             FireType = FireTypes.Single;
             GunCost = 150;

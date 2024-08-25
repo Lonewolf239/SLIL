@@ -10,7 +10,7 @@ namespace SLIL.Classes
         public int EntityID { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
-        protected double EntityWidth;
+        public double EntityWidth;
         public int IntX { get; set; }
         public int IntY { get; set; }
         public int Texture { get; set; }
@@ -132,7 +132,7 @@ namespace SLIL.Classes
         protected abstract int GetMIN_DAMAGE();
         protected abstract char[] GetImpassibleCells();
         protected abstract int GetMovesInARow();
-        protected abstract double GetMove();
+        public abstract double GetMove();
 
         public Creature(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init(map_width);
         public Creature(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init(map_width);
@@ -256,7 +256,7 @@ namespace SLIL.Classes
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
         protected override int GetTexture() => Texture;
-        protected override double GetMove() => 0;
+        public override double GetMove() => 0;
         protected override int GetMAX_MONEY() => 0;
         protected override int GetMIN_MONEY() => 0;
         protected override int GetMAX_DAMAGE() => 0;
@@ -291,7 +291,7 @@ namespace SLIL.Classes
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
         protected override int GetTexture() => Texture;
-        protected override double GetMove() => 0.2;
+        public override double GetMove() => 0.2;
         protected override int GetMAX_MONEY() => 0;
         protected override int GetMIN_MONEY() => 0;
         protected override int GetMAX_DAMAGE() => 0;
@@ -466,7 +466,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 16;
         protected override double GetEntityWidth() => 0.4;
-        protected override double GetMove() => 0.6;
+        public override double GetMove() => 0.6;
 
         public RpgRocket(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public RpgRocket(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
@@ -474,6 +474,27 @@ namespace SLIL.Classes
         private void Init()
         {
             Texture = 48;
+            base.SetAnimations(1, 0);
+        }
+    }
+
+    public class RPGRocketExplosion: GameObject
+    {
+        protected override int GetEntityID() => 17;
+        protected override double GetEntityWidth() => 0.4;
+
+        public RPGRocketExplosion(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public RPGRocketExplosion(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        public int ShooterID;
+
+        private void Init()
+        {
+            Texture = 48;
+            LifeTime = 0;
+            TotalLifeTime = 4;
+            Temporarily = true;
+            Animated = true;
             base.SetAnimations(1, 0);
         }
     }
@@ -621,6 +642,7 @@ namespace SLIL.Classes
 
         public override bool DealDamage(double damage)
         {
+            if (!CanHit) return false;
             HP -= damage;
             if (HP <= 0)
             {
@@ -717,7 +739,7 @@ namespace SLIL.Classes
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 10;
         protected override int GetTexture() => Texture;
-        protected override double GetMove() => 0.16;
+        public override double GetMove() => 0.16;
         protected override int GetMAX_MONEY() => 10;
         protected override int GetMIN_MONEY() => 5;
         protected override int GetMAX_DAMAGE() => 35;
@@ -814,7 +836,7 @@ namespace SLIL.Classes
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 5;
         protected override int GetTexture() => Texture;
-        protected override double GetMove() => 0.125;
+        public override double GetMove() => 0.125;
         protected override int GetMAX_MONEY() => 15;
         protected override int GetMIN_MONEY() => 10;
         protected override int GetMAX_DAMAGE() => 40;
@@ -912,7 +934,7 @@ namespace SLIL.Classes
         protected override int GetMovesInARow() => 40;
         protected override int GetMAX_HP() => 20;
         protected override int GetTexture() => Texture;
-        protected override double GetMove() => 0.125;
+        public override double GetMove() => 0.125;
         protected override int GetMAX_MONEY() => 18;
         protected override int GetMIN_MONEY() => 12;
         protected override int GetMAX_DAMAGE() => 30;
@@ -1009,7 +1031,7 @@ namespace SLIL.Classes
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 2;
         protected override int GetTexture() => Texture;
-        protected override double GetMove() => 0.13;
+        public override double GetMove() => 0.13;
         protected override int GetMAX_MONEY() => 18;
         protected override int GetMIN_MONEY() => 13;
         protected override int GetMAX_DAMAGE() => 30;
