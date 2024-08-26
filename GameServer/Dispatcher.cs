@@ -9,18 +9,18 @@ namespace GameServer
 
     internal class Dispatcher
     {
-        private GameModel Game;
-        public SendOutcomingMessageDelegate sendMessageDelegate;
+        private readonly GameModel Game;
+        public SendOutcomingMessageDelegate? sendMessageDelegate;
         public SendMessageFromGameCallback sendMessageFromGameCallback;
 
         public Dispatcher()
         {
             sendMessageFromGameCallback = SendMessageFromGameHandle;
-            Game = new GameModel(sendMessageFromGameCallback);
+            Game = new(sendMessageFromGameCallback);
             Game.StartGame();
         }
 
-        public void SendMessageFromGameHandle(int packetID) => sendMessageDelegate(packetID);
+        public void SendMessageFromGameHandle(int packetID) => sendMessageDelegate?.Invoke(packetID);
 
         public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server, int playerIDfromPeer)
         {
@@ -80,7 +80,7 @@ namespace GameServer
         }
         public void SendOutcomingMessage(int packetID, ref NetManager server) 
         {
-            NetDataWriter writer = new NetDataWriter();
+            NetDataWriter writer = new();
             writer.Put(packetID);
             switch (packetID)
             {

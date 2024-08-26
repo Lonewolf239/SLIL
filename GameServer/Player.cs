@@ -4,7 +4,7 @@ namespace SLIL.Classes
 {
     public class Player : Entity
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public double A { get; set; }
         public double Look { get; set; }
         public double HP { get; set; }
@@ -33,17 +33,17 @@ namespace SLIL.Classes
         public bool Fast { get; set; }
         public List<Effect> Effects = [];
         public readonly Gun[] GUNS =
-        {
+        [
             new Flashlight(), new Knife(), new Pistol(),
             new Shotgun(), new SubmachineGun(), new AssaultRifle(),
             new SniperRifle(), new Fingershot(), new TSPitW(),
             new Gnome(), new FirstAidKit(), new Candy(),
             new Rainblower(), new Adrenalin(), new Helmet(),
             new RPG()
-        };
+        ];
         public List<Gun> Guns = [];
         public List<DisposableItem> DisposableItems = [];
-        public Pet PET = null;
+        public Pet? PET = null;
         public double MAX_HP { get; set; }
         public double MAX_STAMINE { get; set; }
 
@@ -58,16 +58,16 @@ namespace SLIL.Classes
             writer.Put(Money);
             writer.Put(CurrentGun);
             writer.Put(this.GUNS.Length);
-            foreach(Gun gun in this.GUNS)
+            foreach (Gun gun in this.GUNS)
                 writer.Put(gun.HasIt);
             writer.Put(Guns.Count);
-            foreach(Gun gun in this.Guns)
+            foreach (Gun gun in this.Guns)
             {
                 writer.Put(gun.ItemID);
                 gun.Serialize(writer);
             }
             writer.Put(DisposableItems.Count);
-            foreach(DisposableItem item in this.DisposableItems)
+            foreach (DisposableItem item in this.DisposableItems)
             {
                 writer.Put(item.ItemID);
                 item.Serialize(writer);
@@ -82,11 +82,11 @@ namespace SLIL.Classes
             this.Money = reader.GetInt();
             this.CurrentGun = reader.GetInt();
             int GUNSLength = reader.GetInt();
-            for(int i = 0; i < GUNSLength; i++)
+            for (int i = 0; i < GUNSLength; i++)
                 this.GUNS[i].HasIt = reader.GetBool();
             int GunsCount = reader.GetInt();
             List<Gun> tempGuns = [];
-            for(int i = 0; i< GunsCount; i++)
+            for (int i = 0; i < GunsCount; i++)
             {
                 int gunID = reader.GetInt();
                 switch (gunID)
@@ -167,7 +167,7 @@ namespace SLIL.Classes
                         tempGuns.Add(helmet);
                         break;
                     case 15:
-                        RPG rpg = new RPG();
+                        RPG rpg = new();
                         rpg.Deserialize(reader);
                         tempGuns.Add(rpg);
                         break;
@@ -177,7 +177,7 @@ namespace SLIL.Classes
             }
             int disposableItemsCount = reader.GetInt();
             List<DisposableItem> tempDisposableItems = [];
-            for(int i = 0; i < disposableItemsCount; i++)
+            for (int i = 0; i < disposableItemsCount; i++)
             {
                 int itemID = reader.GetInt();
                 switch (itemID)
@@ -291,7 +291,7 @@ namespace SLIL.Classes
             if (index == 0)
             {
                 if (EffectCheck(0)) return;
-                Regeneration effect = new Regeneration();
+                Regeneration effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.UpdateTimeRemaining();
@@ -300,7 +300,7 @@ namespace SLIL.Classes
             else if (index == 1)
             {
                 if (EffectCheck(1)) return;
-                Adrenaline effect = new Adrenaline();
+                Adrenaline effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.UpdateTimeRemaining();
@@ -311,7 +311,7 @@ namespace SLIL.Classes
             else if (index == 2)
             {
                 if (EffectCheck(2)) return;
-                Protection effect = new Protection();
+                Protection effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.UpdateTimeRemaining();

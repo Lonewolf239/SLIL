@@ -39,6 +39,16 @@ namespace SLIL
         private readonly Random rand;
         private const int texWidth = 128;
         private readonly int[] SCREEN_HEIGHT = { 128, 128 * 2 }, SCREEN_WIDTH = { 228, 228 * 2 };
+        private int display_size = 0;
+        private readonly int[,] DISPLAY_SIZE =
+        {
+            { 256, 128 },
+            { 512, 256 },
+            { 640, 480 },
+            { 800, 600 },
+            { 1024, 768 },
+            { 1280, 720 },
+        };
         public static int resolution = 0, smoothing = 1;
         private readonly SmoothingMode[] smoothingModes =
         {
@@ -534,6 +544,7 @@ namespace SLIL
         {
             difficulty = MainMenu.difficulty;
             resolution = MainMenu.resolution;
+            display_size = MainMenu.display_size;
             smoothing = MainMenu.smoothing;
             scope_type = MainMenu.scope_type;
             scope_color = MainMenu.scope_color;
@@ -843,11 +854,6 @@ namespace SLIL
                 {
                     Player player = Controller.GetPlayer();
                     if (e.KeyCode == Bind.Run) RunKeyPressed = true;
-                    if (player != null && player.GetCurrentGun().CanRun && RunKeyPressed &&
-                        playerDirection == Direction.FORWARD && !player.Fast &&
-                        player.STAMINE >= player.MAX_STAMINE / 1.75 && !player.Aiming &&
-                        !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !chill_timer.Enabled)
-                        playerMoveStyle = Direction.RUN;
                     if (e.KeyCode == Bind.Forward)
                         playerDirection = Direction.FORWARD;
                     if (e.KeyCode == Bind.Back)
@@ -1016,8 +1022,7 @@ namespace SLIL
             if (e.KeyCode == Bind.Run)
             {
                 playerMoveStyle = Direction.WALK;
-                if (!chill_timer.Enabled)
-                    chill_timer.Start();
+                chill_timer.Start();
             }
             if (e.KeyCode == Bind.Run) RunKeyPressed = false;
             if (e.KeyCode == Bind.Forward || e.KeyCode == Bind.Back)
@@ -1336,8 +1341,8 @@ namespace SLIL
                             if (player.GetCurrentGun().FireType == FireTypes.Single)
                             {
                                 BulletRayCasting();
-                                if (player.Look - player.GetCurrentGun().Recoil > -360)
-                                    player.Look -= player.GetCurrentGun().Recoil;
+                                if (player.Look - player.GetCurrentGun().RecoilY > -360)
+                                    player.Look -= player.GetCurrentGun().RecoilY;
                                 else
                                     player.Look = -360;
                             }
@@ -1628,8 +1633,8 @@ namespace SLIL
                     if (player.GetCurrentGun().FireType != FireTypes.Single)
                     {
                         BulletRayCasting();
-                        if (player.Look - player.GetCurrentGun().Recoil > -360)
-                            player.Look -= player.GetCurrentGun().Recoil;
+                        if (player.Look - player.GetCurrentGun().RecoilY > -360)
+                            player.Look -= player.GetCurrentGun().RecoilY;
                         else
                             player.Look = -360;
                     }
@@ -1712,17 +1717,19 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
+            if (player.GetCurrentGun().CanRun && RunKeyPressed &&
+                playerDirection == Direction.FORWARD && !player.Fast &&
+                player.STAMINE >= player.MAX_STAMINE / 2.5 && !player.Aiming &&
+                !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !chill_timer.Enabled)
+                playerMoveStyle = Direction.RUN;
             if (playerMoveStyle == Direction.RUN && playerDirection == Direction.FORWARD && !player.Aiming && !reload_timer.Enabled && !shotgun_pull_timer.Enabled)
             {
-                if (player.STAMINE <= 0)
-                    playerMoveStyle = Direction.WALK;
-                else
+                if (player.STAMINE <= 0 || chill_timer.Enabled)
                 {
-                    if (player.GetCurrentGun() is Pistol || player.GetCurrentGun() is Flashlight || player.GetCurrentGun() is Knife)
-                        player.STAMINE -= 2;
-                    else
-                        player.STAMINE -= 3;
+                    playerMoveStyle = Direction.WALK;
+                    chill_timer.Start();
                 }
+                else player.STAMINE -= player.GetCurrentGun().LowWeight ? 2 : 3;
             }
             else
             {
@@ -1824,7 +1831,7 @@ namespace SLIL
             BUFFER = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             graphicsWeapon = Graphics.FromImage(WEAPON);
             graphicsWeapon.SmoothingMode = smoothingModes[smoothing];
-            display.ResizeImage(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
+            display.ResizeImage(DISPLAY_SIZE[display_size, 0], DISPLAY_SIZE[display_size, 1]);
             raycast.Interval = hight_fps ? 15 : 30;
         }
 
@@ -2018,14 +2025,13 @@ namespace SLIL
 
         private void UpdateDisplay()
         {
-            using (Graphics g = Graphics.FromImage(SCREEN))
-                g.DrawImage(WEAPON, 0, 0, SCREEN.Width, SCREEN.Height);
             using (Graphics g = Graphics.FromImage(BUFFER))
             {
                 g.Clear(Color.Black);
-                g.DrawImage(SCREEN, 0, 0, SCREEN.Width, SCREEN.Height);
+                g.DrawImage(SCREEN, 0, 0, BUFFER.Width, BUFFER.Height);
+                g.DrawImage(WEAPON, 0, 0, BUFFER.Width, BUFFER.Height);
             }
-            SharpDX.Direct2D1.Bitmap dxBitmap = ConvertBitmap.ToDX(SCREEN, display.renderTarget);
+            SharpDX.Direct2D1.Bitmap dxBitmap = ConvertBitmap.ToDX(BUFFER, display.renderTarget);
             display.SCREEN = dxBitmap;
             display.DrawImage();
             dxBitmap?.Dispose();
@@ -2314,18 +2320,29 @@ namespace SLIL
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount + player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 * size);
                 else
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount}/{player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 * size);
-                if (player.GetCurrentGun().IsMagic)
-                    graphicsWeapon.DrawImage(Properties.Resources.magic, ammo_icon_x, 110 * size, icon_size, icon_size);
-                else if(player.GetCurrentGun() is Rainblower)
-                    graphicsWeapon.DrawImage(Properties.Resources.bubbles, ammo_icon_x, 110 * size, icon_size, icon_size);
-                else
+                switch (player.GetCurrentGun().AmmoType)
                 {
-                    if (player.GetCurrentGun() is SniperRifle || player.GetCurrentGun() is AssaultRifle)
-                        graphicsWeapon.DrawImage(Properties.Resources.rifle_bullet, ammo_icon_x, 110 * size, icon_size, icon_size);
-                    else if (player.GetCurrentGun() is Shotgun)
-                        graphicsWeapon.DrawImage(Properties.Resources.shell, ammo_icon_x, 110 * size, icon_size, icon_size);
-                    else
+                    case AmmoTypes.Magic:
+                        graphicsWeapon.DrawImage(Properties.Resources.magic, ammo_icon_x, 110 * size, icon_size, icon_size);
+                        break;
+                    case AmmoTypes.Bubbles:
+                        graphicsWeapon.DrawImage(Properties.Resources.bubbles, ammo_icon_x, 110 * size, icon_size, icon_size);
+                        break;
+                    case AmmoTypes.Bullet:
                         graphicsWeapon.DrawImage(Properties.Resources.bullet, ammo_icon_x, 110 * size, icon_size, icon_size);
+                        break;
+                    case AmmoTypes.Shell:
+                        graphicsWeapon.DrawImage(Properties.Resources.shell, ammo_icon_x, 110 * size, icon_size, icon_size);
+                        break;
+                    case AmmoTypes.Rifle:
+                        graphicsWeapon.DrawImage(Properties.Resources.rifle_bullet, ammo_icon_x, 110 * size, icon_size, icon_size);
+                        break;
+                    case AmmoTypes.Rocket:
+                        graphicsWeapon.DrawImage(Properties.Resources.rocket, ammo_icon_x, 110 * size, icon_size, icon_size);
+                        break;
+                    case AmmoTypes.C4:
+                        graphicsWeapon.DrawImage(Properties.Resources.c4, ammo_icon_x, 110 * size, icon_size, icon_size);
+                        break;
                 }
             }
             if (player.GetCurrentGun().ShowScope)

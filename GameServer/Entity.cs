@@ -1,6 +1,4 @@
 ﻿using LiteNetLib.Utils;
-using System;
-using System.Linq;
 
 namespace SLIL.Classes
 {
@@ -14,7 +12,7 @@ namespace SLIL.Classes
         public int IntX { get; set; }
         public int IntY { get; set; }
         public int Texture { get; set; }
-        public int[][] Animations { get; set; }
+        public int[][]? Animations { get; set; }
         public bool RespondsToFlashlight { get; set; }
         public int Frames { get; set; }
         protected readonly Random rand;
@@ -25,7 +23,7 @@ namespace SLIL.Classes
         protected abstract double GetEntityWidth();
         public virtual int Interaction() => 0;
 
-        public Entity(double x, double y, int map_width, ref int maxEntityID)
+        public Entity(double x, double y, int mapWidth, ref int maxEntityID)
         {
             ID = maxEntityID;
             maxEntityID++;
@@ -40,7 +38,7 @@ namespace SLIL.Classes
             IntX = (int)x;
             IntY = (int)y;
         }
-        public Entity(double x, double y, int map_width, int maxEntityID)
+        public Entity(double x, double y, int mapWidth, int maxEntityID)
         {
             ID = maxEntityID;
             EntityID = this.GetEntityID();
@@ -110,7 +108,7 @@ namespace SLIL.Classes
     {
         protected double HP { get; set; }
         public double A { get; set; }
-        protected char[] ImpassibleCells;
+        protected char[]? ImpassibleCells;
         protected int MovesInARow;
         protected int NumberOfMovesLeft;
         public bool CanHit { get; set; }
@@ -130,7 +128,7 @@ namespace SLIL.Classes
         protected abstract int GetMIN_MONEY();
         protected abstract int GetMAX_DAMAGE();
         protected abstract int GetMIN_DAMAGE();
-        protected abstract char[] GetImpassibleCells();
+        protected abstract char[]? GetImpassibleCells();
         protected abstract int GetMovesInARow();
         public abstract double GetMove();
 
@@ -170,8 +168,7 @@ namespace SLIL.Classes
         public virtual bool DealDamage(double damage)
         {
             HP -= damage;
-            if (HP <= 0)
-                Kill();
+            if (HP <= 0) Kill();
             return DEAD;
         }
 
@@ -205,6 +202,7 @@ namespace SLIL.Classes
             }
             IntX = (int)X;
             IntY = (int)Y;
+            if (ImpassibleCells == null) return;
             if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
                 || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
@@ -249,10 +247,7 @@ namespace SLIL.Classes
     public abstract class NPC : Friend
     {
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W' };
-        }
+        protected override char[]? GetImpassibleCells() => ['#', 'D', 'd', '=', 'W'];
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
         protected override int GetTexture() => Texture;
@@ -262,7 +257,6 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 0;
         protected override int GetMIN_DAMAGE() => 0;
 
-
         public NPC(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => RespondsToFlashlight = false;
         public NPC(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => RespondsToFlashlight = false;
 
@@ -271,11 +265,11 @@ namespace SLIL.Classes
 
     public abstract class Pet : Friend
     {
-        protected double detectionRange;
+        protected double DetectionRange;
         public bool Stoped { get; set; }
         public bool HasStopAnimation { get; set; }
-        public string[] Name { get; set; }
-        public string[] Descryption { get; set; }
+        public string[]? Name { get; set; }
+        public string[]? Descryption { get; set; }
         public int Cost { get; set; }
         public int Index { get; set; }
         public bool PetAbilityReloading { get; set; }
@@ -283,11 +277,9 @@ namespace SLIL.Classes
         public int AbilityReloadTime { get; set; }
         public int AbilityTimer { get; set; }
         protected int PetAbility { get; set; }
+
         protected override double GetEntityWidth() => 0.1;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=' };
-        }
+        protected override char[]? GetImpassibleCells() => ['#', 'D', 'd', '='];
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
         protected override int GetTexture() => Texture;
@@ -305,7 +297,7 @@ namespace SLIL.Classes
             IsInstantAbility = 0;
             HasStopAnimation = false;
             Stoped = false;
-            detectionRange = 8.0;
+            DetectionRange = 8.0;
         }
 
         public void SetNewParametrs(double x, double y, int map_width)
@@ -319,10 +311,11 @@ namespace SLIL.Classes
 
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
+            if (ImpassibleCells == null) return;
             Stoped = false;
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
-            if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -392,6 +385,7 @@ namespace SLIL.Classes
         public int LifeTime { get; set; }
         public bool Animated { get; set; }
         public int CurrentFrame { get; set; }
+
         protected override double GetEntityWidth() => 0.4;
         protected override int GetTexture() => Texture;
 
@@ -428,7 +422,7 @@ namespace SLIL.Classes
 
     public abstract class Rockets : NPC
     {
-        protected override char[] GetImpassibleCells() => ['#', 'D', 'd'];
+        protected override char[]? GetImpassibleCells() => ['#', 'D', 'd'];
 
         public Rockets(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => CanHit = false;
         public Rockets(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => CanHit = false;
@@ -436,6 +430,7 @@ namespace SLIL.Classes
         public void SetA(double value) => A = value;
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
+            if (ImpassibleCells == null) return;
             double move = this.GetMove();
             double newX = X;
             double newY = Y;
@@ -464,7 +459,7 @@ namespace SLIL.Classes
 
     public class RpgRocket : Rockets
     {
-        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', '='];
+        protected override char[]? GetImpassibleCells() => ['#', 'D', 'd', '='];
         protected override int GetEntityID() => 16;
         protected override double GetEntityWidth() => 0.4;
         public override double GetMove() => 0.6;
@@ -479,13 +474,13 @@ namespace SLIL.Classes
         }
     }
 
-    public class RPGRocketExplosion: GameObject
+    public class Explosion : GameObject
     {
         protected override int GetEntityID() => 17;
         protected override double GetEntityWidth() => 0.4;
 
-        public RPGRocketExplosion(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public RPGRocketExplosion(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Explosion(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Explosion(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
         public int ShooterID;
 
@@ -522,8 +517,8 @@ namespace SLIL.Classes
         {
             Index = 0;
             Cost = 150;
-            Name = new[] { "Глупый Кот", "Silly Cat" };
-            Descryption = new[] { "Раз в 8 секунд восстанавливает 2 HP", "Restores 2 HP every 8 seconds" };
+            Name = ["Глупый Кот", "Silly Cat"];
+            Descryption = ["Раз в 8 секунд восстанавливает 2 HP", "Restores 2 HP every 8 seconds"];
             Texture = 17;
             PetAbility = 0;
             AbilityReloadTime = 8;
@@ -544,8 +539,8 @@ namespace SLIL.Classes
         {
             Index = 1;
             Cost = 60;
-            Name = new[] { "Зелёный Гном", "Green Gnome" };
-            Descryption = new[] { "Увеличивает максимальное здоровье на 25", "Increases maximum health by 25" };
+            Name = ["Зелёный Гном", "Green Gnome"];
+            Descryption = ["Увеличивает максимальное здоровье на 25", "Increases maximum health by 25"];
             Texture = 24;
             PetAbility = 1;
             IsInstantAbility = 1;
@@ -565,8 +560,8 @@ namespace SLIL.Classes
         {
             Index = 2;
             Cost = 60;
-            Name = new[] { "Энергетик", "Energy Drink" };
-            Descryption = new[] { "Увеличивает выносливость и скорость", "Increases endurance and speed" };
+            Name = ["Энергетик", "Energy Drink"];
+            Descryption = ["Увеличивает выносливость и скорость", "Increases endurance and speed"];
             Texture = 27;
             PetAbility = 2;
             IsInstantAbility = 1;
@@ -580,10 +575,7 @@ namespace SLIL.Classes
     public class Pyro : Pet
     {
         protected override int GetEntityID() => 8;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd' };
-        }
+        protected override char[]? GetImpassibleCells() => ['#', 'D', 'd'];
 
         public Pyro(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Pyro(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
@@ -592,8 +584,8 @@ namespace SLIL.Classes
         {
             Index = 3;
             Cost = 666;
-            Name = new[] { "Подсератель", "Podseratel" };
-            Descryption = new[] { "Мир — это сказка...", "The world is a fairy tale..." };
+            Name = ["Подсератель", "Podseratel"];
+            Descryption = ["Мир — это сказка...", "The world is a fairy tale..."];
             Texture = 31;
             PetAbility = 3;
             IsInstantAbility = 2;
@@ -601,7 +593,6 @@ namespace SLIL.Classes
             RespondsToFlashlight = true;
             base.SetAnimations(1, 0);
         }
-
         public override int Interaction() => 2;
     }
 
@@ -633,14 +624,12 @@ namespace SLIL.Classes
             CanHit = true;
             HP = 2.5;
         }
-
         public void BreakTheBox()
         {
             CanHit = false;
             Texture++;
             base.AnimationsToStatic();
         }
-
         public override bool DealDamage(double damage)
         {
             if (!CanHit) return false;
@@ -656,8 +645,6 @@ namespace SLIL.Classes
 
     public class Box : Boxes
     {
-        protected override int GetEntityID() => 14;
-
         public Box(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Box(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
@@ -667,12 +654,11 @@ namespace SLIL.Classes
             DeathSound = 4;
             base.AnimationsToStatic();
         }
+        protected override int GetEntityID() => 14;
     }
 
     public class Barrel : Boxes
     {
-        protected override int GetEntityID() => 15;
-
         public Barrel(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Barrel(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
@@ -682,11 +668,11 @@ namespace SLIL.Classes
             DeathSound = 4;
             base.AnimationsToStatic();
         }
+        protected override int GetEntityID() => 15;
     }
 
     public class HittingTheWall : GameObject
     {
-        protected override int GetEntityID() => 10;
         public HittingTheWall(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public HittingTheWall(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
@@ -699,11 +685,11 @@ namespace SLIL.Classes
             Animated = true;
             base.SetAnimations(2, 2);
         }
+        protected override int GetEntityID() => 10;
     }
 
     public class ShopDoor : GameObject
     {
-        protected override int GetEntityID() => 11;
         public ShopDoor(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public ShopDoor(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
@@ -712,12 +698,11 @@ namespace SLIL.Classes
             Texture = 4;
             base.AnimationsToStatic();
         }
+        protected override int GetEntityID() => 11;
     }
 
     public class ShopMan : NPC
     {
-        protected override int GetEntityID() => 12;
-
         public ShopMan(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public ShopMan(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
@@ -727,16 +712,14 @@ namespace SLIL.Classes
             RespondsToFlashlight = true;
             base.AnimationsToStatic();
         }
+        protected override int GetEntityID() => 12;
     }
 
     public class Man : Enemy
     {
         protected override int GetEntityID() => 1;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W' };
-        }
+        protected override char[]? GetImpassibleCells() => ['#', 'D', 'd', '=', 'W'];
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 10;
         protected override int GetTexture() => Texture;
@@ -758,6 +741,7 @@ namespace SLIL.Classes
         }
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
+            if (ImpassibleCells == null) return;
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
@@ -830,10 +814,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 2;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W' };
-        }
+        protected override char[]? GetImpassibleCells() => ['#', 'D', 'd', '=', 'W'];
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 5;
         protected override int GetTexture() => Texture;
@@ -856,6 +837,7 @@ namespace SLIL.Classes
         }
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
+            if (ImpassibleCells == null) return;
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
@@ -928,10 +910,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 3;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W' };
-        }
+        protected override char[]? GetImpassibleCells() => ['#', 'D', 'd', '=', 'W'];
         protected override int GetMovesInARow() => 40;
         protected override int GetMAX_HP() => 20;
         protected override int GetTexture() => Texture;
@@ -953,6 +932,7 @@ namespace SLIL.Classes
         }
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
+            if (ImpassibleCells == null) return;
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
@@ -1025,10 +1005,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 4;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', 'W' };
-        }
+        protected override char[]? GetImpassibleCells() => ['#', 'D', 'd', 'W'];
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 2;
         protected override int GetTexture() => Texture;
@@ -1051,6 +1028,7 @@ namespace SLIL.Classes
         }
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
+            if (ImpassibleCells == null) return;
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;

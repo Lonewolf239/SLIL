@@ -127,14 +127,14 @@ namespace SLIL.Classes
                         entity.CurrentFrame++;
                         if (entity.LifeTime >= entity.TotalLifeTime)
                         {
-                            if (entity is RPGRocketExplosion rPGRocketExplosion)
+                            if (entity is Explosion explosion)
                             {
                                 foreach (Entity ent in Entities)
                                 {
                                     if (ent is NPC || ent is Player || ent is Enemy)
                                     {
                                         if (ent is Creature creature && !creature.CanHit) continue;
-                                        double distanceSquared = (rPGRocketExplosion.X - ent.X) * (rPGRocketExplosion.X - ent.X) + (rPGRocketExplosion.Y - ent.Y) * (rPGRocketExplosion.Y - ent.Y);
+                                        double distanceSquared = (explosion.X - ent.X) * (explosion.X - ent.X) + (explosion.Y - ent.Y) * (explosion.Y - ent.Y);
                                         if (distanceSquared > 3) continue;
                                         double damage = rand.Next(25, 50);
                                         if (ent is Player playerTarget)
@@ -211,7 +211,7 @@ namespace SLIL.Classes
                         || ImpassibleCells.Contains(MAP[(int)(newY - entity.EntityWidth / 2) * MAP_WIDTH + (int)newX]))
                         {
                             Entities.Remove(entity);
-                            Entities.Add(new RPGRocketExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                            Entities.Add(new Explosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
                         }
                         if (!Entities.Contains(entity)) continue;
                         foreach(Entity ent in Entities)
@@ -221,7 +221,7 @@ namespace SLIL.Classes
                             if (Math.Sqrt((entity.X - ent.X) * (entity.X - ent.X) + (entity.Y - ent.Y) * (entity.Y - ent.Y)) < (entity.EntityWidth + ent.EntityWidth) * (entity.EntityWidth + ent.EntityWidth))
                             {
                                 Entities.Remove(entity);
-                                Entities.Add(new RPGRocketExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                                Entities.Add(new Explosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
                                 return;
                             }
                         }
@@ -387,9 +387,9 @@ namespace SLIL.Classes
                         tempEntities.Add(rpgRocket);
                         break;
                     case 17:
-                        RPGRocketExplosion rPGRocketExplosion = new RPGRocketExplosion(0, 0, MAP_WIDTH, ID);
-                        rPGRocketExplosion.Deserialize(reader);
-                        tempEntities.Add(rPGRocketExplosion);
+                        Explosion explosion = new Explosion(0, 0, MAP_WIDTH, ID);
+                        explosion.Deserialize(reader);
+                        tempEntities.Add(explosion);
                         break;
                     default:
                         break;
@@ -511,9 +511,9 @@ namespace SLIL.Classes
                         tempEntities.Add(rpgRocket);
                         break;
                     case 17:
-                        RPGRocketExplosion rPGRocketExplosion = new RPGRocketExplosion(0, 0, MAP_WIDTH, ID);
-                        rPGRocketExplosion.Deserialize(reader);
-                        tempEntities.Add(rPGRocketExplosion);
+                        Explosion explosion = new Explosion(0, 0, MAP_WIDTH, ID);
+                        explosion.Deserialize(reader);
+                        tempEntities.Add(explosion);
                         break;
                     default:
                         break;

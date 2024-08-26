@@ -98,6 +98,9 @@
             this.smoothing_panel = new System.Windows.Forms.Panel();
             this.smoothing_list = new System.Windows.Forms.ComboBox();
             this.smoothing_label = new System.Windows.Forms.Label();
+            this.display_size_panel = new System.Windows.Forms.Panel();
+            this.display_size_list = new System.Windows.Forms.ComboBox();
+            this.display_size_label = new System.Windows.Forms.Label();
             this.high_resolution_panel = new System.Windows.Forms.Panel();
             this.high_resolution_on_off = new System.Windows.Forms.CheckBox();
             this.high_resolution_label = new System.Windows.Forms.Label();
@@ -247,6 +250,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.fps)).BeginInit();
             this.show_fps_panel.SuspendLayout();
             this.smoothing_panel.SuspendLayout();
+            this.display_size_panel.SuspendLayout();
             this.high_resolution_panel.SuspendLayout();
             this.controls_settings.SuspendLayout();
             this.controls_tabcontrol.SuspendLayout();
@@ -935,12 +939,13 @@
             this.video_settings.Controls.Add(this.fps_panel);
             this.video_settings.Controls.Add(this.show_fps_panel);
             this.video_settings.Controls.Add(this.smoothing_panel);
+            this.video_settings.Controls.Add(this.display_size_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 22);
+            this.video_settings.Location = new System.Drawing.Point(4, 33);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 194);
+            this.video_settings.Size = new System.Drawing.Size(482, 183);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
@@ -949,7 +954,7 @@
             this.scope_color_panel.Controls.Add(this.scope_color_choice);
             this.scope_color_panel.Controls.Add(this.scope_color_label);
             this.scope_color_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.scope_color_panel.Location = new System.Drawing.Point(3, 207);
+            this.scope_color_panel.Location = new System.Drawing.Point(3, 241);
             this.scope_color_panel.Name = "scope_color_panel";
             this.scope_color_panel.Size = new System.Drawing.Size(459, 34);
             this.scope_color_panel.TabIndex = 4;
@@ -982,7 +987,7 @@
             this.scope_panel.Controls.Add(this.scope_choice);
             this.scope_panel.Controls.Add(this.scope_label);
             this.scope_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.scope_panel.Location = new System.Drawing.Point(3, 173);
+            this.scope_panel.Location = new System.Drawing.Point(3, 207);
             this.scope_panel.Name = "scope_panel";
             this.scope_panel.Size = new System.Drawing.Size(459, 34);
             this.scope_panel.TabIndex = 3;
@@ -1014,7 +1019,7 @@
             this.show_minimap_panel.Controls.Add(this.show_minimap);
             this.show_minimap_panel.Controls.Add(this.show_minimap_label);
             this.show_minimap_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.show_minimap_panel.Location = new System.Drawing.Point(3, 139);
+            this.show_minimap_panel.Location = new System.Drawing.Point(3, 173);
             this.show_minimap_panel.Name = "show_minimap_panel";
             this.show_minimap_panel.Size = new System.Drawing.Size(459, 34);
             this.show_minimap_panel.TabIndex = 5;
@@ -1051,7 +1056,7 @@
             this.fps_panel.Controls.Add(this.fps);
             this.fps_panel.Controls.Add(this.fps_label);
             this.fps_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fps_panel.Location = new System.Drawing.Point(3, 105);
+            this.fps_panel.Location = new System.Drawing.Point(3, 139);
             this.fps_panel.Name = "fps_panel";
             this.fps_panel.Size = new System.Drawing.Size(459, 34);
             this.fps_panel.TabIndex = 1;
@@ -1084,7 +1089,7 @@
             this.show_fps_panel.Controls.Add(this.show_fps_on_off);
             this.show_fps_panel.Controls.Add(this.show_fps_label);
             this.show_fps_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.show_fps_panel.Location = new System.Drawing.Point(3, 71);
+            this.show_fps_panel.Location = new System.Drawing.Point(3, 105);
             this.show_fps_panel.Name = "show_fps_panel";
             this.show_fps_panel.Size = new System.Drawing.Size(459, 34);
             this.show_fps_panel.TabIndex = 2;
@@ -1120,7 +1125,7 @@
             this.smoothing_panel.Controls.Add(this.smoothing_list);
             this.smoothing_panel.Controls.Add(this.smoothing_label);
             this.smoothing_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.smoothing_panel.Location = new System.Drawing.Point(3, 37);
+            this.smoothing_panel.Location = new System.Drawing.Point(3, 71);
             this.smoothing_panel.Name = "smoothing_panel";
             this.smoothing_panel.Size = new System.Drawing.Size(459, 34);
             this.smoothing_panel.TabIndex = 6;
@@ -1152,6 +1157,46 @@
             this.smoothing_label.TabIndex = 2;
             this.smoothing_label.Text = "Сглаживание";
             this.smoothing_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // display_size_panel
+            // 
+            this.display_size_panel.Controls.Add(this.display_size_list);
+            this.display_size_panel.Controls.Add(this.display_size_label);
+            this.display_size_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.display_size_panel.Location = new System.Drawing.Point(3, 37);
+            this.display_size_panel.Name = "display_size_panel";
+            this.display_size_panel.Size = new System.Drawing.Size(459, 34);
+            this.display_size_panel.TabIndex = 7;
+            // 
+            // display_size_list
+            // 
+            this.display_size_list.Dock = System.Windows.Forms.DockStyle.Right;
+            this.display_size_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.display_size_list.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.display_size_list.FormattingEnabled = true;
+            this.display_size_list.Items.AddRange(new object[] {
+            "256x128",
+            "512x256",
+            "640x480",
+            "800x600",
+            "1024x768",
+            "1280x720"});
+            this.display_size_list.Location = new System.Drawing.Point(346, 0);
+            this.display_size_list.Name = "display_size_list";
+            this.display_size_list.Size = new System.Drawing.Size(113, 32);
+            this.display_size_list.TabIndex = 3;
+            this.display_size_list.TabStop = false;
+            this.display_size_list.SelectedIndexChanged += new System.EventHandler(this.Display_size_SelectedIndexChanged);
+            // 
+            // display_size_label
+            // 
+            this.display_size_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.display_size_label.Location = new System.Drawing.Point(0, 0);
+            this.display_size_label.Name = "display_size_label";
+            this.display_size_label.Size = new System.Drawing.Size(273, 34);
+            this.display_size_label.TabIndex = 2;
+            this.display_size_label.Text = "Разрешение экрана";
+            this.display_size_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // high_resolution_panel
             // 
@@ -2643,6 +2688,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.fps)).EndInit();
             this.show_fps_panel.ResumeLayout(false);
             this.smoothing_panel.ResumeLayout(false);
+            this.display_size_panel.ResumeLayout(false);
             this.high_resolution_panel.ResumeLayout(false);
             this.controls_settings.ResumeLayout(false);
             this.controls_tabcontrol.ResumeLayout(false);
@@ -2891,5 +2937,8 @@
         private System.Windows.Forms.Panel smoothing_panel;
         private System.Windows.Forms.Label smoothing_label;
         private System.Windows.Forms.ComboBox smoothing_list;
+        private System.Windows.Forms.Panel display_size_panel;
+        private System.Windows.Forms.ComboBox display_size_list;
+        private System.Windows.Forms.Label display_size_label;
     }
 }

@@ -162,7 +162,7 @@ namespace SLIL
             { "select_item", Keys.Q },
             { "run", Keys.ShiftKey },
         };
-        public static int resolution = 0, smoothing = 1, scope_type = 0, scope_color = 0, difficulty = 2;
+        public static int resolution = 0, display_size = 0, smoothing = 1, scope_type = 0, scope_color = 0, difficulty = 2;
         public static bool hight_fps = true, ShowFPS = true, ShowMiniMap = true;
         public static bool inv_y = false, inv_x = false;
         public static double LOOK_SPEED = 6.5;
@@ -313,6 +313,8 @@ namespace SLIL
             video_settings.Controls.Add(show_fps_panel);
             video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(smoothing_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(display_size_panel);
             video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(high_resolution_panel);
             mouse_settings.Controls.Clear();
@@ -566,6 +568,7 @@ namespace SLIL
             scope_color = INIReader.GetInt(iniFolder, "SLIL", "scope_color", 0);
             scope_type = INIReader.GetInt(iniFolder, "SLIL", "scope_type", 0);
             resolution = INIReader.GetBool(iniFolder, "SLIL", "hight_resolution", false) ? 1 : 0;
+            display_size = INIReader.GetInt(iniFolder, "SLIL", "display_size", 0);
             smoothing = INIReader.GetInt(iniFolder, "SLIL", "smoothing", 1);
             hight_fps = INIReader.GetBool(iniFolder, "SLIL", "hight_fps", true);
             BindControls["screenshot"] = INIReader.GetKeys(iniFolder, "SLIL", "screenshot", Keys.F12);
@@ -582,6 +585,8 @@ namespace SLIL
             BindControls["item"] = INIReader.GetKeys(iniFolder, "SLIL", "item", Keys.H);
             BindControls["select_item"] = INIReader.GetKeys(iniFolder, "SLIL", "select_item", Keys.Q);
             BindControls["run"] = INIReader.GetKeys(iniFolder, "SLIL", "run", Keys.ShiftKey);
+            if (display_size < 0 || display_size > 5)
+                display_size = 0;
             if (smoothing < 0 || smoothing > 3)
                 smoothing = 1;
             if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10)
@@ -611,6 +616,7 @@ namespace SLIL
             select_item_btn.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             run_btn.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
             language_list.SelectedIndex = Language ? 0 : 1;
+            display_size_list.SelectedIndex = display_size;
             smoothing_list.SelectedIndex = smoothing;
             console_btn.Checked = ConsoleEnabled;
             sounds_on_off.Checked = sounds;
@@ -644,6 +650,7 @@ namespace SLIL
             string[] smooth_list = { "Без сглаживания", "По умолчанию", "Высокое качество", "Высокая скорость" };
             if (Language)
             {
+                display_size_label.Text = "Разрешение экрана";
                 smoothing_label.Text = "Сглаживание";
                 console_label.Text = "Консоль разработчика";
                 nickname_label.Text = "Имя игрока:";
@@ -715,6 +722,7 @@ namespace SLIL
             else
             {
                 smooth_list = new string[] { "No Antialiasing", "Default", "High Quality", "High Speed" };
+                display_size_label.Text = "Screen resolution";
                 smoothing_label.Text = "Smoothing";
                 console_label.Text = "Developer console";
                 nickname_label.Text = "Player name:";
@@ -1167,6 +1175,7 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             INIReader.SetKey(iniFolder, "CONFIG", "auto_update", update_on_off.Checked);
             INIReader.SetKey(iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
+            INIReader.SetKey(iniFolder, "SLIL", "display_size", display_size);
             INIReader.SetKey(iniFolder, "SLIL", "smoothing", smoothing);
             INIReader.SetKey(iniFolder, "SLIL", "show_fps", ShowFPS);
             INIReader.SetKey(iniFolder, "SLIL", "hight_fps", hight_fps);
@@ -1351,6 +1360,12 @@ namespace SLIL
         {
             lose_focus.Focus();
             smoothing = smoothing_list.SelectedIndex;
+        }
+
+        private void Display_size_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            display_size = display_size_list.SelectedIndex;
         }
 
         private void ConnectToGame()

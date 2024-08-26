@@ -5,7 +5,7 @@ namespace MazeGenerator
     public class Maze
     {
         private static readonly Random rand = new();
-        Room finishRoom = null;
+        Room? finishRoom = null;
 
         private List<Room> Generate(int width, int height)
         {
@@ -122,7 +122,7 @@ namespace MazeGenerator
                         }
                     }
                 }
-                if (room.X == finishRoom.X && room.Y == finishRoom.Y)
+                if (finishRoom != null && room.X == finishRoom.X && room.Y == finishRoom.Y)
                     result[room.X * 3 + 2, room.Y * 3 + 2] = finishChar;
             }
             for (int i = 0; i < result.GetLength(1); i++)

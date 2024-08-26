@@ -1,7 +1,6 @@
 ﻿using LiteNetLib;
 using LiteNetLib.Utils;
 using GameServer;
-using System.Runtime.CompilerServices;
 
 NetPacketProcessor processor = new();
 //processor.RegisterNestedType<Player>(() => { return new Player(0,0,0,0); });
@@ -19,7 +18,7 @@ server.Start(9999 /* port */);
     
 listener.ConnectionRequestEvent += request =>
 {
-    if (server.ConnectedPeersCount < 10 /* max connections */)
+    if (server.ConnectedPeersCount < 4 /* max connections */)
         request.AcceptIfKey("SomeKey");
     else
         request.Reject();
@@ -71,7 +70,7 @@ new Thread(() =>
 
 while(!exit)
 {
-    string command = Console.ReadLine();
+    string? command = Console.ReadLine();
     switch (command)
     {
         case "stop":

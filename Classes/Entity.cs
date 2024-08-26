@@ -479,13 +479,13 @@ namespace SLIL.Classes
         }
     }
 
-    public class RPGRocketExplosion: GameObject
+    public class Explosion : GameObject
     {
         protected override int GetEntityID() => 17;
         protected override double GetEntityWidth() => 0.4;
 
-        public RPGRocketExplosion(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public RPGRocketExplosion(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Explosion(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Explosion(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
         public int ShooterID;
 

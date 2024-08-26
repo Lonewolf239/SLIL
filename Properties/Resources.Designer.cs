@@ -393,6 +393,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap c4 {
+            get {
+                object obj = ResourceManager.GetObject("c4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap candy {
             get {
                 object obj = ResourceManager.GetObject("candy", resourceCulture);
@@ -1976,6 +1986,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap rifle_lv3_shoot {
             get {
                 object obj = ResourceManager.GetObject("rifle_lv3_shoot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rocket {
+            get {
+                object obj = ResourceManager.GetObject("rocket", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

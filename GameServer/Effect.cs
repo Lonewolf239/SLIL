@@ -1,12 +1,10 @@
-﻿using System.Drawing;
-
-namespace SLIL.Classes
+﻿namespace SLIL.Classes
 {
     public class Effect
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
         public int EffectTotalTime { get; set; }
         public int EffectTimeRemaining { get; set; }
 
@@ -15,8 +13,7 @@ namespace SLIL.Classes
         public bool ReducingTimeRemaining()
         {
             EffectTimeRemaining--;
-            if (EffectTimeRemaining < 0)
-                return true;
+            if (EffectTimeRemaining < 0) return true;
             return false;
         }
 

@@ -743,20 +743,22 @@ namespace SLIL.UserControls
                         }
                         else if (cheat == "BEFWK")
                         {
-                            if (player.Guns.Count < 6)
+                            bool all_ok = false;
+                            for (int i = 0; i < player.GUNS.Length; i++)
                             {
-                                for (int i = 0; i < player.GUNS.Length; i++)
+                                if (player.GUNS[i].AddToShop)
                                 {
-                                    if (player.GUNS[i].AddToShop)
+                                    player.GUNS[i].MaxAmmoCount = player.GUNS[i].MaxAmmo;
+                                    player.GUNS[i].HasIt = true;
+                                    if (!player.Guns.Contains(player.GUNS[i]))
                                     {
-                                        player.GUNS[i].MaxAmmoCount = player.GUNS[i].MaxAmmo;
-                                        player.GUNS[i].HasIt = true;
-                                        if (!player.Guns.Contains(player.GUNS[i]))
-                                            player.Guns.Add(player.GUNS[i]);
+                                        player.Guns.Add(player.GUNS[i]);
+                                        all_ok = true;
                                     }
                                 }
-                                message += "All weapons have been issued.";
                             }
+                            if (all_ok)
+                                message += "All weapons have been issued.";
                             else
                             {
                                 color = Color.Red;

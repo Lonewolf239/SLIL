@@ -2,6 +2,7 @@
 
 namespace SLIL.Classes
 {
+    public enum AmmoTypes { Magic, Bubbles, Bullet, Shell, Rifle, Rocket, C4 }
     public enum FireTypes { Single, SemiAutomatic }
     public enum Levels { LV1 = 0, LV2 = 1, LV3 = 2, LV4 = 3 }
 
@@ -9,6 +10,7 @@ namespace SLIL.Classes
     {
         public int ItemID { get; set; }
         public string[]? Name { get; set; }
+        public bool LowWeight { get; set; }
         public int AimingState { get; set; }
         public int AimingFactor { get; set; }
         public bool Upgradeable { get; set; }
@@ -24,7 +26,8 @@ namespace SLIL.Classes
         public int BurstShots { get; set; }
         public double MaxDamage { get; set; }
         public double MinDamage { get; set; }
-        public int Recoil { get; set; }
+        public int RecoilY { get; set; }
+        public int RecoilX { get; set; }
         public bool HasIt { get; set; }
         public int GunCost { get; set; }
         public int AmmoCost { get; set; }
@@ -39,6 +42,7 @@ namespace SLIL.Classes
         public bool CanAiming { get; set; }
         public bool ShowAmmo { get; set; }
         public bool ShowScope { get; set; }
+        public AmmoTypes AmmoType { get; set; }
         public FireTypes FireType { get; set; }
         public Levels Level { get; set; }
 
@@ -48,6 +52,7 @@ namespace SLIL.Classes
             this.ItemID = this.GetItemID();
             Level = Levels.LV1;
             CanRun = true;
+            LowWeight = false;
             InMultiplayer = true;
             IsMagic = false;
             ShowAmmoAsNumber = false;
@@ -86,14 +91,11 @@ namespace SLIL.Classes
         {
             switch (Level)
             {
-                case Levels.LV1:
-                    return 0;
-                case Levels.LV2:
-                    return 1;
-                case Levels.LV3:
-                    return 2;
-                default:
-                    return 3;
+                case Levels.LV1: return 0;
+                case Levels.LV2: return 1;
+                case Levels.LV3: return 2;
+                case Levels.LV4:
+                default: return 3;
             }
         }
 
@@ -137,16 +139,17 @@ namespace SLIL.Classes
     {
         public Magic() : base()
         {
+            AmmoType = AmmoTypes.Magic;
+            FireType = FireTypes.Single;
             Upgradeable = false;
             AddToShop = false;
             HasIt = false;
             IsMagic = true;
             ShowAmmoAsNumber = true;
-            FireType = FireTypes.Single;
             CartridgesClip = 1;
             AmmoCount = CartridgesClip;
             FiringRange = 10;
-            Recoil = 50;
+            RecoilY = 50;
             RadiusSound = 0;
             BurstShots = 1;
         }
@@ -208,23 +211,21 @@ namespace SLIL.Classes
             MaxAmmoCount = CartridgesClip;
             HasIt = true;
         }
-
         public override void SetDefault()
         {
             AmmoCount = 0;
             MaxAmmoCount = 0;
             HasIt = false;
         }
-
-        public override bool CanUpdate() => false;
     }
 
     public class Flashlight : Item
     {
         public Flashlight() : base()
         {
+            LowWeight = true;
             HasIt = true;
-            Name = new[] { "Фонарик", "Flashlight" };
+            Name = ["Фонарик", "Flashlight"];
         }
 
         public override void SetDefault()
@@ -239,11 +240,12 @@ namespace SLIL.Classes
     {
         public Knife() : base()
         {
+            LowWeight = true;
             Upgradeable = false;
             ShowAmmo = false;
             AddToShop = false;
             HasIt = true;
-            Name = new[] { "Нож", "Knife" };
+            Name = ["Нож", "Knife"];
             FireType = FireTypes.Single;
             RechargeTime = 600;
             CartridgesClip = 1;
@@ -252,7 +254,7 @@ namespace SLIL.Classes
             FiringRange = 1.5;
             MaxDamage = 2;
             MinDamage = 1.5;
-            Recoil = 0;
+            RecoilY = 0;
             FiringRate = 175;
             BurstShots = 1;
             RadiusSound = 0;
@@ -265,7 +267,6 @@ namespace SLIL.Classes
             Level = Levels.LV1;
             ApplyUpdate();
         }
-
         public override bool CanUpdate() => false;
         public override int GetItemID() => 1;
     }
@@ -277,8 +278,9 @@ namespace SLIL.Classes
             FiringRate = 400;
             ShowScope = false;
             HasIt = false;
-            Name = new[] { "Конфета", "Candy" };
+            Name = ["Конфета", "Candy"];
         }
+
         public override int GetItemID() => 2;
     }
 
@@ -286,13 +288,14 @@ namespace SLIL.Classes
     {
         public Rainblower() : base()
         {
+            AmmoType = AmmoTypes.Bubbles;
+            FireType = FireTypes.SemiAutomatic;
             Upgradeable = false;
             ShowScope = false;
             AddToShop = false;
             HasIt = false;
             ShowAmmoAsNumber = true;
-            Name = new[] { "Радужигатель", "Rainblower" };
-            FireType = FireTypes.SemiAutomatic;
+            Name = ["Радужигатель", "Rainblower"];
             RechargeTime = 600;
             CartridgesClip = 100;
             MaxAmmoCount = 0;
@@ -300,7 +303,7 @@ namespace SLIL.Classes
             FiringRange = 2.5;
             MaxDamage = 2.25;
             MinDamage = 2;
-            Recoil = 5;
+            RecoilY = 5;
             FiringRate = 125;
             BurstShots = 5;
             RadiusSound = 6;
@@ -314,7 +317,6 @@ namespace SLIL.Classes
             Level = Levels.LV1;
             ApplyUpdate();
         }
-
         public override bool CanUpdate() => false;
         public override int GetItemID() => 3;
     }
@@ -323,11 +325,13 @@ namespace SLIL.Classes
     {
         public Pistol() : base()
         {
+            AmmoType = AmmoTypes.Bullet;
+            FireType = FireTypes.Single;
+            LowWeight = true;
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;
-            Name = new[] { "Пистолет", "Pistol" };
-            FireType = FireTypes.Single;
+            Name = ["Пистолет", "Pistol"];
             UpdateCost = 20;
             AmmoCost = 5;
             RechargeTime = 600;
@@ -337,7 +341,7 @@ namespace SLIL.Classes
             FiringRange = 7;
             MaxDamage = 1.75;
             MinDamage = 1.25;
-            Recoil = 10;
+            RecoilY = 10;
             FiringRate = 175;
             BurstShots = 1;
             RadiusSound = 6;
@@ -350,7 +354,6 @@ namespace SLIL.Classes
             Level = Levels.LV1;
             ApplyUpdate();
         }
-
         protected override void ApplyUpdate()
         {
             if (Level == Levels.LV1)
@@ -362,7 +365,7 @@ namespace SLIL.Classes
                 FiringRange = 7;
                 MaxDamage = 1.75;
                 MinDamage = 1.25;
-                Recoil = 10;
+                RecoilY = 10;
                 FiringRate = 175;
                 BurstShots = 1;
                 RadiusSound = 6;
@@ -376,7 +379,7 @@ namespace SLIL.Classes
                 FiringRange = 8;
                 MaxDamage = 2.75;
                 MinDamage = 2.5;
-                Recoil = 20;
+                RecoilY = 20;
                 FiringRate = 175;
                 BurstShots = 1;
                 RadiusSound = 7;
@@ -390,7 +393,7 @@ namespace SLIL.Classes
                 FiringRange = 9;
                 MaxDamage = 3.45;
                 MinDamage = 3;
-                Recoil = 25;
+                RecoilY = 25;
                 FiringRate = 175;
                 BurstShots = 1;
                 RadiusSound = 10;
@@ -404,7 +407,7 @@ namespace SLIL.Classes
                 FiringRange = 9;
                 MaxDamage = 10.5;
                 MinDamage = 5;
-                Recoil = 35;
+                RecoilY = 35;
                 FiringRate = 225;
                 BurstShots = 1;
                 RadiusSound = 10;
@@ -422,11 +425,12 @@ namespace SLIL.Classes
 
         public Shotgun() : base()
         {
+            AmmoType = AmmoTypes.Shell;
+            FireType = FireTypes.Single;
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "Дробовик", "Shotgun" };
-            FireType = FireTypes.Single;
+            Name = ["Дробовик", "Shotgun"];
             PullTime = 1;
             UpdateCost = 30;
             GunCost = 35;
@@ -438,7 +442,7 @@ namespace SLIL.Classes
             FiringRange = 4;
             MaxDamage = 3.5;
             MinDamage = 2.75;
-            Recoil = 120;
+            RecoilY = 120;
             FiringRate = 200;
             BurstShots = 1;
             RadiusSound = 10;
@@ -502,7 +506,7 @@ namespace SLIL.Classes
                 FiringRange = 7;
                 MaxDamage = 3.5;
                 MinDamage = 2.75;
-                Recoil = 120;
+                RecoilY = 120;
                 FiringRate = 200;
                 BurstShots = 1;
                 RadiusSound = 10;
@@ -517,7 +521,7 @@ namespace SLIL.Classes
                 FiringRange = 6;
                 MaxDamage = 4.75;
                 MinDamage = 3.25;
-                Recoil = 80;
+                RecoilY = 80;
                 FiringRate = 200;
                 BurstShots = 1;
                 RadiusSound = 10;
@@ -532,7 +536,7 @@ namespace SLIL.Classes
                 FiringRange = 5;
                 MaxDamage = 6.25;
                 MinDamage = 5.25;
-                Recoil = 135;
+                RecoilY = 135;
                 FiringRate = 200;
                 BurstShots = 1;
                 RadiusSound = 10;
@@ -548,11 +552,12 @@ namespace SLIL.Classes
     {
         public SubmachineGun() : base()
         {
+            AmmoType = AmmoTypes.Bullet;
+            FireType = FireTypes.SemiAutomatic;
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "Пистолет-пулемет", "Submachine gun" };
-            FireType = FireTypes.SemiAutomatic;
+            Name = ["Пистолет-пулемет", "Submachine gun"];
             UpdateCost = 40;
             GunCost = 30;
             AmmoCost = 18;
@@ -563,7 +568,7 @@ namespace SLIL.Classes
             FiringRange = 8;
             MaxDamage = 2;
             MinDamage = 1.5;
-            Recoil = 18;
+            RecoilY = 18;
             FiringRate = 50;
             BurstShots = 6;
             RadiusSound = 6;
@@ -582,7 +587,7 @@ namespace SLIL.Classes
                 FiringRange = 8;
                 MaxDamage = 2;
                 MinDamage = 1.5;
-                Recoil = 18;
+                RecoilY = 18;
                 FiringRate = 50;
                 BurstShots = 6;
                 RadiusSound = 6;
@@ -596,7 +601,7 @@ namespace SLIL.Classes
                 FiringRange = 8;
                 MaxDamage = 2.5;
                 MinDamage = 1.75;
-                Recoil = 15;
+                RecoilY = 15;
                 FiringRate = 50;
                 BurstShots = 3;
                 RadiusSound = 6;
@@ -610,7 +615,7 @@ namespace SLIL.Classes
                 FiringRange = 8;
                 MaxDamage = 2.7;
                 MinDamage = 1.95;
-                Recoil = 25;
+                RecoilY = 25;
                 FiringRate = 25;
                 BurstShots = 6;
                 RadiusSound = 6;
@@ -626,11 +631,12 @@ namespace SLIL.Classes
     {
         public AssaultRifle() : base()
         {
+            AmmoType = AmmoTypes.Rifle;
+            FireType = FireTypes.SemiAutomatic;
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "Автомат", "Assault rifle" };
-            FireType = FireTypes.SemiAutomatic;
+            Name = ["Автомат", "Assault rifle"];
             UpdateCost = 50;
             GunCost = 45;
             AmmoCost = 25;
@@ -641,7 +647,7 @@ namespace SLIL.Classes
             FiringRange = 8;
             MaxDamage = 2.5;
             MinDamage = 2;
-            Recoil = 30;
+            RecoilY = 30;
             FiringRate = 100;
             BurstShots = 3;
             RadiusSound = 13;
@@ -661,7 +667,7 @@ namespace SLIL.Classes
                 FiringRange = 8;
                 MaxDamage = 2.5;
                 MinDamage = 2;
-                Recoil = 30;
+                RecoilY = 30;
                 FiringRate = 100;
                 BurstShots = 3;
                 RadiusSound = 13;
@@ -676,7 +682,7 @@ namespace SLIL.Classes
                 FiringRange = 8;
                 MaxDamage = 3.25;
                 MinDamage = 2.75;
-                Recoil = 25;
+                RecoilY = 25;
                 FiringRate = 100;
                 BurstShots = 3;
                 RadiusSound = 13;
@@ -691,7 +697,7 @@ namespace SLIL.Classes
                 FiringRange = 8;
                 MaxDamage = 5.25;
                 MinDamage = 4.5;
-                Recoil = 40;
+                RecoilY = 40;
                 FiringRate = 175;
                 BurstShots = 1;
                 RadiusSound = 13;
@@ -707,28 +713,31 @@ namespace SLIL.Classes
     {
         public SniperRifle() : base()
         {
+            AmmoType = AmmoTypes.Rifle;
+            FireType = FireTypes.Single;
             CanRun = true;
             ShowScope = false;
             AddToShop = true;
             HasIt = false;
             CanAiming = true;
-            Name = new[] { "Снайперка", "Sniper rifle" };
-            FireType = FireTypes.Single;
+            Name = ["Снайперка", "Sniper rifle"];
+            UpdateCost = 60;
             GunCost = 55;
             AmmoCost = 30;
-            AimingState = 4;
+            AimingState = 5;
             AimingFactor = 4;
             RechargeTime = 1500;
             CartridgesClip = 1;
             MaxAmmo = CartridgesClip * 15;
-            FiringRange = 15;
+            FiringRange = 12;
             MaxDamage = 11;
             MinDamage = 5;
-            Recoil = 35;
+            RecoilY = 35;
             FiringRate = 200;
             BurstShots = 1;
             RadiusSound = 20;
-            ReloadFrames = 2;
+            ReloadFrames = 3;
+            AmmoCount = CartridgesClip;
         }
 
         protected override void ApplyUpdate()
@@ -737,33 +746,33 @@ namespace SLIL.Classes
             {
                 AimingFactor = 4;
                 CanRun = true;
-                RechargeTime = 1500;
+                RechargeTime = 650;
                 CartridgesClip = 1;
                 MaxAmmo = CartridgesClip * 15;
-                FiringRange = 15;
+                FiringRange = 12;
                 MaxDamage = 11;
                 MinDamage = 5;
-                Recoil = 35;
+                RecoilY = 35;
                 FiringRate = 200;
                 BurstShots = 1;
                 RadiusSound = 20;
-                ReloadFrames = 2;
+                ReloadFrames = 3;
             }
             else if (Level == Levels.LV2)
             {
                 AimingFactor = 5;
                 CanRun = true;
-                RechargeTime = 850;
+                RechargeTime = 650;
                 CartridgesClip = 10;
                 MaxAmmo = CartridgesClip * 4;
-                FiringRange = 21;
+                FiringRange = 13;
                 MaxDamage = 20;
                 MinDamage = 10;
-                Recoil = 150;
+                RecoilY = 55;
                 FiringRate = 200;
                 BurstShots = 1;
                 RadiusSound = 25;
-                ReloadFrames = 2;
+                ReloadFrames = 3;
             }
             else
             {
@@ -772,10 +781,10 @@ namespace SLIL.Classes
                 RechargeTime = 1000;
                 CartridgesClip = 10;
                 MaxAmmo = CartridgesClip * 4;
-                FiringRange = 21;
+                FiringRange = 20;
                 MaxDamage = 29;
                 MinDamage = 19;
-                Recoil = 150;
+                RecoilY = 150;
                 FiringRate = 300;
                 BurstShots = 1;
                 RadiusSound = 20;
@@ -791,12 +800,13 @@ namespace SLIL.Classes
     {
         public Fingershot() : base()
         {
+            AmmoType = AmmoTypes.Bullet;
+            FireType = FireTypes.Single;
             Upgradeable = false;
             InMultiplayer = false;
             AddToShop = false;
             HasIt = false;
-            Name = new[] { "Пальцестрел", "Fingershot" };
-            FireType = FireTypes.Single;
+            Name = ["Пальцестрел", "Fingershot"];
             RechargeTime = 600;
             CartridgesClip = 1;
             MaxAmmoCount = 99;
@@ -804,7 +814,7 @@ namespace SLIL.Classes
             FiringRange = 10;
             MaxDamage = 25;
             MinDamage = 20;
-            Recoil = 350;
+            RecoilY = 350;
             FiringRate = 175;
             BurstShots = 1;
             RadiusSound = 0;
@@ -820,13 +830,14 @@ namespace SLIL.Classes
     {
         public TSPitW() : base()
         {
+            AmmoType = AmmoTypes.Bullet;
+            FireType = FireTypes.Single;
             Upgradeable = false;
             InMultiplayer = false;
             CanRun = false;
             AddToShop = false;
             HasIt = false;
-            Name = new[] { "СМПвМ", "TSPitW" };
-            FireType = FireTypes.Single;
+            Name = ["СМПвМ", "TSPitW"];
             RechargeTime = 750;
             CartridgesClip = 7;
             MaxAmmoCount = CartridgesClip * 4;
@@ -834,7 +845,7 @@ namespace SLIL.Classes
             FiringRange = 16;
             MaxDamage = 55;
             MinDamage = 50;
-            Recoil = 350;
+            RecoilY = 350;
             FiringRate = 175;
             BurstShots = 1;
             RadiusSound = 0;
@@ -851,7 +862,7 @@ namespace SLIL.Classes
         public Gnome() : base()
         {
             InMultiplayer = false;
-            Name = new[] { "Гном-волшебник", "Wizard Gnome" };
+            Name = ["Гном-волшебник", "Wizard Gnome"];
             RechargeTime = 300;
             MaxAmmoCount = 99;
             MaxAmmo = 99;
@@ -860,6 +871,7 @@ namespace SLIL.Classes
             FiringRate = 650;
             ReloadFrames = 4;
         }
+
         public override int GetItemID() => 11;
     }
 
@@ -867,6 +879,8 @@ namespace SLIL.Classes
     {
         public RPG() : base()
         {
+            AmmoType = AmmoTypes.Rocket;
+            FireType = FireTypes.Single;
             Upgradeable = false;
             CanRun = false;
             ShowScope = false;
@@ -874,7 +888,6 @@ namespace SLIL.Classes
             HasIt = false;
             InMultiplayer = true;
             Name = ["RPG7", "RPG7"];
-            FireType = FireTypes.Single;
             GunCost = 150;
             AmmoCost = 50;
             RechargeTime = 440;
@@ -884,11 +897,12 @@ namespace SLIL.Classes
             FiringRange = 0;
             MaxDamage = 40;
             MinDamage = 25;
-            Recoil = 0;
+            RecoilY = 0;
             FiringRate = 460;
             BurstShots = 1;
             RadiusSound = 20;
             ReloadFrames = 3;
+            AmmoCount = CartridgesClip;
         }
 
         public override bool CanUpdate() => false;
@@ -903,19 +917,20 @@ namespace SLIL.Classes
             HasLVMechanics = true;
             HasCuteDescription = true;
             GunCost = 50;
-            Name = new[]
-            { 
+            Name =
+            [
                 "Аптечка", "First Aid Kit",
                 "Бобы", "Beans"
-            };
-            Description = new[]
-            { 
+            ];
+            Description =
+            [
                 "Восстанавливает здоровье",
                 "Restores health",
                 "Вкусный перекус",
                 "A tasty snack"
-            };
+            ];
         }
+
         public override int GetItemID() => 12;
     }
 
@@ -926,16 +941,14 @@ namespace SLIL.Classes
             EffectID = 1;
             RechargeTime = 530;
             GunCost = 75;
-            Name = new[]
-            {
-                "Адреналин", "Adrenalin"
-            };
-            Description = new[]
-            {
+            Name = ["Адреналин", "Adrenalin"];
+            Description =
+            [
                 "Увеличивает скорость передвижения на 20 сек",
                 "Increases movement speed for 20 sec",
-            };
+            ];
         }
+
         public override int GetItemID() => 13;
     }
 
@@ -947,16 +960,14 @@ namespace SLIL.Classes
             ReloadFrames = 4;
             RechargeTime = 1000;
             GunCost = 75;
-            Name = new[]
-            {
-                "Шлем", "Helmet"
-            };
-            Description = new[]
-            {
+            Name = ["Шлем", "Helmet"];
+            Description =
+            [
                 "Уменьшает получаемый урон на 20% в течение 2 минут",
                 "Reduces incoming damage by 20% for 2 minutes",
-            };
+            ];
         }
+
         public override int GetItemID() => 14;
     }
 }

@@ -13,7 +13,7 @@ namespace GameServer
             Data = reader.GetRemainingBytes();
         }
 
-        public void Serialize(NetDataWriter writer)
+        public readonly void Serialize(NetDataWriter writer)
         {
             writer.Put(PacketID);
             writer.Put(Data);
