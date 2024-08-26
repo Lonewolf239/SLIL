@@ -1025,24 +1025,6 @@
     <None Include="Images\rifle_lv1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\sniper_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\sniper_shoot.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\sniper_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\sniper_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\sniper_aiming.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\sniper.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\fingershot_shoot.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1113,6 +1095,72 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\rainblower_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_aim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_reload_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_aim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_aim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_reload_2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

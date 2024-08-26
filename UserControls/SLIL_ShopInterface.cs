@@ -7,23 +7,28 @@ namespace SLIL.UserControls
 {
     public partial class SLIL_ShopInterface : UserControl
     {
-
         public Timer UpdateTimer;
         public SLIL ParentSLILForm;
+        public Gun weapon;
+        public int index = 0;
+        public int width;
+        public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
+        public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
+        public Player player;
+        private readonly string[,] buy_text = { { "Купить оружие", "Купить патроны" }, { "Buy weapons", "Buy ammo" } };
 
         public SLIL_ShopInterface()
         {
             InitializeComponent();
-            UpdateTimer = new Timer();
-            UpdateTimer.Interval = 1000;
+            UpdateTimer = new Timer
+            {
+                Interval = 1000
+            };
             UpdateTimer.Tick += UpdateTimer_Tick;
             UpdateTimer.Enabled = true;
         }
 
-        ~SLIL_ShopInterface()
-        {
-            UpdateTimer.Stop();
-        }
+        ~SLIL_ShopInterface() => UpdateTimer.Stop();
 
         private void UpdateTimer_Tick(object sender, EventArgs e)
         {
@@ -41,16 +46,8 @@ namespace SLIL.UserControls
                     break;
                 }
             }
-            SLIL_ShopInterface_VisibleChanged(sender, e);
+            UpdateInfo();
         }
-
-        public Gun weapon;
-        public int index = 0;
-        public int width;
-        public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
-        public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
-        public Player player;
-        private readonly string[,] buy_text = { { "Купить оружие", "Купить патроны" }, { "Buy weapons", "Buy ammo" } };
 
         private void Buy_button_Click(object sender, EventArgs e)
         {
@@ -104,12 +101,13 @@ namespace SLIL.UserControls
                 cant_pressed?.Play(SLIL.Volume);
         }
 
-        private void SLIL_ShopInterface_VisibleChanged(object sender, EventArgs e)
+        private void UpdateInfo()
         {
             int cost = weapon.HasIt ? weapon.AmmoCost : weapon.GunCost;
             string ammo = weapon.HasIt ? $"{weapon.MaxAmmoCount}/{weapon.AmmoCount}" : "0/0";
             weapon_name.Text = weapon.Upgradeable ? weapon.Name[index] + $" {weapon.Level}" : weapon.Name[index];
-            weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
+            if (weapon_icon.Image != SLIL.IconDict[weapon.GetType()][weapon.GetLevel()])
+                weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
             ammo_count.Text = index == 0 ? $"Патроны: {ammo}" : $"Ammo: {ammo}";
             buy_button.Text = buy_text[index, weapon.HasIt ? 1 : 0] + $" ${cost}";
             update_button.Text = $"${weapon.UpdateCost}";
@@ -117,6 +115,11 @@ namespace SLIL.UserControls
             ammo_count.Left = damage_text.Right;
             update_button.Left = buy_button.Right + 6;
             update_button.Visible = weapon.CanUpdate() && weapon.HasIt;
+        }
+
+        private void SLIL_ShopInterface_VisibleChanged(object sender, EventArgs e)
+        {
+            UpdateInfo();
             Width = width;
         }
     }

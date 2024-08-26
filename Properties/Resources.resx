@@ -568,9 +568,6 @@
   <data name="hp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\hp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="first_aid" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\first_aid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="helmet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\helmet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -931,24 +928,6 @@
   <data name="smg_lv3_shoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\smg_lv3_shoot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sniper" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\sniper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="sniper_aiming" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\sniper_aiming.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="sniper_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\sniper_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="sniper_reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\sniper_reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="sniper_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\sniper_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="sniper_shoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\sniper_shoot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="TSPitW" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\TSPitW.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -963,5 +942,74 @@
   </data>
   <data name="TSPitW_shoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\TSPitW_shoot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv1_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv1_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv2_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv2_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv3_aim" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv3_aim.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv3_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv3_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv3_reload_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv3_reload_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv3_shoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv3_shoot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv3_reload_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv3_reload_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="first_aid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\first_aid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv1_aim" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv1_aim.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv1_reload_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv1_reload_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv1_reload_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv1_reload_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv1_reload_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv1_reload_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv1_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv1_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv1_shoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv1_shoot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv2_aim" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv2_aim.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv2_reload_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv2_reload_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv2_reload_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv2_reload_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv2_reload_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv2_reload_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv2_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv2_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sniper_lv2_shoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\sniper_lv2_shoot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

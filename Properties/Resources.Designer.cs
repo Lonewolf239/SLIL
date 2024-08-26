@@ -2663,9 +2663,9 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap sniper {
+        internal static System.Drawing.Bitmap sniper_lv1 {
             get {
-                object obj = ResourceManager.GetObject("sniper", resourceCulture);
+                object obj = ResourceManager.GetObject("sniper_lv1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2673,9 +2673,9 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap sniper_aiming {
+        internal static System.Drawing.Bitmap sniper_lv1_aim {
             get {
-                object obj = ResourceManager.GetObject("sniper_aiming", resourceCulture);
+                object obj = ResourceManager.GetObject("sniper_lv1_aim", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2683,9 +2683,9 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap sniper_icon {
+        internal static System.Drawing.Bitmap sniper_lv1_icon {
             get {
-                object obj = ResourceManager.GetObject("sniper_icon", resourceCulture);
+                object obj = ResourceManager.GetObject("sniper_lv1_icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2693,9 +2693,9 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap sniper_reload {
+        internal static System.Drawing.Bitmap sniper_lv1_reload_0 {
             get {
-                object obj = ResourceManager.GetObject("sniper_reload", resourceCulture);
+                object obj = ResourceManager.GetObject("sniper_lv1_reload_0", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2703,9 +2703,9 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap sniper_run {
+        internal static System.Drawing.Bitmap sniper_lv1_reload_1 {
             get {
-                object obj = ResourceManager.GetObject("sniper_run", resourceCulture);
+                object obj = ResourceManager.GetObject("sniper_lv1_reload_1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2713,9 +2713,169 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap sniper_shoot {
+        internal static System.Drawing.Bitmap sniper_lv1_reload_2 {
             get {
-                object obj = ResourceManager.GetObject("sniper_shoot", resourceCulture);
+                object obj = ResourceManager.GetObject("sniper_lv1_reload_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv1_run {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv1_run", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv1_shoot {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv1_shoot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv2 {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv2_aim {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv2_aim", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv2_icon {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv2_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv2_reload_0 {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv2_reload_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv2_reload_1 {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv2_reload_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv2_reload_2 {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv2_reload_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv2_run {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv2_run", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv2_shoot {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv2_shoot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv3 {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv3_aim {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv3_aim", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv3_icon {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv3_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv3_reload_0 {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv3_reload_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv3_reload_1 {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv3_reload_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sniper_lv3_shoot {
+            get {
+                object obj = ResourceManager.GetObject("sniper_lv3_shoot", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

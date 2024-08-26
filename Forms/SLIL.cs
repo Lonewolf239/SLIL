@@ -99,7 +99,9 @@ namespace SLIL
             } },
             { typeof(SniperRifle), new[]
             {
-                    Properties.Resources.sniper_icon
+                    /*LV1:*/ Properties.Resources.sniper_lv1_icon,
+                    /*LV2:*/ Properties.Resources.sniper_lv2_icon,
+                    /*LV3:*/ Properties.Resources.sniper_lv3_icon,
             } },
             { typeof(Fingershot), new[] { Properties.Resources.missing } },
             { typeof(TSPitW), new[] { Properties.Resources.missing } },
@@ -157,7 +159,9 @@ namespace SLIL
             } },
             { typeof(SniperRifle), new[,]
             {
-                    { Properties.Resources.sniper, Properties.Resources.sniper_shoot, Properties.Resources.sniper_reload, Properties.Resources.sniper_aiming, Properties.Resources.sniper_run }
+                    /*LV1:*/ { Properties.Resources.sniper_lv1, Properties.Resources.sniper_lv1_shoot, Properties.Resources.sniper_lv1_reload_0, Properties.Resources.sniper_lv1_reload_1, Properties.Resources.sniper_lv1_reload_2, Properties.Resources.sniper_lv1_aim, Properties.Resources.sniper_lv1_run },
+                    /*LV2:*/ { Properties.Resources.sniper_lv2, Properties.Resources.sniper_lv2_shoot, Properties.Resources.sniper_lv2_reload_0, Properties.Resources.sniper_lv2_reload_1, Properties.Resources.sniper_lv2_reload_2, Properties.Resources.sniper_lv2_aim, Properties.Resources.sniper_lv2_run },
+                    /*LV3:*/ { Properties.Resources.sniper_lv3, Properties.Resources.sniper_lv3_shoot, Properties.Resources.sniper_lv3_reload_0, Properties.Resources.sniper_lv3_reload_1, Properties.Resources.missing, Properties.Resources.sniper_lv3_aim, Properties.Resources.missing }
             } },
             { typeof(Fingershot), new[,]
             {
@@ -201,44 +205,46 @@ namespace SLIL
             { typeof(Candy), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("candy.wav"), false) } } },
             { typeof(Rainblower),  new[,]
             {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_rainblower.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
+                   { new PlaySound(MainMenu.CGFReader.GetFile("rainblower.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
             } },
             { typeof(Pistol), new[,]
             {
-                   /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2_reloading.wav"), false), new PlaySound(null, false) },
-                   /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_empty.wav"), false) },
-                   /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_2_reloading.wav"), false), new PlaySound(null, false) },
-                   /*LV4:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_0_3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_3_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_0_3_empty.wav"), false) },
+                   /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("pistol_lv1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("pistol_reload.wav"), false), new PlaySound(null, false) },
+                   /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("pistol_lv2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("pistol_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("pistol_lv2_empty.wav"), false) },
+                   /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("pistol_lv3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("pistol_reload.wav"), false), new PlaySound(null, false) },
+                   /*LV4:*/ { new PlaySound(MainMenu.CGFReader.GetFile("pistol_lv4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("pistol_lv4_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("pistol_lv4_empty.wav"), false) },
             } },
             { typeof(Shotgun), new[,]
             {
-                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_0_reloading.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
-                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_shell.wav"), false) },
-                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_1_shell.wav"), false) },
+                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("shotgun.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("shotgun_lv1_reload.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
+                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("shotgun.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("shotgun_lv2_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("shotgun_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("shotgun_shell.wav"), false) },
+                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("shotgun.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("shotgun_lv3_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("shotgun_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("shotgun_shell.wav"), false) },
             } },
             { typeof(SubmachineGun), new[,]
             {
-                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_3_1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_empty.wav"), false) },
-                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_3_2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_empty.wav"), false) },
-                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_3_3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_3_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_3_empty.wav"), false) }
+                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("smg_lv1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("smg_lv1_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("smg_empty.wav"), false) },
+                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("smg_lv2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("smg_lv2_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("smg_empty.wav"), false) },
+                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("smg_lv3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("smg_lv3_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("smg_empty.wav"), false) }
             } },
             { typeof(AssaultRifle), new[,]
             {
-                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_empty.wav"), false) },
-                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_4.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_1_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_empty.wav"), false) },
-                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("gun_4_3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_3_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_4_empty.wav"), false) }
+                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("rifle.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("rifle_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("rifle_empty.wav"), false) },
+                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("rifle.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("rifle_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("rifle_empty.wav"), false) },
+                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("rifle_lv3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("rifle_lv3_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("rifle_empty.wav"), false) }
             } },
             { typeof(SniperRifle), new[,]
             {
-                    { new PlaySound(MainMenu.CGFReader.GetFile("gun_2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_2_reloading.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_2_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_2_aiming.wav"), false) }
+                    /*LV1:*/ { new PlaySound(MainMenu.CGFReader.GetFile("sniper_lv1.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("sniper_lv1_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("sniper_lv1_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("sniper_aiming.wav"), false) },
+                    /*LV2:*/ { new PlaySound(MainMenu.CGFReader.GetFile("sniper_lv2.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("sniper_lv2_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("sniper_lv2_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("sniper_aiming.wav"), false) },
+                    /*LV3:*/ { new PlaySound(MainMenu.CGFReader.GetFile("sniper_lv3.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("sniper_lv3_reload.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("sniper_lv3_empty.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("sniper_aiming.wav"), false) },
             } },
             { typeof(Fingershot), new[,]
             {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_5.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_5_reloading.wav"), false), new PlaySound(null, false) }
+                   { new PlaySound(MainMenu.CGFReader.GetFile("fingershot.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("fingershot_reload.wav"), false), new PlaySound(null, false) }
             } },
             { typeof(TSPitW), new[,]
             {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("gun_6.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("gun_6_reloading.wav"), false), new PlaySound(null, false) }
+                   { new PlaySound(MainMenu.CGFReader.GetFile("TSPitW.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("TSPitW_reload.wav"), false), new PlaySound(null, false) }
             } },
             { typeof(Gnome), new[,]
             {
@@ -1360,7 +1366,7 @@ namespace SLIL
                             if (MainMenu.sounds)
                                 SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3].Play(Volume);
                             player.Aiming = !player.Aiming;
-                            player.GunState = player.Aiming ? 3 : 0;
+                            player.GunState = player.Aiming ? player.GetCurrentGun().AimingState : 0;
                         }
                     }
                 }
@@ -1374,6 +1380,8 @@ namespace SLIL
             if (player.GetCurrentGun() is RPG) Controller.SpawnRockets(player.X, player.Y, 0, player.A);
             else
             {
+                int bullet_x = SCREEN_WIDTH[resolution] / 2;
+                int bullet_y = SCREEN_HEIGHT[resolution] / 2;
                 double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
                 double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
                 Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
@@ -1443,7 +1451,7 @@ namespace SLIL
                                     rays[stripe][y].TextureX = texX;
                                     rays[stripe][y].TextureY = texY;
                                     Color color = GetColorForPixel(rays[stripe][y]);
-                                    if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && player.GetCurrentGun().FiringRange >= Distance)
+                                    if (color != Color.Transparent && stripe == bullet_x && y == bullet_y && player.GetCurrentGun().FiringRange >= Distance)
                                     {
                                         if (creature != null)
                                         {
@@ -1519,24 +1527,6 @@ namespace SLIL
                         if (test_wall == '#' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT[resolution] / 2 >= mid))
                         {
                             hit = true;
-                            /*int side = GetAccurateSide(distance, ray_x, ray_y);
-                            switch (side)
-                            {
-                                case 0:
-                                    Controller.AddHittingTheWall(player.X + ray_x * distance - 0.5, player.Y + ray_y * distance - 0.2 - 0.5);
-                                    break;
-                                case 1:
-                                    Controller.AddHittingTheWall(player.X + ray_x * distance - 0.5, player.Y + ray_y * distance + 0.2 - 0.5);
-                                    break;
-                                case 2:
-                                    Controller.AddHittingTheWall(player.X + ray_x * distance - 0.2 - 0.5, player.Y + ray_y * distance - 0.5);
-                                    break;
-                                case 3:
-                                    Controller.AddHittingTheWall(player.X + ray_x * distance + 0.2 - 0.5, player.Y + ray_y * distance - 0.5);
-                                    break;
-                                default:
-                                    break;
-                            }*/
                             distance -= 0.2;
                             Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance);
                         }
@@ -1662,9 +1652,7 @@ namespace SLIL
                         if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4)
                             player.GunState = 4;
                         if(player.GetCurrentGun() is RPG)
-                        {
                             player.GunState = 5;
-                        }
                         else if (player.GetCurrentGun() is Shotgun)
                         {
                             if (player.GetCurrentGun().Level == Levels.LV1 || player.GetCurrentGun().MaxAmmoCount == 0)
@@ -2059,7 +2047,7 @@ namespace SLIL
                 }
                 return rays;
             }
-            factor = player.Aiming ? 12 : 0;
+            factor = player.Aiming ? player.GetCurrentGun().AimingFactor : 0;
             if (player.GetCurrentGun() is Flashlight) factor = 8;
             dirX = Math.Sin(player.A);
             dirY = Math.Cos(player.A);
@@ -2388,9 +2376,9 @@ namespace SLIL
             {
                 if (playerMoveStyle == Direction.RUN)
                 {
-                    if (player.GetCurrentGun() is Pistol || player.GetCurrentGun() is Shotgun || player.GetCurrentGun() is Fingershot)
+                    if (player.GetCurrentGun() is Pistol || player.GetCurrentGun() is Shotgun || player.GetCurrentGun() is SniperRifle || player.GetCurrentGun() is Fingershot)
                     {
-                        if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().AmmoCount <= 0)
+                        if (player.GetCurrentGun() is SniperRifle || (player.GetCurrentGun() is Pistol && player.GetCurrentGun().AmmoCount <= 0))
                             player.MoveStyle = 6;
                         else
                             player.MoveStyle = 5;

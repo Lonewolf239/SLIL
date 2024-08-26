@@ -9,6 +9,8 @@ namespace SLIL.Classes
     {
         public int ItemID { get; set; }
         public string[] Name { get; set; }
+        public int AimingState { get; set; }
+        public int AimingFactor { get; set; }
         public bool Upgradeable { get; set; }
         public bool InMultiplayer { get; set; }
         public bool CanRun { get; set; }
@@ -704,30 +706,84 @@ namespace SLIL.Classes
     {
         public SniperRifle() : base()
         {
-            Upgradeable = false;
+            CanRun = true;
             ShowScope = false;
             AddToShop = true;
             HasIt = false;
             CanAiming = true;
             Name = new[] { "Снайперка", "Sniper rifle" };
             FireType = FireTypes.Single;
+            UpdateCost = 60;
             GunCost = 55;
             AmmoCost = 30;
-            RechargeTime = 850;
-            CartridgesClip = 2;
-            MaxAmmoCount = CartridgesClip * 2;
-            MaxAmmo = CartridgesClip * 4;
-            FiringRange = 21;
-            MaxDamage = 23;
-            MinDamage = 17;
-            Recoil = 150;
+            AimingState = 5;
+            AimingFactor = 4;
+            RechargeTime = 1500;
+            CartridgesClip = 1;
+            MaxAmmo = CartridgesClip * 15;
+            FiringRange = 15;
+            MaxDamage = 11;
+            MinDamage = 5;
+            Recoil = 35;
             FiringRate = 200;
             BurstShots = 1;
             RadiusSound = 20;
-            ReloadFrames = 1;
+            ReloadFrames = 3;
         }
 
-        public override bool CanUpdate() => false;
+        protected override void ApplyUpdate()
+        {
+            if (Level == Levels.LV1)
+            {
+                AimingFactor = 4;
+                CanRun = true;
+                RechargeTime = 650;
+                CartridgesClip = 1;
+                MaxAmmo = CartridgesClip * 15;
+                FiringRange = 15;
+                MaxDamage = 11;
+                MinDamage = 5;
+                Recoil = 35;
+                FiringRate = 200;
+                BurstShots = 1;
+                RadiusSound = 20;
+                ReloadFrames = 3;
+            }
+            else if (Level == Levels.LV2)
+            {
+                AimingFactor = 5;
+                CanRun = true;
+                RechargeTime = 650;
+                CartridgesClip = 10;
+                MaxAmmo = CartridgesClip * 4;
+                FiringRange = 21;
+                MaxDamage = 20;
+                MinDamage = 10;
+                Recoil = 150;
+                FiringRate = 200;
+                BurstShots = 1;
+                RadiusSound = 25;
+                ReloadFrames = 3;
+            }
+            else
+            {
+                AimingFactor = 12;
+                CanRun = false;
+                RechargeTime = 1000;
+                CartridgesClip = 10;
+                MaxAmmo = CartridgesClip * 4;
+                FiringRange = 21;
+                MaxDamage = 29;
+                MinDamage = 19;
+                Recoil = 150;
+                FiringRate = 300;
+                BurstShots = 1;
+                RadiusSound = 20;
+                ReloadFrames = 2;
+            }
+            MaxAmmoCount = CartridgesClip * 2;
+            base.ApplyUpdate();
+        }
         public override int GetItemID() => 8;
     }
 
