@@ -1143,7 +1143,7 @@ namespace SLIL.Classes
                 if (player.Invulnerable)
                     player.InvulnerableEnd();
                 player.UpdateEffectsTime();
-                Pet playerPet = player.PET;
+                Pet? playerPet = player.PET;
                 if (playerPet != null && playerPet.IsInstantAbility != 1)
                 {
                     if (playerPet.PetAbilityReloading)
@@ -1212,8 +1212,9 @@ namespace SLIL.Classes
             {
                 if (entity.ID == playerID)
                 {
-                    Player? player = (Player)entity;
-                    player.GetCurrentGun().AmmoCount--;
+                    Gun gun = ((Player)entity).GetCurrentGun();
+                    int ammo = gun is SubmachineGun && gun.Level == Levels.LV3 ? 2 : 1;
+                    gun.AmmoCount -= ammo;
                     return;
                 }
             }

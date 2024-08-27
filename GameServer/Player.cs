@@ -258,6 +258,8 @@ namespace SLIL.Classes
             }
         }
 
+        public double GetDrawDistance() => DEPTH + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
+
         public Gun GetCurrentGun() => Guns[CurrentGun];
 
         public void InvulnerableEnd()

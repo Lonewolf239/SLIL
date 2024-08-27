@@ -923,6 +923,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap helmet_count_icon {
+            get {
+                object obj = ResourceManager.GetObject("helmet_count_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap helmet_icon {
             get {
                 object obj = ResourceManager.GetObject("helmet_icon", resourceCulture);

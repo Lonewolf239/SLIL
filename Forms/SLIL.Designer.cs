@@ -59,6 +59,7 @@ namespace SLIL
             this.exit_restart_btn = new System.Windows.Forms.Button();
             this.restart_btn = new System.Windows.Forms.Button();
             this.shotgun_pull_timer = new System.Windows.Forms.Timer(this.components);
+            this.mouse_hold_timer = new System.Windows.Forms.Timer(this.components);
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -342,6 +343,11 @@ namespace SLIL
             this.shotgun_pull_timer.Interval = 350;
             this.shotgun_pull_timer.Tick += new System.EventHandler(this.Shotgun_pull_timer_Tick);
             // 
+            // mouse_hold_timer
+            // 
+            this.mouse_hold_timer.Interval = 500;
+            this.mouse_hold_timer.Tick += new System.EventHandler(this.Mouse_hold_timer_Tick);
+            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -408,5 +414,6 @@ namespace SLIL
         private Button restart_btn;
         private Button exit_restart_btn;
         private Timer shotgun_pull_timer;
+        private Timer mouse_hold_timer;
     }
 }

@@ -44,8 +44,6 @@ namespace SLIL.Classes
             Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
             listener = new EventBasedNetListener();
             client = new NetManager(listener);
-            //client.UnsyncedEvents = true;
-            //client.UpdateTime = 1;
             processor = new NetPacketProcessor();
             client.Start();
             client.Connect(adress, port, "SomeKey");

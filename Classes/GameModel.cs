@@ -1119,30 +1119,22 @@ namespace SLIL.Classes
                             multiplier = 1.5;
                         attackerPlayer.ChangeMoney(rand.Next((int)(c.MIN_MONEY * multiplier), (int)(c.MAX_MONEY * multiplier)));
                         attackerPlayer.EnemiesKilled++;
-                        if (target is Boxes && !attackerPlayer.CuteMode)
+                        if (target is Boxes box && !attackerPlayer.CuteMode)
                         {
-                            if ((target as Boxes).BoxWithMoney)
+                            if (box.BoxWithMoney)
                                 attackerPlayer.ChangeMoney(rand.Next(5, 11));
                             else
                             {
-                                int count = attackerPlayer.Guns.Count;
-                                int type = rand.Next(1, count);
+                                int type = rand.Next(1, attackerPlayer.Guns.Count);
                                 int max = attackerPlayer.Guns[type].MaxAmmo;
                                 int ammo = attackerPlayer.Guns[type].CartridgesClip + attackerPlayer.Guns[type].MaxAmmoCount;
-                                if (ammo > max)
-                                {
-                                    ammo = max;
-                                    attackerPlayer.Money += rand.Next(5, 11);
-                                }
+                                if (ammo > max) ammo = max;
                                 attackerPlayer.Guns[type].MaxAmmoCount = ammo;
                             }
                         }
                         return true;
                     }
                 }
-                else if (attacker is Player attackerPlayer)
-                    if (difficulty == 0 && attackerPlayer.GetCurrentGun().FireType == FireTypes.Single && !(attackerPlayer.GetCurrentGun() is Knife))
-                        c.UpdateCoordinates(MAP.ToString(), attackerPlayer.X, attackerPlayer.Y);
                 return false;
             }
             return false;
@@ -1339,11 +1331,13 @@ namespace SLIL.Classes
 
         internal void AmmoCountDecrease(int playerID)
         {
-            foreach(Entity entity in Entities)
+            foreach (Entity entity in Entities)
             {
-                if(entity.ID == playerID)
+                if (entity.ID == playerID)
                 {
-                    (entity as Player).GetCurrentGun().AmmoCount--;
+                    Gun gun = (entity as Player).GetCurrentGun();
+                    int ammo = gun is SubmachineGun && gun.Level == Levels.LV3 ? 2 : 1;
+                    gun.AmmoCount--;
                     return;
                 }
             }

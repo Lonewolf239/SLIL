@@ -141,6 +141,12 @@ namespace SLIL.Classes
             }
             for (int id = COLORS.Length; id < textureCount; id++)
             {
+                if (id - CUTE_COLORS.Length == 3)
+                {
+                    textureColorCache[id] = new Color[1, 1];
+                    textureColorCache[id][0, 0] = COLORS[0];
+                    continue;
+                }
                 Bitmap textureBitmap = new Bitmap(textures[id - COLORS.Length]);
                 BitmapData bitmapData = textureBitmap.LockBits(new Rectangle(0, 0, textureBitmap.Width, textureBitmap.Height), ImageLockMode.ReadOnly, textureBitmap.PixelFormat);
                 int bytesPerPixel = Bitmap.GetPixelFormatSize(textureBitmap.PixelFormat) / 8;
@@ -158,6 +164,12 @@ namespace SLIL.Classes
             }
             for (int id = CUTE_COLORS.Length; id < textureCount; id++)
             {
+                if (id - CUTE_COLORS.Length == 3 )
+                {
+                    textureColorCache[id] = new Color[1, 1];
+                    textureColorCache[id][0, 0] = COLORS[0];
+                    continue;
+                }
                 Bitmap textureBitmap = new Bitmap(cute_textures[id - CUTE_COLORS.Length]);
                 BitmapData bitmapData = textureBitmap.LockBits(new Rectangle(0, 0, textureBitmap.Width, textureBitmap.Height), ImageLockMode.ReadOnly, textureBitmap.PixelFormat);
                 int bytesPerPixel = Bitmap.GetPixelFormatSize(textureBitmap.PixelFormat) / 8;

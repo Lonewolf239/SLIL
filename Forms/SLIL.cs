@@ -39,7 +39,7 @@ namespace SLIL
         private readonly Random rand;
         private const int texWidth = 128;
         private readonly int[] SCREEN_HEIGHT = { 128, 128 * 2 }, SCREEN_WIDTH = { 228, 228 * 2 };
-        private int display_size = 0;
+        private int display_size = 0, center_x = 0, center_y = 0;
         private readonly int[,] DISPLAY_SIZE =
         {
             { 256, 128 },
@@ -68,13 +68,12 @@ namespace SLIL
         private Graphics graphicsWeapon;
         private int fps;
         private double planeX, planeY, dirX, dirY, invDet;
-        private int factor = 0;
         private enum Direction { STOP, FORWARD, BACK, LEFT, RIGHT, WALK, RUN };
         private Direction playerDirection = Direction.STOP, strafeDirection = Direction.STOP, playerMoveStyle = Direction.WALK;
         private DateTime total_time = DateTime.Now;
         private List<int> soundIndices = new List<int> { 0, 1, 2, 3, 4 };
         private int currentIndex = 0;
-        private bool map_presed = false, active = true;
+        private bool active = true;
         private bool Paused = false, RunKeyPressed = false;
         public static readonly Dictionary<Type, Image[]> IconDict = new Dictionary<Type, Image[]>
         {
@@ -284,13 +283,13 @@ namespace SLIL
         {
             { typeof(FirstAidKit), Properties.Resources.first_aid },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
-            { typeof(Helmet), Properties.Resources.missing },
+            { typeof(Helmet), Properties.Resources.helmet_count_icon },
         };
         public static readonly Dictionary<Type, Image> CuteItemIconDict = new Dictionary<Type, Image>
         {
             { typeof(FirstAidKit), Properties.Resources.food_count },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
-            { typeof(Helmet), Properties.Resources.adrenalin_count_icon },
+            { typeof(Helmet), Properties.Resources.helmet_count_icon },
         };
         public static readonly Dictionary<Type, Image> ShopImageDict = new Dictionary<Type, Image>
         {
@@ -375,7 +374,7 @@ namespace SLIL
         };
         public static int scope_color = 0, scope_type = 0;
         public static bool ShowMap = false;
-        private bool open_shop = false, pressed_r = false, pressed_h = false;
+        private bool open_shop = false, pressed_r = false, cancelReload = false, pressed_h = false;
         private Display display;
         private Bitmap map;
         private ConsolePanel console_panel;
@@ -842,10 +841,8 @@ namespace SLIL
                     int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
                     Cursor.Position = new Point(x, y);
                 }
-                else if (!GameStarted)
-                    Close();
-                else
-                    Pause();
+                else if (!GameStarted) Close();
+                else Pause();
                 return;
             }
             if (GameStarted && !Paused)
@@ -1035,7 +1032,6 @@ namespace SLIL
                     DoScreenshot();
                 if (e.KeyCode == Bind.Show_map_0 || e.KeyCode == Bind.Show_map_1)
                 {
-                    map_presed = true;
                     ShowMap = !ShowMap;
                     Activate();
                 }
@@ -1274,14 +1270,11 @@ namespace SLIL
 
         private void SLIL_Deactivate(object sender, EventArgs e)
         {
-            if (!map_presed)
-            {
-                strafeDirection = Direction.STOP;
-                playerDirection = Direction.STOP;
-                playerMoveStyle = Direction.WALK;
-                active = false;
-            }
-            map_presed = false;
+            strafeDirection = Direction.STOP;
+            playerDirection = Direction.STOP;
+            playerMoveStyle = Direction.WALK;
+            RunKeyPressed = false;
+            active = false;
         }
 
         private void ChangeWeapon(int new_gun)
@@ -1289,15 +1282,12 @@ namespace SLIL
             Player player = Controller.GetPlayer();
             if ((new_gun != player.CurrentGun || player.LevelUpdated) && player.Guns[new_gun].HasIt)
             {
-                if (MainMenu.sounds)
-                    draw.Play(Volume);
+                if (MainMenu.sounds) draw.Play(Volume);
                 Controller.ChangeWeapon(new_gun);
                 player.GunState = 0;
                 player.Aiming = false;
                 reload_timer.Interval = player.GetCurrentGun().RechargeTime;
                 shot_timer.Interval = player.GetCurrentGun().FiringRate;
-                if (player.GetCurrentGun() is Shotgun)
-                    shotgun_pull_timer.Interval = (player.GetCurrentGun() as Shotgun).PullTime;
                 if (player.GetCurrentGun() is Gnome)
                 {
                     prev_ost = ost_index;
@@ -1315,64 +1305,85 @@ namespace SLIL
             }
         }
 
+        private bool Shoot(Player player)
+        {
+            if (player.GetCurrentGun() is DisposableItem) return false;
+                reload_timer.Interval = player.GetCurrentGun().RechargeTime;
+            shot_timer.Interval = player.GetCurrentGun().FiringRate;
+            mouse_hold_timer.Interval = player.GetCurrentGun().PauseBetweenShooting;
+            if (player.GetCurrentGun() is Shotgun shotgun)
+                shotgun_pull_timer.Interval = shotgun.PullTime;
+            if (player.GetCurrentGun().MaxAmmoCount >= 0 && player.GetCurrentGun().AmmoCount > 0)
+            {
+                if (player.GetCurrentGun() is SniperRifle && !player.Aiming) return false;
+                if (MainMenu.sounds)
+                    SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0].Play(Volume);
+                player.GunState = 1;
+                player.Aiming = false;
+                player.CanShoot = false;
+                burst_shots = 0;
+                if (player.GetCurrentGun().FireType == FireTypes.Single)
+                {
+                    BulletRayCasting();
+                    if (player.Look - player.GetCurrentGun().RecoilY > -360)
+                        player.Look -= player.GetCurrentGun().RecoilY;
+                    else player.Look = -360;
+                    player.A += player.GetCurrentGun().GetRecoilX(rand.NextDouble());
+                }
+                shot_timer.Start();
+                return true;
+            }
+            else if (player.GetCurrentGun().MaxAmmoCount > 0 && player.GetCurrentGun().AmmoCount == 0)
+            {
+                player.GunState = 2;
+                if (player.GetCurrentGun() is Pistol || player.GetCurrentGun() is Shotgun)
+                    player.GunState = 3;
+                player.Aiming = false;
+                reload_timer.Start();
+                if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
+                    return false;
+                if (MainMenu.sounds)
+                    SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                return false;
+            }
+            else if (!(player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level == Levels.LV1) &&
+                !(player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level == Levels.LV1) && MainMenu.sounds)
+            {
+                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 2].Play(Volume);
+                return false;
+            }
+            return false;
+        }
+
+        private void Display_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                mouse_hold_timer.Stop();
+        }
+
         private void Display_MouseDown(object sender, MouseEventArgs e)
         {
             Player player = Controller.GetPlayer();
-            if (GameStarted && player.CanShoot && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
+            if (GameStarted && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
             {
-                if (player.GetCurrentGun().CanShoot && !player.IsPetting)
+                if (e.Button == MouseButtons.Left)
                 {
-                    if (e.Button == MouseButtons.Left)
+                    if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1 && reload_timer.Enabled)
+                        cancelReload = true;
+                    else if (!reload_timer.Enabled && !mouse_hold_timer.Enabled && player.CanShoot && player.GetCurrentGun().CanShoot)
                     {
-                        reload_timer.Interval = player.GetCurrentGun().RechargeTime;
-                        shot_timer.Interval = player.GetCurrentGun().FiringRate;
-                        if (player.GetCurrentGun() is Shotgun)
-                            shotgun_pull_timer.Interval = (player.GetCurrentGun() as Shotgun).PullTime;
-                        if (player.GetCurrentGun().MaxAmmoCount >= 0 && player.GetCurrentGun().AmmoCount > 0)
-                        {
-                            if (player.GetCurrentGun() is SniperRifle && !player.Aiming)
-                                return;
-                            if (MainMenu.sounds)
-                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0].Play(Volume);
-                            player.GunState = 1;
-                            player.Aiming = false;
-                            player.CanShoot = false;
-                            burst_shots = 0;
-                            if (player.GetCurrentGun().FireType == FireTypes.Single)
-                            {
-                                BulletRayCasting();
-                                if (player.Look - player.GetCurrentGun().RecoilY > -360)
-                                    player.Look -= player.GetCurrentGun().RecoilY;
-                                else
-                                    player.Look = -360;
-                            }
-                            shot_timer.Start();
-                        }
-                        else if (player.GetCurrentGun().MaxAmmoCount > 0 && player.GetCurrentGun().AmmoCount == 0)
-                        {
-                            player.GunState = 2;
-                            if (player.GetCurrentGun() is Pistol || player.GetCurrentGun() is Shotgun)
-                                player.GunState = 3;
-                            player.Aiming = false;
-                            reload_timer.Start();
-                            if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
-                                return;
-                            if (MainMenu.sounds)
-                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
-                        }
-                        else if (!(player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level == Levels.LV1) &&
-                            !(player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level == Levels.LV1) && MainMenu.sounds)
-                            SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 2].Play(Volume);
+                        if (Shoot(player))
+                            mouse_hold_timer.Start();
                     }
-                    else if (e.Button == MouseButtons.Right)
+                }
+                else if (e.Button == MouseButtons.Right && !reload_timer.Enabled)
+                {
+                    if (player.GetCurrentGun().CanAiming && player.CanShoot && player.GetCurrentGun().CanShoot)
                     {
-                        if (player.GetCurrentGun().CanAiming)
-                        {
-                            if (MainMenu.sounds)
-                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3].Play(Volume);
-                            player.Aiming = !player.Aiming;
-                            player.GunState = player.Aiming ? player.GetCurrentGun().AimingState : 0;
-                        }
+                        if (MainMenu.sounds)
+                            SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3].Play(Volume);
+                        player.Aiming = !player.Aiming;
+                        player.GunState = player.Aiming ? player.GetCurrentGun().AimingState : 0;
                     }
                 }
             }
@@ -1385,8 +1396,24 @@ namespace SLIL
             if (player.GetCurrentGun() is RPG) Controller.SpawnRockets(player.X, player.Y, 0, player.A);
             else
             {
-                int bullet_x = SCREEN_WIDTH[resolution] / 2;
-                int bullet_y = SCREEN_HEIGHT[resolution] / 2;
+                int[,] bullet = new int[player.GetCurrentGun().BulletCount, 2];
+                if (player.GetCurrentGun().BulletCount == 1)
+                    bullet = new int[,] { { center_x, center_y } };
+                else
+                {
+                    if(player.GetCurrentGun() is SubmachineGun)
+                    {
+                        bullet[0, 0] = center_x - 6;
+                        bullet[0, 1] = center_y;
+                        bullet[1, 0] = center_x + 6;
+                        bullet[1, 1] = center_y;
+                    }
+                    for (int i = 0; i < player.GetCurrentGun().BulletCount; i++)
+                    {
+                        bullet[i, 0] = center_x + rand.Next(-4, 4);
+                        bullet[i, 1] = center_y + rand.Next(-4, 4);
+                    }
+                }
                 double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
                 double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
                 Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
@@ -1456,53 +1483,54 @@ namespace SLIL
                                     rays[stripe][y].TextureX = texX;
                                     rays[stripe][y].TextureY = texY;
                                     Color color = GetColorForPixel(rays[stripe][y]);
-                                    if (color != Color.Transparent && stripe == bullet_x && y == bullet_y && player.GetCurrentGun().FiringRange >= Distance)
+                                    for (int k = 0; k < bullet.GetLength(0); k++)
                                     {
-                                        if (creature != null)
+                                        if (color != Color.Transparent && stripe == bullet[k, 0] && y == bullet[k, 1] && player.GetCurrentGun().FiringRange >= Distance)
                                         {
-                                            if (creature.DEAD)
-                                                continue;
-                                            double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                            if (player.GetCurrentGun() is Shotgun)
-                                                damage *= player.GetCurrentGun().FiringRange - Distance;
-                                            if (Controller.DealDamage(creature, damage))
+                                            if (creature != null)
                                             {
-                                                if (MainMenu.sounds)
+                                                if (creature.DEAD) continue;
+                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                if (player.GetCurrentGun() is Shotgun)
+                                                    damage *= player.GetCurrentGun().FiringRange - Distance;
+                                                if (Controller.DealDamage(creature, damage))
                                                 {
-                                                    if (player.CuteMode)
-                                                        CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
-                                                    else
-                                                        DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                    if (MainMenu.sounds)
+                                                    {
+                                                        if (player.CuteMode)
+                                                            CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                        else
+                                                            DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                    }
                                                 }
+                                                else if (difficulty == 0 && player.GetCurrentGun().FireType == FireTypes.Single && !(player.GetCurrentGun() is Knife))
+                                                    creature.UpdateCoordinates(Controller.GetMap().ToString(), player.X, player.Y);
+                                                if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
+                                                else scope_hit = Properties.Resources.scope_c_hit;
+                                                return;
                                             }
-                                            else if (difficulty == 0 && player.GetCurrentGun().FireType == FireTypes.Single && !(player.GetCurrentGun() is Knife))
-                                                creature.UpdateCoordinates(Controller.GetMap().ToString(), player.X, player.Y);
-                                            if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
-                                            else scope_hit = Properties.Resources.scope_c_hit;
-                                            return;
-                                        }
-                                        else if (entity is Player targetPlayer && entity.ID != player.ID)
-                                        {
-                                            if (targetPlayer.Dead) continue;
-                                            double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                            if (player.GetCurrentGun() is Shotgun)
-                                                damage *= player.GetCurrentGun().FiringRange - Distance;
-                                            if (Controller.DealDamage(targetPlayer, damage * 5))
+                                            else if (entity is Player targetPlayer && entity.ID != player.ID)
                                             {
-                                                if (MainMenu.sounds)
+                                                if (targetPlayer.Dead) continue;
+                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                if (player.GetCurrentGun() is Shotgun)
+                                                    damage *= player.GetCurrentGun().FiringRange - Distance;
+                                                if (Controller.DealDamage(targetPlayer, damage * 5))
                                                 {
-                                                    if (player.CuteMode)
-                                                        CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
-                                                    else
-                                                        DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                    if (MainMenu.sounds)
+                                                    {
+                                                        if (player.CuteMode)
+                                                            CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                        else
+                                                            DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                    }
                                                 }
+                                                if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
+                                                else scope_hit = Properties.Resources.scope_c_hit;
+                                                return;
                                             }
-                                            if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
-                                            else scope_hit = Properties.Resources.scope_c_hit;
-                                            return;
+                                            else return;
                                         }
-                                        else
-                                            return;
                                     }
                                 }
                             }
@@ -1521,7 +1549,7 @@ namespace SLIL
                     distance += 0.01d;
                     int test_x = (int)(player.X + ray_x * distance);
                     int test_y = (int)(player.Y + ray_y * distance);
-                    if (test_x < 0 || test_x >= (player.DEPTH + factor) + player.X || test_y < 0 || test_y >= (player.DEPTH + factor) + player.Y)
+                    if (test_x < 0 || test_x >= (player.GetDrawDistance()) + player.X || test_y < 0 || test_y >= (player.GetDrawDistance()) + player.Y)
                         hit = true;
                     else
                     {
@@ -1560,7 +1588,7 @@ namespace SLIL
                 {
                     int index = 1;
                     Player player = Controller.GetPlayer();
-                    if (player.GetCurrentGun().AmmoCount == 0 && player.GetCurrentGun().MaxAmmoCount == 0) reload_timer.Stop();
+                    if (player.GetCurrentGun().AmmoCount == 0 && player.GetCurrentGun().MaxAmmoCount == 0 && !(player.GetCurrentGun() is DisposableItem)) reload_timer.Stop();
                     if (player.GetCurrentGun() is Shotgun && (player.GetCurrentGun().MaxAmmoCount == 0 || pressed_r))
                     {
                         if (player.GetCurrentGun().Level == Levels.LV1) index = 2;
@@ -1580,8 +1608,9 @@ namespace SLIL
                                 reload_frames = pressed_r ? -1 : 0;
                                 Controller.ReloadClip();
                             }
-                            if (player.GetCurrentGun().MaxAmmoCount == 0 || player.GetCurrentGun().AmmoCount == player.GetCurrentGun().CartridgesClip)
+                            if (cancelReload || player.GetCurrentGun().MaxAmmoCount == 0 || player.GetCurrentGun().AmmoCount == player.GetCurrentGun().CartridgesClip)
                             {
+                                cancelReload = false;
                                 pressed_r = false;
                                 player.CanShoot = true;
                                 reload_timer.Stop();
@@ -1608,8 +1637,10 @@ namespace SLIL
                 }
                 else
                 {
-                    reload_timer.Stop();
+                    cancelReload = false;
+                    pressed_r = false;
                     reload_frames = 0;
+                    reload_timer.Stop();
                 }
             }
             catch { }
@@ -1630,15 +1661,15 @@ namespace SLIL
                         player.GunState = player.Aiming ? 3 : 0;
                     if (!(player.GetCurrentGun() is Knife))
                         Controller.AmmoCountDecrease();
-                    if (player.GetCurrentGun().FireType != FireTypes.Single)
+                    if (player.GetCurrentGun().CanShoot && player.GetCurrentGun().FireType != FireTypes.Single)
                     {
                         BulletRayCasting();
                         if (player.Look - player.GetCurrentGun().RecoilY > -360)
                             player.Look -= player.GetCurrentGun().RecoilY;
-                        else
-                            player.Look = -360;
+                        else player.Look = -360;
+                        player.A += player.GetCurrentGun().GetRecoilX(rand.NextDouble());
                     }
-                    if ((player.GetCurrentGun().AmmoCount <= 0 && player.GetCurrentGun().MaxAmmoCount > 0) || player.GetCurrentGun() is DisposableItem)
+                    if (player.GetCurrentGun() is DisposableItem || (player.GetCurrentGun().AmmoCount <= 0 && player.GetCurrentGun().MaxAmmoCount > 0))
                     {
                         player.GunState = 2;
                         if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4)
@@ -1656,7 +1687,7 @@ namespace SLIL
                         player.GunState = player.MoveStyle;
                         if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4)
                             player.GunState = 4;
-                        if(player.GetCurrentGun() is RPG)
+                        if (player.GetCurrentGun() is RPG)
                             player.GunState = 5;
                         else if (player.GetCurrentGun() is Shotgun)
                         {
@@ -1826,6 +1857,8 @@ namespace SLIL
             WEAPON?.Dispose();
             BUFFER?.Dispose();
             graphicsWeapon?.Dispose();
+            center_x = SCREEN_WIDTH[resolution] / 2;
+            center_y = SCREEN_HEIGHT[resolution] / 2;
             SCREEN = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             WEAPON = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             BUFFER = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
@@ -1889,6 +1922,24 @@ namespace SLIL
             fps = CalculateFPS(elapsed_time);
         }
 
+        private void Mouse_hold_timer_Tick(object sender, EventArgs e)
+        {
+            Player player = Controller.GetPlayer();
+            if (player.GetCurrentGun() is DisposableItem)
+            {
+                mouse_hold_timer.Stop();
+                return;
+            }
+            if (GameStarted && player.CanShoot && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
+            {
+                if (player.GetCurrentGun().CanShoot && !player.IsPetting)
+                {
+                    if (!Shoot(player))
+                        mouse_hold_timer.Stop();
+                }
+            }
+        }
+
         private void DrawSprites(ref Pixel[][] rays, ref double[] ZBuffer, ref double[] ZBufferWindow, out List<int> enemiesCoords)
         {
             Player player = Controller.GetPlayer();
@@ -1909,12 +1960,9 @@ namespace SLIL
             Array.Sort(spriteInfo, (a, b) => b.Distance.CompareTo(a.Distance));
             for (int i = 0; i < spriteInfo.Length; i++)
             {
-                if (Entities[spriteInfo[i].Order] is Player) {
-                    if (player.ID == (Entities[spriteInfo[i].Order] as Player).ID) continue;
-                }
+                if (Entities[spriteInfo[i].Order] is Player pl && player.ID == pl.ID) continue;
                 double Distance = Math.Sqrt((player.X - Entities[spriteInfo[i].Order].X) * (player.X - Entities[spriteInfo[i].Order].X) + (player.Y - Entities[spriteInfo[i].Order].Y) * (player.Y - Entities[spriteInfo[i].Order].Y));
-                if (Distance > 22 || Distance == 0)
-                    continue;
+                if (Distance > player.GetDrawDistance() || Distance == 0) continue;
                 double spriteX = Entities[spriteInfo[i].Order].X - player.X;
                 double spriteY = Entities[spriteInfo[i].Order].Y - player.Y;
                 double transformX = invDet * (dirY * spriteX - dirX * spriteY);
@@ -1998,7 +2046,7 @@ namespace SLIL
                                     else
                                         rays[stripe][y].TextureId = spriteInfo[i].Texture;
                                 }
-                                rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / (player.DEPTH + factor)) * 100)), 100));
+                                rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / player.GetDrawDistance()) * 100)), 100));
                                 rays[stripe][y].TextureX = texX;
                                 rays[stripe][y].TextureY = texY;
                                 Color color = GetColorForPixel(rays[stripe][y]);
@@ -2053,8 +2101,6 @@ namespace SLIL
                 }
                 return rays;
             }
-            factor = player.Aiming ? player.GetCurrentGun().AimingFactor : 0;
-            if (player.GetCurrentGun() is Flashlight) factor = 8;
             dirX = Math.Sin(player.A);
             dirY = Math.Cos(player.A);
             planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
@@ -2527,10 +2573,10 @@ namespace SLIL
                     if (wallSide == 0) window_distance = (sideDistX - deltaDistX);
                     else window_distance = (sideDistY - deltaDistY);
                 }
-                if (mapX < 0 || mapX >= (player.DEPTH + factor) + player.X || mapY < 0 || mapY >= (player.DEPTH + factor) + player.Y || distance >= (player.DEPTH + factor))
+                if (mapX < 0 || mapX >= (player.GetDrawDistance()) + player.X || mapY < 0 || mapY >= (player.GetDrawDistance()) + player.Y || distance >= player.GetDrawDistance())
                 {
                     hit_wall = true;
-                    distance = (player.DEPTH + factor);
+                    distance = player.GetDrawDistance();
                     continue;
                 }
                 char test_wall = Controller.GetMap()[mapY * Controller.GetMapWidth() + mapX];
@@ -2617,7 +2663,7 @@ namespace SLIL
                     textureId = 2;
                     if (Math.Abs(y - mid) <= 6 / window_distance || is_window_bound)
                         textureId = 0;
-                    blackout = (int)(Math.Min(Math.Max(0, Math.Floor((window_distance / (player.DEPTH + factor)) * 100)), 100));
+                    blackout = (int)(Math.Min(Math.Max(0, Math.Floor((window_distance / player.GetDrawDistance()) * 100)), 100));
                 }
                 else if ((y < mid || !hit_window) && y > ceiling && y < floor)
                 {
@@ -2626,7 +2672,7 @@ namespace SLIL
                         textureId = 3;
                     if (is_bound)
                         textureId = 0;
-                    blackout = (int)(Math.Min(Math.Max(0, Math.Floor((distance / (player.DEPTH + factor)) * 100)), 100));
+                    blackout = (int)(Math.Min(Math.Max(0, Math.Floor((distance / player.GetDrawDistance()) * 100)), 100));
                 }
                 else if (y >= floor)
                 {
@@ -2780,6 +2826,7 @@ namespace SLIL
                 Controls.Add(console_panel);
                 display = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
                 display.MouseDown += new MouseEventHandler(Display_MouseDown);
+                display.MouseUp += new MouseEventHandler(Display_MouseUp);
                 display.MouseMove += new MouseEventHandler(Display_MouseMove);
                 display.MouseWheel += new MouseEventHandler(Display_Scroll);
                 Controls.Add(display);
@@ -2808,8 +2855,7 @@ namespace SLIL
             raycast.Start();
             stamina_timer.Start();
             mouse_timer.Start();
-            if (MainMenu.sounds)
-                step_sound_timer.Start();
+            if (MainMenu.sounds) step_sound_timer.Start();
             GameStarted = true;
             game_over_panel.Visible = false;
             display.BringToFront();
