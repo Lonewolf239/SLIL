@@ -1328,7 +1328,7 @@ namespace SLIL
                     if (player.Look - player.GetCurrentGun().RecoilY > -360)
                         player.Look -= player.GetCurrentGun().RecoilY;
                     else player.Look = -360;
-                    player.A += player.GetCurrentGun().GetRecoilX(rand.NextDouble());
+                    Controller.ChangePlayerA(player.GetCurrentGun().GetRecoilX(rand.NextDouble()));
                 }
                 shot_timer.Start();
                 return true;
@@ -1507,7 +1507,8 @@ namespace SLIL
                                                     creature.UpdateCoordinates(Controller.GetMap().ToString(), player.X, player.Y);
                                                 if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
                                                 else scope_hit = Properties.Resources.scope_c_hit;
-                                                return;
+                                                bullet[k, 0] = -1;
+                                                bullet[k, 1] = -1;
                                             }
                                             else if (entity is Player targetPlayer && entity.ID != player.ID)
                                             {
@@ -1527,9 +1528,14 @@ namespace SLIL
                                                 }
                                                 if (!player.CuteMode) scope_hit = Properties.Resources.scope_hit;
                                                 else scope_hit = Properties.Resources.scope_c_hit;
-                                                return;
+                                                bullet[k, 0] = -1;
+                                                bullet[k, 1] = -1;
                                             }
-                                            else return;
+                                            else
+                                            {
+                                                bullet[k, 0] = -1;
+                                                bullet[k, 1] = -1;
+                                            }
                                         }
                                     }
                                 }
@@ -1538,30 +1544,35 @@ namespace SLIL
                     }
                 }
                 if (player.CuteMode) return;
-                double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
-                double ray_x = Math.Sin(rayA);
-                double ray_y = Math.Cos(rayA);
-                double distance = 0;
-                bool hit = false;
-                scope_hit = null;
-                while (raycast.Enabled && !hit && distance < player.GetCurrentGun().FiringRange)
+                for (int k = 0; k < bullet.GetLength(0); k++)
                 {
-                    distance += 0.01d;
-                    int test_x = (int)(player.X + ray_x * distance);
-                    int test_y = (int)(player.Y + ray_y * distance);
-                    if (test_x < 0 || test_x >= (player.GetDrawDistance()) + player.X || test_y < 0 || test_y >= (player.GetDrawDistance()) + player.Y)
-                        hit = true;
-                    else
+                    if (bullet[k,0]==-1) continue;
+                    double deltaA = FOV / 2 - bullet[k, 0] * FOV / SCREEN_WIDTH[resolution];
+                    double rayA = player.A + deltaA;
+                    double ray_x = Math.Sin(rayA);
+                    double ray_y = Math.Cos(rayA);
+                    double distance = 0;
+                    bool hit = false;
+                    scope_hit = null;
+                    while (raycast.Enabled && !hit && distance < player.GetCurrentGun().FiringRange)
                     {
-                        char test_wall = Controller.GetMap()[test_y * Controller.GetMapWidth() + test_x];
-                        double celling = (SCREEN_HEIGHT[resolution] - player.Look) / 2.25d - (SCREEN_HEIGHT[resolution] * FOV) / distance;
-                        double floor = SCREEN_HEIGHT[resolution] - (celling + player.Look);
-                        double mid = (celling + floor) / 2;
-                        if (test_wall == '#' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT[resolution] / 2 >= mid))
-                        {
+                        distance += 0.01d;
+                        int test_x = (int)(player.X + ray_x * distance);
+                        int test_y = (int)(player.Y + ray_y * distance);
+                        if (test_x < 0 || test_x >= (player.GetDrawDistance()) + player.X || test_y < 0 || test_y >= (player.GetDrawDistance()) + player.Y)
                             hit = true;
-                            distance -= 0.2;
-                            Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance);
+                        else
+                        {
+                            char test_wall = Controller.GetMap()[test_y * Controller.GetMapWidth() + test_x];
+                            double celling = (SCREEN_HEIGHT[resolution] - player.Look) / 2.25d - (SCREEN_HEIGHT[resolution] * FOV) / distance;
+                            double floor = SCREEN_HEIGHT[resolution] - (celling + player.Look);
+                            double mid = (celling + floor) / 2;
+                            if (test_wall == '#' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT[resolution] / 2 >= mid))
+                            {
+                                hit = true;
+                                distance -= 0.2;
+                                Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance);
+                            }
                         }
                     }
                 }
