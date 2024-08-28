@@ -748,7 +748,7 @@ namespace SLIL.UserControls
                             {
                                 if (player.GUNS[i].AddToShop)
                                 {
-                                    player.GUNS[i].MaxAmmoCount = player.GUNS[i].MaxAmmo;
+                                    player.GUNS[i].AmmoInStock = player.GUNS[i].MaxAmmo;
                                     player.GUNS[i].HasIt = true;
                                     if (!player.Guns.Contains(player.GUNS[i]))
                                     {
@@ -791,7 +791,7 @@ namespace SLIL.UserControls
                             for (int i = 0; i < player.Guns.Count; i++)
                             {
                                 if (player.GUNS[i].AddToShop)
-                                    player.Guns[i].MaxAmmoCount = player.Guns[i].MaxAmmo;
+                                    player.Guns[i].AmmoInStock = player.Guns[i].MaxAmmo;
                             }
                             message += "Maximum ammunition provided.";
                         }
@@ -805,7 +805,7 @@ namespace SLIL.UserControls
                             if (!player.GUNS[7].HasIt)
                             {
                                 player.GUNS[7].HasIt = true;
-                                player.GUNS[7].MaxAmmoCount = player.GUNS[7].MaxAmmo;
+                                player.GUNS[7].AmmoInStock = player.GUNS[7].MaxAmmo;
                                 if (!player.Guns.Contains(player.GUNS[7]))
                                     player.Guns.Add(player.GUNS[7]);
                                 message += "\"Fingershot\" issued.";
@@ -821,7 +821,7 @@ namespace SLIL.UserControls
                             if (!player.GUNS[8].HasIt)
                             {
                                 player.GUNS[8].HasIt = true;
-                                player.GUNS[8].MaxAmmoCount = player.GUNS[8].MaxAmmo;
+                                player.GUNS[8].AmmoInStock = player.GUNS[8].MaxAmmo;
                                 if (!player.Guns.Contains(player.GUNS[8]))
                                     player.Guns.Add(player.GUNS[8]);
                                 message += "\"The Smallest Pistol in the World\" has been issued.";
@@ -837,7 +837,7 @@ namespace SLIL.UserControls
                             if (!player.GUNS[9].HasIt)
                             {
                                 player.GUNS[9].HasIt = true;
-                                player.GUNS[9].MaxAmmoCount = player.GUNS[9].MaxAmmo;
+                                player.GUNS[9].AmmoInStock = player.GUNS[9].MaxAmmo;
                                 if (!player.Guns.Contains(player.GUNS[9]))
                                     player.Guns.Add(player.GUNS[9]);
                                 message += "\"Wizard Gnome\" has been issued.";

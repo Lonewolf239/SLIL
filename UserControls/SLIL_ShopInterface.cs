@@ -54,12 +54,12 @@ namespace SLIL.UserControls
             weapon_icon.Focus();
             if (weapon.HasIt)
             {
-                if (player.Money >= weapon.AmmoCost && weapon.MaxAmmoCount + weapon.AmmoCount <= weapon.MaxAmmo)
+                if (player.Money >= weapon.AmmoCost && weapon.AmmoInStock + weapon.AmmoCount <= weapon.MaxAmmo)
                 {
                     if (MainMenu.sounds)
                         buy.Play(SLIL.Volume);
                     ParentSLILForm.BuyAmmo(weapon);
-                    ammo_count.Text = index == 0 ? $"Патроны: {weapon.MaxAmmoCount}/{weapon.AmmoCount}" : $"Ammo: {weapon.MaxAmmoCount}/{weapon.AmmoCount}";
+                    ammo_count.Text = index == 0 ? $"Патроны: {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                 }
                 else if (MainMenu.sounds)
                     cant_pressed?.Play(SLIL.Volume);
@@ -72,7 +72,7 @@ namespace SLIL.UserControls
                         buy.Play(SLIL.Volume);
                     ParentSLILForm.BuyWeapon(weapon);
                     buy_button.Text = buy_text[index, weapon.HasIt ? 1 : 0] + $" ${weapon.AmmoCost}";
-                    ammo_count.Text = index == 0 ? $"Патроны: {weapon.MaxAmmoCount}/{weapon.AmmoCount}" : $"Ammo: {weapon.MaxAmmoCount}/{weapon.AmmoCount}";
+                    ammo_count.Text = index == 0 ? $"Патроны: {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                     update_button.Left = buy_button.Right + 6;
                     update_button.Visible = weapon.CanUpdate();
                 }
@@ -93,7 +93,7 @@ namespace SLIL.UserControls
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
                 update_button.Text = $"${weapon.UpdateCost}";
                 damage_text.Text = index == 0 ? $"Урон: {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
-                ammo_count.Text = index == 0 ? $"Патроны: {weapon.MaxAmmoCount}/{weapon.AmmoCount}" : $"Ammo: {weapon.MaxAmmoCount}/{weapon.AmmoCount}";
+                ammo_count.Text = index == 0 ? $"Патроны: {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                 ammo_count.Left = damage_text.Right;
                 update_button.Visible = weapon.CanUpdate();
             }
@@ -104,7 +104,7 @@ namespace SLIL.UserControls
         private void UpdateInfo()
         {
             int cost = weapon.HasIt ? weapon.AmmoCost : weapon.GunCost;
-            string ammo = weapon.HasIt ? $"{weapon.MaxAmmoCount}/{weapon.AmmoCount}" : "0/0";
+            string ammo = weapon.HasIt ? $"{weapon.AmmoInStock}/{weapon.AmmoCount}" : "0/0";
             weapon_name.Text = weapon.Upgradeable ? weapon.Name[index] + $" {weapon.Level}" : weapon.Name[index];
             if (weapon_icon.Image != SLIL.IconDict[weapon.GetType()][weapon.GetLevel()])
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];

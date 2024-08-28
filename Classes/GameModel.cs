@@ -647,8 +647,8 @@ namespace SLIL.Classes
                     {
                         for (int i = 0; i < player.Guns.Count; i++)
                         {
-                            if (player.Guns[i].MaxAmmoCount == 0)
-                                player.Guns[i].MaxAmmoCount = player.Guns[i].CartridgesClip;
+                            if (player.Guns[i].AmmoInStock == 0)
+                                player.Guns[i].AmmoInStock = player.Guns[i].CartridgesClip;
                         }
                     }
                     player.ChangeMoney(50 + (5 * player.EnemiesKilled));
@@ -1127,9 +1127,9 @@ namespace SLIL.Classes
                             {
                                 int type = rand.Next(1, attackerPlayer.Guns.Count);
                                 int max = attackerPlayer.Guns[type].MaxAmmo;
-                                int ammo = attackerPlayer.Guns[type].CartridgesClip + attackerPlayer.Guns[type].MaxAmmoCount;
+                                int ammo = attackerPlayer.Guns[type].CartridgesClip + attackerPlayer.Guns[type].AmmoInStock;
                                 if (ammo > max) ammo = max;
-                                attackerPlayer.Guns[type].MaxAmmoCount = ammo;
+                                attackerPlayer.Guns[type].AmmoInStock = ammo;
                             }
                         }
                         return true;
@@ -1297,12 +1297,7 @@ namespace SLIL.Classes
             }*/
         }
 
-        public void AddHittingTheWall(double X, double Y, double playerLook)
-        {
-            HittingTheWall hittingTheWall = new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID);
-            hittingTheWall.VMove = playerLook;
-            Entities.Add(hittingTheWall);
-        }
+        public void AddHittingTheWall(double X, double Y) => Entities.Add(new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID));
 
         internal void ChangePlayerA(double v, int playerID)
         {
@@ -1380,10 +1375,10 @@ namespace SLIL.Classes
                 {
                     Player p = (Player)ent;
                     Gun weapon = p.Guns[weaponID];
-                    if (p.Money >= weapon.AmmoCost && weapon.MaxAmmoCount + weapon.AmmoCount <= weapon.MaxAmmo)
+                    if (p.Money >= weapon.AmmoCost && weapon.AmmoInStock + weapon.AmmoCount <= weapon.MaxAmmo)
                     {
                         p.ChangeMoney(-weapon.AmmoCost);
-                        weapon.MaxAmmoCount += weapon.CartridgesClip;
+                        weapon.AmmoInStock += weapon.CartridgesClip;
                     }
                     return;
                 }

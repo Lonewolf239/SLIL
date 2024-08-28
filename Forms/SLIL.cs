@@ -807,7 +807,7 @@ namespace SLIL
                         ChangeWeapon(player.PreviousGun);
                         player.PreviousGun = player.CurrentGun;
                         player.Guns.Remove(player.DisposableItems[player.SelectedItem]);
-                        if (player.DisposableItems[player.SelectedItem].AmmoCount <= 0 && player.DisposableItems[player.SelectedItem].MaxAmmoCount <= 0)
+                        if (player.DisposableItems[player.SelectedItem].AmmoCount <= 0 && player.DisposableItems[player.SelectedItem].AmmoInStock <= 0)
                             player.DisposableItems[player.SelectedItem].HasIt = false;
                     }
                 }
@@ -865,7 +865,7 @@ namespace SLIL
                         if (player.Guns.Contains(player.GUNS[0])) count--;
                         if (e.KeyCode == Bind.Reloading)
                         {
-                            if (player.GetCurrentGun().AmmoCount != player.GetCurrentGun().CartridgesClip && player.GetCurrentGun().MaxAmmoCount > 0)
+                            if (player.GetCurrentGun().AmmoCount != player.GetCurrentGun().CartridgesClip && player.GetCurrentGun().AmmoInStock > 0)
                             {
                                 pressed_r = true;
                                 player.CanShoot = false;
@@ -1313,7 +1313,7 @@ namespace SLIL
             mouse_hold_timer.Interval = player.GetCurrentGun().PauseBetweenShooting;
             if (player.GetCurrentGun() is Shotgun shotgun)
                 shotgun_pull_timer.Interval = shotgun.PullTime;
-            if (player.GetCurrentGun().MaxAmmoCount >= 0 && player.GetCurrentGun().AmmoCount > 0)
+            if (player.GetCurrentGun().AmmoInStock >= 0 && player.GetCurrentGun().AmmoCount > 0)
             {
                 if (player.GetCurrentGun() is SniperRifle && !player.Aiming) return false;
                 if (MainMenu.sounds)
@@ -1333,7 +1333,7 @@ namespace SLIL
                 shot_timer.Start();
                 return true;
             }
-            else if (player.GetCurrentGun().MaxAmmoCount > 0 && player.GetCurrentGun().AmmoCount == 0)
+            else if (player.GetCurrentGun().AmmoInStock > 0 && player.GetCurrentGun().AmmoCount == 0)
             {
                 player.GunState = 2;
                 if (player.GetCurrentGun() is Pistol || player.GetCurrentGun() is Shotgun)
@@ -1582,8 +1582,8 @@ namespace SLIL
                                 //double vMove = ((player.Look + mid) / (floor - celling)) * mid;
 
                                 if (bullet[k, 1] > floor || bullet[k, 1] < celling) continue;
-                                //double vMove = (bullet[k, 1]-player.Look) / (floor - celling) * SCREEN_HEIGHT[resolution];
-                                double vMove = player.Look / 2.25d + player.Look * FOV / (distance+0.2);
+                                double vMove = (bullet[k, 1]-player.Look) / (floor - celling) * SCREEN_HEIGHT[resolution];
+                                //double vMove = player.Look / 2.25d + player.Look * FOV / (distance+0.2);
                                 Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance, vMove);
                             }
                         }
@@ -1612,8 +1612,8 @@ namespace SLIL
                 {
                     int index = 1;
                     Player player = Controller.GetPlayer();
-                    if (player.GetCurrentGun().AmmoCount == 0 && player.GetCurrentGun().MaxAmmoCount == 0 && !(player.GetCurrentGun() is DisposableItem)) reload_timer.Stop();
-                    if (player.GetCurrentGun() is Shotgun && (player.GetCurrentGun().MaxAmmoCount == 0 || pressed_r))
+                    if (player.GetCurrentGun().AmmoCount == 0 && player.GetCurrentGun().AmmoInStock == 0 && !(player.GetCurrentGun() is DisposableItem)) reload_timer.Stop();
+                    if (player.GetCurrentGun() is Shotgun && (player.GetCurrentGun().AmmoInStock == 0 || pressed_r))
                     {
                         if (player.GetCurrentGun().Level == Levels.LV1) index = 2;
                         else
@@ -1626,13 +1626,13 @@ namespace SLIL
                     {
                         if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
                         {
-                            if (player.GetCurrentGun().MaxAmmoCount > 0)
+                            if (player.GetCurrentGun().AmmoInStock > 0)
                             {
                                 player.GunState = 3;
                                 reload_frames = pressed_r ? -1 : 0;
                                 Controller.ReloadClip();
                             }
-                            if (cancelReload || player.GetCurrentGun().MaxAmmoCount == 0 || player.GetCurrentGun().AmmoCount == player.GetCurrentGun().CartridgesClip)
+                            if (cancelReload || player.GetCurrentGun().AmmoInStock == 0 || player.GetCurrentGun().AmmoCount == player.GetCurrentGun().CartridgesClip)
                             {
                                 cancelReload = false;
                                 pressed_r = false;
@@ -1693,7 +1693,7 @@ namespace SLIL
                         else player.Look = -360;
                         player.A += player.GetCurrentGun().GetRecoilX(rand.NextDouble());
                     }
-                    if (player.GetCurrentGun() is DisposableItem || (player.GetCurrentGun().AmmoCount <= 0 && player.GetCurrentGun().MaxAmmoCount > 0))
+                    if (player.GetCurrentGun() is DisposableItem || (player.GetCurrentGun().AmmoCount <= 0 && player.GetCurrentGun().AmmoInStock > 0))
                     {
                         player.GunState = 2;
                         if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4)
@@ -1715,7 +1715,7 @@ namespace SLIL
                             player.GunState = 5;
                         else if (player.GetCurrentGun() is Shotgun)
                         {
-                            if (player.GetCurrentGun().Level == Levels.LV1 || player.GetCurrentGun().MaxAmmoCount == 0)
+                            if (player.GetCurrentGun().Level == Levels.LV1 || player.GetCurrentGun().AmmoInStock == 0)
                                 player.GunState = 2;
                             else
                                 player.GunState = 3;
@@ -2335,7 +2335,7 @@ namespace SLIL
             }
             int item_count = 0;
             if (player.DisposableItems.Count > 0)
-                item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].MaxAmmoCount;
+                item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].AmmoInStock;
             int icon_size = resolution == 0 ? 16 : 32;
             int size = resolution == 0 ? 1 : 2;
             SizeF hpSize = graphicsWeapon.MeasureString(player.HP.ToString("0"), consolasFont[resolution]);
@@ -2390,9 +2390,9 @@ namespace SLIL
             if (!player.IsPetting && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount + player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 * size);
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 * size);
                 else
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().MaxAmmoCount}/{player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 * size);
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[resolution], whiteBrush, ammo_x, 110 * size);
                 switch (player.GetCurrentGun().AmmoType)
                 {
                     case AmmoTypes.Magic:
