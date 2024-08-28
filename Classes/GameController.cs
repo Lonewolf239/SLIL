@@ -207,7 +207,7 @@ namespace SLIL.Classes
 
         public Pet[] GetPets() => Game.GetPets();
 
-        public void AddHittingTheWall(double X, double Y) => Game.AddHittingTheWall(X, Y);
+        public void AddHittingTheWall(double X, double Y, double vMove) => Game.AddHittingTheWall(X, Y, vMove);
 
         internal void ChangePlayerA(double v) => Game.ChangePlayerA(v, playerID);
 

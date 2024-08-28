@@ -1455,11 +1455,14 @@ namespace SLIL
                     int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
                     int drawStartY = (int)spriteTop;
                     int drawEndY = (int)spriteBottom;
+                    //parameters for scaling and moving the sprites
+                    double vMove = entity.VMove;
+                    int vMoveScreen = (int)(vMove / transformY);
                     int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
                     int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
-                    int drawStartX = -spriteWidth / 2 + spriteScreenX;
+                    int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
                     if (drawStartX < 0) drawStartX = 0;
-                    int drawEndX = spriteWidth / 2 + spriteScreenX;
+                    int drawEndX = spriteWidth / 2 + spriteScreenX + vMoveScreen;
                     if (drawEndX >= SCREEN_WIDTH[resolution]) drawEndX = SCREEN_WIDTH[resolution];
                     var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
                     for (int stripe = drawStartX; stripe < drawEndX; stripe++)
@@ -1472,7 +1475,7 @@ namespace SLIL
                             {
                                 if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
                                     continue;
-                                double d = y - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                                double d = (y - vMoveScreen) - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
                                 double texY = d / (drawEndY - drawStartY);
                                 if (y == drawStartY) texY = 0;
                                 if (rays[stripe].Length > y && y >= 0)
@@ -1572,7 +1575,16 @@ namespace SLIL
                             {
                                 hit = true;
                                 distance -= 0.2;
-                                Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance);
+                                //floor texture_height
+                                //ceiling 0
+                                //vMove = player.Look/(floor-ceiling=135)
+                                //if (player.Look > floor || player.Look < celling) continue;
+                                //double vMove = ((player.Look + mid) / (floor - celling)) * mid;
+
+                                if (bullet[k, 1] > floor || bullet[k, 1] < celling) continue;
+                                //double vMove = (bullet[k, 1]-player.Look) / (floor - celling) * SCREEN_HEIGHT[resolution];
+                                double vMove = player.Look / 2.25d + player.Look * FOV / (distance+0.2);
+                                Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance, vMove);
                             }
                         }
                     }
@@ -1987,9 +1999,12 @@ namespace SLIL
                 int drawEndY = (int)spriteBottom;
                 int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
                 int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
-                int drawStartX = -spriteWidth / 2 + spriteScreenX;
+                //parameters for scaling and moving the sprites
+                double vMove = Entities[spriteInfo[i].Order].VMove;
+                int vMoveScreen = (int)(vMove / transformY);
+                int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
                 if (drawStartX < 0) drawStartX = 0;
-                int drawEndX = spriteWidth / 2 + spriteScreenX;
+                int drawEndX = spriteWidth / 2 + spriteScreenX + vMoveScreen;
                 if (drawEndX >= SCREEN_WIDTH[resolution]) drawEndX = SCREEN_WIDTH[resolution];
                 var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
                 for (int stripe = drawStartX; stripe < drawEndX; stripe++)
@@ -2001,7 +2016,7 @@ namespace SLIL
                         {
                             if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
                                 continue;
-                            double d = y - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                            double d = (y-vMoveScreen) - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
                             double texY = d / (drawEndY - drawStartY);
                             if (y == drawStartY) texY = 0;
                             if (rays[stripe].Length > y && y >= 0)

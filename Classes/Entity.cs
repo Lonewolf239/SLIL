@@ -13,6 +13,7 @@ namespace SLIL.Classes
         public double EntityWidth;
         public int IntX { get; set; }
         public int IntY { get; set; }
+        public double VMove { get; set; }
         public int Texture { get; set; }
         public int[][] Animations { get; set; }
         public bool RespondsToFlashlight { get; set; }
@@ -31,6 +32,7 @@ namespace SLIL.Classes
             maxEntityID++;
             EntityID = this.GetEntityID();
             rand = new Random();
+            VMove = this.GetVMove();
             Frames = 24;
             EntityWidth = this.GetEntityWidth();
             RespondsToFlashlight = false;
@@ -45,6 +47,7 @@ namespace SLIL.Classes
             ID = maxEntityID;
             EntityID = this.GetEntityID();
             rand = new Random();
+            VMove = this.GetVMove();
             Frames = 24;
             Texture = this.GetTexture();
             EntityWidth = this.GetEntityWidth();
@@ -104,6 +107,7 @@ namespace SLIL.Classes
                 }
             }
         }
+        protected virtual double GetVMove() => 0;
     }
 
     public abstract class Creature : Entity
