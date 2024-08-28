@@ -1297,7 +1297,12 @@ namespace SLIL.Classes
             }*/
         }
 
-        public void AddHittingTheWall(double X, double Y) => Entities.Add(new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID));
+        public void AddHittingTheWall(double X, double Y, double playerLook)
+        {
+            HittingTheWall hittingTheWall = new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID);
+            hittingTheWall.VMove = playerLook;
+            Entities.Add(hittingTheWall);
+        }
 
         internal void ChangePlayerA(double v, int playerID)
         {
