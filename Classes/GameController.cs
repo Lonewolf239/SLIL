@@ -70,6 +70,16 @@ namespace SLIL.Classes
                         Game.Deserialize(dataReader, playerID);
                     else Game.Deserialize(dataReader);
                 }
+                if (packetType == 101)
+                {
+                    Game.StopGame(-1);
+                }
+                if (packetType == 102)
+                {
+                    Game.Deserialize(dataReader);
+                    Game.StartGame(false);
+                    startGame();
+                }
                 dataReader.Recycle();
             };
             listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
@@ -172,8 +182,8 @@ namespace SLIL.Classes
                 Game.StartGame(true);
         }
 
-        public void SpawnRockets(double x, double y, int id, double a) { 
-            if(!IsMultiplayer()) Game.SpawnRockets(x, y, id, a);
+        public void SpawnRockets(double x, double y, int id, double a) {
+            if (!IsMultiplayer()) Game.SpawnRockets(x, y, id, a);
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -207,7 +217,22 @@ namespace SLIL.Classes
 
         public Pet[] GetPets() => Game.GetPets();
 
-        public void AddHittingTheWall(double X, double Y, double vMove) => Game.AddHittingTheWall(X, Y, vMove);
+        public void AddHittingTheWall(double X, double Y, double vMove) 
+        {
+            if (peer == null)
+            {
+                Game.AddHittingTheWall(X, Y, vMove);
+            }
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(77);
+                writer.Put(X);
+                writer.Put(Y);
+                writer.Put(vMove);
+                peer.Send(writer, DeliveryMethod.Unreliable);
+            }
+        }
 
         internal void ChangePlayerA(double v) => Game.ChangePlayerA(v, playerID);
 

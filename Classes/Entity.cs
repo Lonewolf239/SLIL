@@ -694,6 +694,18 @@ namespace SLIL.Classes
         public HittingTheWall(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public HittingTheWall(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
+        public override void Deserialize(NetDataReader reader)
+        {
+            base.Deserialize(reader);
+            this.VMove = reader.GetDouble();
+        }
+
+        public override void Serialize(NetDataWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Put(this.VMove);
+        }
+
         private void Init()
         {
             Texture = 36;

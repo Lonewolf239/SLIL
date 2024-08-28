@@ -102,8 +102,8 @@ namespace SLIL.Classes
                 {
                     if (Entities[i] is Player) continue;
                     var entity = Entities[i] as dynamic;
-                    _ = playersList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
-                    Player player = playersList[0];
+                    var playerListOrdered = playersList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
+                    Player player = playerListOrdered.First();
                     double distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
                     if (entity is GameObject && entity.Temporarily)
                     {
@@ -668,11 +668,12 @@ namespace SLIL.Classes
             MAP.Clear();
             if (win == 1)
             {
+                sendMessageFromGameCallback(101);
+                List<Player> players = new List<Player>();
                 foreach (Entity ent in Entities)
                 {
                     if (ent is not Player player)
                     {
-                        Entities.Remove(ent);
                         continue;
                     }
                     if (difficulty != 4)
@@ -686,9 +687,22 @@ namespace SLIL.Classes
                         }
                     }
                     player.ChangeMoney(50 + (5 * player.EnemiesKilled));
-                    StartGame();
+                    //StartGame();
                     UpdatePet(player);
+                    players.Add(player);
                 }
+                Entities.Clear();
+                foreach(Player p in players)
+                {
+                    Entities.Add(p);
+                }
+                StartGame();
+                foreach(Entity ent in Entities)
+                {
+                    if (ent is Player p) UpdatePet(p);
+                }
+                sendMessageFromGameCallback(102);
+                
             }
             else if (win == 0)
             {
@@ -1176,7 +1190,12 @@ namespace SLIL.Classes
             }
         }
 
-        public void AddHittingTheWall(double X, double Y) => Entities.Add(new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID));
+        public void AddHittingTheWall(double X, double Y, double playerLook)
+        {
+            HittingTheWall hittingTheWall = new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID);
+            hittingTheWall.VMove = playerLook;
+            Entities.Add(hittingTheWall);
+        }
 
         internal void ChangePlayerA(double v, int playerID)
         {

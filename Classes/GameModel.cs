@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
+using SharpDX.Direct2D1;
+using LiteNetLib;
 
 namespace SLIL.Classes
 {
@@ -116,8 +119,8 @@ namespace SLIL.Classes
                 {
                     if (Entities[i] is Player) continue;
                     var entity = Entities[i] as dynamic;
-                    playersList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
-                    Player player = playersList[0];
+                    var playerListOrdered = playersList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
+                    Player player = playerListOrdered.First();
                     double distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
                     if (entity is GameObject && entity.Temporarily)
                     {

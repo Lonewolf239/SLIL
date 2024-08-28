@@ -71,6 +71,9 @@ namespace GameServer
                 case 40:
                     Game.InteractingWithDoors(dreader.GetInt());
                     break;
+                case 77:
+                    Game.AddHittingTheWall(dreader.GetDouble(), dreader.GetDouble(), dreader.GetDouble());
+                    break;
                 case 89:
                     Game.SpawnRockets(dreader.GetDouble(), dreader.GetDouble(), dreader.GetInt(), dreader.GetDouble());
                     break;
@@ -86,6 +89,8 @@ namespace GameServer
             {
                 case 0:
                     Game.Serialize(writer);
+                    break;
+                case 101:
                     break;
                 default:
                     break;

@@ -53,7 +53,17 @@ listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
 
 void SendOutcomingMessageInvoker(int packetID)
 {
-    dispatcher.SendOutcomingMessage(packetID, ref server);
+    if(packetID == 102)
+    {
+        foreach(KeyValuePair<int, int> entry in peerPlayerIDs)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put(102);
+            dispatcher.SerializeGame(writer);
+            server.GetPeerById(entry.Key).Send(writer, DeliveryMethod.ReliableOrdered);
+        }
+    }
+    else dispatcher.SendOutcomingMessage(packetID, ref server);
 }
 
 bool exit = false;
