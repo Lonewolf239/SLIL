@@ -1397,21 +1397,23 @@ namespace SLIL
             else
             {
                 int[,] bullet = new int[player.GetCurrentGun().BulletCount, 2];
+                int maxXOffset = (int)(24 * (1 - player.GetCurrentGun().Accuracy));
+                int maxYOffset = (int)(10 * (1 - player.GetCurrentGun().Accuracy));
                 if (player.GetCurrentGun().BulletCount == 1)
-                    bullet = new int[,] { { center_x, center_y } };
+                    bullet = new int[,] { { center_x + rand.Next(-maxXOffset, maxXOffset), center_y + rand.Next(-maxYOffset, maxYOffset) } };
                 else
                 {
-                    if(player.GetCurrentGun() is SubmachineGun)
+                    if (player.GetCurrentGun() is SubmachineGun && player.GetCurrentGun().Level == Levels.LV3)
                     {
-                        bullet[0, 0] = center_x - 6;
-                        bullet[0, 1] = center_y;
-                        bullet[1, 0] = center_x + 6;
-                        bullet[1, 1] = center_y;
+                        bullet[0, 0] = center_x - 16;
+                        bullet[0, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
+                        bullet[1, 0] = center_x + 16;
+                        bullet[1, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
                     }
                     for (int i = 0; i < player.GetCurrentGun().BulletCount; i++)
                     {
-                        bullet[i, 0] = center_x + rand.Next(-4, 4);
-                        bullet[i, 1] = center_y + rand.Next(-4, 4);
+                        bullet[i, 0] = center_x + rand.Next(-maxXOffset, maxXOffset);
+                        bullet[i, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
                     }
                 }
                 double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
@@ -1553,7 +1555,6 @@ namespace SLIL
                     double ray_y = Math.Cos(rayA);
                     double distance = 0;
                     bool hit = false;
-                    scope_hit = null;
                     while (raycast.Enabled && !hit && distance < player.GetCurrentGun().FiringRange)
                     {
                         distance += 0.01d;

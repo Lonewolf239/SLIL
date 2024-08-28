@@ -40,6 +40,7 @@ namespace SLIL.Classes
         public int MaxAmmo { get; set; }
         public int RadiusSound { get; set; }
         public int ReloadFrames { get; set; }
+        public double Accuracy { get; set; }
         public double FiringRange { get; set; }
         public double MaxDamage { get; set; }
         public double MinDamage { get; set; }
@@ -52,6 +53,7 @@ namespace SLIL.Classes
         {
             this.ItemID = this.GetItemID();
             Level = Levels.LV1;
+            Accuracy = 1;
             BulletCount = 1;
             PauseBetweenShooting = 500;
             Upgradeable = true;
@@ -155,6 +157,7 @@ namespace SLIL.Classes
             HasIt = false;
             ShowAmmoAsNumber = true;
             IsMagic = true;
+            Accuracy = 1;
             CartridgesClip = 1;
             AmmoCount = CartridgesClip;
             FiringRange = 10;
@@ -179,6 +182,7 @@ namespace SLIL.Classes
             ShowAmmo = false;
             AddToShop = false;
             CanShoot = false;
+            Accuracy = 0;
             CartridgesClip = 1;
             MaxAmmoCount = 1;
             PauseBetweenShooting = 500;
@@ -259,6 +263,7 @@ namespace SLIL.Classes
             HasIt = true;
             Name = new[] { "Нож", "Knife" };
             FireType = FireTypes.Single;
+            Accuracy = 1;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 175;
@@ -943,6 +948,7 @@ namespace SLIL.Classes
             HasIt = false;
             InMultiplayer = true;
             Name = new[] { "RPG7", "RPG7" };
+            Accuracy = 1;
             GunCost = 150;
             AmmoCost = 50;
             RechargeTime = 440;
@@ -977,7 +983,8 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             InMultiplayer = true;
-            Name = new[] { "RPG7", "RPG7" };
+            Name = new[] { "C4", "C4" };
+            Accuracy = 1;
             GunCost = 100;
             AmmoCost = 50;
             RechargeTime = 350;
