@@ -10,6 +10,7 @@ namespace GameServer
     internal class Dispatcher
     {
         private readonly GameModel Game;
+        public Dictionary<int, int> PeerPlayerIDs = [];
         public SendOutcomingMessageDelegate? sendMessageDelegate;
         public SendMessageFromGameCallback sendMessageFromGameCallback;
 
@@ -92,10 +93,36 @@ namespace GameServer
                     break;
                 case 101:
                     break;
+                case 102:
+                    foreach(KeyValuePair<int, int> entry in PeerPlayerIDs)
+                    {
+                        NetDataWriter peerWriter = new();
+                        peerWriter.Put(packetID);
+                        SerializeGame(peerWriter);
+                        server.GetPeerById(entry.Key).Send(peerWriter, DeliveryMethod.ReliableOrdered);
+                    }
+                    return;
                 default:
                     break;
             }
             server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+        }
+        public void SendOutcomingMessage(int packetID, ref NetPeer peer)
+        {
+            NetDataWriter writer = new();
+            writer.Put(packetID);
+            switch (packetID)
+            {
+                case 100:
+                    int newPlayerId = AddPlayer();
+                    PeerPlayerIDs.Add(peer.Id, newPlayerId);
+                    writer.Put(newPlayerId);
+                    SerializeGame(writer);
+                    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public int AddPlayer() => Game.AddPlayer();

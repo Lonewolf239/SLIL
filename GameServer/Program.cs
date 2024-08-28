@@ -7,7 +7,6 @@ NetPacketProcessor processor = new();
 //processor.RegisterNestedType<GameModel>(() => { return new GameModel(null); });
 EventBasedNetListener listener = new();
 NetManager server = new(listener);
-Dictionary<int, int> peerPlayerIDs = [];
 Dispatcher dispatcher = new();
 SendOutcomingMessageDelegate sendOutcomingMessageHandle;
 sendOutcomingMessageHandle = SendOutcomingMessageInvoker;
@@ -27,27 +26,21 @@ listener.ConnectionRequestEvent += request =>
 listener.PeerConnectedEvent += peer =>
 {
     Console.WriteLine("We got connection: {0}", peer);
-    NetDataWriter writer = new();
-    writer.Put(100);
-    int newPlayerId = dispatcher.AddPlayer();
-    peerPlayerIDs.Add(peer.Id, newPlayerId);
-    writer.Put(newPlayerId);
-    dispatcher.SerializeGame(writer);
-    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+    dispatcher.SendOutcomingMessage(100, ref peer);
 };
 
 listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
 {
     Packet pack = new();
     pack.Deserialize(dataReader);
-    int playerIDFromPeer = peerPlayerIDs[fromPeer.Id];
+    int playerIDFromPeer = dispatcher.PeerPlayerIDs[fromPeer.Id];
     dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref server, playerIDFromPeer);
 };
 
 listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
 {
-    dispatcher.RemovePlayer(peerPlayerIDs[peer.Id]);
-    peerPlayerIDs.Remove(peer.Id);
+    dispatcher.RemovePlayer(dispatcher.PeerPlayerIDs[peer.Id]);
+    dispatcher.PeerPlayerIDs.Remove(peer.Id);
     Console.WriteLine("Closed connection: {0}", peer);
 };
 
@@ -55,13 +48,7 @@ void SendOutcomingMessageInvoker(int packetID)
 {
     if(packetID == 102)
     {
-        foreach(KeyValuePair<int, int> entry in peerPlayerIDs)
-        {
-            NetDataWriter writer = new NetDataWriter();
-            writer.Put(102);
-            dispatcher.SerializeGame(writer);
-            server.GetPeerById(entry.Key).Send(writer, DeliveryMethod.ReliableOrdered);
-        }
+       dispatcher.SendOutcomingMessage(packetID, ref server);
     }
     else dispatcher.SendOutcomingMessage(packetID, ref server);
 }
