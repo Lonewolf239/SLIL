@@ -6,8 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
-using SharpDX.Direct2D1;
 
 namespace SLIL.Classes
 {
@@ -184,11 +182,11 @@ namespace SLIL.Classes
                         Player owner = null;
                         foreach (Entity ent in Entities)
                         {
-                            if (ent is Player)
+                            if (ent is Player player1)
                             {
                                 if ((ent as Player).PET == entity)
                                 {
-                                    owner = (Player)ent;
+                                    owner = player1;
                                     distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
                                 }
                             }
@@ -1297,7 +1295,14 @@ namespace SLIL.Classes
             }*/
         }
 
-        public void AddHittingTheWall(double X, double Y) => Entities.Add(new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID));
+        public void AddHittingTheWall(double X, double Y, double vMove)
+        {
+            HittingTheWall hittingTheWall = new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID)
+            {
+                VMove = vMove
+            };
+            Entities.Add(hittingTheWall);
+        }
 
         internal void ChangePlayerA(double v, int playerID)
         {
@@ -1337,7 +1342,7 @@ namespace SLIL.Classes
                 {
                     Gun gun = (entity as Player).GetCurrentGun();
                     int ammo = gun is SubmachineGun && gun.Level == Levels.LV3 ? 2 : 1;
-                    gun.AmmoCount--;
+                    gun.AmmoCount -= ammo;
                     return;
                 }
             }

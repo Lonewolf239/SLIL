@@ -458,7 +458,7 @@ namespace SLIL.Classes
             HasIt = false;
             HaveLV4 = false;
             Name = new[] { "Дробовик", "Shotgun" };
-            Accuracy = 0.8;
+            Accuracy = 0.0;
             BulletCount = 4;
             PauseBetweenShooting = 350;
             RechargeTime = 425;

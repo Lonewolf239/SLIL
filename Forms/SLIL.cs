@@ -1397,8 +1397,8 @@ namespace SLIL
             else
             {
                 int[,] bullet = new int[player.GetCurrentGun().BulletCount, 2];
-                int maxXOffset = (int)(24 * (1 - player.GetCurrentGun().Accuracy));
-                int maxYOffset = (int)(10 * (1 - player.GetCurrentGun().Accuracy));
+                int maxXOffset = (int)(34 * (1 - player.GetCurrentGun().Accuracy));
+                int maxYOffset = (int)(15 * (1 - player.GetCurrentGun().Accuracy));
                 if (player.GetCurrentGun().BulletCount == 1)
                     bullet = new int[,] { { center_x + rand.Next(-maxXOffset, maxXOffset), center_y + rand.Next(-maxYOffset, maxYOffset) } };
                 else
@@ -1575,15 +1575,8 @@ namespace SLIL
                             {
                                 hit = true;
                                 distance -= 0.2;
-                                //floor texture_height
-                                //ceiling 0
-                                //vMove = player.Look/(floor-ceiling=135)
-                                //if (player.Look > floor || player.Look < celling) continue;
-                                //double vMove = ((player.Look + mid) / (floor - celling)) * mid;
-
                                 if (bullet[k, 1] > floor || bullet[k, 1] < celling) continue;
-                                double vMove = (bullet[k, 1]-player.Look) / (floor - celling) * SCREEN_HEIGHT[resolution];
-                                //double vMove = player.Look / 2.25d + player.Look * FOV / (distance+0.2);
+                                double vMove = player.Look / 2.25d + player.Look * FOV / (distance + 0.2) + SCREEN_HEIGHT[resolution] / 2 - bullet[k, 1];
                                 Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance, vMove);
                             }
                         }
