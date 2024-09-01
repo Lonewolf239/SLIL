@@ -167,24 +167,27 @@ namespace SLIL.Classes
                             }
                         }
                     }
-                    else if (entity is Pet)
+                    else if (entity is Pet pet)
                     {
                         Player? owner = null;
                         foreach (Entity ent in Entities)
                         {
                             if (ent is Player player1)
                             {
-                                if (((Player)ent).PET == entity)
+                                if (((Player)ent).PET == pet)
                                 {
                                     owner = player1;
-                                    distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
+                                    distance = Math.Sqrt(Math.Pow(pet.X - player.X, 2) + Math.Pow(pet.Y - player.Y, 2));
                                 }
                             }
                         }
-                        if (distance > 1 && !(owner?.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight))
-                            entity.UpdateCoordinates(MAP.ToString(), owner?.X, owner?.Y);
-                        else
-                            entity.Stoped = true;
+                        if(owner != null)
+                        {
+                            if (distance > 1 && !(owner.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight))
+                                pet.UpdateCoordinates(MAP.ToString(), owner.X, owner.Y);
+                            else
+                                pet.Stoped = true;
+                        }
                     }
                     else if (entity is Rockets rocket)
                     {
