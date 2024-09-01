@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Windows.Forms;
 using Play_Sound;
 using SLIL.Classes;
@@ -15,19 +16,40 @@ namespace SLIL.UserControls
         public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
-        private readonly string[,] buy_text = { { "Купить", "Buy" }, { "Уже есть", "Has already" } };
+        private readonly string[,] buy_text = { { "114", "126" }, { "Buy", "Has already" } };
+
+        private string GetBuyText()
+        {
+            if (index == 0)
+                return MainMenu.Localizations.GetLString(MainMenu.Language, buy_text[0, player.PET == pet ? 1 : 0]);
+            return buy_text[1, player.PET == pet ? 1 : 0];
+        }
+
+        private string GetPetName()
+        {
+            if (index == 0)
+                return MainMenu.Localizations.GetLString(MainMenu.Language, pet.Name[0]);
+            return pet.Name[1];
+        }
+
+        private string GetPetDescryption()
+        {
+            if (index == 0)
+                return MainMenu.Localizations.GetLString(MainMenu.Language, pet.Descryption[0]);
+            return pet.Descryption[1];
+        }
 
         private void SLIL_PetShopInterface_VisibleChanged(object sender, EventArgs e)
         {
             Width = width;
-            name.Text = pet.Name[index];
+            name.Text = GetPetName();
             icon.Image = SLIL.ShopImageDict[pet.GetType()];
-            descryption.Text = pet.Descryption[index];
+            descryption.Text = GetPetDescryption();
             descryption.Width = Width - descryption.Left - 20;
             if (player.PET != pet)
-                buy_button.Text = $"{buy_text[0, index]} ${pet.Cost}";
+                buy_button.Text = $"{GetBuyText()} ${pet.Cost}";
             else
-                buy_button.Text = $"{buy_text[1, index]}";
+                buy_button.Text = $"{GetBuyText()}";
         }
 
         private void Buy_button_Click(object sender, EventArgs e)
@@ -38,7 +60,7 @@ namespace SLIL.UserControls
                 if (MainMenu.sounds)
                     buy.Play(SLIL.Volume);
                 (Parent.FindForm() as SLIL).AddPet(pet.Index);
-                buy_button.Text = $"{buy_text[1, index]}";
+                buy_button.Text = $"{GetBuyText()}";
             }
             else
             {

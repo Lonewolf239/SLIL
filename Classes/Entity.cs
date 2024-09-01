@@ -526,8 +526,8 @@ namespace SLIL.Classes
         {
             Index = 0;
             Cost = 150;
-            Name = new[] { "Глупый Кот", "Silly Cat" };
-            Descryption = new[] { "Раз в 8 секунд восстанавливает 2 HP", "Restores 2 HP every 8 seconds" };
+            Name = new[] { "149", "Silly Cat" };
+            Descryption = new[] { "150", "Restores 2 HP every 8 seconds" };
             Texture = 17;
             PetAbility = 0;
             AbilityReloadTime = 8;
@@ -548,8 +548,8 @@ namespace SLIL.Classes
         {
             Index = 1;
             Cost = 60;
-            Name = new[] { "Зелёный Гном", "Green Gnome" };
-            Descryption = new[] { "Увеличивает максимальное здоровье на 25", "Increases maximum health by 25" };
+            Name = new[] { "151", "Green Gnome" };
+            Descryption = new[] { "152", "Increases maximum health by 25" };
             Texture = 24;
             PetAbility = 1;
             IsInstantAbility = 1;
@@ -569,8 +569,8 @@ namespace SLIL.Classes
         {
             Index = 2;
             Cost = 60;
-            Name = new[] { "Энергетик", "Energy Drink" };
-            Descryption = new[] { "Увеличивает выносливость и скорость", "Increases endurance and speed" };
+            Name = new[] { "153", "Energy Drink" };
+            Descryption = new[] { "154", "Increases endurance and speed" };
             Texture = 27;
             PetAbility = 2;
             IsInstantAbility = 1;
@@ -596,8 +596,8 @@ namespace SLIL.Classes
         {
             Index = 3;
             Cost = 666;
-            Name = new[] { "Подсератель", "Podseratel" };
-            Descryption = new[] { "Мир — это сказка...", "The world is a fairy tale..." };
+            Name = new[] { "155", "Podseratel" };
+            Descryption = new[] { "156", "The world is a fairy tale..." };
             Texture = 31;
             PetAbility = 3;
             IsInstantAbility = 2;
@@ -605,7 +605,6 @@ namespace SLIL.Classes
             RespondsToFlashlight = true;
             base.SetAnimations(1, 0);
         }
-
         public override int Interaction() => 2;
     }
 

@@ -559,7 +559,9 @@ namespace SLIL
         public void AddPet(int index)
         {
             foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true).Cast<SLIL_PetShopInterface>())
-                control.buy_button.Text = MainMenu.Language ? $"Купить ${control.pet.Cost}" : $"Buy ${control.pet.Cost}";
+                control.buy_button.Text = MainMenu.DownloadedLocalizationList
+                    ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "114")} ${control.pet.Cost}"
+                    : $"Buy ${control.pet.Cost}";
             Controller.AddPet(index);
             CuteMode();
             Player player = Controller.GetPlayer();
@@ -653,7 +655,7 @@ namespace SLIL
                         SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
                         {
                             ParentSLILForm = this,
-                            index = MainMenu.Language ? 0 : 1,
+                            index = MainMenu.DownloadedLocalizationList ? 0 : 1,
                             weapon = player.GUNS[i],
                             player = player,
                             BackColor = shop_panel.BackColor,
@@ -667,7 +669,7 @@ namespace SLIL
             {
                 SLIL_PetShopInterface ShopInterface = new SLIL_PetShopInterface()
                 {
-                    index = MainMenu.Language ? 0 : 1,
+                    index = MainMenu.DownloadedLocalizationList ? 0 : 1,
                     pet = Controller.GetPets()[i],
                     player = player,
                     BackColor = shop_panel.BackColor,
@@ -681,10 +683,9 @@ namespace SLIL
                 {
                     SLIL_ConsumablesShopInterface ShopInterface = new SLIL_ConsumablesShopInterface()
                     {
-                        index = MainMenu.Language ? 0 : 1,
+                        index = MainMenu.DownloadedLocalizationList ? 0 : 1,
                         item = player.GUNS[i] as DisposableItem,
                         player = player,
-                        //GUNS = player.GUNS,
                         BackColor = shop_panel.BackColor,
                         Dock = DockStyle.Top
                     };
@@ -2822,7 +2823,7 @@ namespace SLIL
         {
             Controller.RestartGame();
             Player player = Controller.GetPlayer();
-            if (!MainMenu.Language)
+            if (!MainMenu.DownloadedLocalizationList)
             {
                 shop_title.Text = "SHOP";
                 weapon_shop_page.Text = "Weapons";
@@ -2831,6 +2832,16 @@ namespace SLIL
                 pause_text.Text = "PAUSE";
                 pause_btn.Text = "CONTINUE";
                 exit_btn.Text = "EXIT";
+            }
+            else
+            {
+                shop_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "115");
+                weapon_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "116");
+                pet_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "117");
+                consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "118");
+                pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "119");
+                pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "120");
+                exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "121");
             }
             if (console_panel == null)
             {

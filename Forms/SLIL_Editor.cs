@@ -25,34 +25,6 @@ namespace SLIL
         private Panel panel;
         private int element = -1;
         private const int elements_count = 10;
-        private int language_index = 0;
-        private readonly string[,] elements_name =
-        {
-            {
-                "Игрок",
-                "Враг",
-                "Стена",
-                "Дверь",
-                "Окно",
-                "Финиш",
-                "Магазин",
-                "Ящик",
-                "Бочка",
-                "Невидимая стена"
-            },
-            {
-                "Player",
-                "Enemy",
-                "Wall",
-                "Door",
-                "Window",
-                "Finish",
-                "Shop",
-                "Box",
-                "Barrel",
-                "Invisible Wall"
-            }
-        };
         private readonly Color[] elements_color =
         {
             //игрок
@@ -93,6 +65,53 @@ namespace SLIL
                 c == 'E' || c == '$' || c == 'W';
         }
 
+        private string GetElementsName(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "104");
+                    return "Player";
+                case 1:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "105");
+                    return "Enemy";
+                case 2:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "106");
+                    return "Wall";
+                case 3:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "107");
+                    return "Door";
+                case 4:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "108");
+                    return "Window";
+                case 5:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "109");
+                    return "Finish";
+                case 6:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "110");
+                    return "Shop";
+                case 7:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "111");
+                    return "Box";
+                case 8:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "112");
+                    return "Barrel";
+                default:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "113");
+                    return "Invisible Wall";
+            }
+        }
+
         private void Import_btn_Click(object sender, EventArgs e)
         {
             editor_interface.Focus();
@@ -105,24 +124,24 @@ namespace SLIL
                 maze_width = Convert.ToInt32(MAP[1]);
                 if (MAP[2].Any(c => !IsValidMapCharacter(c)))
                 {
-                    if (MainMenu.Language)
-                        MessageBox.Show("Строка содержит недопустимые символы.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MainMenu.DownloadedLocalizationList)
+                        MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "88"), MainMenu.Localizations.GetLString(MainMenu.Language, "89"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     else
                         MessageBox.Show("The string contains invalid characters.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else if (map.Length == 0)
                 {
-                    if (MainMenu.Language)
-                        MessageBox.Show("Буфер обмена пуст.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MainMenu.DownloadedLocalizationList)
+                        MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "91"), MainMenu.Localizations.GetLString(MainMenu.Language, "89"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     else
                         MessageBox.Show("The clipboard is empty.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else if (maze_height < 2 * 3 + 1 || maze_height > 20 * 3 + 1 || maze_width < 2 * 3 + 1 || maze_width > 20 * 3 + 1)
                 {
-                    if (MainMenu.Language)
-                        MessageBox.Show("Неверный формат строки.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MainMenu.DownloadedLocalizationList)
+                        MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "90"), MainMenu.Localizations.GetLString(MainMenu.Language, "89"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     else
                         MessageBox.Show("Invalid string format.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -138,8 +157,8 @@ namespace SLIL
                 MazeWidth = old_MazeWidth;
                 editor_interface.Controls.Clear();
                 GenerateField();
-                if (MainMenu.Language)
-                    MessageBox.Show("Неверный формат строки.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "90"), MainMenu.Localizations.GetLString(MainMenu.Language, "89"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     MessageBox.Show("Invalid string format.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -153,15 +172,15 @@ namespace SLIL
             {
                 string map = $"{MazeHeight}:{MazeWidth}:{GenerateMap()}";
                 Clipboard.SetText(map);
-                if (MainMenu.Language)
-                    MessageBox.Show("Карта успешно скопирована в буфер обмена.", "Карта скопирована", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "100"), MainMenu.Localizations.GetLString(MainMenu.Language, "101"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else
                     MessageBox.Show("The map was successfully copied to the clipboard.", "The map was copied", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                if (MainMenu.Language)
-                    MessageBox.Show($"Не удалось скопировать карту в буфер обмена.\n{ex.Message}", "Ошибка копирования", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show($"{MainMenu.Localizations.GetLString(MainMenu.Language, "102")}\n{ex.Message}", MainMenu.Localizations.GetLString(MainMenu.Language, "103"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     MessageBox.Show($"Could not copy the map to the clipboard.\n{ex.Message}", "Copy error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -169,13 +188,19 @@ namespace SLIL
 
         private void SLIL_Editor_Load(object sender, EventArgs e)
         {
-            if (!MainMenu.Language)
+            if (MainMenu.DownloadedLocalizationList)
             {
-                language_index = 1;
                 Text = "Editor";
                 about.Text = "Elements:";
                 size_label.Text = "Field size:";
                 accept_size_btn.Text = "Accept";
+            }
+            else
+            {
+                Text = MainMenu.Localizations.GetLString(MainMenu.Language, "15");
+                about.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "92");
+                size_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "93");
+                accept_size_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "94");
             }
             UserControl separator = new UserControl()
             {
@@ -190,7 +215,7 @@ namespace SLIL
                 EditorElementSelector selector = new EditorElementSelector()
                 {
                     Index = i,
-                    ElementName = elements_name[language_index, i],
+                    ElementName = GetElementsName(i),
                     ElementColor = elements_color[i],
                     Dock = DockStyle.Top
                 };
@@ -468,16 +493,16 @@ namespace SLIL
             editor_interface.Focus();
             if (!playerExist)
             {
-                if (MainMenu.Language)
-                    MessageBox.Show("Отсутствует игрок", "Карта не завершена", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "97"), MainMenu.Localizations.GetLString(MainMenu.Language, "98"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     MessageBox.Show("Missing player", "The map is not completed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             else if (finishCount == 0)
             {
-                if (MainMenu.Language)
-                    MessageBox.Show("Отсутствует финиш", "Карта не завершена", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "99"), MainMenu.Localizations.GetLString(MainMenu.Language, "98"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     MessageBox.Show("Missing finish", "The map is not completed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -490,8 +515,8 @@ namespace SLIL
         private void Question_Click(object sender, EventArgs e)
         {
             editor_interface.Focus();
-            if (MainMenu.Language)
-                MessageBox.Show("Управление редактором:\nРазмещение и удаление элементов происходит в той ячейке, на которую наведен курсор мыши.\nРазместить выбранный элемент: Space или Enter\nУдалить элемент: Backspace или Del", "Подсказка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (MainMenu.DownloadedLocalizationList)
+                MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "95"), MainMenu.Localizations.GetLString(MainMenu.Language, "96"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
                 MessageBox.Show("Editor control:\nPlacement and removal of elements occur in the cell where the mouse cursor is hovered.\nPlace selected element: Space or Enter\nDelete element: Backspace or Del", "Hint", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

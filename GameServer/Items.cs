@@ -9,7 +9,7 @@ namespace SLIL.Classes
     public abstract class Gun : INetSerializable
     {
         public int ItemID { get; set; }
-        public string[]? Name { get; set; }
+        public string[] Name { get; set; }
         public bool LowWeight { get; set; }
         public bool Upgradeable { get; set; }
         public bool InMultiplayer { get; set; }
@@ -23,6 +23,7 @@ namespace SLIL.Classes
         public bool CanAiming { get; set; }
         public bool ShowAmmo { get; set; }
         public bool ShowScope { get; set; }
+        public int BulletCount { get; set; }
         public int AimingState { get; set; }
         public int AimingFactor { get; set; }
         public int RechargeTime { get; set; }
@@ -39,6 +40,7 @@ namespace SLIL.Classes
         public int MaxAmmo { get; set; }
         public int RadiusSound { get; set; }
         public int ReloadFrames { get; set; }
+        public double Accuracy { get; set; }
         public double FiringRange { get; set; }
         public double MaxDamage { get; set; }
         public double MinDamage { get; set; }
@@ -51,6 +53,8 @@ namespace SLIL.Classes
         {
             this.ItemID = this.GetItemID();
             Level = Levels.LV1;
+            Accuracy = 1;
+            BulletCount = 1;
             PauseBetweenShooting = 500;
             Upgradeable = true;
             CanRun = true;
@@ -153,6 +157,7 @@ namespace SLIL.Classes
             HasIt = false;
             ShowAmmoAsNumber = true;
             IsMagic = true;
+            Accuracy = 1;
             CartridgesClip = 1;
             AmmoCount = CartridgesClip;
             FiringRange = 10;
@@ -165,7 +170,7 @@ namespace SLIL.Classes
 
     public abstract class Item : Gun
     {
-        public string[]? Description { get; set; }
+        public string[] Description { get; set; }
         public bool HasCuteDescription { get; set; }
 
         public Item() : base()
@@ -177,6 +182,7 @@ namespace SLIL.Classes
             ShowAmmo = false;
             AddToShop = false;
             CanShoot = false;
+            Accuracy = 0;
             CartridgesClip = 1;
             AmmoInStock = 1;
             PauseBetweenShooting = 500;
@@ -235,7 +241,7 @@ namespace SLIL.Classes
             AimingFactor = 8;
             LowWeight = true;
             HasIt = true;
-            Name = ["Фонарик", "Flashlight"];
+            Name = new[] { "127", "Flashlight" };
         }
 
         public override void SetDefault()
@@ -255,8 +261,9 @@ namespace SLIL.Classes
             ShowAmmo = false;
             AddToShop = false;
             HasIt = true;
-            Name = ["Нож", "Knife"];
+            Name = new[] { "128", "Knife" };
             FireType = FireTypes.Single;
+            Accuracy = 1;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 175;
@@ -290,7 +297,7 @@ namespace SLIL.Classes
             FiringRate = 400;
             ShowScope = false;
             HasIt = false;
-            Name = ["Конфета", "Candy"];
+            Name = new[] { "129", "Candy" };
         }
 
         public override int GetItemID() => 2;
@@ -307,7 +314,7 @@ namespace SLIL.Classes
             AddToShop = false;
             HasIt = false;
             ShowAmmoAsNumber = true;
-            Name = ["Радужигатель", "Rainblower"];
+            Name = new[] { "130", "Rainblower" };
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 125;
@@ -345,7 +352,7 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;
-            Name = ["Пистолет", "Pistol"];
+            Name = new[] { "131", "Pistol" };
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 175;
@@ -450,7 +457,9 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = ["Дробовик", "Shotgun"];
+            Name = new[] { "132", "Shotgun" };
+            Accuracy = 0.0;
+            BulletCount = 4;
             PauseBetweenShooting = 350;
             RechargeTime = 425;
             FiringRate = 200;
@@ -585,7 +594,7 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = ["Пистолет-пулемет", "Submachine gun"];
+            Name = new[] { "133", "Submachine gun" };
             RechargeTime = 375;
             PauseBetweenShooting = 175;
             FiringRate = 50;
@@ -611,6 +620,7 @@ namespace SLIL.Classes
             if (Level == Levels.LV1)
             {
                 UpdateCost = 40;
+                BulletCount = 1;
                 PauseBetweenShooting = 175;
                 RechargeTime = 375;
                 CartridgesClip = 20;
@@ -627,6 +637,7 @@ namespace SLIL.Classes
             else if (Level == Levels.LV2)
             {
                 RechargeTime = 350;
+                BulletCount = 1;
                 PauseBetweenShooting = 150;
                 FiringRate = 50;
                 CartridgesClip = 30;
@@ -642,6 +653,7 @@ namespace SLIL.Classes
             else
             {
                 RechargeTime = 350;
+                BulletCount = 2;
                 PauseBetweenShooting = 75;
                 FiringRate = 25;
                 CartridgesClip = 30;
@@ -669,7 +681,7 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = ["Автомат", "Assault rifle"];
+            Name = new[] { "134", "Assault rifle" };
             PauseBetweenShooting = 750;
             RechargeTime = 700;
             FiringRate = 100;
@@ -761,7 +773,7 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             CanAiming = true;
-            Name = ["Снайперка", "Sniper rifle"];
+            Name = new[] { "135", "Sniper rifle" };
             RechargeTime = 650;
             FiringRate = 200;
             UpdateCost = 60;
@@ -851,7 +863,7 @@ namespace SLIL.Classes
             AddToShop = false;
             HasIt = false;
             InMultiplayer = false;
-            Name = ["Пальцестрел", "Fingershot"];
+            Name = new[] { "136", "Fingershot" };
             RechargeTime = 600;
             FiringRate = 175;
             CartridgesClip = 1;
@@ -883,7 +895,7 @@ namespace SLIL.Classes
             AddToShop = false;
             HasIt = false;
             InMultiplayer = false;
-            Name = ["СМПвМ", "TSPitW"];
+            Name = new[] { "137", "TSPitW" };
             RechargeTime = 750;
             FiringRate = 175;
             CartridgesClip = 7;
@@ -909,7 +921,7 @@ namespace SLIL.Classes
         public Gnome() : base()
         {
             InMultiplayer = false;
-            Name = new[] { "Гном-волшебник", "Wizard Gnome" };
+            Name = new[] { "138", "Wizard Gnome" };
             RecoilY = 35;
             RecoilX = 2;
             RechargeTime = 300;
@@ -936,7 +948,8 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             InMultiplayer = true;
-            Name = ["RPG7", "RPG7"];
+            Name = new[] { "139", "RPG7" };
+            Accuracy = 1;
             GunCost = 150;
             AmmoCost = 50;
             RechargeTime = 440;
@@ -971,7 +984,8 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             InMultiplayer = true;
-            Name = ["RPG7", "RPG7"];
+            Name = new[] { "140", "C4" };
+            Accuracy = 1;
             GunCost = 100;
             AmmoCost = 50;
             RechargeTime = 350;
@@ -1003,18 +1017,18 @@ namespace SLIL.Classes
             HasLVMechanics = true;
             HasCuteDescription = true;
             GunCost = 50;
-            Name =
-            [
-                "Аптечка", "First Aid Kit",
-                "Бобы", "Beans"
-            ];
-            Description =
-            [
-                "Восстанавливает здоровье",
+            Name = new[]
+            {
+                "141", "First Aid Kit",
+                "142", "Beans"
+            };
+            Description = new[]
+            {
+                "143",
                 "Restores health",
-                "Вкусный перекус",
+                "144",
                 "A tasty snack"
-            ];
+            };
         }
 
         public override int GetItemID() => 12;
@@ -1027,12 +1041,12 @@ namespace SLIL.Classes
             EffectID = 1;
             RechargeTime = 530;
             GunCost = 75;
-            Name = ["Адреналин", "Adrenalin"];
-            Description =
-            [
-                "Увеличивает скорость передвижения на 20 сек",
+            Name = new[] { "145", "Adrenalin" };
+            Description = new[]
+            {
+                "146",
                 "Increases movement speed for 20 sec",
-            ];
+            };
         }
 
         public override int GetItemID() => 13;
@@ -1046,12 +1060,12 @@ namespace SLIL.Classes
             ReloadFrames = 4;
             RechargeTime = 1000;
             GunCost = 75;
-            Name = ["Шлем", "Helmet"];
-            Description =
-            [
-                "Уменьшает получаемый урон на 20% в течение 2 минут",
+            Name = new[] { "147", "Helmet" };
+            Description = new[]
+            {
+                "148",
                 "Reduces incoming damage by 20% for 2 minutes",
-            ];
+            };
         }
 
         public override int GetItemID() => 14;

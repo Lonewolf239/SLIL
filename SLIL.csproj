@@ -129,6 +129,8 @@
     <Compile Include="Classes\Separator.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SLIL_Localization\LocalizationString.cs" />
+    <Compile Include="SLIL_Localization\Localization.cs" />
     <Compile Include="Classes\TextureCache.cs" />
     <Compile Include="Loading.cs">
       <SubType>Form</SubType>
@@ -164,6 +166,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SLIL_Localization\SLILLocalization.cs" />
     <Compile Include="UserControls\ConsolePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

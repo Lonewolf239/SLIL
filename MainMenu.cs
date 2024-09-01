@@ -11,6 +11,8 @@ using System.Net;
 using System.Diagnostics;
 using SLIL.Classes;
 using Play_Sound;
+using SLIL.SLIL_Localization;
+using System.Linq;
 
 namespace SLIL
 {
@@ -18,7 +20,14 @@ namespace SLIL
     {
         private const string current_version = "|1.1.1a|";
         public static string iniFolder = "config.ini";
-        public static bool Language = true, sounds = true, ConsoleEnabled = false;
+        public bool downloadedLocalizationList = false;
+        public Localization localizations;
+        public Dictionary<string, string> supportedLanguages;
+        public static bool DownloadedLocalizationList = false;
+        public static Localization Localizations;
+        private Dictionary<string, string> SupportedLanguages;
+        public static string Language = "English";
+        public static bool sounds = true, ConsoleEnabled = false;
         private readonly TextureCache textureCache = new TextureCache();
         public static CGF_Reader CGFReader;
         private string SelectButtonName;
@@ -101,33 +110,6 @@ namespace SLIL
             "• Релиз игры",
             "• SLIL был отделен от Mini-Games"
         };
-        private readonly string[,] AboutDifficulty =
-        {
-            {
-                // Очень сложно
-                "Начальное оружие: Пистолет 1 ур.\nВраги возрождаются каждые 60 секунд",
-                // Сложно
-                "Начальное оружие: Пистолет 1 ур.",
-                // Нормально
-                "Начальное оружие: Пистолет 2 ур.",
-                // Легко
-                "Начальное оружие: Пистолет 2 ур.\nВраги дают больше денег",
-                // Редактор
-                "Параметры уровня могут быть изменены вручную"
-            },
-            {
-                // Очень сложно
-                "Starting weapon: Pistol Lv1\nEnemies respawn every 60 seconds",
-                // Сложно
-                "Starting weapon: Pistol Lv1",
-                // Нормально
-                "Starting weapon: Pistol Lv2",
-                // Легко
-                "Starting weapon: Pistol Lv2\nEnemies give more money",
-                // Редактор
-                "Level parameters can be manually adjusted"
-            }
-        };
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
             { "screenshot", Keys.F12 },
@@ -175,8 +157,9 @@ namespace SLIL
                 CGFReader = new CGF_Reader("data.cgf");
             else
             {
+                bool language = GetLanguageName() != "English";
                 string title = "Отсутствует файл \"data.cgf\"!", message = $"Файл \"data.cgf\" отсутствует! Возможно, он был переименован, перемещен или удален. Хотите загрузить установщик еще раз?";
-                if (!Check_Language())
+                if (!language)
                 {
                     title = "Missing \"data.cgf\" file!";
                     message = $"The file \"data.cgf\" is missing! It may have been renamed, moved, or deleted. Do you want to download the installer again?";
@@ -185,10 +168,10 @@ namespace SLIL
                 {
                     if (!File.Exists("UpdateDownloader.exe"))
                     {
-                        message = Language
+                        message = language
                             ? "UpdateDownloader.exe был удалён, переименован или перемещён. После закрытия этого сообщения он будет загружен снова."
                             : "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
-                        string caption = Language ? "Ошибка" : "Error";
+                        string caption = language ? "Ошибка" : "Error";
                         MessageBox.Show(message, caption, MessageBoxButtons.OK);
                         DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
                     }
@@ -294,6 +277,8 @@ namespace SLIL
             all_settings.Controls.Add(new Separator());
             all_settings.Controls.Add(update_panel);
             all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(localization_panel);
+            all_settings.Controls.Add(new Separator());
             all_settings.Controls.Add(language_panel);
             all_settings.Controls.Add(new Separator());
             all_settings.Controls.Add(volume_panel);
@@ -314,8 +299,8 @@ namespace SLIL
             video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(smoothing_panel);
             video_settings.Controls.Add(new Separator());
-            video_settings.Controls.Add(display_size_panel);
-            video_settings.Controls.Add(new Separator());
+            //video_settings.Controls.Add(display_size_panel);
+            //video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(high_resolution_panel);
             mouse_settings.Controls.Clear();
             mouse_settings.Controls.Add(invert_x_panel);
@@ -362,7 +347,8 @@ namespace SLIL
         private void Bug_report_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            Process.Start(new ProcessStartInfo("https://t.me/MiniGamesBugReport_BOT") { UseShellExecute = true });
+            help_panel.Visible = true;
+            help_panel.BringToFront();
         }
 
         private void Web_site_lonewolf_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://base-escape.ru") { UseShellExecute = true });
@@ -415,12 +401,16 @@ namespace SLIL
             Application.Exit();
         }
 
-        private bool Check_Language()
+        private string GetLanguageName()
         {
             CultureInfo ci = CultureInfo.InstalledUICulture;
-            string language = ci.Name.ToLower();
-            string[] supportedLanguages = { "ru", "uk", "be", "kk", "ky" };
-            return Array.Exists(supportedLanguages, lang => lang.Equals(language) || lang.Equals(language.Substring(0, 2)));
+            string languageCode = ci.Name.ToLower();
+            if (SupportedLanguages.ContainsKey(languageCode))
+                return SupportedLanguages[languageCode];
+            string shortCode = languageCode.Substring(0, 2);
+            if (SupportedLanguages.ContainsKey(shortCode))
+                return SupportedLanguages[shortCode];
+            return "English";
         }
 
         private void Check_Update(bool auto)
@@ -430,7 +420,7 @@ namespace SLIL
                              $"Текущая версия: {current_version.Trim('|')}\n" +
                              $"Актуальная версия: ";
             string update_text = "\n\nСписок изменений:";
-            if (!Check_Language())
+            if (GetLanguageName() != "Русский")
             {
                 title = "Update available!";
                 message = $"New update is out! Want to install it?\n\n" +
@@ -451,7 +441,7 @@ namespace SLIL
                             {
                                 message = "Не удалось установить соединение с сервером обновлений. Проверьте подключение к интернету.";
                                 title = "Ошибка подключения";
-                                if (!Language)
+                                if (GetLanguageName() != "Русский")
                                 {
                                     message = "Failed to establish a connection with the update server. Please check your internet connection.";
                                     title = "Connection Error";
@@ -465,7 +455,7 @@ namespace SLIL
                             {
                                 message = $"Во время загрузки обновления произошла ошибка! {e.Error.Message}.";
                                 title = $"Ошибка {e.Error.HResult}!";
-                                if (!Language)
+                                if (GetLanguageName() != "Русский")
                                 {
                                     message = $"An error occurred while downloading the update! {e.Error.Message}.";
                                     title = $"Error {e.Error.HResult}!";
@@ -481,7 +471,7 @@ namespace SLIL
                         {
                             message += lines[0].Trim('|');
                             message += update_text;
-                            bool isRussian = Check_Language();
+                            bool isRussian = GetLanguageName() == "Русский";
                             for (int i = 1; i < lines.Length; i++)
                             {
                                 string line = lines[i].Trim();
@@ -500,10 +490,10 @@ namespace SLIL
                             {
                                 if (!File.Exists("UpdateDownloader.exe"))
                                 {
-                                    message = Language
+                                    message = GetLanguageName() == "Русский"
                                         ? "UpdateDownloader.exe был удалён, переименован или перемещён. После закрытия этого сообщения он будет загружен снова."
                                         : "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
-                                    string caption = Language ? "Ошибка" : "Error";
+                                    string caption = GetLanguageName() == "Русский" ? "Ошибка" : "Error";
                                     MessageBox.Show(message, caption, MessageBoxButtons.OK);
                                     DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
                                 }
@@ -516,7 +506,7 @@ namespace SLIL
                         {
                             if (!auto)
                             {
-                                if (Language)
+                                if (GetLanguageName() == "Русский")
                                     MessageBox.Show("У вас уже установлена последняя версия программы.", "Версия актуальная", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 else
                                     MessageBox.Show("You already have the latest version of the program installed.", "Version is current", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -528,12 +518,24 @@ namespace SLIL
             }
         }
 
+        public void SetLocalization()
+        {
+            DownloadedLocalizationList = downloadedLocalizationList;
+            SupportedLanguages = supportedLanguages;
+            if (DownloadedLocalizationList)
+            {
+                language_list.Items.Clear();
+                language_list.Items.AddRange(SupportedLanguages.Values.Distinct().ToArray());
+            }
+            Localizations = localizations;
+        }
+
         private void MainMenu_Load(object sender, EventArgs e)
         {
             Activate();
             version_label.Text = $"v{current_version.Trim('|')}";
-            Language = Check_Language();
             INIReader.CreateIniFileIfNotExist(iniFolder);
+            SetLocalization();
             GetGameParametrs();
             SetVisualSettings();
             SetLanguage();
@@ -542,6 +544,7 @@ namespace SLIL
             difficulty_panel.Location = buttons_panel.Location;
             developers_panel.Location = buttons_panel.Location;
             settings_panel.Location = buttons_panel.Location;
+            help_panel.Location = buttons_panel.Location;
             press_any_btn_panel.Location = buttons_panel.Location;
             exit_panel.Location = buttons_panel.Location;
             change_logs_panel.Location = buttons_panel.Location;
@@ -555,7 +558,8 @@ namespace SLIL
 
         private void GetGameParametrs()
         {
-            Language = INIReader.GetBool(iniFolder, "CONFIG", "language", Language);
+            Language = INIReader.GetString(iniFolder, "CONFIG", "language", Language);
+            if (!SupportedLanguages.Values.Contains(Language)) Language = "English";
             ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             update_on_off.Checked = INIReader.GetBool(iniFolder, "CONFIG", "auto_update", true);
@@ -615,7 +619,8 @@ namespace SLIL
             item_btn.Text = BindControls["item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             select_item_btn.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             run_btn.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            language_list.SelectedIndex = Language ? 0 : 1;
+            language_list.SelectedIndex = language_list.Items.IndexOf(Language);
+            localization_error_pic.Visible = !DownloadedLocalizationList;
             display_size_list.SelectedIndex = display_size;
             smoothing_list.SelectedIndex = smoothing;
             console_btn.Checked = ConsoleEnabled;
@@ -632,102 +637,144 @@ namespace SLIL
                 fps_label.Text = "FPS: 60";
             else
                 fps_label.Text = "FPS: 30";
-            if (Language)
+            scope_label.Text = Localizations.GetLString(Language, "36") + GetScopeType();
+            scope_color_label.Text = Localizations.GetLString(Language, "37") + GetScopeColor();
+        }
+
+        private void GetDifficulty()
+        {
+            switch (difficulty)
             {
-                scope_label.Text = "Прицел: " + GetScopeType();
-                scope_color_label.Text = "Цвет прицела: " + GetScopeColor();
-            }
-            else
-            {
-                scope_label.Text = "Scope: " + GetScopeType();
-                scope_color_label.Text = "Scope color: " + GetScopeColor();
+                case 0:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "65");
+                    else
+                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies Respawn Every 60 Seconds";
+                    break;
+                case 1:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "66");
+                    else
+                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1";
+                    break;
+                case 2:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "67");
+                    else
+                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 2";
+                    break;
+                case 3:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "68");
+                    else
+                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money";
+                    break;
+                default:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "69");
+                    else
+                        difficulty_label.Text = "Level parameters can be changed manually";
+                    break;
             }
         }
 
         private void SetLanguage()
         {
             smoothing_list.Items.Clear();
-            string[] smooth_list = { "Без сглаживания", "По умолчанию", "Высокое качество", "Высокая скорость" };
-            if (Language)
+            if (DownloadedLocalizationList)
             {
-                display_size_label.Text = "Разрешение экрана";
-                smoothing_label.Text = "Сглаживание";
-                console_label.Text = "Консоль разработчика";
-                nickname_label.Text = "Имя игрока:";
-                host_btn.Text = "Создать игру";
-                connect_game_btn.Text = "Присоединиться";
-                multiplayer_close.Text = "Назад";
-                close_host_btn.Text = "Назад";
-                start_multiplayer_game.Text = "Играть";
-                start_btn.Text = "Начать игру";
-                select_mode_btn.Text = "Выбрать";
-                close_game_mode_panel.Text = "Закрыть";
-                easy_btn.Text = "Легко";
-                normal_btn.Text = "Нормально";
-                hard_btn.Text = "Сложно";
-                very_hard_btn.Text = "Оч. сложно";
-                custom_btn.Text = "Редактор";
-                close_difficulty_panel.Text = "Назад";
-                start_game_btn.Text = "Играть";
-                setting_btn.Text = "Настройки";
-                volume_label.Text = "Громкость";
-                about_developers_btn.Text = "О разработчиках";
-                bug_report_btn.Text = "Сообщить об ошибке";
-                exit_btn.Text = "Выйти из игры";
-                exit_label.Text = "Вы действительно хотите выйти?";
-                exit_yes_btn.Text = "Да";
-                exit_no_btn.Text = "Нет";
-                fatalan_about.Text = "Текстурирование, рендеринг спрайтов, ИИ врагов и питомцев";
-                qsvhu_about.Text = "Спрайты и звуки оружия";
-                koyo_about.Text = "Текстуры, спрайты врагов и фон меню";
-                close_developers.Text = "Закрыть";
-                all_settings.Text = "Общие";
-                sounds_label.Text = "Игровые звуки";
-                language_label.Text = "Язык";
-                update_label.Text = "Авто-обновление";
-                check_update_btn.Text = "Проверить наличие обновлений";
-                video_settings.Text = "Графика";
-                high_resolution_label.Text = "Высокое разрешение";
-                show_fps_label.Text = "Отображение FPS";
-                show_minimap_label.Text = "Отображать мини-карту";
-                scope_label.Text = "Прицел: " + GetScopeType();
-                scope_color_label.Text = "Цвет прицела: " + GetScopeColor();
-                controls_settings.Text = "Управление";
-                keyboard_settings.Text = "Клавиатура";
-                mouse_settings.Text = "Мышь";
-                sensitivity_label.Text = "Чувствительность мыши";
-                invert_y.Text = "Инвертировать ось Y";
-                invert_x.Text = "Инвертировать ось X";
-                clear_settings.Text = "Сбросить";
-                close_settings.Text = "Закрыть";
-                change_logs_close_btn.Text = "Закрыть";
-                press_any_btn_label.Text = "Нажмите любую кнопку или ESC для отмены";
-                screenshot_label.Text = "Скриншот";
-                fire_btn.Text = "ЛКМ";
-                aim_btn.Text = "ПКМ";
-                reloading_label.Text = "Перезарядка";
-                fire_label.Text = "Выстрел";
-                aim_label.Text = "Прицеливание";
-                forward_label.Text = "Вперёд";
-                back_label.Text = "Назад";
-                left_label.Text = "Влево";
-                right_label.Text = "Вправо";
-                interaction_label.Text = "Взаимодействие";
-                show_map_label.Text = "Показать/скрыть карту";
-                flashlight_label.Text = "Фонарик";
-                medkit_label.Text = "Использовать предмет";
-                select_item_label.Text = "Выбрать предмет";
-                run_label.Text = "Бег (удерживать)";
+                string[] smooth_list =
+                {
+                    Localizations.GetLString(Language, "61"),
+                    Localizations.GetLString(Language, "62"),
+                    Localizations.GetLString(Language, "63"),
+                    Localizations.GetLString(Language, "64")
+                };
+                smoothing_list.Items.AddRange(smooth_list);
+                localization_update_btn.Text = Localizations.GetLString(Language, "159");
+                display_size_label.Text = Localizations.GetLString(Language, "0");
+                smoothing_label.Text = Localizations.GetLString(Language, "1");
+                console_label.Text = Localizations.GetLString(Language, "2");
+                nickname_label.Text = Localizations.GetLString(Language, "3");
+                host_btn.Text = Localizations.GetLString(Language, "4");
+                connect_game_btn.Text = Localizations.GetLString(Language, "5");
+                help_close.Text = Localizations.GetLString(Language, "6");
+                multiplayer_close.Text = Localizations.GetLString(Language, "6");
+                close_host_btn.Text = Localizations.GetLString(Language, "6");
+                start_multiplayer_game.Text = Localizations.GetLString(Language, "7");
+                start_btn.Text = Localizations.GetLString(Language, "8");
+                select_mode_btn.Text = Localizations.GetLString(Language, "9");
+                close_game_mode_panel.Text = Localizations.GetLString(Language, "10");
+                easy_btn.Text = Localizations.GetLString(Language, "11");
+                normal_btn.Text = Localizations.GetLString(Language, "12");
+                hard_btn.Text = Localizations.GetLString(Language, "13");
+                very_hard_btn.Text = Localizations.GetLString(Language, "14");
+                custom_btn.Text = Localizations.GetLString(Language, "15");
+                close_difficulty_panel.Text = Localizations.GetLString(Language, "6");
+                start_game_btn.Text = Localizations.GetLString(Language, "7");
+                setting_btn.Text = Localizations.GetLString(Language, "16");
+                volume_label.Text = Localizations.GetLString(Language, "17");
+                about_developers_btn.Text = Localizations.GetLString(Language, "18");
+                open_help_btn.Text = Localizations.GetLString(Language, "19");
+                bug_repor_btn.Text = Localizations.GetLString(Language, "158");
+                create_translate.Text = Localizations.GetLString(Language, "157");
+                exit_btn.Text = Localizations.GetLString(Language, "20");
+                exit_label.Text = Localizations.GetLString(Language, "21");
+                exit_yes_btn.Text = Localizations.GetLString(Language, "22");
+                exit_no_btn.Text = Localizations.GetLString(Language, "23");
+                fatalan_about.Text = Localizations.GetLString(Language, "24");
+                qsvhu_about.Text = Localizations.GetLString(Language, "25");
+                koyo_about.Text = Localizations.GetLString(Language, "26");
+                close_developers.Text = Localizations.GetLString(Language, "10");
+                all_settings.Text = Localizations.GetLString(Language, "27");
+                sounds_label.Text = Localizations.GetLString(Language, "28");
+                language_label.Text = Localizations.GetLString(Language, "29");
+                update_label.Text = Localizations.GetLString(Language, "30");
+                check_update_btn.Text = Localizations.GetLString(Language, "31");
+                video_settings.Text = Localizations.GetLString(Language, "32");
+                high_resolution_label.Text = Localizations.GetLString(Language, "33");
+                show_fps_label.Text = Localizations.GetLString(Language, "34");
+                show_minimap_label.Text = Localizations.GetLString(Language, "35");
+                scope_label.Text = Localizations.GetLString(Language, "36") + GetScopeType();
+                scope_color_label.Text = Localizations.GetLString(Language, "37") + GetScopeColor();
+                controls_settings.Text = Localizations.GetLString(Language, "38");
+                keyboard_settings.Text = Localizations.GetLString(Language, "39");
+                mouse_settings.Text = Localizations.GetLString(Language, "40");
+                sensitivity_label.Text = Localizations.GetLString(Language, "41");
+                invert_y_label.Text = Localizations.GetLString(Language, "42");
+                invert_x_label.Text = Localizations.GetLString(Language, "43");
+                clear_settings.Text = Localizations.GetLString(Language, "44");
+                close_settings.Text = Localizations.GetLString(Language, "10");
+                change_logs_close_btn.Text = Localizations.GetLString(Language, "10");
+                press_any_btn_label.Text = Localizations.GetLString(Language, "45");
+                screenshot_label.Text = Localizations.GetLString(Language, "46");
+                fire_btn.Text = Localizations.GetLString(Language, "47");
+                aim_btn.Text = Localizations.GetLString(Language, "48");
+                reloading_label.Text = Localizations.GetLString(Language, "49");
+                fire_label.Text = Localizations.GetLString(Language, "50");
+                aim_label.Text = Localizations.GetLString(Language, "51");
+                forward_label.Text = Localizations.GetLString(Language, "52");
+                back_label.Text = Localizations.GetLString(Language, "6");
+                left_label.Text = Localizations.GetLString(Language, "53");
+                right_label.Text = Localizations.GetLString(Language, "54");
+                interaction_label.Text = Localizations.GetLString(Language, "55");
+                show_map_label.Text = Localizations.GetLString(Language, "56");
+                flashlight_label.Text = Localizations.GetLString(Language, "57");
+                medkit_label.Text = Localizations.GetLString(Language, "58");
+                select_item_label.Text = Localizations.GetLString(Language, "59");
+                run_label.Text = Localizations.GetLString(Language, "60");
             }
             else
             {
-                smooth_list = new string[] { "No Antialiasing", "Default", "High Quality", "High Speed" };
+                smoothing_list.Items.AddRange(new string[] { "No Antialiasing", "Default", "High Quality", "High Speed" });
+                localization_update_btn.Text = "Update language list";
                 display_size_label.Text = "Screen resolution";
                 smoothing_label.Text = "Smoothing";
                 console_label.Text = "Developer console";
                 nickname_label.Text = "Player name:";
                 host_btn.Text = "Create game";
                 connect_game_btn.Text = "Join";
+                help_close.Text = "Back";
                 multiplayer_close.Text = "Back";
                 close_host_btn.Text = "Back";
                 start_multiplayer_game.Text = "Play";
@@ -744,7 +791,9 @@ namespace SLIL
                 volume_label.Text = "Volume";
                 setting_btn.Text = "Settings";
                 about_developers_btn.Text = "About developers";
-                bug_report_btn.Text = "Report a bug";
+                open_help_btn.Text = "Feedback";
+                bug_repor_btn.Text = "Report a bug";
+                create_translate.Text = "Add localization";
                 exit_btn.Text = "Exit game";
                 exit_label.Text = "Do you really want to leave?";
                 exit_yes_btn.Text = "Yes";
@@ -768,8 +817,8 @@ namespace SLIL
                 keyboard_settings.Text = "Keyboard";
                 mouse_settings.Text = "Mouse";
                 sensitivity_label.Text = "Mouse sensitivity";
-                invert_y.Text = "Invert Y axis";
-                invert_x.Text = "Invert X axis";
+                invert_y_label.Text = "Invert Y-axis";
+                invert_x_label.Text = "Invert X-axis";
                 clear_settings.Text = "Reset";
                 close_settings.Text = "Close";
                 change_logs_close_btn.Text = "Close";
@@ -793,129 +842,130 @@ namespace SLIL
             }
             if (ConsoleEnabled)
             {
-                if (Language)
-                    console_btn.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    console_btn.Text = Localizations.GetLString(Language, "70");
                 else
                     console_btn.Text = "On";
             }
             else
             {
-                if (Language)
-                    console_btn.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    console_btn.Text = Localizations.GetLString(Language, "71");
                 else
                     console_btn.Text = "Off";
             }
             if (sounds)
             {
-                if (Language)
-                    sounds_on_off.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    sounds_on_off.Text = Localizations.GetLString(Language, "70");
                 else
                     sounds_on_off.Text = "On";
+                MainMenuTheme.Play(Volume);
             }
             else
             {
-                if (Language)
-                    sounds_on_off.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    sounds_on_off.Text = Localizations.GetLString(Language, "71");
                 else
                     sounds_on_off.Text = "Off";
+                MainMenuTheme.Stop();
             }
             if (update_on_off.Checked)
             {
-                if (Language)
-                    update_on_off.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    update_on_off.Text = Localizations.GetLString(Language, "70");
                 else
                     update_on_off.Text = "On";
             }
             else
             {
-                if (Language)
-                    update_on_off.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    update_on_off.Text = Localizations.GetLString(Language, "71");
                 else
                     update_on_off.Text = "Off";
             }
             if (high_resolution_on_off.Checked)
             {
-                if (Language)
-                    high_resolution_on_off.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "70");
                 else
                     high_resolution_on_off.Text = "On";
             }
             else
             {
-                if (Language)
-                    high_resolution_on_off.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "71");
                 else
                     high_resolution_on_off.Text = "Off";
             }
             if (ShowFPS)
             {
-                if (Language)
-                    show_fps_on_off.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    show_fps_on_off.Text = Localizations.GetLString(Language, "70");
                 else
                     show_fps_on_off.Text = "On";
             }
             else
             {
-                if (Language)
-                    show_fps_on_off.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    show_fps_on_off.Text = Localizations.GetLString(Language, "71");
                 else
                     show_fps_on_off.Text = "Off";
             }
             if (ShowMiniMap)
             {
-                if (Language)
-                    show_minimap.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    show_minimap.Text = Localizations.GetLString(Language, "70");
                 else
                     show_minimap.Text = "On";
             }
             else
             {
-                if (Language)
-                    show_minimap.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    show_minimap.Text = Localizations.GetLString(Language, "71");
                 else
                     show_minimap.Text = "Off";
             }
             if (inv_y)
             {
-                if (Language)
-                    invert_y.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    invert_y.Text = Localizations.GetLString(Language, "70");
                 else
                     invert_y.Text = "On";
             }
             else
             {
-                if (Language)
-                    invert_y.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    invert_y.Text = Localizations.GetLString(Language, "71");
                 else
                     invert_y.Text = "Off";
             }
             if (inv_x)
             {
-                if (Language)
-                    invert_x.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    invert_x.Text = Localizations.GetLString(Language, "70");
                 else
                     invert_x.Text = "On";
             }
             else
             {
-                if (Language)
-                    invert_x.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    invert_x.Text = Localizations.GetLString(Language, "71");
                 else
                     invert_x.Text = "Off";
             }
-            smoothing_list.Items.AddRange(smooth_list);
             smoothing_list.SelectedIndex = smoothing;
-            difficulty_label.Text = AboutDifficulty[Language ? 0 : 1, difficulty];
+            GetDifficulty();
             start_btn.Size = new Size(0, 0);
             setting_btn.Size = new Size(0, 0);
             about_developers_btn.Size = new Size(0, 0);
-            bug_report_btn.Size = new Size(0, 0);
+            open_help_btn.Size = new Size(0, 0);
             exit_btn.Size = new Size(0, 0);
             check_update_btn.Size = new Size(0, 0);
             start_btn.Left = (button_background.Width - start_btn.Width) / 2;
             setting_btn.Left = (button_background.Width - setting_btn.Width) / 2;
             about_developers_btn.Left = (button_background.Width - about_developers_btn.Width) / 2;
-            bug_report_btn.Left = (button_background.Width - bug_report_btn.Width) / 2;
+            open_help_btn.Left = (button_background.Width - open_help_btn.Width) / 2;
             exit_btn.Left = (button_background.Width - exit_btn.Width) / 2;
         }
 
@@ -932,16 +982,16 @@ namespace SLIL
             sounds = sounds_on_off.Checked;
             if (sounds)
             {
-                if (Language)
-                    sounds_on_off.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    sounds_on_off.Text = Localizations.GetLString(Language, "70");
                 else
                     sounds_on_off.Text = "On";
                 MainMenuTheme.Play(Volume);
             }
             else
             {
-                if (Language)
-                    sounds_on_off.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    sounds_on_off.Text = Localizations.GetLString(Language, "71");
                 else
                     sounds_on_off.Text = "Off";
                 MainMenuTheme.Stop();
@@ -954,15 +1004,15 @@ namespace SLIL
             ConsoleEnabled = console_btn.Checked;
             if (ConsoleEnabled)
             {
-                if (Language)
-                    console_btn.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    console_btn.Text = Localizations.GetLString(Language, "70");
                 else
                     console_btn.Text = "On";
             }
             else
             {
-                if (Language)
-                    console_btn.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    console_btn.Text = Localizations.GetLString(Language, "71");
                 else
                     console_btn.Text = "Off";
             }
@@ -971,7 +1021,7 @@ namespace SLIL
         private void Language_list_SelectedIndexChanged(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            Language = language_list.SelectedIndex == 0;
+            Language = language_list.SelectedItem.ToString();
             SetLanguage();
         }
 
@@ -987,15 +1037,15 @@ namespace SLIL
             lose_focus.Focus();
             if (update_on_off.Checked)
             {
-                if (Language)
-                    update_on_off.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    update_on_off.Text = Localizations.GetLString(Language, "70");
                 else
                     update_on_off.Text = "On";
             }
             else
             {
-                if (Language)
-                    update_on_off.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    update_on_off.Text = Localizations.GetLString(Language, "71");
                 else
                     update_on_off.Text = "Off";
             }
@@ -1013,15 +1063,15 @@ namespace SLIL
             resolution = high_resolution_on_off.Checked ? 1 : 0;
             if (high_resolution_on_off.Checked)
             {
-                if (Language)
-                    high_resolution_on_off.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "70");
                 else
                     high_resolution_on_off.Text = "On";
             }
             else
             {
-                if (Language)
-                    high_resolution_on_off.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "71");
                 else
                     high_resolution_on_off.Text = "Off";
             }
@@ -1030,10 +1080,8 @@ namespace SLIL
         private void Fps_Scroll(object sender, EventArgs e)
         {
             hight_fps = fps.Value == 1;
-            if (hight_fps)
-                fps_label.Text = "FPS: 60";
-            else
-                fps_label.Text = "FPS: 30";
+            if (hight_fps) fps_label.Text = "FPS: 60";
+            else fps_label.Text = "FPS: 30";
         }
 
         private string GetScopeType()
@@ -1041,24 +1089,24 @@ namespace SLIL
             switch (scope_type)
             {
                 case 0:
-                    if (Language)
-                        return "Стандартный";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "72");
                     return "Standard";
                 case 1:
-                    if (Language)
-                        return "Крест";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "73");
                     return "Cross";
                 case 2:
-                    if (Language)
-                        return "Линия";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "74");
                     return "Line";
                 case 3:
-                    if (Language)
-                        return "Точка";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "75");
                     return "Dot";
                 default:
-                    if (Language)
-                        return "Без прицела";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "76");
                     return "No scope";
             }
         }
@@ -1068,40 +1116,40 @@ namespace SLIL
             switch (scope_color)
             {
                 case 0:
-                    if (Language)
-                        return "Зелёный";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "77");
                     return "Green";
                 case 1:
-                    if (Language)
-                        return "Красный";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "78");
                     return "Red";
                 case 2:
-                    if (Language)
-                        return "Жёлтый";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "79");
                     return "Yellow";
                 case 3:
-                    if (Language)
-                        return "Синий";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "80");
                     return "Blue";
                 case 4:
-                    if (Language)
-                        return "Пурпурный";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "81");
                     return "Purple";
                 case 5:
-                    if (Language)
-                        return "Голубой";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "82");
                     return "Cyan";
                 case 6:
-                    if (Language)
-                        return "Оранжевый";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "83");
                     return "Orange";
                 case 7:
-                    if (Language)
-                        return "Белый";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "84");
                     return "White";
                 default:
-                    if (Language)
-                        return "Случайный";
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "85");
                     return "Random";
             }
         }
@@ -1114,15 +1162,15 @@ namespace SLIL
             ShowMiniMap = show_minimap.Checked;
             if (ShowMiniMap)
             {
-                if (Language)
-                    show_minimap.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    show_minimap.Text = Localizations.GetLString(Language, "70");
                 else
                     show_minimap.Text = "On";
             }
             else
             {
-                if (Language)
-                    show_minimap.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    show_minimap.Text = Localizations.GetLString(Language, "71");
                 else
                     show_minimap.Text = "Off";
             }
@@ -1134,15 +1182,15 @@ namespace SLIL
             ShowFPS = show_fps_on_off.Checked;
             if (ShowFPS)
             {
-                if (Language)
-                    show_fps_on_off.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    show_fps_on_off.Text = Localizations.GetLString(Language, "70");
                 else
                     show_fps_on_off.Text = "On";
             }
             else
             {
-                if (Language)
-                    show_fps_on_off.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    show_fps_on_off.Text = Localizations.GetLString(Language, "71");
                 else
                     show_fps_on_off.Text = "Off";
             }
@@ -1150,7 +1198,7 @@ namespace SLIL
 
         private void Clear_settings_Click(object sender, EventArgs e)
         {
-            Language = Check_Language();
+            Language = GetLanguageName();
             sounds = true;
             ConsoleEnabled = false;
             update_on_off.Checked = true;
@@ -1207,11 +1255,14 @@ namespace SLIL
             if (custom_btn.Checked)
             {
                 difficulty = 4;
-                start_game_btn.Text = Language ? "Редактор" : "Editor";
+                if (DownloadedLocalizationList)
+                    start_game_btn.Text = Localizations.GetLString(Language, "15");
+                else
+                    start_game_btn.Text = "Editor";
             }
             else
             {
-                start_game_btn.Text = Language ? "Играть" : "Play";
+                start_game_btn.Text = Localizations.GetLString(Language, "7");
                 if (easy_btn.Checked)
                     difficulty = 3;
                 else if (normal_btn.Checked)
@@ -1221,7 +1272,7 @@ namespace SLIL
                 else
                     difficulty = 0;
             }
-            difficulty_label.Text = AboutDifficulty[Language ? 0 : 1, difficulty];
+            GetDifficulty();
         }
 
         private void Close_difficulty_panel_Click(object sender, EventArgs e)
@@ -1279,7 +1330,7 @@ namespace SLIL
         private void Change_logs_panel_VisibleChanged(object sender, EventArgs e)
         {
             changes_list.Items.Clear();
-            if (Language)
+            if (GetLanguageName() == "Русский")
                 changes_list.Items.AddRange(ru_changes);
             else
                 changes_list.Items.AddRange(en_changes);
@@ -1321,8 +1372,8 @@ namespace SLIL
         {
             lose_focus.Focus();
             Clipboard.SetText(ip.Text);
-            if (Language)
-                MessageBox.Show("IP-адрес успешно скопирован в буфер обмена", "Копирование IP", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (DownloadedLocalizationList)
+                MessageBox.Show(Localizations.GetLString(Language, "86"), Localizations.GetLString(Language, "87"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
                 MessageBox.Show("IP address successfully copied to clipboard", "IP Copying", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -1333,15 +1384,15 @@ namespace SLIL
             inv_y = invert_y.Checked;
             if (inv_y)
             {
-                if (Language)
-                    invert_y.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    invert_y.Text = Localizations.GetLString(Language, "70");
                 else
                     invert_y.Text = "On";
             }
             else
             {
-                if (Language)
-                    invert_y.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    invert_y.Text = Localizations.GetLString(Language, "71");
                 else
                     invert_y.Text = "Off";
             }
@@ -1366,6 +1417,101 @@ namespace SLIL
         {
             lose_focus.Focus();
             display_size = display_size_list.SelectedIndex;
+        }
+
+        private void Help_close_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            help_panel.Visible = false;
+        }
+
+        private void Bug_repor_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            Process.Start(new ProcessStartInfo("https://t.me/MiniGamesBugReport_BOT") { UseShellExecute = true });
+            help_panel.Visible = false;
+        }
+
+        private void Create_translate_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            Process.Start(new ProcessStartInfo("https://t.me/MiniGamesBugReport_BOT") { UseShellExecute = true });
+            help_panel.Visible = false;
+        }
+
+        private void SetLocalizations(string[] codes, string[] languages)
+        {
+            SupportedLanguages.Clear();
+            for (int i = 0; i < languages.Length; i++)
+                SupportedLanguages.Add(codes[i], languages[i]);
+            for (int i = 0; i < languages.Length; i++)
+            {
+                try
+                {
+                    Localizations.DownloadLocalization(languages[i]);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    DownloadedLocalizationList = false;
+                    return;
+                }
+            }
+            DownloadedLocalizationList = true;
+        }
+
+        private void DownloadLocalizationList()
+        {
+            using (WebClient webClient = new WebClient())
+            {
+                webClient.Encoding = Encoding.UTF8;
+                try
+                {
+                    string result = webClient.DownloadString(new Uri("https://base-escape.ru/SLILLocalization/LocalizationList.txt"));
+                    string[] lines = result.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                    string[] languages = new string[lines.Length];
+                    string[] codes = new string[lines.Length];
+                    if (lines.Length > 0)
+                    {
+                        for (int i = 0; i < lines.Length; i++)
+                        {
+                            codes[i] = lines[i].Split('-')[0];
+                            languages[i] = lines[i].Split('-')[1];
+                        }
+                        language_list.Items.Clear();
+                        language_list.Items.AddRange(languages.Distinct().ToArray());
+                        SetLocalizations(codes, languages);
+                    }
+                }
+                catch (WebException e)
+                {
+                    if (e.Status == WebExceptionStatus.ConnectFailure)
+                        MessageBox.Show("Failed to establish a connection with the localizations server. Please check your internet connection.",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else
+                        MessageBox.Show($"An error occurred while downloading the localization: {e.Message}",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DownloadedLocalizationList = false;
+                    return;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"An unexpected error occurred: {e.Message}",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DownloadedLocalizationList = false;
+                    return;
+                }
+            }
+            Localizations.RemoveDuplicates();
+        }
+
+        private void Localization_update_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            DownloadedLocalizationList = false;
+            DownloadLocalizationList();
+            SetVisualSettings();
+            SetLanguage();
         }
 
         private void ConnectToGame()
@@ -1395,15 +1541,15 @@ namespace SLIL
             inv_x = invert_x.Checked;
             if (inv_x)
             {
-                if (Language)
-                    invert_x.Text = "Вкл.";
+                if (DownloadedLocalizationList)
+                    invert_x.Text = Localizations.GetLString(Language, "70");
                 else
                     invert_x.Text = "On";
             }
             else
             {
-                if (Language)
-                    invert_x.Text = "Откл.";
+                if (DownloadedLocalizationList)
+                    invert_x.Text = Localizations.GetLString(Language, "71");
                 else
                     invert_x.Text = "Off";
             }
@@ -1481,8 +1627,8 @@ namespace SLIL
         private void Scope_color_choice_Scroll(object sender, EventArgs e)
         {
             scope_color = scope_color_choice.Value;
-            if (Language)
-                scope_color_label.Text = "Цвет прицела: " + GetScopeColor();
+            if (DownloadedLocalizationList)
+                scope_color_label.Text = Localizations.GetLString(Language, "37") + GetScopeColor();
             else
                 scope_color_label.Text = "Scope color: " + GetScopeColor();
         }
@@ -1490,8 +1636,8 @@ namespace SLIL
         private void Scope_choice_Scroll(object sender, EventArgs e)
         {
             scope_type = scope_choice.Value;
-            if (Language)
-                scope_label.Text = "Прицел: " + GetScopeType();
+            if (DownloadedLocalizationList)
+                scope_label.Text = Localizations.GetLString(Language, "36") + GetScopeType();
             else
                 scope_label.Text = "Scope: " + GetScopeType();
         }

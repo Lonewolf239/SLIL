@@ -33,7 +33,7 @@
             this.start_btn = new System.Windows.Forms.Button();
             this.setting_btn = new System.Windows.Forms.Button();
             this.about_developers_btn = new System.Windows.Forms.Button();
-            this.bug_report_btn = new System.Windows.Forms.Button();
+            this.open_help_btn = new System.Windows.Forms.Button();
             this.exit_btn = new System.Windows.Forms.Button();
             this.buttons_panel = new System.Windows.Forms.Panel();
             this.button_background = new System.Windows.Forms.Panel();
@@ -67,6 +67,9 @@
             this.update_panel = new System.Windows.Forms.Panel();
             this.update_on_off = new System.Windows.Forms.CheckBox();
             this.update_label = new System.Windows.Forms.Label();
+            this.localization_panel = new System.Windows.Forms.Panel();
+            this.localization_error_pic = new System.Windows.Forms.PictureBox();
+            this.localization_update_btn = new System.Windows.Forms.Button();
             this.language_panel = new System.Windows.Forms.Panel();
             this.language_list = new System.Windows.Forms.ComboBox();
             this.language_label = new System.Windows.Forms.Label();
@@ -220,6 +223,11 @@
             this.ip_connect_input = new System.Windows.Forms.TextBox();
             this.ip_input_label = new System.Windows.Forms.Label();
             this.close_connect_btn = new System.Windows.Forms.Button();
+            this.help_panel = new System.Windows.Forms.Panel();
+            this.help_background = new System.Windows.Forms.Panel();
+            this.create_translate = new System.Windows.Forms.Button();
+            this.bug_repor_btn = new System.Windows.Forms.Button();
+            this.help_close = new System.Windows.Forms.Button();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -235,6 +243,8 @@
             this.all_settings.SuspendLayout();
             this.check_update_panel.SuspendLayout();
             this.update_panel.SuspendLayout();
+            this.localization_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.localization_error_pic)).BeginInit();
             this.language_panel.SuspendLayout();
             this.volume_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.volume)).BeginInit();
@@ -296,6 +306,8 @@
             this.bottom_panel.SuspendLayout();
             this.connect_panel.SuspendLayout();
             this.connect_background.SuspendLayout();
+            this.help_panel.SuspendLayout();
+            this.help_background.SuspendLayout();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -356,20 +368,20 @@
             this.about_developers_btn.UseVisualStyleBackColor = false;
             this.about_developers_btn.Click += new System.EventHandler(this.About_developers_btn_Click);
             // 
-            // bug_report_btn
+            // open_help_btn
             // 
-            this.bug_report_btn.AutoSize = true;
-            this.bug_report_btn.BackColor = System.Drawing.Color.Black;
-            this.bug_report_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.bug_report_btn.ForeColor = System.Drawing.Color.White;
-            this.bug_report_btn.Location = new System.Drawing.Point(3, 168);
-            this.bug_report_btn.Name = "bug_report_btn";
-            this.bug_report_btn.Size = new System.Drawing.Size(320, 49);
-            this.bug_report_btn.TabIndex = 47;
-            this.bug_report_btn.TabStop = false;
-            this.bug_report_btn.Text = "Сообщить об ошибке";
-            this.bug_report_btn.UseVisualStyleBackColor = false;
-            this.bug_report_btn.Click += new System.EventHandler(this.Bug_report_btn_Click);
+            this.open_help_btn.AutoSize = true;
+            this.open_help_btn.BackColor = System.Drawing.Color.Black;
+            this.open_help_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.open_help_btn.ForeColor = System.Drawing.Color.White;
+            this.open_help_btn.Location = new System.Drawing.Point(4, 168);
+            this.open_help_btn.Name = "open_help_btn";
+            this.open_help_btn.Size = new System.Drawing.Size(250, 49);
+            this.open_help_btn.TabIndex = 47;
+            this.open_help_btn.TabStop = false;
+            this.open_help_btn.Text = "Обратная связь";
+            this.open_help_btn.UseVisualStyleBackColor = false;
+            this.open_help_btn.Click += new System.EventHandler(this.Bug_report_btn_Click);
             // 
             // exit_btn
             // 
@@ -401,7 +413,7 @@
             this.button_background.Controls.Add(this.start_btn);
             this.button_background.Controls.Add(this.exit_btn);
             this.button_background.Controls.Add(this.setting_btn);
-            this.button_background.Controls.Add(this.bug_report_btn);
+            this.button_background.Controls.Add(this.open_help_btn);
             this.button_background.Controls.Add(this.about_developers_btn);
             this.button_background.Location = new System.Drawing.Point(3, 3);
             this.button_background.Name = "button_background";
@@ -718,6 +730,7 @@
             this.all_settings.BackColor = System.Drawing.Color.Black;
             this.all_settings.Controls.Add(this.check_update_panel);
             this.all_settings.Controls.Add(this.update_panel);
+            this.all_settings.Controls.Add(this.localization_panel);
             this.all_settings.Controls.Add(this.language_panel);
             this.all_settings.Controls.Add(this.volume_panel);
             this.all_settings.Controls.Add(this.sound_panel);
@@ -735,7 +748,7 @@
             this.check_update_panel.BackColor = System.Drawing.Color.Black;
             this.check_update_panel.Controls.Add(this.check_update_btn);
             this.check_update_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.check_update_panel.Location = new System.Drawing.Point(3, 173);
+            this.check_update_panel.Location = new System.Drawing.Point(3, 207);
             this.check_update_panel.Name = "check_update_panel";
             this.check_update_panel.Size = new System.Drawing.Size(459, 34);
             this.check_update_panel.TabIndex = 3;
@@ -758,7 +771,7 @@
             this.update_panel.Controls.Add(this.update_on_off);
             this.update_panel.Controls.Add(this.update_label);
             this.update_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.update_panel.Location = new System.Drawing.Point(3, 139);
+            this.update_panel.Location = new System.Drawing.Point(3, 173);
             this.update_panel.Name = "update_panel";
             this.update_panel.Size = new System.Drawing.Size(459, 34);
             this.update_panel.TabIndex = 2;
@@ -789,6 +802,42 @@
             this.update_label.Text = "Авто-обновление";
             this.update_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // localization_panel
+            // 
+            this.localization_panel.BackColor = System.Drawing.Color.Black;
+            this.localization_panel.Controls.Add(this.localization_error_pic);
+            this.localization_panel.Controls.Add(this.localization_update_btn);
+            this.localization_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.localization_panel.Location = new System.Drawing.Point(3, 139);
+            this.localization_panel.Name = "localization_panel";
+            this.localization_panel.Size = new System.Drawing.Size(459, 34);
+            this.localization_panel.TabIndex = 6;
+            // 
+            // localization_error_pic
+            // 
+            this.localization_error_pic.Dock = System.Windows.Forms.DockStyle.Right;
+            this.localization_error_pic.Image = global::SLIL.Properties.Resources.warning1;
+            this.localization_error_pic.Location = new System.Drawing.Point(178, 0);
+            this.localization_error_pic.Name = "localization_error_pic";
+            this.localization_error_pic.Size = new System.Drawing.Size(34, 34);
+            this.localization_error_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.localization_error_pic.TabIndex = 1;
+            this.localization_error_pic.TabStop = false;
+            this.localization_error_pic.Visible = false;
+            // 
+            // localization_update_btn
+            // 
+            this.localization_update_btn.AutoSize = true;
+            this.localization_update_btn.Dock = System.Windows.Forms.DockStyle.Right;
+            this.localization_update_btn.Location = new System.Drawing.Point(212, 0);
+            this.localization_update_btn.Name = "localization_update_btn";
+            this.localization_update_btn.Size = new System.Drawing.Size(247, 34);
+            this.localization_update_btn.TabIndex = 0;
+            this.localization_update_btn.TabStop = false;
+            this.localization_update_btn.Text = "Обновить список языков";
+            this.localization_update_btn.UseVisualStyleBackColor = false;
+            this.localization_update_btn.Click += new System.EventHandler(this.Localization_update_btn_Click);
+            // 
             // language_panel
             // 
             this.language_panel.BackColor = System.Drawing.Color.Black;
@@ -807,7 +856,6 @@
             this.language_list.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.language_list.FormattingEnabled = true;
             this.language_list.Items.AddRange(new object[] {
-            "Русский",
             "English"});
             this.language_list.Location = new System.Drawing.Point(297, 0);
             this.language_list.Name = "language_list";
@@ -942,10 +990,10 @@
             this.video_settings.Controls.Add(this.display_size_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 33);
+            this.video_settings.Location = new System.Drawing.Point(4, 22);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 183);
+            this.video_settings.Size = new System.Drawing.Size(482, 194);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
@@ -2614,6 +2662,72 @@
             this.close_connect_btn.UseVisualStyleBackColor = false;
             this.close_connect_btn.Click += new System.EventHandler(this.Close_connect_btn_Click);
             // 
+            // help_panel
+            // 
+            this.help_panel.BackColor = System.Drawing.Color.DarkGray;
+            this.help_panel.Controls.Add(this.help_background);
+            this.help_panel.Location = new System.Drawing.Point(514, 582);
+            this.help_panel.Name = "help_panel";
+            this.help_panel.Size = new System.Drawing.Size(496, 282);
+            this.help_panel.TabIndex = 62;
+            this.help_panel.Visible = false;
+            // 
+            // help_background
+            // 
+            this.help_background.BackColor = System.Drawing.Color.Black;
+            this.help_background.Controls.Add(this.create_translate);
+            this.help_background.Controls.Add(this.bug_repor_btn);
+            this.help_background.Controls.Add(this.help_close);
+            this.help_background.Location = new System.Drawing.Point(3, 3);
+            this.help_background.Name = "help_background";
+            this.help_background.Size = new System.Drawing.Size(490, 276);
+            this.help_background.TabIndex = 45;
+            // 
+            // create_translate
+            // 
+            this.create_translate.AutoSize = true;
+            this.create_translate.BackColor = System.Drawing.Color.Black;
+            this.create_translate.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.create_translate.ForeColor = System.Drawing.Color.White;
+            this.create_translate.Location = new System.Drawing.Point(68, 123);
+            this.create_translate.Name = "create_translate";
+            this.create_translate.Size = new System.Drawing.Size(354, 49);
+            this.create_translate.TabIndex = 60;
+            this.create_translate.TabStop = false;
+            this.create_translate.Text = "Добавить локализацию";
+            this.create_translate.UseVisualStyleBackColor = false;
+            this.create_translate.Click += new System.EventHandler(this.Create_translate_Click);
+            // 
+            // bug_repor_btn
+            // 
+            this.bug_repor_btn.AutoSize = true;
+            this.bug_repor_btn.BackColor = System.Drawing.Color.Black;
+            this.bug_repor_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.bug_repor_btn.ForeColor = System.Drawing.Color.White;
+            this.bug_repor_btn.Location = new System.Drawing.Point(85, 59);
+            this.bug_repor_btn.Name = "bug_repor_btn";
+            this.bug_repor_btn.Size = new System.Drawing.Size(320, 49);
+            this.bug_repor_btn.TabIndex = 59;
+            this.bug_repor_btn.TabStop = false;
+            this.bug_repor_btn.Text = "Сообщить об ошибке";
+            this.bug_repor_btn.UseVisualStyleBackColor = false;
+            this.bug_repor_btn.Click += new System.EventHandler(this.Bug_repor_btn_Click);
+            // 
+            // help_close
+            // 
+            this.help_close.AutoSize = true;
+            this.help_close.BackColor = System.Drawing.Color.Black;
+            this.help_close.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.help_close.ForeColor = System.Drawing.Color.White;
+            this.help_close.Location = new System.Drawing.Point(10, 226);
+            this.help_close.Name = "help_close";
+            this.help_close.Size = new System.Drawing.Size(130, 41);
+            this.help_close.TabIndex = 58;
+            this.help_close.TabStop = false;
+            this.help_close.Text = "Назад";
+            this.help_close.UseVisualStyleBackColor = false;
+            this.help_close.Click += new System.EventHandler(this.Help_close_Click);
+            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2621,6 +2735,7 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1251, 896);
+            this.Controls.Add(this.help_panel);
             this.Controls.Add(this.game_mode_panel);
             this.Controls.Add(this.exit_panel);
             this.Controls.Add(this.connect_panel);
@@ -2669,6 +2784,9 @@
             this.check_update_panel.ResumeLayout(false);
             this.check_update_panel.PerformLayout();
             this.update_panel.ResumeLayout(false);
+            this.localization_panel.ResumeLayout(false);
+            this.localization_panel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.localization_error_pic)).EndInit();
             this.language_panel.ResumeLayout(false);
             this.volume_panel.ResumeLayout(false);
             this.volume_panel.PerformLayout();
@@ -2743,6 +2861,9 @@
             this.connect_panel.ResumeLayout(false);
             this.connect_background.ResumeLayout(false);
             this.connect_background.PerformLayout();
+            this.help_panel.ResumeLayout(false);
+            this.help_background.ResumeLayout(false);
+            this.help_background.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2753,7 +2874,7 @@
         private System.Windows.Forms.Button start_btn;
         private System.Windows.Forms.Button setting_btn;
         private System.Windows.Forms.Button about_developers_btn;
-        private System.Windows.Forms.Button bug_report_btn;
+        private System.Windows.Forms.Button open_help_btn;
         private System.Windows.Forms.Button exit_btn;
         private System.Windows.Forms.Panel buttons_panel;
         private System.Windows.Forms.Panel developers_panel;
@@ -2940,5 +3061,13 @@
         private System.Windows.Forms.Panel display_size_panel;
         private System.Windows.Forms.ComboBox display_size_list;
         private System.Windows.Forms.Label display_size_label;
+        private System.Windows.Forms.Panel help_panel;
+        private System.Windows.Forms.Panel help_background;
+        private System.Windows.Forms.Button help_close;
+        private System.Windows.Forms.Button bug_repor_btn;
+        private System.Windows.Forms.Button create_translate;
+        private System.Windows.Forms.Panel localization_panel;
+        private System.Windows.Forms.Button localization_update_btn;
+        private System.Windows.Forms.PictureBox localization_error_pic;
     }
 }
