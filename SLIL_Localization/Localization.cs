@@ -7,7 +7,7 @@ namespace SLIL.SLIL_Localization
 {
     public class Localization
     {
-        private List<SLILLocalization> SLILLocalizations;
+        private readonly List<SLILLocalization> SLILLocalizations;
 
         public Localization() => SLILLocalizations = new List<SLILLocalization>();
 

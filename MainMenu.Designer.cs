@@ -2666,7 +2666,7 @@
             // 
             this.help_panel.BackColor = System.Drawing.Color.DarkGray;
             this.help_panel.Controls.Add(this.help_background);
-            this.help_panel.Location = new System.Drawing.Point(514, 582);
+            this.help_panel.Location = new System.Drawing.Point(1016, 297);
             this.help_panel.Name = "help_panel";
             this.help_panel.Size = new System.Drawing.Size(496, 282);
             this.help_panel.TabIndex = 62;

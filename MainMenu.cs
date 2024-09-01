@@ -13,6 +13,7 @@ using SLIL.Classes;
 using Play_Sound;
 using SLIL.SLIL_Localization;
 using System.Linq;
+using System.Security.Policy;
 
 namespace SLIL
 {
@@ -38,78 +39,6 @@ namespace SLIL
         private readonly PlaySound[,] CuteDeathSounds;
         private readonly PlaySound game_over, draw, buy, wall, tp, screenshot;
         public static Player player;
-        private readonly string[] en_changes =
-        {
-            "\t\t\tv1.1.1a",
-            "_______________________________________________________________",
-            "• Critical error fixed",
-            "\n",
-            "\t\t\tv1.1.1",
-            "_______________________________________________________________",
-            "• Added 2 new effects: Regeneration and Protection",
-            "• Medkit has been reworked",
-            "• Podseratel and Adrenaline have been balanced",
-            "• Fixed some bugs",
-            "\n",
-            "\t\t\tv1.1",
-            "_______________________________________________________________",
-            "• Podseratel: Added ability",
-            "• Added new item: Adrenaline",
-            "• Improved optimization",
-            "• Difficulty rebalance",
-            "• Added music to main menu",
-            "• Fixed some bugs",
-            "\n",
-            "\t\t\tv1.0.2",
-            "_______________________________________________________________",
-            "• Fixed detection of the run key",
-            "• Some bugs fixed",
-            "\n",
-            "\t\t\tv1.0.1",
-            "_______________________________________________________________",
-            "• Fixed game over screen",
-            "\n",
-            "\t\t\tv1.0",
-            "_______________________________________________________________",
-            "• Game Release",
-            "• SLIL was separated from Mini-Games"
-        };
-        private readonly string[] ru_changes =
-        {
-            "\t\t\tv1.1.1a",
-            "_______________________________________________________________",
-            "• Исправлена ​​критическая ошибка",
-            "\n",
-            "\t\t\tv1.1.1",
-            "_______________________________________________________________",
-            "• Добавлены 2 новых эффекта: Регенерация и Защита",
-            "• Аптечка была переработана",
-            "• Подсератель и Адреналин были сбалансированы",
-            "• Исправлены некоторые ошибки",
-            "\n",
-            "\t\t\tv1.1",
-            "_______________________________________________________________",
-            "• Подсератель: Добавлена ​​способность",
-            "• Добавлен новый предмет: Адреналин",
-            "• Улучшена оптимизация",
-            "• Ребаланс сложности",
-            "• Добавлена ​​музыка в главное меню",
-            "• Исправлены некоторые ошибки",
-            "\n",
-            "\t\t\tv1.0.2",
-            "_______________________________________________________________",
-            "• Исправлено обнаружение клавиши бега",
-            "• Исправлены некоторые ошибки",
-            "\n",
-            "\t\t\tv1.0.1",
-            "_______________________________________________________________",
-            "• Исправлен экран окончания игры",
-            "\n",
-            "\t\t\tv1.0",
-            "_______________________________________________________________",
-            "• Релиз игры",
-            "• SLIL был отделен от Mini-Games"
-        };
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
             { "screenshot", Keys.F12 },
@@ -536,6 +465,7 @@ namespace SLIL
             version_label.Text = $"v{current_version.Trim('|')}";
             INIReader.CreateIniFileIfNotExist(iniFolder);
             SetLocalization();
+            Language = GetLanguageName();
             GetGameParametrs();
             SetVisualSettings();
             SetLanguage();
@@ -961,6 +891,7 @@ namespace SLIL
             about_developers_btn.Size = new Size(0, 0);
             open_help_btn.Size = new Size(0, 0);
             exit_btn.Size = new Size(0, 0);
+            localization_update_btn.Size = new Size(0, 0);
             check_update_btn.Size = new Size(0, 0);
             start_btn.Left = (button_background.Width - start_btn.Width) / 2;
             setting_btn.Left = (button_background.Width - setting_btn.Width) / 2;
@@ -1330,10 +1261,24 @@ namespace SLIL
         private void Change_logs_panel_VisibleChanged(object sender, EventArgs e)
         {
             changes_list.Items.Clear();
-            if (GetLanguageName() == "Русский")
-                changes_list.Items.AddRange(ru_changes);
-            else
-                changes_list.Items.AddRange(en_changes);
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.Encoding = Encoding.UTF8;
+                    string[] changes = client.DownloadString($"https://base-escape.ru/SLILLocalization/Changelogs/{Language}.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                    changes_list.Items.AddRange(changes);
+                }
+            }
+            catch (Exception er)
+            {
+                changes_list.Items.Clear();
+                if (DownloadedLocalizationList)
+                    changes_list.Items.Add(Localizations.GetLString(Language, "160"));
+                else
+                    changes_list.Items.Add("Error getting changelog");
+                changes_list.Items.Add(er.Message);
+            }
         }
 
         private void Change_logs_close_btn_Click(object sender, EventArgs e)
@@ -1435,7 +1380,7 @@ namespace SLIL
         private void Create_translate_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            Process.Start(new ProcessStartInfo("https://t.me/MiniGamesBugReport_BOT") { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo("https://t.me/SLILLocalizationBOT") { UseShellExecute = true });
             help_panel.Visible = false;
         }
 
