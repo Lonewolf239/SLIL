@@ -13,7 +13,6 @@ using SLIL.Classes;
 using Play_Sound;
 using SLIL.SLIL_Localization;
 using System.Linq;
-using System.Security.Policy;
 
 namespace SLIL
 {
@@ -86,21 +85,23 @@ namespace SLIL
                 CGFReader = new CGF_Reader("data.cgf");
             else
             {
-                bool language = GetLanguageName() != "English";
-                string title = "Отсутствует файл \"data.cgf\"!", message = $"Файл \"data.cgf\" отсутствует! Возможно, он был переименован, перемещен или удален. Хотите загрузить установщик еще раз?";
-                if (!language)
+                string title = "Missing \"data.cgf\" file!", message = $"The file \"data.cgf\" is missing! It may have been renamed, moved, or deleted. Do you want to download the installer again?";
+                if (DownloadedLocalizationList)
                 {
-                    title = "Missing \"data.cgf\" file!";
-                    message = $"The file \"data.cgf\" is missing! It may have been renamed, moved, or deleted. Do you want to download the installer again?";
+                    title = Localizations.GetLString(Language, "161");
+                    message = Localizations.GetLString(Language, "162");
                 }
                 if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {
                     if (!File.Exists("UpdateDownloader.exe"))
                     {
-                        message = language
-                            ? "UpdateDownloader.exe был удалён, переименован или перемещён. После закрытия этого сообщения он будет загружен снова."
-                            : "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
-                        string caption = language ? "Ошибка" : "Error";
+                        message = "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
+                        string caption = "Error";
+                        if (DownloadedLocalizationList)
+                        {
+                            caption = Localizations.GetLString(Language, "163");
+                            message = Localizations.GetLString(Language, "164");
+                        }
                         MessageBox.Show(message, caption, MessageBoxButtons.OK);
                         DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
                     }
@@ -342,20 +343,34 @@ namespace SLIL
             return "English";
         }
 
+        private string GetLanguageCode()
+        {
+            CultureInfo ci = CultureInfo.InstalledUICulture;
+            string language = null;
+            string languageCode = ci.Name.ToLower();
+            if (SupportedLanguages.ContainsKey(languageCode))
+                language = SupportedLanguages[languageCode];
+            string shortCode = languageCode.Substring(0, 2);
+            if (SupportedLanguages.ContainsKey(shortCode))
+                language = SupportedLanguages[shortCode];
+            if (language == null) return "en";
+            return language.Remove(1).ToLower();
+        }
+
         private void Check_Update(bool auto)
         {
-            string title = "Доступно обновление!";
-            string message = $"Вышло новое обновление! Хотите установить его?\n\n" +
-                             $"Текущая версия: {current_version.Trim('|')}\n" +
-                             $"Актуальная версия: ";
-            string update_text = "\n\nСписок изменений:";
-            if (GetLanguageName() != "Русский")
-            {
-                title = "Update available!";
-                message = $"New update is out! Want to install it?\n\n" +
+            string title = "Update available!";
+            string message = $"New update is out! Want to install it?\n\n" +
                           $"Current version: {current_version.Trim('|')}\n" +
                           $"Actual version: ";
-                update_text = "\n\nList of changes:";
+            string update_text = "\n\nList of changes:";
+            if (DownloadedLocalizationList)
+            {
+                message = $"{Localizations.GetLString(Language, "166")}\n\n" +
+                             $"{Localizations.GetLString(Language, "167")} {current_version.Trim('|')}\n" +
+                             $"{Localizations.GetLString(Language, "168")} ";
+                title = Localizations.GetLString(Language, "165");
+                update_text = "\n\n" + Localizations.GetLString(Language, "169");
             }
             using (WebClient webClient = new WebClient())
             {
@@ -368,12 +383,12 @@ namespace SLIL
                         {
                             if (!auto)
                             {
-                                message = "Не удалось установить соединение с сервером обновлений. Проверьте подключение к интернету.";
-                                title = "Ошибка подключения";
-                                if (GetLanguageName() != "Русский")
+                                message = "Failed to establish a connection with the update server. Please check your internet connection.";
+                                title = "Connection Error";
+                                if (DownloadedLocalizationList)
                                 {
-                                    message = "Failed to establish a connection with the update server. Please check your internet connection.";
-                                    title = "Connection Error";
+                                    message = Localizations.GetLString(Language, "170");
+                                    title = Localizations.GetLString(Language, "171");
                                 }
                                 MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
@@ -382,13 +397,15 @@ namespace SLIL
                         {
                             if (!auto)
                             {
-                                message = $"Во время загрузки обновления произошла ошибка! {e.Error.Message}.";
-                                title = $"Ошибка {e.Error.HResult}!";
-                                if (GetLanguageName() != "Русский")
+                                message = $"An error occurred while downloading the update!";
+                                title = $"Error";
+                                if (DownloadedLocalizationList)
                                 {
-                                    message = $"An error occurred while downloading the update! {e.Error.Message}.";
-                                    title = $"Error {e.Error.HResult}!";
+                                    message = Localizations.GetLString(Language, "172");
+                                    title = Localizations.GetLString(Language, "163");
                                 }
+                                message += $" {e.Error.Message}.";
+                                title += $" {e.Error.HResult}!";
                                 MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
@@ -400,29 +417,24 @@ namespace SLIL
                         {
                             message += lines[0].Trim('|');
                             message += update_text;
-                            bool isRussian = GetLanguageName() == "Русский";
                             for (int i = 1; i < lines.Length; i++)
                             {
                                 string line = lines[i].Trim();
-                                if (line.StartsWith("ru:"))
-                                {
-                                    if (isRussian)
-                                        message += "\n• " + line.Substring(3);
-                                }
-                                else if (line.StartsWith("en:"))
-                                {
-                                    if (!isRussian)
-                                        message += "\n• " + line.Substring(3);
-                                }
+                                if (line.StartsWith(";")) continue;
+                                if (line.StartsWith(GetLanguageCode()))
+                                    message += "\n• " + line.Substring(3);
                             }
                             if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
                                 if (!File.Exists("UpdateDownloader.exe"))
                                 {
-                                    message = GetLanguageName() == "Русский"
-                                        ? "UpdateDownloader.exe был удалён, переименован или перемещён. После закрытия этого сообщения он будет загружен снова."
-                                        : "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
-                                    string caption = GetLanguageName() == "Русский" ? "Ошибка" : "Error";
+                                    message = "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
+                                    string caption = "Error";
+                                    if (DownloadedLocalizationList)
+                                    {
+                                        caption = Localizations.GetLString(Language, "163");
+                                        message = Localizations.GetLString(Language, "164");
+                                    }
                                     MessageBox.Show(message, caption, MessageBoxButtons.OK);
                                     DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
                                 }
@@ -435,8 +447,8 @@ namespace SLIL
                         {
                             if (!auto)
                             {
-                                if (GetLanguageName() == "Русский")
-                                    MessageBox.Show("У вас уже установлена последняя версия программы.", "Версия актуальная", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                if (DownloadedLocalizationList)
+                                    MessageBox.Show(Localizations.GetLString(Language, "173"), Localizations.GetLString(Language, "174"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 else
                                     MessageBox.Show("You already have the latest version of the program installed.", "Version is current", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
@@ -549,7 +561,8 @@ namespace SLIL
             item_btn.Text = BindControls["item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             select_item_btn.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             run_btn.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            language_list.SelectedIndex = language_list.Items.IndexOf(Language);
+            language_list.SelectedIndex = DownloadedLocalizationList
+                ? language_list.Items.IndexOf(Language) : 0;
             localization_error_pic.Visible = !DownloadedLocalizationList;
             display_size_list.SelectedIndex = display_size;
             smoothing_list.SelectedIndex = smoothing;
@@ -1260,24 +1273,27 @@ namespace SLIL
 
         private void Change_logs_panel_VisibleChanged(object sender, EventArgs e)
         {
-            changes_list.Items.Clear();
-            try
-            {
-                using (WebClient client = new WebClient())
-                {
-                    client.Encoding = Encoding.UTF8;
-                    string[] changes = client.DownloadString($"https://base-escape.ru/SLILLocalization/Changelogs/{Language}.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                    changes_list.Items.AddRange(changes);
-                }
-            }
-            catch (Exception er)
+            if (changes_list.Visible)
             {
                 changes_list.Items.Clear();
-                if (DownloadedLocalizationList)
-                    changes_list.Items.Add(Localizations.GetLString(Language, "160"));
-                else
-                    changes_list.Items.Add("Error getting changelog");
-                changes_list.Items.Add(er.Message);
+                try
+                {
+                    using (WebClient client = new WebClient())
+                    {
+                        client.Encoding = Encoding.UTF8;
+                        string[] changes = client.DownloadString($"https://base-escape.ru/SLILLocalization/Changelogs/{Language}.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                        changes_list.Items.AddRange(changes);
+                    }
+                }
+                catch (Exception er)
+                {
+                    changes_list.Items.Clear();
+                    if (DownloadedLocalizationList)
+                        changes_list.Items.Add(Localizations.GetLString(Language, "160"));
+                    else
+                        changes_list.Items.Add("Error getting changelog");
+                    changes_list.Items.Add(er.Message);
+                }
             }
         }
 
@@ -1373,7 +1389,7 @@ namespace SLIL
         private void Bug_repor_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            Process.Start(new ProcessStartInfo("https://t.me/MiniGamesBugReport_BOT") { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo("https://t.me/SLILBugReportBOT") { UseShellExecute = true });
             help_panel.Visible = false;
         }
 
