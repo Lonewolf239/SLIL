@@ -1,17 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using NAudio.Wave;
 
 namespace Play_Sound
 {
-    public class PlaybackState
-    {
-        public bool IsPlaying { get; set; }
-    }
-
     public class PlaySound : IDisposable
     {
+        public bool IsPlaying { get; set; }
         private readonly WaveFileReader file;
         private readonly WaveOutEvent playing;
         private readonly LoopStream loopStream;
@@ -58,34 +53,26 @@ namespace Play_Sound
             catch { }
         }
 
-        public async Task<bool> PlayWithWait(float volume, PlaybackState state)
+        public void PlayWithWait(float volume)
         {
-            if (state.IsPlaying)
-                return false;
+            if (IsPlaying) return;
             try
             {
                 file.Position = 0;
                 playing.Volume = volume;
-                var tcs = new TaskCompletionSource<bool>();
-                EventHandler<StoppedEventArgs> handler = null;
-                handler = (sender, e) =>
-                {
-                    tcs.TrySetResult(true);
-                    state.IsPlaying = false;
-                    playing.PlaybackStopped -= handler;
-                };
-                playing.PlaybackStopped += handler;
+                playing.PlaybackStopped += Playing_PlaybackStopped;
                 playing.Play();
-                state.IsPlaying = true;
-                await tcs.Task;
-                return true;
+                IsPlaying = true;
+                return;
             }
             catch
             {
-                state.IsPlaying = false;
-                return false;
+                IsPlaying = false;
+                return;
             }
         }
+
+        private void Playing_PlaybackStopped(object sender, StoppedEventArgs e) => IsPlaying = false;
 
         public void PlayWithDispose(float volume)
         {

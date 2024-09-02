@@ -298,12 +298,12 @@ namespace SLIL
             { typeof(EnergyDrink), Properties.Resources.pet_energy_drink_icon },
             { typeof(Pyro), Properties.Resources.pet_pyro_icon },
         };
-        private readonly PlaybackState playbackState = new PlaybackState();
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
         public static PlaySound hit = new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false);
         public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
-        public static PlaySound[,] step = new PlaySound[,]
+        private PlaySound step;
+        public static PlaySound[,] steps = new PlaySound[,]
             {
                 {
                     new PlaySound(MainMenu.CGFReader.GetFile("step_0.wav"), false),
@@ -741,11 +741,11 @@ namespace SLIL
             ost[ost_index].LoopPlay(Volume);
         }
 
-        private async void Step_sound_timer_Tick(object sender, EventArgs e)
+        private void Step_sound_timer_Tick(object sender, EventArgs e)
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if ((playerDirection != Direction.STOP || strafeDirection != Direction.STOP) && !player.Aiming && !playbackState.IsPlaying)
+            if ((playerDirection != Direction.STOP || strafeDirection != Direction.STOP) && !player.Aiming && (step == null || !step.IsPlaying))
             {
                 if (currentIndex >= soundIndices.Count)
                 {
@@ -753,12 +753,11 @@ namespace SLIL
                     currentIndex = 0;
                 }
                 int i = playerMoveStyle == Direction.RUN || player.Fast ? 1 : 0;
-                if (player.CuteMode)
-                    i += 2;
+                if (player.CuteMode) i += 2;
                 int j = soundIndices[currentIndex];
-                bool completed = await step[i, j].PlayWithWait(Volume, playbackState);
-                if (completed)
-                    currentIndex++;
+                step = steps[i, j];
+                step.PlayWithWait(Volume);
+                currentIndex++;
             }
         }
 
