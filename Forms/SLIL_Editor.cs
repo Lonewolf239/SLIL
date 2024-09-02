@@ -188,7 +188,7 @@ namespace SLIL
 
         private void SLIL_Editor_Load(object sender, EventArgs e)
         {
-            if (MainMenu.DownloadedLocalizationList)
+            if (!MainMenu.DownloadedLocalizationList)
             {
                 Text = "Editor";
                 about.Text = "Elements:";

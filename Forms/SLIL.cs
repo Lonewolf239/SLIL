@@ -1551,7 +1551,7 @@ namespace SLIL
                 if (player.CuteMode) return;
                 for (int k = 0; k < bullet.GetLength(0); k++)
                 {
-                    if (bullet[k,0]==-1) continue;
+                    if (bullet[k, 0] == -1) continue;
                     double deltaA = FOV / 2 - bullet[k, 0] * FOV / SCREEN_WIDTH[resolution];
                     double rayA = player.A + deltaA;
                     double ray_x = Math.Sin(rayA);
@@ -2806,7 +2806,6 @@ namespace SLIL
             strafeDirection = playerDirection = Direction.STOP;
             playerMoveStyle = Direction.WALK;
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
-            //map = new Bitmap(MAP_WIDTH, MAP_HEIGHT);
             if (MainMenu.sounds)
             {
                 if (!player.CuteMode)

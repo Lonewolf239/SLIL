@@ -61,6 +61,7 @@
             // 
             // random_btn
             // 
+            this.random_btn.BackgroundImage = global::SLIL.Properties.Resources.random;
             this.random_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.random_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.random_btn.Location = new System.Drawing.Point(112, 249);
@@ -73,6 +74,7 @@
             // 
             // reset_btn
             // 
+            this.reset_btn.BackgroundImage = global::SLIL.Properties.Resources.reset;
             this.reset_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.reset_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.reset_btn.Location = new System.Drawing.Point(56, 249);
@@ -85,6 +87,7 @@
             // 
             // export_btn
             // 
+            this.export_btn.BackgroundImage = global::SLIL.Properties.Resources.export;
             this.export_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.export_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.export_btn.Location = new System.Drawing.Point(224, 249);
@@ -97,6 +100,7 @@
             // 
             // accept_button
             // 
+            this.accept_button.BackgroundImage = global::SLIL.Properties.Resources.done;
             this.accept_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.accept_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.accept_button.Location = new System.Drawing.Point(0, 249);
@@ -109,6 +113,7 @@
             // 
             // import_btn
             // 
+            this.import_btn.BackgroundImage = global::SLIL.Properties.Resources.import;
             this.import_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.import_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.import_btn.Location = new System.Drawing.Point(168, 249);
@@ -121,6 +126,7 @@
             // 
             // question
             // 
+            this.question.BackgroundImage = global::SLIL.Properties.Resources.question;
             this.question.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.question.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.question.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));

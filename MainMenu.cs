@@ -803,7 +803,6 @@ namespace SLIL
                     sounds_on_off.Text = Localizations.GetLString(Language, "70");
                 else
                     sounds_on_off.Text = "On";
-                MainMenuTheme.Play(Volume);
             }
             else
             {
@@ -811,7 +810,6 @@ namespace SLIL
                     sounds_on_off.Text = Localizations.GetLString(Language, "71");
                 else
                     sounds_on_off.Text = "Off";
-                MainMenuTheme.Stop();
             }
             if (update_on_off.Checked)
             {
