@@ -43,6 +43,7 @@ namespace SLIL.SLIL_Localization
                 List<LocalizationString> strings = new List<LocalizationString>();
                 foreach (var line in lines)
                 {
+                    if (line.StartsWith(";") || line.Length < 3) continue;
                     string[] parts = line.Split('|');
                     if (parts.Length == 2)
                     {

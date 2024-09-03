@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows.Forms;
 using Play_Sound;
 using SLIL.Classes;
@@ -16,7 +15,7 @@ namespace SLIL.UserControls
         public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
-        private readonly string[,] buy_text = { { "114", "126" }, { "Buy", "Has already" } };
+        private readonly string[,] buy_text = { { "2-0", "2-12" }, { "Buy", "Has already" } };
 
         private string GetBuyText()
         {

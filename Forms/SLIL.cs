@@ -556,13 +556,13 @@ namespace SLIL
             }
             else
             {
-                shop_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "115");
-                weapon_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "116");
-                pet_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "117");
-                consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "118");
-                pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "119");
-                pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "120");
-                exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "121");
+                shop_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-1");
+                weapon_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-2");
+                pet_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-3");
+                consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-4");
+                pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-5");
+                pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-6");
+                exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-7");
             }
         }
 
@@ -587,7 +587,7 @@ namespace SLIL
         {
             foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true).Cast<SLIL_PetShopInterface>())
                 control.buy_button.Text = MainMenu.DownloadedLocalizationList
-                    ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "114")} ${control.pet.Cost}"
+                    ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-0")} ${control.pet.Cost}"
                     : $"Buy ${control.pet.Cost}";
             Controller.AddPet(index);
             CuteMode();

@@ -15,7 +15,7 @@ namespace SLIL.UserControls
         public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
-        private readonly string[,] buy_text = { { "122", "123" }, { "Buy weapons", "Buy ammo" } };
+        private readonly string[,] buy_text = { { "2-8", "2-9" }, { "Buy weapons", "Buy ammo" } };
 
         public SLIL_ShopInterface()
         {
@@ -73,7 +73,7 @@ namespace SLIL.UserControls
                     if (MainMenu.sounds)
                         buy.Play(SLIL.Volume);
                     ParentSLILForm.BuyAmmo(weapon);
-                    ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "124")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
+                    ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                 }
                 else if (MainMenu.sounds)
                     cant_pressed?.Play(SLIL.Volume);
@@ -86,7 +86,7 @@ namespace SLIL.UserControls
                         buy.Play(SLIL.Volume);
                     ParentSLILForm.BuyWeapon(weapon);
                     buy_button.Text = GetBuyText() + $" ${weapon.AmmoCost}";
-                    ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "124")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
+                    ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                     update_button.Left = buy_button.Right + 6;
                     update_button.Visible = weapon.CanUpdate();
                 }
@@ -106,8 +106,8 @@ namespace SLIL.UserControls
                 weapon_name.Text = GetWeaponName() + $" {weapon.Level}";
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
                 update_button.Text = $"${weapon.UpdateCost}";
-                damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "125")} {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
-                ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "124")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
+                damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-11")} {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
+                ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                 ammo_count.Left = damage_text.Right;
                 update_button.Visible = weapon.CanUpdate();
             }
@@ -122,10 +122,10 @@ namespace SLIL.UserControls
             weapon_name.Text = weapon.Upgradeable ? GetWeaponName() + $" {weapon.Level}" : GetWeaponName();
             if (weapon_icon.Image != SLIL.IconDict[weapon.GetType()][weapon.GetLevel()])
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
-            ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "124")} {ammo}" : $"Ammo: {ammo}";
+            ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {ammo}" : $"Ammo: {ammo}";
             buy_button.Text = GetBuyText() + $" ${cost}";
             update_button.Text = $"${weapon.UpdateCost}";
-            damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "125")} {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
+            damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-11")} {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
             ammo_count.Left = damage_text.Right;
             update_button.Left = buy_button.Right + 6;
             update_button.Visible = weapon.CanUpdate() && weapon.HasIt;

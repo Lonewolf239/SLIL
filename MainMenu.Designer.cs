@@ -175,6 +175,7 @@
             this.press_any_btn_panel = new System.Windows.Forms.Panel();
             this.press_any_btn_background = new System.Windows.Forms.Panel();
             this.press_any_btn_label = new System.Windows.Forms.Label();
+            this.cant_use_panel = new System.Windows.Forms.Label();
             this.exit_panel = new System.Windows.Forms.Panel();
             this.exit_background = new System.Windows.Forms.Panel();
             this.exit_size_panel = new System.Windows.Forms.Panel();
@@ -232,7 +233,6 @@
             this.create_translate_cp = new System.Windows.Forms.Button();
             this.bug_repor_btn_cp = new System.Windows.Forms.Button();
             this.help_close_l = new System.Windows.Forms.Button();
-            this.cant_use_panel = new System.Windows.Forms.Label();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -1047,10 +1047,10 @@
             this.video_settings.Controls.Add(this.display_size_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 22);
+            this.video_settings.Location = new System.Drawing.Point(4, 33);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 194);
+            this.video_settings.Size = new System.Drawing.Size(482, 183);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
@@ -2072,6 +2072,19 @@
             this.press_any_btn_label.Text = "Нажмите любую кнопку или ESC для отмены";
             this.press_any_btn_label.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
+            // cant_use_panel
+            // 
+            this.cant_use_panel.AutoEllipsis = true;
+            this.cant_use_panel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.cant_use_panel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cant_use_panel.ForeColor = System.Drawing.Color.White;
+            this.cant_use_panel.Location = new System.Drawing.Point(0, 190);
+            this.cant_use_panel.Name = "cant_use_panel";
+            this.cant_use_panel.Size = new System.Drawing.Size(490, 86);
+            this.cant_use_panel.TabIndex = 2;
+            this.cant_use_panel.Text = "Эту кнопку нельзя использовать!";
+            this.cant_use_panel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // exit_panel
             // 
             this.exit_panel.BackColor = System.Drawing.Color.DarkGray;
@@ -2796,19 +2809,6 @@
             this.help_close_l.Text = "Назад";
             this.help_close_l.UseVisualStyleBackColor = false;
             this.help_close_l.Click += new System.EventHandler(this.Help_close_Click);
-            // 
-            // cant_use_panel
-            // 
-            this.cant_use_panel.AutoEllipsis = true;
-            this.cant_use_panel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.cant_use_panel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cant_use_panel.ForeColor = System.Drawing.Color.White;
-            this.cant_use_panel.Location = new System.Drawing.Point(0, 190);
-            this.cant_use_panel.Name = "cant_use_panel";
-            this.cant_use_panel.Size = new System.Drawing.Size(490, 86);
-            this.cant_use_panel.TabIndex = 2;
-            this.cant_use_panel.Text = "Эту кнопку нельзя использовать!";
-            this.cant_use_panel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // MainMenu
             // 

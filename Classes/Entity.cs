@@ -526,8 +526,8 @@ namespace SLIL.Classes
         {
             Index = 0;
             Cost = 150;
-            Name = new[] { "149", "Silly Cat" };
-            Descryption = new[] { "150", "Restores 2 HP every 8 seconds" };
+            Name = new[] { "5-0", "Silly Cat" };
+            Descryption = new[] { "5-1", "Restores 2 HP every 8 seconds" };
             Texture = 17;
             PetAbility = 0;
             AbilityReloadTime = 8;
@@ -548,8 +548,8 @@ namespace SLIL.Classes
         {
             Index = 1;
             Cost = 60;
-            Name = new[] { "151", "Green Gnome" };
-            Descryption = new[] { "152", "Increases maximum health by 25" };
+            Name = new[] { "5-2", "Green Gnome" };
+            Descryption = new[] { "5-3", "Increases maximum health by 25" };
             Texture = 24;
             PetAbility = 1;
             IsInstantAbility = 1;
@@ -569,8 +569,8 @@ namespace SLIL.Classes
         {
             Index = 2;
             Cost = 60;
-            Name = new[] { "153", "Energy Drink" };
-            Descryption = new[] { "154", "Increases endurance and speed" };
+            Name = new[] { "5-4", "Energy Drink" };
+            Descryption = new[] { "5-5", "Increases endurance and speed" };
             Texture = 27;
             PetAbility = 2;
             IsInstantAbility = 1;
@@ -596,8 +596,8 @@ namespace SLIL.Classes
         {
             Index = 3;
             Cost = 666;
-            Name = new[] { "155", "Podseratel" };
-            Descryption = new[] { "156", "The world is a fairy tale..." };
+            Name = new[] { "5-6", "Podseratel" };
+            Descryption = new[] { "5-7", "The world is a fairy tale..." };
             Texture = 31;
             PetAbility = 3;
             IsInstantAbility = 2;

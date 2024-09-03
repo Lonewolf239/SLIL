@@ -88,8 +88,8 @@ namespace SLIL
                 string title = "Missing \"data.cgf\" file!", message = $"The file \"data.cgf\" is missing! It may have been renamed, moved, or deleted. Do you want to download the installer again?";
                 if (DownloadedLocalizationList)
                 {
-                    title = Localizations.GetLString(Language, "161");
-                    message = Localizations.GetLString(Language, "162");
+                    title = Localizations.GetLString(Language, "0-92");
+                    message = Localizations.GetLString(Language, "0-93");
                 }
                 if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {
@@ -99,8 +99,8 @@ namespace SLIL
                         string caption = "Error";
                         if (DownloadedLocalizationList)
                         {
-                            caption = Localizations.GetLString(Language, "163");
-                            message = Localizations.GetLString(Language, "164");
+                            caption = Localizations.GetLString(Language, "0-94");
+                            message = Localizations.GetLString(Language, "0-95");
                         }
                         MessageBox.Show(message, caption, MessageBoxButtons.OK);
                         DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
@@ -368,11 +368,11 @@ namespace SLIL
             string update_text = "\n\nList of changes:";
             if (DownloadedLocalizationList)
             {
-                message = $"{Localizations.GetLString(Language, "166")}\n\n" +
-                             $"{Localizations.GetLString(Language, "167")} {current_version.Trim('|')}\n" +
-                             $"{Localizations.GetLString(Language, "168")} ";
-                title = Localizations.GetLString(Language, "165");
-                update_text = "\n\n" + Localizations.GetLString(Language, "169");
+                message = $"{Localizations.GetLString(Language, "0-97")}\n\n" +
+                             $"{Localizations.GetLString(Language, "0-98")} {current_version.Trim('|')}\n" +
+                             $"{Localizations.GetLString(Language, "0-99")} ";
+                title = Localizations.GetLString(Language, "0-96");
+                update_text = "\n\n" + Localizations.GetLString(Language, "0-100");
             }
             using (WebClient webClient = new WebClient())
             {
@@ -389,8 +389,8 @@ namespace SLIL
                                 title = "Connection Error";
                                 if (DownloadedLocalizationList)
                                 {
-                                    message = Localizations.GetLString(Language, "170");
-                                    title = Localizations.GetLString(Language, "171");
+                                    message = Localizations.GetLString(Language, "0-101");
+                                    title = Localizations.GetLString(Language, "0-102");
                                 }
                                 MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
@@ -403,8 +403,8 @@ namespace SLIL
                                 title = $"Error";
                                 if (DownloadedLocalizationList)
                                 {
-                                    message = Localizations.GetLString(Language, "172");
-                                    title = Localizations.GetLString(Language, "163");
+                                    message = Localizations.GetLString(Language, "0-103");
+                                    title = Localizations.GetLString(Language, "0-94");
                                 }
                                 message += $" {e.Error.Message}.";
                                 title += $" {e.Error.HResult}!";
@@ -434,8 +434,8 @@ namespace SLIL
                                     string caption = "Error";
                                     if (DownloadedLocalizationList)
                                     {
-                                        caption = Localizations.GetLString(Language, "163");
-                                        message = Localizations.GetLString(Language, "164");
+                                        caption = Localizations.GetLString(Language, "0-94");
+                                        message = Localizations.GetLString(Language, "0-95");
                                     }
                                     MessageBox.Show(message, caption, MessageBoxButtons.OK);
                                     DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
@@ -450,7 +450,7 @@ namespace SLIL
                             if (!auto)
                             {
                                 if (DownloadedLocalizationList)
-                                    MessageBox.Show(Localizations.GetLString(Language, "173"), Localizations.GetLString(Language, "174"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    MessageBox.Show(Localizations.GetLString(Language, "0-104"), Localizations.GetLString(Language, "0-105"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 else
                                     MessageBox.Show("You already have the latest version of the program installed.", "Version is current", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
@@ -582,8 +582,8 @@ namespace SLIL
                 fps_label.Text = "FPS: 60";
             else
                 fps_label.Text = "FPS: 30";
-            scope_label.Text = Localizations.GetLString(Language, "36") + GetScopeType();
-            scope_color_label.Text = Localizations.GetLString(Language, "37") + GetScopeColor();
+            scope_label.Text = Localizations.GetLString(Language, "0-36") + GetScopeType();
+            scope_color_label.Text = Localizations.GetLString(Language, "0-37") + GetScopeColor();
         }
 
         private void GetDifficulty()
@@ -592,31 +592,31 @@ namespace SLIL
             {
                 case 0:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "65");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-65");
                     else
                         difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies Respawn Every 60 Seconds";
                     break;
                 case 1:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "66");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-66");
                     else
                         difficulty_label.Text = "Starting Weapon: Pistol Lvl 1";
                     break;
                 case 2:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "67");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-67");
                     else
                         difficulty_label.Text = "Starting Weapon: Pistol Lvl 2";
                     break;
                 case 3:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "68");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-68");
                     else
                         difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money";
                     break;
                 default:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "69");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-69");
                     else
                         difficulty_label.Text = "Level parameters can be changed manually";
                     break;
@@ -646,86 +646,86 @@ namespace SLIL
             {
                 string[] smooth_list =
                 {
-                    Localizations.GetLString(Language, "61"),
-                    Localizations.GetLString(Language, "62"),
-                    Localizations.GetLString(Language, "63"),
-                    Localizations.GetLString(Language, "64")
+                    Localizations.GetLString(Language, "0-61"),
+                    Localizations.GetLString(Language, "0-62"),
+                    Localizations.GetLString(Language, "0-63"),
+                    Localizations.GetLString(Language, "0-64")
                 };
                 smoothing_list.Items.AddRange(smooth_list);
-                localization_update_btn.Text = Localizations.GetLString(Language, "159");
-                display_size_label.Text = Localizations.GetLString(Language, "0");
-                smoothing_label.Text = Localizations.GetLString(Language, "1");
-                console_label.Text = Localizations.GetLString(Language, "2");
-                nickname_label.Text = Localizations.GetLString(Language, "3");
-                host_btn_cp.Text = Localizations.GetLString(Language, "4");
-                connect_game_btn_cp.Text = Localizations.GetLString(Language, "5");
-                help_close_l.Text = Localizations.GetLString(Language, "6");
-                multiplayer_close_l.Text = Localizations.GetLString(Language, "6");
-                close_host_btn_l.Text = Localizations.GetLString(Language, "6");
-                start_multiplayer_game_r.Text = Localizations.GetLString(Language, "7");
-                start_btn_cp.Text = Localizations.GetLString(Language, "8");
-                select_mode_btn_r.Text = Localizations.GetLString(Language, "9");
-                close_game_mode_panel_l.Text = Localizations.GetLString(Language, "10");
-                easy_btn.Text = Localizations.GetLString(Language, "11");
-                normal_btn.Text = Localizations.GetLString(Language, "12");
-                hard_btn.Text = Localizations.GetLString(Language, "13");
-                very_hard_btn.Text = Localizations.GetLString(Language, "14");
-                custom_btn.Text = Localizations.GetLString(Language, "15");
-                close_difficulty_panel_l.Text = Localizations.GetLString(Language, "6");
-                start_game_btn_r.Text = Localizations.GetLString(Language, "7");
-                setting_btn_cp.Text = Localizations.GetLString(Language, "16");
-                volume_label.Text = Localizations.GetLString(Language, "17");
-                about_developers_btn_cp.Text = Localizations.GetLString(Language, "18");
-                open_help_btn_cp.Text = Localizations.GetLString(Language, "19");
-                bug_repor_btn_cp.Text = Localizations.GetLString(Language, "158");
-                create_translate_cp.Text = Localizations.GetLString(Language, "157");
-                exit_btn_cp.Text = Localizations.GetLString(Language, "20");
-                exit_label.Text = Localizations.GetLString(Language, "21");
-                exit_yes_btn_c.Text = Localizations.GetLString(Language, "22");
-                exit_no_btn_c.Text = Localizations.GetLString(Language, "23");
-                fatalan_about.Text = Localizations.GetLString(Language, "24");
-                qsvhu_about.Text = Localizations.GetLString(Language, "25");
-                koyo_about.Text = Localizations.GetLString(Language, "26");
-                fazzy_about.Text = Localizations.GetLString(Language, "175");
-                close_developers_r.Text = Localizations.GetLString(Language, "10");
-                all_settings.Text = Localizations.GetLString(Language, "27");
-                sounds_label.Text = Localizations.GetLString(Language, "28");
-                language_label.Text = Localizations.GetLString(Language, "29");
-                update_label.Text = Localizations.GetLString(Language, "30");
-                check_update_btn.Text = Localizations.GetLString(Language, "31");
-                video_settings.Text = Localizations.GetLString(Language, "32");
-                high_resolution_label.Text = Localizations.GetLString(Language, "33");
-                show_fps_label.Text = Localizations.GetLString(Language, "34");
-                show_minimap_label.Text = Localizations.GetLString(Language, "35");
-                scope_label.Text = Localizations.GetLString(Language, "36") + GetScopeType();
-                scope_color_label.Text = Localizations.GetLString(Language, "37") + GetScopeColor();
-                controls_settings.Text = Localizations.GetLString(Language, "38");
-                keyboard_settings.Text = Localizations.GetLString(Language, "39");
-                mouse_settings.Text = Localizations.GetLString(Language, "40");
-                sensitivity_label.Text = Localizations.GetLString(Language, "41");
-                invert_y_label.Text = Localizations.GetLString(Language, "42");
-                invert_x_label.Text = Localizations.GetLString(Language, "43");
-                clear_settings_l.Text = Localizations.GetLString(Language, "44");
-                close_settings_r.Text = Localizations.GetLString(Language, "10");
-                change_logs_close_btn_r.Text = Localizations.GetLString(Language, "10");
-                press_any_btn_label.Text = Localizations.GetLString(Language, "45");
-                cant_use_panel.Text = Localizations.GetLString(Language, "176");
-                screenshot_label.Text = Localizations.GetLString(Language, "46");
-                fire_btn_c.Text = Localizations.GetLString(Language, "47");
-                aim_btn_c.Text = Localizations.GetLString(Language, "48");
-                reloading_label.Text = Localizations.GetLString(Language, "49");
-                fire_label.Text = Localizations.GetLString(Language, "50");
-                aim_label.Text = Localizations.GetLString(Language, "51");
-                forward_label.Text = Localizations.GetLString(Language, "52");
-                back_label.Text = Localizations.GetLString(Language, "6");
-                left_label.Text = Localizations.GetLString(Language, "53");
-                right_label.Text = Localizations.GetLString(Language, "54");
-                interaction_label.Text = Localizations.GetLString(Language, "55");
-                show_map_label.Text = Localizations.GetLString(Language, "56");
-                flashlight_label.Text = Localizations.GetLString(Language, "57");
-                medkit_label.Text = Localizations.GetLString(Language, "58");
-                select_item_label.Text = Localizations.GetLString(Language, "59");
-                run_label.Text = Localizations.GetLString(Language, "60");
+                localization_update_btn.Text = Localizations.GetLString(Language, "0-90");
+                display_size_label.Text = Localizations.GetLString(Language, "0-0");
+                smoothing_label.Text = Localizations.GetLString(Language, "0-1");
+                console_label.Text = Localizations.GetLString(Language, "0-2");
+                nickname_label.Text = Localizations.GetLString(Language, "0-3");
+                host_btn_cp.Text = Localizations.GetLString(Language, "0-4");
+                connect_game_btn_cp.Text = Localizations.GetLString(Language, "0-5");
+                help_close_l.Text = Localizations.GetLString(Language, "0-6");
+                multiplayer_close_l.Text = Localizations.GetLString(Language, "0-6");
+                close_host_btn_l.Text = Localizations.GetLString(Language, "0-6");
+                start_multiplayer_game_r.Text = Localizations.GetLString(Language, "0-7");
+                start_btn_cp.Text = Localizations.GetLString(Language, "0-8");
+                select_mode_btn_r.Text = Localizations.GetLString(Language, "0-9");
+                close_game_mode_panel_l.Text = Localizations.GetLString(Language, "0-10");
+                easy_btn.Text = Localizations.GetLString(Language, "0-11");
+                normal_btn.Text = Localizations.GetLString(Language, "0-12");
+                hard_btn.Text = Localizations.GetLString(Language, "0-13");
+                very_hard_btn.Text = Localizations.GetLString(Language, "0-14");
+                custom_btn.Text = Localizations.GetLString(Language, "0-15");
+                close_difficulty_panel_l.Text = Localizations.GetLString(Language, "0-6");
+                start_game_btn_r.Text = Localizations.GetLString(Language, "0-7");
+                setting_btn_cp.Text = Localizations.GetLString(Language, "0-16");
+                volume_label.Text = Localizations.GetLString(Language, "0-17");
+                about_developers_btn_cp.Text = Localizations.GetLString(Language, "0-18");
+                open_help_btn_cp.Text = Localizations.GetLString(Language, "0-19");
+                bug_repor_btn_cp.Text = Localizations.GetLString(Language, "0-89");
+                create_translate_cp.Text = Localizations.GetLString(Language, "0-88");
+                exit_btn_cp.Text = Localizations.GetLString(Language, "0-20");
+                exit_label.Text = Localizations.GetLString(Language, "0-21");
+                exit_yes_btn_c.Text = Localizations.GetLString(Language, "0-22");
+                exit_no_btn_c.Text = Localizations.GetLString(Language, "0-23");
+                fatalan_about.Text = Localizations.GetLString(Language, "0-24");
+                qsvhu_about.Text = Localizations.GetLString(Language, "0-25");
+                koyo_about.Text = Localizations.GetLString(Language, "0-26");
+                fazzy_about.Text = Localizations.GetLString(Language, "0-106");
+                close_developers_r.Text = Localizations.GetLString(Language, "0-10");
+                all_settings.Text = Localizations.GetLString(Language, "0-27");
+                sounds_label.Text = Localizations.GetLString(Language, "0-28");
+                language_label.Text = Localizations.GetLString(Language, "0-29");
+                update_label.Text = Localizations.GetLString(Language, "0-30");
+                check_update_btn.Text = Localizations.GetLString(Language, "0-31");
+                video_settings.Text = Localizations.GetLString(Language, "0-32");
+                high_resolution_label.Text = Localizations.GetLString(Language, "0-33");
+                show_fps_label.Text = Localizations.GetLString(Language, "0-34");
+                show_minimap_label.Text = Localizations.GetLString(Language, "0-35");
+                scope_label.Text = Localizations.GetLString(Language, "0-36") + GetScopeType();
+                scope_color_label.Text = Localizations.GetLString(Language, "0-37") + GetScopeColor();
+                controls_settings.Text = Localizations.GetLString(Language, "0-38");
+                keyboard_settings.Text = Localizations.GetLString(Language, "0-39");
+                mouse_settings.Text = Localizations.GetLString(Language, "0-40");
+                sensitivity_label.Text = Localizations.GetLString(Language, "0-41");
+                invert_y_label.Text = Localizations.GetLString(Language, "0-42");
+                invert_x_label.Text = Localizations.GetLString(Language, "0-43");
+                clear_settings_l.Text = Localizations.GetLString(Language, "0-44");
+                close_settings_r.Text = Localizations.GetLString(Language, "0-10");
+                change_logs_close_btn_r.Text = Localizations.GetLString(Language, "0-10");
+                press_any_btn_label.Text = Localizations.GetLString(Language, "0-45");
+                cant_use_panel.Text = Localizations.GetLString(Language, "0-107");
+                screenshot_label.Text = Localizations.GetLString(Language, "0-46");
+                fire_btn_c.Text = Localizations.GetLString(Language, "0-47");
+                aim_btn_c.Text = Localizations.GetLString(Language, "0-48");
+                reloading_label.Text = Localizations.GetLString(Language, "0-49");
+                fire_label.Text = Localizations.GetLString(Language, "0-50");
+                aim_label.Text = Localizations.GetLString(Language, "0-51");
+                forward_label.Text = Localizations.GetLString(Language, "0-52");
+                back_label.Text = Localizations.GetLString(Language, "0-6");
+                left_label.Text = Localizations.GetLString(Language, "0-53");
+                right_label.Text = Localizations.GetLString(Language, "0-54");
+                interaction_label.Text = Localizations.GetLString(Language, "0-55");
+                show_map_label.Text = Localizations.GetLString(Language, "0-56");
+                flashlight_label.Text = Localizations.GetLString(Language, "0-57");
+                medkit_label.Text = Localizations.GetLString(Language, "0-58");
+                select_item_label.Text = Localizations.GetLString(Language, "0-59");
+                run_label.Text = Localizations.GetLString(Language, "0-60");
             }
             else
             {
@@ -808,112 +808,112 @@ namespace SLIL
             if (ConsoleEnabled)
             {
                 if (DownloadedLocalizationList)
-                    console_btn.Text = Localizations.GetLString(Language, "70");
+                    console_btn.Text = Localizations.GetLString(Language, "0-70");
                 else
                     console_btn.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    console_btn.Text = Localizations.GetLString(Language, "71");
+                    console_btn.Text = Localizations.GetLString(Language, "0-71");
                 else
                     console_btn.Text = "Off";
             }
             if (sounds)
             {
                 if (DownloadedLocalizationList)
-                    sounds_on_off.Text = Localizations.GetLString(Language, "70");
+                    sounds_on_off.Text = Localizations.GetLString(Language, "0-70");
                 else
                     sounds_on_off.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    sounds_on_off.Text = Localizations.GetLString(Language, "71");
+                    sounds_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     sounds_on_off.Text = "Off";
             }
             if (update_on_off.Checked)
             {
                 if (DownloadedLocalizationList)
-                    update_on_off.Text = Localizations.GetLString(Language, "70");
+                    update_on_off.Text = Localizations.GetLString(Language, "0-70");
                 else
                     update_on_off.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    update_on_off.Text = Localizations.GetLString(Language, "71");
+                    update_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     update_on_off.Text = "Off";
             }
             if (high_resolution_on_off.Checked)
             {
                 if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "70");
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-70");
                 else
                     high_resolution_on_off.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "71");
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     high_resolution_on_off.Text = "Off";
             }
             if (ShowFPS)
             {
                 if (DownloadedLocalizationList)
-                    show_fps_on_off.Text = Localizations.GetLString(Language, "70");
+                    show_fps_on_off.Text = Localizations.GetLString(Language, "0-70");
                 else
                     show_fps_on_off.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    show_fps_on_off.Text = Localizations.GetLString(Language, "71");
+                    show_fps_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     show_fps_on_off.Text = "Off";
             }
             if (ShowMiniMap)
             {
                 if (DownloadedLocalizationList)
-                    show_minimap.Text = Localizations.GetLString(Language, "70");
+                    show_minimap.Text = Localizations.GetLString(Language, "0-70");
                 else
                     show_minimap.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    show_minimap.Text = Localizations.GetLString(Language, "71");
+                    show_minimap.Text = Localizations.GetLString(Language, "0-71");
                 else
                     show_minimap.Text = "Off";
             }
             if (inv_y)
             {
                 if (DownloadedLocalizationList)
-                    invert_y.Text = Localizations.GetLString(Language, "70");
+                    invert_y.Text = Localizations.GetLString(Language, "0-70");
                 else
                     invert_y.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    invert_y.Text = Localizations.GetLString(Language, "71");
+                    invert_y.Text = Localizations.GetLString(Language, "0-71");
                 else
                     invert_y.Text = "Off";
             }
             if (inv_x)
             {
                 if (DownloadedLocalizationList)
-                    invert_x.Text = Localizations.GetLString(Language, "70");
+                    invert_x.Text = Localizations.GetLString(Language, "0-70");
                 else
                     invert_x.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    invert_x.Text = Localizations.GetLString(Language, "71");
+                    invert_x.Text = Localizations.GetLString(Language, "0-71");
                 else
                     invert_x.Text = "Off";
             }
@@ -936,7 +936,7 @@ namespace SLIL
             if (sounds)
             {
                 if (DownloadedLocalizationList)
-                    sounds_on_off.Text = Localizations.GetLString(Language, "70");
+                    sounds_on_off.Text = Localizations.GetLString(Language, "0-70");
                 else
                     sounds_on_off.Text = "On";
                 MainMenuTheme.Play(Volume);
@@ -944,7 +944,7 @@ namespace SLIL
             else
             {
                 if (DownloadedLocalizationList)
-                    sounds_on_off.Text = Localizations.GetLString(Language, "71");
+                    sounds_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     sounds_on_off.Text = "Off";
                 MainMenuTheme.Stop();
@@ -958,14 +958,14 @@ namespace SLIL
             if (ConsoleEnabled)
             {
                 if (DownloadedLocalizationList)
-                    console_btn.Text = Localizations.GetLString(Language, "70");
+                    console_btn.Text = Localizations.GetLString(Language, "0-70");
                 else
                     console_btn.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    console_btn.Text = Localizations.GetLString(Language, "71");
+                    console_btn.Text = Localizations.GetLString(Language, "0-71");
                 else
                     console_btn.Text = "Off";
             }
@@ -991,14 +991,14 @@ namespace SLIL
             if (update_on_off.Checked)
             {
                 if (DownloadedLocalizationList)
-                    update_on_off.Text = Localizations.GetLString(Language, "70");
+                    update_on_off.Text = Localizations.GetLString(Language, "0-70");
                 else
                     update_on_off.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    update_on_off.Text = Localizations.GetLString(Language, "71");
+                    update_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     update_on_off.Text = "Off";
             }
@@ -1017,14 +1017,14 @@ namespace SLIL
             if (high_resolution_on_off.Checked)
             {
                 if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "70");
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-70");
                 else
                     high_resolution_on_off.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "71");
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     high_resolution_on_off.Text = "Off";
             }
@@ -1043,23 +1043,23 @@ namespace SLIL
             {
                 case 0:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "72");
+                        return " " + Localizations.GetLString(Language, "0-72");
                     return "Standard";
                 case 1:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "73");
+                        return " " + Localizations.GetLString(Language, "0-73");
                     return "Cross";
                 case 2:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "74");
+                        return " " + Localizations.GetLString(Language, "0-74");
                     return "Line";
                 case 3:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "75");
+                        return " " + Localizations.GetLString(Language, "0-75");
                     return "Dot";
                 default:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "76");
+                        return " " + Localizations.GetLString(Language, "0-76");
                     return "No scope";
             }
         }
@@ -1070,39 +1070,39 @@ namespace SLIL
             {
                 case 0:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "77");
+                        return " " + Localizations.GetLString(Language, "0-77");
                     return "Green";
                 case 1:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "78");
+                        return " " + Localizations.GetLString(Language, "0-78");
                     return "Red";
                 case 2:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "79");
+                        return " " + Localizations.GetLString(Language, "0-79");
                     return "Yellow";
                 case 3:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "80");
+                        return " " + Localizations.GetLString(Language, "0-80");
                     return "Blue";
                 case 4:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "81");
+                        return " " + Localizations.GetLString(Language, "0-81");
                     return "Purple";
                 case 5:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "82");
+                        return " " + Localizations.GetLString(Language, "0-82");
                     return "Cyan";
                 case 6:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "83");
+                        return " " + Localizations.GetLString(Language, "0-83");
                     return "Orange";
                 case 7:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "84");
+                        return " " + Localizations.GetLString(Language, "0-84");
                     return "White";
                 default:
                     if (DownloadedLocalizationList)
-                        return " " + Localizations.GetLString(Language, "85");
+                        return " " + Localizations.GetLString(Language, "0-85");
                     return "Random";
             }
         }
@@ -1116,14 +1116,14 @@ namespace SLIL
             if (ShowMiniMap)
             {
                 if (DownloadedLocalizationList)
-                    show_minimap.Text = Localizations.GetLString(Language, "70");
+                    show_minimap.Text = Localizations.GetLString(Language, "0-70");
                 else
                     show_minimap.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    show_minimap.Text = Localizations.GetLString(Language, "71");
+                    show_minimap.Text = Localizations.GetLString(Language, "0-71");
                 else
                     show_minimap.Text = "Off";
             }
@@ -1136,14 +1136,14 @@ namespace SLIL
             if (ShowFPS)
             {
                 if (DownloadedLocalizationList)
-                    show_fps_on_off.Text = Localizations.GetLString(Language, "70");
+                    show_fps_on_off.Text = Localizations.GetLString(Language, "0-70");
                 else
                     show_fps_on_off.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    show_fps_on_off.Text = Localizations.GetLString(Language, "71");
+                    show_fps_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     show_fps_on_off.Text = "Off";
             }
@@ -1209,14 +1209,14 @@ namespace SLIL
             {
                 difficulty = 4;
                 if (DownloadedLocalizationList)
-                    start_game_btn_r.Text = Localizations.GetLString(Language, "15");
+                    start_game_btn_r.Text = Localizations.GetLString(Language, "0-15");
                 else
                     start_game_btn_r.Text = "Editor";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    start_game_btn_r.Text = Localizations.GetLString(Language, "7");
+                    start_game_btn_r.Text = Localizations.GetLString(Language, "0-7");
                 else
                     start_game_btn_r.Text = "Play";
                 if (easy_btn.Checked)
@@ -1303,7 +1303,7 @@ namespace SLIL
                 {
                     changes_list.Items.Clear();
                     if (DownloadedLocalizationList)
-                        changes_list.Items.Add(Localizations.GetLString(Language, "160"));
+                        changes_list.Items.Add(Localizations.GetLString(Language, "0-91"));
                     else
                         changes_list.Items.Add("Error getting changelog");
                     changes_list.Items.Add(er.Message);
@@ -1349,7 +1349,7 @@ namespace SLIL
             lose_focus.Focus();
             Clipboard.SetText(ip.Text);
             if (DownloadedLocalizationList)
-                MessageBox.Show(Localizations.GetLString(Language, "86"), Localizations.GetLString(Language, "87"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Localizations.GetLString(Language, "0-86"), Localizations.GetLString(Language, "0-87"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
                 MessageBox.Show("IP address successfully copied to clipboard", "IP Copying", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -1361,14 +1361,14 @@ namespace SLIL
             if (inv_y)
             {
                 if (DownloadedLocalizationList)
-                    invert_y.Text = Localizations.GetLString(Language, "70");
+                    invert_y.Text = Localizations.GetLString(Language, "0-70");
                 else
                     invert_y.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    invert_y.Text = Localizations.GetLString(Language, "71");
+                    invert_y.Text = Localizations.GetLString(Language, "0-71");
                 else
                     invert_y.Text = "Off";
             }
@@ -1518,14 +1518,14 @@ namespace SLIL
             if (inv_x)
             {
                 if (DownloadedLocalizationList)
-                    invert_x.Text = Localizations.GetLString(Language, "70");
+                    invert_x.Text = Localizations.GetLString(Language, "0-70");
                 else
                     invert_x.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    invert_x.Text = Localizations.GetLString(Language, "71");
+                    invert_x.Text = Localizations.GetLString(Language, "0-71");
                 else
                     invert_x.Text = "Off";
             }
@@ -1604,7 +1604,7 @@ namespace SLIL
         {
             scope_color = scope_color_choice.Value;
             if (DownloadedLocalizationList)
-                scope_color_label.Text = Localizations.GetLString(Language, "37") + GetScopeColor();
+                scope_color_label.Text = Localizations.GetLString(Language, "0-37") + GetScopeColor();
             else
                 scope_color_label.Text = "Scope color: " + GetScopeColor();
         }
@@ -1613,7 +1613,7 @@ namespace SLIL
         {
             scope_type = scope_choice.Value;
             if (DownloadedLocalizationList)
-                scope_label.Text = Localizations.GetLString(Language, "36") + GetScopeType();
+                scope_label.Text = Localizations.GetLString(Language, "0-36") + GetScopeType();
             else
                 scope_label.Text = "Scope: " + GetScopeType();
         }
