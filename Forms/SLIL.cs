@@ -1480,7 +1480,6 @@ namespace SLIL
                     int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
                     int drawStartY = (int)spriteTop;
                     int drawEndY = (int)spriteBottom;
-                    //parameters for scaling and moving the sprites
                     double vMove = entity.VMove;
                     int vMoveScreen = (int)(vMove / transformY);
                     int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
@@ -1588,8 +1587,7 @@ namespace SLIL
                         distance += 0.01d;
                         int test_x = (int)(player.X + ray_x * distance);
                         int test_y = (int)(player.Y + ray_y * distance);
-                        if (test_x < 0 || test_x >= (player.GetDrawDistance()) + player.X || test_y < 0 || test_y >= (player.GetDrawDistance()) + player.Y)
-                            hit = true;
+                        if (test_x < 0 || test_x >= (player.GetDrawDistance()) + player.X || test_y < 0 || test_y >= (player.GetDrawDistance()) + player.Y) hit = true;
                         else
                         {
                             char test_wall = Controller.GetMap()[test_y * Controller.GetMapWidth() + test_x];
@@ -1969,13 +1967,18 @@ namespace SLIL
 
         private void Mouse_hold_timer_Tick(object sender, EventArgs e)
         {
+            if (!GameStarted)
+            {
+                mouse_hold_timer.Stop();
+                return;
+            }
             Player player = Controller.GetPlayer();
             if (player.GetCurrentGun() is DisposableItem)
             {
                 mouse_hold_timer.Stop();
                 return;
             }
-            if (GameStarted && player.CanShoot && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
+            if (player.CanShoot && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
             {
                 if (player.GetCurrentGun().CanShoot && !player.IsPetting)
                 {
@@ -2020,7 +2023,6 @@ namespace SLIL
                 int drawEndY = (int)spriteBottom;
                 int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
                 int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
-                //parameters for scaling and moving the sprites
                 double vMove = Entities[spriteInfo[i].Order].VMove;
                 int vMoveScreen = (int)(vMove / transformY);
                 int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
