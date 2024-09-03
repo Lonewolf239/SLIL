@@ -1430,17 +1430,15 @@ namespace SLIL
                     bullet = new int[,] { { center_x + rand.Next(-maxXOffset, maxXOffset), center_y + rand.Next(-maxYOffset, maxYOffset) } };
                 else
                 {
-                    if (player.GetCurrentGun() is SubmachineGun && player.GetCurrentGun().Level == Levels.LV3)
-                    {
-                        bullet[0, 0] = center_x - 24;
-                        bullet[0, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
-                        bullet[1, 0] = center_x + 24;
-                        bullet[1, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
-                    }
                     for (int i = 0; i < player.GetCurrentGun().BulletCount; i++)
                     {
                         bullet[i, 0] = center_x + rand.Next(-maxXOffset, maxXOffset);
                         bullet[i, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
+                    }
+                    if (player.GetCurrentGun() is SubmachineGun && player.GetCurrentGun().Level == Levels.LV3)
+                    {
+                        bullet[0, 0] -= 5;
+                        bullet[1, 0] += 5;
                     }
                 }
                 double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
@@ -1742,7 +1740,10 @@ namespace SLIL
                             if (MainMenu.sounds)
                                 SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
                             shot_timer.Stop();
-                            shotgun_pull_timer.Start();
+                            if (player.GetCurrentGun().Level != Levels.LV1)
+                                shotgun_pull_timer.Start();
+                            else
+                                reload_timer.Start();
                         }
                     }
                     else

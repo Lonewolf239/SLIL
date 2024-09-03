@@ -315,6 +315,8 @@ namespace SLIL.Classes
             HasIt = false;
             ShowAmmoAsNumber = true;
             Name = new[] { "3-3", "Rainblower" };
+            Accuracy = 0.8;
+            BulletCount = 2;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 125;
@@ -603,6 +605,7 @@ namespace SLIL.Classes
             HasIt = false;
             HaveLV4 = false;
             Name = new[] { "3-6", "Submachine gun" };
+            Accuracy = 0.65;
             RechargeTime = 375;
             BulletCount = 2;
             PauseBetweenShooting = 175;
@@ -629,6 +632,7 @@ namespace SLIL.Classes
             if (Level == Levels.LV1)
             {
                 UpdateCost = 40;
+                Accuracy = 0.65;
                 BulletCount = 1;
                 PauseBetweenShooting = 175;
                 RechargeTime = 375;
@@ -645,6 +649,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV2)
             {
+                Accuracy = 0.8;
                 RechargeTime = 350;
                 BulletCount = 1;
                 PauseBetweenShooting = 150;
@@ -661,6 +666,7 @@ namespace SLIL.Classes
             }
             else
             {
+                Accuracy = 0.5;
                 RechargeTime = 350;
                 BulletCount = 2;
                 PauseBetweenShooting = 75;
@@ -691,6 +697,7 @@ namespace SLIL.Classes
             HasIt = false;
             HaveLV4 = false;
             Name = new[] { "3-7", "Assault rifle" };
+            Accuracy = 0.75;
             PauseBetweenShooting = 750;
             RechargeTime = 700;
             FiringRate = 100;
@@ -717,6 +724,7 @@ namespace SLIL.Classes
             {
                 UpdateCost = 50;
                 FireType = FireTypes.SemiAutomatic;
+                Accuracy = 0.75;
                 PauseBetweenShooting = 750;
                 RechargeTime = 700;
                 FiringRate = 100;
@@ -734,6 +742,7 @@ namespace SLIL.Classes
             else if (Level == Levels.LV2)
             {
                 FireType = FireTypes.SemiAutomatic;
+                Accuracy = 0.85;
                 PauseBetweenShooting = 650;
                 RechargeTime = 450;
                 FiringRate = 100;
@@ -751,6 +760,7 @@ namespace SLIL.Classes
             else
             {
                 FireType = FireTypes.Single;
+                Accuracy = 0.9;
                 PauseBetweenShooting = 500;
                 RechargeTime = 400;
                 CartridgesClip = 20;
@@ -784,6 +794,7 @@ namespace SLIL.Classes
             CanAiming = true;
             Name = new[] { "3-8", "Sniper rifle" };
             RechargeTime = 650;
+            Accuracy = 0.9;
             FiringRate = 200;
             UpdateCost = 60;
             GunCost = 55;
@@ -809,6 +820,7 @@ namespace SLIL.Classes
             {
                 AimingFactor = 4;
                 CanRun = true;
+                Accuracy = 0.9;
                 RechargeTime = 650;
                 CartridgesClip = 1;
                 MaxAmmo = CartridgesClip * 15;
@@ -826,6 +838,7 @@ namespace SLIL.Classes
             {
                 AimingFactor = 5;
                 CanRun = true;
+                Accuracy = 0.95;
                 RechargeTime = 650;
                 CartridgesClip = 10;
                 MaxAmmo = CartridgesClip * 4;
@@ -843,6 +856,7 @@ namespace SLIL.Classes
             {
                 AimingFactor = 12;
                 CanRun = false;
+                Accuracy = 1;
                 RechargeTime = 1000;
                 CartridgesClip = 10;
                 MaxAmmo = CartridgesClip * 4;
@@ -873,6 +887,7 @@ namespace SLIL.Classes
             HasIt = false;
             InMultiplayer = false;
             Name = new[] { "3-9", "Fingershot" };
+            Accuracy = 1;
             RechargeTime = 600;
             FiringRate = 175;
             CartridgesClip = 1;
@@ -905,6 +920,7 @@ namespace SLIL.Classes
             HasIt = false;
             InMultiplayer = false;
             Name = new[] { "3-10", "TSPitW" };
+            Accuracy = 0.8;
             RechargeTime = 750;
             FiringRate = 175;
             CartridgesClip = 7;

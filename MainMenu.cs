@@ -81,6 +81,8 @@ namespace SLIL
         public MainMenu()
         {
             InitializeComponent();
+            if (!File.Exists("UpdateDownloader.exe"))
+                DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
             if (File.Exists("data.cgf"))
                 CGFReader = new CGF_Reader("data.cgf");
             else
@@ -271,7 +273,13 @@ namespace SLIL
         private void DownloadFile(string url, string outputPath)
         {
             using (WebClient client = new WebClient())
-                client.DownloadFile(new Uri(url), outputPath);
+            {
+                try
+                {
+                    client.DownloadFile(new Uri(url), outputPath);
+                }
+                catch { }
+            }
         }
 
         private void Bug_report_btn_Click(object sender, EventArgs e)

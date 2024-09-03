@@ -197,7 +197,7 @@ namespace SLIL
             }
             else
             {
-                Text = MainMenu.Localizations.GetLString(MainMenu.Language, "15");
+                Text = MainMenu.Localizations.GetLString(MainMenu.Language, "0-15");
                 about.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "1-4");
                 size_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "1-5");
                 accept_size_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "1-6");
