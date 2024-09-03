@@ -293,6 +293,8 @@ namespace SLIL
 
         private void Koyo_hipolink_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://hipolink.me/koyomichu") { UseShellExecute = true });
 
+        private void Fazzy_telegram_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://t.me/Theripperofrice") { UseShellExecute = true });
+
         private void Close_developers_Click(object sender, EventArgs e) => developers_panel.Visible = false;
 
         private void MainMenu_FormClosing(object sender, FormClosingEventArgs e)
@@ -668,6 +670,7 @@ namespace SLIL
                 fatalan_about.Text = Localizations.GetLString(Language, "24");
                 qsvhu_about.Text = Localizations.GetLString(Language, "25");
                 koyo_about.Text = Localizations.GetLString(Language, "26");
+                fazzy_about.Text = Localizations.GetLString(Language, "175");
                 close_developers.Text = Localizations.GetLString(Language, "10");
                 all_settings.Text = Localizations.GetLString(Language, "27");
                 sounds_label.Text = Localizations.GetLString(Language, "28");
@@ -744,6 +747,7 @@ namespace SLIL
                 fatalan_about.Text = "Texturing, sprite rendering, enemy and pet AI";
                 qsvhu_about.Text = "Weapon sprites and sounds";
                 koyo_about.Text = "Textures, enemy sprites and menu background";
+                fazzy_about.Text = "Translation of the game into Ukrainian";
                 close_developers.Text = "Close";
                 all_settings.Text = "General";
                 sounds_label.Text = "Game sounds";

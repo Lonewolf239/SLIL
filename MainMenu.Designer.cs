@@ -228,6 +228,10 @@
             this.create_translate = new System.Windows.Forms.Button();
             this.bug_repor_btn = new System.Windows.Forms.Button();
             this.help_close = new System.Windows.Forms.Button();
+            this.fazzy_panel = new System.Windows.Forms.Panel();
+            this.fazzy_about = new System.Windows.Forms.Label();
+            this.fazzy_telegram = new System.Windows.Forms.Button();
+            this.fazzy_name = new System.Windows.Forms.Label();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -308,6 +312,7 @@
             this.connect_background.SuspendLayout();
             this.help_panel.SuspendLayout();
             this.help_background.SuspendLayout();
+            this.fazzy_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -425,7 +430,7 @@
             this.developers_panel.BackColor = System.Drawing.Color.DarkGray;
             this.developers_panel.Controls.Add(this.close_developers_panel);
             this.developers_panel.Controls.Add(this.developers_background);
-            this.developers_panel.Location = new System.Drawing.Point(1016, 12);
+            this.developers_panel.Location = new System.Drawing.Point(514, 582);
             this.developers_panel.Name = "developers_panel";
             this.developers_panel.Size = new System.Drawing.Size(496, 282);
             this.developers_panel.TabIndex = 50;
@@ -459,6 +464,7 @@
             // 
             this.developers_background.AutoScroll = true;
             this.developers_background.BackColor = System.Drawing.Color.Black;
+            this.developers_background.Controls.Add(this.fazzy_panel);
             this.developers_background.Controls.Add(this.koyo_panel);
             this.developers_background.Controls.Add(this.qsvhu_panel);
             this.developers_background.Controls.Add(this.fatalan_panel);
@@ -485,7 +491,7 @@
             this.koyo_about.ForeColor = System.Drawing.Color.White;
             this.koyo_about.Location = new System.Drawing.Point(6, 36);
             this.koyo_about.Name = "koyo_about";
-            this.koyo_about.Size = new System.Drawing.Size(440, 61);
+            this.koyo_about.Size = new System.Drawing.Size(464, 61);
             this.koyo_about.TabIndex = 50;
             this.koyo_about.Text = "Текстуры, спрайты врагов и фон меню";
             // 
@@ -2130,6 +2136,7 @@
             // custom_btn
             // 
             this.custom_btn.Appearance = System.Windows.Forms.Appearance.Button;
+            this.custom_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.custom_btn.ForeColor = System.Drawing.Color.White;
             this.custom_btn.Location = new System.Drawing.Point(10, 180);
             this.custom_btn.Name = "custom_btn";
@@ -2143,6 +2150,7 @@
             // very_hard_btn
             // 
             this.very_hard_btn.Appearance = System.Windows.Forms.Appearance.Button;
+            this.very_hard_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.very_hard_btn.ForeColor = System.Drawing.Color.White;
             this.very_hard_btn.Location = new System.Drawing.Point(10, 140);
             this.very_hard_btn.Name = "very_hard_btn";
@@ -2156,6 +2164,7 @@
             // hard_btn
             // 
             this.hard_btn.Appearance = System.Windows.Forms.Appearance.Button;
+            this.hard_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.hard_btn.ForeColor = System.Drawing.Color.White;
             this.hard_btn.Location = new System.Drawing.Point(10, 100);
             this.hard_btn.Name = "hard_btn";
@@ -2170,6 +2179,7 @@
             // 
             this.normal_btn.Appearance = System.Windows.Forms.Appearance.Button;
             this.normal_btn.Checked = true;
+            this.normal_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.normal_btn.ForeColor = System.Drawing.Color.White;
             this.normal_btn.Location = new System.Drawing.Point(10, 60);
             this.normal_btn.Name = "normal_btn";
@@ -2184,6 +2194,7 @@
             // easy_btn
             // 
             this.easy_btn.Appearance = System.Windows.Forms.Appearance.Button;
+            this.easy_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.easy_btn.ForeColor = System.Drawing.Color.White;
             this.easy_btn.Location = new System.Drawing.Point(10, 20);
             this.easy_btn.Name = "easy_btn";
@@ -2728,6 +2739,56 @@
             this.help_close.UseVisualStyleBackColor = false;
             this.help_close.Click += new System.EventHandler(this.Help_close_Click);
             // 
+            // fazzy_panel
+            // 
+            this.fazzy_panel.BackColor = System.Drawing.Color.Black;
+            this.fazzy_panel.Controls.Add(this.fazzy_about);
+            this.fazzy_panel.Controls.Add(this.fazzy_telegram);
+            this.fazzy_panel.Controls.Add(this.fazzy_name);
+            this.fazzy_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fazzy_panel.Location = new System.Drawing.Point(0, 545);
+            this.fazzy_panel.Name = "fazzy_panel";
+            this.fazzy_panel.Size = new System.Drawing.Size(473, 150);
+            this.fazzy_panel.TabIndex = 48;
+            // 
+            // fazzy_about
+            // 
+            this.fazzy_about.ForeColor = System.Drawing.Color.White;
+            this.fazzy_about.Location = new System.Drawing.Point(6, 36);
+            this.fazzy_about.Name = "fazzy_about";
+            this.fazzy_about.Size = new System.Drawing.Size(440, 61);
+            this.fazzy_about.TabIndex = 50;
+            this.fazzy_about.Text = "Переклад гри на Українську мову";
+            // 
+            // fazzy_telegram
+            // 
+            this.fazzy_telegram.AutoSize = true;
+            this.fazzy_telegram.BackColor = System.Drawing.Color.Black;
+            this.fazzy_telegram.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.fazzy_telegram.ForeColor = System.Drawing.Color.White;
+            this.fazzy_telegram.Location = new System.Drawing.Point(6, 100);
+            this.fazzy_telegram.Name = "fazzy_telegram";
+            this.fazzy_telegram.Size = new System.Drawing.Size(130, 41);
+            this.fazzy_telegram.TabIndex = 48;
+            this.fazzy_telegram.TabStop = false;
+            this.fazzy_telegram.Text = "Telegram";
+            this.fazzy_telegram.UseVisualStyleBackColor = false;
+            this.fazzy_telegram.Click += new System.EventHandler(this.Fazzy_telegram_Click);
+            // 
+            // fazzy_name
+            // 
+            this.fazzy_name.BackColor = System.Drawing.Color.Transparent;
+            this.fazzy_name.Cursor = System.Windows.Forms.Cursors.Default;
+            this.fazzy_name.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fazzy_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fazzy_name.ForeColor = System.Drawing.Color.White;
+            this.fazzy_name.Location = new System.Drawing.Point(0, 0);
+            this.fazzy_name.Name = "fazzy_name";
+            this.fazzy_name.Size = new System.Drawing.Size(473, 36);
+            this.fazzy_name.TabIndex = 43;
+            this.fazzy_name.Text = "Fazzy";
+            this.fazzy_name.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2735,6 +2796,7 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1251, 896);
+            this.Controls.Add(this.developers_panel);
             this.Controls.Add(this.help_panel);
             this.Controls.Add(this.game_mode_panel);
             this.Controls.Add(this.exit_panel);
@@ -2743,7 +2805,6 @@
             this.Controls.Add(this.multiplayer_panel);
             this.Controls.Add(this.change_logs_panel);
             this.Controls.Add(this.press_any_btn_panel);
-            this.Controls.Add(this.developers_panel);
             this.Controls.Add(this.buttons_panel);
             this.Controls.Add(this.difficulty_panel);
             this.Controls.Add(this.version_label);
@@ -2864,6 +2925,8 @@
             this.help_panel.ResumeLayout(false);
             this.help_background.ResumeLayout(false);
             this.help_background.PerformLayout();
+            this.fazzy_panel.ResumeLayout(false);
+            this.fazzy_panel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3069,5 +3132,9 @@
         private System.Windows.Forms.Panel localization_panel;
         private System.Windows.Forms.Button localization_update_btn;
         private System.Windows.Forms.PictureBox localization_error_pic;
+        private System.Windows.Forms.Panel fazzy_panel;
+        private System.Windows.Forms.Label fazzy_about;
+        private System.Windows.Forms.Button fazzy_telegram;
+        private System.Windows.Forms.Label fazzy_name;
     }
 }

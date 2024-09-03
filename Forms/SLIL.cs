@@ -491,6 +491,7 @@ namespace SLIL
         public SLIL(TextureCache textures)
         {
             InitializeComponent();
+            SetLocalization();
             StartGameHandle = StartGameInvokerSinglePlayer;
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
@@ -506,6 +507,7 @@ namespace SLIL
         public SLIL(TextureCache textures, bool custom, StringBuilder customMap, int mazeWidth, int mazeHeight, int customX, int customY)
         {
             InitializeComponent();
+            SetLocalization();
             StartGameHandle = StartGameInvokerSinglePlayer;
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
@@ -527,6 +529,7 @@ namespace SLIL
         public SLIL(TextureCache textures, string adress, int port)
         {
             InitializeComponent();
+            SetLocalization();
             StartGameHandle = StartGameInvokerMultiPlayer;
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
@@ -537,6 +540,30 @@ namespace SLIL
             Bind = new BindControls(MainMenu.BindControls);
             SetParameters();
             textureCache = textures;
+        }
+
+        private void SetLocalization()
+        {
+            if (!MainMenu.DownloadedLocalizationList)
+            {
+                shop_title.Text = "SHOP";
+                weapon_shop_page.Text = "Weapons";
+                pet_shop_page.Text = "Pets";
+                consumables_shop_page.Text = "Other";
+                pause_text.Text = "PAUSE";
+                pause_btn.Text = "CONTINUE";
+                exit_btn.Text = "EXIT";
+            }
+            else
+            {
+                shop_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "115");
+                weapon_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "116");
+                pet_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "117");
+                consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "118");
+                pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "119");
+                pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "120");
+                exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "121");
+            }
         }
 
         private void SetParameters()
@@ -2821,26 +2848,6 @@ namespace SLIL
         {
             Controller.RestartGame();
             Player player = Controller.GetPlayer();
-            if (!MainMenu.DownloadedLocalizationList)
-            {
-                shop_title.Text = "SHOP";
-                weapon_shop_page.Text = "Weapons";
-                pet_shop_page.Text = "Pets";
-                consumables_shop_page.Text = "Other";
-                pause_text.Text = "PAUSE";
-                pause_btn.Text = "CONTINUE";
-                exit_btn.Text = "EXIT";
-            }
-            else
-            {
-                shop_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "115");
-                weapon_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "116");
-                pet_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "117");
-                consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "118");
-                pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "119");
-                pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "120");
-                exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "121");
-            }
             if (console_panel == null)
             {
                 console_panel = new ConsolePanel()
@@ -2848,7 +2855,6 @@ namespace SLIL
                     Dock = DockStyle.Fill,
                     Visible = false,
                     player = player,
-                    //GUNS = player.GUNS,
                     Entities = Controller.GetEntities()
                 };
                 console_panel.Log("SLIL console *v1.3*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
@@ -2902,9 +2908,7 @@ namespace SLIL
         private void GameOver(int win)
         {
             foreach (PlaySound ostTrack in ost)
-            {
                 ostTrack?.Stop();
-            }
             raycast.Stop();
             shot_timer.Stop();
             reload_timer.Stop();
@@ -2922,7 +2926,6 @@ namespace SLIL
                 if (MainMenu.sounds)
                     tp.Play(Volume);
                 StartGame();
-                //UpdatePet();
             }
             else if (win == 0)
             {
@@ -2932,8 +2935,7 @@ namespace SLIL
                 if (MainMenu.sounds)
                     game_over.Play(Volume);
             }
-            else
-                ToDefault();
+            else ToDefault();
         }
 
         internal void BuyAmmo(Gun weapon) => Controller.BuyAmmo(weapon);
