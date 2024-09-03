@@ -353,6 +353,7 @@ namespace SLIL.Classes
             HasIt = true;
             HaveLV4 = true;
             Name = new[] { "131", "Pistol" };
+            Accuracy = 0.8;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 175;
@@ -382,6 +383,7 @@ namespace SLIL.Classes
             if (Level == Levels.LV1)
             {
                 UpdateCost = 20;
+                Accuracy = 0.8;
                 RechargeTime = 600;
                 CartridgesClip = 8;
                 MaxAmmo = CartridgesClip * 6;
@@ -397,6 +399,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV2)
             {
+                Accuracy = 0.85;
                 RechargeTime = 350;
                 CartridgesClip = 12;
                 MaxAmmo = CartridgesClip * 7;
@@ -412,6 +415,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV3)
             {
+                Accuracy = 0.8;
                 RechargeTime = 400;
                 CartridgesClip = 7;
                 MaxAmmo = CartridgesClip * 6;
@@ -427,6 +431,7 @@ namespace SLIL.Classes
             }
             else
             {
+                Accuracy = 1;
                 RechargeTime = 400;
                 CartridgesClip = 6;
                 MaxAmmo = CartridgesClip * 6;
@@ -458,7 +463,7 @@ namespace SLIL.Classes
             HasIt = false;
             HaveLV4 = false;
             Name = new[] { "132", "Shotgun" };
-            Accuracy = 0.0;
+            Accuracy = 0;
             BulletCount = 4;
             PauseBetweenShooting = 350;
             RechargeTime = 425;
@@ -530,6 +535,7 @@ namespace SLIL.Classes
             if (Level == Levels.LV1)
             {
                 UpdateCost = 30;
+                BulletCount = 4;
                 PauseBetweenShooting = 350;
                 RechargeTime = 425;
                 FiringRate = 200;
@@ -547,6 +553,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV2)
             {
+                BulletCount = 5;
                 PauseBetweenShooting = 500;
                 RechargeTime = 325;
                 FiringRate = 200;
@@ -564,6 +571,7 @@ namespace SLIL.Classes
             }
             else
             {
+                BulletCount = 6;
                 PauseBetweenShooting = 500;
                 RechargeTime = 325;
                 FiringRate = 200;
@@ -596,6 +604,7 @@ namespace SLIL.Classes
             HaveLV4 = false;
             Name = new[] { "133", "Submachine gun" };
             RechargeTime = 375;
+            BulletCount = 2;
             PauseBetweenShooting = 175;
             FiringRate = 50;
             UpdateCost = 40;
@@ -842,7 +851,7 @@ namespace SLIL.Classes
                 MinDamage = 19;
                 RecoilY = 150;
                 RecoilX = 4.25;
-                FiringRate = 300;
+                FiringRate = 490;
                 BurstShots = 1;
                 RadiusSound = 20;
                 ReloadFrames = 2;

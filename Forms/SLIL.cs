@@ -1432,9 +1432,9 @@ namespace SLIL
                 {
                     if (player.GetCurrentGun() is SubmachineGun && player.GetCurrentGun().Level == Levels.LV3)
                     {
-                        bullet[0, 0] = center_x - 16;
+                        bullet[0, 0] = center_x - 24;
                         bullet[0, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
-                        bullet[1, 0] = center_x + 16;
+                        bullet[1, 0] = center_x + 24;
                         bullet[1, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
                     }
                     for (int i = 0; i < player.GetCurrentGun().BulletCount; i++)

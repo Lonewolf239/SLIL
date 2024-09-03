@@ -18,7 +18,7 @@ namespace SLIL
 {
     public partial class MainMenu : Form
     {
-        private const string current_version = "|1.1.1a|";
+        private const string current_version = "|1.2|";
         public static string iniFolder = "config.ini";
         public bool downloadedLocalizationList = false;
         public Localization localizations;
@@ -549,20 +549,20 @@ namespace SLIL
 
         private void SetVisualSettings()
         {
-            screenshot_btn.Text = BindControls["screenshot"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            reloading_btn.Text = BindControls["reloading"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            forward_btn.Text = BindControls["forward"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            back_btn.Text = BindControls["back"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            left_btn.Text = BindControls["left"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            right_btn.Text = BindControls["right"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            interaction_0_btn.Text = BindControls["interaction_0"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            interaction_1_btn.Text = BindControls["interaction_1"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            show_map_0_btn.Text = BindControls["show_map_0"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            show_map_1_btn.Text = BindControls["show_map_1"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            flashlight_btn.Text = BindControls["flashlight"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            item_btn.Text = BindControls["item"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            select_item_btn.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            run_btn.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            screenshot_btn_c.Text = BindControls["screenshot"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            reloading_btn_c.Text = BindControls["reloading"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            forward_btn_c.Text = BindControls["forward"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            back_btn_c.Text = BindControls["back"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            left_btn_c.Text = BindControls["left"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            right_btn_c.Text = BindControls["right"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            interaction_0_btn_c.Text = BindControls["interaction_0"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            interaction_1_btn_c.Text = BindControls["interaction_1"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            show_map_0_btn_c.Text = BindControls["show_map_0"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            show_map_1_btn_c.Text = BindControls["show_map_1"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            flashlight_btn_c.Text = BindControls["flashlight"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            item_btn_c.Text = BindControls["item"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            select_item_btn_c.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            run_btn_c.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
             language_list.SelectedIndex = DownloadedLocalizationList
                 ? language_list.Items.IndexOf(Language) : 0;
             localization_error_pic.Visible = !DownloadedLocalizationList;
@@ -623,6 +623,22 @@ namespace SLIL
             }
         }
 
+        private void ResizeButtonsInControl(Control control)
+        {
+            if (control is Button button && !control.Name.EndsWith("_c"))
+            {
+                button.Size = new Size(0, 0);
+                if (button.Name.EndsWith("_r"))
+                    button.Left = button.Parent.Width - button.Width - 7;
+                else if (button.Name.EndsWith("_l"))
+                    button.Left = 7;
+                else if (button.Name.EndsWith("_cp"))
+                    button.Left = (button.Parent.Width - button.Width) / 2;
+            }
+            foreach (Control childControl in control.Controls)
+                ResizeButtonsInControl(childControl);
+        }
+
         private void SetLanguage()
         {
             smoothing_list.Items.Clear();
@@ -641,37 +657,37 @@ namespace SLIL
                 smoothing_label.Text = Localizations.GetLString(Language, "1");
                 console_label.Text = Localizations.GetLString(Language, "2");
                 nickname_label.Text = Localizations.GetLString(Language, "3");
-                host_btn.Text = Localizations.GetLString(Language, "4");
-                connect_game_btn.Text = Localizations.GetLString(Language, "5");
-                help_close.Text = Localizations.GetLString(Language, "6");
-                multiplayer_close.Text = Localizations.GetLString(Language, "6");
-                close_host_btn.Text = Localizations.GetLString(Language, "6");
-                start_multiplayer_game.Text = Localizations.GetLString(Language, "7");
-                start_btn.Text = Localizations.GetLString(Language, "8");
-                select_mode_btn.Text = Localizations.GetLString(Language, "9");
-                close_game_mode_panel.Text = Localizations.GetLString(Language, "10");
+                host_btn_cp.Text = Localizations.GetLString(Language, "4");
+                connect_game_btn_cp.Text = Localizations.GetLString(Language, "5");
+                help_close_l.Text = Localizations.GetLString(Language, "6");
+                multiplayer_close_l.Text = Localizations.GetLString(Language, "6");
+                close_host_btn_l.Text = Localizations.GetLString(Language, "6");
+                start_multiplayer_game_r.Text = Localizations.GetLString(Language, "7");
+                start_btn_cp.Text = Localizations.GetLString(Language, "8");
+                select_mode_btn_r.Text = Localizations.GetLString(Language, "9");
+                close_game_mode_panel_l.Text = Localizations.GetLString(Language, "10");
                 easy_btn.Text = Localizations.GetLString(Language, "11");
                 normal_btn.Text = Localizations.GetLString(Language, "12");
                 hard_btn.Text = Localizations.GetLString(Language, "13");
                 very_hard_btn.Text = Localizations.GetLString(Language, "14");
                 custom_btn.Text = Localizations.GetLString(Language, "15");
-                close_difficulty_panel.Text = Localizations.GetLString(Language, "6");
-                start_game_btn.Text = Localizations.GetLString(Language, "7");
-                setting_btn.Text = Localizations.GetLString(Language, "16");
+                close_difficulty_panel_l.Text = Localizations.GetLString(Language, "6");
+                start_game_btn_r.Text = Localizations.GetLString(Language, "7");
+                setting_btn_cp.Text = Localizations.GetLString(Language, "16");
                 volume_label.Text = Localizations.GetLString(Language, "17");
-                about_developers_btn.Text = Localizations.GetLString(Language, "18");
-                open_help_btn.Text = Localizations.GetLString(Language, "19");
-                bug_repor_btn.Text = Localizations.GetLString(Language, "158");
-                create_translate.Text = Localizations.GetLString(Language, "157");
-                exit_btn.Text = Localizations.GetLString(Language, "20");
+                about_developers_btn_cp.Text = Localizations.GetLString(Language, "18");
+                open_help_btn_cp.Text = Localizations.GetLString(Language, "19");
+                bug_repor_btn_cp.Text = Localizations.GetLString(Language, "158");
+                create_translate_cp.Text = Localizations.GetLString(Language, "157");
+                exit_btn_cp.Text = Localizations.GetLString(Language, "20");
                 exit_label.Text = Localizations.GetLString(Language, "21");
-                exit_yes_btn.Text = Localizations.GetLString(Language, "22");
-                exit_no_btn.Text = Localizations.GetLString(Language, "23");
+                exit_yes_btn_c.Text = Localizations.GetLString(Language, "22");
+                exit_no_btn_c.Text = Localizations.GetLString(Language, "23");
                 fatalan_about.Text = Localizations.GetLString(Language, "24");
                 qsvhu_about.Text = Localizations.GetLString(Language, "25");
                 koyo_about.Text = Localizations.GetLString(Language, "26");
                 fazzy_about.Text = Localizations.GetLString(Language, "175");
-                close_developers.Text = Localizations.GetLString(Language, "10");
+                close_developers_r.Text = Localizations.GetLString(Language, "10");
                 all_settings.Text = Localizations.GetLString(Language, "27");
                 sounds_label.Text = Localizations.GetLString(Language, "28");
                 language_label.Text = Localizations.GetLString(Language, "29");
@@ -689,13 +705,14 @@ namespace SLIL
                 sensitivity_label.Text = Localizations.GetLString(Language, "41");
                 invert_y_label.Text = Localizations.GetLString(Language, "42");
                 invert_x_label.Text = Localizations.GetLString(Language, "43");
-                clear_settings.Text = Localizations.GetLString(Language, "44");
-                close_settings.Text = Localizations.GetLString(Language, "10");
-                change_logs_close_btn.Text = Localizations.GetLString(Language, "10");
+                clear_settings_l.Text = Localizations.GetLString(Language, "44");
+                close_settings_r.Text = Localizations.GetLString(Language, "10");
+                change_logs_close_btn_r.Text = Localizations.GetLString(Language, "10");
                 press_any_btn_label.Text = Localizations.GetLString(Language, "45");
+                cant_use_panel.Text = Localizations.GetLString(Language, "176");
                 screenshot_label.Text = Localizations.GetLString(Language, "46");
-                fire_btn.Text = Localizations.GetLString(Language, "47");
-                aim_btn.Text = Localizations.GetLString(Language, "48");
+                fire_btn_c.Text = Localizations.GetLString(Language, "47");
+                aim_btn_c.Text = Localizations.GetLString(Language, "48");
                 reloading_label.Text = Localizations.GetLString(Language, "49");
                 fire_label.Text = Localizations.GetLString(Language, "50");
                 aim_label.Text = Localizations.GetLString(Language, "51");
@@ -718,37 +735,37 @@ namespace SLIL
                 smoothing_label.Text = "Smoothing";
                 console_label.Text = "Developer console";
                 nickname_label.Text = "Player name:";
-                host_btn.Text = "Create game";
-                connect_game_btn.Text = "Join";
-                help_close.Text = "Back";
-                multiplayer_close.Text = "Back";
-                close_host_btn.Text = "Back";
-                start_multiplayer_game.Text = "Play";
-                start_btn.Text = "Start game";
-                select_mode_btn.Text = "Select";
-                close_game_mode_panel.Text = "Close";
+                host_btn_cp.Text = "Create game";
+                connect_game_btn_cp.Text = "Join";
+                help_close_l.Text = "Back";
+                multiplayer_close_l.Text = "Back";
+                close_host_btn_l.Text = "Back";
+                start_multiplayer_game_r.Text = "Play";
+                start_btn_cp.Text = "Start game";
+                select_mode_btn_r.Text = "Select";
+                close_game_mode_panel_l.Text = "Close";
                 easy_btn.Text = "Easy";
                 normal_btn.Text = "Normal";
                 hard_btn.Text = "Difficult";
                 very_hard_btn.Text = "Very difficult";
                 custom_btn.Text = "Editor";
-                close_difficulty_panel.Text = "Return";
-                start_game_btn.Text = "Play";
+                close_difficulty_panel_l.Text = "Return";
+                start_game_btn_r.Text = "Play";
                 volume_label.Text = "Volume";
-                setting_btn.Text = "Settings";
-                about_developers_btn.Text = "About developers";
-                open_help_btn.Text = "Feedback";
-                bug_repor_btn.Text = "Report a bug";
-                create_translate.Text = "Add localization";
-                exit_btn.Text = "Exit game";
+                setting_btn_cp.Text = "Settings";
+                about_developers_btn_cp.Text = "About developers";
+                open_help_btn_cp.Text = "Feedback";
+                bug_repor_btn_cp.Text = "Report a bug";
+                create_translate_cp.Text = "Add localization";
+                exit_btn_cp.Text = "Exit game";
                 exit_label.Text = "Do you really want to leave?";
-                exit_yes_btn.Text = "Yes";
-                exit_no_btn.Text = "No";
+                exit_yes_btn_c.Text = "Yes";
+                exit_no_btn_c.Text = "No";
                 fatalan_about.Text = "Texturing, sprite rendering, enemy and pet AI";
                 qsvhu_about.Text = "Weapon sprites and sounds";
                 koyo_about.Text = "Textures, enemy sprites and menu background";
                 fazzy_about.Text = "Translation of the game into Ukrainian";
-                close_developers.Text = "Close";
+                close_developers_r.Text = "Close";
                 all_settings.Text = "General";
                 sounds_label.Text = "Game sounds";
                 language_label.Text = "Language";
@@ -766,13 +783,14 @@ namespace SLIL
                 sensitivity_label.Text = "Mouse sensitivity";
                 invert_y_label.Text = "Invert Y-axis";
                 invert_x_label.Text = "Invert X-axis";
-                clear_settings.Text = "Reset";
-                close_settings.Text = "Close";
-                change_logs_close_btn.Text = "Close";
+                clear_settings_l.Text = "Reset";
+                close_settings_r.Text = "Close";
+                change_logs_close_btn_r.Text = "Close";
                 press_any_btn_label.Text = "Press any button or ESC to cancel";
+                cant_use_panel.Text = "This button can't be used!";
                 screenshot_label.Text = "Screenshot";
-                fire_btn.Text = "LMB";
-                aim_btn.Text = "RMB";
+                fire_btn_c.Text = "LMB";
+                aim_btn_c.Text = "RMB";
                 reloading_label.Text = "Reloading";
                 fire_label.Text = "Shot";
                 aim_label.Text = "Aiming";
@@ -901,18 +919,7 @@ namespace SLIL
             }
             smoothing_list.SelectedIndex = smoothing;
             GetDifficulty();
-            start_btn.Size = new Size(0, 0);
-            setting_btn.Size = new Size(0, 0);
-            about_developers_btn.Size = new Size(0, 0);
-            open_help_btn.Size = new Size(0, 0);
-            exit_btn.Size = new Size(0, 0);
-            localization_update_btn.Size = new Size(0, 0);
-            check_update_btn.Size = new Size(0, 0);
-            start_btn.Left = (button_background.Width - start_btn.Width) / 2;
-            setting_btn.Left = (button_background.Width - setting_btn.Width) / 2;
-            about_developers_btn.Left = (button_background.Width - about_developers_btn.Width) / 2;
-            open_help_btn.Left = (button_background.Width - open_help_btn.Width) / 2;
-            exit_btn.Left = (button_background.Width - exit_btn.Width) / 2;
+            ResizeButtonsInControl(this);
         }
 
         private void Start_btn_Click(object sender, EventArgs e)
@@ -1202,13 +1209,16 @@ namespace SLIL
             {
                 difficulty = 4;
                 if (DownloadedLocalizationList)
-                    start_game_btn.Text = Localizations.GetLString(Language, "15");
+                    start_game_btn_r.Text = Localizations.GetLString(Language, "15");
                 else
-                    start_game_btn.Text = "Editor";
+                    start_game_btn_r.Text = "Editor";
             }
             else
             {
-                start_game_btn.Text = Localizations.GetLString(Language, "7");
+                if (DownloadedLocalizationList)
+                    start_game_btn_r.Text = Localizations.GetLString(Language, "7");
+                else
+                    start_game_btn_r.Text = "Play";
                 if (easy_btn.Checked)
                     difficulty = 3;
                 else if (normal_btn.Checked)
@@ -1218,6 +1228,8 @@ namespace SLIL
                 else
                     difficulty = 0;
             }
+            start_game_btn_r.Size = new Size(0, 0);
+            start_game_btn_r.Left = start_game_btn_r.Parent.Width - start_game_btn_r.Width - 7;
             GetDifficulty();
         }
 
@@ -1283,7 +1295,7 @@ namespace SLIL
                     using (WebClient client = new WebClient())
                     {
                         client.Encoding = Encoding.UTF8;
-                        string[] changes = client.DownloadString($"https://base-escape.ru/SLILLocalization/Changelogs/{Language}.txt").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                        string[] changes = client.DownloadString($"https://base-escape.ru/SLILLocalization/Changelogs/{Language}.txt").Replace("@", "\t\t\tv").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                         changes_list.Items.AddRange(changes);
                     }
                 }
@@ -1320,6 +1332,7 @@ namespace SLIL
             }
             else
             {
+                return;
                 multiplayer_panel.Visible = true;
                 multiplayer_panel.BringToFront();
             }
@@ -1623,12 +1636,15 @@ namespace SLIL
                     press_any_btn_panel.Visible = false;
                     return;
                 }
-                if (BindControls.ContainsValue(key) || key == Keys.Oemtilde || key.ToString().StartsWith("Num") || (key.ToString().StartsWith("D") && key.ToString().Length == 2))
+                if (BindControls.ContainsValue(key) || key.ToString().StartsWith("Oem") || key.ToString().StartsWith("Num") || (key.ToString().StartsWith("D") && key.ToString().Length == 2))
+                {
+                    cant_use_panel.Visible = true;
                     return;
+                }
                 if (BindControls.ContainsKey(SelectButtonName))
                 {
                     BindControls[SelectButtonName] = key;
-                    Button btn = Controls.Find(SelectButtonName + "_btn", true)[0] as Button;
+                    Button btn = Controls.Find(SelectButtonName + "_btn_c", true)[0] as Button;
                     btn.Text = key.ToString().Replace("Key", null).Replace("Return", "Enter");
                     ChangeControlButton = false;
                     press_any_btn_panel.Visible = false;
@@ -1643,7 +1659,8 @@ namespace SLIL
             if (!ChangeControlButton)
             {
                 ChangeControlButton = true;
-                SelectButtonName = (sender as Button).Name.Replace("_btn", null);
+                SelectButtonName = (sender as Button).Name.Replace("_btn_c", null);
+                cant_use_panel.Visible = false;
                 press_any_btn_panel.Visible = true;
                 press_any_btn_panel.BringToFront();
             }
