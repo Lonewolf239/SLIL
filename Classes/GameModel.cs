@@ -155,7 +155,7 @@ namespace SLIL.Classes
                     {
                         if (distance <= 22)
                         {
-                            if (!entity.DEAD)
+                            if (!entity.DEAD && !player.Dead)
                             {
                                 entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
                                 if (entity.Fast)

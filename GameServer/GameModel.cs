@@ -138,7 +138,7 @@ namespace SLIL.Classes
                     {
                         if (distance <= 22)
                         {
-                            if (!entity.DEAD)
+                            if (!entity.DEAD && !player.Dead)
                             {
                                 entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
                                 if (entity.Fast)
@@ -159,6 +159,7 @@ namespace SLIL.Classes
                                         if (player.HP <= 0)
                                         {
                                             Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                            sendMessageFromGameCallback(666);
                                             //GameOver(0);
                                             return;
                                         }
