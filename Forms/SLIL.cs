@@ -1309,6 +1309,7 @@ namespace SLIL
         private void ChangeWeapon(int new_gun)
         {
             Player player = Controller.GetPlayer();
+            if (player == null) return;
             if ((new_gun != player.CurrentGun || player.LevelUpdated) && !InSelectingMode && player.Guns[new_gun].HasIt)
             {
                 if (MainMenu.sounds) draw.Play(Volume);
