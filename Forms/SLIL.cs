@@ -2380,7 +2380,7 @@ namespace SLIL
             else if (index == 2) x += icon_size * 2;
             else if (index == 3) y += icon_size * 2;
             RectangleF circleRect = new RectangleF(x, y, icon_size, icon_size);
-            using (Pen pen = !selected ? new Pen(Color.FromArgb(100, 150, 200), 3.75f) : new Pen(Color.FromArgb(150, 200, 250), 5f))
+            using (Pen pen = !selected ? new Pen(Color.FromArgb(100, 150, 200), 3.75f) : new Pen(Color.FromArgb(125, 175, 225), 5f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
             if (selected) DrawArrow(cursor_x, cursor_y);
             graphicsWeapon.DrawImage(item_image, x, y, icon_size, icon_size);
@@ -2388,7 +2388,7 @@ namespace SLIL
 
         private void DrawArrow(int targetX, int targetY)
         {
-            int arrowLength = 15 + (15 * resolution);
+            int arrowLength = resolution == 0 ? 12 : 24;
             float angle = (float)Math.Atan2(targetY - (center_y - 1), targetX - (center_x - 1));
             PointF arrowTip = new PointF(
                 (center_x - 1) + (float)(arrowLength * Math.Cos(angle)),
