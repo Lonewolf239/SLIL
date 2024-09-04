@@ -235,7 +235,7 @@ namespace SLIL.Classes
 
         public bool DealDamage(Entity ent, double damage)
         {
-            if (!_isInSpectatorMode) return false;
+            if (_isInSpectatorMode) return false;
             if (peer != null)
             {
                 NetDataWriter writer = new NetDataWriter();
