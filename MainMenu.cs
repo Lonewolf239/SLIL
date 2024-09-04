@@ -18,7 +18,7 @@ namespace SLIL
 {
     public partial class MainMenu : Form
     {
-        private const string current_version = "|1.1.1a|";
+        private const string current_version = "|1.2|";
         public static string iniFolder = "config.ini";
         public bool downloadedLocalizationList = false;
         public Localization localizations;

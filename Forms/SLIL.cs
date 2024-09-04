@@ -27,6 +27,7 @@ namespace SLIL
     public partial class SLIL : Form
     {
         private readonly GameController Controller;
+        private bool InSelectingMode = false;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
         public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
@@ -956,12 +957,7 @@ namespace SLIL
                             }
                         }
                         if (e.KeyCode == Bind.SelectItem)
-                        {
-                            int selected_item = player.SelectedItem;
-                            selected_item++;
-                            if (selected_item >= player.DisposableItems.Count) selected_item = 0;
-                            player.SelectedItem = selected_item;
-                        }
+                            InSelectingMode = true;
                         if (e.KeyCode == Keys.D1)
                         {
                             TakeFlashlight(false);
@@ -1068,6 +1064,8 @@ namespace SLIL
                 {
                     if (e.KeyCode == Bind.Flashlight)
                         TakeFlashlight(true);
+                    if (e.KeyCode == Bind.SelectItem)
+                        InSelectingMode = false;
                     if (e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1)
                     {
                         double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
@@ -1432,9 +1430,9 @@ namespace SLIL
                 {
                     if (player.GetCurrentGun() is SubmachineGun && player.GetCurrentGun().Level == Levels.LV3)
                     {
-                        bullet[0, 0] = center_x - 16;
+                        bullet[0, 0] = center_x - 24;
                         bullet[0, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
-                        bullet[1, 0] = center_x + 16;
+                        bullet[1, 0] = center_x + 24;
                         bullet[1, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
                     }
                     for (int i = 0; i < player.GetCurrentGun().BulletCount; i++)
@@ -1819,13 +1817,31 @@ namespace SLIL
             if (GameStarted && active && !console_panel.Visible && !shop_panel.Visible)
             {
                 double x = display.Width / 2, y = display.Height / 2;
-                double X = e.X - x, Y = e.Y - y;
-                int invY = inv_y ? -1 : 1;
-                int invX = inv_x ? -1 : 1;
-                double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
-                double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
-                Controller.ChangePlayerA(A * invX);
-                Controller.ChangePlayerLook(Look * invY);
+                if (!InSelectingMode)
+                {
+                    double X = e.X - x, Y = e.Y - y;
+                    int invY = inv_y ? -1 : 1;
+                    int invX = inv_x ? -1 : 1;
+                    double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
+                    double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
+                    Controller.ChangePlayerA(A * invX);
+                    Controller.ChangePlayerLook(Look * invY);
+                }
+                else
+                {
+                    Player player = Controller.GetPlayer();
+                    if (player != null)
+                    {
+                        if (x < e.X && player.DisposableItems.Count >= 3)
+                            player.SelectedItem = 3;
+                        else if (x > e.X && player.DisposableItems.Count >= 0)
+                            player.SelectedItem = 0;
+                        else if (x < e.Y && player.DisposableItems.Count >= 1)
+                            player.SelectedItem = 1;
+                        else if (x > e.Y && player.DisposableItems.Count >= 2)
+                            player.SelectedItem = 2;
+                    }
+                }
                 Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
             }
         }
@@ -2343,6 +2359,39 @@ namespace SLIL
             graphicsWeapon.DrawImage(effect_image, x, y, icon_size, icon_size);
         }
 
+        private void DrawItemSelecter(Image item_image, int icon_size, int index, bool selected)
+        {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
+            int diameter = icon_size;
+            int x = center_x - icon_size - 34;
+            int y = center_y - icon_size;
+            if (index == 1)
+            {
+                x = center_x - icon_size;
+                y = center_y - icon_size - 34;
+            }
+            else if (index == 2)
+            {
+                x = center_x - icon_size + 34;
+                y = center_y - icon_size;
+            }
+            else
+            {
+                x = center_x - icon_size;
+                y = center_y - icon_size + 34;
+            }
+            RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
+            using (Pen pen = new Pen(Color.FromArgb(55, 55, 55), 3.75f))
+                graphicsWeapon.DrawEllipse(pen, circleRect);
+            if (selected)
+            {
+                using (Pen pen = new Pen(Color.FromArgb(175, 175, 175), 3.75f))
+                    graphicsWeapon.DrawEllipse(pen, circleRect);
+            }
+            graphicsWeapon.DrawImage(item_image, x, y, icon_size, icon_size);
+        }
+
         private void DrawWeaponGraphics()
         {
             Player player = Controller.GetPlayer();
@@ -2472,6 +2521,18 @@ namespace SLIL
             {
                 for (int i = 0; i < player.Effects.Count; i++)
                     DrawDurationEffect(player.Effects[i].Icon, icon_size, i);
+            }
+            if (InSelectingMode)
+            {
+                for(int i = 0; i < player.DisposableItems.Count; i++)
+                {
+                    Image icon = ItemIconDict[player.DisposableItems[i].GetType()];
+                    bool selected = false;
+                    if (player.CuteMode)
+                        icon = CuteItemIconDict[player.DisposableItems[i].GetType()];
+                    if (player.SelectedItem == i) selected = true;
+                    DrawItemSelecter(icon, icon_size, i, selected);
+                }
             }
             if (resolution == 1)
             {
