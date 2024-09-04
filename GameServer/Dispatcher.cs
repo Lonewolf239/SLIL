@@ -102,6 +102,26 @@ namespace GameServer
                         server.GetPeerById(entry.Key).Send(peerWriter, DeliveryMethod.ReliableOrdered);
                     }
                     return;
+                case 666:
+                    List<int> deadPlayers = new List<int>();
+                    foreach(Entity ent in Game.Entities)
+                    {
+                        if (ent is Player p) 
+                        {
+                            if(p.Dead)
+                                deadPlayers.Add(p.ID);
+                        }
+                    }
+                    foreach(KeyValuePair<int, int> entry in PeerPlayerIDs)
+                    {
+                        if (deadPlayers.Contains(entry.Value))
+                        {
+                            NetDataWriter peerWriter = new();
+                            peerWriter.Put(packetID);
+                            server.GetPeerById(entry.Key).Send(peerWriter, DeliveryMethod.ReliableOrdered);
+                        }
+                    }
+                    return;
                 default:
                     break;
             }

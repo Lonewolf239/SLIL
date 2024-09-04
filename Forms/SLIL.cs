@@ -825,7 +825,7 @@ namespace SLIL
             Player player = Controller.GetPlayer();
             if (player == null) return;
             shop_money.Text = $"$: {player.Money}";
-            if (player.HP <= 0 && GameStarted) GameOver(0);
+            //if (player.HP <= 0 && GameStarted) GameOver(0);
             try
             {
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !pressed_h)

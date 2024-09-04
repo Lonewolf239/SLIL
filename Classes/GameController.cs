@@ -13,6 +13,8 @@ namespace SLIL.Classes
     {
         private readonly GameModel Game;
         public int playerID;
+        private bool _isInSpectatorMode;
+        private int _spectatingForPlayerID;
         private readonly EventBasedNetListener listener;
         private readonly NetManager client;
         private readonly NetPacketProcessor processor;
@@ -80,6 +82,21 @@ namespace SLIL.Classes
                     Game.StartGame(false);
                     startGame();
                 }
+                if (packetType == 666)
+                {
+                    _isInSpectatorMode = true;
+                    foreach(Entity ent in Game.Entities)
+                    {
+                        if(ent is Player p)
+                        {
+                            if (!p.Dead)
+                            {
+                                _spectatingForPlayerID = p.ID;
+                                break;
+                            }
+                        }
+                    }
+                }
                 dataReader.Recycle();
             };
             listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
@@ -90,7 +107,7 @@ namespace SLIL.Classes
             {
                 while (client.IsRunning)
                 {
-                    if (GetPlayer() != null)
+                    if (GetPlayer() != null && !_isInSpectatorMode)
                     {
                         NetDataWriter writer = new NetDataWriter();
                         writer.Put(1);
@@ -128,6 +145,7 @@ namespace SLIL.Classes
             //Game.InitMap();
         }
 
+        internal bool IsInSpectatorMode() => _isInSpectatorMode;
         internal StringBuilder GetMap() => Game.GetMap();
 
         internal int GetMapWidth() => Game.GetMapWidth();
@@ -161,8 +179,22 @@ namespace SLIL.Classes
             {
                 if (Entities[i] is Player player1)
                 {
-                    if ((Entities[i] as Player).ID == playerID)
-                        player = player1;
+                    if (!_isInSpectatorMode)
+                    {
+                        if ((Entities[i] as Player).ID == playerID)
+                        {
+                            player = player1;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if ((Entities[i] as Player).ID == _spectatingForPlayerID)
+                        {
+                            player = player1;
+                            break;
+                        }
+                    }
                 }
             }
             return player;
@@ -202,6 +234,7 @@ namespace SLIL.Classes
 
         public bool DealDamage(Entity ent, double damage)
         {
+            if (!_isInSpectatorMode) return false;
             if (peer != null)
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -219,6 +252,7 @@ namespace SLIL.Classes
 
         public void AddHittingTheWall(double X, double Y, double vMove) 
         {
+            if (_isInSpectatorMode) return;
             if (peer == null)
             {
                 Game.AddHittingTheWall(X, Y, vMove);
@@ -234,9 +268,21 @@ namespace SLIL.Classes
             }
         }
 
-        internal void ChangePlayerA(double v) => Game.ChangePlayerA(v, playerID);
+        internal void ChangePlayerA(double v)
+        {
+            if (!_isInSpectatorMode)
+            {
+                Game.ChangePlayerA(v, playerID);
+            }
+        }
 
-        internal void ChangePlayerLook(double lookDif) => Game.ChangePlayerLook(lookDif, playerID);
+        internal void ChangePlayerLook(double lookDif) 
+        {
+            if (!_isInSpectatorMode)
+            {
+                Game.ChangePlayerLook(lookDif, playerID);
+            }
+        }
 
         internal void StopGame(int win) => Game.StopGame(win);
 

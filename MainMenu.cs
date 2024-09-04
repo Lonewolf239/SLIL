@@ -1340,7 +1340,6 @@ namespace SLIL
             }
             else
             {
-                return;
                 multiplayer_panel.Visible = true;
                 multiplayer_panel.BringToFront();
             }
