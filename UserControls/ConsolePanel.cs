@@ -56,10 +56,7 @@ namespace SLIL.UserControls
                 {
                     bool show_date = true, show_message = true;
                     string message = null, time = null;
-                    string cheat = command_input.Text.ToUpper().Trim(' ').Replace("`", "");
-                    if (!previous_cheat.Contains(cheat))
-                        previous_cheat.Add(cheat);
-                    cheat_index = previous_cheat.Count - 1;
+                    string cheat = command_input.Text.ToUpper().Trim(' ').Replace("`", null);
                     command_input.Text = null;
                     if (cheat == "HELP")
                     {
@@ -74,7 +71,7 @@ namespace SLIL.UserControls
                              "~│~ -MINIMAP-     ~│~ Show/hide Minimap                           ~│~\n" +
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -CLS-         ~│~ Clearing the console                        ~│~\n" +
-                             "~│~ -SLS-         ~│~ Clear console history                       ~│~\n" +
+                             "~│~ -SLC-         ~│~ Clear console history                       ~│~\n" +
                              "~│~ -COLOR_-*X*     ~│~ Change console font color                   ~│~\n" +
                              "~│~ -VOL_-*X*       ~│~ Change volume of sounds to X                ~│~\n" +
                              "~│~ -SCOPE_-*X*     ~│~ Replace current sight                       ~│~\n" +
@@ -279,7 +276,6 @@ namespace SLIL.UserControls
                         catch { }
                         if (selected == null)
                         {
-                            previous_cheat.Remove(cheat);
                             cheat_index = previous_cheat.Count - 1;
                             color = Color.Red;
                             message += "There is no enemy under this index.";
@@ -328,7 +324,6 @@ namespace SLIL.UserControls
                         }
                         if (selected == null)
                         {
-                            previous_cheat.Remove(cheat);
                             cheat_index = previous_cheat.Count - 1;
                             color = Color.Red;
                             message += "This weapon is not on the list.";
@@ -625,8 +620,8 @@ namespace SLIL.UserControls
                             if (!(player.PET is SillyCat))
                             {
                                 message += "Pet \"Silly cat\" has been issued.";
-                                player.ChangeMoney((Parent.FindForm() as SLIL).GetPetCost(0));
-                                (Parent.FindForm() as SLIL).AddPet(0);
+                                player.ChangeMoney(parent.GetPetCost(0));
+                                parent.AddPet(0);
                             }
                             else
                             {
@@ -639,8 +634,8 @@ namespace SLIL.UserControls
                             if (!(player.PET is GreenGnome))
                             {
                                 message += "Pet \"Wizard Gnome\" has been issued.";
-                                player.ChangeMoney((Parent.FindForm() as SLIL).GetPetCost(1));
-                                (Parent.FindForm() as SLIL).AddPet(1);
+                                player.ChangeMoney(parent.GetPetCost(1));
+                                parent.AddPet(1);
                             }
                             else
                             {
@@ -653,8 +648,8 @@ namespace SLIL.UserControls
                             if (!(player.PET is EnergyDrink))
                             {
                                 message += "Pet \"Energy Drink\" has been issued.";
-                                player.ChangeMoney((Parent.FindForm() as SLIL).GetPetCost(2));
-                                (Parent.FindForm() as SLIL).AddPet(2);
+                                player.ChangeMoney(parent.GetPetCost(2));
+                                parent.AddPet(2);
                             }
                             else
                             {
@@ -667,8 +662,8 @@ namespace SLIL.UserControls
                             if (!(player.PET is Pyro))
                             {
                                 message += "Pet \"Podseratel\" has been issued.";
-                                player.ChangeMoney((Parent.FindForm() as SLIL).GetPetCost(3));
-                                (Parent.FindForm() as SLIL).AddPet(3);
+                                player.ChangeMoney(parent.GetPetCost(3));
+                                parent.AddPet(3);
                             }
                             else
                             {
@@ -739,7 +734,7 @@ namespace SLIL.UserControls
                         else if (cheat == "KILL")
                         {
                             show_message = false;
-                            (Parent.FindForm() as SLIL).KillFromConsole();
+                            parent.KillFromConsole();
                         }
                         else if (cheat == "BEFWK")
                         {
@@ -875,7 +870,6 @@ namespace SLIL.UserControls
                         }
                         else
                         {
-                            previous_cheat.Remove(cheat);
                             cheat_index = previous_cheat.Count - 1;
                             color = Color.Red;
                             message = $"Unknown command: {cheat}";
@@ -883,7 +877,6 @@ namespace SLIL.UserControls
                     }
                     else
                     {
-                        previous_cheat.Remove(cheat);
                         cheat_index = previous_cheat.Count - 1;
                         color = Color.Red;
                         message = $"Unknown command: {cheat}";
@@ -892,6 +885,11 @@ namespace SLIL.UserControls
                         time = $"\n-<{DateTime.Now:HH:mm}>- ";
                     if (show_message)
                         ConsoleAppendText($"{time}{message}", color);
+                    if (color != Color.Red)
+                    {
+                        previous_cheat.Add(cheat);
+                        cheat_index = previous_cheat.Count - 1;
+                    }
                 }
             }
             if (previous_cheat.Count > 0)
@@ -899,17 +897,17 @@ namespace SLIL.UserControls
                 if (e.KeyCode == Keys.Up)
                 {
                     command_input.Text = previous_cheat[cheat_index];
-                    cheat_index++;
-                    if (cheat_index >= previous_cheat.Count)
-                        cheat_index = 0;
+                    cheat_index--;
+                    if (cheat_index < 0)
+                        cheat_index = previous_cheat.Count - 1;
                     command_input.SelectionStart = command_input.Text.Length;
                 }
                 if (e.KeyCode == Keys.Down)
                 {
                     command_input.Text = previous_cheat[cheat_index];
-                    cheat_index--;
-                    if (cheat_index < 0)
-                        cheat_index = previous_cheat.Count - 1;
+                    cheat_index++;
+                    if (cheat_index >= previous_cheat.Count)
+                        cheat_index = 0;
                     command_input.SelectionStart = command_input.Text.Length;
                 }
             }
