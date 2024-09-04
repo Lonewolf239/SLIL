@@ -464,8 +464,8 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "132", "Shotgun" };
-            Accuracy = 0.0;
+            Name = new[] { "3-5", "Shotgun" };
+            Accuracy = 0;
             BulletCount = 4;
             PauseBetweenShooting = 350;
             RechargeTime = 425;

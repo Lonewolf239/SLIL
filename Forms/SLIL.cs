@@ -40,7 +40,7 @@ namespace SLIL
         private readonly Random rand;
         private const int texWidth = 128;
         private readonly int[] SCREEN_HEIGHT = { 128, 128 * 2 }, SCREEN_WIDTH = { 228, 228 * 2 };
-        private int display_size = 0, center_x = 0, center_y = 0;
+        private int display_size = 0, center_x = 0, center_y = 0, cursor_x = 0, cursor_y = 0;
         private readonly int[,] DISPLAY_SIZE =
         {
             { 256, 128 },
@@ -1389,7 +1389,7 @@ namespace SLIL
         private void Display_MouseDown(object sender, MouseEventArgs e)
         {
             Player player = Controller.GetPlayer();
-            if (GameStarted && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
+            if (GameStarted && !InSelectingMode && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
             {
                 if (e.Button == MouseButtons.Left)
                 {
@@ -1815,32 +1815,33 @@ namespace SLIL
             if (GameStarted && active && !console_panel.Visible && !shop_panel.Visible)
             {
                 double x = display.Width / 2, y = display.Height / 2;
+                double X = e.X - x, Y = e.Y - y;
+                cursor_x = (int)X; cursor_y = (int)Y;
                 if (!InSelectingMode)
                 {
-                    double X = e.X - x, Y = e.Y - y;
                     int invY = inv_y ? -1 : 1;
                     int invX = inv_x ? -1 : 1;
                     double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
                     double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
                     Controller.ChangePlayerA(A * invX);
                     Controller.ChangePlayerLook(Look * invY);
+                    Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
                 }
                 else
                 {
                     Player player = Controller.GetPlayer();
-                    if (player != null)
+                    if(player != null)
                     {
-                        if (x < e.X && player.DisposableItems.Count >= 3)
-                            player.SelectedItem = 3;
-                        else if (x > e.X && player.DisposableItems.Count >= 0)
+                        if (cursor_x < 0 && player.DisposableItems.Count >= 1)
                             player.SelectedItem = 0;
-                        else if (x < e.Y && player.DisposableItems.Count >= 1)
+                        else if (cursor_y < 0 && player.DisposableItems.Count >= 2)
                             player.SelectedItem = 1;
-                        else if (x > e.Y && player.DisposableItems.Count >= 2)
+                        else if (cursor_x > 0 && player.DisposableItems.Count >= 3)
                             player.SelectedItem = 2;
+                        else if (cursor_y > 0 && player.DisposableItems.Count >= 4)
+                            player.SelectedItem = 3;
                     }
                 }
-                Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
             }
         }
 
@@ -2364,22 +2365,22 @@ namespace SLIL
             Player player = Controller.GetPlayer();
             if (player == null) return;
             int diameter = icon_size;
-            int x = center_x - icon_size - 34;
-            int y = center_y - icon_size;
+            int x = center_x - (icon_size / 2) - (icon_size * 2);
+            int y = center_y - (icon_size / 2);
             if (index == 1)
             {
-                x = center_x - icon_size;
-                y = center_y - icon_size - 34;
+                x = center_x - (icon_size / 2);
+                y = center_y - (icon_size / 2) - (icon_size * 2);
             }
             else if (index == 2)
             {
-                x = center_x - icon_size + 34;
-                y = center_y - icon_size;
+                x = center_x - (icon_size / 2) + (icon_size * 2);
+                y = center_y - (icon_size / 2);
             }
-            else
+            else if (index == 3)
             {
-                x = center_x - icon_size;
-                y = center_y - icon_size + 34;
+                x = center_x - (icon_size / 2);
+                y = center_y - (icon_size / 2) + (icon_size * 2);
             }
             RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
             using (Pen pen = new Pen(Color.FromArgb(55, 55, 55), 3.75f))
@@ -2388,8 +2389,33 @@ namespace SLIL
             {
                 using (Pen pen = new Pen(Color.FromArgb(175, 175, 175), 3.75f))
                     graphicsWeapon.DrawEllipse(pen, circleRect);
+                DrawArrow(cursor_x, cursor_y);
             }
             graphicsWeapon.DrawImage(item_image, x, y, icon_size, icon_size);
+        }
+
+        private void DrawArrow(int targetX, int targetY)
+        {
+            int arrowLength = 10;
+            float angle = (float)Math.Atan2(targetY - center_y, targetX - center_x);
+            PointF arrowTip = new PointF(
+                center_x + (float)(arrowLength * Math.Cos(angle)),
+                center_y + (float)(arrowLength * Math.Sin(angle))
+            );
+            PointF arrowBase1 = new PointF(
+                center_x + (float)(arrowLength * 0.7 * Math.Cos(angle + Math.PI / 6)),
+                center_y + (float)(arrowLength * 0.7 * Math.Sin(angle + Math.PI / 6))
+            );
+            PointF arrowBase2 = new PointF(
+                center_x + (float)(arrowLength * 0.7 * Math.Cos(angle - Math.PI / 6)),
+                center_y + (float)(arrowLength * 0.7 * Math.Sin(angle - Math.PI / 6))
+            );
+            using (Pen arrowPen = new Pen(Color.FromArgb(104, 213, 248), 2f))
+            {
+                graphicsWeapon.DrawLine(arrowPen, center_x, center_y, arrowTip.X, arrowTip.Y);
+                graphicsWeapon.DrawLine(arrowPen, arrowTip.X, arrowTip.Y, arrowBase1.X, arrowBase1.Y);
+                graphicsWeapon.DrawLine(arrowPen, arrowTip.X, arrowTip.Y, arrowBase2.X, arrowBase2.Y);
+            }
         }
 
         private void DrawWeaponGraphics()
