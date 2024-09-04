@@ -654,8 +654,7 @@ namespace SLIL
         private void Shop_panel_VisibleChanged(object sender, EventArgs e)
         {
             Player player = Controller.GetPlayer();
-            if (player != null)
-                player.Look = 0;
+            if (player != null) player.Look = 0;
             shop_panel.BringToFront();
         }
 

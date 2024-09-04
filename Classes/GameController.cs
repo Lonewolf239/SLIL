@@ -146,6 +146,7 @@ namespace SLIL.Classes
         }
 
         internal bool IsInSpectatorMode() => _isInSpectatorMode;
+
         internal StringBuilder GetMap() => Game.GetMap();
 
         internal int GetMapWidth() => Game.GetMapWidth();
@@ -254,9 +255,7 @@ namespace SLIL.Classes
         {
             if (_isInSpectatorMode) return;
             if (peer == null)
-            {
                 Game.AddHittingTheWall(X, Y, vMove);
-            }
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -271,17 +270,13 @@ namespace SLIL.Classes
         internal void ChangePlayerA(double v)
         {
             if (!_isInSpectatorMode)
-            {
                 Game.ChangePlayerA(v, playerID);
-            }
         }
 
         internal void ChangePlayerLook(double lookDif) 
         {
             if (!_isInSpectatorMode)
-            {
                 Game.ChangePlayerLook(lookDif, playerID);
-            }
         }
 
         internal void StopGame(int win) => Game.StopGame(win);
