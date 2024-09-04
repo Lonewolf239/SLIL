@@ -1482,7 +1482,6 @@ namespace SLIL
                     int drawEndY = (int)spriteBottom;
                     double vMove = entity.VMove;
                     int vMoveScreen = (int)(vMove / transformY);
-                    int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
                     int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
                     int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
                     if (drawStartX < 0) drawStartX = 0;
@@ -1956,9 +1955,7 @@ namespace SLIL
             Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
             DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<int> enemiesCoords);
             foreach (int i in enemiesCoords)
-            {
                 DISPLAYED_MAP[i] = 'E';
-            }
             DrawRaysOnScreen(rays);
             DrawWeaponGraphics();
             UpdateDisplay();
