@@ -59,6 +59,8 @@ namespace SLIL.Classes
             writer.Put(Dead);
             writer.Put(Money);
             writer.Put(CurrentGun);
+            writer.Put(A);
+            writer.Put(Look);
             writer.Put(this.GUNS.Length);
             foreach(Gun gun in this.GUNS)
                 writer.Put(gun.HasIt);
@@ -83,6 +85,8 @@ namespace SLIL.Classes
             this.Dead = reader.GetBool();
             this.Money = reader.GetInt();
             this.CurrentGun = reader.GetInt();
+            this.A = reader.GetDouble();
+            this.Look = reader.GetDouble();
             int GUNSLength = reader.GetInt();
             for(int i = 0; i < GUNSLength; i++)
                 this.GUNS[i].HasIt = reader.GetBool();
@@ -216,6 +220,7 @@ namespace SLIL.Classes
                 this.Dead = reader.GetBool();
                 this.Money = reader.GetInt();
                 this.CurrentGun = reader.GetInt();
+                reader.GetDouble(); reader.GetDouble();
                 int GUNSLength = reader.GetInt();
                 for(int i = 0; i < GUNSLength; i++)
                     this.GUNS[i].HasIt = reader.GetBool();

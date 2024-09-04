@@ -1983,7 +1983,8 @@ namespace SLIL
             foreach (int i in enemiesCoords)
                 DISPLAYED_MAP[i] = 'E';
             DrawRaysOnScreen(rays);
-            DrawWeaponGraphics();
+            if(!Controller.IsInSpectatorMode())
+                DrawWeaponGraphics();
             UpdateDisplay();
             fps = CalculateFPS(elapsed_time);
         }
