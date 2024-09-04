@@ -1309,7 +1309,7 @@ namespace SLIL
         private void ChangeWeapon(int new_gun)
         {
             Player player = Controller.GetPlayer();
-            if ((new_gun != player.CurrentGun || player.LevelUpdated) && player.Guns[new_gun].HasIt)
+            if ((new_gun != player.CurrentGun || player.LevelUpdated) && !InSelectingMode && player.Guns[new_gun].HasIt)
             {
                 if (MainMenu.sounds) draw.Play(Volume);
                 Controller.ChangeWeapon(new_gun);
@@ -2372,55 +2372,38 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            int diameter = icon_size;
-            int x = center_x - (icon_size / 2) - (icon_size * 2);
+            int x = center_x - (icon_size / 2);
             int y = center_y - (icon_size / 2);
-            if (index == 1)
-            {
-                x = center_x - (icon_size / 2);
-                y = center_y - (icon_size / 2) - (icon_size * 2);
-            }
-            else if (index == 2)
-            {
-                x = center_x - (icon_size / 2) + (icon_size * 2);
-                y = center_y - (icon_size / 2);
-            }
-            else if (index == 3)
-            {
-                x = center_x - (icon_size / 2);
-                y = center_y - (icon_size / 2) + (icon_size * 2);
-            }
-            RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
-            using (Pen pen = new Pen(Color.FromArgb(55, 55, 55), 5f))
+            if (index == 0) x -= icon_size * 2;
+            else if (index == 1) y -= icon_size * 2;
+            else if (index == 2) x += icon_size * 2;
+            else if (index == 3) y += icon_size * 2;
+            RectangleF circleRect = new RectangleF(x, y, icon_size, icon_size);
+            using (Pen pen = !selected ? new Pen(Color.FromArgb(100, 150, 200), 3.75f) : new Pen(Color.FromArgb(150, 200, 250), 5f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
-            if (selected)
-            {
-                using (Pen pen = new Pen(Color.FromArgb(175, 175, 175), 5f))
-                    graphicsWeapon.DrawEllipse(pen, circleRect);
-                DrawArrow(cursor_x, cursor_y);
-            }
+            if (selected) DrawArrow(cursor_x, cursor_y);
             graphicsWeapon.DrawImage(item_image, x, y, icon_size, icon_size);
         }
 
         private void DrawArrow(int targetX, int targetY)
         {
-            int arrowLength = 10;
-            float angle = (float)Math.Atan2(targetY - center_y, targetX - center_x);
+            int arrowLength = 15 + (15 * resolution);
+            float angle = (float)Math.Atan2(targetY - (center_y - 1), targetX - (center_x - 1));
             PointF arrowTip = new PointF(
-                center_x + (float)(arrowLength * Math.Cos(angle)),
-                center_y + (float)(arrowLength * Math.Sin(angle))
+                (center_x - 1) + (float)(arrowLength * Math.Cos(angle)),
+                (center_y - 1) + (float)(arrowLength * Math.Sin(angle))
             );
             PointF arrowBase1 = new PointF(
-                center_x + (float)(arrowLength * 0.7 * Math.Cos(angle + Math.PI / 6)),
-                center_y + (float)(arrowLength * 0.7 * Math.Sin(angle + Math.PI / 6))
+                (center_x - 1) + (float)(arrowLength * 0.7 * Math.Cos(angle + Math.PI / 6)),
+                (center_y - 1) + (float)(arrowLength * 0.7 * Math.Sin(angle + Math.PI / 6))
             );
             PointF arrowBase2 = new PointF(
-                center_x + (float)(arrowLength * 0.7 * Math.Cos(angle - Math.PI / 6)),
-                center_y + (float)(arrowLength * 0.7 * Math.Sin(angle - Math.PI / 6))
+                (center_x - 1) + (float)(arrowLength * 0.7 * Math.Cos(angle - Math.PI / 6)),
+                (center_y - 1) + (float)(arrowLength * 0.7 * Math.Sin(angle - Math.PI / 6))
             );
             using (Pen arrowPen = new Pen(Color.FromArgb(104, 213, 248), 2f))
             {
-                graphicsWeapon.DrawLine(arrowPen, center_x, center_y, arrowTip.X, arrowTip.Y);
+                graphicsWeapon.DrawLine(arrowPen, center_x - 1, center_y - 1, arrowTip.X, arrowTip.Y);
                 graphicsWeapon.DrawLine(arrowPen, arrowTip.X, arrowTip.Y, arrowBase1.X, arrowBase1.Y);
                 graphicsWeapon.DrawLine(arrowPen, arrowTip.X, arrowTip.Y, arrowBase2.X, arrowBase2.Y);
             }
@@ -2521,7 +2504,7 @@ namespace SLIL
                         break;
                 }
             }
-            if (player.GetCurrentGun().ShowScope)
+            if (player.GetCurrentGun().ShowScope && !InSelectingMode)
             {
                 if (player.GetCurrentGun() is Shotgun)
                     graphicsWeapon.DrawImage(scope_shotgun[scope_type], WEAPON.Width / 4, WEAPON.Height / 4, WEAPON.Width / 2, WEAPON.Height / 2);

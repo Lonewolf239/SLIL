@@ -982,11 +982,9 @@ namespace SLIL.UserControls
         private void Console_MouseClick(object sender, MouseEventArgs e)
         {
             int charIndex = console.GetCharIndexFromPosition(e.Location);
-            if (charIndex < 0 || charIndex >= console.TextLength)
-                return;
+            if (charIndex < 0 || charIndex >= console.TextLength) return;
             int lineIndex = console.GetLineFromCharIndex(charIndex);
-            if (lineIndex < 0 || lineIndex >= console.Lines.Length)
-                return;
+            if (lineIndex < 0 || lineIndex >= console.Lines.Length) return;
             string line = console.Lines[lineIndex];
             int charPositionInLine = charIndex - console.GetFirstCharIndexFromLine(lineIndex);
             string pattern = @"screenshots\\screenshot_\d{4}_\d{2}_\d{2}__\d{2}_\d{2}_\d{2}\.png";
