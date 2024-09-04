@@ -27,7 +27,7 @@ namespace SLIL
     public partial class SLIL : Form
     {
         private readonly GameController Controller;
-        private bool InSelectingMode = false;
+        private bool InSelectingMode = false, BlockCamera = false, CanUnblockCamera = false;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
         public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
@@ -1065,7 +1065,11 @@ namespace SLIL
                     if (e.KeyCode == Bind.Flashlight)
                         TakeFlashlight(true);
                     if (e.KeyCode == Bind.SelectItem)
+                    {
+                        BlockCamera = CanUnblockCamera = true;
                         InSelectingMode = false;
+                        Cursor.Position = display.PointToScreen(new Point(center_x, center_y));
+                    }
                     if (e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1)
                     {
                         double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
@@ -1819,18 +1823,22 @@ namespace SLIL
                 cursor_x = (int)X; cursor_y = (int)Y;
                 if (!InSelectingMode)
                 {
-                    int invY = inv_y ? -1 : 1;
-                    int invX = inv_x ? -1 : 1;
-                    double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
-                    double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
-                    Controller.ChangePlayerA(A * invX);
-                    Controller.ChangePlayerLook(Look * invY);
+                    if (!BlockCamera)
+                    {
+                        int invY = inv_y ? -1 : 1;
+                        int invX = inv_x ? -1 : 1;
+                        double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
+                        double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
+                        Controller.ChangePlayerA(A * invX);
+                        Controller.ChangePlayerLook(Look * invY);
+                    }
+                    else if (CanUnblockCamera) BlockCamera = CanUnblockCamera = false;
                     Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
                 }
                 else
                 {
                     Player player = Controller.GetPlayer();
-                    if(player != null)
+                    if (player != null)
                     {
                         if (cursor_x < 0 && player.DisposableItems.Count >= 1)
                             player.SelectedItem = 0;
@@ -2383,11 +2391,11 @@ namespace SLIL
                 y = center_y - (icon_size / 2) + (icon_size * 2);
             }
             RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
-            using (Pen pen = new Pen(Color.FromArgb(55, 55, 55), 3.75f))
+            using (Pen pen = new Pen(Color.FromArgb(55, 55, 55), 5f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
             if (selected)
             {
-                using (Pen pen = new Pen(Color.FromArgb(175, 175, 175), 3.75f))
+                using (Pen pen = new Pen(Color.FromArgb(175, 175, 175), 5f))
                     graphicsWeapon.DrawEllipse(pen, circleRect);
                 DrawArrow(cursor_x, cursor_y);
             }
@@ -2953,6 +2961,7 @@ namespace SLIL
                 display.MouseWheel += new MouseEventHandler(Display_Scroll);
                 Controls.Add(display);
             }
+            BlockCamera = CanUnblockCamera = true;
             UpdateBitmap();
             Activate();
             ResetDefault(player);
