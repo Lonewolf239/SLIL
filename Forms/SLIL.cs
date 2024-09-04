@@ -63,7 +63,7 @@ namespace SLIL
         private double elapsed_time = 0;
         private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
         private Bitmap SCREEN, WEAPON, BUFFER;
-        private readonly Font[] consolasFont = { new Font("Consolas", 9.75F), new Font("Consolas", 16F), new Font("Consolas", 22F) };
+        private readonly Font[] consolasFont = { new Font("Consolas", 6.75F), new Font("Consolas", 9.75F), new Font("Consolas", 16F), new Font("Consolas", 22F) };
         private readonly SolidBrush whiteBrush = new SolidBrush(Color.White);
         private readonly StringFormat rightToLeft = new StringFormat() { FormatFlags = StringFormatFlags.DirectionRightToLeft };
         private Graphics graphicsWeapon;
@@ -2423,7 +2423,7 @@ namespace SLIL
             int item_count = 0;
             if (player.DisposableItems.Count > 0)
                 item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].AmmoInStock;
-            int icon_size = resolution == 0 ? 16 : 32;
+            int icon_size = resolution == 0 ? 12 : 24;
             int size = resolution == 0 ? 1 : 2;
             SizeF hpSize = graphicsWeapon.MeasureString(player.HP.ToString("0"), consolasFont[resolution]);
             int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
@@ -2530,8 +2530,8 @@ namespace SLIL
                     text = "STAGE: Debug Boss";
                 else if (difficulty == 4)
                     text = "STAGE: Custom";
-                SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[resolution + 1]);
-                graphicsWeapon.DrawString(text, consolasFont[resolution + 1], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
+                SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[resolution + 2]);
+                graphicsWeapon.DrawString(text, consolasFont[resolution + 2], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }
             if (player.STAMINE < player.MAX_STAMINE)
                 graphicsWeapon.DrawLine(new Pen(Color.Lime, 2 * size), 0, SCREEN_HEIGHT[resolution], (int)(player.STAMINE / player.MAX_STAMINE * SCREEN_WIDTH[resolution]), SCREEN_HEIGHT[resolution]);

@@ -73,7 +73,7 @@ namespace SLIL
             { "run", Keys.ShiftKey },
         };
         public static int resolution = 0, display_size = 0, smoothing = 1, scope_type = 0, scope_color = 0, difficulty = 2;
-        public static bool hight_fps = true, ShowFPS = true, ShowMiniMap = true;
+        public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true;
         public static bool inv_y = false, inv_x = false;
         public static double LOOK_SPEED = 6.5;
         public static float Volume = 0.4f;
@@ -1164,7 +1164,7 @@ namespace SLIL
             ConsoleEnabled = false;
             update_on_off.Checked = true;
             resolution = 0;
-            ShowFPS = true;
+            ShowFPS = false;
             hight_fps = true;
             ShowMiniMap = true;
             scope_type = 0;

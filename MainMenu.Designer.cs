@@ -1047,10 +1047,10 @@
             this.video_settings.Controls.Add(this.display_size_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 33);
+            this.video_settings.Location = new System.Drawing.Point(4, 22);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 183);
+            this.video_settings.Size = new System.Drawing.Size(482, 194);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
