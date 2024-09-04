@@ -739,7 +739,7 @@ namespace SLIL.UserControls
                         else if (cheat == "KILL")
                         {
                             show_message = false;
-                            player.HP = 0;
+                            (Parent.FindForm() as SLIL).KillFromConsole();
                         }
                         else if (cheat == "BEFWK")
                         {

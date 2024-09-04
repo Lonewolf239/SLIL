@@ -2939,6 +2939,14 @@ namespace SLIL
             }
         }
 
+        public void KillFromConsole()
+        {
+            if (Controller.IsMultiplayer())
+                Controller.DealDamage(Controller.GetPlayer(), 9999);
+            else
+                Controller.StopGame(0);
+        }
+
         private void StartGame()
         {
             Controller.RestartGame();
