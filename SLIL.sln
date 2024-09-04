@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLIL", "SLIL.csproj", "{2FF30E8C-3D43-4CE8-B147-79E328BF932B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer\GameServer.csproj", "{F48520D9-984A-44E6-A243-04D28BDD7543}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer", "GameServer\GameServer.csproj", "{F48520D9-984A-44E6-A243-04D28BDD7543}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

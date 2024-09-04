@@ -241,7 +241,7 @@ namespace SLIL.Classes
             AimingFactor = 8;
             LowWeight = true;
             HasIt = true;
-            Name = new[] { "127", "Flashlight" };
+            Name = new[] { "3-0", "Flashlight" };
         }
 
         public override void SetDefault()
@@ -261,7 +261,7 @@ namespace SLIL.Classes
             ShowAmmo = false;
             AddToShop = false;
             HasIt = true;
-            Name = new[] { "128", "Knife" };
+            Name = new[] { "3-1", "Knife" };
             FireType = FireTypes.Single;
             Accuracy = 1;
             PauseBetweenShooting = 500;
@@ -297,7 +297,7 @@ namespace SLIL.Classes
             FiringRate = 400;
             ShowScope = false;
             HasIt = false;
-            Name = new[] { "129", "Candy" };
+            Name = new[] { "3-2", "Candy" };
         }
 
         public override int GetItemID() => 2;
@@ -314,7 +314,7 @@ namespace SLIL.Classes
             AddToShop = false;
             HasIt = false;
             ShowAmmoAsNumber = true;
-            Name = new[] { "130", "Rainblower" };
+            Name = new[] { "3-3", "Rainblower" };
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 125;
@@ -352,7 +352,8 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;
-            Name = new[] { "131", "Pistol" };
+            Name = new[] { "3-4", "Pistol" };
+            Accuracy = 0.8;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 175;
@@ -382,6 +383,7 @@ namespace SLIL.Classes
             if (Level == Levels.LV1)
             {
                 UpdateCost = 20;
+                Accuracy = 0.8;
                 RechargeTime = 600;
                 CartridgesClip = 8;
                 MaxAmmo = CartridgesClip * 6;
@@ -397,6 +399,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV2)
             {
+                Accuracy = 0.85;
                 RechargeTime = 350;
                 CartridgesClip = 12;
                 MaxAmmo = CartridgesClip * 7;
@@ -412,6 +415,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV3)
             {
+                Accuracy = 0.8;
                 RechargeTime = 400;
                 CartridgesClip = 7;
                 MaxAmmo = CartridgesClip * 6;
@@ -427,6 +431,7 @@ namespace SLIL.Classes
             }
             else
             {
+                Accuracy = 1;
                 RechargeTime = 400;
                 CartridgesClip = 6;
                 MaxAmmo = CartridgesClip * 6;
@@ -457,8 +462,8 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "132", "Shotgun" };
-            Accuracy = 0.0;
+            Name = new[] { "3-5", "Shotgun" };
+            Accuracy = 0;
             BulletCount = 4;
             PauseBetweenShooting = 350;
             RechargeTime = 425;
@@ -530,6 +535,7 @@ namespace SLIL.Classes
             if (Level == Levels.LV1)
             {
                 UpdateCost = 30;
+                BulletCount = 4;
                 PauseBetweenShooting = 350;
                 RechargeTime = 425;
                 FiringRate = 200;
@@ -547,6 +553,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV2)
             {
+                BulletCount = 5;
                 PauseBetweenShooting = 500;
                 RechargeTime = 325;
                 FiringRate = 200;
@@ -564,6 +571,7 @@ namespace SLIL.Classes
             }
             else
             {
+                BulletCount = 6;
                 PauseBetweenShooting = 500;
                 RechargeTime = 325;
                 FiringRate = 200;
@@ -594,8 +602,9 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "133", "Submachine gun" };
+            Name = new[] { "3-6", "Submachine gun" };
             RechargeTime = 375;
+            BulletCount = 2;
             PauseBetweenShooting = 175;
             FiringRate = 50;
             UpdateCost = 40;
@@ -681,7 +690,7 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "134", "Assault rifle" };
+            Name = new[] { "3-7", "Assault rifle" };
             PauseBetweenShooting = 750;
             RechargeTime = 700;
             FiringRate = 100;
@@ -773,7 +782,7 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             CanAiming = true;
-            Name = new[] { "135", "Sniper rifle" };
+            Name = new[] { "3-8", "Sniper rifle" };
             RechargeTime = 650;
             FiringRate = 200;
             UpdateCost = 60;
@@ -842,7 +851,7 @@ namespace SLIL.Classes
                 MinDamage = 19;
                 RecoilY = 150;
                 RecoilX = 4.25;
-                FiringRate = 300;
+                FiringRate = 490;
                 BurstShots = 1;
                 RadiusSound = 20;
                 ReloadFrames = 2;
@@ -863,7 +872,7 @@ namespace SLIL.Classes
             AddToShop = false;
             HasIt = false;
             InMultiplayer = false;
-            Name = new[] { "136", "Fingershot" };
+            Name = new[] { "3-9", "Fingershot" };
             RechargeTime = 600;
             FiringRate = 175;
             CartridgesClip = 1;
@@ -895,7 +904,7 @@ namespace SLIL.Classes
             AddToShop = false;
             HasIt = false;
             InMultiplayer = false;
-            Name = new[] { "137", "TSPitW" };
+            Name = new[] { "3-10", "TSPitW" };
             RechargeTime = 750;
             FiringRate = 175;
             CartridgesClip = 7;
@@ -921,7 +930,7 @@ namespace SLIL.Classes
         public Gnome() : base()
         {
             InMultiplayer = false;
-            Name = new[] { "138", "Wizard Gnome" };
+            Name = new[] { "3-11", "Wizard Gnome" };
             RecoilY = 35;
             RecoilX = 2;
             RechargeTime = 300;
@@ -948,7 +957,7 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             InMultiplayer = true;
-            Name = new[] { "139", "RPG7" };
+            Name = new[] { "3-12", "RPG7" };
             Accuracy = 1;
             GunCost = 150;
             AmmoCost = 50;
@@ -984,7 +993,7 @@ namespace SLIL.Classes
             AddToShop = true;
             HasIt = false;
             InMultiplayer = true;
-            Name = new[] { "140", "C4" };
+            Name = new[] { "3-13", "C4" };
             Accuracy = 1;
             GunCost = 100;
             AmmoCost = 50;
@@ -1019,14 +1028,14 @@ namespace SLIL.Classes
             GunCost = 50;
             Name = new[]
             {
-                "141", "First Aid Kit",
-                "142", "Beans"
+                "4-0", "First Aid Kit",
+                "4-1", "Beans"
             };
             Description = new[]
             {
-                "143",
+                "4-2",
                 "Restores health",
-                "144",
+                "4-3",
                 "A tasty snack"
             };
         }
@@ -1041,10 +1050,10 @@ namespace SLIL.Classes
             EffectID = 1;
             RechargeTime = 530;
             GunCost = 75;
-            Name = new[] { "145", "Adrenalin" };
+            Name = new[] { "4-4", "Adrenalin" };
             Description = new[]
             {
-                "146",
+                "4-5",
                 "Increases movement speed for 20 sec",
             };
         }
@@ -1060,10 +1069,10 @@ namespace SLIL.Classes
             ReloadFrames = 4;
             RechargeTime = 1000;
             GunCost = 75;
-            Name = new[] { "147", "Helmet" };
+            Name = new[] { "4-6", "Helmet" };
             Description = new[]
             {
-                "148",
+                "4-7",
                 "Reduces incoming damage by 20% for 2 minutes",
             };
         }

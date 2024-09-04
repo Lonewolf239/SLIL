@@ -557,13 +557,13 @@ namespace SLIL
             }
             else
             {
-                shop_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "115");
-                weapon_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "116");
-                pet_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "117");
-                consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "118");
-                pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "119");
-                pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "120");
-                exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "121");
+                shop_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-1");
+                weapon_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-2");
+                pet_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-3");
+                consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-4");
+                pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-5");
+                pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-6");
+                exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-7");
             }
         }
 
@@ -588,7 +588,7 @@ namespace SLIL
         {
             foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true).Cast<SLIL_PetShopInterface>())
                 control.buy_button.Text = MainMenu.DownloadedLocalizationList
-                    ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "114")} ${control.pet.Cost}"
+                    ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-0")} ${control.pet.Cost}"
                     : $"Buy ${control.pet.Cost}";
             Controller.AddPet(index);
             CuteMode();
@@ -1428,17 +1428,15 @@ namespace SLIL
                     bullet = new int[,] { { center_x + rand.Next(-maxXOffset, maxXOffset), center_y + rand.Next(-maxYOffset, maxYOffset) } };
                 else
                 {
-                    if (player.GetCurrentGun() is SubmachineGun && player.GetCurrentGun().Level == Levels.LV3)
-                    {
-                        bullet[0, 0] = center_x - 24;
-                        bullet[0, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
-                        bullet[1, 0] = center_x + 24;
-                        bullet[1, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
-                    }
                     for (int i = 0; i < player.GetCurrentGun().BulletCount; i++)
                     {
                         bullet[i, 0] = center_x + rand.Next(-maxXOffset, maxXOffset);
                         bullet[i, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
+                    }
+                    if (player.GetCurrentGun() is SubmachineGun && player.GetCurrentGun().Level == Levels.LV3)
+                    {
+                        bullet[0, 0] -= 5;
+                        bullet[1, 0] += 5;
                     }
                 }
                 double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
@@ -1480,10 +1478,8 @@ namespace SLIL
                     int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
                     int drawStartY = (int)spriteTop;
                     int drawEndY = (int)spriteBottom;
-                    //parameters for scaling and moving the sprites
                     double vMove = entity.VMove;
                     int vMoveScreen = (int)(vMove / transformY);
-                    int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
                     int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
                     int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
                     if (drawStartX < 0) drawStartX = 0;
@@ -1588,8 +1584,7 @@ namespace SLIL
                         distance += 0.01d;
                         int test_x = (int)(player.X + ray_x * distance);
                         int test_y = (int)(player.Y + ray_y * distance);
-                        if (test_x < 0 || test_x >= (player.GetDrawDistance()) + player.X || test_y < 0 || test_y >= (player.GetDrawDistance()) + player.Y)
-                            hit = true;
+                        if (test_x < 0 || test_x >= (player.GetDrawDistance()) + player.X || test_y < 0 || test_y >= (player.GetDrawDistance()) + player.Y) hit = true;
                         else
                         {
                             char test_wall = Controller.GetMap()[test_y * Controller.GetMapWidth() + test_x];
@@ -1740,7 +1735,10 @@ namespace SLIL
                             if (MainMenu.sounds)
                                 SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
                             shot_timer.Stop();
-                            shotgun_pull_timer.Start();
+                            if (player.GetCurrentGun().Level != Levels.LV1)
+                                shotgun_pull_timer.Start();
+                            else
+                                reload_timer.Start();
                         }
                     }
                     else
@@ -1973,9 +1971,7 @@ namespace SLIL
             Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
             DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<int> enemiesCoords);
             foreach (int i in enemiesCoords)
-            {
                 DISPLAYED_MAP[i] = 'E';
-            }
             DrawRaysOnScreen(rays);
             DrawWeaponGraphics();
             UpdateDisplay();
@@ -1984,13 +1980,18 @@ namespace SLIL
 
         private void Mouse_hold_timer_Tick(object sender, EventArgs e)
         {
+            if (!GameStarted)
+            {
+                mouse_hold_timer.Stop();
+                return;
+            }
             Player player = Controller.GetPlayer();
             if (player.GetCurrentGun() is DisposableItem)
             {
                 mouse_hold_timer.Stop();
                 return;
             }
-            if (GameStarted && player.CanShoot && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
+            if (player.CanShoot && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
             {
                 if (player.GetCurrentGun().CanShoot && !player.IsPetting)
                 {
@@ -2035,7 +2036,6 @@ namespace SLIL
                 int drawEndY = (int)spriteBottom;
                 int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
                 int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
-                //parameters for scaling and moving the sprites
                 double vMove = Entities[spriteInfo[i].Order].VMove;
                 int vMoveScreen = (int)(vMove / transformY);
                 int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;

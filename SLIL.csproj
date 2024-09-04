@@ -1174,5 +1174,8 @@
   <ItemGroup>
     <None Include="Images\helmet_count_icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Soon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
