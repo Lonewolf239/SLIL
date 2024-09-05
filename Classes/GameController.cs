@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Play_Sound;
 
 namespace SLIL.Classes
 {
@@ -96,6 +97,22 @@ namespace SLIL.Classes
                             }
                         }
                     }
+                }
+                if (packetType == 1000)
+                {
+                    PlaySound sound = null;
+                    switch (dataReader.GetInt())
+                    {
+                        case 0:
+                            sound = SLIL.hit; 
+                            break;
+                        case 1:
+                            sound = SLIL.hungry;
+                            break;
+                        default:
+                            break;
+                    }
+                    PlaySoundHandle(sound);
                 }
                 dataReader.Recycle();
             };

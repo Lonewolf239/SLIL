@@ -44,13 +44,13 @@ listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
     Console.WriteLine("Closed connection: {0}", peer);
 };
 
-void SendOutcomingMessageInvoker(int packetID)
+void SendOutcomingMessageInvoker(int packetID, byte[] data = null)
 {
     if(packetID == 102)
     {
-       dispatcher.SendOutcomingMessage(packetID, ref server);
+       dispatcher.SendOutcomingMessage(packetID, ref server, data);
     }
-    else dispatcher.SendOutcomingMessage(packetID, ref server);
+    else dispatcher.SendOutcomingMessage(packetID, ref server, data);
 }
 
 bool exit = false;

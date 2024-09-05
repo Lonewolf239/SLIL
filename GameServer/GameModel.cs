@@ -2,6 +2,7 @@
 using LiteNetLib.Utils;
 using System.Text;
 using GameServer;
+using Microsoft.VisualBasic.FileIO;
 
 namespace SLIL.Classes
 {
@@ -151,10 +152,20 @@ namespace SLIL.Classes
                                         if (player.CuteMode)
                                         {
                                             //PlaySoundHandle(SLIL.hungry);
+                                            NetDataWriter writer = new();
+                                            writer.Put(player.ID);
+                                            writer.Put(1);
+                                            byte[] data = writer.Data;
+                                            sendMessageFromGameCallback(1000, data);
                                         }
                                         else
                                         {
                                             //PlaySoundHandle(SLIL.hit);
+                                            NetDataWriter writer = new();
+                                            writer.Put(player.ID);
+                                            writer.Put(0);
+                                            byte[] data = writer.Data;
+                                            sendMessageFromGameCallback(1000, data);
                                         }
                                         if (player.HP <= 0)
                                         {

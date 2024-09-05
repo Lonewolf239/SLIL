@@ -4,8 +4,8 @@ using LiteNetLib;
 
 namespace GameServer
 {
-    public delegate void SendOutcomingMessageDelegate(int packetID);
-    public delegate void SendMessageFromGameCallback(int packetID);
+    public delegate void SendOutcomingMessageDelegate(int packetID, byte[] data = null);
+    public delegate void SendMessageFromGameCallback(int packetID, byte[] data = null);
 
     internal class Dispatcher
     {
@@ -21,7 +21,7 @@ namespace GameServer
             Game.StartGame();
         }
 
-        public void SendMessageFromGameHandle(int packetID) => sendMessageDelegate?.Invoke(packetID);
+        public void SendMessageFromGameHandle(int packetID, byte[] data = null) => sendMessageDelegate?.Invoke(packetID, data);
 
         public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server, int playerIDfromPeer)
         {
@@ -82,7 +82,7 @@ namespace GameServer
                     break;
             }
         }
-        public void SendOutcomingMessage(int packetID, ref NetManager server) 
+        public void SendOutcomingMessage(int packetID, ref NetManager server, byte[] data = null) 
         {
             NetDataWriter writer = new();
             writer.Put(packetID);
@@ -122,6 +122,22 @@ namespace GameServer
                         }
                     }
                     return;
+                case 1000:
+                    NetDataReader reader = new NetDataReader(data);
+                    int playerID = reader.GetInt();
+                    int soundID = reader.GetInt();
+                    foreach (KeyValuePair<int, int> entry in PeerPlayerIDs)
+                    {
+                        if (entry.Value == playerID)
+                        {
+                            NetDataWriter peerWriter = new();
+                            peerWriter.Put(packetID);
+                            peerWriter.Put(soundID);
+                            server.GetPeerById(entry.Key).Send(peerWriter, DeliveryMethod.ReliableOrdered);
+                            return;
+                        }
+                    }
+                    break;
                 default:
                     break;
             }
