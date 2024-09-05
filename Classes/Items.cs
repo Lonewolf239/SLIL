@@ -635,6 +635,7 @@ namespace SLIL.Classes
                 Accuracy = 0.65;
                 BulletCount = 1;
                 PauseBetweenShooting = 175;
+                FiringRate = 50;
                 RechargeTime = 375;
                 CartridgesClip = 20;
                 MaxAmmo = CartridgesClip * 6;
