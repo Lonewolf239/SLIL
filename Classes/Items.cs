@@ -857,7 +857,7 @@ namespace SLIL.Classes
                 AimingFactor = 12;
                 CanRun = false;
                 Accuracy = 1;
-                RechargeTime = 1000;
+                RechargeTime = 500;
                 CartridgesClip = 10;
                 MaxAmmo = CartridgesClip * 4;
                 FiringRange = 22;

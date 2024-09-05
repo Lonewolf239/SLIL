@@ -224,10 +224,10 @@
             this.close_host_btn_l = new System.Windows.Forms.Button();
             this.connect_panel = new System.Windows.Forms.Panel();
             this.connect_background = new System.Windows.Forms.Panel();
-            this.connect_btn = new System.Windows.Forms.Button();
+            this.connect_btn_cp = new System.Windows.Forms.Button();
             this.ip_connect_input = new System.Windows.Forms.TextBox();
             this.ip_input_label = new System.Windows.Forms.Label();
-            this.close_connect_btn = new System.Windows.Forms.Button();
+            this.close_connect_btn_l = new System.Windows.Forms.Button();
             this.help_panel = new System.Windows.Forms.Panel();
             this.help_background = new System.Windows.Forms.Panel();
             this.create_translate_cp = new System.Windows.Forms.Button();
@@ -431,7 +431,7 @@
             this.developers_panel.BackColor = System.Drawing.Color.DarkGray;
             this.developers_panel.Controls.Add(this.close_developers_panel);
             this.developers_panel.Controls.Add(this.developers_background);
-            this.developers_panel.Location = new System.Drawing.Point(514, 582);
+            this.developers_panel.Location = new System.Drawing.Point(1518, 582);
             this.developers_panel.Name = "developers_panel";
             this.developers_panel.Size = new System.Drawing.Size(496, 282);
             this.developers_panel.TabIndex = 50;
@@ -516,7 +516,7 @@
             this.fazzy_name.BackColor = System.Drawing.Color.Transparent;
             this.fazzy_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.fazzy_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fazzy_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fazzy_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.fazzy_name.ForeColor = System.Drawing.Color.White;
             this.fazzy_name.Location = new System.Drawing.Point(0, 0);
             this.fazzy_name.Name = "fazzy_name";
@@ -566,7 +566,7 @@
             this.koyo_name.BackColor = System.Drawing.Color.Transparent;
             this.koyo_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.koyo_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.koyo_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.koyo_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.koyo_name.ForeColor = System.Drawing.Color.White;
             this.koyo_name.Location = new System.Drawing.Point(0, 0);
             this.koyo_name.Name = "koyo_name";
@@ -616,7 +616,7 @@
             this.qsvhu_name.BackColor = System.Drawing.Color.Transparent;
             this.qsvhu_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.qsvhu_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.qsvhu_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.qsvhu_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.qsvhu_name.ForeColor = System.Drawing.Color.White;
             this.qsvhu_name.Location = new System.Drawing.Point(0, 0);
             this.qsvhu_name.Name = "qsvhu_name";
@@ -666,7 +666,7 @@
             this.fatalan_name.BackColor = System.Drawing.Color.Transparent;
             this.fatalan_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.fatalan_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fatalan_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fatalan_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.fatalan_name.ForeColor = System.Drawing.Color.White;
             this.fatalan_name.Location = new System.Drawing.Point(0, 0);
             this.fatalan_name.Name = "fatalan_name";
@@ -738,7 +738,7 @@
             this.lonewolf_name.BackColor = System.Drawing.Color.Transparent;
             this.lonewolf_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.lonewolf_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lonewolf_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lonewolf_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lonewolf_name.ForeColor = System.Drawing.Color.White;
             this.lonewolf_name.Location = new System.Drawing.Point(0, 0);
             this.lonewolf_name.Name = "lonewolf_name";
@@ -2685,28 +2685,29 @@
             // connect_background
             // 
             this.connect_background.BackColor = System.Drawing.Color.Black;
-            this.connect_background.Controls.Add(this.connect_btn);
+            this.connect_background.Controls.Add(this.connect_btn_cp);
             this.connect_background.Controls.Add(this.ip_connect_input);
             this.connect_background.Controls.Add(this.ip_input_label);
-            this.connect_background.Controls.Add(this.close_connect_btn);
+            this.connect_background.Controls.Add(this.close_connect_btn_l);
             this.connect_background.Location = new System.Drawing.Point(3, 3);
             this.connect_background.Name = "connect_background";
             this.connect_background.Size = new System.Drawing.Size(490, 276);
             this.connect_background.TabIndex = 45;
             // 
-            // connect_btn
+            // connect_btn_cp
             // 
-            this.connect_btn.BackColor = System.Drawing.Color.Black;
-            this.connect_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.connect_btn.ForeColor = System.Drawing.Color.White;
-            this.connect_btn.Location = new System.Drawing.Point(125, 114);
-            this.connect_btn.Name = "connect_btn";
-            this.connect_btn.Size = new System.Drawing.Size(240, 41);
-            this.connect_btn.TabIndex = 62;
-            this.connect_btn.TabStop = false;
-            this.connect_btn.Text = "Присоединиться";
-            this.connect_btn.UseVisualStyleBackColor = false;
-            this.connect_btn.Click += new System.EventHandler(this.Connect_btn_Click);
+            this.connect_btn_cp.AutoSize = true;
+            this.connect_btn_cp.BackColor = System.Drawing.Color.Black;
+            this.connect_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.connect_btn_cp.ForeColor = System.Drawing.Color.White;
+            this.connect_btn_cp.Location = new System.Drawing.Point(125, 114);
+            this.connect_btn_cp.Name = "connect_btn_cp";
+            this.connect_btn_cp.Size = new System.Drawing.Size(240, 41);
+            this.connect_btn_cp.TabIndex = 62;
+            this.connect_btn_cp.TabStop = false;
+            this.connect_btn_cp.Text = "Присоединиться";
+            this.connect_btn_cp.UseVisualStyleBackColor = false;
+            this.connect_btn_cp.Click += new System.EventHandler(this.Connect_btn_Click);
             // 
             // ip_connect_input
             // 
@@ -2729,20 +2730,20 @@
             this.ip_input_label.Text = "IP игры:";
             this.ip_input_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // close_connect_btn
+            // close_connect_btn_l
             // 
-            this.close_connect_btn.AutoSize = true;
-            this.close_connect_btn.BackColor = System.Drawing.Color.Black;
-            this.close_connect_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.close_connect_btn.ForeColor = System.Drawing.Color.White;
-            this.close_connect_btn.Location = new System.Drawing.Point(10, 226);
-            this.close_connect_btn.Name = "close_connect_btn";
-            this.close_connect_btn.Size = new System.Drawing.Size(130, 41);
-            this.close_connect_btn.TabIndex = 58;
-            this.close_connect_btn.TabStop = false;
-            this.close_connect_btn.Text = "Назад";
-            this.close_connect_btn.UseVisualStyleBackColor = false;
-            this.close_connect_btn.Click += new System.EventHandler(this.Close_connect_btn_Click);
+            this.close_connect_btn_l.AutoSize = true;
+            this.close_connect_btn_l.BackColor = System.Drawing.Color.Black;
+            this.close_connect_btn_l.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.close_connect_btn_l.ForeColor = System.Drawing.Color.White;
+            this.close_connect_btn_l.Location = new System.Drawing.Point(10, 226);
+            this.close_connect_btn_l.Name = "close_connect_btn_l";
+            this.close_connect_btn_l.Size = new System.Drawing.Size(130, 41);
+            this.close_connect_btn_l.TabIndex = 58;
+            this.close_connect_btn_l.TabStop = false;
+            this.close_connect_btn_l.Text = "Назад";
+            this.close_connect_btn_l.UseVisualStyleBackColor = false;
+            this.close_connect_btn_l.Click += new System.EventHandler(this.Close_connect_btn_Click);
             // 
             // help_panel
             // 
@@ -3119,10 +3120,10 @@
         private System.Windows.Forms.Button start_multiplayer_game_r;
         private System.Windows.Forms.Panel connect_panel;
         private System.Windows.Forms.Panel connect_background;
-        private System.Windows.Forms.Button connect_btn;
+        private System.Windows.Forms.Button connect_btn_cp;
         private System.Windows.Forms.TextBox ip_connect_input;
         private System.Windows.Forms.Label ip_input_label;
-        private System.Windows.Forms.Button close_connect_btn;
+        private System.Windows.Forms.Button close_connect_btn_l;
         private System.Windows.Forms.Label coming_soon_label;
         private System.Windows.Forms.Panel select_item_panel;
         private System.Windows.Forms.Button select_item_btn_c;

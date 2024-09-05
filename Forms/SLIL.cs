@@ -15,6 +15,7 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
+using System.Reflection;
 
 namespace SLIL
 {
@@ -63,7 +64,7 @@ namespace SLIL
         private double elapsed_time = 0;
         private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
         private Bitmap SCREEN, WEAPON, BUFFER;
-        private readonly Font[] consolasFont = { new Font("Consolas", 6.75F), new Font("Consolas", 9.75F), new Font("Consolas", 16F), new Font("Consolas", 22F) };
+        private readonly Font[] consolasFont = { new Font("Consolas", 8F), new Font("Consolas", 16F), new Font("Consolas", 22F) };
         private readonly SolidBrush whiteBrush = new SolidBrush(Color.White);
         private readonly StringFormat rightToLeft = new StringFormat() { FormatFlags = StringFormatFlags.DirectionRightToLeft };
         private Graphics graphicsWeapon;
@@ -956,7 +957,16 @@ namespace SLIL
                             }
                         }
                         if (e.KeyCode == Bind.SelectItem)
+                        {
                             InSelectingMode = true;
+                            int x = center_x - 14;
+                            int y = center_y - 14;
+                            if (player.SelectedItem == 0) x -= 100;
+                            else if (player.SelectedItem == 1) y -= 28;
+                            else if (player.SelectedItem == 2) x += 28;
+                            else if (player.SelectedItem == 3) y += 28;
+                            Cursor.Position = new Point(x, y);
+                        }
                         if (e.KeyCode == Keys.D1)
                         {
                             TakeFlashlight(false);
@@ -2423,9 +2433,10 @@ namespace SLIL
             int item_count = 0;
             if (player.DisposableItems.Count > 0)
                 item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].AmmoInStock;
-            int icon_size = resolution == 0 ? 12 : 24;
+            int icon_size = resolution == 0 ? 14 : 28;
             int size = resolution == 0 ? 1 : 2;
             SizeF hpSize = graphicsWeapon.MeasureString(player.HP.ToString("0"), consolasFont[resolution]);
+            SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), consolasFont[resolution]);
             int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
             int ammo_x = ammo_icon_x + icon_size;
             graphicsWeapon.Clear(Color.Transparent);
@@ -2444,10 +2455,10 @@ namespace SLIL
                 }
                 catch { }
             }
-            if(player.EffectCheck(2))
+            if (player.EffectCheck(2))
                 graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
             if (ShowFPS)
-                graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[resolution], whiteBrush, SCREEN_WIDTH[resolution], 0, rightToLeft);
+                graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[resolution], whiteBrush, 0, 0);
             if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 110 * size, icon_size, icon_size);
@@ -2458,19 +2469,17 @@ namespace SLIL
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 110 * size, icon_size, icon_size);
                 graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 92 * size, icon_size, icon_size);
             }
-            int money_y = Controller.IsMultiplayer() ? 16 * size : 2;
-            graphicsWeapon.DrawImage(Properties.Resources.money, 2, money_y, icon_size, icon_size);
-            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, money_y);
             if (Controller.IsMultiplayer())
             {
+                SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[resolution]);
                 int ping = Controller.GetPing();
                 int connection_status;
                 if (ping < 100) connection_status = 0;
                 else if (ping < 150) connection_status = 1;
                 else if (ping < 300) connection_status = 2;
-                else connection_status = 4;
-                if(!(connection_status == 4)) graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, 0, icon_size, icon_size);
-                graphicsWeapon.DrawString($"{ping}ms", consolasFont[resolution], whiteBrush, icon_size + 2, 0);
+                else connection_status = 3;
+                graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, ShowFPS ? fpsSize.Height : 0, icon_size, icon_size);
+                graphicsWeapon.DrawString($"{ping}ms", consolasFont[resolution], whiteBrush, icon_size + 2, ShowFPS ? fpsSize.Height : 0);
             }
             graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 110 * size);
             graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 92 * size);
@@ -2514,13 +2523,16 @@ namespace SLIL
             }
             if (scope_hit != null)
                 graphicsWeapon.DrawImage(scope_hit, WEAPON.Width / 4, WEAPON.Height / 4, WEAPON.Width / 2, WEAPON.Height / 2);
+            int money_y = 2;
             if (ShowMiniMap)
             {
                 Bitmap mini_map = DrawMiniMap();
-                int mini_map_top = ShowFPS ? 14 : 0;
-                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH[resolution] - mini_map.Width - 5, mini_map_top * size);
+                money_y = mini_map.Height + 3;
+                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH[resolution] - mini_map.Width - 1, size);
                 mini_map.Dispose();
             }
+            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[resolution], whiteBrush, SCREEN_WIDTH[resolution], money_y, rightToLeft);
+            graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH[resolution] - moneySize.Width - icon_size, money_y, icon_size, icon_size);
             if (stage_timer.Enabled)
             {
                 string text = $"STAGE: {player.Stage + 1}";
@@ -2530,8 +2542,8 @@ namespace SLIL
                     text = "STAGE: Debug Boss";
                 else if (difficulty == 4)
                     text = "STAGE: Custom";
-                SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[resolution + 2]);
-                graphicsWeapon.DrawString(text, consolasFont[resolution + 2], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
+                SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[resolution + 1]);
+                graphicsWeapon.DrawString(text, consolasFont[resolution + 1], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }
             if (player.STAMINE < player.MAX_STAMINE)
                 graphicsWeapon.DrawLine(new Pen(Color.Lime, 2 * size), 0, SCREEN_HEIGHT[resolution], (int)(player.STAMINE / player.MAX_STAMINE * SCREEN_WIDTH[resolution]), SCREEN_HEIGHT[resolution]);
@@ -2542,7 +2554,7 @@ namespace SLIL
             }
             if (InSelectingMode)
             {
-                for(int i = 0; i < player.DisposableItems.Count; i++)
+                for (int i = 0; i < player.DisposableItems.Count; i++)
                 {
                     Image icon = ItemIconDict[player.DisposableItems[i].GetType()];
                     bool selected = false;
@@ -2898,6 +2910,7 @@ namespace SLIL
             scope[scope_type] = GetScope(scope[scope_type]);
             scope_shotgun[scope_type] = GetScope(scope_shotgun[scope_type]);
             display.Refresh();
+            BlockCamera = CanUnblockCamera = true;
             int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
             int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
             Cursor.Position = new Point(x, y);
@@ -2927,8 +2940,7 @@ namespace SLIL
         {
             if (Controller.IsMultiplayer())
                 Controller.DealDamage(Controller.GetPlayer(), 9999);
-            else
-                Controller.StopGame(0);
+            else Controller.StopGame(0);
         }
 
         private void StartGame()
