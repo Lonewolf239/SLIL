@@ -1434,12 +1434,42 @@ namespace SLIL
         {
             scope_hit = null;
             Player player = Controller.GetPlayer();
+            List<Entity> Entities = Controller.GetEntities();
             if (player.GetCurrentGun() is RPG) Controller.SpawnRockets(player.X, player.Y, 0, player.A);
             else
             {
+                double shotDistance = 0;
+                double step = 0.01;
+                double rayAngleX = Math.Sin(player.A);
+                double rayAngleY = Math.Cos(player.A);
+                char[] impassibleCells = {'#', '=', 'd', 'D' };
+                while (shotDistance <= player.GetCurrentGun().FiringRange)
+                {
+                    int test_x = (int)(player.X + rayAngleX * shotDistance);
+                    int test_y = (int)(player.Y + rayAngleY * shotDistance);
+
+                    if (impassibleCells.Contains(Controller.GetMap()[test_y * Controller.GetMapWidth() + test_x]))
+                    {
+                        break;
+                    }
+
+                    foreach(Entity ent in Entities)
+                    {
+                        if((ent as Player) == player)
+                        {
+                            continue;
+                        }
+                        if((ent.X - player.X)*(ent.X-player.X) + (ent.Y-player.Y)*(ent.Y-player.Y) <= 1)
+                        {
+                            break;
+                        }
+                    }
+
+                    shotDistance += step;
+                }
                 int[,] bullet = new int[player.GetCurrentGun().BulletCount, 2];
-                int maxXOffset = (int)(34 * (1 - player.GetCurrentGun().Accuracy));
-                int maxYOffset = (int)(15 * (1 - player.GetCurrentGun().Accuracy));
+                int maxXOffset = (int)(shotDistance * 34 * (1 - player.GetCurrentGun().Accuracy));
+                int maxYOffset = (int)(shotDistance * 15 * (1 - player.GetCurrentGun().Accuracy));
                 if (player.GetCurrentGun().BulletCount == 1)
                     bullet = new int[,] { { center_x + rand.Next(-maxXOffset, maxXOffset), center_y + rand.Next(-maxYOffset, maxYOffset) } };
                 else
@@ -1458,7 +1488,6 @@ namespace SLIL
                 double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
                 double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
                 Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
-                List<Entity> Entities = Controller.GetEntities();
                 int[] spriteOrder = new int[Entities.Count];
                 double[] spriteDistance = new double[Entities.Count];
                 int[] textures = new int[Entities.Count];
