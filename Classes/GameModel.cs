@@ -553,6 +553,7 @@ namespace SLIL.Classes
                                 player.MAX_STAMINE -= 150;
                                 player.MOVE_SPEED -= 0.15;
                                 player.RUN_SPEED -= 0.15;
+                                player.STAMINE = player.MAX_STAMINE;
                                 break;
                             case 3: //Pyro
                                 player.CuteMode = false;
@@ -575,6 +576,7 @@ namespace SLIL.Classes
                         player.MAX_STAMINE += 150;
                         player.MOVE_SPEED += 0.15;
                         player.RUN_SPEED += 0.15;
+                        player.STAMINE = player.MAX_STAMINE;
                         break;
                     case 3: //Pyro
                         player.CuteMode = true;

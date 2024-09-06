@@ -15,7 +15,6 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
-using System.Reflection;
 
 namespace SLIL
 {
@@ -1459,16 +1458,15 @@ namespace SLIL
                     shotDistance += step;
                 }
                 int[,] bullet = new int[player.GetCurrentGun().BulletCount, 2];
-                int maxXOffset = (int)(shotDistance * 5 * (1 - player.GetCurrentGun().Accuracy));
-                int maxYOffset = (int)(shotDistance * 5 * (1 - player.GetCurrentGun().Accuracy));
+                int maxOffset = (int)(shotDistance * 5 * (1 - player.GetCurrentGun().Accuracy));
                 if (player.GetCurrentGun().BulletCount == 1)
-                    bullet = new int[,] { { center_x + rand.Next(-maxXOffset, maxXOffset), center_y + rand.Next(-maxYOffset, maxYOffset) } };
+                    bullet = new int[,] { { center_x + rand.Next(-maxOffset, maxOffset), center_y + rand.Next(-maxOffset, maxOffset) } };
                 else
                 {
                     for (int i = 0; i < player.GetCurrentGun().BulletCount; i++)
                     {
-                        bullet[i, 0] = center_x + rand.Next(-maxXOffset, maxXOffset);
-                        bullet[i, 1] = center_y + rand.Next(-maxYOffset, maxYOffset);
+                        bullet[i, 0] = center_x + rand.Next(-maxOffset, maxOffset);
+                        bullet[i, 1] = center_y + rand.Next(-maxOffset, maxOffset);
                     }
                     if (player.GetCurrentGun() is SubmachineGun && player.GetCurrentGun().Level == Levels.LV3)
                     {
@@ -2443,6 +2441,23 @@ namespace SLIL
             }
         }
 
+        private void DisplayStamine(Player player, int icon_size, int size)
+        {
+            if (player.STAMINE >= player.MAX_STAMINE)
+                return;
+            int stamine_icon_size = icon_size / 2;
+            int stamine_width = resolution == 0 ? 40 : 80;
+            int progress_width = (int)(player.STAMINE / player.MAX_STAMINE * (stamine_width - 2));
+            int stamine_top = SCREEN_HEIGHT[resolution] - (icon_size * 2);
+            int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + stamine_icon_size + 2)) / 2;
+            int stamine_progressbar_left = stamine_left + stamine_icon_size + 2;
+            int stamine_progressbar_top = stamine_top + ((stamine_icon_size - 3) / 2);
+            graphicsWeapon.DrawImage(Properties.Resources.stamine_icon, stamine_left, stamine_top, stamine_icon_size, stamine_icon_size);
+            graphicsWeapon.FillRectangle(new SolidBrush(Color.Gray), stamine_progressbar_left, stamine_progressbar_top, stamine_width, 2.25f * size);
+            bool check = player.STAMINE >= player.MAX_STAMINE / 2.5;
+            graphicsWeapon.FillRectangle(check ? new SolidBrush(Color.White) : new SolidBrush(Color.Red), stamine_progressbar_left + 1, stamine_progressbar_top + size, progress_width, 1.5f * size);
+        }
+
         private void DrawGameInterface()
         {
             Player player = Controller.GetPlayer();
@@ -2568,19 +2583,7 @@ namespace SLIL
                 SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[resolution + 1]);
                 graphicsWeapon.DrawString(text, consolasFont[resolution + 1], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }
-            if (player.STAMINE < player.MAX_STAMINE)
-            {
-                int stamine_icon_size = icon_size / 2;
-                int stamine_width = resolution == 0 ? 40 : 80;
-                int progress_width = (int)(player.STAMINE / player.MAX_STAMINE * stamine_width);
-                int stamine_top = SCREEN_HEIGHT[resolution] - (icon_size * 2);
-                int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + stamine_icon_size + 2)) / 2;
-                int stamine_progressbar_left = stamine_left + stamine_icon_size + 2;
-                int stamine_progressbar_top = stamine_top + ((stamine_icon_size - 3) / 2);
-                graphicsWeapon.DrawImage(Properties.Resources.stamine_icon, stamine_left, stamine_top, stamine_icon_size, stamine_icon_size);
-                graphicsWeapon.DrawLine(new Pen(Color.Gray, 2.25f * size), stamine_progressbar_left, stamine_progressbar_top, stamine_progressbar_left + stamine_width, stamine_progressbar_top);
-                graphicsWeapon.DrawLine(new Pen(Color.White, 1.5f * size), stamine_progressbar_left, stamine_progressbar_top, stamine_progressbar_left + progress_width, stamine_progressbar_top);
-            }
+            DisplayStamine(player, icon_size, size);
             if (player.Effects.Count > 0)
             {
                 for (int i = 0; i < player.Effects.Count; i++)
