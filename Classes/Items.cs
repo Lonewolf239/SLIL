@@ -608,7 +608,7 @@ namespace SLIL.Classes
             Accuracy = 0.65;
             RechargeTime = 375;
             BulletCount = 1;
-            PauseBetweenShooting = 175;
+            PauseBetweenShooting = 125;
             FiringRate = 100;
             UpdateCost = 40;
             GunCost = 30;
@@ -634,7 +634,7 @@ namespace SLIL.Classes
                 UpdateCost = 40;
                 Accuracy = 0.65;
                 BulletCount = 1;
-                PauseBetweenShooting = 175;
+                PauseBetweenShooting = 125;
                 FiringRate = 100;
                 RechargeTime = 375;
                 CartridgesClip = 20;
@@ -653,7 +653,7 @@ namespace SLIL.Classes
                 Accuracy = 0.8;
                 RechargeTime = 350;
                 BulletCount = 1;
-                PauseBetweenShooting = 150;
+                PauseBetweenShooting = 110;
                 FiringRate = 92;
                 CartridgesClip = 30;
                 MaxAmmo = CartridgesClip * 6;
@@ -670,7 +670,7 @@ namespace SLIL.Classes
                 Accuracy = 0.5;
                 RechargeTime = 350;
                 BulletCount = 2;
-                PauseBetweenShooting = 75;
+                PauseBetweenShooting = 70;
                 FiringRate = 60;
                 CartridgesClip = 30;
                 MaxAmmo = CartridgesClip * 6;
