@@ -607,9 +607,9 @@ namespace SLIL.Classes
             Name = new[] { "3-6", "Submachine gun" };
             Accuracy = 0.65;
             RechargeTime = 375;
-            BulletCount = 2;
+            BulletCount = 1;
             PauseBetweenShooting = 175;
-            FiringRate = 50;
+            FiringRate = 100;
             UpdateCost = 40;
             GunCost = 30;
             AmmoCost = 18;
@@ -635,7 +635,7 @@ namespace SLIL.Classes
                 Accuracy = 0.65;
                 BulletCount = 1;
                 PauseBetweenShooting = 175;
-                FiringRate = 50;
+                FiringRate = 100;
                 RechargeTime = 375;
                 CartridgesClip = 20;
                 MaxAmmo = CartridgesClip * 6;
@@ -654,7 +654,7 @@ namespace SLIL.Classes
                 RechargeTime = 350;
                 BulletCount = 1;
                 PauseBetweenShooting = 150;
-                FiringRate = 50;
+                FiringRate = 92;
                 CartridgesClip = 30;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 8;
@@ -671,7 +671,7 @@ namespace SLIL.Classes
                 RechargeTime = 350;
                 BulletCount = 2;
                 PauseBetweenShooting = 75;
-                FiringRate = 25;
+                FiringRate = 60;
                 CartridgesClip = 30;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 8;

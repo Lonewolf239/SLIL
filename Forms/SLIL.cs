@@ -28,7 +28,7 @@ namespace SLIL
     public partial class SLIL : Form
     {
         private readonly GameController Controller;
-        private bool InSelectingMode = false, BlockCamera = false, CanUnblockCamera = false;
+        private bool InSelectingMode = false, BlockCamera = true, CanUnblockCamera = true;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
         public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
@@ -960,15 +960,13 @@ namespace SLIL
                         {
                             if (!InSelectingMode)
                             {
-                                //int x = 0, y = 0;
-                                //if (player.SelectedItem == 0) x -= 100;
-                                //else if (player.SelectedItem == 1) y -= 100;
-                                //else if (player.SelectedItem == 2) x += 100;
-                                //else if (player.SelectedItem == 3) y += 100;
+                                int x = Width / 2, y = Height / 2;
+                                if (player.SelectedItem == 0) x = 0;
+                                else if (player.SelectedItem == 1) y = 0;
+                                else if (player.SelectedItem == 2) x = Width;
+                                else if (player.SelectedItem == 3) y = Height;
                                 InSelectingMode = true;
-                                //Point point = display.PointToScreen(new Point(x + center_x, y + center_y));
-                                //Cursor.Position = new Point(point.X, point.Y);
-                                //Mouse(point.X, point.Y);
+                                Cursor.Position = display.PointToScreen(new Point(x, y));
                             }
                         }
                         if (e.KeyCode == Keys.D1)
@@ -1815,6 +1813,7 @@ namespace SLIL
             {
                 if (player.STAMINE <= 0 || chill_timer.Enabled)
                 {
+                    player.STAMINE = 0;
                     playerMoveStyle = Direction.WALK;
                     chill_timer.Start();
                 }
@@ -1831,41 +1830,38 @@ namespace SLIL
         private void Display_MouseMove(object sender, MouseEventArgs e)
         {
             if (GameStarted && active && !console_panel.Visible && !shop_panel.Visible)
-                Mouse(e.X, e.Y);
-        }
-
-        private void Mouse(int eX,int eY)
-        {
-            double x = display.Width / 2, y = display.Height / 2;
-            double X = eX - x, Y = eY - y;
-            cursor_x = (int)X; cursor_y = (int)Y;
-            if (!InSelectingMode)
             {
-                if (!BlockCamera)
+                double x = display.Width / 2, y = display.Height / 2;
+                double X = e.X - x, Y = e.Y - y;
+                cursor_x = (int)X; cursor_y = (int)Y;
+                if (!InSelectingMode)
                 {
-                    int invY = inv_y ? -1 : 1;
-                    int invX = inv_x ? -1 : 1;
-                    double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
-                    double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
-                    Controller.ChangePlayerA(A * invX);
-                    Controller.ChangePlayerLook(Look * invY);
+                    if (!BlockCamera)
+                    {
+                        int invY = inv_y ? -1 : 1;
+                        int invX = inv_x ? -1 : 1;
+                        double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
+                        double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
+                        Controller.ChangePlayerA(A * invX);
+                        Controller.ChangePlayerLook(Look * invY);
+                    }
+                    else if (CanUnblockCamera) BlockCamera = CanUnblockCamera = false;
+                    Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
                 }
-                else if (CanUnblockCamera) BlockCamera = CanUnblockCamera = false;
-                Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
-            }
-            else
-            {
-                Player player = Controller.GetPlayer();
-                if (player != null)
+                else
                 {
-                    if (cursor_x < 0 && player.DisposableItems.Count >= 1)
-                        player.SelectedItem = 0;
-                    else if (cursor_y < 0 && player.DisposableItems.Count >= 2)
-                        player.SelectedItem = 1;
-                    else if (cursor_x > 0 && player.DisposableItems.Count >= 3)
-                        player.SelectedItem = 2;
-                    else if (cursor_y > 0 && player.DisposableItems.Count >= 4)
-                        player.SelectedItem = 3;
+                    Player player = Controller.GetPlayer();
+                    if (player != null)
+                    {
+                        if (cursor_x < 0 && player.DisposableItems.Count >= 1)
+                            player.SelectedItem = 0;
+                        else if (cursor_y < 0 && player.DisposableItems.Count >= 2)
+                            player.SelectedItem = 1;
+                        else if (cursor_x > 0 && player.DisposableItems.Count >= 3)
+                            player.SelectedItem = 2;
+                        else if (cursor_y > 0 && player.DisposableItems.Count >= 4)
+                            player.SelectedItem = 3;
+                    }
                 }
             }
         }
@@ -2469,12 +2465,12 @@ namespace SLIL
             if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, 110 * size, icon_size, icon_size);
-                graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 92 * size, icon_size, icon_size);
+                graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2 + icon_size / 2), icon_size, icon_size);
             }
             else
             {
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, 110 * size, icon_size, icon_size);
-                graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, 92 * size, icon_size, icon_size);
+                graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2 + icon_size / 2), icon_size, icon_size);
             }
             if (Controller.IsMultiplayer())
             {
@@ -2489,7 +2485,7 @@ namespace SLIL
                 graphicsWeapon.DrawString($"{ping}ms", consolasFont[resolution], whiteBrush, icon_size + 2, ShowFPS ? fpsSize.Height : 0);
             }
             graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[resolution], whiteBrush, icon_size + 2, 110 * size);
-            graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, 92 * size);
+            graphicsWeapon.DrawString(item_count.ToString(), consolasFont[resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2 + icon_size / 2));
             if (!player.IsPetting && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
@@ -2555,14 +2551,15 @@ namespace SLIL
             if (player.STAMINE < player.MAX_STAMINE)
             {
                 int stamine_icon_size = icon_size / 2;
-                int stamine_width = resolution == 0 ? 75 : 150;
-                int stamine_top = SCREEN_HEIGHT[resolution] - ((icon_size * size) * 2);
+                int stamine_width = resolution == 0 ? 40 : 80;
+                int progress_width = (int)(player.STAMINE / player.MAX_STAMINE * stamine_width);
+                int stamine_top = SCREEN_HEIGHT[resolution] - (icon_size * 2);
                 int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + stamine_icon_size + 2)) / 2;
                 int stamine_progressbar_left = stamine_left + stamine_icon_size + 2;
                 int stamine_progressbar_top = stamine_top + ((stamine_icon_size - 3) / 2);
-                graphicsWeapon.DrawImage(Properties.Resources.missing, stamine_left, stamine_top, stamine_icon_size, stamine_icon_size);
-                graphicsWeapon.DrawLine(new Pen(Color.Gray, 3 * size), stamine_progressbar_left, stamine_progressbar_top, stamine_progressbar_left + stamine_width, stamine_progressbar_top);
-                graphicsWeapon.DrawLine(new Pen(Color.White, 2 * size), stamine_progressbar_left + 1, stamine_progressbar_top, stamine_progressbar_left + (int)(player.STAMINE / player.MAX_STAMINE * stamine_width), stamine_progressbar_top);
+                graphicsWeapon.DrawImage(Properties.Resources.stamine_icon, stamine_left, stamine_top, stamine_icon_size, stamine_icon_size);
+                graphicsWeapon.DrawLine(new Pen(Color.Gray, 2.25f * size), stamine_progressbar_left, stamine_progressbar_top, stamine_progressbar_left + stamine_width, stamine_progressbar_top);
+                graphicsWeapon.DrawLine(new Pen(Color.White, 1.5f * size), stamine_progressbar_left, stamine_progressbar_top, stamine_progressbar_left + progress_width, stamine_progressbar_top);
             }
             if (player.Effects.Count > 0)
             {

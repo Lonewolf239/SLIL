@@ -1177,5 +1177,8 @@
   <ItemGroup>
     <None Include="Images\Soon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\stamine_icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
