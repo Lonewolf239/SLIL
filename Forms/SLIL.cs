@@ -747,11 +747,15 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if (player.GetCurrentGun().CanRun && RunKeyPressed &&
-                playerDirection == Direction.FORWARD && !player.Fast &&
-                player.STAMINE >= player.MAX_STAMINE / 2.5 && !player.Aiming &&
-                !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !chill_timer.Enabled)
-                playerMoveStyle = Direction.RUN;
+            if (player.GetCurrentGun().CanRun && RunKeyPressed && playerDirection == Direction.FORWARD &&
+                !player.Fast && !player.IsPetting && !player.Aiming &&
+                !shot_timer.Enabled && !reload_timer.Enabled && 
+                !shotgun_pull_timer.Enabled && !chill_timer.Enabled && !mouse_hold_timer.Enabled)
+            {
+                if (player.STAMINE >= player.MAX_STAMINE / 2.5)
+                    playerMoveStyle = Direction.RUN;
+            }
+            else playerMoveStyle = Direction.WALK;
             if (playerMoveStyle == Direction.RUN && playerDirection == Direction.FORWARD && !player.Aiming && !reload_timer.Enabled && !shotgun_pull_timer.Enabled)
             {
                 if (player.STAMINE <= 0 || chill_timer.Enabled)
