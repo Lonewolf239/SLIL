@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace SLIL.Classes
@@ -43,24 +44,38 @@ namespace SLIL.Classes
             Properties.Resources.teleport_1,
             Properties.Resources.hit_0, //36
             Properties.Resources.hit_1,
+            Properties.Resources.player, //38
+            Properties.Resources.player_1,
+            Properties.Resources.player_stoped,
+            Properties.Resources.player_aiming,
+            Properties.Resources.player_shooted,
+            Properties.Resources.player_stoped, //43
+            Properties.Resources.box, //44
+            Properties.Resources.box_broken,
+            Properties.Resources.barrel, //46
+            Properties.Resources.barrel_broken,
+            Properties.Resources.rpg_rocket_0, //48
+            Properties.Resources.rpg_rocket_1,
+            Properties.Resources.rpg_explosion_0, //50
+            Properties.Resources.rpg_explosion_1,
         };
         private readonly Image[] cute_textures =
         {
-            Properties.Resources.wall,
-            Properties.Resources.door,
-            Properties.Resources.shop_door,
+            Properties.Resources.c_wall,
+            Properties.Resources.c_door,
+            Properties.Resources.c_shop_door,
             Properties.Resources.teleport,
-            Properties.Resources.floor,
-            Properties.Resources.ceiling,
-            Properties.Resources.enemy_0, //8
-            Properties.Resources.enemy_0_1,
-            Properties.Resources.enemy_0_DEAD,
-            Properties.Resources.enemy_1, //11
-            Properties.Resources.enemy_1_1,
-            Properties.Resources.enemy_1_DEAD,
-            Properties.Resources.enemy_2, //14
-            Properties.Resources.enemy_2_1,
-            Properties.Resources.enemy_2_DEAD,
+            Properties.Resources.c_floor,
+            Properties.Resources.c_ceiling,
+            Properties.Resources.c_enemy_0, //8
+            Properties.Resources.c_enemy_0_1,
+            Properties.Resources.c_enemy_0_DEAD,
+            Properties.Resources.c_enemy_1, //11
+            Properties.Resources.c_enemy_1_1,
+            Properties.Resources.c_enemy_1_DEAD,
+            Properties.Resources.c_enemy_2, //14
+            Properties.Resources.c_enemy_2_1,
+            Properties.Resources.c_enemy_2_DEAD,
             Properties.Resources.pet_cat_0, //17
             Properties.Resources.pet_cat_1,
             Properties.Resources.pet_cat_3,
@@ -78,10 +93,24 @@ namespace SLIL.Classes
             Properties.Resources.pet_pyro_0, //31
             Properties.Resources.pet_pyro_1,
             Properties.Resources.pet_pyro_3,
-            Properties.Resources.teleport_0, //34
-            Properties.Resources.teleport_1,
+            Properties.Resources.c_teleport_0, //34
+            Properties.Resources.c_teleport_1,
             Properties.Resources.hit_0, //36
             Properties.Resources.hit_1,
+            Properties.Resources.player, //38
+            Properties.Resources.player_1,
+            Properties.Resources.player_stoped,
+            Properties.Resources.player_aiming,
+            Properties.Resources.player_shooted,
+            Properties.Resources.player_stoped, //43
+            Properties.Resources.box, //44
+            Properties.Resources.box_broken,
+            Properties.Resources.barrel, //46
+            Properties.Resources.barrel_broken,
+            Properties.Resources.rpg_rocket_0, //48
+            Properties.Resources.rpg_rocket_1,
+            Properties.Resources.rpg_explosion_0, //50
+            Properties.Resources.rpg_explosion_1,
         };
         private readonly Color[] COLORS =
         {
@@ -93,31 +122,31 @@ namespace SLIL.Classes
         private readonly Color[] CUTE_COLORS =
         {
             //bound
-            Color.FromArgb(90, 80, 90),
+            Color.FromArgb(98, 138, 82),
             //dark
-            Color.FromArgb(150, 140, 150)
+            Color.White
         };
-        private readonly Color[,][,] textureColorCache;
-        private readonly Color[,][,] textureCuteColorCache;
+        private readonly Color[][,] textureColorCache;
+        private readonly Color[][,] textureCuteColorCache;
 
         public TextureCache()
         {
             int textureCount = textures.Length + COLORS.Length;
-            textureColorCache = new Color[textureCount, 101][,];
-            textureCuteColorCache = new Color[textureCount, 101][,];
+            textureColorCache = new Color[textureCount][,];
+            textureCuteColorCache = new Color[textureCount][,];
             for (int id = 0; id < COLORS.Length; id++)
             {
-                Color color = COLORS[id];
-                for (int blackout = 0; blackout <= 100; blackout += 10)
-                {
-                    if (blackout == 100)
-                        textureColorCache[id, blackout] = GenerateBlackTexture(1, 1, COLORS[1]);
-                    else
-                        textureColorCache[id, blackout] = CacheColor(color, blackout);
-                }
+                textureColorCache[id] = new Color[1, 1];
+                textureColorCache[id][0, 0] = COLORS[id];
             }
             for (int id = COLORS.Length; id < textureCount; id++)
             {
+                if (id - CUTE_COLORS.Length == 3)
+                {
+                    textureColorCache[id] = new Color[1, 1];
+                    textureColorCache[id][0, 0] = COLORS[0];
+                    continue;
+                }
                 Bitmap textureBitmap = new Bitmap(textures[id - COLORS.Length]);
                 BitmapData bitmapData = textureBitmap.LockBits(new Rectangle(0, 0, textureBitmap.Width, textureBitmap.Height), ImageLockMode.ReadOnly, textureBitmap.PixelFormat);
                 int bytesPerPixel = Bitmap.GetPixelFormatSize(textureBitmap.PixelFormat) / 8;
@@ -125,28 +154,22 @@ namespace SLIL.Classes
                 byte[] pixels = new byte[byteCount];
                 System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, pixels, 0, byteCount);
                 textureBitmap.UnlockBits(bitmapData);
-                for (int blackout = 0; blackout <= 100; blackout += 10)
-                {
-                    float darkenAmount = 1 - (blackout / 100f);
-                    if (blackout == 100)
-                        textureColorCache[id, blackout] = GenerateBlackTexture(textureBitmap.Width, textureBitmap.Height, COLORS[1]);
-                    else
-                        textureColorCache[id, blackout] = CacheTextureColors(pixels, bitmapData.Stride, textureBitmap.Width, textureBitmap.Height, bytesPerPixel, darkenAmount);
-                }
+                textureColorCache[id] = new Color[textureBitmap.Width, textureBitmap.Height];
+                textureColorCache[id] = CacheTextureColors(pixels, bitmapData.Stride, textureBitmap.Width, textureBitmap.Height, bytesPerPixel);
             }
             for (int id = 0; id < CUTE_COLORS.Length; id++)
             {
-                Color color = CUTE_COLORS[id];
-                for (int blackout = 0; blackout <= 100; blackout += 10)
-                {
-                    if (blackout == 100)
-                        textureCuteColorCache[id, blackout] = GenerateBlackTexture(1, 1, CUTE_COLORS[1]);
-                    else
-                        textureCuteColorCache[id, blackout] = CacheColor(color, blackout);
-                }
+                textureCuteColorCache[id] = new Color[1, 1];
+                textureCuteColorCache[id][0, 0] = CUTE_COLORS[id];
             }
             for (int id = CUTE_COLORS.Length; id < textureCount; id++)
             {
+                if (id - CUTE_COLORS.Length == 3 )
+                {
+                    textureColorCache[id] = new Color[1, 1];
+                    textureColorCache[id][0, 0] = COLORS[0];
+                    continue;
+                }
                 Bitmap textureBitmap = new Bitmap(cute_textures[id - CUTE_COLORS.Length]);
                 BitmapData bitmapData = textureBitmap.LockBits(new Rectangle(0, 0, textureBitmap.Width, textureBitmap.Height), ImageLockMode.ReadOnly, textureBitmap.PixelFormat);
                 int bytesPerPixel = Bitmap.GetPixelFormatSize(textureBitmap.PixelFormat) / 8;
@@ -154,36 +177,25 @@ namespace SLIL.Classes
                 byte[] pixels = new byte[byteCount];
                 System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, pixels, 0, byteCount);
                 textureBitmap.UnlockBits(bitmapData);
-                for (int blackout = 0; blackout <= 100; blackout += 10)
-                {
-                    float darkenAmount = 1 - (blackout / 100f);
-                    if (blackout == 100)
-                        textureCuteColorCache[id, blackout] = GenerateBlackTexture(textureBitmap.Width, textureBitmap.Height, CUTE_COLORS[1]);
-                    else
-                        textureCuteColorCache[id, blackout] = CacheTextureColors(pixels, bitmapData.Stride, textureBitmap.Width, textureBitmap.Height, bytesPerPixel, darkenAmount);
-                }
+                textureCuteColorCache[id] = new Color[textureBitmap.Width, textureBitmap.Height];
+                textureCuteColorCache[id] = CacheTextureColors(pixels, bitmapData.Stride, textureBitmap.Width, textureBitmap.Height, bytesPerPixel);
             }
         }
 
         public Color GetTextureColor(int textureId, int x, int y, int blackout, bool cute)
         {
-            if(cute)
-                return textureCuteColorCache[textureId, blackout][x, y];
-            return textureColorCache[textureId, blackout][x, y];
-        }
-
-        private Color[,] GenerateBlackTexture(int width, int height, Color color)
-        {
-            Color[,] blackTexture = new Color[width, height];
-            for (int x = 0; x < width; x++)
+            if (cute)
             {
-                for (int y = 0; y < height; y++)
-                    blackTexture[x, y] = color;
+                if (blackout >= 96)
+                    return CUTE_COLORS[1];
+                return LightenColor(textureCuteColorCache[textureId][x, y], blackout);
             }
-            return blackTexture;
+            if (blackout >= 96)
+                return COLORS[1];
+            return DarkenColor(textureColorCache[textureId][x, y], blackout);
         }
 
-        private Color[,] CacheTextureColors(byte[] pixels, int stride, int width, int height, int bytesPerPixel, float darkenAmount)
+        private Color[,] CacheTextureColors(byte[] pixels, int stride, int width, int height, int bytesPerPixel)
         {
             Color[,] colors = new Color[width, height];
             for (int y = 0; y < height; y++)
@@ -198,24 +210,33 @@ namespace SLIL.Classes
                     bytes[2] = pixels[offset + 2];
                     if (bytesPerPixel == 4)
                         bytes[3] = pixels[offset + 3];
-                    if (bytes[3] == 0)
+                    if (bytes[3] <= 50)
                         colors[x, y] = Color.Transparent;
                     else
-                    {
-                        Color originalColor = Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
-                        colors[x, y] = DarkenColor(originalColor, darkenAmount);
-                    }
+                        colors[x, y] = Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
                 }
             }
             return colors;
         }
 
-        private Color[,] CacheColor(Color color, int blackout)
+        private Color LightenColor(Color color, float blackout)
         {
-            float darkenAmount = 1 - (blackout / 100f);
-            return new Color[,] { { DarkenColor(color, darkenAmount) } };
+            if (color.A <= 50) return Color.Transparent;
+            blackout = 0.65f / (0.96f - (blackout / 100));
+            int r = (int)(color.R * blackout);
+            int g = (int)(color.G * blackout);
+            int b = (int)(color.B * blackout);
+            return Color.FromArgb(color.A, Math.Min(r, 255), Math.Min(g, 255), Math.Min(b, 255));
         }
 
-        private Color DarkenColor(Color color, float darkenAmount) => Color.FromArgb(color.A, (int)(color.R * darkenAmount), (int)(color.G * darkenAmount), (int)(color.B * darkenAmount));
+        private Color DarkenColor(Color color, float blackout)
+        {
+            if (color.A <= 50) return Color.Transparent;
+            blackout = 0.96f - (blackout / 100);
+            int r = (int)(color.R * blackout);
+            int g = (int)(color.G * blackout);
+            int b = (int)(color.B * blackout);
+            return Color.FromArgb(color.A, Math.Max(r, 0), Math.Max(g, 0), Math.Max(b, 0));
+        }
     }
 }

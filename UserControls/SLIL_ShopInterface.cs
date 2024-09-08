@@ -7,31 +7,73 @@ namespace SLIL.UserControls
 {
     public partial class SLIL_ShopInterface : UserControl
     {
-        public SLIL_ShopInterface()
-        {
-            InitializeComponent();
-        }
-
+        public Timer UpdateTimer;
+        public SLIL ParentSLILForm;
         public Gun weapon;
         public int index = 0;
         public int width;
-        public PlaySound buy;
+        public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
-        private readonly string[,] buy_text = { { "Купить оружие", "Купить патроны" }, { "Buy weapons", "Buy ammo" } };
+        private readonly string[,] buy_text = { { "2-8", "2-9" }, { "Buy weapons", "Buy ammo" } };
+
+        public SLIL_ShopInterface()
+        {
+            InitializeComponent();
+            UpdateTimer = new Timer
+            {
+                Interval = 1000
+            };
+            UpdateTimer.Tick += UpdateTimer_Tick;
+            UpdateTimer.Enabled = true;
+        }
+
+        ~SLIL_ShopInterface() => UpdateTimer.Stop();
+
+        private string GetBuyText()
+        {
+            if (index == 0)
+                return MainMenu.Localizations.GetLString(MainMenu.Language, buy_text[0, weapon.HasIt ? 1 : 0]);
+            return buy_text[1, weapon.HasIt ? 1 : 0];
+        }
+
+        private string GetWeaponName()
+        {
+            if (index == 0)
+                return MainMenu.Localizations.GetLString(MainMenu.Language, weapon.Name[0]);
+            return weapon.Name[1];
+        }
+
+        private void UpdateTimer_Tick(object sender, EventArgs e)
+        {
+            player = ParentSLILForm.GetPlayer();
+            if (player == null)
+            {
+                this.UpdateTimer.Stop();
+                return;
+            }
+            foreach (Gun gun in player.Guns)
+            {
+                if (gun.GetType() == weapon.GetType())
+                {
+                    weapon = gun;
+                    break;
+                }
+            }
+            UpdateInfo();
+        }
 
         private void Buy_button_Click(object sender, EventArgs e)
         {
             weapon_icon.Focus();
             if (weapon.HasIt)
             {
-                if (player.Money >= weapon.AmmoCost && weapon.MaxAmmoCount + weapon.AmmoCount <= weapon.MaxAmmo)
+                if (player.Money >= weapon.AmmoCost && weapon.AmmoInStock + weapon.AmmoCount <= weapon.MaxAmmo)
                 {
                     if (MainMenu.sounds)
                         buy.Play(SLIL.Volume);
-                    player.ChangeMoney(-weapon.AmmoCost);
-                    weapon.MaxAmmoCount += weapon.CartridgesClip;
-                    ammo_count.Text = index == 0 ? $"Патроны: {weapon.MaxAmmoCount}/{weapon.AmmoCount}" : $"Ammo: {weapon.MaxAmmoCount}/{weapon.AmmoCount}";
+                    ParentSLILForm.BuyAmmo(weapon);
+                    ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                 }
                 else if (MainMenu.sounds)
                     cant_pressed?.Play(SLIL.Volume);
@@ -42,18 +84,16 @@ namespace SLIL.UserControls
                 {
                     if (MainMenu.sounds)
                         buy.Play(SLIL.Volume);
-                    player.ChangeMoney(-weapon.GunCost);
-                    weapon.SetDefault();
-                    player.Guns.Add(weapon);
-                    weapon.HasIt = true;
-                    buy_button.Text = buy_text[index, weapon.HasIt ? 1 : 0] + $" ${weapon.AmmoCost}";
-                    ammo_count.Text = index == 0 ? $"Патроны: {weapon.MaxAmmoCount}/{weapon.AmmoCount}" : $"Ammo: {weapon.MaxAmmoCount}/{weapon.AmmoCount}";
+                    ParentSLILForm.BuyWeapon(weapon);
+                    buy_button.Text = GetBuyText() + $" ${weapon.AmmoCost}";
+                    ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                     update_button.Left = buy_button.Right + 6;
-                    update_button.Visible = !(weapon is SniperRifle);
+                    update_button.Visible = weapon.CanUpdate();
                 }
                 else if (MainMenu.sounds)
                     cant_pressed?.Play(SLIL.Volume);
             }
+            UpdateInfo();
         }
 
         private void Update_button_Click(object sender, EventArgs e)
@@ -63,34 +103,41 @@ namespace SLIL.UserControls
             {
                 if (MainMenu.sounds)
                     buy.Play(SLIL.Volume);
-                player.ChangeMoney(-weapon.UpdateCost);
-                weapon.LevelUpdate();
-                player.LevelUpdated = true;
-                weapon_name.Text = weapon.Name[index] + $" {weapon.Level}";
-                weapon_icon.Image = weapon.Icon[weapon.GetLevel()];
+                ParentSLILForm.UpdateWeapon(weapon);
+                weapon_name.Text = GetWeaponName() + $" {weapon.Level}";
+                weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
                 update_button.Text = $"${weapon.UpdateCost}";
-                damage_text.Text = index == 0 ? $"Урон: {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
-                ammo_count.Text = index == 0 ? $"Патроны: {weapon.MaxAmmoCount}/{weapon.AmmoCount}" : $"Ammo: {weapon.MaxAmmoCount}/{weapon.AmmoCount}";
+                damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-11")} {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
+                ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                 ammo_count.Left = damage_text.Right;
                 update_button.Visible = weapon.CanUpdate();
             }
             else if (MainMenu.sounds)
                 cant_pressed?.Play(SLIL.Volume);
+            UpdateInfo();
+        }
+
+        private void UpdateInfo()
+        {
+            int cost = weapon.HasIt ? weapon.AmmoCost : weapon.GunCost;
+            string ammo = weapon.HasIt ? $"{weapon.AmmoInStock}/{weapon.AmmoCount}" : "0/0";
+            weapon_name.Text = weapon.Upgradeable ? GetWeaponName() + $" {weapon.Level}" : GetWeaponName();
+            if (weapon_icon.Image != SLIL.IconDict[weapon.GetType()][weapon.GetLevel()])
+                weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
+            ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {ammo}" : $"Ammo: {ammo}";
+            buy_button.Text = GetBuyText() + $" ${cost}";
+            update_button.Text = $"${weapon.UpdateCost}";
+            string shotgun = weapon is Shotgun ? $" x {weapon.BulletCount}" : null;
+            damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-11")} {weapon.MinDamage}-{weapon.MaxDamage}{shotgun}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
+            accuracy_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-13")} {weapon.Accuracy * 100}%" : $"Accuracy: {weapon.Accuracy * 100}%";
+            ammo_count.Left = damage_text.Right;
+            update_button.Left = buy_button.Right + 6;
+            update_button.Visible = weapon.CanUpdate() && weapon.HasIt;
         }
 
         private void SLIL_ShopInterface_VisibleChanged(object sender, EventArgs e)
         {
-            int cost = weapon.HasIt ? weapon.AmmoCost : weapon.GunCost;
-            string ammo = weapon.HasIt ? $"{weapon.MaxAmmoCount}/{weapon.AmmoCount}" : "0/0";
-            weapon_name.Text = !(weapon is SniperRifle) ? weapon.Name[index] + $" {weapon.Level}" : weapon.Name[index];
-            weapon_icon.Image = weapon.Icon[weapon.GetLevel()];
-            ammo_count.Text = index == 0 ? $"Патроны: {ammo}" : $"Ammo: {ammo}";
-            buy_button.Text = buy_text[index, weapon.HasIt ? 1 : 0] + $" ${cost}";
-            update_button.Text = $"${weapon.UpdateCost}";
-            damage_text.Text = index == 0 ? $"Урон: {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
-            ammo_count.Left = damage_text.Right;
-            update_button.Left = buy_button.Right + 6;
-            update_button.Visible = weapon.CanUpdate() && weapon.HasIt && !(weapon is SniperRifle);
+            UpdateInfo();
             Width = width;
         }
     }

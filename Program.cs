@@ -8,6 +8,7 @@ namespace SLIL
     internal static class Program
     {
         public static Mutex mutex;
+        public static string current_version = "|1.2.1|";
 
         [STAThread]
         static void Main()

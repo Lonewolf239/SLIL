@@ -47,20 +47,19 @@ namespace SLIL
             this.pause_text = new System.Windows.Forms.Label();
             this.game_over_text = new System.Windows.Forms.Label();
             this.raycast = new System.Windows.Forms.Timer(this.components);
-            this.time_remein = new System.Windows.Forms.Timer(this.components);
             this.step_sound_timer = new System.Windows.Forms.Timer(this.components);
             this.stamina_timer = new System.Windows.Forms.Timer(this.components);
             this.mouse_timer = new System.Windows.Forms.Timer(this.components);
             this.shot_timer = new System.Windows.Forms.Timer(this.components);
             this.reload_timer = new System.Windows.Forms.Timer(this.components);
-            this.enemy_timer = new System.Windows.Forms.Timer(this.components);
             this.status_refresh = new System.Windows.Forms.Timer(this.components);
             this.chill_timer = new System.Windows.Forms.Timer(this.components);
             this.stage_timer = new System.Windows.Forms.Timer(this.components);
-            this.respawn_timer = new System.Windows.Forms.Timer(this.components);
             this.game_over_panel = new System.Windows.Forms.Panel();
             this.exit_restart_btn = new System.Windows.Forms.Button();
             this.restart_btn = new System.Windows.Forms.Button();
+            this.shotgun_pull_timer = new System.Windows.Forms.Timer(this.components);
+            this.mouse_hold_timer = new System.Windows.Forms.Timer(this.components);
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -252,11 +251,6 @@ namespace SLIL
             this.raycast.Interval = 25;
             this.raycast.Tick += new System.EventHandler(this.Raycast_Tick);
             // 
-            // time_remein
-            // 
-            this.time_remein.Interval = 1000;
-            this.time_remein.Tick += new System.EventHandler(this.Time_remein_Tick);
-            // 
             // step_sound_timer
             // 
             this.step_sound_timer.Interval = 1;
@@ -282,30 +276,21 @@ namespace SLIL
             this.reload_timer.Interval = 750;
             this.reload_timer.Tick += new System.EventHandler(this.Reload_gun_Tick);
             // 
-            // enemy_timer
-            // 
-            this.enemy_timer.Tick += new System.EventHandler(this.Enemy_timer_Tick);
-            // 
             // status_refresh
             // 
             this.status_refresh.Enabled = true;
-            this.status_refresh.Interval = 1;
+            this.status_refresh.Interval = 5;
             this.status_refresh.Tick += new System.EventHandler(this.Status_refresh_Tick);
             // 
             // chill_timer
             // 
-            this.chill_timer.Interval = 150;
+            this.chill_timer.Interval = 750;
             this.chill_timer.Tick += new System.EventHandler(this.Chill_timer_Tick);
             // 
             // stage_timer
             // 
             this.stage_timer.Interval = 3250;
             this.stage_timer.Tick += new System.EventHandler(this.Stage_timer_Tick);
-            // 
-            // respawn_timer
-            // 
-            this.respawn_timer.Interval = 1000;
-            this.respawn_timer.Tick += new System.EventHandler(this.Respawn_timer_Tick);
             // 
             // game_over_panel
             // 
@@ -353,6 +338,16 @@ namespace SLIL
             this.restart_btn.UseVisualStyleBackColor = true;
             this.restart_btn.Click += new System.EventHandler(this.Restart_btn_Click);
             // 
+            // shotgun_pull_timer
+            // 
+            this.shotgun_pull_timer.Interval = 350;
+            this.shotgun_pull_timer.Tick += new System.EventHandler(this.Shotgun_pull_timer_Tick);
+            // 
+            // mouse_hold_timer
+            // 
+            this.mouse_hold_timer.Interval = 500;
+            this.mouse_hold_timer.Tick += new System.EventHandler(this.Mouse_hold_timer_Tick);
+            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -375,8 +370,6 @@ namespace SLIL
             this.Activated += new System.EventHandler(this.SLIL_Activated);
             this.Deactivate += new System.EventHandler(this.SLIL_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SLIL_FormClosing);
-            this.Load += new System.EventHandler(this.SLIL_Load);
-            this.Shown += new System.EventHandler(this.SLIL_Shown);
             this.LocationChanged += new System.EventHandler(this.SLIL_LocationChanged);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SLIL_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SLIL_KeyUp);
@@ -395,14 +388,12 @@ namespace SLIL
 
         #endregion
         private System.Windows.Forms.Timer raycast;
-        private System.Windows.Forms.Timer time_remein;
         private System.Windows.Forms.Timer step_sound_timer;
         private System.Windows.Forms.Label game_over_text;
         private System.Windows.Forms.Timer stamina_timer;
         private System.Windows.Forms.Timer mouse_timer;
         private System.Windows.Forms.Timer shot_timer;
         private System.Windows.Forms.Timer reload_timer;
-        private System.Windows.Forms.Timer enemy_timer;
         private System.Windows.Forms.Timer status_refresh;
         private Panel shop_panel;
         private Label shop_money;
@@ -415,7 +406,6 @@ namespace SLIL
         private Label pause_text;
         private Button exit_btn;
         private Button pause_btn;
-        private Timer respawn_timer;
         private TabControl shop_tab_control;
         private TabPage weapon_shop_page;
         private TabPage pet_shop_page;
@@ -423,5 +413,7 @@ namespace SLIL
         private Panel game_over_panel;
         private Button restart_btn;
         private Button exit_restart_btn;
+        private Timer shotgun_pull_timer;
+        private Timer mouse_hold_timer;
     }
 }

@@ -12,6 +12,22 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,9 +54,15 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Win32.Registry, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.Win32.Registry.4.7.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
+    <Reference Include="LiteNetLib, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\LiteNetLib.1.2.0\lib\net471\LiteNetLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
     <Reference Include="NAudio, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
       <HintPath>packages\NAudio.2.2.1\lib\net472\NAudio.dll</HintPath>
@@ -74,11 +96,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Security.AccessControl, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Security.AccessControl.4.7.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.AccessControl.6.0.1\lib\net461\System.Security.AccessControl.dll</HintPath>
     </Reference>
-    <Reference Include="System.Security.Principal.Windows, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Security.Principal.Windows.4.7.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -95,19 +117,21 @@
     <Compile Include="CGF\Files.cs" />
     <Compile Include="Classes\BindControls.cs" />
     <Compile Include="Classes\ConvertBitmap.cs" />
+    <Compile Include="Classes\Effect.cs" />
     <Compile Include="Classes\Entity.cs" />
+    <Compile Include="Classes\GameController.cs" />
+    <Compile Include="Classes\GameModel.cs" />
     <Compile Include="Classes\INIReader.cs" />
     <Compile Include="Classes\Items.cs" />
     <Compile Include="Classes\Pixel.cs" />
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\PlaySound.cs" />
+    <Compile Include="Classes\Separator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SLIL_Localization\LocalizationString.cs" />
+    <Compile Include="SLIL_Localization\Localization.cs" />
     <Compile Include="Classes\TextureCache.cs" />
-    <Compile Include="Downloading.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Downloading.Designer.cs">
-      <DependentUpon>Downloading.cs</DependentUpon>
-    </Compile>
     <Compile Include="Loading.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -137,6 +161,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SLIL_Localization\SLILLocalization.cs" />
     <Compile Include="UserControls\ConsolePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -148,6 +178,12 @@
     </Compile>
     <Compile Include="UserControls\Display.Designer.cs">
       <DependentUpon>Display.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\EditorElementSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\EditorElementSelector.Designer.cs">
+      <DependentUpon>EditorElementSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControls\PlayerPanel.cs">
       <SubType>UserControl</SubType>
@@ -173,9 +209,6 @@
     <Compile Include="UserControls\SLIL_ShopInterface.Designer.cs">
       <DependentUpon>SLIL_ShopInterface.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Downloading.resx">
-      <DependentUpon>Downloading.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SLIL_Editor.resx">
       <DependentUpon>SLIL_Editor.cs</DependentUpon>
     </EmbeddedResource>
@@ -187,14 +220,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="Forms\SLIL.resx">
       <DependentUpon>SLIL.cs</DependentUpon>
     </EmbeddedResource>
@@ -203,6 +231,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Display.resx">
       <DependentUpon>Display.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\EditorElementSelector.resx">
+      <DependentUpon>EditorElementSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\PlayerPanel.resx">
       <DependentUpon>PlayerPanel.cs</DependentUpon>
@@ -299,324 +330,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\github.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_0.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_0_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_0_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_0_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_0_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_0_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_1_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_1_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_1_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_1_pump.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_1_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_1_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_2_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_2_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_2_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_2_pump.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_2_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_0_2_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_0.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_0_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_0_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_0_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_0_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_1_empty.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_1_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_1_reload_empty.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_1_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_1_run_empty.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_1_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_2_empty.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_2_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_2_reload_empty.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_2_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_2_run_empty.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_2_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_3_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_3_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_3_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_3_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_1_3_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_2_aiming.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_2_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_2_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_2_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_1_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_1_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_1_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_1_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_1_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_2_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_2_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_2_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_2_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_2_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_3_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_3_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_3_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_3_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_3_3_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_1_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_1_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_1_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_1_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_1_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_2_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_2_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_2_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_2_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_2_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_3_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_3_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_3_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_3_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_4_3_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_5_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_5_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_5_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_5_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_6_1_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_6_2_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_6_3_reload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_6_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_gnome.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_gnome_reloading_0.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_gnome_reloading_1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_gnome_reloading_2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_gnome_reloading_3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_gnome_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_gnome_shooted.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\hand.png" />
@@ -751,9 +464,6 @@
     <None Include="Images\random.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\red.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\reset.png" />
   </ItemGroup>
   <ItemGroup>
@@ -805,9 +515,6 @@
     <None Include="Images\shop_man_1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\speed.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\syringe.png" />
   </ItemGroup>
   <ItemGroup>
@@ -841,25 +548,7 @@
     <None Include="Images\web.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\gun_candy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_candy_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_rainblower.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_rainblower_run.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_rainblower_shooted.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\bubbles.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\gun_candy_run.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\food.png" />
@@ -899,6 +588,603 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_1_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_1_DEAD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_2_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_2_DEAD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_floor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\scope_c_hit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_ceiling.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_wall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\food_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_0_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_enemy_0_DEAD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_door.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_shop_door.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_using_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_using_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_using_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_teleport_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_teleport_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_effect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\adrenalin_count_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\protection_effect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\regeneration_effect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player_aiming.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player_shooted.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player_stoped.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\barrel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\barrel_broken.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\box.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\box_broken.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\selected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\excellent_connection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\good_connection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\bad_connection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\no_connection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\helmet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\helmet_on_head.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\helmet_using_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\helmet_using_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\helmet_using_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\helmet_using_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\helmet_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_reload_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_shooted.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_rocket_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_rocket_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_explosion_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_explosion_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv1_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv2_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv3_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv4_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv4_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv4_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv4_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv4_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv3_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv3_run_empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv3_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv3_reload_empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv3_reload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv3_empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv2_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv2_run_empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv2_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv2_reload_empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv2_reload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv2_empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv1_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv1_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv1_reload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\pistol_lv1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv1_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv2_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv3_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv3_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv3_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv3_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv3_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv2_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv2_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv2_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv2_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv1_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv1_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv1_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv1_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\smg_lv1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv1_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv2_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv3_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv3_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv3_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv3_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv3_pump.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv3_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv2_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv2_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv2_pump.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv2_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv2_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv1_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv1_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv1_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv1_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\shotgun_lv1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv1_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv2_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv3_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv3_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv3_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv3_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv3_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv2_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv2_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv2_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv2_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv1_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv1_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv1_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv1_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rifle_lv1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\fingershot_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\fingershot_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\fingershot_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\fingershot_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\fingershot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\TSPitW_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\TSPitW_reload_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\TSPitW_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\TSPitW_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\TSPitW.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gnome.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gnome_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gnome_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gnome_reload_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gnome_reload_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gnome_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\gnome_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rpg_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\candy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\candy_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\candy_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rainblower_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rainblower.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rainblower_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_aim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv3_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_reload_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv1_aim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_aim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_reload_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_reload_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sniper_lv2_reload_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\rocket.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\helmet_count_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Soon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\stamine_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\stamine_cant_run_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\close.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

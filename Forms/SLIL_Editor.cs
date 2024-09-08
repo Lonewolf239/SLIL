@@ -5,26 +5,112 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MazeGenerator;
+using SLIL.UserControls;
 
 namespace SLIL
 {
     public partial class SLIL_Editor : Form
     {
-        public SLIL_Editor()
-        {
-            InitializeComponent();
-        }
-
         public int MazeHeight, MazeWidth;
         private int old_MazeHeight;
         private int old_MazeWidth;
         public static int x, y;
+        private int x_panel, y_panel;
         private Panel[,] panels;
         private bool playerExist = false;
         private int finishCount = 0;
         public StringBuilder MAP;
         public bool OK = false;
-        private readonly Random rand = new Random();
+        private readonly Random rand;
+        private Panel panel;
+        private int element = -1;
+        private const int elements_count = 10;
+        private readonly Color[] elements_color =
+        {
+            //игрок
+             Color.Red,
+            //враг
+             Color.Navy,
+            //стена
+             Color.Gray,
+            //дверь
+             Color.Orange,
+            //окно
+             Color.Blue,
+            //финиш
+             Color.Lime,
+            //магазин
+             Color.Pink,
+            //ящик
+             Color.Brown,
+            //бочка
+             Color.RosyBrown,
+            //невидимая стена
+             Color.Purple,
+        };
+
+        public SLIL_Editor()
+        {
+            InitializeComponent();
+            rand = new Random();
+        }
+
+        private void SLIL_Editor_MouseEnter(object sender, EventArgs e) => panel = null;
+
+        private bool IsValidMapCharacter(char c)
+        {
+            return c == '.' || c == '#' || c == '=' ||
+                c == 'D' || c == 'd' || c == 'b' ||
+                c == 'B' || c == 'F' || c == 'P' ||
+                c == 'E' || c == '$' || c == 'W';
+        }
+
+        private string GetElementsName(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-16");
+                    return "Player";
+                case 1:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-17");
+                    return "Enemy";
+                case 2:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-18");
+                    return "Wall";
+                case 3:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-19");
+                    return "Door";
+                case 4:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-20");
+                    return "Window";
+                case 5:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-21");
+                    return "Finish";
+                case 6:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-22");
+                    return "Shop";
+                case 7:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-23");
+                    return "Box";
+                case 8:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-24");
+                    return "Barrel";
+                default:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-25");
+                    return "Invisible Wall";
+            }
+        }
 
         private void Import_btn_Click(object sender, EventArgs e)
         {
@@ -36,26 +122,26 @@ namespace SLIL
                 string[] MAP = map.Split(':');
                 maze_height = Convert.ToInt32(MAP[0]);
                 maze_width = Convert.ToInt32(MAP[1]);
-                if (MAP[2].Any(c => c != '.' && c != '#' && c != '=' && c != 'D' && c != 'd' && c != 'F' && c != 'P' && c != 'E' && c != '$'))
+                if (MAP[2].Any(c => !IsValidMapCharacter(c)))
                 {
-                    if (MainMenu.Language)
-                        MessageBox.Show("Строка содержит недопустимые символы.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MainMenu.DownloadedLocalizationList)
+                        MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "1-0"), MainMenu.Localizations.GetLString(MainMenu.Language, "1-1"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     else
                         MessageBox.Show("The string contains invalid characters.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else if (map.Length == 0)
                 {
-                    if (MainMenu.Language)
-                        MessageBox.Show("Буфер обмена пуст.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MainMenu.DownloadedLocalizationList)
+                        MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "1-3"), MainMenu.Localizations.GetLString(MainMenu.Language, "1-1"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     else
                         MessageBox.Show("The clipboard is empty.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 else if (maze_height < 2 * 3 + 1 || maze_height > 20 * 3 + 1 || maze_width < 2 * 3 + 1 || maze_width > 20 * 3 + 1)
                 {
-                    if (MainMenu.Language)
-                        MessageBox.Show("Неверный формат строки.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MainMenu.DownloadedLocalizationList)
+                        MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "1-2"), MainMenu.Localizations.GetLString(MainMenu.Language, "1-1"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     else
                         MessageBox.Show("Invalid string format.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -71,8 +157,8 @@ namespace SLIL
                 MazeWidth = old_MazeWidth;
                 editor_interface.Controls.Clear();
                 GenerateField();
-                if (MainMenu.Language)
-                    MessageBox.Show("Неверный формат строки.", "Ошибка импорта карты", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "1-2"), MainMenu.Localizations.GetLString(MainMenu.Language, "1-1"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     MessageBox.Show("Invalid string format.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -86,15 +172,15 @@ namespace SLIL
             {
                 string map = $"{MazeHeight}:{MazeWidth}:{GenerateMap()}";
                 Clipboard.SetText(map);
-                if (MainMenu.Language)
-                    MessageBox.Show("Карта успешно скопирована в буфер обмена.", "Карта скопирована", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "1-12"), MainMenu.Localizations.GetLString(MainMenu.Language, "1-13"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else
                     MessageBox.Show("The map was successfully copied to the clipboard.", "The map was copied", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                if (MainMenu.Language)
-                    MessageBox.Show($"Не удалось скопировать карту в буфер обмена.\n{ex.Message}", "Ошибка копирования", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show($"{MainMenu.Localizations.GetLString(MainMenu.Language, "1-14")}\n{ex.Message}", MainMenu.Localizations.GetLString(MainMenu.Language, "1-15"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     MessageBox.Show($"Could not copy the map to the clipboard.\n{ex.Message}", "Copy error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -102,13 +188,50 @@ namespace SLIL
 
         private void SLIL_Editor_Load(object sender, EventArgs e)
         {
-            if (!MainMenu.Language)
+            if (!MainMenu.DownloadedLocalizationList)
             {
                 Text = "Editor";
                 about.Text = "Elements:";
-                elements.Items.Clear();
-                string[] div = { "Player", "Wall", "Door", "Window", "Finish", "Shop", "Enemy" };
-                elements.Items.AddRange(div);
+                size_label.Text = "Field size:";
+                accept_size_btn.Text = "Accept";
+            }
+            else
+            {
+                Text = MainMenu.Localizations.GetLString(MainMenu.Language, "0-15");
+                about.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "1-4");
+                size_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "1-5");
+                accept_size_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "1-6");
+            }
+            UserControl separator = new UserControl()
+            {
+                Height = 2,
+                BackColor = Color.Black,
+                Dock = DockStyle.Top
+            };
+            elements_panel.Controls.Add(separator);
+            separator.BringToFront();
+            for (int i = 0; i < elements_count; i++)
+            {
+                EditorElementSelector selector = new EditorElementSelector()
+                {
+                    Index = i,
+                    ElementName = GetElementsName(i),
+                    ElementColor = elements_color[i],
+                    Dock = DockStyle.Top
+                };
+                selector.element_color.Click += Select_btn_Click;
+                selector.element_name.Click += Select_btn_Click;
+                selector.select_btn.Click += Select_btn_Click;
+                elements_panel.Controls.Add(selector);
+                selector.BringToFront();
+                separator = new UserControl()
+                {
+                    Height = 2,
+                    BackColor = Color.Black,
+                    Dock = DockStyle.Top
+                };
+                elements_panel.Controls.Add(separator);
+                separator.BringToFront();
             }
             old_MazeHeight = MazeHeight;
             old_MazeWidth = MazeWidth;
@@ -117,14 +240,31 @@ namespace SLIL
                 random_btn.BackColor = Color.LightGray;
                 random_btn.Enabled = false;
             }
-            elements.SelectedIndex = 0;
             GenerateField();
+        }
+
+        private void ClearSelector()
+        {
+            element = -1;
+            foreach (EditorElementSelector selector in elements_panel.Controls.Find("EditorElementSelector", false).Cast<EditorElementSelector>())
+                selector.select_btn.Image = null;
+        }
+
+        private void Select_btn_Click(object sender, EventArgs e)
+        {
+            editor_interface.Focus();
+            ClearSelector();
+            EditorElementSelector parent = (sender as Control).Parent as EditorElementSelector;
+            element = Convert.ToInt32(parent.Index);
+            parent.select_btn.Image = Properties.Resources.selected;
         }
 
         private void GenerateField(string map = "empty")
         {
             if (map == "empty")
             {
+                playerExist = false;
+                finishCount = 0;
                 for (int i = 0; i < MazeWidth * MazeHeight + 1; i++)
                     map += ".";
             }
@@ -141,7 +281,7 @@ namespace SLIL
             {
                 for (int j = 0; j < max; j++)
                 {
-                    Color color = Color.Black;
+                    Color color = Color.Gray;
                     char c = map[i * min + j];
                     if (i != 0 && i != min - 1 && j != 0 && j != max - 1)
                     {
@@ -151,6 +291,8 @@ namespace SLIL
                             color = Color.Blue;
                         else if (c == 'D')
                             color = Color.DarkOrange;
+                        else if (c == 'W')
+                            color = Color.Purple;
                         else if (c == 'd')
                             color = Color.Orange;
                         else if (c == 'F')
@@ -165,6 +307,10 @@ namespace SLIL
                         }
                         else if (c == '$')
                             color = Color.Pink;
+                        else if (c == 'b')
+                            color = Color.Brown;
+                        else if (c == 'B')
+                            color = Color.RosyBrown;
                         else if (c == 'E')
                             color = Color.Navy;
                     }
@@ -178,22 +324,21 @@ namespace SLIL
                         Top = size * i,
                         Name = $"panel_{i}_{j}"
                     };
-                    panel.MouseEnter += new EventHandler(Panels_MouseEnter);
+                    if (i != 0 && i != min - 1 && j != 0 && j != max - 1)
+                        panel.MouseEnter += new EventHandler(Panels_MouseEnter);
                     editor_interface.Controls.Add(panel);
                     panels[i, j] = panel;
                 }
             }
-            accept_button.Left = reset_btn.Left = random_btn.Left = import_btn.Left = export_btn.Left = editor_interface.Right + 6;
-            size_label.Top = editor_interface.Bottom + 3;
+            accept_button.Top = reset_btn.Top = random_btn.Top = import_btn.Top = export_btn.Top = question.Top = editor_interface.Bottom + 6;
+            size_label.Top = accept_button.Bottom + 3;
             height.Top = size_label.Bottom + 3;
             width.Top = height.Top;
             separator.Top = height.Top + 2;
             accept_size_btn.Top = width.Bottom - accept_size_btn.Height;
             about.Top = height.Bottom + 3;
-            elements.Top = about.Bottom + 3;
-            question.Top = elements.Top - 8;
-            Width = accept_button.Right + 21;
-            Height = elements.Bottom + 43;
+            Width = editor_interface.Right + 274;
+            Height = accept_size_btn.Bottom + 43;
             int centerX = Owner.Left + (Owner.Width - Width) / 2;
             int centerY = Owner.Top + (Owner.Height - Height) / 2;
             Location = new Point(centerX, centerY);
@@ -206,7 +351,7 @@ namespace SLIL
             {
                 for (int j = 0; j < panels.GetLength(1); j++)
                 {
-                    if (panels[i, j].BackColor == Color.Black)
+                    if (panels[i, j].BackColor == Color.Gray)
                         MAP.Append("#");
                     else if (panels[i, j].BackColor == Color.Blue)
                         MAP.Append("=");
@@ -220,6 +365,12 @@ namespace SLIL
                         MAP.Append("F");
                     else if (panels[i, j].BackColor == Color.Pink)
                         MAP.Append("$");
+                    else if (panels[i, j].BackColor == Color.Purple)
+                        MAP.Append("W");
+                    else if (panels[i, j].BackColor == Color.Brown)
+                        MAP.Append("b");
+                    else if (panels[i, j].BackColor == Color.RosyBrown)
+                        MAP.Append("B");
                     else if (panels[i, j].BackColor == Color.Red)
                     {
                         MAP.Append("P");
@@ -235,15 +386,18 @@ namespace SLIL
 
         private void Panels_MouseEnter(object sender, EventArgs e)
         {
-            Panel panel = sender as Panel;
+            panel = sender as Panel;
+            x_panel = Convert.ToInt32(panel.Name.Split('_')[1]);
+            y_panel = Convert.ToInt32(panel.Name.Split('_')[2]);
             panel.Focus();
         }
-        
+
         private void Reset_btn_Click(object sender, EventArgs e)
         {
             editor_interface.Focus();
             playerExist = false;
             finishCount = 0;
+            ClearSelector();
             GenerateField();
         }
 
@@ -339,16 +493,16 @@ namespace SLIL
             editor_interface.Focus();
             if (!playerExist)
             {
-                if (MainMenu.Language)
-                    MessageBox.Show("Отсутствует игрок", "Карта не завершена", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "1-9"), MainMenu.Localizations.GetLString(MainMenu.Language, "1-10"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     MessageBox.Show("Missing player", "The map is not completed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             else if (finishCount == 0)
             {
-                if (MainMenu.Language)
-                    MessageBox.Show("Отсутствует финиш", "Карта не завершена", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (MainMenu.DownloadedLocalizationList)
+                    MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "1-11"), MainMenu.Localizations.GetLString(MainMenu.Language, "1-10"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     MessageBox.Show("Missing finish", "The map is not completed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -361,8 +515,8 @@ namespace SLIL
         private void Question_Click(object sender, EventArgs e)
         {
             editor_interface.Focus();
-            if (MainMenu.Language)
-                MessageBox.Show("Управление редактором:\nРазмещение и удаление элементов происходит в той ячейке, на которую наведен курсор мыши.\nРазместить выбранный элемент: Space или Enter\nУдалить элемент: Backspace или Del", "Подсказка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (MainMenu.DownloadedLocalizationList)
+                MessageBox.Show(MainMenu.Localizations.GetLString(MainMenu.Language, "1-7"), MainMenu.Localizations.GetLString(MainMenu.Language, "1-8"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
                 MessageBox.Show("Editor control:\nPlacement and removal of elements occur in the cell where the mouse cursor is hovered.\nPlace selected element: Space or Enter\nDelete element: Backspace or Del", "Hint", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -381,74 +535,118 @@ namespace SLIL
                 random_btn.BackColor = SystemColors.Control;
                 random_btn.Enabled = true;
             }
-            elements.SelectedIndex = 0;
+            ClearSelector();
             GenerateField();
         }
 
         private void SLIL_Editor_KeyDown(object sender, KeyEventArgs e)
         {
-            Panel panel = null;
-            int x = 0, y = 0;
-            for (int i = 1; i < panels.GetLength(0) - 1; i++)
-            {
-                for (int j = 1; j < panels.GetLength(1) - 1; j++)
-                {
-                    if (panels[i, j].Focused)
-                    {
-                        panel = panels[i, j];
-                        x = i;
-                        y = j;
-                    }
-                }
-            }
-            if (panel == null)
-                return;
-            int index = elements.SelectedIndex;
+            if (panel == null) return;
+            int index = element;
             if (panel.BackColor == Color.White)
             {
-                if(e.KeyCode == Keys.Space || e.KeyCode == Keys.Enter)
+                if (e.KeyCode == Keys.Space || e.KeyCode == Keys.Enter)
                 {
+                    if (index == -1) return;
                     if (index == 0 && !playerExist)
                     {
                         panel.BackColor = Color.Red;
                         playerExist = true;
                     }
                     else if (index == 1)
-                        panel.BackColor = Color.Black;
+                        panel.BackColor = Color.Navy;
                     else if (index == 2)
-                        panel.BackColor = Color.Orange;
+                        panel.BackColor = Color.Gray;
                     else if (index == 3)
-                        panel.BackColor = Color.Blue;
+                        panel.BackColor = Color.Orange;
                     else if (index == 4)
+                        panel.BackColor = Color.Blue;
+                    else if (index == 5)
                     {
                         panel.BackColor = Color.Lime;
                         finishCount++;
                     }
-                    else if (index == 5)
+                    else if (index == 6)
                     {
                         panel.BackColor = Color.Pink;
-                        for (int i = x - 1; i <= x + 1; i++)
+                        for (int i = x_panel - 1; i <= x_panel + 1; i++)
                         {
-                            for (int j = y - 1; j <= y + 1; j++)
+                            for (int j = y_panel - 1; j <= y_panel + 1; j++)
                             {
                                 if (j <= 0 && j >= panels.GetLength(1) && i <= 0 && i >= panels.GetLength(0))
                                     continue;
-                                if (i == x && j == y)
+                                if (i == x_panel && j == y_panel)
                                     continue;
-                                panels[i, j].BackColor = Color.Black;
+                                panels[i, j].BackColor = Color.Gray;
                             }
                         }
-                        if (y >= 2 && y < panels.GetLength(0) - 2 && x >= 0 && x < panels.GetLength(1) && panels[x, y - 2].BackColor == Color.White)
-                            panels[x, y - 1].BackColor = Color.DarkOrange;
-                        else if (y >= 0 && y < panels.GetLength(0) - 2 && x >= 0 && x < panels.GetLength(1) && panels[x, y + 2].BackColor == Color.White)
-                            panels[x, y + 1].BackColor = Color.DarkOrange;
-                        else if (y >= 0 && y < panels.GetLength(0) && x >= 2 && x < panels.GetLength(1) - 2 && panels[x - 2, y].BackColor == Color.White)
-                            panels[x - 1, y].BackColor = Color.DarkOrange;
-                        else if (y >= 0 && y < panels.GetLength(0) && x >= 0 && x < panels.GetLength(1) - 2 && panels[x + 2, y].BackColor == Color.White)
-                            panels[x + 1, y].BackColor = Color.DarkOrange;
+                        bool spawned = false;
+                        if (y_panel >= 2 && y_panel < panels.GetLength(0) - 2 && x_panel >= 0 && x_panel < panels.GetLength(1) && panels[x_panel, y_panel - 2].BackColor == Color.White)
+                        {
+                            try
+                            {
+                                if (!spawned)
+                                {
+                                    panels[x_panel, y_panel - 1].BackColor = Color.DarkOrange;
+                                    spawned = true;
+                                }
+                            }
+                            catch { }
+                        }
+                        if (y_panel >= 0 && y_panel < panels.GetLength(0) - 2 && x_panel >= 0 && x_panel < panels.GetLength(1) && panels[x_panel, y_panel + 2].BackColor == Color.White)
+                        {
+                            try
+                            {
+                                if (!spawned)
+                                {
+                                    panels[x_panel, y_panel + 1].BackColor = Color.DarkOrange;
+                                    spawned = true;
+                                }
+                            }
+                            catch { }
+                        }
+                        if (y_panel >= 0 && y_panel < panels.GetLength(0) && x_panel >= 2 && x_panel < panels.GetLength(1) - 2 && panels[x_panel - 2, y_panel].BackColor == Color.White)
+                        {
+                            try
+                            {
+                                if (!spawned)
+                                {
+                                    panels[x_panel - 1, y_panel].BackColor = Color.DarkOrange;
+                                    spawned = true;
+                                }
+                            }
+                            catch { }
+                        }
+                        if (y_panel >= 0 && y_panel < panels.GetLength(0) && x_panel >= 0 && x_panel < panels.GetLength(1) - 2 && panels[x_panel + 2, y_panel].BackColor == Color.White)
+                        {
+                            try
+                            {
+                                if (!spawned)
+                                {
+                                    panels[x_panel + 1, y_panel].BackColor = Color.DarkOrange;
+                                    spawned = true;
+                                }
+                            }
+                            catch { }
+                        }
+                        if (!spawned)
+                        {
+                            if (y_panel - 1 > 0)
+                                panels[x_panel, y_panel - 1].BackColor = Color.DarkOrange;
+                            if (y_panel + 1 < panels.GetLength(0) - 1)
+                                panels[x_panel, y_panel + 1].BackColor = Color.DarkOrange;
+                            if (x_panel - 1 > 0)
+                                panels[x_panel - 1, y_panel].BackColor = Color.DarkOrange;
+                            if (x_panel + 1 < panels.GetLength(1) - 1)
+                                panels[x_panel + 1, y_panel].BackColor = Color.DarkOrange;
+                        }
                     }
-                    else if (index == 6)
-                        panel.BackColor = Color.Navy;
+                    else if (index == 7)
+                        panel.BackColor = Color.Brown;
+                    else if (index == 8)
+                        panel.BackColor = Color.RosyBrown;
+                    else if (index == 9)
+                        panel.BackColor = Color.Purple;
                 }
             }
             else
