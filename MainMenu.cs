@@ -35,8 +35,6 @@ namespace SLIL
         private SLIL_Editor Editor;
         private bool ChangeControlButton = false, CanClose = false;
         private readonly PlaySound MainMenuTheme;
-        private readonly PlaySound[,] DeathSounds;
-        private readonly PlaySound[,] CuteDeathSounds;
         private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
         public static Player player;
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
@@ -116,84 +114,6 @@ namespace SLIL
                     Application.Exit();
             }
             MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
-            DeathSounds = new PlaySound[,]
-            {
-                //Zombie
-                {
-                    new PlaySound(CGFReader.GetFile("zombie_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("zombie_die_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("zombie_die_2.wav"), false)
-                },
-                //Dog
-                {
-                    new PlaySound(CGFReader.GetFile("dog_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("dog_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("dog_die_0.wav"), false)
-                },
-                //Abomination
-                {
-                    new PlaySound(CGFReader.GetFile("abomination_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("abomination_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("abomination_die_0.wav"), false)
-                },
-                //Bat
-                {
-                    new PlaySound(CGFReader.GetFile("bat_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("bat_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("bat_die_0.wav"), false)
-                },
-                //Box
-                {
-                    new PlaySound(CGFReader.GetFile("break_box_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box_2.wav"), false)
-                },
-                //Player
-                {
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false)
-                }
-            };
-            CuteDeathSounds = new PlaySound[,]
-            {
-                //Zombie
-                {
-                    new PlaySound(CGFReader.GetFile("c_zombie_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("c_zombie_die_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("c_zombie_die_0.wav"), false)
-                },
-                //Dog
-                {
-                    new PlaySound(CGFReader.GetFile("c_dog_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("c_dog_die_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("c_dog_die_0.wav"), false)
-                },
-                //Abomination
-                {
-                    new PlaySound(CGFReader.GetFile("c_abomination_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("c_abomination_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("c_abomination_die_0.wav"), false)
-                },
-                //Bat
-                {
-                    new PlaySound(CGFReader.GetFile("c_bat_die_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("c_bat_die_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("c_bat_die_0.wav"), false)
-                },
-                //Box
-                {
-                    new PlaySound(CGFReader.GetFile("break_box_0.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box_1.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box_2.wav"), false)
-                },
-                //Player
-                {
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false),
-                    new PlaySound(CGFReader.GetFile("break_box.wav"), false)
-                }
-            };
             game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
             draw = new PlaySound(CGFReader.GetFile("draw.wav"), false);
             buy = new PlaySound(CGFReader.GetFile("buy.wav"), false);
@@ -1262,8 +1182,6 @@ namespace SLIL
                 if(sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache)
                 {
-                    DeathSounds = DeathSounds,
-                    CuteDeathSounds = CuteDeathSounds,
                     game_over = game_over,
                     draw = draw,
                     buy = buy,
@@ -1347,7 +1265,6 @@ namespace SLIL
             }
             else
             {
-                return;
                 multiplayer_panel.Visible = true;
                 multiplayer_panel.BringToFront();
             }
@@ -1534,8 +1451,6 @@ namespace SLIL
             if (sounds) MainMenuTheme.Stop();
             SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]))
             {
-                DeathSounds = DeathSounds,
-                CuteDeathSounds = CuteDeathSounds,
                 game_over = game_over,
                 draw = draw,
                 buy = buy,
@@ -1622,8 +1537,6 @@ namespace SLIL
                 if (sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3,(Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
                 {
-                    DeathSounds = DeathSounds,
-                    CuteDeathSounds = CuteDeathSounds,
                     game_over = game_over,
                     draw = draw,
                     buy = buy,

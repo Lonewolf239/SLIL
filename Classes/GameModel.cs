@@ -31,6 +31,7 @@ namespace SLIL.Classes
         private readonly StopGameDelegate StopGameHandle;
         private readonly PlaySoundDelegate PlaySoundHandle;
         private readonly SetPlayerIDDelegate SetPlayerID;
+        public bool IsMultiplayer;
         private static Timer RespawnTimer;
         private static Timer EnemyTimer;
         private static Timer TimeRemain;
@@ -87,7 +88,7 @@ namespace SLIL.Classes
             if (Entities.Count == 0) SetPlayerID(AddPlayer());
             if (MAP.Length == 0) InitMap();
             GameStarted = true;
-            if (startTimers)
+            if (startTimers && !IsMultiplayer)
             {
                 RespawnTimer.Start();
                 EnemyTimer.Start();
@@ -164,9 +165,9 @@ namespace SLIL.Classes
                                     {
                                         player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
                                         if (player.CuteMode)
-                                            PlaySoundHandle(SLIL.hungry);
+                                            PlaySoundHandle(SLIL.hungry, player.X, player.Y);
                                         else
-                                            PlaySoundHandle(SLIL.hit);
+                                            PlaySoundHandle(SLIL.hit, player.X, player.Y);
                                         if (player.HP <= 0)
                                         {
                                             Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
@@ -699,7 +700,10 @@ namespace SLIL.Classes
                         Entities[i].Y += dY;
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
                         {
-                            GameOver(1);
+                            if (!IsMultiplayer)
+                            {
+                                GameOver(1);
+                            }
                             return;
                         }
                         return;
@@ -1464,15 +1468,17 @@ namespace SLIL.Classes
 
         internal void InteractingWithDoors(int coordinate)
         {
+            double X = coordinate % MAP_HEIGHT;
+            double Y = (coordinate - X) / MAP_WIDTH;
             if (MAP[coordinate] == 'o')
             {
                 MAP[coordinate] = 'd';
-                PlaySoundHandle(SLIL.door[1]);
+                PlaySoundHandle(SLIL.door[1], X, Y);
             }
             else
             {
                 MAP[coordinate] = 'o';
-                PlaySoundHandle(SLIL.door[0]);
+                PlaySoundHandle(SLIL.door[0], X, Y);
             }
         }
 

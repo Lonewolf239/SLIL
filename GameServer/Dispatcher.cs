@@ -17,7 +17,7 @@ namespace GameServer
         {
             sendMessageFromGameCallback = SendMessageFromGameHandle;
             Game = new(sendMessageFromGameCallback);
-            Game.StartGame();
+            //Game.StartGame();
         }
 
         public void SendMessageFromGameHandle(int packetID, byte[] data = null) => sendMessageDelegate?.Invoke(packetID, data);
@@ -84,11 +84,25 @@ namespace GameServer
         public void SendOutcomingMessage(int packetID, ref NetManager server, byte[] data = null) 
         {
             NetDataWriter writer = new();
+            NetDataReader reader = null;
+            if (data != null)
+            {
+                reader = new NetDataReader(data);
+            }
+            int playerID = -1;
             writer.Put(packetID);
             switch (packetID)
             {
                 case 0:
                     Game.Serialize(writer);
+                    break;
+                case 1:
+                    writer.Put(reader.GetDouble());
+                    writer.Put(reader.GetDouble());
+                    break;
+                case 2:
+                    writer.Put(reader.GetDouble());
+                    writer.Put(reader.GetDouble());
                     break;
                 case 101:
                     break;
@@ -101,6 +115,20 @@ namespace GameServer
                         server.GetPeerById(entry.Key).Send(peerWriter, DeliveryMethod.ReliableOrdered);
                     }
                     return;
+                case 103:
+                    playerID = reader.GetInt();
+                    foreach(KeyValuePair<int, int> entry in PeerPlayerIDs)
+                    {
+                        if (entry.Value == playerID)
+                        {
+                            NetDataWriter peerWriter = new();
+                            peerWriter.Put(packetID);
+                            SerializeGame(peerWriter);
+                            server.GetPeerById(entry.Key).Send(peerWriter, DeliveryMethod.ReliableOrdered);
+                            return;
+                        }
+                    }
+                    break;
                 case 666:
                     List<int> deadPlayers = new List<int>();
                     foreach(Entity ent in Game.Entities)
@@ -122,8 +150,7 @@ namespace GameServer
                     }
                     return;
                 case 1000:
-                    NetDataReader reader = new NetDataReader(data);
-                    int playerID = reader.GetInt();
+                    playerID = reader.GetInt();
                     int soundID = reader.GetInt();
                     foreach (KeyValuePair<int, int> entry in PeerPlayerIDs)
                     {
@@ -136,6 +163,11 @@ namespace GameServer
                             return;
                         }
                     }
+                    break;
+                case 1001:
+                    writer.Put(reader.GetDouble());
+                    writer.Put(reader.GetDouble());
+                    writer.Put(reader.GetInt());
                     break;
                 default:
                     break;
@@ -154,6 +186,12 @@ namespace GameServer
                     writer.Put(newPlayerId);
                     SerializeGame(writer);
                     peer.Send(writer, DeliveryMethod.ReliableOrdered);
+                    if (Game.IsGameStarted())
+                    {
+                        NetDataWriter netDataWriter = new();
+                        netDataWriter.Put(102);
+                        peer.Send(netDataWriter, DeliveryMethod.ReliableOrdered);
+                    }
                     break;
                 default:
                     break;
@@ -165,5 +203,33 @@ namespace GameServer
         public void RemovePlayer(int playerID) => Game.RemovePlayer(playerID);
 
         public void SerializeGame(NetDataWriter writer) => Game.Serialize(writer);
+
+        public void StartGame() => Game.StartGame();
+        public void ChangeDifficulty(int difficulty) => Game.ChangeDifficulty(difficulty);
+
+        internal void StopGame()
+        {
+            Game.StopGame(3);
+        }
+
+        internal void KickPlayer(int playerID, ref NetManager server)
+        {
+            foreach (KeyValuePair<int, int> entry in PeerPlayerIDs)
+            {
+                if (entry.Value == playerID)
+                {
+                    NetDataWriter peerWriter = new();
+                    peerWriter.Put(403);
+                    server.GetPeerById(entry.Key).Send(peerWriter, DeliveryMethod.ReliableOrdered);
+                    server.DisconnectPeer(server.GetPeerById(entry.Key));
+                    break;
+                }
+            }
+            Game.RemovePlayer(playerID);
+        }
+        internal void ChangeGameMode(GameMode gameMode)
+        {
+            Game.ChangeGameMode(gameMode);
+        }
     }
 }

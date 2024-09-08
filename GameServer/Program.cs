@@ -46,11 +46,7 @@ listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
 
 void SendOutcomingMessageInvoker(int packetID, byte[] data = null)
 {
-    if(packetID == 102)
-    {
-       dispatcher.SendOutcomingMessage(packetID, ref server, data);
-    }
-    else dispatcher.SendOutcomingMessage(packetID, ref server, data);
+   dispatcher.SendOutcomingMessage(packetID, ref server, data);
 }
 
 bool exit = false;
@@ -73,6 +69,24 @@ while(!exit)
         case "stop":
             server.Stop();
             exit = true;
+            break;
+        case "stop_game":
+            dispatcher.StopGame();
+            break;
+        case "start_game":
+            dispatcher.StartGame();
+            break;
+        case { } when command.StartsWith("kick_"):
+            try { dispatcher.KickPlayer(int.Parse(command.Split('_')[1]), ref server); }
+            catch(Exception e) { Console.WriteLine(e); }
+            break;
+        case { } when command.StartsWith("set_difficulty_"):
+            try { dispatcher.ChangeDifficulty(int.Parse(command.Split('_')[2])); }
+            catch(Exception e) { Console.WriteLine(e); }
+            break;
+        case { } when command.StartsWith("set_game_mode_"):
+            try { dispatcher.ChangeGameMode((GameMode)int.Parse(command.Split('_')[3])); }
+            catch(Exception e) { Console.WriteLine(e); }
             break;
         default:
             break;
