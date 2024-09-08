@@ -6,9 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
-using SharpDX.Direct2D1;
-using LiteNetLib;
 
 namespace SLIL.Classes
 {
@@ -20,6 +17,7 @@ namespace SLIL.Classes
         private int inDebug = 0;
         private readonly Pet[] PETS;
         public List<Entity> Entities = new List<Entity>();
+        private double EnemyDamageOffset = 1;
         private readonly char[] impassibleCells = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
@@ -309,21 +307,25 @@ namespace SLIL.Classes
                         break;
                     case 1:
                         Man man = new Man(0, 0, MAP_WIDTH, ID);
+                        man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
                         break;
                     case 2:
                         Dog dog = new Dog(0, 0, MAP_WIDTH, ID);
+                        dog.SetDamage(EnemyDamageOffset);
                         dog.Deserialize(reader);
                         tempEntities.Add(dog);
                         break;
                     case 3:
                         Abomination abomination = new Abomination(0, 0, MAP_WIDTH, ID);
+                        abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
                         break;
                     case 4:
                         Bat bat = new Bat(0, 0, MAP_WIDTH, ID);
+                        bat.SetDamage(EnemyDamageOffset);
                         bat.Deserialize(reader);
                         tempEntities.Add(bat);
                         break;
@@ -433,21 +435,25 @@ namespace SLIL.Classes
                         break;
                     case 1:
                         Man man = new Man(0, 0, MAP_WIDTH, ID);
+                        man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
                         break;
                     case 2:
                         Dog dog = new Dog(0, 0, MAP_WIDTH, ID);
+                        dog.SetDamage(EnemyDamageOffset);
                         dog.Deserialize(reader);
                         tempEntities.Add(dog);
                         break;
                     case 3:
                         Abomination abomination = new Abomination(0, 0, MAP_WIDTH, ID);
+                        abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
                         break;
                     case 4:
                         Bat bat = new Bat(0, 0, MAP_WIDTH, ID);
+                        bat.SetDamage(EnemyDamageOffset);
                         bat.Deserialize(reader);
                         tempEntities.Add(bat);
                         break;
@@ -1060,21 +1066,25 @@ namespace SLIL.Classes
             if (dice <= 0.4) // 40%
             {
                 Man enemy = new Man(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
                 Entities.Add(enemy);
             }
             else if (dice > 0.4 && dice <= 0.65) // 25%
             {
                 Dog enemy = new Dog(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
                 Entities.Add(enemy);
             }
             else if (dice > 0.65 && dice <= 0.85) // 20%
             {
                 Bat enemy = new Bat(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
                 Entities.Add(enemy);
             }
             else // 15%
             {
                 Abomination enemy = new Abomination(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
                 Entities.Add(enemy);
             }
         }
@@ -1465,5 +1475,7 @@ namespace SLIL.Classes
                 PlaySoundHandle(SLIL.door[0]);
             }
         }
+
+        internal void SetEnemyDamageOffset(double value) => EnemyDamageOffset = value;
     }
 }

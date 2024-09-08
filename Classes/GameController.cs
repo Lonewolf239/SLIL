@@ -438,5 +438,7 @@ namespace SLIL.Classes
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
         }
+
+        internal void SetEnemyDamageOffset(double value) => Game.SetEnemyDamageOffset(value);
     }
 }

@@ -67,6 +67,7 @@
             this.settings = new System.Windows.Forms.TabControl();
             this.all_settings = new System.Windows.Forms.TabPage();
             this.check_update_panel = new System.Windows.Forms.Panel();
+            this.update_error_pic = new System.Windows.Forms.PictureBox();
             this.check_update_btn = new System.Windows.Forms.Button();
             this.localization_panel = new System.Windows.Forms.Panel();
             this.localization_error_pic = new System.Windows.Forms.PictureBox();
@@ -84,6 +85,9 @@
             this.console_btn = new System.Windows.Forms.CheckBox();
             this.console_label = new System.Windows.Forms.Label();
             this.video_settings = new System.Windows.Forms.TabPage();
+            this.interface_size_panel = new System.Windows.Forms.Panel();
+            this.interface_size_choice = new System.Windows.Forms.TrackBar();
+            this.interface_size_label = new System.Windows.Forms.Label();
             this.scope_color_panel = new System.Windows.Forms.Panel();
             this.scope_color_choice = new System.Windows.Forms.TrackBar();
             this.scope_color_label = new System.Windows.Forms.Label();
@@ -236,7 +240,6 @@
             this.nickname = new System.Windows.Forms.TextBox();
             this.close_account_btn_c = new System.Windows.Forms.Button();
             this.nickname_label = new System.Windows.Forms.Label();
-            this.update_error_pic = new System.Windows.Forms.PictureBox();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -252,6 +255,7 @@
             this.settings.SuspendLayout();
             this.all_settings.SuspendLayout();
             this.check_update_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.update_error_pic)).BeginInit();
             this.localization_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.localization_error_pic)).BeginInit();
             this.language_panel.SuspendLayout();
@@ -260,6 +264,8 @@
             this.sound_panel.SuspendLayout();
             this.console_panel.SuspendLayout();
             this.video_settings.SuspendLayout();
+            this.interface_size_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.interface_size_choice)).BeginInit();
             this.scope_color_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scope_color_choice)).BeginInit();
             this.scope_panel.SuspendLayout();
@@ -320,7 +326,6 @@
             this.account_panel.SuspendLayout();
             this.account_background.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.player_icon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.update_error_pic)).BeginInit();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -817,6 +822,17 @@
             this.check_update_panel.Size = new System.Drawing.Size(459, 34);
             this.check_update_panel.TabIndex = 3;
             // 
+            // update_error_pic
+            // 
+            this.update_error_pic.Dock = System.Windows.Forms.DockStyle.Right;
+            this.update_error_pic.Image = global::SLIL.Properties.Resources.warning1;
+            this.update_error_pic.Location = new System.Drawing.Point(113, 0);
+            this.update_error_pic.Name = "update_error_pic";
+            this.update_error_pic.Size = new System.Drawing.Size(34, 34);
+            this.update_error_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.update_error_pic.TabIndex = 2;
+            this.update_error_pic.TabStop = false;
+            // 
             // check_update_btn
             // 
             this.check_update_btn.AutoSize = true;
@@ -1009,6 +1025,7 @@
             // 
             this.video_settings.AutoScroll = true;
             this.video_settings.BackColor = System.Drawing.Color.Black;
+            this.video_settings.Controls.Add(this.interface_size_panel);
             this.video_settings.Controls.Add(this.scope_color_panel);
             this.video_settings.Controls.Add(this.scope_panel);
             this.video_settings.Controls.Add(this.show_minimap_panel);
@@ -1024,6 +1041,39 @@
             this.video_settings.Size = new System.Drawing.Size(482, 194);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
+            // 
+            // interface_size_panel
+            // 
+            this.interface_size_panel.BackColor = System.Drawing.Color.Black;
+            this.interface_size_panel.Controls.Add(this.interface_size_choice);
+            this.interface_size_panel.Controls.Add(this.interface_size_label);
+            this.interface_size_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.interface_size_panel.Location = new System.Drawing.Point(3, 275);
+            this.interface_size_panel.Name = "interface_size_panel";
+            this.interface_size_panel.Size = new System.Drawing.Size(459, 34);
+            this.interface_size_panel.TabIndex = 8;
+            // 
+            // interface_size_choice
+            // 
+            this.interface_size_choice.Dock = System.Windows.Forms.DockStyle.Right;
+            this.interface_size_choice.Location = new System.Drawing.Point(355, 0);
+            this.interface_size_choice.Maximum = 3;
+            this.interface_size_choice.Name = "interface_size_choice";
+            this.interface_size_choice.Size = new System.Drawing.Size(104, 34);
+            this.interface_size_choice.TabIndex = 4;
+            this.interface_size_choice.TabStop = false;
+            this.interface_size_choice.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.interface_size_choice.Scroll += new System.EventHandler(this.Interface_size_choice_Scroll);
+            // 
+            // interface_size_label
+            // 
+            this.interface_size_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.interface_size_label.Location = new System.Drawing.Point(0, 0);
+            this.interface_size_label.Name = "interface_size_label";
+            this.interface_size_label.Size = new System.Drawing.Size(349, 34);
+            this.interface_size_label.TabIndex = 3;
+            this.interface_size_label.Text = "Размер интерфейса:";
+            this.interface_size_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // scope_color_panel
             // 
@@ -1471,7 +1521,7 @@
             this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 151);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
@@ -2857,17 +2907,6 @@
             this.nickname_label.Text = "Имя игрока:";
             this.nickname_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // update_error_pic
-            // 
-            this.update_error_pic.Dock = System.Windows.Forms.DockStyle.Right;
-            this.update_error_pic.Image = global::SLIL.Properties.Resources.warning1;
-            this.update_error_pic.Location = new System.Drawing.Point(113, 0);
-            this.update_error_pic.Name = "update_error_pic";
-            this.update_error_pic.Size = new System.Drawing.Size(34, 34);
-            this.update_error_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.update_error_pic.TabIndex = 2;
-            this.update_error_pic.TabStop = false;
-            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2927,6 +2966,7 @@
             this.all_settings.ResumeLayout(false);
             this.check_update_panel.ResumeLayout(false);
             this.check_update_panel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.update_error_pic)).EndInit();
             this.localization_panel.ResumeLayout(false);
             this.localization_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.localization_error_pic)).EndInit();
@@ -2937,6 +2977,9 @@
             this.sound_panel.ResumeLayout(false);
             this.console_panel.ResumeLayout(false);
             this.video_settings.ResumeLayout(false);
+            this.interface_size_panel.ResumeLayout(false);
+            this.interface_size_panel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.interface_size_choice)).EndInit();
             this.scope_color_panel.ResumeLayout(false);
             this.scope_color_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scope_color_choice)).EndInit();
@@ -3011,7 +3054,6 @@
             this.account_background.ResumeLayout(false);
             this.account_background.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.player_icon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.update_error_pic)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3226,5 +3268,8 @@
         private System.Windows.Forms.Label nickname_label;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox update_error_pic;
+        private System.Windows.Forms.Panel interface_size_panel;
+        private System.Windows.Forms.TrackBar interface_size_choice;
+        private System.Windows.Forms.Label interface_size_label;
     }
 }

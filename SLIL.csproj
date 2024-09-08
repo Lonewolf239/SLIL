@@ -1186,5 +1186,26 @@
   <ItemGroup>
     <None Include="Images\close.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\h_scope.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\h_scope_c_hit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\h_scope_cross.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\h_scope_dot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\h_scope_hit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\h_scope_line.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\h_scope_shotgun.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

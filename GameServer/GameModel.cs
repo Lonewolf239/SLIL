@@ -12,6 +12,7 @@ namespace GameServer
         private int inDebug = 0;
         private readonly Pet[] PETS;
         public List<Entity> Entities = [];
+        private double EnemyDamageOffset = 1;
         private readonly char[] impassibleCells = ['#', 'D', '=', 'd'];
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
@@ -321,21 +322,25 @@ namespace GameServer
                         break;
                     case 1:
                         Man man = new(0, 0, MAP_WIDTH, ID);
+                        man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
                         break;
                     case 2:
                         Dog dog = new(0, 0, MAP_WIDTH, ID);
+                        dog.SetDamage(EnemyDamageOffset);
                         dog.Deserialize(reader);
                         tempEntities.Add(dog);
                         break;
                     case 3:
                         Abomination abomination = new(0, 0, MAP_WIDTH, ID);
+                        abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
                         break;
                     case 4:
                         Bat bat = new(0, 0, MAP_WIDTH, ID);
+                        bat.SetDamage(EnemyDamageOffset);
                         bat.Deserialize(reader);
                         tempEntities.Add(bat);
                         break;
@@ -445,21 +450,25 @@ namespace GameServer
                         break;
                     case 1:
                         Man man = new(0, 0, MAP_WIDTH, ID);
+                        man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
                         break;
                     case 2:
                         Dog dog = new(0, 0, MAP_WIDTH, ID);
+                        dog.SetDamage(EnemyDamageOffset);
                         dog.Deserialize(reader);
                         tempEntities.Add(dog);
                         break;
                     case 3:
                         Abomination abomination = new(0, 0, MAP_WIDTH, ID);
+                        abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
                         break;
                     case 4:
                         Bat bat = new(0, 0, MAP_WIDTH, ID);
+                        bat.SetDamage(EnemyDamageOffset);
                         bat.Deserialize(reader);
                         tempEntities.Add(bat);
                         break;
@@ -1086,13 +1095,29 @@ namespace GameServer
         {
             double dice = rand.NextDouble();
             if (dice <= 0.4) // 40%
-                Entities.Add(new Man(x, y, size, ref MaxEntityID));
+            {
+                Man enemy = new(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
+                Entities.Add(enemy);
+            }
             else if (dice > 0.4 && dice <= 0.65) // 25%
-                Entities.Add(new Dog(x, y, size, ref MaxEntityID));
+            {
+                Dog enemy = new(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
+                Entities.Add(enemy);
+            }
             else if (dice > 0.65 && dice <= 0.85) // 20%
-                Entities.Add(new Bat(x, y, size, ref MaxEntityID));
+            {
+                Bat enemy = new(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
+                Entities.Add(enemy);
+            }
             else // 15%
-                Entities.Add(new Abomination(x, y, size, ref MaxEntityID));
+            {
+                Abomination enemy = new(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
+                Entities.Add(enemy);
+            }
         }
 
         public StringBuilder GetMap() => MAP;

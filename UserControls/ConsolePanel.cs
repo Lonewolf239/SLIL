@@ -266,12 +266,12 @@ namespace SLIL.UserControls
                     }
                     else if (cheat.StartsWith("ENEMY_"))
                     {
-                        Entity selected = null;
+                        Enemy selected = null;
                         try
                         {
                             int index = Convert.ToInt32(cheat.Split('_')[1]);
-                            if (Entities[index] is Enemy && Entities.Contains(Entities[index]))
-                                selected = Entities[index];
+                            if (Entities[index] is Enemy enemy && Entities.Contains(Entities[index]))
+                                selected = enemy;
                         }
                         catch { }
                         if (selected == null)
@@ -282,7 +282,7 @@ namespace SLIL.UserControls
                         }
                         else
                         {
-                            PropertyInfo[] properties = typeof(Enemy).GetProperties();
+                            PropertyInfo[] properties = typeof(Enemy).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
                             int maxPropNameLength = properties.Max(p => p.Name.Length);
                             int maxValueLength = properties.Max(p => p.GetValue(selected)?.ToString().Length ?? 0);
                             int columnWidth = Math.Max(maxPropNameLength, maxValueLength);
@@ -900,6 +900,7 @@ namespace SLIL.UserControls
                     cheat_index--;
                     if (cheat_index < 0)
                         cheat_index = previous_cheat.Count - 1;
+                    command_input.Text += " ";
                     command_input.SelectionStart = command_input.Text.Length;
                 }
                 if (e.KeyCode == Keys.Down)

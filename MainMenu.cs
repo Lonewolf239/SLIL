@@ -73,7 +73,7 @@ namespace SLIL
             { "select_item", Keys.Q },
             { "run", Keys.ShiftKey },
         };
-        public static int resolution = 0, display_size = 0, smoothing = 1, scope_type = 0, scope_color = 0, difficulty = 2;
+        public static int resolution = 0, display_size = 0, smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
         public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true;
         public static bool inv_y = false, inv_x = false;
         public static double LOOK_SPEED = 6.5;
@@ -219,6 +219,8 @@ namespace SLIL
             all_settings.Controls.Add(new Separator());
             all_settings.Controls.Add(console_panel);
             video_settings.Controls.Clear();
+            video_settings.Controls.Add(interface_size_panel);
+            video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(scope_color_panel);
             video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(scope_panel);
@@ -524,6 +526,7 @@ namespace SLIL
             scope_type = INIReader.GetInt(iniFolder, "SLIL", "scope_type", 0);
             resolution = INIReader.GetBool(iniFolder, "SLIL", "hight_resolution", false) ? 1 : 0;
             display_size = INIReader.GetInt(iniFolder, "SLIL", "display_size", 0);
+            interface_size = INIReader.GetInt(iniFolder, "SLIL", "interface_size", 0);
             smoothing = INIReader.GetInt(iniFolder, "SLIL", "smoothing", 1);
             hight_fps = INIReader.GetBool(iniFolder, "SLIL", "hight_fps", true);
             BindControls["screenshot"] = INIReader.GetKeys(iniFolder, "SLIL", "screenshot", Keys.F12);
@@ -540,7 +543,9 @@ namespace SLIL
             BindControls["item"] = INIReader.GetKeys(iniFolder, "SLIL", "item", Keys.H);
             BindControls["select_item"] = INIReader.GetKeys(iniFolder, "SLIL", "select_item", Keys.Q);
             BindControls["run"] = INIReader.GetKeys(iniFolder, "SLIL", "run", Keys.ShiftKey);
-            if (display_size < 0 || display_size > 5)
+            if (interface_size < 0 || interface_size > 3)
+                interface_size = 2;
+            //if (display_size < 0 || display_size > 5)
                 display_size = 0;
             if (smoothing < 0 || smoothing > 3)
                 smoothing = 1;
@@ -574,6 +579,7 @@ namespace SLIL
                 ? language_list.Items.IndexOf(Language) : 0;
             localization_error_pic.Visible = !DownloadedLocalizationList;
             display_size_list.SelectedIndex = display_size;
+            interface_size_choice.Value = interface_size;
             smoothing_list.SelectedIndex = smoothing;
             console_btn.Checked = ConsoleEnabled;
             sounds_on_off.Checked = sounds;
@@ -589,8 +595,18 @@ namespace SLIL
                 fps_label.Text = "FPS: 60";
             else
                 fps_label.Text = "FPS: 30";
-            scope_label.Text = Localizations.GetLString(Language, "0-36") + GetScopeType();
-            scope_color_label.Text = Localizations.GetLString(Language, "0-37") + GetScopeColor();
+            if (DownloadedLocalizationList)
+            {
+                scope_label.Text = Localizations.GetLString(Language, "0-36") + GetScopeType();
+                scope_color_label.Text = Localizations.GetLString(Language, "0-37") + GetScopeColor();
+                interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
+            }
+            else
+            {
+                scope_label.Text = "Scope: " + GetScopeType();
+                scope_color_label.Text = "Scope color: " + GetScopeColor();
+                interface_size_label.Text = "Interface size: " + GetInterfaceSize();
+            }
         }
 
         private void GetDifficulty()
@@ -599,15 +615,15 @@ namespace SLIL
             {
                 case 0:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-65");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-65") + Localizations.GetLString(Language, "0-113");
                     else
-                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies Respawn Every 60 Seconds";
+                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies Respawn Every 60 Seconds\nEnemies deal 25% more damage";
                     break;
                 case 1:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-66");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-66") + Localizations.GetLString(Language, "0-114");
                     else
-                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1";
+                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies deal 25% more damage";
                     break;
                 case 2:
                     if (DownloadedLocalizationList)
@@ -617,9 +633,9 @@ namespace SLIL
                     break;
                 case 3:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-68");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-68") + Localizations.GetLString(Language, "0-115");
                     else
-                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money";
+                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money\nEnemies deal 25% less damage";
                     break;
                 default:
                     if (DownloadedLocalizationList)
@@ -716,6 +732,7 @@ namespace SLIL
                 change_logs_close_btn_r.Text = Localizations.GetLString(Language, "0-10");
                 press_any_btn_label.Text = Localizations.GetLString(Language, "0-45");
                 cant_use_panel.Text = Localizations.GetLString(Language, "0-107");
+                interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
                 screenshot_label.Text = Localizations.GetLString(Language, "0-46");
                 fire_btn_c.Text = Localizations.GetLString(Language, "0-47");
                 aim_btn_c.Text = Localizations.GetLString(Language, "0-48");
@@ -793,6 +810,7 @@ namespace SLIL
                 change_logs_close_btn_r.Text = "Close";
                 press_any_btn_label.Text = "Press any button or ESC to cancel";
                 cant_use_panel.Text = "This button can't be used!";
+                interface_size_label.Text = "Interface size: " + GetInterfaceSize();
                 screenshot_label.Text = "Screenshot";
                 fire_btn_c.Text = "LMB";
                 aim_btn_c.Text = "RMB";
@@ -1079,6 +1097,29 @@ namespace SLIL
             }
         }
 
+        private string GetInterfaceSize()
+        {
+            switch (interface_size)
+            {
+                case 0:
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "0-109");
+                    return "Very small";
+                case 1:
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "0-110");
+                    return "Small";
+                case 2:
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "0-111");
+                    return "Normal";
+                default:
+                    if (DownloadedLocalizationList)
+                        return " " + Localizations.GetLString(Language, "0-112");
+                    return "Big";
+            }
+        }
+
         private void Sensitivity_Scroll(object sender, EventArgs e) => LOOK_SPEED = (double)sensitivity.Value / 100;
 
         private void Show_minimap_CheckedChanged(object sender, EventArgs e)
@@ -1127,6 +1168,8 @@ namespace SLIL
             sounds = true;
             ConsoleEnabled = false;
             resolution = 0;
+            display_size = 0;
+            interface_size = 2;
             ShowFPS = false;
             hight_fps = true;
             ShowMiniMap = true;
@@ -1147,6 +1190,7 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             INIReader.SetKey(iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
             INIReader.SetKey(iniFolder, "SLIL", "display_size", display_size);
+            INIReader.SetKey(iniFolder, "SLIL", "interface_size", interface_size);
             INIReader.SetKey(iniFolder, "SLIL", "smoothing", smoothing);
             INIReader.SetKey(iniFolder, "SLIL", "show_fps", ShowFPS);
             INIReader.SetKey(iniFolder, "SLIL", "hight_fps", hight_fps);
@@ -1463,6 +1507,15 @@ namespace SLIL
         {
             lose_focus.Focus();
             account_panel.Visible = false;
+        }
+
+        private void Interface_size_choice_Scroll(object sender, EventArgs e)
+        {
+            interface_size = interface_size_choice.Value;
+            if (DownloadedLocalizationList)
+                interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
+            else
+                interface_size_label.Text = "Interface size: " + GetInterfaceSize();
         }
 
         private void Localization_update_btn_Click(object sender, EventArgs e)

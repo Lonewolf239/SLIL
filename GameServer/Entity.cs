@@ -426,6 +426,12 @@ namespace GameServer
             CanHit = true;
             Fast = false;
         }
+
+        public void SetDamage(double offset)
+        {
+            MAX_DAMAGE = (int)(MAX_DAMAGE * offset);
+            MIN_DAMAGE = (int)(MIN_DAMAGE * offset);
+        }
     }
 
     public abstract class Rockets : NPC
