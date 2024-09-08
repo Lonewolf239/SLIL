@@ -284,7 +284,7 @@ namespace SLIL
             // 
             // chill_timer
             // 
-            this.chill_timer.Interval = 150;
+            this.chill_timer.Interval = 750;
             this.chill_timer.Tick += new System.EventHandler(this.Chill_timer_Tick);
             // 
             // stage_timer

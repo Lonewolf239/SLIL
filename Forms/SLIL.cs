@@ -747,7 +747,7 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if (RunKeyPressed && PlayerCanRun())
+            if (RunKeyPressed && PlayerCanRun() && playerDirection == Direction.FORWARD)
             {
                 if (player.STAMINE >= player.MAX_STAMINE / 2.5)
                     playerMoveStyle = Direction.RUN;
@@ -2369,8 +2369,7 @@ namespace SLIL
 
         private void DisplayStamine(Player player, int icon_size, int size)
         {
-            if (player.STAMINE >= player.MAX_STAMINE)
-                return;
+            if (player.STAMINE >= player.MAX_STAMINE) return;
             int stamine_width = resolution == 0 ? 40 : 80;
             int progress_width = (int)(player.STAMINE / player.MAX_STAMINE * (stamine_width - 2));
             int stamine_top = SCREEN_HEIGHT[resolution] - (icon_size * 2);
@@ -2796,7 +2795,7 @@ namespace SLIL
         private bool PlayerCanRun()
         {
             Player player = Controller.GetPlayer();
-            return player.GetCurrentGun().CanRun && playerDirection == Direction.FORWARD &&
+            return player.GetCurrentGun().CanRun &&
                 !player.Fast && !player.IsPetting && !player.Aiming &&
                 !shot_timer.Enabled && !reload_timer.Enabled &&
                 !shotgun_pull_timer.Enabled && !chill_timer.Enabled && !mouse_hold_timer.Enabled;

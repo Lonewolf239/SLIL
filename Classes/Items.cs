@@ -367,7 +367,7 @@ namespace SLIL.Classes
             HasIt = true;
             HaveLV4 = true;
             Name = new[] { "3-4", "Pistol" };
-            Accuracy = 0.8;
+            Accuracy = 0.85;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 175;
@@ -397,7 +397,7 @@ namespace SLIL.Classes
             if (Level == Levels.LV1)
             {
                 UpdateCost = 20;
-                Accuracy = 0.8;
+                Accuracy = 0.85;
                 RechargeTime = 600;
                 CartridgesClip = 8;
                 MaxAmmo = CartridgesClip * 6;
@@ -413,7 +413,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV2)
             {
-                Accuracy = 0.85;
+                Accuracy = 0.95;
                 RechargeTime = 350;
                 CartridgesClip = 12;
                 MaxAmmo = CartridgesClip * 7;
@@ -490,8 +490,8 @@ namespace SLIL.Classes
             AmmoInStock = CartridgesClip * 2;
             MaxAmmo = CartridgesClip * 8;
             FiringRange = 4;
-            MaxDamage = 3.5;
-            MinDamage = 2.75;
+            MaxDamage = 1.5;
+            MinDamage = 1.25;
             RecoilY = 120;
             RecoilX = 2;
             BurstShots = 1;
@@ -557,8 +557,8 @@ namespace SLIL.Classes
                 CartridgesClip = 2;
                 MaxAmmo = CartridgesClip * 8;
                 FiringRange = 7;
-                MaxDamage = 3.5;
-                MinDamage = 2.75;
+                MaxDamage = 1.5;
+                MinDamage = 1.25;
                 RecoilY = 120;
                 RecoilX = 2;
                 BurstShots = 1;
@@ -567,7 +567,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV2)
             {
-                BulletCount = 5;
+                BulletCount = 6;
                 PauseBetweenShooting = 500;
                 RechargeTime = 325;
                 FiringRate = 200;
@@ -575,8 +575,8 @@ namespace SLIL.Classes
                 CartridgesClip = 6;
                 MaxAmmo = CartridgesClip * 7;
                 FiringRange = 6;
-                MaxDamage = 4.75;
-                MinDamage = 3.25;
+                MaxDamage = 2.25;
+                MinDamage = 1.75;
                 RecoilY = 80;
                 RecoilX = 1.65;
                 BurstShots = 1;
@@ -593,8 +593,8 @@ namespace SLIL.Classes
                 CartridgesClip = 14;
                 MaxAmmo = CartridgesClip * 4;
                 FiringRange = 5;
-                MaxDamage = 6.25;
-                MinDamage = 5.25;
+                MaxDamage = 3;
+                MinDamage = 2.75;
                 RecoilY = 135;
                 RecoilX = 2;
                 BurstShots = 1;

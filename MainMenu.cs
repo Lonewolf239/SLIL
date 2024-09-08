@@ -18,7 +18,8 @@ namespace SLIL
 {
     public partial class MainMenu : Form
     {
-        private const string current_version = "|1.2|";
+        private readonly string current_version = Program.current_version;
+        public bool UpdateVerified = false;
         public static string iniFolder = "config.ini";
         public bool downloadedLocalizationList = false;
         public Localization localizations;
@@ -208,8 +209,6 @@ namespace SLIL
             all_settings.Controls.Clear();
             all_settings.Controls.Add(check_update_panel);
             all_settings.Controls.Add(new Separator());
-            all_settings.Controls.Add(update_panel);
-            all_settings.Controls.Add(new Separator());
             all_settings.Controls.Add(localization_panel);
             all_settings.Controls.Add(new Separator());
             all_settings.Controls.Add(language_panel);
@@ -368,7 +367,7 @@ namespace SLIL
             return language.Remove(1).ToLower();
         }
 
-        private void Check_Update(bool auto)
+        private void Check_Update()
         {
             string title = "Update available!";
             string message = $"New update is out! Want to install it?\n\n" +
@@ -392,34 +391,30 @@ namespace SLIL
                     {
                         if (e.Error.HResult == -2146233079)
                         {
-                            if (!auto)
+                            message = "Failed to establish a connection with the update server. Please check your internet connection.";
+                            title = "Connection Error";
+                            if (DownloadedLocalizationList)
                             {
-                                message = "Failed to establish a connection with the update server. Please check your internet connection.";
-                                title = "Connection Error";
-                                if (DownloadedLocalizationList)
-                                {
-                                    message = Localizations.GetLString(Language, "0-101");
-                                    title = Localizations.GetLString(Language, "0-102");
-                                }
-                                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                message = Localizations.GetLString(Language, "0-101");
+                                title = Localizations.GetLString(Language, "0-102");
                             }
+                            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         else
                         {
-                            if (!auto)
+                            message = $"An error occurred while downloading the update!";
+                            title = $"Error";
+                            if (DownloadedLocalizationList)
                             {
-                                message = $"An error occurred while downloading the update!";
-                                title = $"Error";
-                                if (DownloadedLocalizationList)
-                                {
-                                    message = Localizations.GetLString(Language, "0-103");
-                                    title = Localizations.GetLString(Language, "0-94");
-                                }
-                                message += $" {e.Error.Message}.";
-                                title += $" {e.Error.HResult}!";
-                                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                message = Localizations.GetLString(Language, "0-103");
+                                title = Localizations.GetLString(Language, "0-94");
                             }
+                            message += $" {e.Error.Message}.";
+                            title += $" {e.Error.HResult}!";
+                            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+                        UpdateVerified = false;
+                        update_error_pic.Visible = true;
                     }
                     else
                     {
@@ -428,11 +423,14 @@ namespace SLIL
                         {
                             message += lines[0].Trim('|');
                             message += update_text;
+                            bool has_loc = lines.Contains(GetLanguageCode());
                             for (int i = 1; i < lines.Length; i++)
                             {
                                 string line = lines[i].Trim();
                                 if (line.StartsWith(";")) continue;
-                                if (line.StartsWith(GetLanguageCode()))
+                                if (has_loc && line.StartsWith(GetLanguageCode()))
+                                    message += "\n• " + line.Substring(3);
+                                else if (!has_loc && line.StartsWith("en"))
                                     message += "\n• " + line.Substring(3);
                             }
                             if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -456,13 +454,12 @@ namespace SLIL
                         }
                         else
                         {
-                            if (!auto)
-                            {
-                                if (DownloadedLocalizationList)
-                                    MessageBox.Show(Localizations.GetLString(Language, "0-104"), Localizations.GetLString(Language, "0-105"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                else
-                                    MessageBox.Show("You already have the latest version of the program installed.", "Version is current", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
+                            if (DownloadedLocalizationList)
+                                MessageBox.Show(Localizations.GetLString(Language, "0-104"), Localizations.GetLString(Language, "0-105"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            else
+                                MessageBox.Show("You already have the latest version of the program installed.", "Version is current", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            UpdateVerified = true;
+                            update_error_pic.Visible = false;
                         }
                     }
                 };
@@ -492,7 +489,7 @@ namespace SLIL
             GetGameParametrs();
             SetVisualSettings();
             SetLanguage();
-            if (update_on_off.Checked) Check_Update(true);
+            if (UpdateVerified) update_error_pic.Visible = false;
             buttons_panel.Location = new Point((Width - buttons_panel.Width) / 2, (Height - buttons_panel.Height) / 2 + 75);
             difficulty_panel.Location = buttons_panel.Location;
             developers_panel.Location = buttons_panel.Location;
@@ -517,7 +514,6 @@ namespace SLIL
             if (!SupportedLanguages.Values.Contains(Language)) Language = "English";
             ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
-            update_on_off.Checked = INIReader.GetBool(iniFolder, "CONFIG", "auto_update", true);
             LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 6.5);
             inv_y = INIReader.GetBool(iniFolder, "SlIL", "inv_y", false);
             inv_x = INIReader.GetBool(iniFolder, "SlIL", "inv_x", false);
@@ -702,7 +698,6 @@ namespace SLIL
                 all_settings.Text = Localizations.GetLString(Language, "0-27");
                 sounds_label.Text = Localizations.GetLString(Language, "0-28");
                 language_label.Text = Localizations.GetLString(Language, "0-29");
-                update_label.Text = Localizations.GetLString(Language, "0-30");
                 check_update_btn.Text = Localizations.GetLString(Language, "0-31");
                 video_settings.Text = Localizations.GetLString(Language, "0-32");
                 high_resolution_label.Text = Localizations.GetLString(Language, "0-33");
@@ -780,7 +775,6 @@ namespace SLIL
                 all_settings.Text = "General";
                 sounds_label.Text = "Game sounds";
                 language_label.Text = "Language";
-                update_label.Text = "Auto-update";
                 check_update_btn.Text = "Check for update";
                 video_settings.Text = "Graphics";
                 high_resolution_label.Text = "High resolution";
@@ -843,20 +837,6 @@ namespace SLIL
                     sounds_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     sounds_on_off.Text = "Off";
-            }
-            if (update_on_off.Checked)
-            {
-                if (DownloadedLocalizationList)
-                    update_on_off.Text = Localizations.GetLString(Language, "0-70");
-                else
-                    update_on_off.Text = "On";
-            }
-            else
-            {
-                if (DownloadedLocalizationList)
-                    update_on_off.Text = Localizations.GetLString(Language, "0-71");
-                else
-                    update_on_off.Text = "Off";
             }
             if (high_resolution_on_off.Checked)
             {
@@ -996,29 +976,10 @@ namespace SLIL
             settings_panel.BringToFront();
         }
 
-        private void Update_on_off_CheckedChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            if (update_on_off.Checked)
-            {
-                if (DownloadedLocalizationList)
-                    update_on_off.Text = Localizations.GetLString(Language, "0-70");
-                else
-                    update_on_off.Text = "On";
-            }
-            else
-            {
-                if (DownloadedLocalizationList)
-                    update_on_off.Text = Localizations.GetLString(Language, "0-71");
-                else
-                    update_on_off.Text = "Off";
-            }
-        }
-
         private void Check_update_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            Check_Update(false);
+            Check_Update();
         }
 
         private void High_resolution_on_off_CheckedChanged(object sender, EventArgs e)
@@ -1165,7 +1126,6 @@ namespace SLIL
             Language = GetLanguageName();
             sounds = true;
             ConsoleEnabled = false;
-            update_on_off.Checked = true;
             resolution = 0;
             ShowFPS = false;
             hight_fps = true;
@@ -1185,7 +1145,6 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "CONFIG", "sounds", sounds);
             INIReader.SetKey(iniFolder, "CONFIG", "language", Language);
             INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
-            INIReader.SetKey(iniFolder, "CONFIG", "auto_update", update_on_off.Checked);
             INIReader.SetKey(iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
             INIReader.SetKey(iniFolder, "SLIL", "display_size", display_size);
             INIReader.SetKey(iniFolder, "SLIL", "smoothing", smoothing);

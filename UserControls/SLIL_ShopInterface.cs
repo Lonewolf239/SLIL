@@ -127,7 +127,8 @@ namespace SLIL.UserControls
             ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {ammo}" : $"Ammo: {ammo}";
             buy_button.Text = GetBuyText() + $" ${cost}";
             update_button.Text = $"${weapon.UpdateCost}";
-            damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-11")} {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
+            string shotgun = weapon is Shotgun ? $" x {weapon.BulletCount}" : null;
+            damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-11")} {weapon.MinDamage}-{weapon.MaxDamage}{shotgun}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
             accuracy_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-13")} {weapon.Accuracy * 100}%" : $"Accuracy: {weapon.Accuracy * 100}%";
             ammo_count.Left = damage_text.Right;
             update_button.Left = buy_button.Right + 6;

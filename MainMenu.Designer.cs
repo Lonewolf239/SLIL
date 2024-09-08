@@ -68,9 +68,6 @@
             this.all_settings = new System.Windows.Forms.TabPage();
             this.check_update_panel = new System.Windows.Forms.Panel();
             this.check_update_btn = new System.Windows.Forms.Button();
-            this.update_panel = new System.Windows.Forms.Panel();
-            this.update_on_off = new System.Windows.Forms.CheckBox();
-            this.update_label = new System.Windows.Forms.Label();
             this.localization_panel = new System.Windows.Forms.Panel();
             this.localization_error_pic = new System.Windows.Forms.PictureBox();
             this.localization_update_btn = new System.Windows.Forms.Button();
@@ -234,11 +231,12 @@
             this.account_btn_c = new System.Windows.Forms.Button();
             this.account_panel = new System.Windows.Forms.Panel();
             this.account_background = new System.Windows.Forms.Panel();
-            this.close_account_btn_c = new System.Windows.Forms.Button();
-            this.player_icon = new System.Windows.Forms.PictureBox();
-            this.nickname_label = new System.Windows.Forms.Label();
-            this.nickname = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.player_icon = new System.Windows.Forms.PictureBox();
+            this.nickname = new System.Windows.Forms.TextBox();
+            this.close_account_btn_c = new System.Windows.Forms.Button();
+            this.nickname_label = new System.Windows.Forms.Label();
+            this.update_error_pic = new System.Windows.Forms.PictureBox();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -254,7 +252,6 @@
             this.settings.SuspendLayout();
             this.all_settings.SuspendLayout();
             this.check_update_panel.SuspendLayout();
-            this.update_panel.SuspendLayout();
             this.localization_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.localization_error_pic)).BeginInit();
             this.language_panel.SuspendLayout();
@@ -323,6 +320,7 @@
             this.account_panel.SuspendLayout();
             this.account_background.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.player_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.update_error_pic)).BeginInit();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -795,7 +793,6 @@
             this.all_settings.AutoScroll = true;
             this.all_settings.BackColor = System.Drawing.Color.Black;
             this.all_settings.Controls.Add(this.check_update_panel);
-            this.all_settings.Controls.Add(this.update_panel);
             this.all_settings.Controls.Add(this.localization_panel);
             this.all_settings.Controls.Add(this.language_panel);
             this.all_settings.Controls.Add(this.volume_panel);
@@ -812,9 +809,10 @@
             // check_update_panel
             // 
             this.check_update_panel.BackColor = System.Drawing.Color.Black;
+            this.check_update_panel.Controls.Add(this.update_error_pic);
             this.check_update_panel.Controls.Add(this.check_update_btn);
             this.check_update_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.check_update_panel.Location = new System.Drawing.Point(3, 207);
+            this.check_update_panel.Location = new System.Drawing.Point(3, 173);
             this.check_update_panel.Name = "check_update_panel";
             this.check_update_panel.Size = new System.Drawing.Size(459, 34);
             this.check_update_panel.TabIndex = 3;
@@ -831,42 +829,6 @@
             this.check_update_btn.Text = "Проверить наличие обновления";
             this.check_update_btn.UseVisualStyleBackColor = false;
             this.check_update_btn.Click += new System.EventHandler(this.Check_update_btn_Click);
-            // 
-            // update_panel
-            // 
-            this.update_panel.Controls.Add(this.update_on_off);
-            this.update_panel.Controls.Add(this.update_label);
-            this.update_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.update_panel.Location = new System.Drawing.Point(3, 173);
-            this.update_panel.Name = "update_panel";
-            this.update_panel.Size = new System.Drawing.Size(459, 34);
-            this.update_panel.TabIndex = 2;
-            // 
-            // update_on_off
-            // 
-            this.update_on_off.Appearance = System.Windows.Forms.Appearance.Button;
-            this.update_on_off.Checked = true;
-            this.update_on_off.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.update_on_off.Dock = System.Windows.Forms.DockStyle.Right;
-            this.update_on_off.Location = new System.Drawing.Point(389, 0);
-            this.update_on_off.Name = "update_on_off";
-            this.update_on_off.Size = new System.Drawing.Size(70, 34);
-            this.update_on_off.TabIndex = 1;
-            this.update_on_off.TabStop = false;
-            this.update_on_off.Text = "Вкл.";
-            this.update_on_off.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.update_on_off.UseVisualStyleBackColor = false;
-            this.update_on_off.CheckedChanged += new System.EventHandler(this.Update_on_off_CheckedChanged);
-            // 
-            // update_label
-            // 
-            this.update_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.update_label.Location = new System.Drawing.Point(0, 0);
-            this.update_label.Name = "update_label";
-            this.update_label.Size = new System.Drawing.Size(226, 34);
-            this.update_label.TabIndex = 0;
-            this.update_label.Text = "Авто-обновление";
-            this.update_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // localization_panel
             // 
@@ -2836,6 +2798,38 @@
             this.account_background.Size = new System.Drawing.Size(490, 276);
             this.account_background.TabIndex = 45;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(162, 94);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(295, 146);
+            this.label1.TabIndex = 62;
+            this.label1.Text = "COMING\r\nSOON";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // player_icon
+            // 
+            this.player_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.player_icon.Location = new System.Drawing.Point(6, 6);
+            this.player_icon.Name = "player_icon";
+            this.player_icon.Size = new System.Drawing.Size(150, 150);
+            this.player_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.player_icon.TabIndex = 59;
+            this.player_icon.TabStop = false;
+            // 
+            // nickname
+            // 
+            this.nickname.Location = new System.Drawing.Point(167, 48);
+            this.nickname.MaxLength = 24;
+            this.nickname.Name = "nickname";
+            this.nickname.Size = new System.Drawing.Size(217, 29);
+            this.nickname.TabIndex = 61;
+            this.nickname.TabStop = false;
+            this.nickname.Text = "Player";
+            // 
             // close_account_btn_c
             // 
             this.close_account_btn_c.BackColor = System.Drawing.Color.Black;
@@ -2851,16 +2845,6 @@
             this.close_account_btn_c.UseVisualStyleBackColor = false;
             this.close_account_btn_c.Click += new System.EventHandler(this.Close_account_btn_c_Click);
             // 
-            // player_icon
-            // 
-            this.player_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.player_icon.Location = new System.Drawing.Point(6, 6);
-            this.player_icon.Name = "player_icon";
-            this.player_icon.Size = new System.Drawing.Size(150, 150);
-            this.player_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.player_icon.TabIndex = 59;
-            this.player_icon.TabStop = false;
-            // 
             // nickname_label
             // 
             this.nickname_label.AutoSize = true;
@@ -2873,27 +2857,16 @@
             this.nickname_label.Text = "Имя игрока:";
             this.nickname_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // nickname
+            // update_error_pic
             // 
-            this.nickname.Location = new System.Drawing.Point(167, 48);
-            this.nickname.MaxLength = 24;
-            this.nickname.Name = "nickname";
-            this.nickname.Size = new System.Drawing.Size(217, 29);
-            this.nickname.TabIndex = 61;
-            this.nickname.TabStop = false;
-            this.nickname.Text = "Player";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(162, 94);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(295, 146);
-            this.label1.TabIndex = 62;
-            this.label1.Text = "COMING\r\nSOON";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.update_error_pic.Dock = System.Windows.Forms.DockStyle.Right;
+            this.update_error_pic.Image = global::SLIL.Properties.Resources.warning1;
+            this.update_error_pic.Location = new System.Drawing.Point(113, 0);
+            this.update_error_pic.Name = "update_error_pic";
+            this.update_error_pic.Size = new System.Drawing.Size(34, 34);
+            this.update_error_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.update_error_pic.TabIndex = 2;
+            this.update_error_pic.TabStop = false;
             // 
             // MainMenu
             // 
@@ -2954,7 +2927,6 @@
             this.all_settings.ResumeLayout(false);
             this.check_update_panel.ResumeLayout(false);
             this.check_update_panel.PerformLayout();
-            this.update_panel.ResumeLayout(false);
             this.localization_panel.ResumeLayout(false);
             this.localization_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.localization_error_pic)).EndInit();
@@ -3039,6 +3011,7 @@
             this.account_background.ResumeLayout(false);
             this.account_background.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.player_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.update_error_pic)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3084,9 +3057,6 @@
         private System.Windows.Forms.Panel language_panel;
         private System.Windows.Forms.Label language_label;
         private System.Windows.Forms.ComboBox language_list;
-        private System.Windows.Forms.Panel update_panel;
-        private System.Windows.Forms.CheckBox update_on_off;
-        private System.Windows.Forms.Label update_label;
         private System.Windows.Forms.Panel check_update_panel;
         private System.Windows.Forms.Button check_update_btn;
         private System.Windows.Forms.TabPage video_settings;
@@ -3255,5 +3225,6 @@
         private System.Windows.Forms.TextBox nickname;
         private System.Windows.Forms.Label nickname_label;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox update_error_pic;
     }
 }
