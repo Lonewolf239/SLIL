@@ -626,15 +626,21 @@ namespace SLIL.Classes
     public abstract class Boxes : NPC
     {
         public bool BoxWithMoney { get; set; }
+        public double MoneyChance { get; set; }
 
         public Boxes(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Boxes(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
         private void Init()
         {
-            if (rand.NextDouble() <= 0.25) BoxWithMoney = true;
             CanHit = true;
             HP = 2.5;
+        }
+
+        public void SetMoneyChance()
+        {
+            if (rand.NextDouble() <= MoneyChance)
+                BoxWithMoney = true;
         }
 
         public void BreakTheBox()
@@ -668,6 +674,8 @@ namespace SLIL.Classes
         {
             Texture = 44;
             DeathSound = 4;
+            MoneyChance = 0.25;
+            SetMoneyChance();
             base.AnimationsToStatic();
         }
     }
@@ -683,6 +691,8 @@ namespace SLIL.Classes
         {
             Texture = 46;
             DeathSound = 4;
+            MoneyChance = 0.75;
+            SetMoneyChance();
             base.AnimationsToStatic();
         }
     }

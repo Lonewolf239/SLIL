@@ -122,7 +122,19 @@ namespace SLIL.Classes
             }
         }
 
+        public virtual void LevelDowngrade()
+        {
+            if (CanDowngrade())
+            {
+                Level--;
+                UpdateCost -= 20;
+                ApplyUpdate();
+            }
+        }
+
         public virtual bool CanUpdate() => (!HaveLV4 && Level != Levels.LV3) || (HaveLV4 && Level != Levels.LV4);
+
+        public virtual bool CanDowngrade() => Level != Levels.LV1;
 
         public void Serialize(NetDataWriter writer)
         {
@@ -417,7 +429,7 @@ namespace SLIL.Classes
             }
             else if (Level == Levels.LV3)
             {
-                Accuracy = 0.8;
+                Accuracy = 0.9;
                 RechargeTime = 400;
                 CartridgesClip = 7;
                 MaxAmmo = CartridgesClip * 6;
@@ -465,7 +477,7 @@ namespace SLIL.Classes
             HasIt = false;
             HaveLV4 = false;
             Name = new[] { "3-5", "Shotgun" };
-            Accuracy = 0;
+            Accuracy = 0.2;
             BulletCount = 4;
             PauseBetweenShooting = 350;
             RechargeTime = 425;
@@ -608,8 +620,8 @@ namespace SLIL.Classes
             Accuracy = 0.65;
             RechargeTime = 375;
             BulletCount = 1;
-            PauseBetweenShooting = 125;
-            FiringRate = 100;
+            PauseBetweenShooting = 60;
+            FiringRate = 50;
             UpdateCost = 40;
             GunCost = 30;
             AmmoCost = 18;
@@ -634,8 +646,8 @@ namespace SLIL.Classes
                 UpdateCost = 40;
                 Accuracy = 0.65;
                 BulletCount = 1;
-                PauseBetweenShooting = 125;
-                FiringRate = 100;
+                PauseBetweenShooting = 60;
+                FiringRate = 50;
                 RechargeTime = 375;
                 CartridgesClip = 20;
                 MaxAmmo = CartridgesClip * 6;
@@ -653,8 +665,8 @@ namespace SLIL.Classes
                 Accuracy = 0.8;
                 RechargeTime = 350;
                 BulletCount = 1;
-                PauseBetweenShooting = 110;
-                FiringRate = 92;
+                PauseBetweenShooting = 50;
+                FiringRate = 40;
                 CartridgesClip = 30;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 8;
@@ -670,8 +682,8 @@ namespace SLIL.Classes
                 Accuracy = 0.5;
                 RechargeTime = 350;
                 BulletCount = 2;
-                PauseBetweenShooting = 70;
-                FiringRate = 60;
+                PauseBetweenShooting = 35;
+                FiringRate = 25;
                 CartridgesClip = 30;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 8;
@@ -795,7 +807,7 @@ namespace SLIL.Classes
             CanAiming = true;
             Name = new[] { "3-8", "Sniper rifle" };
             RechargeTime = 650;
-            Accuracy = 0.9;
+            Accuracy = 0.96;
             FiringRate = 200;
             UpdateCost = 60;
             GunCost = 55;
@@ -821,7 +833,7 @@ namespace SLIL.Classes
             {
                 AimingFactor = 4;
                 CanRun = true;
-                Accuracy = 0.9;
+                Accuracy = 0.96;
                 RechargeTime = 650;
                 CartridgesClip = 1;
                 MaxAmmo = CartridgesClip * 15;
@@ -830,7 +842,6 @@ namespace SLIL.Classes
                 MinDamage = 5;
                 RecoilY = 35;
                 RecoilX = 2.5;
-                FiringRate = 200;
                 BurstShots = 1;
                 RadiusSound = 20;
                 ReloadFrames = 3;
@@ -839,7 +850,7 @@ namespace SLIL.Classes
             {
                 AimingFactor = 5;
                 CanRun = true;
-                Accuracy = 0.95;
+                Accuracy = 0.98;
                 RechargeTime = 650;
                 CartridgesClip = 10;
                 MaxAmmo = CartridgesClip * 4;
@@ -848,7 +859,6 @@ namespace SLIL.Classes
                 MinDamage = 10;
                 RecoilY = 55;
                 RecoilX = 3.5;
-                FiringRate = 200;
                 BurstShots = 1;
                 RadiusSound = 25;
                 ReloadFrames = 3;
@@ -858,7 +868,7 @@ namespace SLIL.Classes
                 AimingFactor = 12;
                 CanRun = false;
                 Accuracy = 1;
-                RechargeTime = 500;
+                RechargeTime = 772;
                 CartridgesClip = 10;
                 MaxAmmo = CartridgesClip * 4;
                 FiringRange = 22;
@@ -866,7 +876,6 @@ namespace SLIL.Classes
                 MinDamage = 19;
                 RecoilY = 150;
                 RecoilX = 4.25;
-                FiringRate = 490;
                 BurstShots = 1;
                 RadiusSound = 20;
                 ReloadFrames = 2;
@@ -987,7 +996,7 @@ namespace SLIL.Classes
             MinDamage = 25;
             RecoilY = 0;
             RecoilX = 0;
-            FiringRate = 460;
+            FiringRate = 200;
             BurstShots = 1;
             RadiusSound = 20;
             ReloadFrames = 3;
@@ -995,6 +1004,7 @@ namespace SLIL.Classes
         }
 
         public override void LevelUpdate() => ApplyUpdate();
+        public override void LevelDowngrade() => ApplyUpdate();
         public override bool CanUpdate() => false;
         public override int GetItemID() => 15;
     }
@@ -1031,6 +1041,7 @@ namespace SLIL.Classes
         }
 
         public override void LevelUpdate() => ApplyUpdate();
+        public override void LevelDowngrade() => ApplyUpdate();
         public override bool CanUpdate() => false;
         public override int GetItemID() => 16;
     }

@@ -36,7 +36,7 @@ namespace SLIL
         private readonly PlaySound MainMenuTheme;
         private readonly PlaySound[,] DeathSounds;
         private readonly PlaySound[,] CuteDeathSounds;
-        private readonly PlaySound game_over, draw, buy, wall, tp, screenshot;
+        private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
         public static Player player;
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
@@ -199,6 +199,7 @@ namespace SLIL
             wall = new PlaySound(CGFReader.GetFile("wall_interaction.wav"), false);
             tp = new PlaySound(CGFReader.GetFile("tp.wav"), false);
             screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
+            low_stamine = new PlaySound(CGFReader.GetFile("low_stamine.wav"), false);
             AddSeparators();
         }
 
@@ -504,7 +505,9 @@ namespace SLIL
             multiplayer_panel.Location = buttons_panel.Location;
             host_panel.Location = buttons_panel.Location;
             connect_panel.Location = buttons_panel.Location;
+            account_panel.Location = buttons_panel.Location;
             exit_size_panel.Left = (exit_panel.Width - exit_size_panel.Width) / 2;
+            account_btn_c.Location = new Point(Width - account_btn_c.Width - 15, 15);
             if (sounds) MainMenuTheme.Play(Volume);
         }
 
@@ -1263,7 +1266,8 @@ namespace SLIL
                     buy = buy,
                     wall = wall,
                     tp = tp,
-                    screenshot = screenshot
+                    screenshot = screenshot,
+                    low_stamine = low_stamine
                 };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(Volume);
@@ -1340,6 +1344,7 @@ namespace SLIL
             }
             else
             {
+                return;
                 multiplayer_panel.Visible = true;
                 multiplayer_panel.BringToFront();
             }
@@ -1488,6 +1493,19 @@ namespace SLIL
             Localizations.RemoveDuplicates();
         }
 
+        private void Account_btn_c_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            account_panel.Visible = true;
+            account_panel.BringToFront();
+        }
+
+        private void Close_account_btn_c_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            account_panel.Visible = false;
+        }
+
         private void Localization_update_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
@@ -1511,7 +1529,8 @@ namespace SLIL
                 buy = buy,
                 wall = wall,
                 tp = tp,
-                screenshot = screenshot
+                screenshot = screenshot,
+                low_stamine = low_stamine
             };
             form.ShowDialog();
             if (sounds) MainMenuTheme.Play(Volume);
@@ -1598,7 +1617,8 @@ namespace SLIL
                     buy = buy,
                     wall = wall,
                     tp = tp,
-                    screenshot = screenshot
+                    screenshot = screenshot,
+                    low_stamine = low_stamine
                 };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(Volume);

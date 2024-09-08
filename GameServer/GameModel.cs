@@ -1,10 +1,8 @@
 ﻿using MazeGenerator;
 using LiteNetLib.Utils;
 using System.Text;
-using GameServer;
-using Microsoft.VisualBasic.FileIO;
 
-namespace SLIL.Classes
+namespace GameServer
 {
     internal class GameModel : INetSerializable
     {

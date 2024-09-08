@@ -1,4 +1,4 @@
-﻿namespace SLIL.Classes
+﻿namespace GameServer
 {
     public class Effect
     {

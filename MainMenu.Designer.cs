@@ -207,8 +207,6 @@
             this.multiplayer_panel = new System.Windows.Forms.Panel();
             this.multiplayer_background = new System.Windows.Forms.Panel();
             this.connect_game_btn_cp = new System.Windows.Forms.Button();
-            this.nickname = new System.Windows.Forms.TextBox();
-            this.nickname_label = new System.Windows.Forms.Label();
             this.host_btn_cp = new System.Windows.Forms.Button();
             this.multiplayer_close_l = new System.Windows.Forms.Button();
             this.coming_soon_label = new System.Windows.Forms.Label();
@@ -233,6 +231,14 @@
             this.create_translate_cp = new System.Windows.Forms.Button();
             this.bug_repor_btn_cp = new System.Windows.Forms.Button();
             this.help_close_l = new System.Windows.Forms.Button();
+            this.account_btn_c = new System.Windows.Forms.Button();
+            this.account_panel = new System.Windows.Forms.Panel();
+            this.account_background = new System.Windows.Forms.Panel();
+            this.close_account_btn_c = new System.Windows.Forms.Button();
+            this.player_icon = new System.Windows.Forms.PictureBox();
+            this.nickname_label = new System.Windows.Forms.Label();
+            this.nickname = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -314,6 +320,9 @@
             this.connect_background.SuspendLayout();
             this.help_panel.SuspendLayout();
             this.help_background.SuspendLayout();
+            this.account_panel.SuspendLayout();
+            this.account_background.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.player_icon)).BeginInit();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -431,7 +440,7 @@
             this.developers_panel.BackColor = System.Drawing.Color.DarkGray;
             this.developers_panel.Controls.Add(this.close_developers_panel);
             this.developers_panel.Controls.Add(this.developers_background);
-            this.developers_panel.Location = new System.Drawing.Point(1518, 582);
+            this.developers_panel.Location = new System.Drawing.Point(1016, 12);
             this.developers_panel.Name = "developers_panel";
             this.developers_panel.Size = new System.Drawing.Size(496, 282);
             this.developers_panel.TabIndex = 50;
@@ -2089,7 +2098,7 @@
             // 
             this.exit_panel.BackColor = System.Drawing.Color.DarkGray;
             this.exit_panel.Controls.Add(this.exit_background);
-            this.exit_panel.Location = new System.Drawing.Point(1016, 297);
+            this.exit_panel.Location = new System.Drawing.Point(1016, 12);
             this.exit_panel.Name = "exit_panel";
             this.exit_panel.Size = new System.Drawing.Size(496, 282);
             this.exit_panel.TabIndex = 54;
@@ -2300,7 +2309,7 @@
             this.change_logs_panel.BackColor = System.Drawing.Color.DarkGray;
             this.change_logs_panel.Controls.Add(this.change_logs_bottom);
             this.change_logs_panel.Controls.Add(this.change_logs_background);
-            this.change_logs_panel.Location = new System.Drawing.Point(1518, 297);
+            this.change_logs_panel.Location = new System.Drawing.Point(1016, 12);
             this.change_logs_panel.Name = "change_logs_panel";
             this.change_logs_panel.Size = new System.Drawing.Size(496, 282);
             this.change_logs_panel.TabIndex = 57;
@@ -2361,7 +2370,7 @@
             // 
             this.game_mode_panel.BackColor = System.Drawing.Color.DarkGray;
             this.game_mode_panel.Controls.Add(this.game_mode_background);
-            this.game_mode_panel.Location = new System.Drawing.Point(1518, 12);
+            this.game_mode_panel.Location = new System.Drawing.Point(1016, 12);
             this.game_mode_panel.Name = "game_mode_panel";
             this.game_mode_panel.Size = new System.Drawing.Size(496, 282);
             this.game_mode_panel.TabIndex = 58;
@@ -2463,8 +2472,6 @@
             // 
             this.multiplayer_background.BackColor = System.Drawing.Color.Black;
             this.multiplayer_background.Controls.Add(this.connect_game_btn_cp);
-            this.multiplayer_background.Controls.Add(this.nickname);
-            this.multiplayer_background.Controls.Add(this.nickname_label);
             this.multiplayer_background.Controls.Add(this.host_btn_cp);
             this.multiplayer_background.Controls.Add(this.multiplayer_close_l);
             this.multiplayer_background.Location = new System.Drawing.Point(3, 3);
@@ -2476,46 +2483,26 @@
             // 
             this.connect_game_btn_cp.AutoSize = true;
             this.connect_game_btn_cp.BackColor = System.Drawing.Color.Black;
-            this.connect_game_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.connect_game_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
             this.connect_game_btn_cp.ForeColor = System.Drawing.Color.White;
-            this.connect_game_btn_cp.Location = new System.Drawing.Point(125, 160);
+            this.connect_game_btn_cp.Location = new System.Drawing.Point(107, 124);
             this.connect_game_btn_cp.Name = "connect_game_btn_cp";
-            this.connect_game_btn_cp.Size = new System.Drawing.Size(240, 41);
+            this.connect_game_btn_cp.Size = new System.Drawing.Size(258, 47);
             this.connect_game_btn_cp.TabIndex = 62;
             this.connect_game_btn_cp.TabStop = false;
             this.connect_game_btn_cp.Text = "Присоединиться";
             this.connect_game_btn_cp.UseVisualStyleBackColor = false;
             this.connect_game_btn_cp.Click += new System.EventHandler(this.Connect_game_btn_Click);
             // 
-            // nickname
-            // 
-            this.nickname.Location = new System.Drawing.Point(211, 35);
-            this.nickname.MaxLength = 24;
-            this.nickname.Name = "nickname";
-            this.nickname.Size = new System.Drawing.Size(217, 29);
-            this.nickname.TabIndex = 61;
-            this.nickname.TabStop = false;
-            this.nickname.Text = "Player";
-            // 
-            // nickname_label
-            // 
-            this.nickname_label.ForeColor = System.Drawing.Color.White;
-            this.nickname_label.Location = new System.Drawing.Point(6, 33);
-            this.nickname_label.Name = "nickname_label";
-            this.nickname_label.Size = new System.Drawing.Size(199, 34);
-            this.nickname_label.TabIndex = 60;
-            this.nickname_label.Text = "Имя игрока:";
-            this.nickname_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // host_btn_cp
             // 
             this.host_btn_cp.AutoSize = true;
             this.host_btn_cp.BackColor = System.Drawing.Color.Black;
-            this.host_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.host_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
             this.host_btn_cp.ForeColor = System.Drawing.Color.White;
-            this.host_btn_cp.Location = new System.Drawing.Point(125, 100);
+            this.host_btn_cp.Location = new System.Drawing.Point(107, 60);
             this.host_btn_cp.Name = "host_btn_cp";
-            this.host_btn_cp.Size = new System.Drawing.Size(240, 41);
+            this.host_btn_cp.Size = new System.Drawing.Size(240, 47);
             this.host_btn_cp.TabIndex = 59;
             this.host_btn_cp.TabStop = false;
             this.host_btn_cp.Text = "Создать игру";
@@ -2811,6 +2798,103 @@
             this.help_close_l.UseVisualStyleBackColor = false;
             this.help_close_l.Click += new System.EventHandler(this.Help_close_Click);
             // 
+            // account_btn_c
+            // 
+            this.account_btn_c.BackColor = System.Drawing.Color.Black;
+            this.account_btn_c.BackgroundImage = global::SLIL.Properties.Resources.singleplayer;
+            this.account_btn_c.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.account_btn_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.account_btn_c.ForeColor = System.Drawing.Color.White;
+            this.account_btn_c.Location = new System.Drawing.Point(1725, 18);
+            this.account_btn_c.Name = "account_btn_c";
+            this.account_btn_c.Size = new System.Drawing.Size(75, 75);
+            this.account_btn_c.TabIndex = 63;
+            this.account_btn_c.TabStop = false;
+            this.account_btn_c.UseVisualStyleBackColor = false;
+            this.account_btn_c.Click += new System.EventHandler(this.Account_btn_c_Click);
+            // 
+            // account_panel
+            // 
+            this.account_panel.BackColor = System.Drawing.Color.DarkGray;
+            this.account_panel.Controls.Add(this.account_background);
+            this.account_panel.Location = new System.Drawing.Point(1016, 297);
+            this.account_panel.Name = "account_panel";
+            this.account_panel.Size = new System.Drawing.Size(496, 282);
+            this.account_panel.TabIndex = 64;
+            this.account_panel.Visible = false;
+            // 
+            // account_background
+            // 
+            this.account_background.BackColor = System.Drawing.Color.Black;
+            this.account_background.Controls.Add(this.label1);
+            this.account_background.Controls.Add(this.player_icon);
+            this.account_background.Controls.Add(this.nickname);
+            this.account_background.Controls.Add(this.close_account_btn_c);
+            this.account_background.Controls.Add(this.nickname_label);
+            this.account_background.Location = new System.Drawing.Point(3, 3);
+            this.account_background.Name = "account_background";
+            this.account_background.Size = new System.Drawing.Size(490, 276);
+            this.account_background.TabIndex = 45;
+            // 
+            // close_account_btn_c
+            // 
+            this.close_account_btn_c.BackColor = System.Drawing.Color.Black;
+            this.close_account_btn_c.BackgroundImage = global::SLIL.Properties.Resources.close;
+            this.close_account_btn_c.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.close_account_btn_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.close_account_btn_c.ForeColor = System.Drawing.Color.White;
+            this.close_account_btn_c.Location = new System.Drawing.Point(447, 3);
+            this.close_account_btn_c.Name = "close_account_btn_c";
+            this.close_account_btn_c.Size = new System.Drawing.Size(40, 40);
+            this.close_account_btn_c.TabIndex = 58;
+            this.close_account_btn_c.TabStop = false;
+            this.close_account_btn_c.UseVisualStyleBackColor = false;
+            this.close_account_btn_c.Click += new System.EventHandler(this.Close_account_btn_c_Click);
+            // 
+            // player_icon
+            // 
+            this.player_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.player_icon.Location = new System.Drawing.Point(6, 6);
+            this.player_icon.Name = "player_icon";
+            this.player_icon.Size = new System.Drawing.Size(150, 150);
+            this.player_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.player_icon.TabIndex = 59;
+            this.player_icon.TabStop = false;
+            // 
+            // nickname_label
+            // 
+            this.nickname_label.AutoSize = true;
+            this.nickname_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.nickname_label.ForeColor = System.Drawing.Color.White;
+            this.nickname_label.Location = new System.Drawing.Point(162, 16);
+            this.nickname_label.Name = "nickname_label";
+            this.nickname_label.Size = new System.Drawing.Size(154, 29);
+            this.nickname_label.TabIndex = 60;
+            this.nickname_label.Text = "Имя игрока:";
+            this.nickname_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nickname
+            // 
+            this.nickname.Location = new System.Drawing.Point(167, 48);
+            this.nickname.MaxLength = 24;
+            this.nickname.Name = "nickname";
+            this.nickname.Size = new System.Drawing.Size(217, 29);
+            this.nickname.TabIndex = 61;
+            this.nickname.TabStop = false;
+            this.nickname.Text = "Player";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(162, 94);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(295, 146);
+            this.label1.TabIndex = 62;
+            this.label1.Text = "COMING\r\nSOON";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2818,9 +2902,11 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1924, 896);
+            this.Controls.Add(this.account_panel);
+            this.Controls.Add(this.account_btn_c);
+            this.Controls.Add(this.game_mode_panel);
             this.Controls.Add(this.developers_panel);
             this.Controls.Add(this.help_panel);
-            this.Controls.Add(this.game_mode_panel);
             this.Controls.Add(this.exit_panel);
             this.Controls.Add(this.connect_panel);
             this.Controls.Add(this.host_panel);
@@ -2949,6 +3035,10 @@
             this.help_panel.ResumeLayout(false);
             this.help_background.ResumeLayout(false);
             this.help_background.PerformLayout();
+            this.account_panel.ResumeLayout(false);
+            this.account_background.ResumeLayout(false);
+            this.account_background.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.player_icon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3105,8 +3195,6 @@
         private System.Windows.Forms.Panel volume_panel;
         private System.Windows.Forms.Label volume_label;
         private System.Windows.Forms.TrackBar volume;
-        private System.Windows.Forms.Label nickname_label;
-        private System.Windows.Forms.TextBox nickname;
         private System.Windows.Forms.Button connect_game_btn_cp;
         private System.Windows.Forms.Panel host_panel;
         private System.Windows.Forms.Panel host_background;
@@ -3159,5 +3247,13 @@
         private System.Windows.Forms.Button fazzy_telegram_c;
         private System.Windows.Forms.Label fazzy_name;
         private System.Windows.Forms.Label cant_use_panel;
+        private System.Windows.Forms.Button account_btn_c;
+        private System.Windows.Forms.Panel account_panel;
+        private System.Windows.Forms.Panel account_background;
+        private System.Windows.Forms.Button close_account_btn_c;
+        private System.Windows.Forms.PictureBox player_icon;
+        private System.Windows.Forms.TextBox nickname;
+        private System.Windows.Forms.Label nickname_label;
+        private System.Windows.Forms.Label label1;
     }
 }

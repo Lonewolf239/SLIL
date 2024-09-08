@@ -93,6 +93,7 @@ namespace SLIL.UserControls
                 else if (MainMenu.sounds)
                     cant_pressed?.Play(SLIL.Volume);
             }
+            UpdateInfo();
         }
 
         private void Update_button_Click(object sender, EventArgs e)
@@ -113,6 +114,7 @@ namespace SLIL.UserControls
             }
             else if (MainMenu.sounds)
                 cant_pressed?.Play(SLIL.Volume);
+            UpdateInfo();
         }
 
         private void UpdateInfo()
@@ -126,6 +128,7 @@ namespace SLIL.UserControls
             buy_button.Text = GetBuyText() + $" ${cost}";
             update_button.Text = $"${weapon.UpdateCost}";
             damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-11")} {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
+            accuracy_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-13")} {weapon.Accuracy * 100}%" : $"Accuracy: {weapon.Accuracy * 100}%";
             ammo_count.Left = damage_text.Right;
             update_button.Left = buy_button.Right + 6;
             update_button.Visible = weapon.CanUpdate() && weapon.HasIt;

@@ -1180,5 +1180,11 @@
   <ItemGroup>
     <None Include="Images\stamine_icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\stamine_cant_run_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\close.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

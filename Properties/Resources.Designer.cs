@@ -443,6 +443,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap close {
+            get {
+                object obj = ResourceManager.GetObject("close", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap copy {
             get {
                 object obj = ResourceManager.GetObject("copy", resourceCulture);
@@ -2916,6 +2926,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap Soon {
             get {
                 object obj = ResourceManager.GetObject("Soon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stamine_cant_run_icon {
+            get {
+                object obj = ResourceManager.GetObject("stamine_cant_run_icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -348,7 +348,7 @@ namespace SLIL
         };
         public PlaySound[,] DeathSounds;
         public PlaySound[,] CuteDeathSounds;
-        public PlaySound game_over, draw, buy, wall, tp, screenshot;
+        public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##..WWWW...........##..W..W..B..b..#..##..WE.W...........##..W..W...........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
@@ -747,10 +747,7 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if (player.GetCurrentGun().CanRun && RunKeyPressed && playerDirection == Direction.FORWARD &&
-                !player.Fast && !player.IsPetting && !player.Aiming &&
-                !shot_timer.Enabled && !reload_timer.Enabled && 
-                !shotgun_pull_timer.Enabled && !chill_timer.Enabled && !mouse_hold_timer.Enabled)
+            if (RunKeyPressed && PlayerCanRun())
             {
                 if (player.STAMINE >= player.MAX_STAMINE / 2.5)
                     playerMoveStyle = Direction.RUN;
@@ -758,11 +755,12 @@ namespace SLIL
             else playerMoveStyle = Direction.WALK;
             if (playerMoveStyle == Direction.RUN && playerDirection == Direction.FORWARD && !player.Aiming && !reload_timer.Enabled && !shotgun_pull_timer.Enabled)
             {
-                if (player.STAMINE <= 0 || chill_timer.Enabled)
+                if (player.STAMINE <= 0)
                 {
                     player.STAMINE = 0;
                     playerMoveStyle = Direction.WALK;
                     chill_timer.Start();
+                    if (MainMenu.sounds) low_stamine.Play(Volume);
                 }
                 else player.STAMINE -= player.GetCurrentGun().LowWeight ? 2 : 3;
             }
@@ -2373,16 +2371,17 @@ namespace SLIL
         {
             if (player.STAMINE >= player.MAX_STAMINE)
                 return;
-            int stamine_icon_size = icon_size / 2;
             int stamine_width = resolution == 0 ? 40 : 80;
             int progress_width = (int)(player.STAMINE / player.MAX_STAMINE * (stamine_width - 2));
             int stamine_top = SCREEN_HEIGHT[resolution] - (icon_size * 2);
-            int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + stamine_icon_size + 2)) / 2;
-            int stamine_progressbar_left = stamine_left + stamine_icon_size + 2;
-            int stamine_progressbar_top = stamine_top + ((stamine_icon_size - 3) / 2);
-            graphicsWeapon.DrawImage(Properties.Resources.stamine_icon, stamine_left, stamine_top, stamine_icon_size, stamine_icon_size);
-            graphicsWeapon.FillRectangle(new SolidBrush(Color.Gray), stamine_progressbar_left, stamine_progressbar_top, stamine_width, 2.25f * size);
+            int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + icon_size + 2)) / 2;
+            int stamine_progressbar_left = stamine_left + icon_size + 2;
+            int stamine_progressbar_top = stamine_top + ((icon_size - 3) / 2);
             bool check = player.STAMINE >= player.MAX_STAMINE / 2.5;
+            Image icon = PlayerCanRun() ?
+                Properties.Resources.stamine_icon : Properties.Resources.stamine_cant_run_icon;
+            graphicsWeapon.DrawImage(icon, stamine_left, stamine_top, icon_size, icon_size);
+            graphicsWeapon.FillRectangle(new SolidBrush(Color.Gray), stamine_progressbar_left, stamine_progressbar_top, stamine_width, 2.25f * size);
             graphicsWeapon.FillRectangle(check ? new SolidBrush(Color.White) : new SolidBrush(Color.Red), stamine_progressbar_left + 1, stamine_progressbar_top + size, progress_width, 1.5f * size);
         }
 
@@ -2793,6 +2792,15 @@ namespace SLIL
         }
 
         //  #====   Game methods    ====#
+
+        private bool PlayerCanRun()
+        {
+            Player player = Controller.GetPlayer();
+            return player.GetCurrentGun().CanRun && playerDirection == Direction.FORWARD &&
+                !player.Fast && !player.IsPetting && !player.Aiming &&
+                !shot_timer.Enabled && !reload_timer.Enabled &&
+                !shotgun_pull_timer.Enabled && !chill_timer.Enabled && !mouse_hold_timer.Enabled;
+        }
 
         private void StartGame()
         {

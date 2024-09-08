@@ -1,7 +1,6 @@
 ﻿using LiteNetLib.Utils;
-using System.Collections.Generic;
 
-namespace SLIL.Classes
+namespace GameServer
 {
     public class Player : Entity
     {
