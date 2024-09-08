@@ -1503,6 +1503,24 @@ namespace GameServer
         internal void ChangeDifficulty(int difficulty)
         {
             this.difficulty = difficulty;
+            switch (difficulty)
+            {
+                case 0:
+                    EnemyDamageOffset = 1.75;
+                    break;
+                case 1:
+                    EnemyDamageOffset = 1.25;
+                    break;
+                case 2:
+                    EnemyDamageOffset = 1;
+                    break;
+                case 3:
+                    EnemyDamageOffset = 0.75;
+                    break;
+                default:
+                    EnemyDamageOffset = 1;
+                    break;
+            }
             if(GameStarted) StopGame(2);
         }
         internal void ChangeGameMode(GameMode gameMode)
