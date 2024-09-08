@@ -149,6 +149,8 @@ namespace SLIL.Classes
                         writer.Put(1);
                         writer.Put(GetPlayer().X);
                         writer.Put(GetPlayer().Y);
+                        writer.Put(GetPlayer().A);
+                        writer.Put(GetPlayer().Look);
                         writer.Put(playerID);
                         peer.Send(writer, DeliveryMethod.Unreliable);
                     }

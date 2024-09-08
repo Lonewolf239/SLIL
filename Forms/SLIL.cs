@@ -2720,6 +2720,7 @@ namespace SLIL
                     double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
                     int spriteScreenX = (int)((SCREEN_WIDTH[resolution] / 2) * (1 + transformX / transformY));
                     double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
+                    if (Distance <= 0.1) Distance = 0.1;
                     double spriteTop = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / Distance;
                     double spriteBottom = SCREEN_HEIGHT[resolution] - (spriteTop + player.Look);
                     int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
