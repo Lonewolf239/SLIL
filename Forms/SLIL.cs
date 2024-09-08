@@ -2593,8 +2593,6 @@ namespace SLIL
                                             {
                                                 if (creature.DEAD) continue;
                                                 double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                                if (player.GetCurrentGun() is Shotgun)
-                                                    damage *= player.GetCurrentGun().FiringRange - Distance;
                                                 if (Controller.DealDamage(creature, damage))
                                                 {
                                                     if (MainMenu.sounds)
@@ -2616,8 +2614,6 @@ namespace SLIL
                                             {
                                                 if (targetPlayer.Dead) continue;
                                                 double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                                if (player.GetCurrentGun() is Shotgun)
-                                                    damage *= player.GetCurrentGun().FiringRange - Distance;
                                                 if (Controller.DealDamage(targetPlayer, damage * 5))
                                                 {
                                                     if (MainMenu.sounds)
