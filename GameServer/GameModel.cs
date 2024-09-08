@@ -54,8 +54,6 @@ namespace GameServer
 
         public void StartGame()
         {
-            //if (inDebug == 0) difficulty = 3;
-            //else difficulty = 5;
             if (MAP.Length == 0) InitMap();
             MAP.Replace('P', '.');
             GameStarted = true;
@@ -701,13 +699,10 @@ namespace GameServer
             if (win == 1)
             {
                 sendMessageFromGameCallback(101);
-                List<Player> players = new List<Player>();
+                List<Player> players = [];
                 foreach (Entity ent in Entities)
                 {
-                    if (ent is not Player player)
-                    {
-                        continue;
-                    }
+                    if (ent is not Player player) continue;
                     if (difficulty != 4)
                         player.Stage++;
                     if (!player.CuteMode)
@@ -725,14 +720,10 @@ namespace GameServer
                 }
                 Entities.Clear();
                 foreach(Player p in players)
-                {
                     Entities.Add(p);
-                }
                 StartGame();
                 foreach(Entity ent in Entities)
-                {
                     if (ent is Player p) UpdatePet(p);
-                }
                 sendMessageFromGameCallback(102);
                 
             }
@@ -756,20 +747,15 @@ namespace GameServer
             else if (win == 2)
             {
                 sendMessageFromGameCallback(101);
-                List<Player> players = new List<Player>();
+                List<Player> players = [];
                 foreach (Entity ent in Entities)
                 {
-                    if (ent is not Player player)
-                    {
-                        continue;
-                    }
+                    if (ent is not Player player) continue;
                     players.Add(player);
                 }
                 Entities.Clear();
                 foreach(Player p in players)
-                {
                     Entities.Add(p);
-                }
                 StartGame();
                 sendMessageFromGameCallback(102);
             }
@@ -778,19 +764,15 @@ namespace GameServer
                 EnemyTimer?.Stop();
                 RespawnTimer?.Stop();
                 TimeRemain?.Stop();
-                List<Player> players = new List<Player>();
+                List<Player> players = [];
                 foreach(Entity ent in Entities)
                 {
                     if (ent is Player p)
-                    {
                         players.Add(p);
-                    }
                 }
                 Entities.Clear();
                 foreach (Player p in players)
-                {
                     Entities.Add(p);
-                }
                 sendMessageFromGameCallback(101);
             }
             else

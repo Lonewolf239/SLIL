@@ -63,9 +63,23 @@ new Thread(() =>
 
 while(!exit)
 {
+    Console.Write("Enter the command: ");
     string? command = Console.ReadLine();
     switch (command)
     {
+        case "help":
+            Console.WriteLine(
+                             "┌──────────────────┬─────────────────────────────────────────────┐\n" +
+                             "│ Command          │ Description                                 │\n" +
+                             "├──────────────────┼─────────────────────────────────────────────┤\n" +
+                             "│ stop             │ Stopping the server                         │\n" +
+                             "│ stop_game        │ Stopping the game on the server             │\n" +
+                             "│ start_game       │ The start of a new game on the server       │\n" +
+                             "│ kick_{ID}        │ They kick the player with ID from server    │\n" +
+                             "│ set_difficulty_  │ Setting the difficulty on the server        │\n" +
+                             "│ set_game_mode_   │ Setting the game mode on the server         │\n" +
+                             "└──────────────────┴─────────────────────────────────────────────┘\n");
+            break;
         case "stop":
             server.Stop();
             exit = true;
