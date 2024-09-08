@@ -1,6 +1,6 @@
 ﻿using LiteNetLib.Utils;
 
-namespace SLIL.Classes
+namespace GameServer
 {
     public enum AmmoTypes { Magic, Bubbles, Bullet, Shell, Rifle, Rocket, C4 }
     public enum FireTypes { Single, SemiAutomatic }
@@ -147,7 +147,7 @@ namespace SLIL.Classes
         public void Deserialize(NetDataReader reader)
         {
             Levels level = (Levels)reader.GetInt();
-            if (level > this.Level)
+            if (level > this.Level && level<=Enum.GetValues(typeof(Levels)).Cast<Levels>().Max())
             {
                 while (this.Level != level)
                     this.LevelUpdate();

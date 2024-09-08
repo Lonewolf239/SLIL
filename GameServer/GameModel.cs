@@ -4,6 +4,11 @@ using System.Text;
 
 namespace GameServer
 {
+    enum GameMode
+    {
+        Classic,
+        Deathmatch
+    }
     internal class GameModel : INetSerializable
     {
         private StringBuilder MAP = new();
@@ -16,6 +21,7 @@ namespace GameServer
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
         private readonly Random rand;
+        private GameMode _gameMode;
         private int difficulty;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
@@ -47,13 +53,15 @@ namespace GameServer
 
         public void StartGame()
         {
-            if (inDebug == 0) difficulty = 3;
-            else difficulty = 5;
+            //if (inDebug == 0) difficulty = 3;
+            //else difficulty = 5;
             if (MAP.Length == 0) InitMap();
+            MAP.Replace('P', '.');
             GameStarted = true;
             RespawnTimer?.Start();
             EnemyTimer?.Start();
             TimeRemain?.Start();
+            sendMessageFromGameCallback(102);
         }
 
         public bool IsGameStarted() => GameStarted;
@@ -724,8 +732,57 @@ namespace GameServer
                 EnemyTimer?.Stop();
                 RespawnTimer?.Stop();
                 TimeRemain?.Stop();
+                List<int> playerIDs = new List<int>();
+                foreach(Entity ent in Entities)
+                {
+                    if(ent is Player p) playerIDs.Add(p.ID);
+                }
                 Entities.Clear();
-                MaxEntityID = 0;
+                foreach(int pID in playerIDs)
+                {
+                    Entities.Add(new Player(1.5, 1.5, MAP_WIDTH, pID));
+                }
+                sendMessageFromGameCallback(101);
+            }
+            else if (win == 2)
+            {
+                sendMessageFromGameCallback(101);
+                List<Player> players = new List<Player>();
+                foreach (Entity ent in Entities)
+                {
+                    if (ent is not Player player)
+                    {
+                        continue;
+                    }
+                    players.Add(player);
+                }
+                Entities.Clear();
+                foreach(Player p in players)
+                {
+                    Entities.Add(p);
+                }
+                StartGame();
+                sendMessageFromGameCallback(102);
+            }
+            else if (win == 3)
+            {
+                EnemyTimer?.Stop();
+                RespawnTimer?.Stop();
+                TimeRemain?.Stop();
+                List<Player> players = new List<Player>();
+                foreach(Entity ent in Entities)
+                {
+                    if (ent is Player p)
+                    {
+                        players.Add(p);
+                    }
+                }
+                Entities.Clear();
+                foreach (Player p in players)
+                {
+                    Entities.Add(p);
+                }
+                sendMessageFromGameCallback(101);
             }
             else
             {
@@ -772,6 +829,29 @@ namespace GameServer
         {
             double enemy_count = 0;
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
+            if (_gameMode == GameMode.Deathmatch)
+            {
+                MAP_HEIGHT = 22;
+                MAP_WIDTH = 22;
+                MAP.Clear();
+                MAP.AppendLine(bossMap);
+                foreach (Entity ent in Entities)
+                {
+                    if (ent is not Player player) continue;
+                    player.X = 10.5;
+                    player.Y = 19.5;
+                }
+                for (int x = 0; x < MAP_WIDTH; x++)
+                {
+                    for (int y = 0; y < MAP_HEIGHT; y++)
+                    {
+                        Entity? entity = GetEntityForInitMap(MAP[y * MAP_WIDTH + x], x, y);
+                        if (entity != null)
+                            Entities.Add(entity);
+                    }
+                }
+                return;
+            }
             if (difficulty == 0)
                 enemy_count = 0.07;
             else if (difficulty == 1)
@@ -815,13 +895,13 @@ namespace GameServer
                 else if (difficulty == 2)
                 {
                     enemy_count = 0.055;
-                    if (player.Stage == 0)
+                    if (player.Stage == 0 && player.Guns[1].Level==Levels.LV1)
                         player.Guns[1].LevelUpdate();
                 }
                 else if (difficulty == 3)
                 {
                     enemy_count = 0.045;
-                    if (player.Stage == 0)
+                    if (player.Stage == 0 && player.Guns[1].Level==Levels.LV1)
                         player.Guns[1].LevelUpdate();
                 }
                 else if (difficulty == 4)
@@ -1156,6 +1236,11 @@ namespace GameServer
                                 attackerPlayer.Guns[type].AmmoInStock = ammo;
                             }
                         }
+                        NetDataWriter writer = new();
+                        writer.Put(c.X);
+                        writer.Put(c.Y);
+                        writer.Put(c.DeathSound);
+                        sendMessageFromGameCallback(1001, writer.Data);
                         return true;
                     }
                 }
@@ -1166,9 +1251,31 @@ namespace GameServer
 
         private void TimeRemain_Tick(object? sender, EventArgs e)
         {
+            bool areAllThePlayersDead = true;
             for (int i = 0; i < Entities.Count; i++)
             {
                 if (Entities[i] is not Player player) continue;
+                if (!player.Dead) areAllThePlayersDead = false;
+                else
+                {
+                    if(_gameMode == GameMode.Deathmatch)
+                    {
+                        player.SetDefault();
+                        double X = 1.5, Y = 1.5;
+                        bool OK = false;
+                        while (!OK)
+                        {
+                            X = rand.Next(1, MAP_WIDTH - 1);
+                            Y = rand.Next(1, MAP_HEIGHT - 1);
+                            if (MAP[(int)Y * MAP_WIDTH + (int)X] == '.')
+                                OK = true;
+                        }
+                        player.X = X + 0.5; player.Y = Y + 0.5;
+                        NetDataWriter writer = new NetDataWriter();
+                        writer.Put(player.ID);
+                        sendMessageFromGameCallback(103, writer.Data);
+                    }
+                }
                 if (player.Invulnerable)
                     player.InvulnerableEnd();
                 player.UpdateEffectsTime();
@@ -1201,6 +1308,13 @@ namespace GameServer
                                 break;
                         }
                     }
+                }
+            }
+            if (_gameMode == GameMode.Classic)
+            {
+                if (areAllThePlayersDead)
+                {
+                    GameOver(0);
                 }
             }
         }
@@ -1356,16 +1470,32 @@ namespace GameServer
 
         internal void InteractingWithDoors(int coordinate)
         {
+            double X = coordinate % MAP_HEIGHT;
+            double Y = (coordinate - X) / MAP_WIDTH;
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put(X); 
+            writer.Put(Y);
             if (MAP[coordinate] == 'o')
             {
                 MAP[coordinate] = 'd';
-                sendMessageFromGameCallback(1);
+                sendMessageFromGameCallback(1, writer.Data);
             }
             else
             {
                 MAP[coordinate] = 'o';
-                sendMessageFromGameCallback(2);
+                sendMessageFromGameCallback(2, writer.Data);
             }
+        }
+
+        internal void ChangeDifficulty(int difficulty)
+        {
+            this.difficulty = difficulty;
+            if(GameStarted) StopGame(2);
+        }
+        internal void ChangeGameMode(GameMode gameMode)
+        {
+            _gameMode = gameMode;
+            if(GameStarted) StopGame(2);
         }
     }
 }

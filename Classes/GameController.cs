@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Play_Sound;
+using System.Linq.Expressions;
 
 namespace SLIL.Classes
 {
@@ -45,6 +46,7 @@ namespace SLIL.Classes
             CloseForm = closeForm;
             SetPlayerID = SetPlayerIDInvoker;
             Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
+            Game.IsMultiplayer = true;
             listener = new EventBasedNetListener();
             client = new NetManager(listener);
             processor = new NetPacketProcessor();
@@ -60,13 +62,13 @@ namespace SLIL.Classes
                     playerID = dataReader.GetInt();
                     Game.Deserialize(dataReader);
                     //initPlayer();
-                    Game.StartGame(false);
-                    startGame();
+                    //Game.StartGame(false);
+                    //startGame();
                 }
                 if (packetType == 1)
-                    PlaySoundHandle(SLIL.door[1]);
+                    PlaySoundHandle(SLIL.door[1], dataReader.GetDouble(), dataReader.GetDouble());
                 if (packetType == 2)
-                    PlaySoundHandle(SLIL.door[0]);
+                    PlaySoundHandle(SLIL.door[0], dataReader.GetDouble(), dataReader.GetDouble());
                 if (packetType == 0)
                 {
                     if (playerID != -1)
@@ -80,8 +82,18 @@ namespace SLIL.Classes
                 if (packetType == 102)
                 {
                     Game.Deserialize(dataReader);
+                    this._isInSpectatorMode = GetPlayer().Dead;
                     Game.StartGame(false);
                     startGame();
+                }
+                if (packetType == 103)
+                {
+                    Game.Deserialize(dataReader);
+                    this._isInSpectatorMode = GetPlayer().Dead;
+                }
+                if(packetType == 403)
+                {
+                    closeForm();
                 }
                 if (packetType == 666)
                 {
@@ -112,7 +124,14 @@ namespace SLIL.Classes
                         default:
                             break;
                     }
-                    PlaySoundHandle(sound);
+                    PlaySoundHandle(sound, GetPlayer().X, GetPlayer().Y);
+                }
+                if(packetType == 1001)
+                {
+                    double X = dataReader.GetDouble();
+                    double Y = dataReader.GetDouble();
+                    int deathSound = dataReader.GetInt();
+                    PlaySoundHandle(SLIL.DeathSounds[deathSound, GetPlayer().CuteMode ? 1 : 0], X, Y);
                 }
                 dataReader.Recycle();
             };
@@ -145,6 +164,7 @@ namespace SLIL.Classes
 
         internal void MovePlayer(double dX, double dY)
         {
+            if (_isInSpectatorMode) return;
             Game.MovePlayer(dX, dY, playerID);
             //if (peer != null)
             //{

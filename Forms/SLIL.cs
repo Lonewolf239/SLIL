@@ -15,13 +15,14 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
+using SharpDX;
 
 namespace SLIL
 {
     public delegate void StartGameDelegate();
     public delegate void StopGameDelegate(int win);
     public delegate void InitPlayerDelegate();
-    public delegate void PlaySoundDelegate(PlaySound sound);
+    public delegate void PlaySoundDelegate(PlaySound sound, double X, double Y);
     public delegate void CloseFormDelegate();
 
     public partial class SLIL : Form
@@ -346,8 +347,84 @@ namespace SLIL
             new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true),
             new PlaySound(MainMenu.CGFReader.GetFile("cmode_ost.wav"), true)
         };
-        public PlaySound[,] DeathSounds;
-        public PlaySound[,] CuteDeathSounds;
+        public static PlaySound[,] DeathSounds = new PlaySound[,]
+        {
+            //Zombie
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("zombie_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("zombie_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("zombie_die_2.wav"), false)
+            },
+            //Dog
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("dog_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("dog_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("dog_die_0.wav"), false)
+            },
+            //Abomination
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("abomination_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("abomination_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("abomination_die_0.wav"), false)
+            },
+            //Bat
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("bat_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("bat_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("bat_die_0.wav"), false)
+            },
+            //Box
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box_2.wav"), false)
+            },
+            //Player
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
+            }
+        };
+        public static PlaySound[,] CuteDeathSounds = new PlaySound[,]
+        {
+            //Zombie
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("c_zombie_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_zombie_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_zombie_die_0.wav"), false)
+            },
+            //Dog
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("c_dog_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_dog_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_dog_die_0.wav"), false)
+            },
+            //Abomination
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("c_abomination_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_abomination_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_abomination_die_0.wav"), false)
+            },
+            //Bat
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("c_bat_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_bat_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_bat_die_0.wav"), false)
+            },
+            //Box
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box_2.wav"), false)
+            },
+            //Player
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
+            }
+        };
         public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
@@ -568,15 +645,23 @@ namespace SLIL
             }
         }
 
-        public void PlaySoundInvoker(PlaySound sound)
+        public void PlaySoundInvoker(PlaySound sound, double X, double Y)
         {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
+            float distance = (float)Math.Sqrt((player.X-X)*(player.X-X)+(player.Y-Y)*(player.Y-Y));
+            float vol = Volume;
+            if (distance > 1)
+            {
+                vol /= distance;
+            }
             if (this.InvokeRequired && this.IsHandleCreated)
             {
                 this.BeginInvoke((MethodInvoker)delegate
                 {
                     if (MainMenu.sounds)
                     {
-                        sound.Play(Volume);
+                        sound.Play(vol);
                     }
                 });
             }
@@ -584,7 +669,7 @@ namespace SLIL
             {
                 if (MainMenu.sounds)
                 {
-                    sound.Play(Volume);
+                    sound.Play(vol);
                 }
             }
         }
@@ -706,21 +791,28 @@ namespace SLIL
 
         private void Raycast_Tick(object sender, EventArgs e)
         {
-            DateTime time = DateTime.Now;
-            elapsed_time = (time - total_time).TotalSeconds;
-            total_time = time;
-            PlayerMove();
-            ClearDisplayedMap();
-            double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
-            double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
-            Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
-            DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<int> enemiesCoords);
-            foreach (int i in enemiesCoords) DISPLAYED_MAP[i] = 'E';
-            DrawRaysOnScreen(rays);
-            if (!Controller.IsInSpectatorMode())
-                DrawGameInterface();
-            UpdateDisplay();
-            fps = CalculateFPS(elapsed_time);
+            try
+            {
+                DateTime time = DateTime.Now;
+                elapsed_time = (time - total_time).TotalSeconds;
+                total_time = time;
+                PlayerMove();
+                ClearDisplayedMap();
+                double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
+                double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
+                Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
+                DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<int> enemiesCoords);
+                foreach (int i in enemiesCoords)
+                {
+                    DISPLAYED_MAP[i] = 'E';
+                }
+                DrawRaysOnScreen(rays);
+                if (!Controller.IsInSpectatorMode())
+                    DrawGameInterface();
+                UpdateDisplay();
+                fps = CalculateFPS(elapsed_time);
+            }
+            catch { }
         }
 
         private void Step_sound_timer_Tick(object sender, EventArgs e)
@@ -1477,7 +1569,7 @@ namespace SLIL
         private void Display_MouseDown(object sender, MouseEventArgs e)
         {
             Player player = Controller.GetPlayer();
-            if (GameStarted && !InSelectingMode && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled)
+            if (GameStarted && !InSelectingMode && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled && !Controller.IsInSpectatorMode())
             {
                 if (e.Button == MouseButtons.Left)
                 {
@@ -1616,14 +1708,20 @@ namespace SLIL
             planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
             planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
             int mapX = (int)(player.X);
-            int mapY = (int)(player.Y);
-            Parallel.For(0, SCREEN_WIDTH[resolution], x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, mapX, mapY));
+            int mapY = (int)(player.Y);         
+            if (player == null)
+            {
+                return rays;
+            }
+            StringBuilder MAP = Controller.GetMap();
+            int MAP_WIDTH = Controller.GetMapWidth();
+            int MAP_HEIGHT = Controller.GetMapHeight();
+            Parallel.For(0, SCREEN_WIDTH[resolution], x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, mapX, mapY, ref player, ref MAP, MAP_WIDTH, MAP_HEIGHT));
             return rays;
         }
 
-        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int mapX, int mapY)
+        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int mapX, int mapY, ref Player player, ref StringBuilder MAP, int MAP_WIDTH, int MAP_HEIGHT)
         {
-            Player player = Controller.GetPlayer();
             Pixel[] result = new Pixel[SCREEN_HEIGHT[resolution]];
             double cameraX = 2 * x / (double)SCREEN_WIDTH[resolution] - 1;
             double rayDirX = dirX + planeX * cameraX;
@@ -1694,7 +1792,7 @@ namespace SLIL
                     distance = player.GetDrawDistance();
                     continue;
                 }
-                char test_wall = Controller.GetMap()[mapY * Controller.GetMapWidth() + mapX];
+                char test_wall = MAP[mapY * MAP_WIDTH + mapX];
                 switch (test_wall)
                 {
                     case 'W':
@@ -1702,35 +1800,35 @@ namespace SLIL
                         break;
                     case '#':
                         hit_wall = true;
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '#';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '#';
                         break;
                     case '=':
                         hit_window = true;
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '=';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '=';
                         break;
                     case 'B':
                     case 'b':
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'b';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'b';
                         break;
                     case 'd':
                         hit_door = true;
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'D';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'D';
                         break;
                     case 'D':
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'D';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'D';
                         break;
                     case '$':
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '$';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '$';
                         break;
                     case 'F':
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'F';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'F';
                         break;
                     case 'E':
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'E';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'E';
                         break;
                     case '.':
                     case '*':
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = '*';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '*';
                         break;
                 }
             }
@@ -1938,7 +2036,13 @@ namespace SLIL
                                                 rays[stripe][y].TextureId = creature.Animations[0][timeNow % creature.Frames];
                                         }
                                         if (creature is Enemy)
-                                            enemiesCoords.Add(Entities[spriteInfo[i].Order].IntY * mapWidth + Entities[spriteInfo[i].Order].IntX);
+                                        {
+                                            int coords = (int)Entities[spriteInfo[i].Order].Y * mapWidth + (int)Entities[spriteInfo[i].Order].X;
+                                            if (!enemiesCoords.Contains(coords))
+                                            {
+                                                enemiesCoords.Add(coords);
+                                            }
+                                        }
                                     }
                                     else
                                     {
@@ -2475,6 +2579,7 @@ namespace SLIL
         {
             scope_hit = null;
             Player player = Controller.GetPlayer();
+            if (player == null) return;
             List<Entity> Entities = Controller.GetEntities();
             if (player.GetCurrentGun() is RPG) Controller.SpawnRockets(player.X, player.Y, 0, player.A);
             else
