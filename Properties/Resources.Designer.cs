@@ -2593,6 +2593,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap sing {
+            get {
+                object obj = ResourceManager.GetObject("sing", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap singleplayer {
             get {
                 object obj = ResourceManager.GetObject("singleplayer", resourceCulture);
@@ -3166,6 +3176,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap wall {
             get {
                 object obj = ResourceManager.GetObject("wall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap wall_with_sing {
+            get {
+                object obj = ResourceManager.GetObject("wall_with_sing", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

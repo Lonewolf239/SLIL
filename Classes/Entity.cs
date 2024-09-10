@@ -258,7 +258,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=', 'W' };
+            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         }
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
@@ -293,7 +293,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.1;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=' };
+            return new char[] { '#', 'D', 'd', '=', 'S' };
         }
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
@@ -441,7 +441,7 @@ namespace SLIL.Classes
 
     public abstract class Rockets : NPC
     {
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd' };
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S' };
 
         public Rockets(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => CanHit = false;
         public Rockets(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => CanHit = false;
@@ -517,7 +517,7 @@ namespace SLIL.Classes
 
     public class RpgRocket : Rockets
     {
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=' };
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'S' };
         protected override int GetEntityID() => 16;
         protected override double GetEntityWidth() => 0.4;
         public override double GetMove() => 0.6;
@@ -635,7 +635,7 @@ namespace SLIL.Classes
         protected override int GetEntityID() => 8;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd' };
+            return new char[] { '#', 'D', 'd', 'S' };
         }
 
         public Pyro(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
@@ -769,7 +769,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=', 'W' };
+            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         }
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 10;
@@ -866,7 +866,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=', 'W' };
+            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         }
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 5;
@@ -964,7 +964,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', '=', 'W' };
+            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         }
         protected override int GetMovesInARow() => 40;
         protected override int GetMAX_HP() => 20;
@@ -1061,7 +1061,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells()
         {
-            return new char[] { '#', 'D', 'd', 'W' };
+            return new char[] { '#', 'D', 'd', 'W', 'S' };
         }
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 2;

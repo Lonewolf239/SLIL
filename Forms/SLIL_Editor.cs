@@ -62,7 +62,7 @@ namespace SLIL
             return c == '.' || c == '#' || c == '=' ||
                 c == 'D' || c == 'd' || c == 'b' ||
                 c == 'B' || c == 'F' || c == 'P' ||
-                c == 'E' || c == '$' || c == 'W';
+                c == 'E' || c == '$' || c == 'S';
         }
 
         private string GetElementsName(int index)
@@ -291,7 +291,7 @@ namespace SLIL
                             color = Color.Blue;
                         else if (c == 'D')
                             color = Color.DarkOrange;
-                        else if (c == 'W')
+                        else if (c == 'S')
                             color = Color.Purple;
                         else if (c == 'd')
                             color = Color.Orange;
@@ -366,7 +366,7 @@ namespace SLIL
                     else if (panels[i, j].BackColor == Color.Pink)
                         MAP.Append("$");
                     else if (panels[i, j].BackColor == Color.Purple)
-                        MAP.Append("W");
+                        MAP.Append("S");
                     else if (panels[i, j].BackColor == Color.Brown)
                         MAP.Append("b");
                     else if (panels[i, j].BackColor == Color.RosyBrown)

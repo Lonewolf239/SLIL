@@ -1210,5 +1210,11 @@
   <ItemGroup>
     <None Include="Images\player_DEAD.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\sing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\wall_with_sing.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

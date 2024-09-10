@@ -27,7 +27,7 @@ namespace SLIL
     public partial class SLIL : Form
     {
         private readonly GameController Controller;
-        private bool InSelectingMode = false, BlockCamera = true, CanUnblockCamera = true;
+        private bool InSelectingMode = false, BlockInput = false, BlockCamera = true, CanUnblockCamera = true;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
         public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
@@ -66,7 +66,7 @@ namespace SLIL
             { new Font("Consolas", 10F), new Font("Consolas", 18F), new Font("Consolas", 22F) },
             { new Font("Consolas", 12F), new Font("Consolas", 20F), new Font("Consolas", 22F) },
         };
-        private readonly SolidBrush whiteBrush = new SolidBrush(Color.White);
+        private readonly SolidBrush whiteBrush = new SolidBrush(Color.White), blackBrush = new SolidBrush(Color.Black);
         private readonly StringFormat rightToLeft = new StringFormat() { FormatFlags = StringFormatFlags.DirectionRightToLeft };
         private Graphics graphicsWeapon;
         private int fps;
@@ -469,11 +469,13 @@ namespace SLIL
         };
         public static int scope_color = 0, scope_type = 0;
         public static bool ShowMap = false;
+        private bool ShowSing = false;
+        private int SingID;
         private bool open_shop = false, pressed_r = false, cancelReload = false, pressed_h = false;
         private Display display;
         private Bitmap map;
         private ConsolePanel console_panel;
-        private readonly char[] impassibleCells  = { '#', 'D', '=', 'd' };
+        private readonly char[] impassibleCells  = { '#', 'D', '=', 'd', 'S' };
         private const double playerWidth = 0.4;
         private bool GameStarted = false, CorrectExit = false;
         private readonly Image[] ConnectionIcons =
@@ -1255,10 +1257,12 @@ namespace SLIL
                     Cursor.Position = new Point(x, y);
                 }
                 else if (!GameStarted) Close();
+                else if (ShowSing)
+                    ShowSing = BlockInput = BlockCamera = false;
                 else Pause();
                 return;
             }
-            if (GameStarted && !Paused)
+            if (GameStarted && !Paused && !BlockInput)
             {
                 if (!console_panel.Visible && !open_shop)
                 {
@@ -1406,7 +1410,7 @@ namespace SLIL
                         }
                     }
                 }
-                if (Controller.IsMultiplayer() && e.KeyCode == Keys.Oemtilde && !open_shop && MainMenu.ConsoleEnabled)
+                if (!Controller.IsMultiplayer() && e.KeyCode == Keys.Oemtilde && !open_shop && MainMenu.ConsoleEnabled)
                 {
                     console_panel.Visible = !console_panel.Visible;
                     ShowMap = false;
@@ -1439,29 +1443,31 @@ namespace SLIL
         {
             if (e.KeyCode == Bind.Run)
             {
+                RunKeyPressed = false;
                 playerMoveStyle = Direction.WALK;
                 chill_timer.Start();
             }
-            if (e.KeyCode == Bind.Run) RunKeyPressed = false;
             if (e.KeyCode == Bind.Forward || e.KeyCode == Bind.Back)
                 playerDirection = Direction.STOP;
             if (e.KeyCode == Bind.Left || e.KeyCode == Bind.Right)
                 strafeDirection = Direction.STOP;
-            if (GameStarted && !Paused && !console_panel.Visible && !open_shop)
+            if (GameStarted && !Paused && !BlockInput && !console_panel.Visible && !open_shop)
             {
                 if (e.KeyCode == Bind.Screenshot)
                     DoScreenshot();
                 if (e.KeyCode == Bind.Show_map_0 || e.KeyCode == Bind.Show_map_1)
                 {
-                    ShowMap = !ShowMap;
-                    Activate();
+                    if (!ShowSing)
+                    {
+                        ShowMap = !ShowMap;
+                        Activate();
+                    }
                 }
                 Player player = Controller.GetPlayer();
                 if (player == null) return;
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
                 {
-                    if (e.KeyCode == Bind.Flashlight)
-                        TakeFlashlight(true);
+                    if (e.KeyCode == Bind.Flashlight) TakeFlashlight(true);
                     if (e.KeyCode == Bind.SelectItem)
                     {
                         BlockCamera = CanUnblockCamera = true;
@@ -1503,14 +1509,14 @@ namespace SLIL
                                     if (distance < playerWidth || ((int)player.X == x && (int)player.Y == y)) break;
                                     Controller.InteractingWithDoors(y * Controller.GetMapWidth() + x);
                                     break;
+                                case 'S':
+                                    hit = true;
+                                    SingID = y * Controller.GetMapWidth() + x;
+                                    ShowSing = BlockInput = BlockCamera = true;
+                                    break;
                             }
                         }
                         if (hit) return;
-                        DateTime time = DateTime.Now;
-                        elapsed_time = (time - total_time).TotalSeconds;
-                        total_time = time;
-                        PlayerMove();
-                        ClearDisplayedMap();
                         double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
                         double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
                         Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
@@ -1662,7 +1668,7 @@ namespace SLIL
         private void Display_Scroll(object sender, MouseEventArgs e)
         {
             Player player = Controller.GetPlayer();
-            if (GameStarted && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
+            if (GameStarted && !Paused && !BlockInput && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
             {
                 int new_gun = player.CurrentGun;
                 if (e.Delta > 0)
@@ -1681,7 +1687,7 @@ namespace SLIL
         private void Display_MouseDown(object sender, MouseEventArgs e)
         {
             Player player = Controller.GetPlayer();
-            if (GameStarted && !InSelectingMode && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled && !Controller.IsInSpectatorMode())
+            if (GameStarted && !Paused && !BlockInput && !InSelectingMode && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled && !Controller.IsInSpectatorMode())
             {
                 if (e.Button == MouseButtons.Left)
                 {
@@ -1704,6 +1710,8 @@ namespace SLIL
                     }
                 }
             }
+            if (ShowSing && e.Button == MouseButtons.Left)
+                ShowSing = BlockInput = BlockCamera = false;
         }
 
         private void Display_MouseUp(object sender, MouseEventArgs e)
@@ -1867,13 +1875,13 @@ namespace SLIL
             }
             double distance = 0;
             double window_distance = 0;
-            bool hit_wall = false;
+            int hit_wall = -1;
             bool hit_window = false;
             bool hit_door = false;
             bool is_bound = false;
             bool is_window_bound = false;
             int windowSide = 0;
-            while (raycast.Enabled && !hit_wall && !hit_door)
+            while (raycast.Enabled && hit_wall == -1 && !hit_door)
             {
                 if (sideDistX < sideDistY)
                 {
@@ -1900,7 +1908,7 @@ namespace SLIL
                 }
                 if (mapX < 0 || mapX >= (player.GetDrawDistance()) + player.X || mapY < 0 || mapY >= (player.GetDrawDistance()) + player.Y || distance >= player.GetDrawDistance())
                 {
-                    hit_wall = true;
+                    hit_wall = 0;
                     distance = player.GetDrawDistance();
                     continue;
                 }
@@ -1911,12 +1919,16 @@ namespace SLIL
                         DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'W';
                         break;
                     case '#':
-                        hit_wall = true;
+                        hit_wall = 0;
                         DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '#';
                         break;
                     case '=':
                         hit_window = true;
                         DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '=';
+                        break;
+                    case 'S':
+                        hit_wall = 1;
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'S';
                         break;
                     case 'B':
                     case 'b':
@@ -1993,6 +2005,8 @@ namespace SLIL
                 else if ((y < mid || !hit_window) && y > ceiling && y < floor)
                 {
                     textureId = 2;
+                    if (hit_wall == 1)
+                        textureId = 52;
                     if (hit_door)
                         textureId = 3;
                     if (is_bound)
@@ -2043,7 +2057,7 @@ namespace SLIL
                                 result[y].TextureId = 0;
                         }
                     }
-                    else if (hit_door || hit_wall)
+                    else if (hit_door || hit_wall != -1)
                     {
                         if (!get_texture)
                         {
@@ -2278,6 +2292,13 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
+            if (ShowSing)
+            {
+                graphicsWeapon.Clear(Color.Black);
+                graphicsWeapon.DrawImage(Properties.Resources.sing, 0, 0, SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
+                DrawTextOnSing(GetTextOnSing());
+                return;
+            }
             if (ShowMap)
             {
                 SmoothingMode save1 = graphicsWeapon.SmoothingMode;
@@ -2442,6 +2463,26 @@ namespace SLIL
             }
         }
 
+        private void DrawTextOnSing(string text)
+        {
+            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[3, resolution], SCREEN_WIDTH[resolution] - 40);
+            RectangleF rectangle = new RectangleF(20, 10, textSize.Width, textSize.Height);
+            graphicsWeapon.DrawString(text, consolasFont[3, resolution], blackBrush, rectangle);
+        }
+
+        private string GetTextOnSing()
+        {
+            switch (SingID)
+            {
+                case 253:
+                    return "About the game:\n" +
+                        "In SLIL your task is to go through randomly generated labyrinths, find a teleport and enter it.\n" +
+                    "During the passage, you will encounter enemies that you need to destroy with weapons or run away from them.\n";
+                default: return SingID.ToString();
+            }
+            return "Error getting text";
+        }
+
         private Bitmap DrawMiniMap()
         {
             Player player = Controller.GetPlayer();
@@ -2497,6 +2538,7 @@ namespace SLIL
         {
             switch (mapChar)
             {
+                case 'S': return Color.DimGray;
                 case 'W': return Color.White;
                 case '#': return Color.Blue;
                 case '=': return Color.YellowGreen;
