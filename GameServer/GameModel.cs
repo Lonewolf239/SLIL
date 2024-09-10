@@ -788,7 +788,7 @@ namespace GameServer
 
         private static void GetFirstAidKit(Player player) => player.DisposableItems[0].AddItem();
 
-        public void MovePlayer(double dX, double dY, int playerID)
+        public void MovePlayer(double dX, double dY, double newA, double newLook, int playerID)
         {
             if (!GameStarted) return;
             for (int i = 0; i < Entities.Count; i++)
@@ -799,6 +799,8 @@ namespace GameServer
                     {
                         Entities[i].X = dX;
                         Entities[i].Y = dY;
+                        (Entities[i] as Player).A = newA;
+                        (Entities[i] as Player).Look = newLook;
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
                         {
                             GameOver(1);
@@ -1210,6 +1212,10 @@ namespace GameServer
                         multiplier = 1.5;
                     attackerPlayer.ChangeMoney(rand.Next((int)(50 * multiplier), (int)(100 * multiplier)));
                     attackerPlayer.EnemiesKilled++;
+                    Entities.Add(new PlayerDeadBody(p.X, p.Y, MAP_WIDTH, ref MaxEntityID));
+                    NetDataWriter writer = new();
+                    writer.Put(p.ID);
+                    sendMessageFromGameCallback(103, writer.Data);
                     return true;
                 }
                 return false;
@@ -1497,6 +1503,24 @@ namespace GameServer
         internal void ChangeDifficulty(int difficulty)
         {
             this.difficulty = difficulty;
+            switch (difficulty)
+            {
+                case 0:
+                    EnemyDamageOffset = 1.75;
+                    break;
+                case 1:
+                    EnemyDamageOffset = 1.25;
+                    break;
+                case 2:
+                    EnemyDamageOffset = 1;
+                    break;
+                case 3:
+                    EnemyDamageOffset = 0.75;
+                    break;
+                default:
+                    EnemyDamageOffset = 1;
+                    break;
+            }
             if(GameStarted) StopGame(2);
         }
         internal void ChangeGameMode(GameMode gameMode)

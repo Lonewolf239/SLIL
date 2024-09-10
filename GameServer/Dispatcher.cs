@@ -33,9 +33,11 @@ namespace GameServer
                 case 1:
                     double newX = dreader.GetDouble();
                     double newY = dreader.GetDouble();
+                    double newPlayerA = dreader.GetDouble();
+                    double newPlayerLook = dreader.GetDouble();
                     int playerID = dreader.GetInt();
                     //Console.WriteLine("Player ID = " + playerID.ToString() + "; X = " + newX.ToString() + "; Y = " + newY.ToString());
-                    Game.MovePlayer(newX, newY, playerIDfromPeer);
+                    Game.MovePlayer(newX, newY, newPlayerA, newPlayerLook, playerIDfromPeer);
                     //Console.WriteLine(Game.GetEntities().ToString());
                     //SendOutcomingMessage(0, ref server);
                     break;
