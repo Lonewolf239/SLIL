@@ -1500,6 +1500,7 @@ namespace SLIL
             }
             else
             {
+                return;
                 multiplayer_panel.Visible = true;
                 multiplayer_panel.BringToFront();
             }
@@ -1660,6 +1661,7 @@ namespace SLIL
         private void Show_hilf_mir_CheckedChanged(object sender, EventArgs e)
         {
             lose_focus.Focus();
+            show_tutorial.Checked = show_hilf_mir.Checked;
             INIReader.SetKey(iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
         }
 

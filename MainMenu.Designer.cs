@@ -1571,7 +1571,7 @@
             this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 151);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
