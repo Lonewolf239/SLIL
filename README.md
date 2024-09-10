@@ -9,7 +9,6 @@ Dive into a world of retro pixelated nightmares with SLIL, a first-person shoote
 
 ### Version Details
 - Game Version: v1.2.2.1
-- Compatible with: Win64 and Win32 operating systems
 
 ### Game Objective
 In SLIL your task is to go through randomly generated labyrinths, find a portal and enter it.
