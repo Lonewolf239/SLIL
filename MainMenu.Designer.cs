@@ -3040,9 +3040,7 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1924, 896);
-            this.Controls.Add(this.change_logs_panel);
             this.Controls.Add(this.hilf_mir_panel);
-            this.Controls.Add(this.account_panel);
             this.Controls.Add(this.account_btn_c);
             this.Controls.Add(this.game_mode_panel);
             this.Controls.Add(this.developers_panel);
@@ -3057,6 +3055,8 @@
             this.Controls.Add(this.version_label);
             this.Controls.Add(this.settings_panel);
             this.Controls.Add(this.lose_focus);
+            this.Controls.Add(this.change_logs_panel);
+            this.Controls.Add(this.account_panel);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

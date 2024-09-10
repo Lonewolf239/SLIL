@@ -15,7 +15,7 @@ namespace GameServer
     {
         private StringBuilder MAP = new();
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##..WWWW...........##..W..W..B..b..#..##..WE.W...........##..W..W...........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
+            debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
         private int inDebug = 0;
         private readonly Pet[] PETS;
         public List<Entity> Entities = [];
@@ -651,6 +651,26 @@ namespace GameServer
                     SpawnEnemis(x, y, MAP_WIDTH);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
+                case 'e':
+                    SpawnEnemis(x, y, MAP_WIDTH, false);
+                    MAP[y * MAP_WIDTH + x] = '.';
+                    break;
+                case '1':
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 0);
+                    MAP[y * MAP_WIDTH + x] = '.';
+                    break;
+                case '2':
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 1);
+                    MAP[y * MAP_WIDTH + x] = '.';
+                    break;
+                case '3':
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 2);
+                    MAP[y * MAP_WIDTH + x] = '.';
+                    break;
+                case '4':
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 3);
+                    MAP[y * MAP_WIDTH + x] = '.';
+                    break;
             }
             return entity;
         }
@@ -1159,31 +1179,66 @@ namespace GameServer
             }
         }
 
-        private void SpawnEnemis(int x, int y, int size)
+        private void SpawnEnemis(int x, int y, int size, bool ai = true, int type = -1)
         {
-            double dice = rand.NextDouble();
-            if (dice <= 0.4) // 40%
+            if (type == -1)
+            {
+                double dice = rand.NextDouble();
+                if (dice <= 0.4) // 40%
+                {
+                    Man enemy = new(x, y, size, ref MaxEntityID);
+                    enemy.SetDamage(EnemyDamageOffset);
+                    enemy.HasAI = ai;
+                    Entities.Add(enemy);
+                }
+                else if (dice > 0.4 && dice <= 0.65) // 25%
+                {
+                    Dog enemy = new(x, y, size, ref MaxEntityID);
+                    enemy.SetDamage(EnemyDamageOffset);
+                    enemy.HasAI = ai;
+                    Entities.Add(enemy);
+                }
+                else if (dice > 0.65 && dice <= 0.85) // 20%
+                {
+                    Bat enemy = new(x, y, size, ref MaxEntityID);
+                    enemy.SetDamage(EnemyDamageOffset);
+                    enemy.HasAI = ai;
+                    Entities.Add(enemy);
+                }
+                else // 15%
+                {
+                    Abomination enemy = new(x, y, size, ref MaxEntityID);
+                    enemy.SetDamage(EnemyDamageOffset);
+                    enemy.HasAI = ai;
+                    Entities.Add(enemy);
+                }
+            }
+            else if (type == 0)
             {
                 Man enemy = new(x, y, size, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
+                enemy.HasAI = ai;
                 Entities.Add(enemy);
             }
-            else if (dice > 0.4 && dice <= 0.65) // 25%
+            else if (type == 1)
             {
                 Dog enemy = new(x, y, size, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
+                enemy.HasAI = ai;
                 Entities.Add(enemy);
             }
-            else if (dice > 0.65 && dice <= 0.85) // 20%
-            {
-                Bat enemy = new(x, y, size, ref MaxEntityID);
-                enemy.SetDamage(EnemyDamageOffset);
-                Entities.Add(enemy);
-            }
-            else // 15%
+            else if (type == 2)
             {
                 Abomination enemy = new(x, y, size, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
+                enemy.HasAI = ai;
+                Entities.Add(enemy);
+            }
+            else if (type == 3)
+            {
+                Bat enemy = new(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
+                enemy.HasAI = ai;
                 Entities.Add(enemy);
             }
         }
@@ -1536,6 +1591,7 @@ namespace GameServer
             }
             if(GameStarted) StopGame(2);
         }
+
         internal void ChangeGameMode(GameMode gameMode)
         {
             _gameMode = gameMode;

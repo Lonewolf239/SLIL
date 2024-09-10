@@ -429,7 +429,7 @@ namespace SLIL
         public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##..WWWW...........##..W..W..B..b..#..##..WE.W...........##..W..W...........##..W..W........d..##..W.EW...........##..WWWW...........##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
+            debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
         public static float Volume = 0.4f;
         private int burst_shots = 0, reload_frames = 0;
         public static int ost_index = 0;
@@ -1406,7 +1406,7 @@ namespace SLIL
                         }
                     }
                 }
-                if (!Controller.IsMultiplayer() && e.KeyCode == Keys.Oemtilde && !open_shop && MainMenu.ConsoleEnabled)
+                if (Controller.IsMultiplayer() && e.KeyCode == Keys.Oemtilde && !open_shop && MainMenu.ConsoleEnabled)
                 {
                     console_panel.Visible = !console_panel.Visible;
                     ShowMap = false;
@@ -2280,8 +2280,11 @@ namespace SLIL
             if (player == null) return;
             if (ShowMap)
             {
+                SmoothingMode save1 = graphicsWeapon.SmoothingMode;
+                graphicsWeapon.SmoothingMode = SmoothingMode.None;
                 graphicsWeapon.Clear(Color.Black);
                 graphicsWeapon.DrawImage(DrawMap(), 0, 0, SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
+                graphicsWeapon.SmoothingMode = save1;
                 return;
             }
             int item_count = 0;
@@ -2392,7 +2395,6 @@ namespace SLIL
             if (scope_hit != null)
                 graphicsWeapon.DrawImage(scope_hit, 0, 0, WEAPON.Width, WEAPON.Height);
             DisplayStamine(player, icon_size, size);
-            graphicsWeapon.SmoothingMode = save;
             int money_y = 2;
             if (ShowMiniMap)
             {
@@ -2401,6 +2403,7 @@ namespace SLIL
                 graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH[resolution] - mini_map.Width - 1, size);
                 mini_map.Dispose();
             }
+            graphicsWeapon.SmoothingMode = save;
             graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH[resolution], money_y, rightToLeft);
             graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH[resolution] - moneySize.Width - icon_size, money_y, icon_size, icon_size);
             if (stage_timer.Enabled)
@@ -2778,6 +2781,7 @@ namespace SLIL
                         if (Controller.GetPlayer().ID == (Entities[spriteOrder[i]] as Player).ID) continue;
                     }
                     Entity entity = Entities[spriteOrder[i]];
+                    if (!entity.HasAI) continue;
                     Creature creature = null;
                     if (entity is Creature)
                     {
