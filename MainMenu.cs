@@ -13,6 +13,7 @@ using SLIL.Classes;
 using Play_Sound;
 using SLIL.SLIL_Localization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SLIL
 {
@@ -37,6 +38,13 @@ namespace SLIL
         private readonly PlaySound MainMenuTheme;
         private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
         public static Player player;
+        private readonly Dictionary<string, Color> colorMap = new Dictionary<string, Color>
+        {
+            { ">", Color.Yellow },
+            { "*", Color.Tomato },
+            { "~", Color.Cyan },
+            { "<", Color.White }
+        };
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
             { "screenshot", Keys.F12 },
@@ -124,92 +132,7 @@ namespace SLIL
             AddSeparators();
         }
 
-        private void AddSeparators()
-        {
-            all_settings.Controls.Clear();
-            all_settings.Controls.Add(check_update_panel);
-            all_settings.Controls.Add(new Separator());
-            all_settings.Controls.Add(localization_panel);
-            all_settings.Controls.Add(new Separator());
-            all_settings.Controls.Add(language_panel);
-            all_settings.Controls.Add(new Separator());
-            all_settings.Controls.Add(volume_panel);
-            all_settings.Controls.Add(new Separator());
-            all_settings.Controls.Add(sound_panel);
-            all_settings.Controls.Add(new Separator());
-            all_settings.Controls.Add(console_panel);
-            video_settings.Controls.Clear();
-            video_settings.Controls.Add(interface_size_panel);
-            video_settings.Controls.Add(new Separator());
-            video_settings.Controls.Add(scope_color_panel);
-            video_settings.Controls.Add(new Separator());
-            video_settings.Controls.Add(scope_panel);
-            video_settings.Controls.Add(new Separator());
-            video_settings.Controls.Add(show_minimap_panel);
-            video_settings.Controls.Add(new Separator());
-            video_settings.Controls.Add(fps_panel);
-            video_settings.Controls.Add(new Separator());
-            video_settings.Controls.Add(show_fps_panel);
-            video_settings.Controls.Add(new Separator());
-            video_settings.Controls.Add(smoothing_panel);
-            video_settings.Controls.Add(new Separator());
-            //video_settings.Controls.Add(display_size_panel);
-            //video_settings.Controls.Add(new Separator());
-            video_settings.Controls.Add(high_resolution_panel);
-            mouse_settings.Controls.Clear();
-            mouse_settings.Controls.Add(invert_x_panel);
-            mouse_settings.Controls.Add(new Separator());
-            mouse_settings.Controls.Add(invert_y_panel);
-            mouse_settings.Controls.Add(new Separator());
-            mouse_settings.Controls.Add(sensitivity_panel);
-            keyboard_settings.Controls.Clear();
-            keyboard_settings.Controls.Add(run_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(select_item_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(medkit_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(flashlight_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(show_map_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(interaction_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(right_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(left_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(back_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(forward_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(reloading_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(aim_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(fire_panel);
-            keyboard_settings.Controls.Add(new Separator());
-            keyboard_settings.Controls.Add(screenshot_panel);
-        }
-
-        private void DownloadFile(string url, string outputPath)
-        {
-            using (WebClient client = new WebClient())
-            {
-                try
-                {
-                    client.DownloadFile(new Uri(url), outputPath);
-                }
-                catch { }
-            }
-        }
-
-        private void Bug_report_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            help_panel.Visible = true;
-            help_panel.BringToFront();
-        }
+        //  #====  Developers Links  ====#
 
         private void Web_site_lonewolf_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://base-escape.ru") { UseShellExecute = true });
 
@@ -225,69 +148,7 @@ namespace SLIL
 
         private void Fazzy_telegram_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://t.me/Theripperofrice") { UseShellExecute = true });
 
-        private void Close_developers_Click(object sender, EventArgs e) => developers_panel.Visible = false;
-
-        private void MainMenu_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (!CanClose)
-            {
-                e.Cancel = true;
-                exit_panel.Visible = true;
-                exit_panel.BringToFront();
-                return;
-            }
-            SaveSettings();
-        }
-
-        private void Close_settings_Click(object sender, EventArgs e)
-        {
-            SaveSettings();
-            settings_panel.Visible = false;
-        }
-
-        private void Exit_btn_Click(object sender, EventArgs e)
-        {
-            exit_panel.Visible = true;
-            exit_panel.BringToFront();
-        }
-
-        private void Exit_no_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            exit_panel.Visible = false;
-        }
-
-        private void Exit_yes_btn_Click(object sender, EventArgs e)
-        {
-            CanClose = true;
-            Application.Exit();
-        }
-
-        private string GetLanguageName()
-        {
-            CultureInfo ci = CultureInfo.InstalledUICulture;
-            string languageCode = ci.Name.ToLower();
-            if (SupportedLanguages.ContainsKey(languageCode))
-                return SupportedLanguages[languageCode];
-            string shortCode = languageCode.Substring(0, 2);
-            if (SupportedLanguages.ContainsKey(shortCode))
-                return SupportedLanguages[shortCode];
-            return "English";
-        }
-
-        private string GetLanguageCode()
-        {
-            CultureInfo ci = CultureInfo.InstalledUICulture;
-            string language = null;
-            string languageCode = ci.Name.ToLower();
-            if (SupportedLanguages.ContainsKey(languageCode))
-                language = SupportedLanguages[languageCode];
-            string shortCode = languageCode.Substring(0, 2);
-            if (SupportedLanguages.ContainsKey(shortCode))
-                language = SupportedLanguages[shortCode];
-            if (language == null) return "en";
-            return language.Remove(1).ToLower();
-        }
+        //  #====      Updating      ====#
 
         private void Check_Update()
         {
@@ -389,16 +250,88 @@ namespace SLIL
             }
         }
 
-        public void SetLocalization()
+        private void DownloadFile(string url, string outputPath)
         {
-            DownloadedLocalizationList = downloadedLocalizationList;
-            SupportedLanguages = supportedLanguages;
-            if (DownloadedLocalizationList)
+            using (WebClient client = new WebClient())
             {
-                language_list.Items.Clear();
-                language_list.Items.AddRange(SupportedLanguages.Values.Distinct().ToArray());
+                try
+                {
+                    client.DownloadFile(new Uri(url), outputPath);
+                }
+                catch { }
             }
-            Localizations = localizations;
+        }
+
+        //  #====    Form methods    ====#
+
+        private void AddSeparators()
+        {
+            all_settings.Controls.Clear();
+            all_settings.Controls.Add(check_update_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(localization_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(language_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(volume_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(sound_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(console_panel);
+            all_settings.Controls.Add(new Separator());
+            all_settings.Controls.Add(show_tutorial_panel);
+            video_settings.Controls.Clear();
+            video_settings.Controls.Add(interface_size_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(scope_color_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(scope_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(show_minimap_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(fps_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(show_fps_panel);
+            video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(smoothing_panel);
+            video_settings.Controls.Add(new Separator());
+            //video_settings.Controls.Add(display_size_panel);
+            //video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(high_resolution_panel);
+            mouse_settings.Controls.Clear();
+            mouse_settings.Controls.Add(invert_x_panel);
+            mouse_settings.Controls.Add(new Separator());
+            mouse_settings.Controls.Add(invert_y_panel);
+            mouse_settings.Controls.Add(new Separator());
+            mouse_settings.Controls.Add(sensitivity_panel);
+            keyboard_settings.Controls.Clear();
+            keyboard_settings.Controls.Add(run_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(select_item_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(medkit_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(flashlight_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(show_map_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(interaction_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(right_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(left_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(back_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(forward_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(reloading_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(aim_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(fire_panel);
+            keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(screenshot_panel);
         }
 
         private void MainMenu_Load(object sender, EventArgs e)
@@ -425,21 +358,72 @@ namespace SLIL
             host_panel.Location = buttons_panel.Location;
             connect_panel.Location = buttons_panel.Location;
             account_panel.Location = buttons_panel.Location;
+            hilf_mir_panel.Location = buttons_panel.Location;
             exit_size_panel.Left = (exit_panel.Width - exit_size_panel.Width) / 2;
             account_btn_c.Location = new Point(Width - account_btn_c.Width - 15, 15);
             if (sounds) MainMenuTheme.Play(Volume);
         }
 
+        private void MainMenu_Shown(object sender, EventArgs e)
+        {
+            if (show_hilf_mir.Checked)
+                hilf_mir_panel.Visible = true;
+        }
+
+        private void MainMenu_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!CanClose)
+            {
+                e.Cancel = true;
+                exit_panel.Visible = true;
+                exit_panel.BringToFront();
+                return;
+            }
+            SaveSettings();
+        }
+
+        private void MainMenu_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (ChangeControlButton)
+            {
+                Keys key = e.KeyCode;
+                if (key == Keys.Escape)
+                {
+                    ChangeControlButton = false;
+                    press_any_btn_panel.Visible = false;
+                    return;
+                }
+                if (BindControls.ContainsValue(key) || key.ToString().StartsWith("Oem") || key.ToString().StartsWith("Num") || (key.ToString().StartsWith("D") && key.ToString().Length == 2))
+                {
+                    cant_use_panel.Visible = true;
+                    return;
+                }
+                if (BindControls.ContainsKey(SelectButtonName))
+                {
+                    BindControls[SelectButtonName] = key;
+                    Button btn = Controls.Find(SelectButtonName + "_btn_c", true)[0] as Button;
+                    btn.Text = key.ToString().Replace("Key", null).Replace("Return", "Enter");
+                    ChangeControlButton = false;
+                    press_any_btn_panel.Visible = false;
+                    INIReader.SetKey(iniFolder, "SLIL", SelectButtonName, key);
+                }
+            }
+        }
+
+        //  #====   Game Parametrs   ====#
+
         private void GetGameParametrs()
         {
+            show_hilf_mir.Checked = INIReader.GetBool(iniFolder, "CONFIG", "show_tutorial", true);
+            show_tutorial.Checked = show_hilf_mir.Checked;
             Language = INIReader.GetString(iniFolder, "CONFIG", "language", Language);
             if (!SupportedLanguages.Values.Contains(Language)) Language = "English";
             ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
+            Volume = INIReader.GetSingle(iniFolder, "CONFIG", "volume", 0.4f);
             LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 6.5);
             inv_y = INIReader.GetBool(iniFolder, "SlIL", "inv_y", false);
             inv_x = INIReader.GetBool(iniFolder, "SlIL", "inv_x", false);
-            Volume = INIReader.GetSingle(iniFolder, "SLIL", "volume", 0.4f);
             ShowFPS = INIReader.GetBool(iniFolder, "SLIL", "show_fps", true);
             ShowMiniMap = INIReader.GetBool(iniFolder, "SLIL", "show_minimap", true);
             scope_color = INIReader.GetInt(iniFolder, "SLIL", "scope_color", 0);
@@ -449,24 +433,24 @@ namespace SLIL
             interface_size = INIReader.GetInt(iniFolder, "SLIL", "interface_size", 0);
             smoothing = INIReader.GetInt(iniFolder, "SLIL", "smoothing", 1);
             hight_fps = INIReader.GetBool(iniFolder, "SLIL", "hight_fps", true);
-            BindControls["screenshot"] = INIReader.GetKeys(iniFolder, "SLIL", "screenshot", Keys.F12);
-            BindControls["reloading"] = INIReader.GetKeys(iniFolder, "SLIL", "reloading", Keys.R);
-            BindControls["forward"] = INIReader.GetKeys(iniFolder, "SLIL", "forward", Keys.W);
-            BindControls["back"] = INIReader.GetKeys(iniFolder, "SLIL", "back", Keys.S);
-            BindControls["left"] = INIReader.GetKeys(iniFolder, "SLIL", "left", Keys.A);
-            BindControls["right"] = INIReader.GetKeys(iniFolder, "SLIL", "right", Keys.D);
-            BindControls["interaction_0"] = INIReader.GetKeys(iniFolder, "SLIL", "interaction_0", Keys.E);
-            BindControls["interaction_1"] = INIReader.GetKeys(iniFolder, "SLIL", "interaction_1", Keys.Enter);
-            BindControls["show_map_0"] = INIReader.GetKeys(iniFolder, "SLIL", "show_map_0", Keys.M);
-            BindControls["show_map_1"] = INIReader.GetKeys(iniFolder, "SLIL", "show_map_1", Keys.Tab);
-            BindControls["flashlight"] = INIReader.GetKeys(iniFolder, "SLIL", "flashlight", Keys.F);
-            BindControls["item"] = INIReader.GetKeys(iniFolder, "SLIL", "item", Keys.H);
-            BindControls["select_item"] = INIReader.GetKeys(iniFolder, "SLIL", "select_item", Keys.Q);
-            BindControls["run"] = INIReader.GetKeys(iniFolder, "SLIL", "run", Keys.ShiftKey);
+            BindControls["screenshot"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "screenshot", Keys.F12);
+            BindControls["reloading"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "reloading", Keys.R);
+            BindControls["forward"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "forward", Keys.W);
+            BindControls["back"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "back", Keys.S);
+            BindControls["left"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "left", Keys.A);
+            BindControls["right"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "right", Keys.D);
+            BindControls["interaction_0"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "interaction_0", Keys.E);
+            BindControls["interaction_1"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "interaction_1", Keys.Enter);
+            BindControls["show_map_0"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "show_map_0", Keys.M);
+            BindControls["show_map_1"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "show_map_1", Keys.Tab);
+            BindControls["flashlight"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "flashlight", Keys.F);
+            BindControls["item"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "item", Keys.H);
+            BindControls["select_item"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "select_item", Keys.Q);
+            BindControls["run"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "run", Keys.ShiftKey);
             if (interface_size < 0 || interface_size > 3)
                 interface_size = 2;
             //if (display_size < 0 || display_size > 5)
-                display_size = 0;
+            display_size = 0;
             if (smoothing < 0 || smoothing > 3)
                 smoothing = 1;
             if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10)
@@ -477,6 +461,122 @@ namespace SLIL
                 scope_color = 0;
             if (scope_type < 0 || scope_type > 4)
                 scope_type = 0;
+        }
+
+        private void SaveSettings()
+        {
+            INIReader.ClearFile(iniFolder);
+            INIReader.SetKey(iniFolder, "CONFIG", "language", Language);
+            INIReader.SetKey(iniFolder, "CONFIG", "sounds", sounds);
+            INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
+            INIReader.SetKey(iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
+            INIReader.SetKey(iniFolder, "CONFIG", "volume", Volume);
+            INIReader.SetKey(iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
+            INIReader.SetKey(iniFolder, "SLIL", "display_size", display_size);
+            INIReader.SetKey(iniFolder, "SLIL", "interface_size", interface_size);
+            INIReader.SetKey(iniFolder, "SLIL", "smoothing", smoothing);
+            INIReader.SetKey(iniFolder, "SLIL", "show_fps", ShowFPS);
+            INIReader.SetKey(iniFolder, "SLIL", "hight_fps", hight_fps);
+            INIReader.SetKey(iniFolder, "SLIL", "show_minimap", ShowMiniMap);
+            INIReader.SetKey(iniFolder, "SLIL", "scope_type", scope_type);
+            INIReader.SetKey(iniFolder, "SLIL", "scope_color", scope_color);
+            INIReader.SetKey(iniFolder, "SLIL", "look_speed", LOOK_SPEED);
+            INIReader.SetKey(iniFolder, "SLIL", "inv_y", inv_y);
+            INIReader.SetKey(iniFolder, "SLIL", "inv_x", inv_x);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "screenshot", BindControls["screenshot"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "reloading", BindControls["reloading"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "forward", BindControls["forward"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "back", BindControls["back"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "left", BindControls["left"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "right", BindControls["right"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "interaction_0", BindControls["interaction_0"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "interaction_1", BindControls["interaction_1"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "show_map_0", BindControls["show_map_0"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "show_map_1", BindControls["show_map_1"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "flashlight", BindControls["flashlight"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "item", BindControls["item"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "select_item", BindControls["select_item"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "run", BindControls["run"]);
+        }
+
+        //  #====    Localization    ====#
+
+        private void DownloadLocalizationList()
+        {
+            using (WebClient webClient = new WebClient())
+            {
+                webClient.Encoding = Encoding.UTF8;
+                try
+                {
+                    string result = webClient.DownloadString(new Uri("https://base-escape.ru/SLILLocalization/LocalizationList.txt"));
+                    string[] lines = result.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                    string[] languages = new string[lines.Length];
+                    string[] codes = new string[lines.Length];
+                    if (lines.Length > 0)
+                    {
+                        for (int i = 0; i < lines.Length; i++)
+                        {
+                            codes[i] = lines[i].Split('-')[0];
+                            languages[i] = lines[i].Split('-')[1];
+                        }
+                        language_list.Items.Clear();
+                        language_list.Items.AddRange(languages.Distinct().ToArray());
+                        SetLocalizations(codes, languages);
+                    }
+                }
+                catch (WebException e)
+                {
+                    if (e.Status == WebExceptionStatus.ConnectFailure)
+                        MessageBox.Show("Failed to establish a connection with the localizations server. Please check your internet connection.",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else
+                        MessageBox.Show($"An error occurred while downloading the localization: {e.Message}",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DownloadedLocalizationList = false;
+                    return;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"An unexpected error occurred: {e.Message}",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DownloadedLocalizationList = false;
+                    return;
+                }
+            }
+            Localizations.RemoveDuplicates();
+        }
+
+        public void SetLocalization()
+        {
+            DownloadedLocalizationList = downloadedLocalizationList;
+            SupportedLanguages = supportedLanguages;
+            if (DownloadedLocalizationList)
+            {
+                language_list.Items.Clear();
+                language_list.Items.AddRange(SupportedLanguages.Values.Distinct().ToArray());
+            }
+            Localizations = localizations;
+        }
+
+        private void SetLocalizations(string[] codes, string[] languages)
+        {
+            SupportedLanguages.Clear();
+            for (int i = 0; i < languages.Length; i++)
+                SupportedLanguages.Add(codes[i], languages[i]);
+            for (int i = 0; i < languages.Length; i++)
+            {
+                try
+                {
+                    Localizations.DownloadLocalization(languages[i]);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    DownloadedLocalizationList = false;
+                    return;
+                }
+            }
+            DownloadedLocalizationList = true;
         }
 
         private void SetVisualSettings()
@@ -497,6 +597,7 @@ namespace SLIL
             run_btn_c.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
             language_list.SelectedIndex = DownloadedLocalizationList
                 ? language_list.Items.IndexOf(Language) : 0;
+            show_tutorial.Checked = show_hilf_mir.Checked;
             localization_error_pic.Visible = !DownloadedLocalizationList;
             display_size_list.SelectedIndex = display_size;
             interface_size_choice.Value = interface_size;
@@ -529,57 +630,30 @@ namespace SLIL
             }
         }
 
-        private void GetDifficulty()
+        private string GetLanguageName()
         {
-            switch (difficulty)
-            {
-                case 0:
-                    if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-65") + Localizations.GetLString(Language, "0-113");
-                    else
-                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies Respawn Every 60 Seconds\nEnemies deal 25% more damage";
-                    break;
-                case 1:
-                    if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-66") + Localizations.GetLString(Language, "0-114");
-                    else
-                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies deal 25% more damage";
-                    break;
-                case 2:
-                    if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-67");
-                    else
-                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 2";
-                    break;
-                case 3:
-                    if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-68") + Localizations.GetLString(Language, "0-115");
-                    else
-                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money\nEnemies deal 25% less damage";
-                    break;
-                default:
-                    if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-69");
-                    else
-                        difficulty_label.Text = "Level parameters can be changed manually";
-                    break;
-            }
+            CultureInfo ci = CultureInfo.InstalledUICulture;
+            string languageCode = ci.Name.ToLower();
+            if (SupportedLanguages.ContainsKey(languageCode))
+                return SupportedLanguages[languageCode];
+            string shortCode = languageCode.Substring(0, 2);
+            if (SupportedLanguages.ContainsKey(shortCode))
+                return SupportedLanguages[shortCode];
+            return "English";
         }
 
-        private void ResizeButtonsInControl(Control control)
+        private string GetLanguageCode()
         {
-            if (control is Button button && !control.Name.EndsWith("_c"))
-            {
-                button.Size = new Size(0, 0);
-                if (button.Name.EndsWith("_r"))
-                    button.Left = button.Parent.Width - button.Width - 7;
-                else if (button.Name.EndsWith("_l"))
-                    button.Left = 7;
-                else if (button.Name.EndsWith("_cp"))
-                    button.Left = (button.Parent.Width - button.Width) / 2;
-            }
-            foreach (Control childControl in control.Controls)
-                ResizeButtonsInControl(childControl);
+            CultureInfo ci = CultureInfo.InstalledUICulture;
+            string language = null;
+            string languageCode = ci.Name.ToLower();
+            if (SupportedLanguages.ContainsKey(languageCode))
+                language = SupportedLanguages[languageCode];
+            string shortCode = languageCode.Substring(0, 2);
+            if (SupportedLanguages.ContainsKey(shortCode))
+                language = SupportedLanguages[shortCode];
+            if (language == null) return "en";
+            return language.Remove(1).ToLower();
         }
 
         private void SetLanguage()
@@ -650,6 +724,9 @@ namespace SLIL
                 clear_settings_l.Text = Localizations.GetLString(Language, "0-44");
                 close_settings_r.Text = Localizations.GetLString(Language, "0-10");
                 change_logs_close_btn_r.Text = Localizations.GetLString(Language, "0-10");
+                hilf_mir_close_btn_r.Text = Localizations.GetLString(Language, "0-10");
+                show_hilf_mir.Text = Localizations.GetLString(Language, "0-116");
+                show_tutorial_label.Text = Localizations.GetLString(Language, "0-116");
                 press_any_btn_label.Text = Localizations.GetLString(Language, "0-45");
                 cant_use_panel.Text = Localizations.GetLString(Language, "0-107");
                 interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
@@ -728,6 +805,9 @@ namespace SLIL
                 clear_settings_l.Text = "Reset";
                 close_settings_r.Text = "Close";
                 change_logs_close_btn_r.Text = "Close";
+                hilf_mir_close_btn_r.Text = "Close";
+                show_hilf_mir.Text = "Show tutorial";
+                show_tutorial_label.Text = "Show tutorial";
                 press_any_btn_label.Text = "Press any button or ESC to cancel";
                 cant_use_panel.Text = "This button can't be used!";
                 interface_size_label.Text = "Interface size: " + GetInterfaceSize();
@@ -747,6 +827,20 @@ namespace SLIL
                 medkit_label.Text = "Use item";
                 select_item_label.Text = "Select item";
                 run_label.Text = "Run (hold)";
+            }
+            if (show_tutorial.Checked)
+            {
+                if (DownloadedLocalizationList)
+                    show_tutorial.Text = Localizations.GetLString(Language, "0-70");
+                else
+                    show_tutorial.Text = "On";
+            }
+            else
+            {
+                if (DownloadedLocalizationList)
+                    show_tutorial.Text = Localizations.GetLString(Language, "0-71");
+                else
+                    show_tutorial.Text = "Off";
             }
             if (ConsoleEnabled)
             {
@@ -851,102 +945,6 @@ namespace SLIL
             ResizeButtonsInControl(this);
         }
 
-        private void Start_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            game_mode_panel.Visible = true;
-            game_mode_panel.BringToFront();
-        }
-
-        private void Sounds_on_off_CheckedChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            sounds = sounds_on_off.Checked;
-            if (sounds)
-            {
-                if (DownloadedLocalizationList)
-                    sounds_on_off.Text = Localizations.GetLString(Language, "0-70");
-                else
-                    sounds_on_off.Text = "On";
-                MainMenuTheme.Play(Volume);
-            }
-            else
-            {
-                if (DownloadedLocalizationList)
-                    sounds_on_off.Text = Localizations.GetLString(Language, "0-71");
-                else
-                    sounds_on_off.Text = "Off";
-                MainMenuTheme.Stop();
-            }
-        }
-
-        private void Console_btn_CheckedChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            ConsoleEnabled = console_btn.Checked;
-            if (ConsoleEnabled)
-            {
-                if (DownloadedLocalizationList)
-                    console_btn.Text = Localizations.GetLString(Language, "0-70");
-                else
-                    console_btn.Text = "On";
-            }
-            else
-            {
-                if (DownloadedLocalizationList)
-                    console_btn.Text = Localizations.GetLString(Language, "0-71");
-                else
-                    console_btn.Text = "Off";
-            }
-        }
-
-        private void Language_list_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            Language = language_list.SelectedItem.ToString();
-            SetLanguage();
-        }
-
-        private void Setting_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            settings_panel.Visible = true;
-            settings_panel.BringToFront();
-        }
-
-        private void Check_update_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            Check_Update();
-        }
-
-        private void High_resolution_on_off_CheckedChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            resolution = high_resolution_on_off.Checked ? 1 : 0;
-            if (high_resolution_on_off.Checked)
-            {
-                if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-70");
-                else
-                    high_resolution_on_off.Text = "On";
-            }
-            else
-            {
-                if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-71");
-                else
-                    high_resolution_on_off.Text = "Off";
-            }
-        }
-
-        private void Fps_Scroll(object sender, EventArgs e)
-        {
-            hight_fps = fps.Value == 1;
-            if (hight_fps) fps_label.Text = "FPS: 60";
-            else fps_label.Text = "FPS: 30";
-        }
-
         private string GetScopeType()
         {
             switch (scope_type)
@@ -1040,26 +1038,324 @@ namespace SLIL
             }
         }
 
-        private void Sensitivity_Scroll(object sender, EventArgs e) => LOOK_SPEED = (double)sensitivity.Value / 100;
+        private void GetDifficulty()
+        {
+            switch (difficulty)
+            {
+                case 0:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-65") + Localizations.GetLString(Language, "0-113");
+                    else
+                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies Respawn Every 60 Seconds\nEnemies deal 25% more damage";
+                    break;
+                case 1:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-66") + Localizations.GetLString(Language, "0-114");
+                    else
+                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies deal 25% more damage";
+                    break;
+                case 2:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-67");
+                    else
+                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 2";
+                    break;
+                case 3:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-68") + Localizations.GetLString(Language, "0-115");
+                    else
+                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money\nEnemies deal 25% less damage";
+                    break;
+                default:
+                    if (DownloadedLocalizationList)
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-69");
+                    else
+                        difficulty_label.Text = "Level parameters can be changed manually";
+                    break;
+            }
+        }
 
-        private void Show_minimap_CheckedChanged(object sender, EventArgs e)
+        private void ResizeButtonsInControl(Control control)
+        {
+            if (control is Button button && !control.Name.EndsWith("_c"))
+            {
+                button.Size = new Size(0, 0);
+                if (button.Name.EndsWith("_r"))
+                    button.Left = button.Parent.Width - button.Width - 7;
+                else if (button.Name.EndsWith("_l"))
+                    button.Left = 7;
+                else if (button.Name.EndsWith("_cp"))
+                    button.Left = (button.Parent.Width - button.Width) / 2;
+            }
+            foreach (Control childControl in control.Controls)
+                ResizeButtonsInControl(childControl);
+        }
+
+        //  #====    Close Buttons   ====#
+
+        private void Close_developers_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            ShowMiniMap = show_minimap.Checked;
-            if (ShowMiniMap)
+            developers_panel.Visible = false;
+        }
+
+        private void Close_settings_Click(object sender, EventArgs e)
+        {
+            SaveSettings();
+            settings_panel.Visible = false;
+        }
+
+        private void Exit_no_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            exit_panel.Visible = false;
+        }
+
+        private void Exit_yes_btn_Click(object sender, EventArgs e)
+        {
+            CanClose = true;
+            Application.Exit();
+        }
+
+        private void Close_difficulty_panel_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            difficulty_panel.Visible = false;
+        }
+
+        private void Change_logs_close_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            change_logs_panel.Visible = false;
+        }
+
+        private void Close_game_mode__panel_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            game_mode_panel.Visible = false;
+        }
+
+        private void Close_account_btn_c_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            account_panel.Visible = false;
+        }
+
+        private void Hilf_mir_close_btn_r_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            hilf_mir_panel.Visible = false;
+        }
+
+        private void Close_host_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            host_panel.Visible = false;
+            players_panel.Controls.Clear();
+        }
+
+        private void Close_connect_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            connect_panel.Visible = false;
+        }
+
+        private void Multiplayer_close_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            multiplayer_panel.Visible = false;
+        }
+
+        private void Help_close_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            help_panel.Visible = false;
+        }
+
+        //  #====    Menu Buttons    ====#
+
+        private void Start_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            game_mode_panel.Visible = true;
+            game_mode_panel.BringToFront();
+        }
+
+        private void Setting_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            settings_panel.Visible = true;
+            settings_panel.BringToFront();
+        }
+
+        private void About_developers_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            developers_panel.Visible = true;
+            developers_panel.BringToFront();
+        }
+
+        private void Bug_report_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            help_panel.Visible = true;
+            help_panel.BringToFront();
+        }
+
+        private void Exit_btn_Click(object sender, EventArgs e)
+        {
+            exit_panel.Visible = true;
+            exit_panel.BringToFront();
+        }
+
+        //  #====      Settings      ====#
+
+        private void Clear_settings_Click(object sender, EventArgs e)
+        {
+            show_hilf_mir.Checked = true;
+            Language = GetLanguageName();
+            sounds = true;
+            ConsoleEnabled = false;
+            resolution = 0;
+            display_size = 0;
+            interface_size = 2;
+            ShowFPS = false;
+            hight_fps = true;
+            ShowMiniMap = true;
+            scope_type = 0;
+            scope_color = 0;
+            LOOK_SPEED = 6.5;
+            Volume = 0.4f;
+            BindControls.Clear();
+            foreach (var kvp in ClassicBindControls)
+                BindControls.Add(kvp.Key, kvp.Value);
+            SetVisualSettings();
+        }
+
+        //  #==      All Settings      ==#
+
+        private void Show_tutorial_CheckedChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            show_hilf_mir.Checked = show_tutorial.Checked;
+            if (show_tutorial.Checked)
             {
                 if (DownloadedLocalizationList)
-                    show_minimap.Text = Localizations.GetLString(Language, "0-70");
+                    show_tutorial.Text = Localizations.GetLString(Language, "0-70");
                 else
-                    show_minimap.Text = "On";
+                    show_tutorial.Text = "On";
             }
             else
             {
                 if (DownloadedLocalizationList)
-                    show_minimap.Text = Localizations.GetLString(Language, "0-71");
+                    show_tutorial.Text = Localizations.GetLString(Language, "0-71");
                 else
-                    show_minimap.Text = "Off";
+                    show_tutorial.Text = "Off";
             }
+        }
+
+        private void Console_btn_CheckedChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            ConsoleEnabled = console_btn.Checked;
+            if (ConsoleEnabled)
+            {
+                if (DownloadedLocalizationList)
+                    console_btn.Text = Localizations.GetLString(Language, "0-70");
+                else
+                    console_btn.Text = "On";
+            }
+            else
+            {
+                if (DownloadedLocalizationList)
+                    console_btn.Text = Localizations.GetLString(Language, "0-71");
+                else
+                    console_btn.Text = "Off";
+            }
+        }
+
+        private void Sounds_on_off_CheckedChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            sounds = sounds_on_off.Checked;
+            if (sounds)
+            {
+                if (DownloadedLocalizationList)
+                    sounds_on_off.Text = Localizations.GetLString(Language, "0-70");
+                else
+                    sounds_on_off.Text = "On";
+                MainMenuTheme.Play(Volume);
+            }
+            else
+            {
+                if (DownloadedLocalizationList)
+                    sounds_on_off.Text = Localizations.GetLString(Language, "0-71");
+                else
+                    sounds_on_off.Text = "Off";
+                MainMenuTheme.Stop();
+            }
+        }
+
+        private void Volume_Scroll(object sender, EventArgs e)
+        {
+            Volume = (float)volume.Value / 100;
+            MainMenuTheme.SetVolume(Volume);
+        }
+
+        private void Language_list_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            Language = language_list.SelectedItem.ToString();
+            SetLanguage();
+        }
+
+        private void Localization_update_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            DownloadedLocalizationList = false;
+            DownloadLocalizationList();
+            SetVisualSettings();
+            SetLanguage();
+        }
+
+        private void Check_update_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            Check_Update();
+        }
+
+        //  #==     Video Settings     ==#
+
+        private void High_resolution_on_off_CheckedChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            resolution = high_resolution_on_off.Checked ? 1 : 0;
+            if (high_resolution_on_off.Checked)
+            {
+                if (DownloadedLocalizationList)
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-70");
+                else
+                    high_resolution_on_off.Text = "On";
+            }
+            else
+            {
+                if (DownloadedLocalizationList)
+                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-71");
+                else
+                    high_resolution_on_off.Text = "Off";
+            }
+        }
+
+        private void Display_size_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            display_size = display_size_list.SelectedIndex;
+        }
+
+        private void Smoothing_list_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            smoothing = smoothing_list.SelectedIndex;
         }
 
         private void Show_fps_on_off_CheckedChanged(object sender, EventArgs e)
@@ -1082,59 +1378,131 @@ namespace SLIL
             }
         }
 
-        private void Clear_settings_Click(object sender, EventArgs e)
+        private void Fps_Scroll(object sender, EventArgs e)
         {
-            Language = GetLanguageName();
-            sounds = true;
-            ConsoleEnabled = false;
-            resolution = 0;
-            display_size = 0;
-            interface_size = 2;
-            ShowFPS = false;
-            hight_fps = true;
-            ShowMiniMap = true;
-            scope_type = 0;
-            scope_color = 0;
-            LOOK_SPEED = 6.5;
-            Volume = 0.4f;
-            BindControls.Clear();
-            foreach (var kvp in ClassicBindControls)
-                BindControls.Add(kvp.Key, kvp.Value);
-            SetVisualSettings();
+            hight_fps = fps.Value == 1;
+            if (hight_fps) fps_label.Text = "FPS: 60";
+            else fps_label.Text = "FPS: 30";
         }
 
-        private void SaveSettings()
+        private void Show_minimap_CheckedChanged(object sender, EventArgs e)
         {
-            INIReader.SetKey(iniFolder, "CONFIG", "sounds", sounds);
-            INIReader.SetKey(iniFolder, "CONFIG", "language", Language);
-            INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
-            INIReader.SetKey(iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
-            INIReader.SetKey(iniFolder, "SLIL", "display_size", display_size);
-            INIReader.SetKey(iniFolder, "SLIL", "interface_size", interface_size);
-            INIReader.SetKey(iniFolder, "SLIL", "smoothing", smoothing);
-            INIReader.SetKey(iniFolder, "SLIL", "show_fps", ShowFPS);
-            INIReader.SetKey(iniFolder, "SLIL", "hight_fps", hight_fps);
-            INIReader.SetKey(iniFolder, "SLIL", "show_minimap", ShowMiniMap);
-            INIReader.SetKey(iniFolder, "SLIL", "scope_type", scope_type);
-            INIReader.SetKey(iniFolder, "SLIL", "scope_color", scope_color);
-            INIReader.SetKey(iniFolder, "SLIL", "look_speed", LOOK_SPEED);
-            INIReader.SetKey(iniFolder, "SLIL", "inv_y", inv_y);
-            INIReader.SetKey(iniFolder, "SLIL", "inv_x", inv_x);
-            INIReader.SetKey(iniFolder, "SLIL", "volume", Volume);
-            INIReader.SetKey(iniFolder, "SLIL", "screenshot", BindControls["screenshot"]);
-            INIReader.SetKey(iniFolder, "SLIL", "reloading", BindControls["reloading"]);
-            INIReader.SetKey(iniFolder, "SLIL", "forward", BindControls["forward"]);
-            INIReader.SetKey(iniFolder, "SLIL", "back", BindControls["back"]);
-            INIReader.SetKey(iniFolder, "SLIL", "left", BindControls["left"]);
-            INIReader.SetKey(iniFolder, "SLIL", "right", BindControls["right"]);
-            INIReader.SetKey(iniFolder, "SLIL", "interaction_0", BindControls["interaction_0"]);
-            INIReader.SetKey(iniFolder, "SLIL", "interaction_1", BindControls["interaction_1"]);
-            INIReader.SetKey(iniFolder, "SLIL", "show_map_0", BindControls["show_map_0"]);
-            INIReader.SetKey(iniFolder, "SLIL", "show_map_1", BindControls["show_map_1"]);
-            INIReader.SetKey(iniFolder, "SLIL", "flashlight", BindControls["flashlight"]);
-            INIReader.SetKey(iniFolder, "SLIL", "item", BindControls["item"]);
-            INIReader.SetKey(iniFolder, "SLIL", "select_item", BindControls["select_item"]);
-            INIReader.SetKey(iniFolder, "SLIL", "run", BindControls["run"]);
+            lose_focus.Focus();
+            ShowMiniMap = show_minimap.Checked;
+            if (ShowMiniMap)
+            {
+                if (DownloadedLocalizationList)
+                    show_minimap.Text = Localizations.GetLString(Language, "0-70");
+                else
+                    show_minimap.Text = "On";
+            }
+            else
+            {
+                if (DownloadedLocalizationList)
+                    show_minimap.Text = Localizations.GetLString(Language, "0-71");
+                else
+                    show_minimap.Text = "Off";
+            }
+        }
+
+        private void Scope_choice_Scroll(object sender, EventArgs e)
+        {
+            scope_type = scope_choice.Value;
+            if (DownloadedLocalizationList)
+                scope_label.Text = Localizations.GetLString(Language, "0-36") + GetScopeType();
+            else
+                scope_label.Text = "Scope: " + GetScopeType();
+        }
+
+        private void Scope_color_choice_Scroll(object sender, EventArgs e)
+        {
+            scope_color = scope_color_choice.Value;
+            if (DownloadedLocalizationList)
+                scope_color_label.Text = Localizations.GetLString(Language, "0-37") + GetScopeColor();
+            else
+                scope_color_label.Text = "Scope color: " + GetScopeColor();
+        }
+
+        private void Interface_size_choice_Scroll(object sender, EventArgs e)
+        {
+            interface_size = interface_size_choice.Value;
+            if (DownloadedLocalizationList)
+                interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
+            else
+                interface_size_label.Text = "Interface size: " + GetInterfaceSize();
+        }
+
+        //  #==    Control Settings    ==#
+
+        private void Sensitivity_Scroll(object sender, EventArgs e) => LOOK_SPEED = (double)sensitivity.Value / 100;
+
+        private void Invert_y_CheckedChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            inv_y = invert_y.Checked;
+            if (inv_y)
+            {
+                if (DownloadedLocalizationList)
+                    invert_y.Text = Localizations.GetLString(Language, "0-70");
+                else
+                    invert_y.Text = "On";
+            }
+            else
+            {
+                if (DownloadedLocalizationList)
+                    invert_y.Text = Localizations.GetLString(Language, "0-71");
+                else
+                    invert_y.Text = "Off";
+            }
+        }
+
+        private void Invert_x_CheckedChanged(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            inv_x = invert_x.Checked;
+            if (inv_x)
+            {
+                if (DownloadedLocalizationList)
+                    invert_x.Text = Localizations.GetLString(Language, "0-70");
+                else
+                    invert_x.Text = "On";
+            }
+            else
+            {
+                if (DownloadedLocalizationList)
+                    invert_x.Text = Localizations.GetLString(Language, "0-71");
+                else
+                    invert_x.Text = "Off";
+            }
+        }
+
+        private void ChangeControl_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            if (!ChangeControlButton)
+            {
+                ChangeControlButton = true;
+                SelectButtonName = (sender as Button).Name.Replace("_btn_c", null);
+                cant_use_panel.Visible = false;
+                press_any_btn_panel.Visible = true;
+                press_any_btn_panel.BringToFront();
+            }
+        }
+
+        //  #====      Game mode     ====#
+
+        private void Select_mode_btn_Click(object sender, EventArgs e)
+        {
+            if (singleplayer.Checked)
+            {
+                difficulty_panel.Visible = true;
+                difficulty_panel.BringToFront();
+            }
+            else
+            {
+                multiplayer_panel.Visible = true;
+                multiplayer_panel.BringToFront();
+            }
         }
 
         private void Difficulty_CheckedChanged(object sender, EventArgs e)
@@ -1167,19 +1535,13 @@ namespace SLIL
             GetDifficulty();
         }
 
-        private void Close_difficulty_panel_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            difficulty_panel.Visible = false;
-        }
-
         private void Start_game_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
             game_mode_panel.Visible = false;
             if (difficulty != 4)
             {
-                if(sounds) MainMenuTheme.Stop();
+                if (sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache)
                 {
                     game_over = game_over,
@@ -1206,6 +1568,30 @@ namespace SLIL
                 Editor.ShowDialog();
             }
         }
+
+        private void EditorForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (Editor != null && Editor.OK)
+            {
+                if (sounds) MainMenuTheme.Stop();
+                SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3, (Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
+                {
+                    game_over = game_over,
+                    draw = draw,
+                    buy = buy,
+                    wall = wall,
+                    tp = tp,
+                    screenshot = screenshot,
+                    low_stamine = low_stamine
+                };
+                form.ShowDialog();
+                if (sounds) MainMenuTheme.Play(Volume);
+                Editor = null;
+                difficulty_panel.Visible = false;
+            }
+        }
+
+        //  #====     Change Logs    ====#
 
         private void Version_label_MouseClick(object sender, MouseEventArgs e)
         {
@@ -1244,94 +1630,7 @@ namespace SLIL
             }
         }
 
-        private void Change_logs_close_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            change_logs_panel.Visible = false;
-        }
-
-        private void Close_game_mode__panel_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            game_mode_panel.Visible = false;
-        }
-
-        private void Select_mode_btn_Click(object sender, EventArgs e)
-        {
-            if (singleplayer.Checked)
-            {
-                difficulty_panel.Visible = true;
-                difficulty_panel.BringToFront();
-            }
-            else
-            {
-                multiplayer_panel.Visible = true;
-                multiplayer_panel.BringToFront();
-            }
-        }
-
-        private void Volume_Scroll(object sender, EventArgs e)
-        {
-            Volume = (float)volume.Value / 100;
-            MainMenuTheme.SetVolume(Volume);
-        }
-
-        private void Copy_ip_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            Clipboard.SetText(ip.Text);
-            if (DownloadedLocalizationList)
-                MessageBox.Show(Localizations.GetLString(Language, "0-86"), Localizations.GetLString(Language, "0-87"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-            else
-                MessageBox.Show("IP address successfully copied to clipboard", "IP Copying", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void Invert_y_CheckedChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            inv_y = invert_y.Checked;
-            if (inv_y)
-            {
-                if (DownloadedLocalizationList)
-                    invert_y.Text = Localizations.GetLString(Language, "0-70");
-                else
-                    invert_y.Text = "On";
-            }
-            else
-            {
-                if (DownloadedLocalizationList)
-                    invert_y.Text = Localizations.GetLString(Language, "0-71");
-                else
-                    invert_y.Text = "Off";
-            }
-        }
-
-        private void Ip_connect_input_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                ConnectToGame();
-            }
-        }
-
-        private void Smoothing_list_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            smoothing = smoothing_list.SelectedIndex;
-        }
-
-        private void Display_size_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            display_size = display_size_list.SelectedIndex;
-        }
-
-        private void Help_close_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            help_panel.Visible = false;
-        }
+        //  #====      Feedback      ====#
 
         private void Bug_repor_btn_Click(object sender, EventArgs e)
         {
@@ -1347,71 +1646,7 @@ namespace SLIL
             help_panel.Visible = false;
         }
 
-        private void SetLocalizations(string[] codes, string[] languages)
-        {
-            SupportedLanguages.Clear();
-            for (int i = 0; i < languages.Length; i++)
-                SupportedLanguages.Add(codes[i], languages[i]);
-            for (int i = 0; i < languages.Length; i++)
-            {
-                try
-                {
-                    Localizations.DownloadLocalization(languages[i]);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message);
-                    DownloadedLocalizationList = false;
-                    return;
-                }
-            }
-            DownloadedLocalizationList = true;
-        }
-
-        private void DownloadLocalizationList()
-        {
-            using (WebClient webClient = new WebClient())
-            {
-                webClient.Encoding = Encoding.UTF8;
-                try
-                {
-                    string result = webClient.DownloadString(new Uri("https://base-escape.ru/SLILLocalization/LocalizationList.txt"));
-                    string[] lines = result.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                    string[] languages = new string[lines.Length];
-                    string[] codes = new string[lines.Length];
-                    if (lines.Length > 0)
-                    {
-                        for (int i = 0; i < lines.Length; i++)
-                        {
-                            codes[i] = lines[i].Split('-')[0];
-                            languages[i] = lines[i].Split('-')[1];
-                        }
-                        language_list.Items.Clear();
-                        language_list.Items.AddRange(languages.Distinct().ToArray());
-                        SetLocalizations(codes, languages);
-                    }
-                }
-                catch (WebException e)
-                {
-                    if (e.Status == WebExceptionStatus.ConnectFailure)
-                        MessageBox.Show("Failed to establish a connection with the localizations server. Please check your internet connection.",
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    else
-                        MessageBox.Show($"An error occurred while downloading the localization: {e.Message}",
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    DownloadedLocalizationList = false;
-                    return;
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show($"An unexpected error occurred: {e.Message}",
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    DownloadedLocalizationList = false;
-                    return;
-                }
-            }
-            Localizations.RemoveDuplicates();
-        }
+        //  #====      Account       ====#
 
         private void Account_btn_c_Click(object sender, EventArgs e)
         {
@@ -1420,28 +1655,125 @@ namespace SLIL
             account_panel.BringToFront();
         }
 
-        private void Close_account_btn_c_Click(object sender, EventArgs e)
+        //  #====      Tutorial      ====#
+
+        private void Show_hilf_mir_CheckedChanged(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            account_panel.Visible = false;
+            INIReader.SetKey(iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
         }
 
-        private void Interface_size_choice_Scroll(object sender, EventArgs e)
+        private void Hilf_mir_panel_VisibleChanged(object sender, EventArgs e)
         {
-            interface_size = interface_size_choice.Value;
+            if (hilf_mir_panel.Visible)
+            {
+                hilf_mir_list.Clear();
+                string tutorial;
+                try
+                {
+                    using (WebClient client = new WebClient())
+                    {
+                        client.Encoding = Encoding.UTF8;
+                        tutorial = client.DownloadString($"https://base-escape.ru/SLILLocalization/Tutorials/{Language}.txt");
+                    }
+                }
+                catch (Exception er)
+                {
+                    hilf_mir_list.Clear();
+                    if (DownloadedLocalizationList)
+                        AppendColoredText(hilf_mir_list, Localizations.GetLString(Language, "6-0") + "\n", Color.Red);
+                    else
+                        AppendColoredText(hilf_mir_list, "Error getting tutorial\n", Color.Red);
+                    AppendColoredText(hilf_mir_list, er.Message, Color.Red);
+                    AppendColoredText(hilf_mir_list, "\n--------------------------------------------------", Color.Lime);
+                    tutorial = "\n*About the game:*\n" +
+                    "In ~SLIL~ your task is to go through randomly generated labyrinths, find a teleport and enter it.\n" +
+                    "During the passage, you will encounter enemies that you need to destroy with weapons or run away from them.\n" +
+                    "*How to play:*\n" +
+                    "Controls are carried out using the buttons >forward>, >back>, >left> and >right>, as well as the >mouse>.\n" +
+                    "To shoot, use the >left mouse button>, and to aim *(only for sniper rifles)* - the >right mouse button>.\n" +
+                    "The game has a large arsenal of weapons, pets and consumables. All this can be bought in ~shops~, which appear on the map in a random place and are displayed in ~pink~.\n" +
+                    "~Pets~ are companions that follow the player and give some bonuses.\n" +
+                    "~Consumables~ are items that are disposable and give the player a temporary effect.\n" +
+                    "To select an item, hold down >select_item> and hover the mouse cursor over the desired item, and to use it, press >item>.\n" +
+                    "To interact, use the >interaction_0> or >interaction_1> buttons. To open/close the map, press >show_map_0> or >show_map_1>.\n" +
+                    "There is also a ~flashlight~ in the game, it reduces visibility, but dispels darkness, allowing you to see further. The button to turn on the flashlight is >flashlight>.";
+                }
+                SetTutorialText(tutorial, Color.White);
+                hilf_mir_list.SelectionStart = 0;
+                hilf_mir_list.ScrollToCaret();
+            }
+        }
+
+        private void SetTutorialText(string text, Color color)
+        {
+            string pattern = string.Join("|", colorMap.Keys.Select(k => $@"(\{k}.*?\{k})"));
+            string[] parts = Regex.Split(text, pattern);
+            foreach (string part in parts)
+            {
+                if (string.IsNullOrEmpty(part)) continue;
+                var colorPair = colorMap.FirstOrDefault(pair => part.StartsWith(pair.Key) && part.EndsWith(pair.Key));
+                if (colorPair.Key != null)
+                {
+                    string word = part.Trim(colorPair.Key.ToCharArray());
+                    if (BindControls.ContainsKey(word) && colorPair.Value == Color.Yellow)
+                        word = BindControls[word].ToString().Replace("Key", null).Replace("Return", "Enter");
+                    AppendColoredText(hilf_mir_list, word, colorPair.Value);
+                }
+                else AppendColoredText(hilf_mir_list, part, color);
+            }
+            hilf_mir_list.SelectionStart = hilf_mir_list.Text.Length;
+            hilf_mir_list.ScrollToCaret();
+        }
+
+        private void AppendColoredText(RichTextBox textBox, string text, Color color)
+        {
+            textBox.SelectionStart = textBox.Text.Length;
+            textBox.SelectionLength = 0;
+            textBox.SelectionColor = color;
+            textBox.AppendText(text);
+        }
+
+        //  #====     Multiplayer    ====#
+
+        private void Host_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            host_panel.Visible = true;
+            host_panel.BringToFront();
+        }
+
+        private void Copy_ip_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            Clipboard.SetText(ip.Text);
             if (DownloadedLocalizationList)
-                interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
+                MessageBox.Show(Localizations.GetLString(Language, "0-86"), Localizations.GetLString(Language, "0-87"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
-                interface_size_label.Text = "Interface size: " + GetInterfaceSize();
+                MessageBox.Show("IP address successfully copied to clipboard", "IP Copying", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void Localization_update_btn_Click(object sender, EventArgs e)
+        private void Connect_game_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            DownloadedLocalizationList = false;
-            DownloadLocalizationList();
-            SetVisualSettings();
-            SetLanguage();
+            ip_connect_input.Text = "000.000.000.000:0000";
+            connect_panel.Visible = true;
+            connect_panel.BringToFront();
+        }
+
+        private void Ip_connect_input_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                ConnectToGame();
+            }
+        }
+
+        private void Connect_btn_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            ConnectToGame();
         }
 
         private void ConnectToGame()
@@ -1464,158 +1796,9 @@ namespace SLIL
             difficulty_panel.Visible = false;
         }
 
-        private void Invert_x_CheckedChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            inv_x = invert_x.Checked;
-            if (inv_x)
-            {
-                if (DownloadedLocalizationList)
-                    invert_x.Text = Localizations.GetLString(Language, "0-70");
-                else
-                    invert_x.Text = "On";
-            }
-            else
-            {
-                if (DownloadedLocalizationList)
-                    invert_x.Text = Localizations.GetLString(Language, "0-71");
-                else
-                    invert_x.Text = "Off";
-            }
-        }
-
-        private void Host_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            host_panel.Visible = true;
-            host_panel.BringToFront();
-        }
-
-        private void Close_host_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            host_panel.Visible = false;
-            players_panel.Controls.Clear();
-        }
-
         private void Start_multiplayer_game_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-
-        }
-
-        private void Connect_game_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            ip_connect_input.Text = "000.000.000.000:0000";
-            connect_panel.Visible = true;
-            connect_panel.BringToFront();
-        }
-
-        private void Close_connect_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            connect_panel.Visible = false;
-        }
-
-        private void Connect_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            ConnectToGame();
-        }
-
-        private void Multiplayer_close_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            multiplayer_panel.Visible = false;
-        }
-
-        private void EditorForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (Editor != null && Editor.OK)
-            {
-                if (sounds) MainMenuTheme.Stop();
-                SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3,(Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
-                {
-                    game_over = game_over,
-                    draw = draw,
-                    buy = buy,
-                    wall = wall,
-                    tp = tp,
-                    screenshot = screenshot,
-                    low_stamine = low_stamine
-                };
-                form.ShowDialog();
-                if (sounds) MainMenuTheme.Play(Volume);
-                Editor = null;
-                difficulty_panel.Visible = false;
-            }
-        }
-
-        private void Scope_color_choice_Scroll(object sender, EventArgs e)
-        {
-            scope_color = scope_color_choice.Value;
-            if (DownloadedLocalizationList)
-                scope_color_label.Text = Localizations.GetLString(Language, "0-37") + GetScopeColor();
-            else
-                scope_color_label.Text = "Scope color: " + GetScopeColor();
-        }
-
-        private void Scope_choice_Scroll(object sender, EventArgs e)
-        {
-            scope_type = scope_choice.Value;
-            if (DownloadedLocalizationList)
-                scope_label.Text = Localizations.GetLString(Language, "0-36") + GetScopeType();
-            else
-                scope_label.Text = "Scope: " + GetScopeType();
-        }
-
-        private void About_developers_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            developers_panel.Visible = true;
-            developers_panel.BringToFront();
-        }
-
-        private void MainMenu_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (ChangeControlButton)
-            {
-                Keys key = e.KeyCode;
-                if (key == Keys.Escape)
-                {
-                    ChangeControlButton = false;
-                    press_any_btn_panel.Visible = false;
-                    return;
-                }
-                if (BindControls.ContainsValue(key) || key.ToString().StartsWith("Oem") || key.ToString().StartsWith("Num") || (key.ToString().StartsWith("D") && key.ToString().Length == 2))
-                {
-                    cant_use_panel.Visible = true;
-                    return;
-                }
-                if (BindControls.ContainsKey(SelectButtonName))
-                {
-                    BindControls[SelectButtonName] = key;
-                    Button btn = Controls.Find(SelectButtonName + "_btn_c", true)[0] as Button;
-                    btn.Text = key.ToString().Replace("Key", null).Replace("Return", "Enter");
-                    ChangeControlButton = false;
-                    press_any_btn_panel.Visible = false;
-                    INIReader.SetKey(iniFolder, "SLIL", SelectButtonName, key);
-                }
-            }
-        }
-
-        private void ChangeControl_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            if (!ChangeControlButton)
-            {
-                ChangeControlButton = true;
-                SelectButtonName = (sender as Button).Name.Replace("_btn_c", null);
-                cant_use_panel.Visible = false;
-                press_any_btn_panel.Visible = true;
-                press_any_btn_panel.BringToFront();
-            }
         }
     }
 }

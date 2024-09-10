@@ -15,7 +15,6 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
-using SharpDX;
 
 namespace SLIL
 {

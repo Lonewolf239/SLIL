@@ -48,6 +48,7 @@
             // 
             // start_timer
             // 
+            this.start_timer.Enabled = true;
             this.start_timer.Interval = 1000;
             this.start_timer.Tick += new System.EventHandler(this.Start_timer_Tick);
             // 
@@ -69,7 +70,6 @@
             this.Text = "Loading...";
             this.TopMost = true;
             this.UseWaitCursor = true;
-            this.Load += new System.EventHandler(this.Loading_Load);
             this.ResumeLayout(false);
 
         }

@@ -112,6 +112,7 @@ namespace GameServer
     {
         protected double HP { get; set; }
         public double A { get; set; }
+        public bool HasAI { get; set; }
         protected char[] ImpassibleCells;
         protected int MovesInARow;
         protected int NumberOfMovesLeft;
@@ -155,6 +156,7 @@ namespace GameServer
 
         private void Init(int map_width)
         {
+            HasAI = true;
             MAX_HP = this.GetMAX_HP();
             MAX_MONEY = this.GetMAX_MONEY();
             MIN_MONEY = this.GetMIN_MONEY();

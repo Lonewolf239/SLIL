@@ -11,7 +11,7 @@ namespace IniReader
     /// <br></br>
     /// Developer: <a href="https://github.com/Lonewolf239">Lonewolf239</a>
     /// <br></br>
-    /// <b>Version: 1.3</b>
+    /// <b>Version: 1.3.1</b>
     /// </summary>
     internal class INIReader
     {
@@ -96,6 +96,14 @@ namespace IniReader
                 }
             }
             return result;
+        }
+
+        /// <summary>This is a method to clear the INI file.</summary>
+        /// <param name="path">Path to the INI file.</param>
+        public static void ClearFile(string path)
+        {
+            if (File.Exists(path)) File.Delete(path);
+            File.Create(path).Close();
         }
 
         /// <summary>This is a method for creating an INI file if it is missing</summary>

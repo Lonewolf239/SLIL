@@ -108,7 +108,19 @@ namespace SLIL
         private void Start_timer_Tick(object sender, EventArgs e)
         {
             status_label.Text = "Loading game resources...";
-            if (sec == 1)
+            if (sec == 0)
+            {
+                sec++;
+                Check_Update();
+                if (CurrentVersion) sec++;
+                else
+                {
+                    start_timer.Stop();
+                    Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
+                    Application.Exit();
+                }
+            }
+            else if (sec == 2)
             {
                 start_timer.Stop();
                 DownloadLocalizationList();
@@ -122,19 +134,6 @@ namespace SLIL
                 form.FormClosing += new FormClosingEventHandler(MainMenu_FormCLosing);
                 form.Show();
                 Hide();
-            }
-            sec++;
-        }
-
-        private void Loading_Load(object sender, EventArgs e)
-        {
-            Check_Update();
-            if (CurrentVersion)
-                start_timer.Start();
-            else
-            {
-                Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
-                Application.Exit();
             }
         }
 

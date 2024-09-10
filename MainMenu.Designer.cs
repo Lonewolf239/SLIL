@@ -84,6 +84,9 @@
             this.console_panel = new System.Windows.Forms.Panel();
             this.console_btn = new System.Windows.Forms.CheckBox();
             this.console_label = new System.Windows.Forms.Label();
+            this.show_tutorial_panel = new System.Windows.Forms.Panel();
+            this.show_tutorial = new System.Windows.Forms.CheckBox();
+            this.show_tutorial_label = new System.Windows.Forms.Label();
             this.video_settings = new System.Windows.Forms.TabPage();
             this.interface_size_panel = new System.Windows.Forms.Panel();
             this.interface_size_choice = new System.Windows.Forms.TrackBar();
@@ -240,6 +243,12 @@
             this.nickname = new System.Windows.Forms.TextBox();
             this.close_account_btn_c = new System.Windows.Forms.Button();
             this.nickname_label = new System.Windows.Forms.Label();
+            this.hilf_mir_panel = new System.Windows.Forms.Panel();
+            this.hilf_mir_background_top = new System.Windows.Forms.Panel();
+            this.hilf_mir_list = new System.Windows.Forms.RichTextBox();
+            this.hilf_mir_background_bottom = new System.Windows.Forms.Panel();
+            this.show_hilf_mir = new System.Windows.Forms.CheckBox();
+            this.hilf_mir_close_btn_r = new System.Windows.Forms.Button();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -263,6 +272,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.volume)).BeginInit();
             this.sound_panel.SuspendLayout();
             this.console_panel.SuspendLayout();
+            this.show_tutorial_panel.SuspendLayout();
             this.video_settings.SuspendLayout();
             this.interface_size_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.interface_size_choice)).BeginInit();
@@ -326,6 +336,9 @@
             this.account_panel.SuspendLayout();
             this.account_background.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.player_icon)).BeginInit();
+            this.hilf_mir_panel.SuspendLayout();
+            this.hilf_mir_background_top.SuspendLayout();
+            this.hilf_mir_background_bottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -803,6 +816,7 @@
             this.all_settings.Controls.Add(this.volume_panel);
             this.all_settings.Controls.Add(this.sound_panel);
             this.all_settings.Controls.Add(this.console_panel);
+            this.all_settings.Controls.Add(this.show_tutorial_panel);
             this.all_settings.ForeColor = System.Drawing.Color.White;
             this.all_settings.Location = new System.Drawing.Point(4, 33);
             this.all_settings.Name = "all_settings";
@@ -817,7 +831,7 @@
             this.check_update_panel.Controls.Add(this.update_error_pic);
             this.check_update_panel.Controls.Add(this.check_update_btn);
             this.check_update_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.check_update_panel.Location = new System.Drawing.Point(3, 173);
+            this.check_update_panel.Location = new System.Drawing.Point(3, 207);
             this.check_update_panel.Name = "check_update_panel";
             this.check_update_panel.Size = new System.Drawing.Size(459, 34);
             this.check_update_panel.TabIndex = 3;
@@ -852,7 +866,7 @@
             this.localization_panel.Controls.Add(this.localization_error_pic);
             this.localization_panel.Controls.Add(this.localization_update_btn);
             this.localization_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.localization_panel.Location = new System.Drawing.Point(3, 139);
+            this.localization_panel.Location = new System.Drawing.Point(3, 173);
             this.localization_panel.Name = "localization_panel";
             this.localization_panel.Size = new System.Drawing.Size(459, 34);
             this.localization_panel.TabIndex = 6;
@@ -888,7 +902,7 @@
             this.language_panel.Controls.Add(this.language_list);
             this.language_panel.Controls.Add(this.language_label);
             this.language_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.language_panel.Location = new System.Drawing.Point(3, 105);
+            this.language_panel.Location = new System.Drawing.Point(3, 139);
             this.language_panel.Name = "language_panel";
             this.language_panel.Size = new System.Drawing.Size(459, 34);
             this.language_panel.TabIndex = 1;
@@ -923,7 +937,7 @@
             this.volume_panel.Controls.Add(this.volume);
             this.volume_panel.Controls.Add(this.volume_label);
             this.volume_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.volume_panel.Location = new System.Drawing.Point(3, 71);
+            this.volume_panel.Location = new System.Drawing.Point(3, 105);
             this.volume_panel.Name = "volume_panel";
             this.volume_panel.Size = new System.Drawing.Size(459, 34);
             this.volume_panel.TabIndex = 4;
@@ -956,7 +970,7 @@
             this.sound_panel.Controls.Add(this.sounds_on_off);
             this.sound_panel.Controls.Add(this.sounds_label);
             this.sound_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sound_panel.Location = new System.Drawing.Point(3, 37);
+            this.sound_panel.Location = new System.Drawing.Point(3, 71);
             this.sound_panel.Name = "sound_panel";
             this.sound_panel.Size = new System.Drawing.Size(459, 34);
             this.sound_panel.TabIndex = 0;
@@ -992,7 +1006,7 @@
             this.console_panel.Controls.Add(this.console_btn);
             this.console_panel.Controls.Add(this.console_label);
             this.console_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.console_panel.Location = new System.Drawing.Point(3, 3);
+            this.console_panel.Location = new System.Drawing.Point(3, 37);
             this.console_panel.Name = "console_panel";
             this.console_panel.Size = new System.Drawing.Size(459, 34);
             this.console_panel.TabIndex = 5;
@@ -1020,6 +1034,42 @@
             this.console_label.TabIndex = 0;
             this.console_label.Text = "Консоль разработчика";
             this.console_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // show_tutorial_panel
+            // 
+            this.show_tutorial_panel.Controls.Add(this.show_tutorial);
+            this.show_tutorial_panel.Controls.Add(this.show_tutorial_label);
+            this.show_tutorial_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.show_tutorial_panel.Location = new System.Drawing.Point(3, 3);
+            this.show_tutorial_panel.Name = "show_tutorial_panel";
+            this.show_tutorial_panel.Size = new System.Drawing.Size(459, 34);
+            this.show_tutorial_panel.TabIndex = 7;
+            // 
+            // show_tutorial
+            // 
+            this.show_tutorial.Appearance = System.Windows.Forms.Appearance.Button;
+            this.show_tutorial.Checked = true;
+            this.show_tutorial.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.show_tutorial.Dock = System.Windows.Forms.DockStyle.Right;
+            this.show_tutorial.Location = new System.Drawing.Point(389, 0);
+            this.show_tutorial.Name = "show_tutorial";
+            this.show_tutorial.Size = new System.Drawing.Size(70, 34);
+            this.show_tutorial.TabIndex = 1;
+            this.show_tutorial.TabStop = false;
+            this.show_tutorial.Text = "Вкл.";
+            this.show_tutorial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.show_tutorial.UseVisualStyleBackColor = false;
+            this.show_tutorial.CheckedChanged += new System.EventHandler(this.Show_tutorial_CheckedChanged);
+            // 
+            // show_tutorial_label
+            // 
+            this.show_tutorial_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.show_tutorial_label.Location = new System.Drawing.Point(0, 0);
+            this.show_tutorial_label.Name = "show_tutorial_label";
+            this.show_tutorial_label.Size = new System.Drawing.Size(273, 34);
+            this.show_tutorial_label.TabIndex = 0;
+            this.show_tutorial_label.Text = "Показывать обучение";
+            this.show_tutorial_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // video_settings
             // 
@@ -2829,7 +2879,7 @@
             // 
             this.account_panel.BackColor = System.Drawing.Color.DarkGray;
             this.account_panel.Controls.Add(this.account_background);
-            this.account_panel.Location = new System.Drawing.Point(1016, 297);
+            this.account_panel.Location = new System.Drawing.Point(1016, 12);
             this.account_panel.Name = "account_panel";
             this.account_panel.Size = new System.Drawing.Size(496, 282);
             this.account_panel.TabIndex = 64;
@@ -2907,6 +2957,82 @@
             this.nickname_label.Text = "Имя игрока:";
             this.nickname_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // hilf_mir_panel
+            // 
+            this.hilf_mir_panel.BackColor = System.Drawing.Color.DarkGray;
+            this.hilf_mir_panel.Controls.Add(this.hilf_mir_background_top);
+            this.hilf_mir_panel.Controls.Add(this.hilf_mir_background_bottom);
+            this.hilf_mir_panel.Location = new System.Drawing.Point(1016, 297);
+            this.hilf_mir_panel.Name = "hilf_mir_panel";
+            this.hilf_mir_panel.Size = new System.Drawing.Size(496, 282);
+            this.hilf_mir_panel.TabIndex = 65;
+            this.hilf_mir_panel.Visible = false;
+            this.hilf_mir_panel.VisibleChanged += new System.EventHandler(this.Hilf_mir_panel_VisibleChanged);
+            // 
+            // hilf_mir_background_top
+            // 
+            this.hilf_mir_background_top.AutoScroll = true;
+            this.hilf_mir_background_top.BackColor = System.Drawing.Color.Black;
+            this.hilf_mir_background_top.Controls.Add(this.hilf_mir_list);
+            this.hilf_mir_background_top.Location = new System.Drawing.Point(3, 3);
+            this.hilf_mir_background_top.Name = "hilf_mir_background_top";
+            this.hilf_mir_background_top.Size = new System.Drawing.Size(490, 220);
+            this.hilf_mir_background_top.TabIndex = 50;
+            // 
+            // hilf_mir_list
+            // 
+            this.hilf_mir_list.BackColor = System.Drawing.Color.Black;
+            this.hilf_mir_list.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hilf_mir_list.ForeColor = System.Drawing.Color.White;
+            this.hilf_mir_list.Location = new System.Drawing.Point(0, 0);
+            this.hilf_mir_list.Name = "hilf_mir_list";
+            this.hilf_mir_list.ReadOnly = true;
+            this.hilf_mir_list.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.hilf_mir_list.Size = new System.Drawing.Size(490, 220);
+            this.hilf_mir_list.TabIndex = 0;
+            this.hilf_mir_list.TabStop = false;
+            this.hilf_mir_list.Text = "";
+            // 
+            // hilf_mir_background_bottom
+            // 
+            this.hilf_mir_background_bottom.BackColor = System.Drawing.Color.Black;
+            this.hilf_mir_background_bottom.Controls.Add(this.show_hilf_mir);
+            this.hilf_mir_background_bottom.Controls.Add(this.hilf_mir_close_btn_r);
+            this.hilf_mir_background_bottom.Location = new System.Drawing.Point(3, 223);
+            this.hilf_mir_background_bottom.Name = "hilf_mir_background_bottom";
+            this.hilf_mir_background_bottom.Size = new System.Drawing.Size(490, 56);
+            this.hilf_mir_background_bottom.TabIndex = 51;
+            // 
+            // show_hilf_mir
+            // 
+            this.show_hilf_mir.AutoSize = true;
+            this.show_hilf_mir.Checked = true;
+            this.show_hilf_mir.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.show_hilf_mir.ForeColor = System.Drawing.Color.White;
+            this.show_hilf_mir.Location = new System.Drawing.Point(10, 15);
+            this.show_hilf_mir.Name = "show_hilf_mir";
+            this.show_hilf_mir.Size = new System.Drawing.Size(227, 28);
+            this.show_hilf_mir.TabIndex = 49;
+            this.show_hilf_mir.TabStop = false;
+            this.show_hilf_mir.Text = "Показывать обучение";
+            this.show_hilf_mir.UseVisualStyleBackColor = true;
+            this.show_hilf_mir.CheckedChanged += new System.EventHandler(this.Show_hilf_mir_CheckedChanged);
+            // 
+            // hilf_mir_close_btn_r
+            // 
+            this.hilf_mir_close_btn_r.AutoSize = true;
+            this.hilf_mir_close_btn_r.BackColor = System.Drawing.Color.Black;
+            this.hilf_mir_close_btn_r.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.hilf_mir_close_btn_r.ForeColor = System.Drawing.Color.White;
+            this.hilf_mir_close_btn_r.Location = new System.Drawing.Point(350, 6);
+            this.hilf_mir_close_btn_r.Name = "hilf_mir_close_btn_r";
+            this.hilf_mir_close_btn_r.Size = new System.Drawing.Size(130, 41);
+            this.hilf_mir_close_btn_r.TabIndex = 48;
+            this.hilf_mir_close_btn_r.TabStop = false;
+            this.hilf_mir_close_btn_r.Text = "Закрыть";
+            this.hilf_mir_close_btn_r.UseVisualStyleBackColor = false;
+            this.hilf_mir_close_btn_r.Click += new System.EventHandler(this.Hilf_mir_close_btn_r_Click);
+            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2914,6 +3040,8 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1924, 896);
+            this.Controls.Add(this.change_logs_panel);
+            this.Controls.Add(this.hilf_mir_panel);
             this.Controls.Add(this.account_panel);
             this.Controls.Add(this.account_btn_c);
             this.Controls.Add(this.game_mode_panel);
@@ -2923,7 +3051,6 @@
             this.Controls.Add(this.connect_panel);
             this.Controls.Add(this.host_panel);
             this.Controls.Add(this.multiplayer_panel);
-            this.Controls.Add(this.change_logs_panel);
             this.Controls.Add(this.press_any_btn_panel);
             this.Controls.Add(this.buttons_panel);
             this.Controls.Add(this.difficulty_panel);
@@ -2942,6 +3069,7 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainMenu_FormClosing);
             this.Load += new System.EventHandler(this.MainMenu_Load);
+            this.Shown += new System.EventHandler(this.MainMenu_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainMenu_KeyDown);
             this.buttons_panel.ResumeLayout(false);
             this.button_background.ResumeLayout(false);
@@ -2976,6 +3104,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.volume)).EndInit();
             this.sound_panel.ResumeLayout(false);
             this.console_panel.ResumeLayout(false);
+            this.show_tutorial_panel.ResumeLayout(false);
             this.video_settings.ResumeLayout(false);
             this.interface_size_panel.ResumeLayout(false);
             this.interface_size_panel.PerformLayout();
@@ -3054,6 +3183,10 @@
             this.account_background.ResumeLayout(false);
             this.account_background.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.player_icon)).EndInit();
+            this.hilf_mir_panel.ResumeLayout(false);
+            this.hilf_mir_background_top.ResumeLayout(false);
+            this.hilf_mir_background_bottom.ResumeLayout(false);
+            this.hilf_mir_background_bottom.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3271,5 +3404,14 @@
         private System.Windows.Forms.Panel interface_size_panel;
         private System.Windows.Forms.TrackBar interface_size_choice;
         private System.Windows.Forms.Label interface_size_label;
+        private System.Windows.Forms.Panel hilf_mir_panel;
+        private System.Windows.Forms.Panel hilf_mir_background_bottom;
+        private System.Windows.Forms.CheckBox show_hilf_mir;
+        private System.Windows.Forms.Button hilf_mir_close_btn_r;
+        private System.Windows.Forms.Panel hilf_mir_background_top;
+        private System.Windows.Forms.RichTextBox hilf_mir_list;
+        private System.Windows.Forms.Panel show_tutorial_panel;
+        private System.Windows.Forms.CheckBox show_tutorial;
+        private System.Windows.Forms.Label show_tutorial_label;
     }
 }
