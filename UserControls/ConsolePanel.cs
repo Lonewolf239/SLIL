@@ -21,6 +21,7 @@ namespace SLIL.UserControls
         private readonly List<string> previous_cheat = new List<string>();
         public List<Entity> Entities;
         public Player player;
+        public string command = "";
         private readonly Dictionary<string, Color> colorMap = new Dictionary<string, Color>
         {
             { "-", Color.Yellow },
@@ -45,19 +46,18 @@ namespace SLIL.UserControls
 
         private void Command_input_KeyDown(object sender, KeyEventArgs e)
         {
+            e.SuppressKeyPress = true;
+            e.Handled = true;
             SLIL parent = (Parent.FindForm() as SLIL);
-            if (e.KeyCode == Keys.Escape)
-                e.SuppressKeyPress = true;
             if (e.KeyCode == Keys.Enter)
             {
                 Color color = foreColors[color_index];
-                e.SuppressKeyPress = true;
-                if (command_input.Text.Length > 0)
+                if (command.Length > 0)
                 {
                     bool show_date = true, show_message = true;
                     string message = null, time = null;
-                    string cheat = command_input.Text.ToUpper().Trim(' ').Replace("`", null);
-                    command_input.Text = null;
+                    string cheat = command.ToUpper().Trim(' ').Replace("`", null);
+                    command = "";
                     if (cheat == "HELP")
                     {
                         show_date = false;
@@ -132,6 +132,9 @@ namespace SLIL.UserControls
                                  "~│~ -EFCLEAR-     ~│~ Cleaning up effects                         ~│~\n" +
                                  "~│~ -EFGIVE_-*X*    ~│~ Issue effect under X id                     ~│~\n" +
                                  "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Issue effect under X id for Y seconds       ~│~\n" +
+                                 "~├─────────────┼─────────────────────────────────────────────┤~\n" +
+                                 "~│~ -ENTITIES-    ~│~ List of entities                            ~│~\n" +
+                                 "~│~ -ENT_-*X*-_AI_-*Y*  ~│~ Spawn entity under ID X, Y = 1 - with AI    ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -EGTRE-       ~│~ Issue first aid kits                        ~│~\n" +
                                  "~│~ -DHURF-       ~│~ Issue adrenaline                            ~│~\n" +
@@ -372,7 +375,7 @@ namespace SLIL.UserControls
                     {
                         show_date = false;
                         console.Text = null;
-                        message = "SLIL console *v1.3*\nType \"-help-\" for a list of commands...";
+                        message = "SLIL console *v1.4*\nType \"-help-\" for a list of commands...";
                         console.Refresh();
                     }
                     else if (cheat == "SLC")
@@ -512,7 +515,7 @@ namespace SLIL.UserControls
                                 color = foreColors[color_index];
                                 show_date = false;
                                 console.Text = null;
-                                message = "SLIL console *v1.3*\nType \"-help-\" for a list of commands...";
+                                message = "SLIL console *v1.4*\nType \"-help-\" for a list of commands...";
                                 console.Refresh();
                             }
                         }
@@ -731,6 +734,82 @@ namespace SLIL.UserControls
                                 message = "Incorrect data entered! X is not a number.";
                             }
                         }
+                        else if (cheat == "ENTITIES")
+                        {
+                            show_date = false;
+                            message = "\n" +
+                                 "~┌─────┬──────────────────┐~\n" +
+                                 "~│~ *ID*  ~│~ *Entity*           ~│~\n" +
+                                 "~├─────┼──────────────────┤~\n";
+                            string[,] entities =
+                            {
+                                { "Player", "0" },
+                                { "PlayerDeadBody", "1" },
+                                { "Zombie", "2" },
+                                { "Dog", "3" },
+                                { "Abomination", "4" },
+                                { "Bat", "5" },
+                                { "Box", "6" },
+                                { "Barrel", "7" },
+                                { "ShopDoor", "8" },
+                                { "ShopMan", "9" },
+                                { "Teleport", "10" },
+                                { "HittingTheWall", "11" },
+                                { "RpgRocket", "12" },
+                                { "Explosion", "13" },
+                                { "SillyCat", "14" },
+                                { "GreenGnome", "15" },
+                                { "EnergyDrink", "16" },
+                                { "Pyro", "17" }
+                            };
+                            for (int i = 0; i < entities.GetLength(0); i++)
+                            {
+                                string id = entities[i, 1].PadRight(4);
+                                string name = entities[i, 0].PadRight(17);
+                                message += $"~│~ *{id}*~│~ -{name}-~│~\n";
+                            }
+                            message += "~└─────┴──────────────────┘~\n" +
+                                "-ENT_-*X*-_AI_-*Y* Spawn entity under ID X, Y = 1 - with AI";
+                        }
+                        else if (cheat.StartsWith("ENT_") && cheat.Contains("_AI_"))
+                        {
+                            try
+                            {
+                                int x = Convert.ToInt32(cheat.Split('_')[1]);
+                                int y = Convert.ToInt32(cheat.Split('_')[3]);
+                                if (x >= 0 && x < 18)
+                                {
+                                    if (y < 0 || y > 1)
+                                    {
+                                        color = Color.Red;
+                                        message = "Incorrect value! Y must be 0 or 1";
+                                    }
+                                    else
+                                    {
+                                        if (parent.SpawnEntity(x, y == 1))
+                                        {
+                                            if (y == 0) message = $"Creature with ID X successfully spawned with AI disabled";
+                                            else message = $"Creature with ID X successfully spawned with AI enabled";
+                                        }
+                                        else
+                                        {
+                                            color = Color.Red;
+                                            message = $"There was an error while spawning the enemy. Most likely a wall got in the way.";
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    color = Color.Red;
+                                    message = $"There is no entity under ID {x}";
+                                }
+                            }
+                            catch
+                            {
+                                color = Color.Red;
+                                message = "Incorrect data entered! X or Y is not a number.";
+                            }
+                        }
                         else if (cheat == "KILL")
                         {
                             show_message = false;
@@ -890,28 +969,73 @@ namespace SLIL.UserControls
                         previous_cheat.Add(cheat);
                         cheat_index = previous_cheat.Count - 1;
                     }
+                    ConsoleAppendText("\n\nEnter the command: ", foreColors[color_index]);
+                    console.ScrollToCaret();
                 }
             }
-            if (previous_cheat.Count > 0)
+            else if (e.KeyCode != Keys.Up && e.KeyCode != Keys.Down)
             {
-                if (e.KeyCode == Keys.Up)
+                if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+                    return;
+                if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
                 {
-                    command_input.Text = previous_cheat[cheat_index];
-                    cheat_index--;
-                    if (cheat_index < 0)
-                        cheat_index = previous_cheat.Count - 1;
-                    command_input.Text += " ";
-                    command_input.SelectionStart = command_input.Text.Length;
+                    if (console.Text[console.Text.Length - 2] == ':' && console.Text[console.Text.Length - 1] == ' ') return;
+                    if (command.Length > 0)
+                    {
+                        int start = command.Length - 1;
+                        if (start < 0) start = 0;
+                        command = command.Remove(start);
+                    }
+                    ConsoleDeleteText(1);
+                    return;
                 }
-                if (e.KeyCode == Keys.Down)
-                {
-                    command_input.Text = previous_cheat[cheat_index];
-                    cheat_index++;
-                    if (cheat_index >= previous_cheat.Count)
-                        cheat_index = 0;
-                    command_input.SelectionStart = command_input.Text.Length;
-                }
+                char c = (char)e.KeyValue;
+                if (!char.IsLetterOrDigit(c) && e.KeyCode != Keys.OemMinus)
+                    return;
+                if (e.KeyCode == Keys.OemMinus) c = '_';
+                else if (e.KeyCode.ToString().StartsWith("Oem") || e.KeyCode == Keys.Divide || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Add)
+                    return;
+                command += c.ToString();
+                ConsoleAppendColoredText(c.ToString(), Color.Cyan);
             }
+            if (e.KeyCode == Keys.Up)
+            {                
+                if (previous_cheat.Count == 0) return;
+                ClearCommand();
+                command = previous_cheat[cheat_index];
+                cheat_index--;
+                if (cheat_index < 0)
+                    cheat_index = previous_cheat.Count - 1;
+                ConsoleAppendColoredText(command, Color.Cyan);
+            }
+            if (e.KeyCode == Keys.Down)
+            {                
+                if (previous_cheat.Count == 0) return;
+                ClearCommand();
+                command = previous_cheat[cheat_index];
+                cheat_index++;
+                if (cheat_index >= previous_cheat.Count)
+                    cheat_index = 0;
+                ConsoleAppendColoredText(command, Color.Cyan);
+            }
+        }
+
+        public void ClearCommand()
+        {
+            ConsoleDeleteText(command.Length);
+            command = "";
+        }
+
+        private void ConsoleDeleteText(int count)
+        {
+            if (count == 0) return;
+            console.ReadOnly = false;
+            int length = console.Text.Length;
+            console.Select(length - count, count);
+            console.SelectedText = "";
+            console.Select(length - count, 0);
+            console.ScrollToCaret();
+            console.ReadOnly = true;
         }
 
         private void ConsoleAppendText(string text, Color color)
@@ -956,16 +1080,11 @@ namespace SLIL.UserControls
             if (console.Text.Length == console.MaxLength)
             {
                 console.Clear();
-                ConsoleAppendText("SLIL console *v1.3*\nType \"-help-\" for a list of commands...", foreColors[color_index]);
+                ConsoleAppendText("SLIL console *v1.4*\nType \"-help-\" for a list of commands...", foreColors[color_index]);
                 ConsoleAppendText("*The console was cleared due to a buffer overflow*", foreColors[color_index]);
+                ConsoleAppendText("\n\nEnter the command: ", foreColors[color_index]);
                 console.Refresh();
             }
-        }
-
-        private void Console_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Oemtilde)
-                e.SuppressKeyPress = true;
         }
 
         public void Log(string message, bool newline, bool showTime, Color color)

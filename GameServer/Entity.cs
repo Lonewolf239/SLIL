@@ -6,6 +6,7 @@ namespace GameServer
     {
         public int ID { get; set; }
         public int EntityID { get; set; }
+        public bool HasAI { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public double EntityWidth;
@@ -35,6 +36,7 @@ namespace GameServer
             EntityWidth = this.GetEntityWidth();
             RespondsToFlashlight = false;
             Texture = this.GetTexture();
+            HasAI = true;
             X = x;
             Y = y;
             IntX = (int)x;
@@ -51,6 +53,7 @@ namespace GameServer
             EntityWidth = this.GetEntityWidth();
             RespondsToFlashlight = false;
             Texture = this.GetTexture();
+            HasAI = true;
             X = x;
             Y = y;
             IntX = (int)x;
@@ -112,7 +115,6 @@ namespace GameServer
     {
         protected double HP { get; set; }
         public double A { get; set; }
-        public bool HasAI { get; set; }
         protected char[] ImpassibleCells;
         protected int MovesInARow;
         protected int NumberOfMovesLeft;
@@ -156,7 +158,6 @@ namespace GameServer
 
         private void Init(int map_width)
         {
-            HasAI = true;
             MAX_HP = this.GetMAX_HP();
             MAX_MONEY = this.GetMAX_MONEY();
             MIN_MONEY = this.GetMIN_MONEY();
@@ -472,6 +473,46 @@ namespace GameServer
         }
     }
 
+    public abstract class Boxes : NPC
+    {
+        public bool BoxWithMoney { get; set; }
+        public double MoneyChance { get; set; }
+
+        public Boxes(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Boxes(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            CanHit = true;
+            HP = 2.5;
+        }
+
+        public void SetMoneyChance()
+        {
+            if (rand.NextDouble() <= MoneyChance)
+                BoxWithMoney = true;
+        }
+
+        public void BreakTheBox()
+        {
+            CanHit = false;
+            Texture++;
+            base.AnimationsToStatic();
+        }
+
+        public override bool DealDamage(double damage)
+        {
+            if (!CanHit) return false;
+            HP -= damage;
+            if (HP <= 0)
+            {
+                BreakTheBox();
+                return true;
+            }
+            return false;
+        }
+    }
+
     public class RpgRocket : Rockets
     {
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=' };
@@ -626,46 +667,6 @@ namespace GameServer
             Texture = 34;
             Animated = true;
             base.SetAnimations(1, 0);
-        }
-    }
-
-    public abstract class Boxes : NPC
-    {
-        public bool BoxWithMoney { get; set; }
-        public double MoneyChance { get; set; }
-
-        public Boxes(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Boxes(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
-
-        private void Init()
-        {
-            CanHit = true;
-            HP = 2.5;
-        }
-
-        public void SetMoneyChance()
-        {
-            if (rand.NextDouble() <= MoneyChance)
-                BoxWithMoney = true;
-        }
-
-        public void BreakTheBox()
-        {
-            CanHit = false;
-            Texture++;
-            base.AnimationsToStatic();
-        }
-
-        public override bool DealDamage(double damage)
-        {
-            if (!CanHit) return false;
-            HP -= damage;
-            if (HP <= 0)
-            {
-                BreakTheBox();
-                return true;
-            }
-            return false;
         }
     }
 

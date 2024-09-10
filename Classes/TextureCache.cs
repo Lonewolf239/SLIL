@@ -49,7 +49,7 @@ namespace SLIL.Classes
             Properties.Resources.player_stoped,
             Properties.Resources.player_aiming,
             Properties.Resources.player_shooted,
-            Properties.Resources.player_stoped, //43
+            Properties.Resources.player_DEAD, //43
             Properties.Resources.box, //44
             Properties.Resources.box_broken,
             Properties.Resources.barrel, //46
@@ -102,7 +102,7 @@ namespace SLIL.Classes
             Properties.Resources.player_stoped,
             Properties.Resources.player_aiming,
             Properties.Resources.player_shooted,
-            Properties.Resources.player_stoped, //43
+            Properties.Resources.player_DEAD, //43
             Properties.Resources.box, //44
             Properties.Resources.box_broken,
             Properties.Resources.barrel, //46

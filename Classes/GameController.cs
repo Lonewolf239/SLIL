@@ -194,6 +194,10 @@ namespace SLIL.Classes
 
         public List<Entity> GetEntities() => Game.GetEntities();
 
+        public int GetMaxEntityID() => Game.MaxEntityID;
+
+        public void AddEntity(Entity entity) => Game.AddEntity(entity);
+
         public void SetPlayerIDInvoker(int id) => this.playerID = id;
 
         public void AddPet(int index)

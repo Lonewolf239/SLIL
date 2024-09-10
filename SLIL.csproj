@@ -1207,5 +1207,8 @@
   <ItemGroup>
     <None Include="Images\h_scope_shotgun.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\player_DEAD.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

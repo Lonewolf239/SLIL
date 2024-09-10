@@ -756,6 +756,78 @@ namespace SLIL
             else Controller.StopGame(0);
         }
 
+        public bool SpawnEntity(int id, bool hasAI)
+        {
+            Player player = Controller.GetPlayer();
+            Entity entity = null;
+            double moveSin = Math.Sin(player.A) * 3;
+            double moveCos = Math.Cos(player.A) * 3;
+            double x = player.X + moveSin;
+            double y = player.Y + moveCos;
+            if (Controller.GetMap()[(int)y * Controller.GetMapWidth() + (int)x] != '.') return false;
+            switch (id)
+            {
+                case 0: // player
+                    entity = new Player(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 1: // player dead
+                    entity = new PlayerDeadBody(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 2: // zombie
+                    entity = new Man(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 3: // dog
+                    entity = new Dog(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 4: // abomination
+                    entity = new Abomination(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 5: // bat
+                    entity = new Bat(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 6: // box
+                    entity = new Box(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 7: // barrel
+                    entity = new Barrel(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 8: // shop door
+                    entity = new ShopDoor(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 9: // shop man
+                    entity = new ShopMan(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 10: // teleport
+                    entity = new Teleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 11: // hitting the wall
+                    entity = new HittingTheWall(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 12: // rpg rocket
+                    entity = new RpgRocket(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 13: // explosion
+                    entity = new Explosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 14: // silly cat
+                    entity = new SillyCat(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 15: // green gnome
+                    entity = new GreenGnome(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 16: // energy drink
+                    entity = new EnergyDrink(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 17: // pyro
+                    entity = new Pyro(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+            }
+            if (entity == null) return false;
+            entity.HasAI = hasAI;
+            Controller.AddEntity(entity);
+            return true;
+        }
+
         //  #====    SLIL methods   ====#
 
         private void SLIL_Activated(object sender, EventArgs e) => active = true;
@@ -1176,7 +1248,7 @@ namespace SLIL
                     h_scope_shotgun[scope_type] = GetScope(h_scope_shotgun[scope_type]);
                     console_panel.Visible = false;
                     mouse_timer.Start();
-                    console_panel.command_input.Text = null;
+                    console_panel.ClearCommand();
                     display.Focus();
                     int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
                     int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
@@ -1342,14 +1414,14 @@ namespace SLIL
                     {
                         mouse_timer.Stop();
                         console_panel.player = Controller.GetPlayer();
-                        console_panel.command_input.Text = null;
-                        console_panel.command_input.Focus();
+                        console_panel.ClearCommand();
+                        console_panel.console.Focus();
                         console_panel.BringToFront();
                     }
                     else
                     {
                         mouse_timer.Start();
-                        console_panel.command_input.Text = null;
+                        console_panel.ClearCommand();
                         display.Focus();
                         int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
                         int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
@@ -3005,7 +3077,8 @@ namespace SLIL
                     player = player,
                     Entities = Controller.GetEntities()
                 };
-                console_panel.Log("SLIL console *v1.3*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
+                console_panel.Log("SLIL console *v1.4*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
+                console_panel.Log("\n\nEnter the command: ", false, false, Color.Lime);
                 Controls.Add(console_panel);
                 display = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
                 display.MouseDown += new MouseEventHandler(Display_MouseDown);

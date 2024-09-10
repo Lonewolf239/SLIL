@@ -117,6 +117,7 @@ namespace SLIL.Classes
                 if (GameStarted)
                 {
                     if (Entities[i] is Player) continue;
+                    if (!Entities[i].HasAI) continue;
                     var entity = Entities[i] as dynamic;
                     var playerListOrdered = playersList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
                     Player player = playerListOrdered.First();
@@ -243,6 +244,7 @@ namespace SLIL.Classes
                 if (GameStarted)
                 {
                     if (!(Entities[i] is Enemy)) return;
+                    if (!Entities[i].HasAI) return;
                     var enemy = Entities[i] as dynamic;
                     playersList.OrderBy((playerI) => Math.Pow(enemy.X - playerI.X, 2) + Math.Pow(enemy.Y - playerI.Y, 2));
                     Player player = playersList[0];
@@ -701,9 +703,7 @@ namespace SLIL.Classes
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
                         {
                             if (!IsMultiplayer)
-                            {
                                 GameOver(1);
-                            }
                             return;
                         }
                         return;
@@ -1114,6 +1114,7 @@ namespace SLIL.Classes
             }
             if (target is Player p)
             {
+                if (!p.HasAI) return false;
                 if (attacker is Player attackerPlayer && p.DealDamage(damage))
                 {
                     double multiplier = 1;
@@ -1127,6 +1128,7 @@ namespace SLIL.Classes
             }
             if (target is Creature c)
             {
+                if (!c.HasAI) return false;
                 if (c.DealDamage(damage))
                 {
                     if (attacker is Player attackerPlayer)
@@ -1155,6 +1157,13 @@ namespace SLIL.Classes
                 return false;
             }
             return false;
+        }
+
+        public void AddEntity(Entity entity)
+        {
+            entity.ID = MaxEntityID;
+            MaxEntityID++;
+            Entities.Add(entity);
         }
 
         private void TimeRemain_Tick(object sender, EventArgs e)
