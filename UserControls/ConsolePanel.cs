@@ -788,8 +788,8 @@ namespace SLIL.UserControls
                                     {
                                         if (parent.SpawnEntity(x, y == 1))
                                         {
-                                            if (y == 0) message = $"Creature with ID X successfully spawned with AI disabled";
-                                            else message = $"Creature with ID X successfully spawned with AI enabled";
+                                            if (y == 0) message = $"Creature with ID {x} successfully spawned with AI disabled";
+                                            else message = $"Creature with ID {x} successfully spawned with AI enabled";
                                         }
                                         else
                                         {
@@ -990,9 +990,10 @@ namespace SLIL.UserControls
                     return;
                 }
                 char c = (char)e.KeyValue;
-                if (!char.IsLetterOrDigit(c) && e.KeyCode != Keys.OemMinus)
+                if (!char.IsLetterOrDigit(c) && e.KeyCode != Keys.OemMinus && e.KeyCode != Keys.OemPeriod && e.KeyCode != Keys.Oemcomma)
                     return;
                 if (e.KeyCode == Keys.OemMinus) c = '_';
+                else if (e.KeyCode == Keys.OemPeriod || e.KeyCode == Keys.Oemcomma) c = ',';
                 else if (e.KeyCode.ToString().StartsWith("Oem") || e.KeyCode == Keys.Divide || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Add)
                     return;
                 command += c.ToString();
@@ -1029,13 +1030,12 @@ namespace SLIL.UserControls
         private void ConsoleDeleteText(int count)
         {
             if (count == 0) return;
-            console.ReadOnly = false;
             int length = console.Text.Length;
             console.Select(length - count, count);
+            console.ReadOnly = false;
             console.SelectedText = "";
-            console.Select(length - count, 0);
-            console.ScrollToCaret();
             console.ReadOnly = true;
+            console.Select(length - count, 0);
         }
 
         private void ConsoleAppendText(string text, Color color)
