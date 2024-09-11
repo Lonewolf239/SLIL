@@ -149,14 +149,12 @@ namespace SLIL
             string message = $"New update is out! Want to install it?\n\n" +
                           $"Current version: {current_version.Trim('|')}\n" +
                           $"Actual version: ";
-            string update_text = "\n\nList of changes:";
             if (DownloadedLocalizationList)
             {
                 message = $"{Localizations.GetLString(Language, "0-97")}\n\n" +
                              $"{Localizations.GetLString(Language, "0-98")} {current_version.Trim('|')}\n" +
                              $"{Localizations.GetLString(Language, "0-99")} ";
                 title = Localizations.GetLString(Language, "0-96");
-                update_text = "\n\n" + Localizations.GetLString(Language, "0-100");
             }
             using (WebClient webClient = new WebClient())
             {
@@ -194,21 +192,9 @@ namespace SLIL
                     }
                     else
                     {
-                        string[] lines = e.Result.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                        if (lines.Length > 0 && !lines[0].Contains(current_version))
+                        if (e.Result.Length > 0 && !e.Result.Contains(current_version))
                         {
-                            message += lines[0].Trim('|');
-                            message += update_text;
-                            bool has_loc = lines.Contains(GetLanguageCode());
-                            for (int i = 1; i < lines.Length; i++)
-                            {
-                                string line = lines[i].Trim();
-                                if (line.StartsWith(";")) continue;
-                                if (has_loc && line.StartsWith(GetLanguageCode()))
-                                    message += "\n• " + line.Substring(3);
-                                else if (!has_loc && line.StartsWith("en"))
-                                    message += "\n• " + line.Substring(3);
-                            }
+                            message += e.Result.Trim('|');
                             if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
                                 if (!File.Exists("UpdateDownloader.exe"))
@@ -721,6 +707,7 @@ namespace SLIL
                 show_hilf_mir.Text = Localizations.GetLString(Language, "0-116");
                 show_tutorial_label.Text = Localizations.GetLString(Language, "0-116");
                 tutorial_label.Text = Localizations.GetLString(Language, "0-117");
+                tutorial_btn_cp.Text = Localizations.GetLString(Language, "0-118");
                 press_any_btn_label.Text = Localizations.GetLString(Language, "0-45");
                 cant_use_panel.Text = Localizations.GetLString(Language, "0-107");
                 interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
@@ -803,6 +790,7 @@ namespace SLIL
                 show_hilf_mir.Text = "Show tutorial";
                 show_tutorial_label.Text = "Show tutorial";
                 tutorial_label.Text = "It seems you are a beginner.\nWould you like to take a training course?";
+                tutorial_btn_cp.Text = "Complete training";
                 press_any_btn_label.Text = "Press any button or ESC to cancel";
                 cant_use_panel.Text = "This button can't be used!";
                 interface_size_label.Text = "Interface size: " + GetInterfaceSize();

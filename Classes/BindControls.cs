@@ -17,7 +17,7 @@ namespace SLIL.Classes
         public Keys Show_map_1 { get; set; }
         public Keys Flashlight { get; set; }
         public Keys Item { get; set; }
-        public Keys SelectItem { get; set; }
+        public Keys Select_item { get; set; }
         public Keys Run { get; set; }
 
         public BindControls(Dictionary<string, Keys> BindControls)
@@ -34,8 +34,52 @@ namespace SLIL.Classes
             Show_map_1 = BindControls["show_map_1"];
             Flashlight = BindControls["flashlight"];
             Item = BindControls["item"];
-            SelectItem = BindControls["select_item"];
+            Select_item = BindControls["select_item"];
             Run = BindControls["run"];
+        }
+
+        public Keys GetKey(string name_properties)
+        {
+            switch (name_properties.ToLower())
+            {
+                case "screenshot": return Screenshot;
+                case "reloading": return Reloading;
+                case "forward": return Forward;
+                case "back": return Back;
+                case "left": return Left;
+                case "right": return Right;
+                case "interaction_0": return Interaction_0;
+                case "interaction_1": return Interaction_1;
+                case "show_map_0": return Show_map_0;
+                case "show_map_1": return Show_map_1;
+                case "flashlight": return Flashlight;
+                case "item": return Item;
+                case "select_item": return Select_item;
+                case "run": return Run;
+                default: return Keys.None;
+            }
+        }
+
+        public bool ExistKey(string name_properties)
+        {
+            switch (name_properties.ToLower())
+            {
+                case "screenshot":
+                case "reloading":
+                case "forward":
+                case "back":
+                case "left":
+                case "right":
+                case "interaction_0":
+                case "interaction_1":
+                case "show_map_0":
+                case "show_map_1":
+                case "flashlight":
+                case "item":
+                case "select_item":
+                case "run": return true;
+                default: return false;
+            }
         }
     }
 }

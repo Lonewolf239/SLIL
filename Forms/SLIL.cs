@@ -15,6 +15,8 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
+using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace SLIL
 {
@@ -530,6 +532,7 @@ namespace SLIL
             CUSTOM_Y = customY;
             Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
             Controller.StartGame();
+            if (IsTutorial) Controller.GetPlayer().ChangeMoney(485);
         }
         public SLIL(TextureCache textures, string adress, int port)
         {
@@ -1348,7 +1351,7 @@ namespace SLIL
                                 pressed_h = false;
                             }
                         }
-                        if (e.KeyCode == Bind.SelectItem)
+                        if (e.KeyCode == Bind.Select_item)
                         {
                             if (!InSelectingMode)
                             {
@@ -1476,7 +1479,7 @@ namespace SLIL
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
                 {
                     if (e.KeyCode == Bind.Flashlight) TakeFlashlight(true);
-                    if (e.KeyCode == Bind.SelectItem)
+                    if (e.KeyCode == Bind.Select_item)
                     {
                         BlockCamera = CanUnblockCamera = true;
                         InSelectingMode = false;
@@ -1677,7 +1680,7 @@ namespace SLIL
         private void Display_Scroll(object sender, MouseEventArgs e)
         {
             Player player = Controller.GetPlayer();
-            if (ShowSing) UpdateScrollPosition(-e.Delta);
+            if (ShowSing) UpdateScrollPosition(-e.Delta / 10);
             if (GameStarted && !Paused && !BlockInput && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
             {
                 int new_gun = player.CurrentGun;
@@ -2505,50 +2508,102 @@ namespace SLIL
             scrollPosition = Math.Max(0, Math.Min(scrollPosition + delta, (int)maxScroll));
         }
 
+        private string DetectingHotkeysInString(string text)
+        {
+            if (!text.Contains("*")) return text;
+            string result = "";
+            string[] parts = text.Split('*');
+            foreach(string part in parts)
+            {
+                if (!Bind.ExistKey(part))
+                {
+                    result += part;
+                    continue;
+                }
+                result += Bind.GetKey(part).ToString().Replace("Key", null).Replace("Return", "Enter");
+            }
+            return result;
+        }
+
         private string GetTextOnSing()
         {
-            switch (SingID)
+            if (IsTutorial)
             {
-                case 253:
-                    if (MainMenu.DownloadedLocalizationList)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-0");
-                    return "About the game:\n" +
-                        "In SLIL your task is to go through randomly generated labyrinths, find a teleport and enter it.\n" +
-                    "During the passage, you will encounter enemies that you need to destroy with weapons or run away from them.";
-                case 255:
-                    if (MainMenu.DownloadedLocalizationList)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-1");
-                    return "1";
-                case 257:
-                    if (MainMenu.DownloadedLocalizationList)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-2");
-                    return "2";
-                case 259:
-                    if (MainMenu.DownloadedLocalizationList)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-3");
-                    return "3";
-                case 166:
-                    if (MainMenu.DownloadedLocalizationList)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-4");
-                    return "4";
-                case 170:
-                    if (MainMenu.DownloadedLocalizationList)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-5");
-                    return "5";
-                case 369:
-                    if (MainMenu.DownloadedLocalizationList)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-6");
-                    return "6";
-                case 391:
-                    if (MainMenu.DownloadedLocalizationList)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-7");
-                    return "7";
-                case 359:
-                    if (MainMenu.DownloadedLocalizationList)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-8");
-                    return "8";
-                default: return $"Error getting text from the table\nSingID = {SingID}";
+                switch (SingID)
+                {
+                    case 253:
+                        if (MainMenu.DownloadedLocalizationList)
+                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-0"));
+                        return DetectingHotkeysInString("About the game:\n" +
+                            "SLIL is a game where you'll explore procedurally generated labyrinths, battle dangerous enemies, and find a portal to advance to the next level.\n" +
+                            "Arm yourself, be cautious, and don't let the creatures stop your progress towards the goal.");
+                    case 255:
+                        if (MainMenu.DownloadedLocalizationList)
+                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-1"));
+                        return DetectingHotkeysInString("How to play:\n" +
+                            "The controls are done using the *forward*, *back*, *left*, and *right* buttons, as well as the mouse.\n" +
+                            "To shoot, use the left mouse button, and to aim (for sniper rifles only), use the right mouse button.\n" +
+                            "To interact, use the *interaction_0* or *interaction_1* buttons.\n" +
+                            "To open/close the map, press *show_map_0* or *show_map_1*.");
+                    case 257:
+                        if (MainMenu.DownloadedLocalizationList)
+                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-2"));
+                        return DetectingHotkeysInString("Weaponry:\n" +
+                            "The game has a large arsenal of weapons, pets, and consumables.\n" +
+                            "All of these can be purchased at stores that appear randomly on the map and are displayed in pink.\n" +
+                            "Pets are companions that follow the player and provide certain bonuses.\n" +
+                            "Consumables are one-time-use items that temporarily affect the player.\n" +
+                            "To select an item, press *select_item* and hover the mouse cursor over the desired item, and to use it, press *item*.");
+                    case 259:
+                        if (MainMenu.DownloadedLocalizationList)
+                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-3"));
+                        return DetectingHotkeysInString("Stores:\n" +
+                            "In the stores, you'll find everything you need for a successful labyrinth run.\n" +
+                            "Go inside and stock up on weapons, pets, and consumables.\n" +
+                            "For training, you're provided with $500 so you can equip yourself well.\n" +
+                            "The store is located across from this sign.");
+                    case 166:
+                        if (MainMenu.DownloadedLocalizationList)
+                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-4"));
+                        return DetectingHotkeysInString("Supplies:\n" +
+                            "In the game, there are crates and barrels. By destroying them, you can obtain ammunition or money.\n" +
+                            "Crates have a 75% chance to drop ammunition and a 25% chance to drop money.\n" +
+                            "Barrels have a 25% chance to drop ammunition and a 75% chance to drop money.");
+                    case 170:
+                        if (MainMenu.DownloadedLocalizationList)
+                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-5"));
+                        return DetectingHotkeysInString("Portal:\n" +
+                            "Go through it to advance to the next level.\n" +
+                            "Upon transitioning to the next level, you'll receive a cash reward.");
+                    case 369:
+                        if (MainMenu.DownloadedLocalizationList)
+                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-6"));
+                        return DetectingHotkeysInString("Darkness:\n" +
+                            "The catacombs are quite a dark place, but you have a flashlight.\n" +
+                            "Using the flashlight, you'll see a smaller area but at greater distances.\n" +
+                            "To use the flashlight, press *flashlight*.");
+                    case 391:
+                        if (MainMenu.DownloadedLocalizationList)
+                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-7"));
+                        return DetectingHotkeysInString("Monsters:\n" +
+                            "On your path, you'll encounter creatures of evil and chaos.\n" +
+                            "Enemy types:\n" +
+                            "Zombies - flesh possessed by dark forces (slow and weak foe).\n" +
+                            "Rabid dogs - feral beings that have lost their minds (fast but not durable).\n" +
+                            "Orcs - a warlike race thirsting for blood (sluggish but durable foe).\n" +
+                            "Bats - nocturnal creatures of darkness (fast and stealthy threat).");
+                    case 359:
+                        if (MainMenu.DownloadedLocalizationList)
+                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-8"));
+                        return DetectingHotkeysInString("Battle:\n" +
+                            "Behind this door awaits a small arena with a couple of opponents.\n" +
+                            "Test your might in real combat.\n" +
+                            "If you didn't buy any weapons at the store, go back and do so.\n" +
+                            "Going into battle with just a Makarov pistol is a bad idea... ");
+                    default: return $"Error getting text from the table\nSingID = {SingID}";
+                }
             }
+            return $"Error getting text from the table\nSingID = {SingID}";
         }
 
         private Bitmap DrawMiniMap()
@@ -2722,14 +2777,9 @@ namespace SLIL
             int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + icon_size + 2)) / 2;
             int stamine_progressbar_left = stamine_left + icon_size + 2;
             int stamine_progressbar_top = stamine_top + ((icon_size - 3) / 2);
-            bool check = player.STAMINE >= player.MAX_STAMINE / 2.5;
             Image icon = PlayerCanRun() ?
                 Properties.Resources.stamine_icon : Properties.Resources.stamine_cant_run_icon;
             graphicsWeapon.DrawImage(icon, stamine_left, stamine_top, icon_size, icon_size);
-            //old:
-            //graphicsWeapon.FillRectangle(new SolidBrush(Color.Gray), stamine_progressbar_left, stamine_progressbar_top, stamine_width, 2.25f * size);
-            //graphicsWeapon.FillRectangle(check ? new SolidBrush(Color.White) : new SolidBrush(Color.Red), stamine_progressbar_left + 1, stamine_progressbar_top + size, progress_width, 1.5f * size);
-            //new:
             graphicsWeapon.FillRectangle(new SolidBrush(Color.Gray), stamine_progressbar_left, stamine_progressbar_top, stamine_width, 2.25f * size);
             Rectangle progressBackgroundRect = new Rectangle(stamine_progressbar_left + 1, stamine_progressbar_top + 1, stamine_width - 2, size);
             using (LinearGradientBrush progressBrush = new LinearGradientBrush(progressBackgroundRect, Color.Red, Color.White, LinearGradientMode.Horizontal))
