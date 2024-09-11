@@ -467,6 +467,7 @@ namespace SLIL
             Properties.Resources.h_scope_dot,
             Properties.Resources.scope_null
         };
+        private bool IsTutorial = false;
         public static int scope_color = 0, scope_type = 0;
         public static bool ShowMap = false;
         private bool ShowSing = false;
@@ -572,6 +573,7 @@ namespace SLIL
 
         private void SetParameters()
         {
+            IsTutorial = MainMenu.IsTutorial;
             difficulty = MainMenu.difficulty;
             switch (difficulty)
             {
@@ -2438,15 +2440,12 @@ namespace SLIL
             graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH[resolution] - moneySize.Width - icon_size, money_y, icon_size, icon_size);
             if (stage_timer.Enabled)
             {
-                string text = $"STAGE: {player.Stage + 1}";
-                if (inDebug == 1)
-                    text = "STAGE: Debug";
-                else if (inDebug == 2)
-                    text = "STAGE: Debug Boss";
-                else if (difficulty == 4)
-                    text = "STAGE: Custom";
-                else if (difficulty == 6)
-                    text = "STAGE: Tutorial";
+                string text = "STAGE: ";
+                if (IsTutorial) text += "Tutorial";
+                else if (inDebug == 1) text += "Debug";
+                else if (inDebug == 2) text += "Debug Boss";
+                else if (difficulty == 4) text += "Custom";
+                else text += (player.Stage + 1).ToString();
                 SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
                 graphicsWeapon.DrawString(text, consolasFont[interface_size, resolution + 1], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }

@@ -73,7 +73,7 @@ namespace SLIL
             { "run", Keys.ShiftKey },
         };
         public static int resolution = 0, display_size = 0, smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
-        public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true;
+        public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true, IsTutorial = false;
         public static bool inv_y = false, inv_x = false;
         public static double LOOK_SPEED = 6.5;
         public static float Volume = 0.4f;
@@ -1488,6 +1488,7 @@ namespace SLIL
 
         private void Select_mode_btn_Click(object sender, EventArgs e)
         {
+            IsTutorial = false;
             if (singleplayer.Checked)
             {
                 difficulty_panel.Visible = true;
@@ -1683,6 +1684,7 @@ namespace SLIL
             "#.E...E.##.........##.e.#" +
             "#.E...E.##.........##...#" +
             "#########################");
+            IsTutorial = true;
             difficulty = 4;
             SLIL form = new SLIL(textureCache, true, tutorialMap, 8, 8, 3.5, 3.5)
             {

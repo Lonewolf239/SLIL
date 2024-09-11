@@ -783,7 +783,7 @@ namespace SLIL.Classes
                 enemy_count = 0.055;
             else if (difficulty == 3)
                 enemy_count = 0.045;
-            else if (difficulty == 4 || difficulty == 6)
+            else if (difficulty == 4)
             {
                 MazeHeight = CustomMazeHeight;
                 MazeWidth = CustomMazeWidth;
@@ -827,7 +827,7 @@ namespace SLIL.Classes
                     if(player.Stage == 0)
                         player.Guns[1].LevelUpdate();
                 }
-                else if (difficulty == 4 || difficulty == 6)
+                else if (difficulty == 4)
                 {
                     MazeHeight = CustomMazeHeight;
                     MazeWidth = CustomMazeWidth;
