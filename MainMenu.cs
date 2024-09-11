@@ -38,13 +38,6 @@ namespace SLIL
         private readonly PlaySound MainMenuTheme;
         private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
         public static Player player;
-        private readonly Dictionary<string, Color> colorMap = new Dictionary<string, Color>
-        {
-            { ">", Color.Yellow },
-            { "*", Color.Tomato },
-            { "~", Color.Cyan },
-            { "<", Color.White }
-        };
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
             { "screenshot", Keys.F12 },
@@ -727,6 +720,7 @@ namespace SLIL
                 hilf_mir_close_btn_r.Text = Localizations.GetLString(Language, "0-10");
                 show_hilf_mir.Text = Localizations.GetLString(Language, "0-116");
                 show_tutorial_label.Text = Localizations.GetLString(Language, "0-116");
+                tutorial_label.Text = Localizations.GetLString(Language, "0-117");
                 press_any_btn_label.Text = Localizations.GetLString(Language, "0-45");
                 cant_use_panel.Text = Localizations.GetLString(Language, "0-107");
                 interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
@@ -808,6 +802,7 @@ namespace SLIL
                 hilf_mir_close_btn_r.Text = "Close";
                 show_hilf_mir.Text = "Show tutorial";
                 show_tutorial_label.Text = "Show tutorial";
+                tutorial_label.Text = "It seems you are a beginner.\nWould you like to take a training course?";
                 press_any_btn_label.Text = "Press any button or ESC to cancel";
                 cant_use_panel.Text = "This button can't be used!";
                 interface_size_label.Text = "Interface size: " + GetInterfaceSize();
@@ -1658,82 +1653,57 @@ namespace SLIL
 
         //  #====      Tutorial      ====#
 
+        private void Tutorial_btn_cp_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            if (sounds) MainMenuTheme.Stop();
+            StringBuilder tutorialMap = new StringBuilder(
+            "#########################" +
+            "#.....######.....########" +
+            "#.....######.b.B.####...#" +
+            "#..P..######.....####.F.#" +
+            "#.....######.....####...#" +
+            "#.....###$####.#######.##" +
+            "###d#####D####d#S###S#d##" +
+            "##.........#............#" +
+            "##.........d............#" +
+            "##.........#............#" +
+            "###S#S#S#S##.......######" +
+            "############.......######" +
+            "#........d.........d....#" +
+            "#.......##.........##...#" +
+            "#..##=#.#S.........S#...#" +
+            "#.....#.######d#S####...#" +
+            "#.......######.######...#" +
+            "#.#.....##.........##...#" +
+            "#.#=##..##.........##...#" +
+            "#.#.....##.........##...#" +
+            "#.......##.........##...#" +
+            "#...E...##.1.2.3.4.##...#" +
+            "#.E...E.##.........##.e.#" +
+            "#.E...E.##.........##...#" +
+            "#########################");
+            difficulty = 4;
+            SLIL form = new SLIL(textureCache, true, tutorialMap, 8, 8, 3.5, 3.5)
+            {
+                game_over = game_over,
+                draw = draw,
+                buy = buy,
+                wall = wall,
+                tp = tp,
+                screenshot = screenshot,
+                low_stamine = low_stamine
+            };
+            form.ShowDialog();
+            hilf_mir_panel.Visible = false;
+            if (sounds) MainMenuTheme.Play(Volume);
+        }
+
         private void Show_hilf_mir_CheckedChanged(object sender, EventArgs e)
         {
             lose_focus.Focus();
             show_tutorial.Checked = show_hilf_mir.Checked;
             INIReader.SetKey(iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
-        }
-
-        private void Hilf_mir_panel_VisibleChanged(object sender, EventArgs e)
-        {
-            if (hilf_mir_panel.Visible)
-            {
-                hilf_mir_list.Clear();
-                string tutorial;
-                try
-                {
-                    using (WebClient client = new WebClient())
-                    {
-                        client.Encoding = Encoding.UTF8;
-                        tutorial = client.DownloadString($"https://base-escape.ru/SLILLocalization/Tutorials/{Language}.txt");
-                    }
-                }
-                catch (Exception er)
-                {
-                    hilf_mir_list.Clear();
-                    if (DownloadedLocalizationList)
-                        AppendColoredText(hilf_mir_list, Localizations.GetLString(Language, "6-0") + "\n", Color.Red);
-                    else
-                        AppendColoredText(hilf_mir_list, "Error getting tutorial\n", Color.Red);
-                    AppendColoredText(hilf_mir_list, er.Message, Color.Red);
-                    AppendColoredText(hilf_mir_list, "\n--------------------------------------------------", Color.Lime);
-                    tutorial = "\n*About the game:*\n" +
-                    "In ~SLIL~ your task is to go through randomly generated labyrinths, find a teleport and enter it.\n" +
-                    "During the passage, you will encounter enemies that you need to destroy with weapons or run away from them.\n" +
-                    "*How to play:*\n" +
-                    "Controls are carried out using the buttons >forward>, >back>, >left> and >right>, as well as the >mouse>.\n" +
-                    "To shoot, use the >left mouse button>, and to aim *(only for sniper rifles)* - the >right mouse button>.\n" +
-                    "The game has a large arsenal of weapons, pets and consumables. All this can be bought in ~shops~, which appear on the map in a random place and are displayed in ~pink~.\n" +
-                    "~Pets~ are companions that follow the player and give some bonuses.\n" +
-                    "~Consumables~ are items that are disposable and give the player a temporary effect.\n" +
-                    "To select an item, hold down >select_item> and hover the mouse cursor over the desired item, and to use it, press >item>.\n" +
-                    "To interact, use the >interaction_0> or >interaction_1> buttons. To open/close the map, press >show_map_0> or >show_map_1>.\n" +
-                    "There is also a ~flashlight~ in the game, it reduces visibility, but dispels darkness, allowing you to see further. The button to turn on the flashlight is >flashlight>.";
-                }
-                SetTutorialText(tutorial, Color.White);
-                hilf_mir_list.SelectionStart = 0;
-                hilf_mir_list.ScrollToCaret();
-            }
-        }
-
-        private void SetTutorialText(string text, Color color)
-        {
-            string pattern = string.Join("|", colorMap.Keys.Select(k => $@"(\{k}.*?\{k})"));
-            string[] parts = Regex.Split(text, pattern);
-            foreach (string part in parts)
-            {
-                if (string.IsNullOrEmpty(part)) continue;
-                var colorPair = colorMap.FirstOrDefault(pair => part.StartsWith(pair.Key) && part.EndsWith(pair.Key));
-                if (colorPair.Key != null)
-                {
-                    string word = part.Trim(colorPair.Key.ToCharArray());
-                    if (BindControls.ContainsKey(word) && colorPair.Value == Color.Yellow)
-                        word = BindControls[word].ToString().Replace("Key", null).Replace("Return", "Enter");
-                    AppendColoredText(hilf_mir_list, word, colorPair.Value);
-                }
-                else AppendColoredText(hilf_mir_list, part, color);
-            }
-            hilf_mir_list.SelectionStart = hilf_mir_list.Text.Length;
-            hilf_mir_list.ScrollToCaret();
-        }
-
-        private void AppendColoredText(RichTextBox textBox, string text, Color color)
-        {
-            textBox.SelectionStart = textBox.Text.Length;
-            textBox.SelectionLength = 0;
-            textBox.SelectionColor = color;
-            textBox.AppendText(text);
         }
 
         //  #====     Multiplayer    ====#

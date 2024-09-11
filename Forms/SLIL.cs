@@ -36,7 +36,7 @@ namespace SLIL
         private int inDebug = 0;
         public static double LOOK_SPEED = 2.5;
         public StringBuilder CUSTOM_MAP = new StringBuilder();
-        public int CUSTOM_X, CUSTOM_Y;
+        public double CUSTOM_X, CUSTOM_Y;
         private readonly Random rand;
         private const int texWidth = 128;
         private readonly int[] SCREEN_HEIGHT = { 128, 128 * 2 }, SCREEN_WIDTH = { 228, 228 * 2 };
@@ -470,7 +470,8 @@ namespace SLIL
         public static int scope_color = 0, scope_type = 0;
         public static bool ShowMap = false;
         private bool ShowSing = false;
-        private int SingID;
+        private int SingID, scrollPosition = 0;
+        private const int ScrollBarWidth = 4, ScrollPadding = 5;
         private bool open_shop = false, pressed_r = false, cancelReload = false, pressed_h = false;
         private Display display;
         private Bitmap map;
@@ -507,7 +508,7 @@ namespace SLIL
             textureCache = textures;
             Controller.StartGame();
         }
-        public SLIL(TextureCache textures, bool custom, StringBuilder customMap, int mazeWidth, int mazeHeight, int customX, int customY)
+        public SLIL(TextureCache textures, bool custom, StringBuilder customMap, int mazeWidth, int mazeHeight, double customX, double customY)
         {
             InitializeComponent();
             SetLocalization();
@@ -1451,6 +1452,11 @@ namespace SLIL
                 playerDirection = Direction.STOP;
             if (e.KeyCode == Bind.Left || e.KeyCode == Bind.Right)
                 strafeDirection = Direction.STOP;
+            if ((e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1) && ShowSing)
+            {
+                ShowSing = BlockInput = BlockCamera = false;
+                return;
+            }
             if (GameStarted && !Paused && !BlockInput && !console_panel.Visible && !open_shop)
             {
                 if (e.KeyCode == Bind.Screenshot)
@@ -1512,6 +1518,7 @@ namespace SLIL
                                 case 'S':
                                     hit = true;
                                     SingID = y * Controller.GetMapWidth() + x;
+                                    scrollPosition = 0;
                                     ShowSing = BlockInput = BlockCamera = true;
                                     break;
                             }
@@ -1668,13 +1675,12 @@ namespace SLIL
         private void Display_Scroll(object sender, MouseEventArgs e)
         {
             Player player = Controller.GetPlayer();
+            if (ShowSing) UpdateScrollPosition(-e.Delta);
             if (GameStarted && !Paused && !BlockInput && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
             {
                 int new_gun = player.CurrentGun;
-                if (e.Delta > 0)
-                    new_gun--;
-                else
-                    new_gun++;
+                if (e.Delta > 0) new_gun--;
+                else new_gun++;
                 if (new_gun < 0)
                     new_gun = player.Guns.Count - 1;
                 else if (new_gun > player.Guns.Count - 1)
@@ -1710,7 +1716,7 @@ namespace SLIL
                     }
                 }
             }
-            if (ShowSing && e.Button == MouseButtons.Left)
+            if (ShowSing)
                 ShowSing = BlockInput = BlockCamera = false;
         }
 
@@ -2294,9 +2300,12 @@ namespace SLIL
             if (player == null) return;
             if (ShowSing)
             {
+                SmoothingMode save1 = graphicsWeapon.SmoothingMode;
+                graphicsWeapon.SmoothingMode = SmoothingMode.None;
                 graphicsWeapon.Clear(Color.Black);
                 graphicsWeapon.DrawImage(Properties.Resources.sing, 0, 0, SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
                 DrawTextOnSing(GetTextOnSing());
+                graphicsWeapon.SmoothingMode = save1;
                 return;
             }
             if (ShowMap)
@@ -2436,6 +2445,8 @@ namespace SLIL
                     text = "STAGE: Debug Boss";
                 else if (difficulty == 4)
                     text = "STAGE: Custom";
+                else if (difficulty == 6)
+                    text = "STAGE: Tutorial";
                 SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
                 graphicsWeapon.DrawString(text, consolasFont[interface_size, resolution + 1], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }
@@ -2465,9 +2476,34 @@ namespace SLIL
 
         private void DrawTextOnSing(string text)
         {
-            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[3, resolution], SCREEN_WIDTH[resolution] - 40);
-            RectangleF rectangle = new RectangleF(20, 10, textSize.Width, textSize.Height);
-            graphicsWeapon.DrawString(text, consolasFont[3, resolution], blackBrush, rectangle);
+            RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH[resolution] - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT[resolution] - 2 * ScrollPadding);
+            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[2, resolution], SCREEN_WIDTH[resolution] - 40 - ScrollBarWidth);
+            graphicsWeapon.SetClip(textRectangle);
+            graphicsWeapon.DrawString(text, consolasFont[2, resolution], blackBrush, new RectangleF(textRectangle.X, textRectangle.Y - scrollPosition, textRectangle.Width, textSize.Height));
+            graphicsWeapon.ResetClip();
+            DrawScrollBar(textSize.Height, textRectangle.Height);
+        }
+
+        private void DrawScrollBar(float contentHeight, float viewportHeight)
+        {
+            if (contentHeight <= viewportHeight) return;
+            float scrollBarHeight = (viewportHeight / contentHeight) * viewportHeight;
+            float scrollBarPosition = (scrollPosition / (contentHeight - viewportHeight)) * (viewportHeight - scrollBarHeight);
+            RectangleF scrollBarRect = new RectangleF(
+                SCREEN_WIDTH[resolution] - ScrollBarWidth - ScrollPadding / 2,
+                ScrollPadding + scrollBarPosition,
+                ScrollBarWidth,
+                scrollBarHeight);
+            graphicsWeapon.FillRectangle(Brushes.Gray, scrollBarRect);
+        }
+
+        public void UpdateScrollPosition(int delta)
+        {
+            string text = GetTextOnSing();
+            RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH[resolution] - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT[resolution] - 2 * ScrollPadding);
+            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[2, resolution], SCREEN_WIDTH[resolution] - 40 - ScrollBarWidth);
+            float maxScroll = Math.Max(0, textSize.Height - textRectangle.Height);
+            scrollPosition = Math.Max(0, Math.Min(scrollPosition + delta, (int)maxScroll));
         }
 
         private string GetTextOnSing()
@@ -2475,12 +2511,45 @@ namespace SLIL
             switch (SingID)
             {
                 case 253:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-0");
                     return "About the game:\n" +
                         "In SLIL your task is to go through randomly generated labyrinths, find a teleport and enter it.\n" +
-                    "During the passage, you will encounter enemies that you need to destroy with weapons or run away from them.\n";
-                default: return SingID.ToString();
+                    "During the passage, you will encounter enemies that you need to destroy with weapons or run away from them.";
+                case 255:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-1");
+                    return "1";
+                case 257:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-2");
+                    return "2";
+                case 259:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-3");
+                    return "3";
+                case 166:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-4");
+                    return "4";
+                case 170:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-5");
+                    return "5";
+                case 369:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-6");
+                    return "6";
+                case 391:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-7");
+                    return "7";
+                case 359:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "6-8");
+                    return "8";
+                default: return $"Error getting text from the table\nSingID = {SingID}";
             }
-            return "Error getting text";
         }
 
         private Bitmap DrawMiniMap()
@@ -2892,8 +2961,6 @@ namespace SLIL
                                                             DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
                                                     }
                                                 }
-                                                else if (difficulty == 0 && player.GetCurrentGun().FireType == FireTypes.Single && !(player.GetCurrentGun() is Knife))
-                                                    creature.UpdateCoordinates(Controller.GetMap().ToString(), player.X, player.Y);
                                                 if (!player.CuteMode)
                                                 {
                                                     if (resolution == 0)
@@ -3265,8 +3332,7 @@ namespace SLIL
         {
             DISPLAYED_MAP.Clear();
             string DMAP = "";
-            for (int i = 0; i < Controller.GetMap().Length; i++)
-                DMAP += '.';
+            for (int i = 0; i < Controller.GetMap().Length; i++) DMAP += '.';
             if (difficulty < 5)
                 DISPLAYED_MAP.Append(DMAP);
             else

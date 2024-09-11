@@ -27,7 +27,7 @@ namespace SLIL.Classes
         private bool CUSTOM = false;
         private int CustomMazeHeight, CustomMazeWidth;
         private StringBuilder CUSTOM_MAP = new StringBuilder();
-        private int CUSTOM_X, CUSTOM_Y;
+        private double CUSTOM_X, CUSTOM_Y;
         private readonly StopGameDelegate StopGameHandle;
         private readonly PlaySoundDelegate PlaySoundHandle;
         private readonly SetPlayerIDDelegate SetPlayerID;
@@ -266,7 +266,7 @@ namespace SLIL.Classes
             });
         }
 
-        public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, int customX, int customY)
+        public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, double customX, double customY)
         {
             CUSTOM = custom;
             CustomMazeWidth = CustomWidth;
@@ -653,7 +653,7 @@ namespace SLIL.Classes
                         Entities.Remove(ent);
                         continue;
                     }
-                    if (difficulty != 4)
+                    if (difficulty != 4 && difficulty != 6)
                         player.Stage++;
                     if (!player.CuteMode)
                     {
@@ -748,23 +748,23 @@ namespace SLIL.Classes
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case 'e':
-                    SpawnEnemis(x, y, MAP_WIDTH, false);
+                    SpawnEnemis(x +0.5, y + 0.5, MAP_WIDTH, false);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case '1':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 0);
+                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 0);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case '2':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 1);
+                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 1);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case '3':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 2);
+                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 2);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case '4':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 3);
+                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 3);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
             }
@@ -783,7 +783,7 @@ namespace SLIL.Classes
                 enemy_count = 0.055;
             else if (difficulty == 3)
                 enemy_count = 0.045;
-            else if (difficulty == 4)
+            else if (difficulty == 4 || difficulty == 6)
             {
                 MazeHeight = CustomMazeHeight;
                 MazeWidth = CustomMazeWidth;
@@ -803,7 +803,7 @@ namespace SLIL.Classes
                     MazeWidth = 7;
                 }
             }
-            if (difficulty != 4 && difficulty != 5)
+            if (difficulty < 4)
             {
                 MazeHeight = MazeWidth = 10;
                 MAX_SHOP_COUNT = 2;
@@ -827,7 +827,7 @@ namespace SLIL.Classes
                     if(player.Stage == 0)
                         player.Guns[1].LevelUpdate();
                 }
-                else if (difficulty == 4)
+                else if (difficulty == 4 || difficulty == 6)
                 {
                     MazeHeight = CustomMazeHeight;
                     MazeWidth = CustomMazeWidth;
@@ -851,7 +851,7 @@ namespace SLIL.Classes
                         MazeWidth = 7;
                     }
                 }
-                if (difficulty != 4 && difficulty != 5)
+                if (difficulty < 4)
                 {
                     if (player.Stage == 0)
                     {
@@ -1042,8 +1042,7 @@ namespace SLIL.Classes
                         for (int y = 0; y < CustomMazeHeight * 3 + 1; y++)
                         {
                             Entity entity = GetEntityForInitMap(MAP[y * (CustomMazeWidth * 3 + 1) + x], x, y);
-                            if (entity != null)
-                                Entities.Add(entity);
+                            if (entity != null) Entities.Add(entity);
                         }
                     }
                 }
@@ -1084,7 +1083,7 @@ namespace SLIL.Classes
             }
         }
 
-        private void SpawnEnemis(int x, int y, int size, bool ai = true,int type=-1)
+        private void SpawnEnemis(double x, double y, int size, bool ai = true,int type=-1)
         {
             if (type == -1)
             {

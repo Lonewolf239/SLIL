@@ -245,10 +245,10 @@
             this.nickname_label = new System.Windows.Forms.Label();
             this.hilf_mir_panel = new System.Windows.Forms.Panel();
             this.hilf_mir_background_top = new System.Windows.Forms.Panel();
-            this.hilf_mir_list = new System.Windows.Forms.RichTextBox();
-            this.hilf_mir_background_bottom = new System.Windows.Forms.Panel();
-            this.show_hilf_mir = new System.Windows.Forms.CheckBox();
+            this.tutorial_label = new System.Windows.Forms.Label();
+            this.tutorial_btn_cp = new System.Windows.Forms.Button();
             this.hilf_mir_close_btn_r = new System.Windows.Forms.Button();
+            this.show_hilf_mir = new System.Windows.Forms.CheckBox();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -338,7 +338,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.player_icon)).BeginInit();
             this.hilf_mir_panel.SuspendLayout();
             this.hilf_mir_background_top.SuspendLayout();
-            this.hilf_mir_background_bottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -2961,62 +2960,51 @@
             // 
             this.hilf_mir_panel.BackColor = System.Drawing.Color.DarkGray;
             this.hilf_mir_panel.Controls.Add(this.hilf_mir_background_top);
-            this.hilf_mir_panel.Controls.Add(this.hilf_mir_background_bottom);
             this.hilf_mir_panel.Location = new System.Drawing.Point(1016, 297);
             this.hilf_mir_panel.Name = "hilf_mir_panel";
             this.hilf_mir_panel.Size = new System.Drawing.Size(496, 282);
             this.hilf_mir_panel.TabIndex = 65;
             this.hilf_mir_panel.Visible = false;
-            this.hilf_mir_panel.VisibleChanged += new System.EventHandler(this.Hilf_mir_panel_VisibleChanged);
             // 
             // hilf_mir_background_top
             // 
             this.hilf_mir_background_top.AutoScroll = true;
             this.hilf_mir_background_top.BackColor = System.Drawing.Color.Black;
-            this.hilf_mir_background_top.Controls.Add(this.hilf_mir_list);
+            this.hilf_mir_background_top.Controls.Add(this.tutorial_label);
+            this.hilf_mir_background_top.Controls.Add(this.tutorial_btn_cp);
+            this.hilf_mir_background_top.Controls.Add(this.hilf_mir_close_btn_r);
+            this.hilf_mir_background_top.Controls.Add(this.show_hilf_mir);
             this.hilf_mir_background_top.Location = new System.Drawing.Point(3, 3);
             this.hilf_mir_background_top.Name = "hilf_mir_background_top";
-            this.hilf_mir_background_top.Size = new System.Drawing.Size(490, 220);
+            this.hilf_mir_background_top.Size = new System.Drawing.Size(490, 276);
             this.hilf_mir_background_top.TabIndex = 50;
             // 
-            // hilf_mir_list
+            // tutorial_label
             // 
-            this.hilf_mir_list.BackColor = System.Drawing.Color.Black;
-            this.hilf_mir_list.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hilf_mir_list.ForeColor = System.Drawing.Color.White;
-            this.hilf_mir_list.Location = new System.Drawing.Point(0, 0);
-            this.hilf_mir_list.Name = "hilf_mir_list";
-            this.hilf_mir_list.ReadOnly = true;
-            this.hilf_mir_list.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.hilf_mir_list.Size = new System.Drawing.Size(490, 220);
-            this.hilf_mir_list.TabIndex = 0;
-            this.hilf_mir_list.TabStop = false;
-            this.hilf_mir_list.Text = "";
+            this.tutorial_label.AutoEllipsis = true;
+            this.tutorial_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tutorial_label.ForeColor = System.Drawing.Color.White;
+            this.tutorial_label.Location = new System.Drawing.Point(6, 6);
+            this.tutorial_label.Name = "tutorial_label";
+            this.tutorial_label.Size = new System.Drawing.Size(481, 137);
+            this.tutorial_label.TabIndex = 52;
+            this.tutorial_label.Text = "Похоже, вы новичок.\r\nХотите пройти обучение?";
+            this.tutorial_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // hilf_mir_background_bottom
+            // tutorial_btn_cp
             // 
-            this.hilf_mir_background_bottom.BackColor = System.Drawing.Color.Black;
-            this.hilf_mir_background_bottom.Controls.Add(this.show_hilf_mir);
-            this.hilf_mir_background_bottom.Controls.Add(this.hilf_mir_close_btn_r);
-            this.hilf_mir_background_bottom.Location = new System.Drawing.Point(3, 223);
-            this.hilf_mir_background_bottom.Name = "hilf_mir_background_bottom";
-            this.hilf_mir_background_bottom.Size = new System.Drawing.Size(490, 56);
-            this.hilf_mir_background_bottom.TabIndex = 51;
-            // 
-            // show_hilf_mir
-            // 
-            this.show_hilf_mir.AutoSize = true;
-            this.show_hilf_mir.Checked = true;
-            this.show_hilf_mir.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.show_hilf_mir.ForeColor = System.Drawing.Color.White;
-            this.show_hilf_mir.Location = new System.Drawing.Point(10, 15);
-            this.show_hilf_mir.Name = "show_hilf_mir";
-            this.show_hilf_mir.Size = new System.Drawing.Size(227, 28);
-            this.show_hilf_mir.TabIndex = 49;
-            this.show_hilf_mir.TabStop = false;
-            this.show_hilf_mir.Text = "Показывать обучение";
-            this.show_hilf_mir.UseVisualStyleBackColor = true;
-            this.show_hilf_mir.CheckedChanged += new System.EventHandler(this.Show_hilf_mir_CheckedChanged);
+            this.tutorial_btn_cp.AutoSize = true;
+            this.tutorial_btn_cp.BackColor = System.Drawing.Color.Black;
+            this.tutorial_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tutorial_btn_cp.ForeColor = System.Drawing.Color.White;
+            this.tutorial_btn_cp.Location = new System.Drawing.Point(107, 146);
+            this.tutorial_btn_cp.Name = "tutorial_btn_cp";
+            this.tutorial_btn_cp.Size = new System.Drawing.Size(277, 49);
+            this.tutorial_btn_cp.TabIndex = 49;
+            this.tutorial_btn_cp.TabStop = false;
+            this.tutorial_btn_cp.Text = "Пройти обучение";
+            this.tutorial_btn_cp.UseVisualStyleBackColor = false;
+            this.tutorial_btn_cp.Click += new System.EventHandler(this.Tutorial_btn_cp_Click);
             // 
             // hilf_mir_close_btn_r
             // 
@@ -3024,7 +3012,7 @@
             this.hilf_mir_close_btn_r.BackColor = System.Drawing.Color.Black;
             this.hilf_mir_close_btn_r.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.hilf_mir_close_btn_r.ForeColor = System.Drawing.Color.White;
-            this.hilf_mir_close_btn_r.Location = new System.Drawing.Point(350, 6);
+            this.hilf_mir_close_btn_r.Location = new System.Drawing.Point(350, 226);
             this.hilf_mir_close_btn_r.Name = "hilf_mir_close_btn_r";
             this.hilf_mir_close_btn_r.Size = new System.Drawing.Size(130, 41);
             this.hilf_mir_close_btn_r.TabIndex = 48;
@@ -3032,6 +3020,21 @@
             this.hilf_mir_close_btn_r.Text = "Закрыть";
             this.hilf_mir_close_btn_r.UseVisualStyleBackColor = false;
             this.hilf_mir_close_btn_r.Click += new System.EventHandler(this.Hilf_mir_close_btn_r_Click);
+            // 
+            // show_hilf_mir
+            // 
+            this.show_hilf_mir.AutoSize = true;
+            this.show_hilf_mir.Checked = true;
+            this.show_hilf_mir.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.show_hilf_mir.ForeColor = System.Drawing.Color.White;
+            this.show_hilf_mir.Location = new System.Drawing.Point(10, 235);
+            this.show_hilf_mir.Name = "show_hilf_mir";
+            this.show_hilf_mir.Size = new System.Drawing.Size(227, 28);
+            this.show_hilf_mir.TabIndex = 49;
+            this.show_hilf_mir.TabStop = false;
+            this.show_hilf_mir.Text = "Показывать обучение";
+            this.show_hilf_mir.UseVisualStyleBackColor = true;
+            this.show_hilf_mir.CheckedChanged += new System.EventHandler(this.Show_hilf_mir_CheckedChanged);
             // 
             // MainMenu
             // 
@@ -3185,8 +3188,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.player_icon)).EndInit();
             this.hilf_mir_panel.ResumeLayout(false);
             this.hilf_mir_background_top.ResumeLayout(false);
-            this.hilf_mir_background_bottom.ResumeLayout(false);
-            this.hilf_mir_background_bottom.PerformLayout();
+            this.hilf_mir_background_top.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3405,13 +3407,13 @@
         private System.Windows.Forms.TrackBar interface_size_choice;
         private System.Windows.Forms.Label interface_size_label;
         private System.Windows.Forms.Panel hilf_mir_panel;
-        private System.Windows.Forms.Panel hilf_mir_background_bottom;
         private System.Windows.Forms.CheckBox show_hilf_mir;
         private System.Windows.Forms.Button hilf_mir_close_btn_r;
         private System.Windows.Forms.Panel hilf_mir_background_top;
-        private System.Windows.Forms.RichTextBox hilf_mir_list;
         private System.Windows.Forms.Panel show_tutorial_panel;
         private System.Windows.Forms.CheckBox show_tutorial;
         private System.Windows.Forms.Label show_tutorial_label;
+        private System.Windows.Forms.Button tutorial_btn_cp;
+        private System.Windows.Forms.Label tutorial_label;
     }
 }

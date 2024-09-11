@@ -62,7 +62,7 @@ namespace SLIL
             return c == '.' || c == '#' || c == '=' ||
                 c == 'D' || c == 'd' || c == 'b' ||
                 c == 'B' || c == 'F' || c == 'P' ||
-                c == 'E' || c == '$' || c == 'S';
+                c == 'E' || c == '$' || c == 'W';
         }
 
         private string GetElementsName(int index)
@@ -291,7 +291,7 @@ namespace SLIL
                             color = Color.Blue;
                         else if (c == 'D')
                             color = Color.DarkOrange;
-                        else if (c == 'S')
+                        else if (c == 'W')
                             color = Color.Purple;
                         else if (c == 'd')
                             color = Color.Orange;
@@ -337,6 +337,8 @@ namespace SLIL
             separator.Top = height.Top + 2;
             accept_size_btn.Top = width.Bottom - accept_size_btn.Height;
             about.Top = height.Bottom + 3;
+            height.Value = (MazeHeight - 1) / 3;
+            width.Value = (MazeWidth - 1) / 3;
             Width = editor_interface.Right + 274;
             Height = accept_size_btn.Bottom + 43;
             int centerX = Owner.Left + (Owner.Width - Width) / 2;
@@ -366,7 +368,7 @@ namespace SLIL
                     else if (panels[i, j].BackColor == Color.Pink)
                         MAP.Append("$");
                     else if (panels[i, j].BackColor == Color.Purple)
-                        MAP.Append("S");
+                        MAP.Append("W");
                     else if (panels[i, j].BackColor == Color.Brown)
                         MAP.Append("b");
                     else if (panels[i, j].BackColor == Color.RosyBrown)
