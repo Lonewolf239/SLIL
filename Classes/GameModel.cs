@@ -133,7 +133,7 @@ namespace SLIL.Classes
                                 {
                                     if (ent is NPC || ent is Player || ent is Enemy)
                                     {
-                                        if (ent is Creature creature && !creature.CanHit) continue;
+                                        if (ent is Creature creature && (creature.DEAD || !creature.CanHit || !creature.HasAI)) continue;
                                         double distanceSquared = (explosion.X - ent.X) * (explosion.X - ent.X) + (explosion.Y - ent.Y) * (explosion.Y - ent.Y);
                                         if (distanceSquared > 3) continue;
                                         double damage = rand.Next(25, 50);
@@ -217,7 +217,7 @@ namespace SLIL.Classes
                         foreach(Entity ent in Entities)
                         {
                             if (ent == entity) continue;
-                            if (ent is Creature creature && (creature.DEAD|| !creature.CanHit)) continue;
+                            if (ent is Creature creature && (creature.DEAD || !creature.CanHit || !creature.HasAI)) continue;
                             if (Math.Sqrt((entity.X - ent.X) * (entity.X - ent.X) + (entity.Y - ent.Y) * (entity.Y - ent.Y)) < (entity.EntityWidth + ent.EntityWidth) * (entity.EntityWidth + ent.EntityWidth))
                             {
                                 Entities.Remove(entity);

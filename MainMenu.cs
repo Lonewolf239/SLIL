@@ -13,7 +13,7 @@ using SLIL.Classes;
 using Play_Sound;
 using SLIL.SLIL_Localization;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Security.Claims;
 
 namespace SLIL
 {
@@ -36,7 +36,7 @@ namespace SLIL
         private SLIL_Editor Editor;
         private bool ChangeControlButton = false, CanClose = false;
         private readonly PlaySound MainMenuTheme;
-        private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
+        private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine, climb;
         public static Player player;
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
@@ -124,6 +124,7 @@ namespace SLIL
             tp = new PlaySound(CGFReader.GetFile("tp.wav"), false);
             screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
             low_stamine = new PlaySound(CGFReader.GetFile("low_stamine.wav"), false);
+            climb = new PlaySound(CGFReader.GetFile("climb.wav"), false);
             AddSeparators();
         }
 
@@ -1556,7 +1557,8 @@ namespace SLIL
                     wall = wall,
                     tp = tp,
                     screenshot = screenshot,
-                    low_stamine = low_stamine
+                    low_stamine = low_stamine,
+                    climb = climb
                 };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(Volume);
@@ -1588,7 +1590,8 @@ namespace SLIL
                     wall = wall,
                     tp = tp,
                     screenshot = screenshot,
-                    low_stamine = low_stamine
+                    low_stamine = low_stamine,
+                    climb = climb
                 };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(Volume);
@@ -1708,7 +1711,8 @@ namespace SLIL
                 wall = wall,
                 tp = tp,
                 screenshot = screenshot,
-                low_stamine = low_stamine
+                low_stamine = low_stamine,
+                climb = climb
             };
             form.ShowDialog();
             game_mode_panel.Visible = false;
@@ -1778,7 +1782,8 @@ namespace SLIL
                 wall = wall,
                 tp = tp,
                 screenshot = screenshot,
-                low_stamine = low_stamine
+                low_stamine = low_stamine,
+                climb = climb
             };
             form.ShowDialog();
             if (sounds) MainMenuTheme.Play(Volume);

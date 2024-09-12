@@ -1216,5 +1216,8 @@
   <ItemGroup>
     <None Include="Images\wall_with_sing.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\no_animation.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

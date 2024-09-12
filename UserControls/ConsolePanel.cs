@@ -44,7 +44,9 @@ namespace SLIL.UserControls
 
         private void GetItem(int index) => player.DisposableItems[index].AddItem();
 
-        private void Command_input_KeyDown(object sender, KeyEventArgs e)
+        private void Console_KeyDown(object sender, KeyEventArgs e) => e.SuppressKeyPress = true;
+
+        private void Console_KeyUp(object sender, KeyEventArgs e)
         {
             e.SuppressKeyPress = true;
             e.Handled = true;
@@ -1023,17 +1025,18 @@ namespace SLIL.UserControls
                     return;
                 }
                 char c = (char)e.KeyValue;
-                if (!char.IsLetterOrDigit(c) && e.KeyCode != Keys.OemMinus && e.KeyCode != Keys.OemPeriod && e.KeyCode != Keys.Oemcomma)
+                if (!char.IsLetterOrDigit(c) && e.KeyCode != Keys.OemMinus && e.KeyCode != Keys.OemPeriod && e.KeyCode != Keys.Oemcomma && e.KeyCode != Keys.Space)
                     return;
                 if (e.KeyCode == Keys.OemMinus) c = '_';
                 else if (e.KeyCode == Keys.OemPeriod || e.KeyCode == Keys.Oemcomma) c = ',';
+                else if (e.KeyCode == Keys.Space) c = ' ';
                 else if (e.KeyCode.ToString().StartsWith("Oem") || e.KeyCode == Keys.Divide || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Add)
                     return;
                 command += c.ToString();
                 ConsoleAppendColoredText(c.ToString(), Color.Cyan);
             }
             if (e.KeyCode == Keys.Up)
-            {                
+            {
                 if (previous_cheat.Count == 0) return;
                 ClearCommand();
                 command = previous_cheat[cheat_index];
@@ -1043,7 +1046,7 @@ namespace SLIL.UserControls
                 ConsoleAppendColoredText(command, Color.Cyan);
             }
             if (e.KeyCode == Keys.Down)
-            {                
+            {
                 if (previous_cheat.Count == 0) return;
                 ClearCommand();
                 command = previous_cheat[cheat_index];

@@ -16,6 +16,7 @@ using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
 using System.IO.Ports;
+using System.Security.Claims;
 
 namespace SLIL
 {
@@ -434,7 +435,7 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
             }
         };
-        public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
+        public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine, climb;
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
@@ -1556,7 +1557,7 @@ namespace SLIL
                                         distance += 0.1d;
                                         int x1 = (int)(player.X + ray_x * distance);
                                         int y1 = (int)(player.Y + ray_y * distance);
-                                        if (Controller.GetMap()[y1 * Controller.GetMapWidth() + x1] == '.')
+                                        if(!HasImpassibleCells(y1 * Controller.GetMapWidth() + x1))
                                             DoParkour(y, x);
                                     }
                                     hit = true;
@@ -2104,14 +2105,7 @@ namespace SLIL
                     ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / distance;
                     floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
                 }
-                if (y <= ceiling)
-                {
-                    textureId = 7;
-                    //TODO:
-                    double d = (y + player.Look / 2) / (SCREEN_HEIGHT[resolution] / 2) * (player.GetDrawDistance() / 6.4);
-                    blackout = (int)(Math.Min(Math.Max(0, d * 100), 100));
-                }
-                else if (y >= mid && y <= floor && hit_window)
+                if (y >= mid && y <= floor && hit_window)
                 {
                     textureId = 2;
                     if (Math.Abs(y - mid) <= 6 / window_distance || is_window_bound)
@@ -2129,15 +2123,8 @@ namespace SLIL
                         textureId = 0;
                     blackout = (int)(Math.Min(Math.Max(0, Math.Floor((distance / player.GetDrawDistance()) * 100)), 100));
                 }
-                else if (y >= floor)
-                {
-                    textureId = 6;
-                    //TODO:
-                    double d = (1 - (y - (SCREEN_HEIGHT[resolution] - player.Look) / 2) / (SCREEN_HEIGHT[resolution] / 2)) * (player.GetDrawDistance() / 6.4);
-                    blackout = (int)(Math.Min(Math.Max(0, d * 100), 100));
-                }
                 result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId);
-                if (y < ceiling)
+                if (y <= ceiling)
                 {
                     int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
                     double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
@@ -2145,6 +2132,8 @@ namespace SLIL
                     double floorY = player.Y - rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
+                    result[y].TextureId = 7;
+                    result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((-rowDistance / player.GetDrawDistance()) * 100)), 100));
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
                     result[y].Side = 0;
@@ -2157,6 +2146,8 @@ namespace SLIL
                     double floorY = player.Y + rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
+                    result[y].TextureId = 6;
+                    result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((rowDistance / player.GetDrawDistance()) * 100)), 100));
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
                     result[y].Side = 0;
@@ -2575,7 +2566,7 @@ namespace SLIL
             {
                 UpdateMoveStyle(player);
                 if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-                else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+                else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
                 else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), player.GunState], 0, 0, WEAPON.Width, WEAPON.Height);
             }
             catch
@@ -2583,7 +2574,7 @@ namespace SLIL
                 try
                 {
                     if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-                    else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+                    else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
                     else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
                 catch { }
@@ -3229,13 +3220,12 @@ namespace SLIL
 
         private void DoParkour(int y, int x)
         {
-            if (!Controller.DoParkour(y, x))
-                return;
+            if (!Controller.DoParkour(y, x)) return;
             CanUnblockCamera = false;
             BlockCamera = BlockInput = true;
+            if (MainMenu.sounds) climb.Play(Volume);
             Player player = Controller.GetPlayer();
-            if (player != null)
-                player.PlayerMoveStyle = Directions.WALK;
+            if (player != null) player.PlayerMoveStyle = Directions.WALK;
             parkour_timer.Start();
         }
 

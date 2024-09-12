@@ -49,7 +49,8 @@
             this.console.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.Console_LinkClicked);
             this.console.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Console_MouseClick);
             this.console.TextChanged += new System.EventHandler(this.Console_TextChanged);
-            this.console.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Command_input_KeyDown);
+            this.console.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Console_KeyDown);
+            this.console.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Console_KeyUp);
             // 
             // ConsolePanel
             // 
