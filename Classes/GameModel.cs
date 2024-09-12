@@ -18,7 +18,6 @@ namespace SLIL.Classes
         private readonly Pet[] PETS;
         public List<Entity> Entities = new List<Entity>();
         private double EnemyDamageOffset = 1;
-        private readonly char[] impassibleCells = { '#', 'D', '=', 'd' };
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
         private readonly Random rand;

@@ -20,7 +20,6 @@ namespace GameServer
         private readonly Pet[] PETS;
         public List<Entity> Entities = [];
         private double EnemyDamageOffset = 1;
-        private readonly char[] impassibleCells = ['#', 'D', '=', 'd'];
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
         private readonly Random rand;
@@ -756,7 +755,7 @@ namespace GameServer
                 EnemyTimer?.Stop();
                 RespawnTimer?.Stop();
                 TimeRemain?.Stop();
-                List<int> playerIDs = new List<int>();
+                List<int> playerIDs = [];
                 foreach(Entity ent in Entities)
                 {
                     if(ent is Player p) playerIDs.Add(p.ID);
@@ -823,8 +822,8 @@ namespace GameServer
                     {
                         Entities[i].X = dX;
                         Entities[i].Y = dY;
-                        (Entities[i] as Player).A = newA;
-                        (Entities[i] as Player).Look = newLook;
+                        ((Player)Entities[i]).A = newA;
+                        ((Player)Entities[i]).Look = newLook;
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
                         {
                             GameOver(1);
@@ -1352,7 +1351,7 @@ namespace GameServer
                                 OK = true;
                         }
                         player.X = X + 0.5; player.Y = Y + 0.5;
-                        NetDataWriter writer = new NetDataWriter();
+                        NetDataWriter writer = new();
                         writer.Put(player.ID);
                         sendMessageFromGameCallback(103, writer.Data);
                     }
@@ -1402,8 +1401,10 @@ namespace GameServer
 
         public void AddHittingTheWall(double X, double Y, double playerLook)
         {
-            HittingTheWall hittingTheWall = new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID);
-            hittingTheWall.VMove = playerLook;
+            HittingTheWall hittingTheWall = new(X, Y, MAP_WIDTH, ref MaxEntityID)
+            {
+                VMove = playerLook
+            };
             Entities.Add(hittingTheWall);
         }
 
@@ -1491,7 +1492,7 @@ namespace GameServer
                 if (ent.ID == playerID)
                 {
                     Player p = (Player)ent;
-                    char[] impassibleCells = { '#', 'D', '=', 'd', 'S' };
+                    char[] impassibleCells = ['#', 'D', '=', 'd', 'S'];
                     if (HasNoClip(playerID) || p.InParkour) return false;
                     return impassibleCells.Contains(GetMap()[index]);
                 }
@@ -1631,7 +1632,7 @@ namespace GameServer
         {
             double X = coordinate % MAP_HEIGHT;
             double Y = (coordinate - X) / MAP_WIDTH;
-            NetDataWriter writer = new NetDataWriter();
+            NetDataWriter writer = new();
             writer.Put(X); 
             writer.Put(Y);
             if (MAP[coordinate] == 'o')
@@ -1649,25 +1650,15 @@ namespace GameServer
         internal void ChangeDifficulty(int difficulty)
         {
             this.difficulty = difficulty;
-            switch (difficulty)
+            EnemyDamageOffset = difficulty switch
             {
-                case 0:
-                    EnemyDamageOffset = 1.75;
-                    break;
-                case 1:
-                    EnemyDamageOffset = 1.25;
-                    break;
-                case 2:
-                    EnemyDamageOffset = 1;
-                    break;
-                case 3:
-                    EnemyDamageOffset = 0.75;
-                    break;
-                default:
-                    EnemyDamageOffset = 1;
-                    break;
-            }
-            if(GameStarted) StopGame(2);
+                0 => 1.75,
+                1 => 1.25,
+                2 => 1,
+                3 => 0.75,
+                _ => 1,
+            };
+            if (GameStarted) StopGame(2);
         }
 
         internal void ChangeGameMode(GameMode gameMode)

@@ -18,10 +18,8 @@ namespace Play_Sound
                 file = new WaveFileReader(new MemoryStream(fileBytes));
                 loopStream = new LoopStream(file);
                 playing = new WaveOutEvent();
-                if (!loop)
-                    playing.Init(file);
-                else
-                    playing.Init(loopStream);
+                if (!loop) playing.Init(file);
+                else playing.Init(loopStream);
             }
             catch
             {

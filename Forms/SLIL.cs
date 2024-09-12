@@ -757,8 +757,7 @@ namespace SLIL
 
         public static void ChangeOst(int index)
         {
-            if (!MainMenu.sounds)
-                return;
+            if (!MainMenu.sounds) return;
             ost[ost_index]?.Stop();
             ost_index = index;
             ost[ost_index].LoopPlay(Volume);
@@ -2320,8 +2319,7 @@ namespace SLIL
         private double WrapTexture(double value, int textureSize)
         {
             value %= textureSize;
-            if (value < 0)
-                value += textureSize;
+            if (value < 0) value += textureSize;
             return value;
         }
 

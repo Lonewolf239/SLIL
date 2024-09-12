@@ -45,8 +45,10 @@ namespace SLIL.Classes
             PlaySoundHandle = playSound;
             CloseForm = closeForm;
             SetPlayerID = SetPlayerIDInvoker;
-            Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
-            Game.IsMultiplayer = true;
+            Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle)
+            {
+                IsMultiplayer = true
+            };
             listener = new EventBasedNetListener();
             client = new NetManager(listener);
             processor = new NetPacketProcessor();
