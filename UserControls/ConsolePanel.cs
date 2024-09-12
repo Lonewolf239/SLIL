@@ -112,7 +112,9 @@ namespace SLIL.UserControls
                                  "~│~ -CCHANC_-*X*    ~│~ Set the probability of cursed treatment     ~│~\n" +
                                  "~│~ -MONEY_-*X*     ~│~ Change the amount of money to X             ~│~\n" +
                                  "~│~ -SOTLG-       ~│~ Maximum amount of money                     ~│~\n" +
-                                 "~│~ -STAMIN_-*X*    ~│~ Changing a player's maximum stamina         ~│~\n" +
+                                 "~├─────────────┼─────────────────────────────────────────────┤~\n" +
+                                 "~│~ -STAMIN_-*X*    ~│~ Changing player maximum stamina             ~│~\n" +
+                                 "~│~ -SPEED_-*X*     ~│~ Changing player movement speed              ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -BIGGUY-      ~│~ Give out \"The Smallest Pistol in the World\" ~│~\n" +
                                  "~│~ -YHRII-       ~│~ Issue \"Fingershot\"                          ~│~\n" +
@@ -736,6 +738,28 @@ namespace SLIL.UserControls
                                 message = "Incorrect data entered! X is not a number.";
                             }
                         }
+                        else if (cheat.StartsWith("SPEED_"))
+                        {
+                            try
+                            {
+                                double x = Convert.ToDouble(cheat.Split('_')[1]);
+                                if (x >= 0.1 && x <= 20)
+                                {
+                                    message += $"Player speed is now {x}. *Default: 1,75*";
+                                    player.MOVE_SPEED = x;
+                                }
+                                else
+                                {
+                                    color = Color.Red;
+                                    message = "Incorrect value! X must be in the range from 0,1 to 20.";
+                                }
+                            }
+                            catch
+                            {
+                                color = Color.Red;
+                                message = "Incorrect data entered! X is not a number.";
+                            }
+                        }
                         else if (cheat == "ENTITIES")
                         {
                             show_date = false;
@@ -972,7 +996,7 @@ namespace SLIL.UserControls
                     if (show_date)
                         time = $"\n-<{DateTime.Now:HH:mm}>- ";
                     if (show_message)
-                        ConsoleAppendText($"{time}{message}", color);
+                        ConsoleAppendText($"\n{time}{message}", color);
                     if (color != Color.Red)
                     {
                         previous_cheat.Add(cheat);

@@ -1711,6 +1711,7 @@ namespace SLIL
                 low_stamine = low_stamine
             };
             form.ShowDialog();
+            game_mode_panel.Visible = false;
             hilf_mir_panel.Visible = false;
             if (sounds) MainMenuTheme.Play(Volume);
         }

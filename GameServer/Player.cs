@@ -2,6 +2,8 @@
 
 namespace GameServer
 {
+    public enum Directions { STOP, FORWARD, BACK, LEFT, RIGHT, WALK, RUN };
+
     public class Player : Entity
     {
         public int DeathSound { get; set; }
@@ -35,6 +37,9 @@ namespace GameServer
         public int SelectedItem { get; set; }
         public bool Fast { get; set; }
         public bool NoClip { get; set; }
+        public Directions PlayerDirection { get; set; }
+        public Directions StrafeDirection { get; set; }
+        public Directions PlayerMoveStyle { get; set; }
         public List<Effect> Effects = [];
         public readonly Gun[] GUNS =
         [
@@ -397,6 +402,9 @@ namespace GameServer
             LevelUpdated = false;
             IsPetting = false;
             InParkour = false;
+            PlayerDirection = Directions.STOP;
+            StrafeDirection = Directions.STOP;
+            PlayerMoveStyle = Directions.WALK;
             ParkourState = 0;
             PreviousGun = CurrentGun = 1;
             STAMINE = MAX_STAMINE;

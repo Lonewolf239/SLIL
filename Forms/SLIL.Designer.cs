@@ -290,7 +290,7 @@ namespace SLIL
             // 
             // stage_timer
             // 
-            this.stage_timer.Interval = 3250;
+            this.stage_timer.Interval = 250;
             this.stage_timer.Tick += new System.EventHandler(this.Stage_timer_Tick);
             // 
             // game_over_panel

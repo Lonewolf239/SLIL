@@ -66,7 +66,7 @@ namespace SLIL.Classes
         {
             ID = 3;
             Debaf = true;
-            EffectTotalTime = 40;
+            EffectTotalTime = 15;
             Name = "Fatigue";
             Description = "Prevents window entry";
             UpdateTimeRemaining();

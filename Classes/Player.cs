@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace SLIL.Classes
 {
+    public enum Directions { STOP, FORWARD, BACK, LEFT, RIGHT, WALK, RUN };
+
     public class Player : Entity
     {
         public int DeathSound { get; set; }
@@ -36,6 +38,9 @@ namespace SLIL.Classes
         public int SelectedItem { get; set; }
         public bool Fast { get; set; }
         public bool NoClip { get; set; }
+        public Directions PlayerDirection { get; set; }
+        public Directions StrafeDirection { get; set; }
+        public Directions PlayerMoveStyle { get; set; }
         public List<Effect> Effects = new List<Effect>();
         public readonly Gun[] GUNS =
         {
@@ -398,6 +403,9 @@ namespace SLIL.Classes
             LevelUpdated = false;
             IsPetting = false;
             InParkour = false;
+            PlayerDirection = Directions.STOP;
+            StrafeDirection = Directions.STOP;
+            PlayerMoveStyle = Directions.WALK;
             ParkourState = 0;
             PreviousGun = CurrentGun = 1;
             STAMINE = MAX_STAMINE;
@@ -425,7 +433,7 @@ namespace SLIL.Classes
             for (int i = Effects.Count - 1; i >= 0; i--)
             {
                 if (Effects[i].ID == 0) HealHP(rand.Next(2, 6));
-                if (Effects[i].ReducingTimeRemaining())
+                if (Effects[i].ID == 3 &&Effects[i].ReducingTimeRemaining())
                 {
                     if (Effects[i].ID == 1)
                     {

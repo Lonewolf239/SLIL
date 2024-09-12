@@ -15,6 +15,7 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
+using System.IO.Ports;
 
 namespace SLIL
 {
@@ -54,11 +55,13 @@ namespace SLIL
             SmoothingMode.HighQuality,
             SmoothingMode.HighSpeed
         };
+        private float StageOpacity = 1;
         public static bool hight_fps = true;
         private const double FOV = Math.PI / 3;
         private double elapsed_time = 0;
         private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
         private Bitmap SCREEN, WEAPON, BUFFER;
+        private ImageAttributes imageAttributes;
         private readonly Font[,] consolasFont =
         {
             { new Font("Consolas", 8F), new Font("Consolas", 14F), new Font("Consolas", 22F) },
@@ -71,8 +74,6 @@ namespace SLIL
         private Graphics graphicsWeapon;
         private int fps;
         private double planeX, planeY, dirX, dirY, invDet;
-        private enum Direction { STOP, FORWARD, BACK, LEFT, RIGHT, WALK, RUN };
-        private Direction playerDirection = Direction.STOP, strafeDirection = Direction.STOP, playerMoveStyle = Direction.WALK;
         private DateTime total_time = DateTime.Now;
         private List<int> soundIndices = new List<int> { 0, 1, 2, 3, 4 };
         private int currentIndex = 0;
@@ -626,6 +627,17 @@ namespace SLIL
             SCREEN = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             WEAPON = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             BUFFER = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
+            imageAttributes = new ImageAttributes(); 
+            float[][] colorMatrixElements =
+            {
+                new float[] { MainMenu.Gamma, 0.0f, 0.0f, 0.0f, 0.0f},
+                new float[] {0.0f, MainMenu.Gamma, 0.0f, 0.0f, 0.0f},
+                new float[] {0.0f, 0.0f, MainMenu.Gamma, 0.0f, 0.0f},
+                new float[] {0.0f, 0.0f, 0.0f, 1.0f, 0.0f},
+                new float[] {0.0f, 0.0f, 0.0f, 0.0f, 1.0f}
+            };
+            ColorMatrix colorMatrix = new ColorMatrix(colorMatrixElements);
+            imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             graphicsWeapon = Graphics.FromImage(WEAPON);
             graphicsWeapon.SmoothingMode = smoothingModes[smoothing];
             display.ResizeImage(DISPLAY_SIZE[display_size, 0], DISPLAY_SIZE[display_size, 1]);
@@ -848,18 +860,26 @@ namespace SLIL
 
         private void SLIL_Deactivate(object sender, EventArgs e)
         {
-            strafeDirection = Direction.STOP;
-            playerDirection = Direction.STOP;
-            playerMoveStyle = Direction.WALK;
+            Player player = Controller.GetPlayer();
+            if (player != null)
+            {
+                player.StrafeDirection = Directions.STOP;
+                player.PlayerDirection = Directions.STOP;
+                player.PlayerMoveStyle = Directions.WALK;
+            }
             RunKeyPressed = false;
             active = false;
         }
 
         private void SLIL_LocationChanged(object sender, EventArgs e)
         {
-            strafeDirection = Direction.STOP;
-            playerDirection = Direction.STOP;
-            playerMoveStyle = Direction.WALK;
+            Player player = Controller.GetPlayer();
+            if (player != null)
+            {
+                player.StrafeDirection = Directions.STOP;
+                player.PlayerDirection = Directions.STOP;
+                player.PlayerMoveStyle = Directions.WALK;
+            }
         }
 
         private void SLIL_FormClosing(object sender, FormClosingEventArgs e)
@@ -953,14 +973,14 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if ((playerDirection != Direction.STOP || strafeDirection != Direction.STOP) && !player.InParkour && !player.Aiming && (step == null || !step.IsPlaying))
+            if ((player.PlayerDirection != Directions.STOP || player.StrafeDirection != Directions.STOP) && !player.InParkour && !player.Aiming && (step == null || !step.IsPlaying))
             {
                 if (currentIndex >= soundIndices.Count)
                 {
                     soundIndices = soundIndices.OrderBy(x => rand.Next()).ToList();
                     currentIndex = 0;
                 }
-                int i = playerMoveStyle == Direction.RUN || player.Fast ? 1 : 0;
+                int i = player.PlayerMoveStyle == Directions.RUN || player.Fast ? 1 : 0;
                 if (player.CuteMode) i += 2;
                 int j = soundIndices[currentIndex];
                 step = steps[i, j];
@@ -973,18 +993,18 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if (RunKeyPressed && PlayerCanRun() && playerDirection == Direction.FORWARD)
+            if (RunKeyPressed && PlayerCanRun() && player.PlayerDirection == Directions.FORWARD)
             {
                 if (player.STAMINE >= player.MAX_STAMINE / 2.5)
-                    playerMoveStyle = Direction.RUN;
+                    player.PlayerMoveStyle = Directions.RUN;
             }
-            else playerMoveStyle = Direction.WALK;
-            if (playerMoveStyle == Direction.RUN && playerDirection == Direction.FORWARD && !player.Aiming && !reload_timer.Enabled && !shotgun_pull_timer.Enabled)
+            else player.PlayerMoveStyle = Directions.WALK;
+            if (player.PlayerMoveStyle == Directions.RUN && player.PlayerDirection == Directions.FORWARD && !player.Aiming && !reload_timer.Enabled && !shotgun_pull_timer.Enabled)
             {
                 if (player.STAMINE <= 0)
                 {
                     player.STAMINE = 0;
-                    playerMoveStyle = Direction.WALK;
+                    player.PlayerMoveStyle = Directions.WALK;
                     chill_timer.Start();
                     if (MainMenu.sounds) low_stamine.Play(Volume);
                 }
@@ -992,7 +1012,7 @@ namespace SLIL
             }
             else
             {
-                playerMoveStyle = Direction.WALK;
+                player.PlayerMoveStyle = Directions.WALK;
                 if (player.STAMINE < player.MAX_STAMINE)
                     player.STAMINE += 2;
             }
@@ -1211,7 +1231,7 @@ namespace SLIL
                 if (player.GetCurrentGun() is Flashlight)
                     shot_timer.Enabled = reload_timer.Enabled = shotgun_pull_timer.Enabled = false;
                 if (!player.GetCurrentGun().CanRun)
-                    playerMoveStyle = Direction.WALK;
+                    player.PlayerMoveStyle = Directions.WALK;
                 if (player.LevelUpdated && !open_shop)
                 {
                     ChangeWeapon(player.CurrentGun);
@@ -1223,7 +1243,11 @@ namespace SLIL
 
         private void Chill_timer_Tick(object sender, EventArgs e) => chill_timer.Stop();
 
-        private void Stage_timer_Tick(object sender, EventArgs e) => stage_timer.Stop();
+        private void Stage_timer_Tick(object sender, EventArgs e)
+        {
+            StageOpacity -= 0.1f;
+            if (StageOpacity <= 0) stage_timer.Stop();
+        }
 
         private void Shotgun_pull_timer_Tick(object sender, EventArgs e)
         {
@@ -1298,13 +1322,13 @@ namespace SLIL
                     Player player = Controller.GetPlayer();
                     if (e.KeyCode == Bind.Run) RunKeyPressed = true;
                     if (e.KeyCode == Bind.Forward)
-                        playerDirection = Direction.FORWARD;
+                        player.PlayerDirection = Directions.FORWARD;
                     if (e.KeyCode == Bind.Back)
-                        playerDirection = Direction.BACK;
+                        player.PlayerDirection = Directions.BACK;
                     if (e.KeyCode == Bind.Left)
-                        strafeDirection = Direction.LEFT;
+                        player.StrafeDirection = Directions.LEFT;
                     if (e.KeyCode == Bind.Right)
-                        strafeDirection = Direction.RIGHT;
+                        player.StrafeDirection = Directions.RIGHT;
                     if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && player != null)
                     {
                         int count = player.Guns.Count;
@@ -1473,13 +1497,23 @@ namespace SLIL
             if (e.KeyCode == Bind.Run)
             {
                 RunKeyPressed = false;
-                playerMoveStyle = Direction.WALK;
+                Player player = Controller.GetPlayer();
+                if (player != null)
+                    player.PlayerMoveStyle = Directions.WALK;
                 chill_timer.Start();
             }
             if (e.KeyCode == Bind.Forward || e.KeyCode == Bind.Back)
-                playerDirection = Direction.STOP;
+            {
+                Player player = Controller.GetPlayer();
+                if (player != null)
+                    player.PlayerDirection = Directions.STOP;
+            }
             if (e.KeyCode == Bind.Left || e.KeyCode == Bind.Right)
-                strafeDirection = Direction.STOP;
+            {
+                Player player = Controller.GetPlayer();
+                if (player != null)
+                    player.StrafeDirection = Directions.STOP;
+            }
             if ((e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1) && ShowSing)
             {
                 ShowSing = BlockInput = BlockCamera = false;
@@ -1810,7 +1844,7 @@ namespace SLIL
             }
             DISPLAYED_MAP.Replace('P', '.');
             double run = 1;
-            if (playerMoveStyle == Direction.RUN && playerDirection == Direction.FORWARD)
+            if (player.PlayerMoveStyle == Directions.RUN && player.PlayerDirection == Directions.FORWARD)
                 run = player.RUN_SPEED;
             double move = player.MOVE_SPEED * run * elapsed_time;
             double moveSin = Math.Sin(player.A) * move;
@@ -1821,24 +1855,24 @@ namespace SLIL
             double newY = player.Y;
             double tempX = player.X;
             double tempY = player.Y;
-            switch (strafeDirection)
+            switch (player.StrafeDirection)
             {
-                case Direction.LEFT:
+                case Directions.LEFT:
                     newX += strafeCos;
                     newY -= strafeSin;
                     break;
-                case Direction.RIGHT:
+                case Directions.RIGHT:
                     newX -= strafeCos;
                     newY += strafeSin;
                     break;
             }
-            switch (playerDirection)
+            switch (player.PlayerDirection)
             {
-                case Direction.FORWARD:
+                case Directions.FORWARD:
                     newX += moveSin;
                     newY += moveCos;
                     break;
-                case Direction.BACK:
+                case Directions.BACK:
                     newX -= moveSin * 0.65;
                     newY -= moveCos * 0.65;
                     break;
@@ -2073,7 +2107,8 @@ namespace SLIL
                 if (y <= ceiling)
                 {
                     textureId = 7;
-                    double d = (y + player.Look / 2) / (SCREEN_HEIGHT[resolution] / 2);
+                    //TODO:
+                    double d = (y + player.Look / 2) / (SCREEN_HEIGHT[resolution] / 2) * (player.GetDrawDistance() / 6.4);
                     blackout = (int)(Math.Min(Math.Max(0, d * 100), 100));
                 }
                 else if (y >= mid && y <= floor && hit_window)
@@ -2097,7 +2132,8 @@ namespace SLIL
                 else if (y >= floor)
                 {
                     textureId = 6;
-                    double d = 1 - (y - (SCREEN_HEIGHT[resolution] - player.Look) / 2) / (SCREEN_HEIGHT[resolution] / 2);
+                    //TODO:
+                    double d = (1 - (y - (SCREEN_HEIGHT[resolution] - player.Look) / 2) / (SCREEN_HEIGHT[resolution] / 2)) * (player.GetDrawDistance() / 6.4);
                     blackout = (int)(Math.Min(Math.Max(0, d * 100), 100));
                 }
                 result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId);
@@ -2351,8 +2387,8 @@ namespace SLIL
             using (Graphics g = Graphics.FromImage(BUFFER))
             {
                 g.Clear(Color.Black);
-                g.DrawImage(SCREEN, 0, 0, BUFFER.Width, BUFFER.Height);
-                g.DrawImage(WEAPON, 0, 0, BUFFER.Width, BUFFER.Height);
+                g.DrawImage(SCREEN, new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), 0, 0, SCREEN.Width, SCREEN.Height, GraphicsUnit.Pixel, imageAttributes);
+                g.DrawImage(WEAPON, new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), 0, 0, WEAPON.Width, WEAPON.Height, GraphicsUnit.Pixel, imageAttributes);
             }
             SharpDX.Direct2D1.Bitmap dxBitmap = ConvertBitmap.ToDX(BUFFER, display.renderTarget);
             display.SCREEN = dxBitmap;
@@ -2644,7 +2680,7 @@ namespace SLIL
             graphicsWeapon.SmoothingMode = save;
             graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH[resolution], money_y, rightToLeft);
             graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH[resolution] - moneySize.Width - icon_size, money_y, icon_size, icon_size);
-            if (stage_timer.Enabled)
+            if (stage_timer.Enabled && StageOpacity > 0)
             {
                 string text = "STAGE: ";
                 if (IsTutorial) text += "Tutorial";
@@ -2653,7 +2689,9 @@ namespace SLIL
                 else if (difficulty == 4) text += "Custom";
                 else text += (player.Stage + 1).ToString();
                 SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
-                graphicsWeapon.DrawString(text, consolasFont[interface_size, resolution + 1], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
+                SolidBrush brush = (SolidBrush)whiteBrush.Clone();
+                brush.Color = Color.FromArgb((int)(255 * StageOpacity), brush.Color);
+                graphicsWeapon.DrawString(text, consolasFont[interface_size, resolution + 1], brush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }
             if (player.Effects.Count > 0)
             {
@@ -2865,7 +2903,7 @@ namespace SLIL
         {
             if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled)
             {
-                if (playerMoveStyle == Direction.RUN)
+                if (player.PlayerMoveStyle == Directions.RUN)
                 {
                     if (player.GetCurrentGun() is Pistol || player.GetCurrentGun() is Shotgun || player.GetCurrentGun() is SniperRifle || player.GetCurrentGun() is Fingershot)
                     {
@@ -3195,7 +3233,9 @@ namespace SLIL
                 return;
             CanUnblockCamera = false;
             BlockCamera = BlockInput = true;
-            playerMoveStyle = Direction.WALK;
+            Player player = Controller.GetPlayer();
+            if (player != null)
+                player.PlayerMoveStyle = Directions.WALK;
             parkour_timer.Start();
         }
 
@@ -3368,7 +3408,7 @@ namespace SLIL
             {
                 player.A = 0;
             }
-            stage_timer.Stop();
+            StageOpacity = 1;
             stage_timer.Start();
             raycast.Start();
             stamina_timer.Start();
@@ -3434,8 +3474,8 @@ namespace SLIL
             player.SetDefault();
             player.LevelUpdated = false;
             open_shop = false;
-            strafeDirection = playerDirection = Direction.STOP;
-            playerMoveStyle = Direction.WALK;
+            player.StrafeDirection = player.PlayerDirection = Directions.STOP;
+            player.PlayerMoveStyle = Directions.WALK;
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
             if (MainMenu.sounds)
             {

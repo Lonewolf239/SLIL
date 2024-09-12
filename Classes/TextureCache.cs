@@ -234,7 +234,7 @@ namespace SLIL.Classes
         private Color DarkenColor(Color color, float blackout)
         {
             if (color.A <= 50) return Color.Transparent;
-            blackout = MainMenu.Gamma * (0.96f - (blackout / 100));
+            blackout = 0.96f - (blackout / 100);
             int r = (int)(color.R * blackout);
             int g = (int)(color.G * blackout);
             int b = (int)(color.B * blackout);
