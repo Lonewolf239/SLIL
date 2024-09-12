@@ -25,6 +25,8 @@ namespace SLIL.Classes
         public bool LevelUpdated { get; set; }
         public double CurseCureChance { get; set; }
         public bool IsPetting { get; set; }
+        public bool InParkour { get; set; }
+        public int ParkourState { get; set; }
         public int Stage { get; set; }
         public bool CuteMode { get; set; }
         public int EnemiesKilled { get; set; }
@@ -393,6 +395,8 @@ namespace SLIL.Classes
             UseItem = false;
             LevelUpdated = false;
             IsPetting = false;
+            InParkour = false;
+            ParkourState = 0;
             PreviousGun = CurrentGun = 1;
             STAMINE = MAX_STAMINE;
             if (Guns.Count == 0)

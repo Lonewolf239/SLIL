@@ -234,11 +234,11 @@ namespace SLIL.Classes
         private Color DarkenColor(Color color, float blackout)
         {
             if (color.A <= 50) return Color.Transparent;
-            blackout = 0.96f - (blackout / 100);
+            blackout = MainMenu.Gamma * (0.96f - (blackout / 100));
             int r = (int)(color.R * blackout);
             int g = (int)(color.G * blackout);
             int b = (int)(color.B * blackout);
-            return Color.FromArgb(color.A, Math.Max(r, 0), Math.Max(g, 0), Math.Max(b, 0));
+            return Color.FromArgb(color.A, Math.Min(r, 255), Math.Min(g, 255), Math.Min(b, 255));
         }
     }
 }

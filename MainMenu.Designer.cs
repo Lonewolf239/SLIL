@@ -100,12 +100,15 @@
             this.show_minimap_panel = new System.Windows.Forms.Panel();
             this.show_minimap = new System.Windows.Forms.CheckBox();
             this.show_minimap_label = new System.Windows.Forms.Label();
-            this.fps_panel = new System.Windows.Forms.Panel();
-            this.fps = new System.Windows.Forms.TrackBar();
-            this.fps_label = new System.Windows.Forms.Label();
             this.show_fps_panel = new System.Windows.Forms.Panel();
             this.show_fps_on_off = new System.Windows.Forms.CheckBox();
             this.show_fps_label = new System.Windows.Forms.Label();
+            this.gamma_panel = new System.Windows.Forms.Panel();
+            this.gamma_choice = new System.Windows.Forms.TrackBar();
+            this.gamma_label = new System.Windows.Forms.Label();
+            this.fps_panel = new System.Windows.Forms.Panel();
+            this.fps = new System.Windows.Forms.TrackBar();
+            this.fps_label = new System.Windows.Forms.Label();
             this.smoothing_panel = new System.Windows.Forms.Panel();
             this.smoothing_list = new System.Windows.Forms.ComboBox();
             this.smoothing_label = new System.Windows.Forms.Label();
@@ -128,6 +131,9 @@
             this.sensitivity = new System.Windows.Forms.TrackBar();
             this.sensitivity_label = new System.Windows.Forms.Label();
             this.keyboard_settings = new System.Windows.Forms.TabPage();
+            this.climb_panel = new System.Windows.Forms.Panel();
+            this.climb_label = new System.Windows.Forms.Label();
+            this.climb_btn_c = new System.Windows.Forms.Button();
             this.run_panel = new System.Windows.Forms.Panel();
             this.run_label = new System.Windows.Forms.Label();
             this.run_btn_c = new System.Windows.Forms.Button();
@@ -203,6 +209,7 @@
             this.changes_list = new System.Windows.Forms.ListBox();
             this.game_mode_panel = new System.Windows.Forms.Panel();
             this.game_mode_background = new System.Windows.Forms.Panel();
+            this.tutorial1_btn_cp = new System.Windows.Forms.Button();
             this.select_mode_panel = new System.Windows.Forms.Panel();
             this.singleplayer = new System.Windows.Forms.RadioButton();
             this.multiplayer = new System.Windows.Forms.RadioButton();
@@ -281,9 +288,11 @@
             this.scope_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scope_choice)).BeginInit();
             this.show_minimap_panel.SuspendLayout();
+            this.show_fps_panel.SuspendLayout();
+            this.gamma_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gamma_choice)).BeginInit();
             this.fps_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fps)).BeginInit();
-            this.show_fps_panel.SuspendLayout();
             this.smoothing_panel.SuspendLayout();
             this.display_size_panel.SuspendLayout();
             this.high_resolution_panel.SuspendLayout();
@@ -295,6 +304,7 @@
             this.sensitivity_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sensitivity)).BeginInit();
             this.keyboard_settings.SuspendLayout();
+            this.climb_panel.SuspendLayout();
             this.run_panel.SuspendLayout();
             this.select_item_panel.SuspendLayout();
             this.medkit_panel.SuspendLayout();
@@ -1078,16 +1088,17 @@
             this.video_settings.Controls.Add(this.scope_color_panel);
             this.video_settings.Controls.Add(this.scope_panel);
             this.video_settings.Controls.Add(this.show_minimap_panel);
-            this.video_settings.Controls.Add(this.fps_panel);
             this.video_settings.Controls.Add(this.show_fps_panel);
+            this.video_settings.Controls.Add(this.gamma_panel);
+            this.video_settings.Controls.Add(this.fps_panel);
             this.video_settings.Controls.Add(this.smoothing_panel);
             this.video_settings.Controls.Add(this.display_size_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 22);
+            this.video_settings.Location = new System.Drawing.Point(4, 33);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 194);
+            this.video_settings.Size = new System.Drawing.Size(482, 183);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
@@ -1097,7 +1108,7 @@
             this.interface_size_panel.Controls.Add(this.interface_size_choice);
             this.interface_size_panel.Controls.Add(this.interface_size_label);
             this.interface_size_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.interface_size_panel.Location = new System.Drawing.Point(3, 275);
+            this.interface_size_panel.Location = new System.Drawing.Point(3, 309);
             this.interface_size_panel.Name = "interface_size_panel";
             this.interface_size_panel.Size = new System.Drawing.Size(459, 34);
             this.interface_size_panel.TabIndex = 8;
@@ -1129,7 +1140,7 @@
             this.scope_color_panel.Controls.Add(this.scope_color_choice);
             this.scope_color_panel.Controls.Add(this.scope_color_label);
             this.scope_color_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.scope_color_panel.Location = new System.Drawing.Point(3, 241);
+            this.scope_color_panel.Location = new System.Drawing.Point(3, 275);
             this.scope_color_panel.Name = "scope_color_panel";
             this.scope_color_panel.Size = new System.Drawing.Size(459, 34);
             this.scope_color_panel.TabIndex = 4;
@@ -1162,7 +1173,7 @@
             this.scope_panel.Controls.Add(this.scope_choice);
             this.scope_panel.Controls.Add(this.scope_label);
             this.scope_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.scope_panel.Location = new System.Drawing.Point(3, 207);
+            this.scope_panel.Location = new System.Drawing.Point(3, 241);
             this.scope_panel.Name = "scope_panel";
             this.scope_panel.Size = new System.Drawing.Size(459, 34);
             this.scope_panel.TabIndex = 3;
@@ -1194,7 +1205,7 @@
             this.show_minimap_panel.Controls.Add(this.show_minimap);
             this.show_minimap_panel.Controls.Add(this.show_minimap_label);
             this.show_minimap_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.show_minimap_panel.Location = new System.Drawing.Point(3, 173);
+            this.show_minimap_panel.Location = new System.Drawing.Point(3, 207);
             this.show_minimap_panel.Name = "show_minimap_panel";
             this.show_minimap_panel.Size = new System.Drawing.Size(459, 34);
             this.show_minimap_panel.TabIndex = 5;
@@ -1225,46 +1236,12 @@
             this.show_minimap_label.Text = "Отображать мини-карту";
             this.show_minimap_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // fps_panel
-            // 
-            this.fps_panel.BackColor = System.Drawing.Color.Black;
-            this.fps_panel.Controls.Add(this.fps);
-            this.fps_panel.Controls.Add(this.fps_label);
-            this.fps_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fps_panel.Location = new System.Drawing.Point(3, 139);
-            this.fps_panel.Name = "fps_panel";
-            this.fps_panel.Size = new System.Drawing.Size(459, 34);
-            this.fps_panel.TabIndex = 1;
-            // 
-            // fps
-            // 
-            this.fps.Dock = System.Windows.Forms.DockStyle.Right;
-            this.fps.Location = new System.Drawing.Point(355, 0);
-            this.fps.Maximum = 1;
-            this.fps.Name = "fps";
-            this.fps.Size = new System.Drawing.Size(104, 34);
-            this.fps.TabIndex = 4;
-            this.fps.TabStop = false;
-            this.fps.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-            this.fps.Value = 1;
-            this.fps.Scroll += new System.EventHandler(this.Fps_Scroll);
-            // 
-            // fps_label
-            // 
-            this.fps_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.fps_label.Location = new System.Drawing.Point(0, 0);
-            this.fps_label.Name = "fps_label";
-            this.fps_label.Size = new System.Drawing.Size(140, 34);
-            this.fps_label.TabIndex = 3;
-            this.fps_label.Text = "FPS: 60";
-            this.fps_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // show_fps_panel
             // 
             this.show_fps_panel.Controls.Add(this.show_fps_on_off);
             this.show_fps_panel.Controls.Add(this.show_fps_label);
             this.show_fps_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.show_fps_panel.Location = new System.Drawing.Point(3, 105);
+            this.show_fps_panel.Location = new System.Drawing.Point(3, 173);
             this.show_fps_panel.Name = "show_fps_panel";
             this.show_fps_panel.Size = new System.Drawing.Size(459, 34);
             this.show_fps_panel.TabIndex = 2;
@@ -1294,6 +1271,75 @@
             this.show_fps_label.TabIndex = 2;
             this.show_fps_label.Text = "Отображать FPS";
             this.show_fps_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // gamma_panel
+            // 
+            this.gamma_panel.BackColor = System.Drawing.Color.Black;
+            this.gamma_panel.Controls.Add(this.gamma_choice);
+            this.gamma_panel.Controls.Add(this.gamma_label);
+            this.gamma_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gamma_panel.Location = new System.Drawing.Point(3, 139);
+            this.gamma_panel.Name = "gamma_panel";
+            this.gamma_panel.Size = new System.Drawing.Size(459, 34);
+            this.gamma_panel.TabIndex = 9;
+            // 
+            // gamma_choice
+            // 
+            this.gamma_choice.Dock = System.Windows.Forms.DockStyle.Right;
+            this.gamma_choice.Location = new System.Drawing.Point(355, 0);
+            this.gamma_choice.Maximum = 120;
+            this.gamma_choice.Minimum = 40;
+            this.gamma_choice.Name = "gamma_choice";
+            this.gamma_choice.Size = new System.Drawing.Size(104, 34);
+            this.gamma_choice.TabIndex = 4;
+            this.gamma_choice.TabStop = false;
+            this.gamma_choice.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.gamma_choice.Value = 40;
+            this.gamma_choice.Scroll += new System.EventHandler(this.Gamma_choice_Scroll);
+            // 
+            // gamma_label
+            // 
+            this.gamma_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.gamma_label.Location = new System.Drawing.Point(0, 0);
+            this.gamma_label.Name = "gamma_label";
+            this.gamma_label.Size = new System.Drawing.Size(225, 34);
+            this.gamma_label.TabIndex = 3;
+            this.gamma_label.Text = "Гамма";
+            this.gamma_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // fps_panel
+            // 
+            this.fps_panel.BackColor = System.Drawing.Color.Black;
+            this.fps_panel.Controls.Add(this.fps);
+            this.fps_panel.Controls.Add(this.fps_label);
+            this.fps_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fps_panel.Location = new System.Drawing.Point(3, 105);
+            this.fps_panel.Name = "fps_panel";
+            this.fps_panel.Size = new System.Drawing.Size(459, 34);
+            this.fps_panel.TabIndex = 1;
+            // 
+            // fps
+            // 
+            this.fps.Dock = System.Windows.Forms.DockStyle.Right;
+            this.fps.Location = new System.Drawing.Point(355, 0);
+            this.fps.Maximum = 1;
+            this.fps.Name = "fps";
+            this.fps.Size = new System.Drawing.Size(104, 34);
+            this.fps.TabIndex = 4;
+            this.fps.TabStop = false;
+            this.fps.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.fps.Value = 1;
+            this.fps.Scroll += new System.EventHandler(this.Fps_Scroll);
+            // 
+            // fps_label
+            // 
+            this.fps_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.fps_label.Location = new System.Drawing.Point(0, 0);
+            this.fps_label.Name = "fps_label";
+            this.fps_label.Size = new System.Drawing.Size(140, 34);
+            this.fps_label.TabIndex = 3;
+            this.fps_label.Text = "FPS: 60";
+            this.fps_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // smoothing_panel
             // 
@@ -1552,6 +1598,7 @@
             // 
             this.keyboard_settings.AutoScroll = true;
             this.keyboard_settings.BackColor = System.Drawing.Color.Black;
+            this.keyboard_settings.Controls.Add(this.climb_panel);
             this.keyboard_settings.Controls.Add(this.run_panel);
             this.keyboard_settings.Controls.Add(this.select_item_panel);
             this.keyboard_settings.Controls.Add(this.medkit_panel);
@@ -1570,9 +1617,42 @@
             this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 151);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
+            // 
+            // climb_panel
+            // 
+            this.climb_panel.BackColor = System.Drawing.Color.Black;
+            this.climb_panel.Controls.Add(this.climb_label);
+            this.climb_panel.Controls.Add(this.climb_btn_c);
+            this.climb_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.climb_panel.Location = new System.Drawing.Point(3, 479);
+            this.climb_panel.Name = "climb_panel";
+            this.climb_panel.Size = new System.Drawing.Size(445, 34);
+            this.climb_panel.TabIndex = 15;
+            // 
+            // climb_label
+            // 
+            this.climb_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.climb_label.Location = new System.Drawing.Point(0, 0);
+            this.climb_label.Name = "climb_label";
+            this.climb_label.Size = new System.Drawing.Size(306, 34);
+            this.climb_label.TabIndex = 0;
+            this.climb_label.Text = "Перелезть";
+            this.climb_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // climb_btn_c
+            // 
+            this.climb_btn_c.Dock = System.Windows.Forms.DockStyle.Right;
+            this.climb_btn_c.Location = new System.Drawing.Point(362, 0);
+            this.climb_btn_c.Name = "climb_btn_c";
+            this.climb_btn_c.Size = new System.Drawing.Size(83, 34);
+            this.climb_btn_c.TabIndex = 2;
+            this.climb_btn_c.TabStop = false;
+            this.climb_btn_c.Text = "Space";
+            this.climb_btn_c.UseVisualStyleBackColor = false;
+            this.climb_btn_c.Click += new System.EventHandler(this.ChangeControl_Click);
             // 
             // run_panel
             // 
@@ -2440,6 +2520,7 @@
             // game_mode_background
             // 
             this.game_mode_background.BackColor = System.Drawing.Color.Black;
+            this.game_mode_background.Controls.Add(this.tutorial1_btn_cp);
             this.game_mode_background.Controls.Add(this.select_mode_panel);
             this.game_mode_background.Controls.Add(this.close_game_mode_panel_l);
             this.game_mode_background.Controls.Add(this.select_mode_btn_r);
@@ -2447,6 +2528,21 @@
             this.game_mode_background.Name = "game_mode_background";
             this.game_mode_background.Size = new System.Drawing.Size(490, 276);
             this.game_mode_background.TabIndex = 45;
+            // 
+            // tutorial1_btn_cp
+            // 
+            this.tutorial1_btn_cp.AutoSize = true;
+            this.tutorial1_btn_cp.BackColor = System.Drawing.Color.Black;
+            this.tutorial1_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tutorial1_btn_cp.ForeColor = System.Drawing.Color.White;
+            this.tutorial1_btn_cp.Location = new System.Drawing.Point(175, 184);
+            this.tutorial1_btn_cp.Name = "tutorial1_btn_cp";
+            this.tutorial1_btn_cp.Size = new System.Drawing.Size(139, 41);
+            this.tutorial1_btn_cp.TabIndex = 60;
+            this.tutorial1_btn_cp.TabStop = false;
+            this.tutorial1_btn_cp.Text = "Обучение";
+            this.tutorial1_btn_cp.UseVisualStyleBackColor = false;
+            this.tutorial1_btn_cp.Click += new System.EventHandler(this.Tutorial_btn_cp_Click);
             // 
             // select_mode_panel
             // 
@@ -3119,10 +3215,13 @@
             this.scope_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scope_choice)).EndInit();
             this.show_minimap_panel.ResumeLayout(false);
+            this.show_fps_panel.ResumeLayout(false);
+            this.gamma_panel.ResumeLayout(false);
+            this.gamma_panel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gamma_choice)).EndInit();
             this.fps_panel.ResumeLayout(false);
             this.fps_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fps)).EndInit();
-            this.show_fps_panel.ResumeLayout(false);
             this.smoothing_panel.ResumeLayout(false);
             this.display_size_panel.ResumeLayout(false);
             this.high_resolution_panel.ResumeLayout(false);
@@ -3135,6 +3234,7 @@
             this.sensitivity_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sensitivity)).EndInit();
             this.keyboard_settings.ResumeLayout(false);
+            this.climb_panel.ResumeLayout(false);
             this.run_panel.ResumeLayout(false);
             this.select_item_panel.ResumeLayout(false);
             this.medkit_panel.ResumeLayout(false);
@@ -3415,5 +3515,12 @@
         private System.Windows.Forms.Label show_tutorial_label;
         private System.Windows.Forms.Button tutorial_btn_cp;
         private System.Windows.Forms.Label tutorial_label;
+        private System.Windows.Forms.Button tutorial1_btn_cp;
+        private System.Windows.Forms.Panel climb_panel;
+        private System.Windows.Forms.Label climb_label;
+        private System.Windows.Forms.Button climb_btn_c;
+        private System.Windows.Forms.Panel gamma_panel;
+        private System.Windows.Forms.TrackBar gamma_choice;
+        private System.Windows.Forms.Label gamma_label;
     }
 }

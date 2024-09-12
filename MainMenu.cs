@@ -54,6 +54,7 @@ namespace SLIL
             { "item", Keys.H },
             { "select_item", Keys.Q },
             { "run", Keys.ShiftKey },
+            { "climb", Keys.Space },
         };
         public static Dictionary<string, Keys> BindControls = new Dictionary<string, Keys>()
         {
@@ -71,12 +72,13 @@ namespace SLIL
             { "item", Keys.H },
             { "select_item", Keys.Q },
             { "run", Keys.ShiftKey },
+            { "climb", Keys.Space },
         };
         public static int resolution = 0, display_size = 0, smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
         public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true, IsTutorial = false;
         public static bool inv_y = false, inv_x = false;
         public static double LOOK_SPEED = 6.5;
-        public static float Volume = 0.4f;
+        public static float Volume = 0.4f, Gamma = 1;
 
         public MainMenu()
         {
@@ -270,6 +272,8 @@ namespace SLIL
             video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(fps_panel);
             video_settings.Controls.Add(new Separator());
+            video_settings.Controls.Add(gamma_panel);
+            video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(show_fps_panel);
             video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(smoothing_panel);
@@ -284,6 +288,8 @@ namespace SLIL
             mouse_settings.Controls.Add(new Separator());
             mouse_settings.Controls.Add(sensitivity_panel);
             keyboard_settings.Controls.Clear();
+            keyboard_settings.Controls.Add(climb_panel);
+            keyboard_settings.Controls.Add(new Separator());
             keyboard_settings.Controls.Add(run_panel);
             keyboard_settings.Controls.Add(new Separator());
             keyboard_settings.Controls.Add(select_item_panel);
@@ -365,6 +371,7 @@ namespace SLIL
         {
             if (ChangeControlButton)
             {
+                e.Handled = true;
                 Keys key = e.KeyCode;
                 if (key == Keys.Escape)
                 {
@@ -400,6 +407,7 @@ namespace SLIL
             ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             Volume = INIReader.GetSingle(iniFolder, "CONFIG", "volume", 0.4f);
+            Gamma = INIReader.GetSingle(iniFolder, "CONFIG", "gamma", 0.8f);
             LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 6.5);
             inv_y = INIReader.GetBool(iniFolder, "SlIL", "inv_y", false);
             inv_x = INIReader.GetBool(iniFolder, "SlIL", "inv_x", false);
@@ -426,6 +434,7 @@ namespace SLIL
             BindControls["item"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "item", Keys.H);
             BindControls["select_item"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "select_item", Keys.Q);
             BindControls["run"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "run", Keys.ShiftKey);
+            BindControls["climb"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "climb", Keys.Space);
             if (interface_size < 0 || interface_size > 3)
                 interface_size = 2;
             //if (display_size < 0 || display_size > 5)
@@ -436,6 +445,8 @@ namespace SLIL
                 LOOK_SPEED = 6.5;
             if (Volume < 0 || Volume > 1)
                 Volume = 0.4f;
+            if (Gamma < 0.4 || Gamma > 1.2)
+                Gamma = 1;
             if (scope_color < 0 || scope_color > 8)
                 scope_color = 0;
             if (scope_type < 0 || scope_type > 4)
@@ -450,6 +461,7 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             INIReader.SetKey(iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
             INIReader.SetKey(iniFolder, "CONFIG", "volume", Volume);
+            INIReader.SetKey(iniFolder, "CONFIG", "gamma", Gamma);
             INIReader.SetKey(iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
             INIReader.SetKey(iniFolder, "SLIL", "display_size", display_size);
             INIReader.SetKey(iniFolder, "SLIL", "interface_size", interface_size);
@@ -574,6 +586,7 @@ namespace SLIL
             item_btn_c.Text = BindControls["item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             select_item_btn_c.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             run_btn_c.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            climb_btn_c.Text = BindControls["climb"].ToString().Replace("Key", null).Replace("Return", "Enter");
             language_list.SelectedIndex = DownloadedLocalizationList
                 ? language_list.Items.IndexOf(Language) : 0;
             show_tutorial.Checked = show_hilf_mir.Checked;
@@ -589,6 +602,7 @@ namespace SLIL
             show_minimap.Checked = ShowMiniMap;
             scope_choice.Value = scope_type;
             scope_color_choice.Value = scope_color;
+            gamma_choice.Value = (int)(Gamma * 100);
             sensitivity.Value = (int)(LOOK_SPEED * 100);
             volume.Value = (int)(Volume * 100);
             if (hight_fps)
@@ -619,20 +633,6 @@ namespace SLIL
             if (SupportedLanguages.ContainsKey(shortCode))
                 return SupportedLanguages[shortCode];
             return "English";
-        }
-
-        private string GetLanguageCode()
-        {
-            CultureInfo ci = CultureInfo.InstalledUICulture;
-            string language = null;
-            string languageCode = ci.Name.ToLower();
-            if (SupportedLanguages.ContainsKey(languageCode))
-                language = SupportedLanguages[languageCode];
-            string shortCode = languageCode.Substring(0, 2);
-            if (SupportedLanguages.ContainsKey(shortCode))
-                language = SupportedLanguages[shortCode];
-            if (language == null) return "en";
-            return language.Remove(1).ToLower();
         }
 
         private void SetLanguage()
@@ -690,6 +690,7 @@ namespace SLIL
                 check_update_btn.Text = Localizations.GetLString(Language, "0-31");
                 video_settings.Text = Localizations.GetLString(Language, "0-32");
                 high_resolution_label.Text = Localizations.GetLString(Language, "0-33");
+                gamma_label.Text = Localizations.GetLString(Language, "0-121") + $" {GetGamma()}";
                 show_fps_label.Text = Localizations.GetLString(Language, "0-34");
                 show_minimap_label.Text = Localizations.GetLString(Language, "0-35");
                 scope_label.Text = Localizations.GetLString(Language, "0-36") + GetScopeType();
@@ -708,6 +709,7 @@ namespace SLIL
                 show_tutorial_label.Text = Localizations.GetLString(Language, "0-116");
                 tutorial_label.Text = Localizations.GetLString(Language, "0-117");
                 tutorial_btn_cp.Text = Localizations.GetLString(Language, "0-118");
+                tutorial1_btn_cp.Text = Localizations.GetLString(Language, "0-119");
                 press_any_btn_label.Text = Localizations.GetLString(Language, "0-45");
                 cant_use_panel.Text = Localizations.GetLString(Language, "0-107");
                 interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
@@ -727,6 +729,7 @@ namespace SLIL
                 medkit_label.Text = Localizations.GetLString(Language, "0-58");
                 select_item_label.Text = Localizations.GetLString(Language, "0-59");
                 run_label.Text = Localizations.GetLString(Language, "0-60");
+                climb_label.Text = Localizations.GetLString(Language, "0-120");
             }
             else
             {
@@ -773,6 +776,7 @@ namespace SLIL
                 check_update_btn.Text = "Check for update";
                 video_settings.Text = "Graphics";
                 high_resolution_label.Text = "High resolution";
+                gamma_label.Text = "Gamma " + GetGamma();
                 show_fps_label.Text = "Display FPS";
                 show_minimap_label.Text = "Show minimap";
                 scope_label.Text = "Scope: " + GetScopeType();
@@ -791,6 +795,7 @@ namespace SLIL
                 show_tutorial_label.Text = "Show tutorial";
                 tutorial_label.Text = "It seems you are a beginner.\nWould you like to take a training course?";
                 tutorial_btn_cp.Text = "Complete training";
+                tutorial1_btn_cp.Text = "Training";
                 press_any_btn_label.Text = "Press any button or ESC to cancel";
                 cant_use_panel.Text = "This button can't be used!";
                 interface_size_label.Text = "Interface size: " + GetInterfaceSize();
@@ -810,6 +815,7 @@ namespace SLIL
                 medkit_label.Text = "Use item";
                 select_item_label.Text = "Select item";
                 run_label.Text = "Run (hold)";
+                climb_label.Text = "Climb over";
             }
             if (show_tutorial.Checked)
             {
@@ -997,6 +1003,8 @@ namespace SLIL
                     return "Random";
             }
         }
+
+        private string GetGamma() => $"{Gamma * 100}%";
 
         private string GetInterfaceSize()
         {
@@ -1209,6 +1217,7 @@ namespace SLIL
             scope_color = 0;
             LOOK_SPEED = 6.5;
             Volume = 0.4f;
+            Gamma = 1;
             BindControls.Clear();
             foreach (var kvp in ClassicBindControls)
                 BindControls.Add(kvp.Key, kvp.Value);
@@ -1359,6 +1368,15 @@ namespace SLIL
                 else
                     show_fps_on_off.Text = "Off";
             }
+        }
+
+        private void Gamma_choice_Scroll(object sender, EventArgs e)
+        {
+            Gamma = (float)gamma_choice.Value / 100;
+            if (DownloadedLocalizationList)
+                gamma_label.Text = Localizations.GetLString(Language, "0-121") + $" {GetGamma()}";
+            else
+                gamma_label.Text = "Gamma " + GetGamma();
         }
 
         private void Fps_Scroll(object sender, EventArgs e)

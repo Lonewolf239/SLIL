@@ -136,6 +136,8 @@ namespace SLIL.UserControls
                                  "~│~ -ENTITIES-    ~│~ List of entities                            ~│~\n" +
                                  "~│~ -ENT_-*X*-_AI_-*Y*  ~│~ Spawn entity under ID X, Y = 1 - with AI    ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
+                                 "~│~ -NOCLIP-      ~│~ Enables/disables noclip                     ~│~\n" +
+                                 "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -EGTRE-       ~│~ Issue first aid kits                        ~│~\n" +
                                  "~│~ -DHURF-       ~│~ Issue adrenaline                            ~│~\n" +
                                  "~│~ -KVISE-       ~│~ Issue helmet                                ~│~\n" +
@@ -809,6 +811,13 @@ namespace SLIL.UserControls
                                 color = Color.Red;
                                 message = "Incorrect data entered! X or Y is not a number.";
                             }
+                        }
+                        else if (cheat == "NOCLIP")
+                        {
+                            if (parent.OnOffNoClip())
+                                message = "noclip enabled";
+                            else
+                                message = "noclip disabled";
                         }
                         else if (cheat == "KILL")
                         {

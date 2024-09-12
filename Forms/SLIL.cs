@@ -17,6 +17,7 @@ using SLIL.UserControls;
 using Play_Sound;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using NAudio.Wave;
 
 namespace SLIL
 {
@@ -469,7 +470,7 @@ namespace SLIL
             Properties.Resources.h_scope_dot,
             Properties.Resources.scope_null
         };
-        private bool IsTutorial = false;
+        private bool IsTutorial = false, NoClip = false;
         public static int scope_color = 0, scope_type = 0;
         public static bool ShowMap = false;
         private bool ShowSing = false;
@@ -739,8 +740,15 @@ namespace SLIL
 
         public static void SetVolume() => ost[ost_index].SetVolume(Volume);
 
+        public bool OnOffNoClip()
+        {
+            NoClip = !NoClip;
+            return NoClip;
+        }
+
         public static void GoDebug(SLIL slil, int debug)
         {
+            slil.IsTutorial = false;
             slil.Controller.StopGame(-1);
             slil.inDebug = debug;
             difficulty = 5;
@@ -872,6 +880,11 @@ namespace SLIL
             shot_timer.Stop();
             reload_timer.Stop();
             status_refresh.Stop();
+            chill_timer.Stop();
+            stage_timer.Stop();
+            shotgun_pull_timer.Stop();
+            mouse_hold_timer.Stop();
+            parkour_timer.Stop();
             if (!isCursorVisible)
                 Cursor.Show();
             foreach (Control control in ShopInterface_panel.Controls)
@@ -931,11 +944,18 @@ namespace SLIL
             catch { }
         }
 
+        private void Parkour_timer_Tick(object sender, EventArgs e)
+        {
+            parkour_timer.Stop();
+            if (GameStarted)
+                Parkour();
+        }
+
         private void Step_sound_timer_Tick(object sender, EventArgs e)
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if ((playerDirection != Direction.STOP || strafeDirection != Direction.STOP) && !player.Aiming && (step == null || !step.IsPlaying))
+            if ((playerDirection != Direction.STOP || strafeDirection != Direction.STOP) && !player.InParkour && !player.Aiming && (step == null || !step.IsPlaying))
             {
                 if (currentIndex >= soundIndices.Count)
                 {
@@ -1209,6 +1229,11 @@ namespace SLIL
 
         private void Shotgun_pull_timer_Tick(object sender, EventArgs e)
         {
+            if (!GameStarted)
+            {
+                shotgun_pull_timer.Stop();
+                return;
+            }
             Player player = Controller.GetPlayer();
             player.GunState = player.MoveStyle;
             player.CanShoot = true;
@@ -1464,8 +1489,7 @@ namespace SLIL
             }
             if (GameStarted && !Paused && !BlockInput && !console_panel.Visible && !open_shop)
             {
-                if (e.KeyCode == Bind.Screenshot)
-                    DoScreenshot();
+                if (e.KeyCode == Bind.Screenshot) DoScreenshot();
                 if (e.KeyCode == Bind.Show_map_0 || e.KeyCode == Bind.Show_map_1)
                 {
                     if (!ShowSing)
@@ -1479,6 +1503,43 @@ namespace SLIL
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
                 {
                     if (e.KeyCode == Bind.Flashlight) TakeFlashlight(true);
+                    if (e.KeyCode == Bind.Climb)
+                    {
+                        double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
+                        double ray_x = Math.Sin(rayA);
+                        double ray_y = Math.Cos(rayA);
+                        double distance = 0;
+                        bool hit = false;
+                        while (raycast.Enabled && !hit && distance <= 1)
+                        {
+                            distance += 0.1d;
+                            int x = (int)(player.X + ray_x * distance);
+                            int y = (int)(player.Y + ray_y * distance);
+                            char test_wall = Controller.GetMap()[y * Controller.GetMapWidth() + x];
+                            switch (test_wall)
+                            {
+                                case '=':
+                                    while (raycast.Enabled && !hit && distance <= 2)
+                                    {
+                                        distance += 0.1d;
+                                        int x1 = (int)(player.X + ray_x * distance);
+                                        int y1 = (int)(player.Y + ray_y * distance);
+                                        if (Controller.GetMap()[y1 * Controller.GetMapWidth() + x1] == '.')
+                                            DoParkour(y, x);
+                                    }
+                                    hit = true;
+                                    break;
+                                case '#':
+                                case 'F':
+                                case 'D':
+                                case 'd':
+                                case 'o':
+                                case 'S':
+                                    hit = true;
+                                    break;
+                            }
+                        }
+                    }
                     if (e.KeyCode == Bind.Select_item)
                     {
                         BlockCamera = CanUnblockCamera = true;
@@ -1680,16 +1741,15 @@ namespace SLIL
         private void Display_Scroll(object sender, MouseEventArgs e)
         {
             Player player = Controller.GetPlayer();
-            if (ShowSing) UpdateScrollPosition(-e.Delta / 10);
+            double delta = e.Delta / 10;
+            if (ShowSing) UpdateScrollPosition(-delta);
             if (GameStarted && !Paused && !BlockInput && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
             {
                 int new_gun = player.CurrentGun;
-                if (e.Delta > 0) new_gun--;
+                if (delta > 0) new_gun--;
                 else new_gun++;
-                if (new_gun < 0)
-                    new_gun = player.Guns.Count - 1;
-                else if (new_gun > player.Guns.Count - 1)
-                    new_gun = 0;
+                if (new_gun < 0) new_gun = player.Guns.Count - 1;
+                else if (new_gun > player.Guns.Count - 1) new_gun = 0;
                 TakeFlashlight(false);
                 ChangeWeapon(new_gun);
             }
@@ -1732,6 +1792,12 @@ namespace SLIL
         }
 
         //  #====     RayCasting    ====#
+
+        private bool HasImpassibleCells(int index)
+        {
+            if (NoClip) return false;
+            return impassibleCells.Contains(Controller.GetMap()[index]);
+        }
 
         private void PlayerMove()
         {
@@ -1778,22 +1844,25 @@ namespace SLIL
                     newY -= moveCos * 0.65;
                     break;
             }
-            if (!(impassibleCells.Contains(Controller.GetMap()[(int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2)])
-                || impassibleCells.Contains(Controller.GetMap()[(int)newY * Controller.GetMapWidth() + (int)(newX - playerWidth / 2)])))
+            if (!(HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2))
+                || HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX - playerWidth / 2))))
                 tempX = newX;
-            if (!(impassibleCells.Contains(Controller.GetMap()[(int)(newY + playerWidth / 2) * Controller.GetMapWidth() + (int)newX])
-                || impassibleCells.Contains(Controller.GetMap()[(int)(newY - playerWidth / 2) * Controller.GetMapWidth() + (int)newX])))
+            if (!(HasImpassibleCells((int)(newY + playerWidth / 2) * Controller.GetMapWidth() + (int)newX)
+                || HasImpassibleCells((int)(newY - playerWidth / 2) * Controller.GetMapWidth() + (int)newX)))
                 tempY = newY;
-            if (impassibleCells.Contains(Controller.GetMap()[(int)tempY * Controller.GetMapWidth() + (int)(tempX + playerWidth / 2)]))
+            if (HasImpassibleCells((int)tempY * Controller.GetMapWidth() + (int)(tempX + playerWidth / 2)))
                 tempX -= playerWidth / 2 - (1 - tempX % 1);
-            if (impassibleCells.Contains(Controller.GetMap()[(int)tempY * Controller.GetMapWidth() + (int)(tempX - playerWidth / 2)]))
+            if (HasImpassibleCells((int)tempY * Controller.GetMapWidth() + (int)(tempX - playerWidth / 2)))
                 tempX += playerWidth / 2 - (tempX % 1);
-            if (impassibleCells.Contains(Controller.GetMap()[(int)(tempY + playerWidth / 2) * Controller.GetMapWidth() + (int)tempX]))
+            if (HasImpassibleCells((int)(tempY + playerWidth / 2) * Controller.GetMapWidth() + (int)tempX))
                 tempY -= playerWidth / 2 - (1 - tempY % 1);
-            if (impassibleCells.Contains(Controller.GetMap()[(int)(tempY - playerWidth / 2) * Controller.GetMapWidth() + (int)tempX]))
+            if (HasImpassibleCells((int)(tempY - playerWidth / 2) * Controller.GetMapWidth() + (int)tempX))
                 tempY += playerWidth / 2 - (tempY % 1);
             if (tempX - player.X != 0 || tempY - player.Y != 0)
-                Controller.MovePlayer(tempX - player.X, tempY - player.Y);
+            {
+                if (!BlockInput)
+                    Controller.MovePlayer(tempX - player.X, tempY - player.Y);
+            }
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == '.')
                 DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
         }
@@ -2338,6 +2407,7 @@ namespace SLIL
             {
                 UpdateMoveStyle(player);
                 if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+                else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
                 else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), player.GunState], 0, 0, WEAPON.Width, WEAPON.Height);
             }
             catch
@@ -2345,6 +2415,7 @@ namespace SLIL
                 try
                 {
                     if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+                    else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
                     else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
                 catch { }
@@ -2377,7 +2448,7 @@ namespace SLIL
             }
             graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
             graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
-            if (!player.IsPetting && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
+            if (!player.IsPetting && !player.InParkour && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
@@ -2410,7 +2481,7 @@ namespace SLIL
             }
             SmoothingMode save = graphicsWeapon.SmoothingMode;
             graphicsWeapon.SmoothingMode = SmoothingMode.None;
-            if (player.GetCurrentGun().ShowScope && !InSelectingMode)
+            if (player.GetCurrentGun().ShowScope && !player.IsPetting && !player.InParkour && !InSelectingMode)
             {
                 if (resolution == 0)
                 {
@@ -2499,13 +2570,13 @@ namespace SLIL
             graphicsWeapon.FillRectangle(Brushes.Gray, scrollBarRect);
         }
 
-        public void UpdateScrollPosition(int delta)
+        public void UpdateScrollPosition(double delta)
         {
             string text = GetTextOnSing();
             RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH[resolution] - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT[resolution] - 2 * ScrollPadding);
             SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[2, resolution], SCREEN_WIDTH[resolution] - 40 - ScrollBarWidth);
             float maxScroll = Math.Max(0, textSize.Height - textRectangle.Height);
-            scrollPosition = Math.Max(0, Math.Min(scrollPosition + delta, (int)maxScroll));
+            scrollPosition = (int)Math.Max(0, Math.Min(scrollPosition + delta, (int)maxScroll));
         }
 
         private string DetectingHotkeysInString(string text)
@@ -2888,7 +2959,7 @@ namespace SLIL
                 double step = 0.01;
                 double rayAngleX = Math.Sin(player.A);
                 double rayAngleY = Math.Cos(player.A);
-                char[] impassibleCells = { '#', '=', 'd', 'D' };
+                char[] impassibleCells = { '#', '=', 'd', 'D', 'S' };
                 while (shotDistance <= player.GetCurrentGun().FiringRange)
                 {
                     int test_x = (int)(player.X + rayAngleX * shotDistance);
@@ -3092,7 +3163,7 @@ namespace SLIL
                             double celling = (SCREEN_HEIGHT[resolution] - player.Look) / 2.25d - (SCREEN_HEIGHT[resolution] * FOV) / distance;
                             double floor = SCREEN_HEIGHT[resolution] - (celling + player.Look);
                             double mid = (celling + floor) / 2;
-                            if (test_wall == '#' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT[resolution] / 2 >= mid))
+                            if (test_wall == '#' || test_wall == 'S'|| test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT[resolution] / 2 >= mid))
                             {
                                 hit = true;
                                 distance -= 0.2;
@@ -3111,6 +3182,34 @@ namespace SLIL
             Tuple<double, int, int>[] spritess = new Tuple<double, int, int>[amount];
             for (int i = 0; i < amount; i++) spritess[i] = Tuple.Create(dist[i], order[i], text[i]);
             spritess = spritess.OrderBy(item => item.Item1).ToArray();
+        }
+
+        //  #====      Parkour      ====#
+
+        private void DoParkour(int y, int x)
+        {
+            Player player = Controller.GetPlayer();
+            player.ParkourState = 0;
+            CanUnblockCamera = false;
+            NoClip = BlockCamera = BlockInput = player.InParkour = true;
+            playerMoveStyle = Direction.WALK;
+            player.X = x + 0.5;
+            player.Y = y + 0.5;
+            parkour_timer.Start();
+        }
+
+        private void Parkour()
+        {
+            Player player = Controller.GetPlayer();
+            if(player.ParkourState == 0)
+                parkour_timer.Start();
+            else
+            {
+                player.X += Math.Sin(player.A);
+                player.Y += Math.Cos(player.A);
+                NoClip = BlockCamera = BlockInput = player.InParkour = false;
+            }
+            player.ParkourState++;
         }
 
         //  #====    ChangeWeapon   ====#
@@ -3220,7 +3319,7 @@ namespace SLIL
         private bool PlayerCanRun()
         {
             Player player = Controller.GetPlayer();
-            return player.GetCurrentGun().CanRun &&
+            return player.GetCurrentGun().CanRun && !player.InParkour &&
                 !player.Fast && !player.IsPetting && !player.Aiming &&
                 !shot_timer.Enabled && !reload_timer.Enabled &&
                 !shotgun_pull_timer.Enabled && !chill_timer.Enabled && !mouse_hold_timer.Enabled;
