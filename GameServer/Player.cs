@@ -5,7 +5,7 @@ namespace GameServer
     public class Player : Entity
     {
         public int DeathSound { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public double A { get; set; }
         public double Look { get; set; }
         public double HP { get; set; }
@@ -34,7 +34,8 @@ namespace GameServer
         public double DEPTH { get; set; }
         public int SelectedItem { get; set; }
         public bool Fast { get; set; }
-        public List<Effect> Effects = new List<Effect>();
+        public bool NoClip { get; set; }
+        public List<Effect> Effects = [];
         public readonly Gun[] GUNS =
         {
             new Flashlight(), new Knife(), new Pistol(),
@@ -44,9 +45,9 @@ namespace GameServer
             new Rainblower(), new Adrenalin(), new Helmet(),
             new RPG()
         };
-        public List<Gun> Guns = new List<Gun>();
-        public List<DisposableItem> DisposableItems = new List<DisposableItem>();
-        public Pet PET = null;
+        public List<Gun> Guns = [];
+        public List<DisposableItem> DisposableItems = [];
+        public Pet? PET = null;
         public double MAX_HP { get; set; }
         public double MAX_STAMINE { get; set; }
 
@@ -382,6 +383,7 @@ namespace GameServer
                 PET = null;
                 CuteMode = false;
                 Fast = false;
+                NoClip = false;
             }
             EnemiesKilled = 0;
             Look = 0;
@@ -440,7 +442,7 @@ namespace GameServer
             if (index == 0)
             {
                 if (EffectCheck(0)) return;
-                Regeneration effect = new Regeneration();
+                Regeneration effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.UpdateTimeRemaining();
@@ -449,7 +451,7 @@ namespace GameServer
             else if (index == 1)
             {
                 if (EffectCheck(1)) return;
-                Adrenaline effect = new Adrenaline();
+                Adrenaline effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.UpdateTimeRemaining();
@@ -460,7 +462,16 @@ namespace GameServer
             else if (index == 2)
             {
                 if (EffectCheck(2)) return;
-                Protection effect = new Protection();
+                Protection effect = new();
+                if (!standart_time)
+                    effect.SetTotalTime(time);
+                effect.UpdateTimeRemaining();
+                Effects.Add(effect);
+            }
+            else if (index == 3)
+            {
+                if (EffectCheck(3)) return;
+                Fatigue effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.UpdateTimeRemaining();

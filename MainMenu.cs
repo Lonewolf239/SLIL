@@ -488,6 +488,7 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "HOTKEYS", "item", BindControls["item"]);
             INIReader.SetKey(iniFolder, "HOTKEYS", "select_item", BindControls["select_item"]);
             INIReader.SetKey(iniFolder, "HOTKEYS", "run", BindControls["run"]);
+            INIReader.SetKey(iniFolder, "HOTKEYS", "climb", BindControls["climb"]);
         }
 
         //  #====    Localization    ====#
@@ -1500,12 +1501,14 @@ namespace SLIL
                 difficulty_panel.Visible = true;
                 difficulty_panel.BringToFront();
             }
-            else
+            else if (multiplayer.Checked)
             {
                 return;
                 multiplayer_panel.Visible = true;
                 multiplayer_panel.BringToFront();
             }
+            else if (tutorial1_btn_cp.Checked)
+                GoToTutorial();
         }
 
         private void Difficulty_CheckedChanged(object sender, EventArgs e)
@@ -1663,6 +1666,11 @@ namespace SLIL
         private void Tutorial_btn_cp_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
+            GoToTutorial();
+        }
+
+        private void GoToTutorial()
+        {
             if (sounds) MainMenuTheme.Stop();
             StringBuilder tutorialMap = new StringBuilder(
             "#########################" +

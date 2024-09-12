@@ -35,6 +35,7 @@ namespace SLIL.Classes
         public double DEPTH { get; set; }
         public int SelectedItem { get; set; }
         public bool Fast { get; set; }
+        public bool NoClip { get; set; }
         public List<Effect> Effects = new List<Effect>();
         public readonly Gun[] GUNS =
         {
@@ -383,6 +384,7 @@ namespace SLIL.Classes
                 PET = null;
                 CuteMode = false;
                 Fast = false;
+                NoClip = false;
             }
             EnemiesKilled = 0;
             Look = 0;
@@ -462,6 +464,15 @@ namespace SLIL.Classes
             {
                 if (EffectCheck(2)) return;
                 Protection effect = new Protection();
+                if (!standart_time)
+                    effect.SetTotalTime(time);
+                effect.UpdateTimeRemaining();
+                Effects.Add(effect);
+            }
+            else if (index == 3)
+            {
+                if (EffectCheck(3)) return;
+                Fatigue effect = new Fatigue();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.UpdateTimeRemaining();

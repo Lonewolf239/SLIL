@@ -1442,6 +1442,89 @@ namespace SLIL.Classes
             }
         }
 
+        internal bool OnOffNoClip(int playerID)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    p.NoClip = !p.NoClip;
+                    return p.NoClip;
+                }
+            }
+            return false;
+        }
+
+        internal bool HasNoClip(int playerID)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    return p.NoClip;
+                }
+            }
+            return false;
+        }
+
+        internal bool HasImpassibleCells(int index, int playerID)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    char[] impassibleCells = { '#', 'D', '=', 'd', 'S' };
+                    if (HasNoClip(playerID) || p.InParkour) return false;
+                    return impassibleCells.Contains(GetMap()[index]);
+                }
+            }
+            return false;
+        }
+
+        internal bool DoParkour(int playerID, int y, int x)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    if (p.EffectCheck(3)) return false;
+                    p.ParkourState = 0;
+                    p.X = x + 0.5;
+                    p.Y = y + 0.5;
+                    p.Look = 0;
+                    p.InParkour = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        internal void StopParkour(int playerID)
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    double new_x = p.X + Math.Sin(p.A);
+                    double new_y = p.Y + Math.Cos(p.A);
+                    while (HasImpassibleCells((int)new_y * MAP_WIDTH + (int)(new_x), playerID))
+                    {
+                        new_x += Math.Sin(p.A) / 4;
+                        new_y += Math.Cos(p.A) / 4;
+                    }
+                    p.X = new_x;
+                    p.Y = new_y;
+                    p.GiveEffect(3, true);
+                    p.InParkour = false;
+                }
+            }
+        }
+
         internal void ChangeWeapon(int playerID, int new_gun)
         {
             foreach (Entity entity in Entities) 

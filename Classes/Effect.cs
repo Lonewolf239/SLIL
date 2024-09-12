@@ -9,9 +9,7 @@ namespace SLIL.Classes
         public string Description { get; set; }
         public int EffectTotalTime { get; set; }
         public int EffectTimeRemaining { get; set; }
-        public Image Icon { get; set; }
-
-        public Effect() { }
+        public bool Debaf { get; set; }
 
         public bool ReducingTimeRemaining()
         {
@@ -28,39 +26,49 @@ namespace SLIL.Classes
 
     public class Regeneration : Effect
     {
-        public Regeneration() : base()
+        public Regeneration()
         {
             ID = 0;
             EffectTotalTime = 15;
             Name = "Regeneration";
             Description = "Gradually restores health";
-            Icon = Properties.Resources.regeneration_effect;
             UpdateTimeRemaining();
         }
     }
 
     public class Adrenaline : Effect
     {
-        public Adrenaline() : base()
+        public Adrenaline()
         {
             ID = 1;
             EffectTotalTime = 20;
             Name = "Adrenaline";
             Description = "Increases movement speed";
-            Icon = Properties.Resources.adrenalin_effect;
             UpdateTimeRemaining();
         }
     }
 
     public class Protection : Effect
     {
-        public Protection() : base()
+        public Protection()
         {
             ID = 2;
             EffectTotalTime = 120;
             Name = "Protection";
             Description = "Reduces damage taken";
-            Icon = Properties.Resources.protection_effect;
+            UpdateTimeRemaining();
+        }
+    }
+
+    public class Fatigue : Effect
+    {
+        public Fatigue()
+        {
+            ID = 3;
+            Debaf = true;
+            EffectTotalTime = 40;
+            Name = "Fatigue";
+            Description = "Prevents window entry";
             UpdateTimeRemaining();
         }
     }

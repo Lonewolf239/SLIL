@@ -17,7 +17,7 @@ namespace SLIL.UserControls
     {
         private static bool ImHonest = false;
         private int cheat_index = 0, color_index = 0;
-        private readonly Effect[] effects = { new Regeneration(), new Adrenaline(), new Protection() };
+        private readonly Effect[] effects = { new Regeneration(), new Adrenaline(), new Protection(), new Fatigue() };
         private readonly List<string> previous_cheat = new List<string>();
         public List<Entity> Entities;
         public Player player;

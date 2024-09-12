@@ -7,8 +7,7 @@
         public string? Description { get; set; }
         public int EffectTotalTime { get; set; }
         public int EffectTimeRemaining { get; set; }
-
-        public Effect() { }
+        public bool Debaf { get; set; }
 
         public bool ReducingTimeRemaining()
         {
@@ -24,7 +23,7 @@
 
     public class Regeneration : Effect
     {
-        public Regeneration() : base()
+        public Regeneration()
         {
             ID = 0;
             EffectTotalTime = 15;
@@ -36,7 +35,7 @@
 
     public class Adrenaline : Effect
     {
-        public Adrenaline() : base()
+        public Adrenaline()
         {
             ID = 1;
             EffectTotalTime = 20;
@@ -48,12 +47,25 @@
 
     public class Protection : Effect
     {
-        public Protection() : base()
+        public Protection()
         {
             ID = 2;
             EffectTotalTime = 120;
             Name = "Protection";
             Description = "Reduces damage taken";
+            UpdateTimeRemaining();
+        }
+    }
+
+    public class Fatigue : Effect
+    {
+        public Fatigue()
+        {
+            ID = 3;
+            Debaf = true;
+            EffectTotalTime = 40;
+            Name = "Fatigue";
+            Description = "Prevents window entry";
             UpdateTimeRemaining();
         }
     }

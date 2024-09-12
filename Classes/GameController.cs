@@ -350,6 +350,10 @@ namespace SLIL.Classes
             }
         }
 
+        internal bool OnOffNoClip() => Game.OnOffNoClip(playerID);
+
+        internal bool HasNoClip() => Game.HasNoClip(playerID);
+
         internal void ChangeWeapon(int new_gun)
         {
             if (peer == null) Game.ChangeWeapon(playerID, new_gun);
@@ -363,6 +367,10 @@ namespace SLIL.Classes
         }
 
         internal bool IsMultiplayer() => peer != null;
+
+        internal bool DoParkour(int y, int x) => Game.DoParkour(playerID, y, x);
+
+        internal void StopParkour() => Game.StopParkour(playerID);
 
         internal void BuyAmmo(Gun weapon)
         {

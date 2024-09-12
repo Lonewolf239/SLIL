@@ -209,8 +209,6 @@
             this.changes_list = new System.Windows.Forms.ListBox();
             this.game_mode_panel = new System.Windows.Forms.Panel();
             this.game_mode_background = new System.Windows.Forms.Panel();
-            this.tutorial1_btn_cp = new System.Windows.Forms.Button();
-            this.select_mode_panel = new System.Windows.Forms.Panel();
             this.singleplayer = new System.Windows.Forms.RadioButton();
             this.multiplayer = new System.Windows.Forms.RadioButton();
             this.close_game_mode_panel_l = new System.Windows.Forms.Button();
@@ -256,6 +254,7 @@
             this.tutorial_btn_cp = new System.Windows.Forms.Button();
             this.hilf_mir_close_btn_r = new System.Windows.Forms.Button();
             this.show_hilf_mir = new System.Windows.Forms.CheckBox();
+            this.tutorial1_btn_cp = new System.Windows.Forms.RadioButton();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -332,7 +331,6 @@
             this.change_logs_background.SuspendLayout();
             this.game_mode_panel.SuspendLayout();
             this.game_mode_background.SuspendLayout();
-            this.select_mode_panel.SuspendLayout();
             this.multiplayer_panel.SuspendLayout();
             this.multiplayer_background.SuspendLayout();
             this.host_panel.SuspendLayout();
@@ -2520,8 +2518,9 @@
             // game_mode_background
             // 
             this.game_mode_background.BackColor = System.Drawing.Color.Black;
+            this.game_mode_background.Controls.Add(this.multiplayer);
+            this.game_mode_background.Controls.Add(this.singleplayer);
             this.game_mode_background.Controls.Add(this.tutorial1_btn_cp);
-            this.game_mode_background.Controls.Add(this.select_mode_panel);
             this.game_mode_background.Controls.Add(this.close_game_mode_panel_l);
             this.game_mode_background.Controls.Add(this.select_mode_btn_r);
             this.game_mode_background.Location = new System.Drawing.Point(3, 3);
@@ -2529,39 +2528,14 @@
             this.game_mode_background.Size = new System.Drawing.Size(490, 276);
             this.game_mode_background.TabIndex = 45;
             // 
-            // tutorial1_btn_cp
-            // 
-            this.tutorial1_btn_cp.AutoSize = true;
-            this.tutorial1_btn_cp.BackColor = System.Drawing.Color.Black;
-            this.tutorial1_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tutorial1_btn_cp.ForeColor = System.Drawing.Color.White;
-            this.tutorial1_btn_cp.Location = new System.Drawing.Point(175, 184);
-            this.tutorial1_btn_cp.Name = "tutorial1_btn_cp";
-            this.tutorial1_btn_cp.Size = new System.Drawing.Size(139, 41);
-            this.tutorial1_btn_cp.TabIndex = 60;
-            this.tutorial1_btn_cp.TabStop = false;
-            this.tutorial1_btn_cp.Text = "Обучение";
-            this.tutorial1_btn_cp.UseVisualStyleBackColor = false;
-            this.tutorial1_btn_cp.Click += new System.EventHandler(this.Tutorial_btn_cp_Click);
-            // 
-            // select_mode_panel
-            // 
-            this.select_mode_panel.Controls.Add(this.singleplayer);
-            this.select_mode_panel.Controls.Add(this.multiplayer);
-            this.select_mode_panel.Location = new System.Drawing.Point(95, 45);
-            this.select_mode_panel.Name = "select_mode_panel";
-            this.select_mode_panel.Size = new System.Drawing.Size(300, 125);
-            this.select_mode_panel.TabIndex = 59;
-            // 
             // singleplayer
             // 
             this.singleplayer.Appearance = System.Windows.Forms.Appearance.Button;
             this.singleplayer.BackgroundImage = global::SLIL.Properties.Resources.singleplayer;
             this.singleplayer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.singleplayer.Checked = true;
-            this.singleplayer.Dock = System.Windows.Forms.DockStyle.Left;
             this.singleplayer.ForeColor = System.Drawing.Color.White;
-            this.singleplayer.Location = new System.Drawing.Point(0, 0);
+            this.singleplayer.Location = new System.Drawing.Point(95, 45);
             this.singleplayer.Name = "singleplayer";
             this.singleplayer.Size = new System.Drawing.Size(125, 125);
             this.singleplayer.TabIndex = 53;
@@ -2574,11 +2548,10 @@
             this.multiplayer.Appearance = System.Windows.Forms.Appearance.Button;
             this.multiplayer.BackgroundImage = global::SLIL.Properties.Resources.multiplayer;
             this.multiplayer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.multiplayer.Dock = System.Windows.Forms.DockStyle.Right;
             this.multiplayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.multiplayer.ForeColor = System.Drawing.Color.White;
             this.multiplayer.Image = global::SLIL.Properties.Resources.Soon;
-            this.multiplayer.Location = new System.Drawing.Point(175, 0);
+            this.multiplayer.Location = new System.Drawing.Point(270, 45);
             this.multiplayer.Name = "multiplayer";
             this.multiplayer.Size = new System.Drawing.Size(125, 125);
             this.multiplayer.TabIndex = 54;
@@ -3132,6 +3105,21 @@
             this.show_hilf_mir.UseVisualStyleBackColor = true;
             this.show_hilf_mir.CheckedChanged += new System.EventHandler(this.Show_hilf_mir_CheckedChanged);
             // 
+            // tutorial1_btn_cp
+            // 
+            this.tutorial1_btn_cp.Appearance = System.Windows.Forms.Appearance.Button;
+            this.tutorial1_btn_cp.AutoSize = true;
+            this.tutorial1_btn_cp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.tutorial1_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.tutorial1_btn_cp.ForeColor = System.Drawing.Color.White;
+            this.tutorial1_btn_cp.Location = new System.Drawing.Point(175, 184);
+            this.tutorial1_btn_cp.Name = "tutorial1_btn_cp";
+            this.tutorial1_btn_cp.Size = new System.Drawing.Size(139, 39);
+            this.tutorial1_btn_cp.TabIndex = 61;
+            this.tutorial1_btn_cp.Text = "Обучение";
+            this.tutorial1_btn_cp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.tutorial1_btn_cp.UseVisualStyleBackColor = false;
+            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3267,7 +3255,6 @@
             this.game_mode_panel.ResumeLayout(false);
             this.game_mode_background.ResumeLayout(false);
             this.game_mode_background.PerformLayout();
-            this.select_mode_panel.ResumeLayout(false);
             this.multiplayer_panel.ResumeLayout(false);
             this.multiplayer_background.ResumeLayout(false);
             this.multiplayer_background.PerformLayout();
@@ -3434,7 +3421,6 @@
         private System.Windows.Forms.RadioButton multiplayer;
         private System.Windows.Forms.RadioButton singleplayer;
         private System.Windows.Forms.Button select_mode_btn_r;
-        private System.Windows.Forms.Panel select_mode_panel;
         private System.Windows.Forms.Panel multiplayer_panel;
         private System.Windows.Forms.Panel multiplayer_background;
         private System.Windows.Forms.Button multiplayer_close_l;
@@ -3515,12 +3501,12 @@
         private System.Windows.Forms.Label show_tutorial_label;
         private System.Windows.Forms.Button tutorial_btn_cp;
         private System.Windows.Forms.Label tutorial_label;
-        private System.Windows.Forms.Button tutorial1_btn_cp;
         private System.Windows.Forms.Panel climb_panel;
         private System.Windows.Forms.Label climb_label;
         private System.Windows.Forms.Button climb_btn_c;
         private System.Windows.Forms.Panel gamma_panel;
         private System.Windows.Forms.TrackBar gamma_choice;
         private System.Windows.Forms.Label gamma_label;
+        private System.Windows.Forms.RadioButton tutorial1_btn_cp;
     }
 }
