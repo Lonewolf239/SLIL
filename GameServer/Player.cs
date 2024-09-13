@@ -394,6 +394,8 @@ namespace GameServer
                 CuteMode = false;
                 Fast = false;
                 NoClip = false;
+                if (OnBike)
+                    StopDrivingOnBike();
             }
             EnemiesKilled = 0;
             Look = 0;
@@ -411,8 +413,6 @@ namespace GameServer
             BlockInput = false;
             BlockCamera = false;
             CanUnblockCamera = true;
-            if (OnBike)
-                StopDrivingOnBike();
             PlayerDirection = Directions.STOP;
             StrafeDirection = Directions.STOP;
             PlayerMoveStyle = Directions.WALK;
@@ -512,7 +512,8 @@ namespace GameServer
                 Look = 0;
                 OnBike = true;
                 Fast = true;
-                MOVE_SPEED += 1.75;
+                MOVE_SPEED += 2.15;
+                HP = MAX_HP;
             }
         }
 
@@ -559,7 +560,8 @@ namespace GameServer
                     CanShoot = true;
                     OnBike = false;
                     Fast = false;
-                    MOVE_SPEED -= 1.75;
+                    MOVE_SPEED -= 2.15;
+                    HP = MAX_HP;
                     break;
                 }
             }
@@ -580,7 +582,8 @@ namespace GameServer
                     CanShoot = true;
                     OnBike = false;
                     Fast = false;
-                    MOVE_SPEED -= 1.75;
+                    MOVE_SPEED -= 2.15;
+                    HP = MAX_HP;
                 }
             }
             Effects.Clear();
@@ -610,12 +613,17 @@ namespace GameServer
 
         public bool DealDamage(double damage)
         {
-            if (EffectCheck(2)) damage *= 0.8;
+            if (EffectCheck(2) || EffectCheck(4)) damage *= 0.8;
             HP -= damage;
             TimeoutInvulnerable = 2;
             Invulnerable = true;
             if (HP <= 0)
-                this.Dead = true;
+            {
+                if (OnBike)
+                    StopDrivingOnBike();
+                else
+                    this.Dead = true;
+            }
             return Dead;
         }
     }

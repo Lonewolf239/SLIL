@@ -351,7 +351,7 @@ namespace SLIL
             // 
             // parkour_timer
             // 
-            this.parkour_timer.Interval = 350;
+            this.parkour_timer.Interval = 250;
             this.parkour_timer.Tick += new System.EventHandler(this.Parkour_timer_Tick);
             // 
             // SLIL

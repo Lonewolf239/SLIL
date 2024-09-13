@@ -1333,7 +1333,7 @@ namespace SLIL
                         player.StrafeDirection = Directions.LEFT;
                     if (e.KeyCode == Bind.Right)
                         player.StrafeDirection = Directions.RIGHT;
-                    if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && player != null)
+                    if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.OnBike && player != null)
                     {
                         int count = player.Guns.Count;
                         if (player.Guns.Contains(player.GUNS[0])) count--;
@@ -1870,11 +1870,11 @@ namespace SLIL
                     else
                     {
                         if (player.PlayerDirection == Directions.FORWARD)
-                            Controller.ChangePlayerA(0.0175);
+                            Controller.ChangePlayerA(0.03);
                         else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(-0.0175);
+                            Controller.ChangePlayerA(-0.03);
                         else
-                            Controller.ChangePlayerA(0.0125);
+                            Controller.ChangePlayerA(0.02);
                     }
                     break;
                 case Directions.RIGHT:
@@ -1886,11 +1886,11 @@ namespace SLIL
                     else
                     {
                         if (player.PlayerDirection == Directions.FORWARD)
-                            Controller.ChangePlayerA(-0.0175);
+                            Controller.ChangePlayerA(-0.03);
                         else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(0.0175);
+                            Controller.ChangePlayerA(0.03);
                         else
-                            Controller.ChangePlayerA(-0.0125);
+                            Controller.ChangePlayerA(-0.02);
                     }
                     break;
             }
@@ -1901,7 +1901,7 @@ namespace SLIL
                     newY += moveCos;
                     break;
                 case Directions.BACK:
-                    double factor = player.OnBike ? 0.25 : 0.65;
+                    double factor = player.OnBike ? 0.2 : 0.65;
                     newX -= moveSin * factor;
                     newY -= moveCos * factor;
                     break;
@@ -2606,12 +2606,18 @@ namespace SLIL
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
             if (!player.CuteMode)
             {
-                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                if (player.OnBike)
+                    graphicsWeapon.DrawImage(Properties.Resources.im_biker, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                else
+                    graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
                 graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
-                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                if (player.OnBike)
+                    graphicsWeapon.DrawImage(Properties.Resources.im_biker, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                else
+                    graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
                 graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (Controller.IsMultiplayer())
