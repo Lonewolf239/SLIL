@@ -906,7 +906,6 @@ namespace SLIL
             stage_timer.Stop();
             shotgun_pull_timer.Stop();
             mouse_hold_timer.Stop();
-            parkour_timer.Stop();
             if (!isCursorVisible)
                 Cursor.Show();
             foreach (Control control in ShopInterface_panel.Controls)
@@ -964,13 +963,6 @@ namespace SLIL
                 fps = CalculateFPS(elapsed_time);
             }
             catch { }
-        }
-
-        private void Parkour_timer_Tick(object sender, EventArgs e)
-        {
-            parkour_timer.Stop();
-            if (GameStarted)
-                Parkour();
         }
 
         private void Step_sound_timer_Tick(object sender, EventArgs e)
@@ -3267,26 +3259,7 @@ namespace SLIL
         private void DoParkour(int y, int x)
         {
             if (!Controller.DoParkour(y, x)) return;
-            Player player = Controller.GetPlayer();
-            if (player == null) return;
-            player.CanUnblockCamera = false;
-            player.BlockCamera = player.BlockInput = true;
             if (MainMenu.sounds) climb.Play(Volume);
-            player.PlayerMoveStyle = Directions.WALK;
-            parkour_timer.Start();
-        }
-
-        private void Parkour()
-        {
-            Player player = Controller.GetPlayer();
-            if (player.ParkourState == 0)
-                parkour_timer.Start();
-            else
-            {
-                Controller.StopParkour();
-                player.BlockCamera = player.BlockInput = false;
-            }
-            player.ParkourState++;
         }
 
         //  #====    ChangeWeapon   ====#

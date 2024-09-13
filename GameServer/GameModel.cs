@@ -34,6 +34,7 @@ namespace GameServer
         private static System.Timers.Timer? RespawnTimer;
         private static System.Timers.Timer? EnemyTimer;
         private static System.Timers.Timer? TimeRemain;
+        private static System.Timers.Timer? ParkourTimer;
         public int MaxEntityID;
         private readonly SendMessageFromGameCallback sendMessageFromGameCallback;
 
@@ -52,6 +53,8 @@ namespace GameServer
             EnemyTimer.Elapsed += EnemyTimer_Tick;
             TimeRemain = new System.Timers.Timer(1000);
             TimeRemain.Elapsed += TimeRemain_Tick;
+            ParkourTimer = new System.Timers.Timer(250);
+            ParkourTimer.Elapsed += ParkourTimer_Tick;
         }
 
         public void StartGame()
@@ -834,9 +837,7 @@ namespace GameServer
                             double extendedX = Entities[i].X + Math.Sin(player.A) * 0.3;
                             double extendedY = Entities[i].Y + Math.Cos(player.A) * 0.3;
                             if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
-                            {
                                 DoParkour(player.ID, (int)extendedX, (int)extendedY);
-                            }
                         }
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
                         {
@@ -1545,45 +1546,71 @@ namespace GameServer
             return false;
         }
 
-        internal bool DoParkour(int playerID, int y, int x)
+        internal Player? GetPlayer(int playerID)
         {
             foreach (Entity ent in Entities)
             {
                 if (ent.ID == playerID)
+                    return (Player)ent;
+            }
+            return null;
+        }
+
+        private void ParkourTimer_Tick(object? sender, EventArgs e)
+        {
+            ParkourTimer?.Stop();
+            if (GameStarted) Parkour();
+        }
+
+        internal bool DoParkour(int playerID, int y, int x)
+        {
+            Player? p = GetPlayer(playerID);
+            if (p == null) return false;
+            if (p.EffectCheck(3)) return false;
+            p.ParkourState = 0;
+            p.X = x + 0.5;
+            p.Y = y + 0.5;
+            p.Look = 0;
+            p.InParkour = true;
+            p.CanUnblockCamera = false;
+            p.BlockCamera = p.BlockInput = true;
+            p.PlayerMoveStyle = Directions.WALK;
+            ParkourTimer?.Start();
+            return true;
+        }
+
+        private void Parkour()
+        {
+            foreach (Entity ent in Entities)
+            {
+                if (ent is Player player)
                 {
-                    Player p = (Player)ent;
-                    if (p.EffectCheck(3)) return false;
-                    p.ParkourState = 0;
-                    p.X = x + 0.5;
-                    p.Y = y + 0.5;
-                    p.Look = 0;
-                    p.InParkour = true;
-                    return true;
+                    if (player == null || !player.InParkour) continue;
+                    if (player.ParkourState == 0) ParkourTimer?.Start();
+                    else StopParkour(player.ID);
+                    player.ParkourState++;
                 }
             }
-            return false;
         }
 
         internal void StopParkour(int playerID)
         {
-            foreach (Entity ent in Entities)
+            Player? p = GetPlayer(playerID);
+            if (p == null) return;
+            double new_x = p.X + Math.Sin(p.A);
+            double new_y = p.Y + Math.Cos(p.A);
+            while (HasImpassibleCells((int)new_y * MAP_WIDTH + (int)(new_x), playerID))
             {
-                if (ent.ID == playerID)
-                {
-                    Player p = (Player)ent;
-                    double new_x = p.X + Math.Sin(p.A);
-                    double new_y = p.Y + Math.Cos(p.A);
-                    while (HasImpassibleCells((int)new_y * MAP_WIDTH + (int)(new_x), playerID))
-                    {
-                        new_x += Math.Sin(p.A) / 4;
-                        new_y += Math.Cos(p.A) / 4;
-                    }
-                    p.X = new_x;
-                    p.Y = new_y;
-                    p.GiveEffect(3, true);
-                    p.InParkour = false;
-                }
+                new_x += Math.Sin(p.A) / 4;
+                new_y += Math.Cos(p.A) / 4;
             }
+            p.X = new_x;
+            p.Y = new_y;
+            p.GiveEffect(3, true);
+            p.InParkour = false;
+            p.BlockInput = false;
+            if (!p.OnBike)
+                p.BlockCamera = false;
         }
 
         internal void ChangeWeapon(int playerID, int new_gun)
