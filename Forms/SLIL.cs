@@ -15,8 +15,6 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
-using System.IO.Ports;
-using System.Security.Claims;
 
 namespace SLIL
 {

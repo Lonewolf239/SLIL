@@ -97,17 +97,13 @@ namespace GameServer
 
         public int GetLevel()
         {
-            switch (Level)
+            return Level switch
             {
-                case Levels.LV1:
-                    return 0;
-                case Levels.LV2:
-                    return 1;
-                case Levels.LV3:
-                    return 2;
-                default:
-                    return 3;
-            }
+                Levels.LV1 => 0,
+                Levels.LV2 => 1,
+                Levels.LV3 => 2,
+                _ => 3,
+            };
         }
 
         protected virtual void ApplyUpdate() => AmmoCount = CartridgesClip;
@@ -366,7 +362,7 @@ namespace GameServer
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;
-            Name = new[] { "3-4", "Pistol" };
+            Name = ["3-4", "Pistol"];
             Accuracy = 0.85;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
@@ -937,8 +933,8 @@ namespace GameServer
             AmmoInStock = CartridgesClip * 4;
             MaxAmmo = CartridgesClip * 4;
             FiringRange = 16;
-            MaxDamage = 55;
-            MinDamage = 50;
+            MaxDamage = 50;
+            MinDamage = 45;
             RecoilY = 350;
             RecoilX = 10;
             BurstShots = 1;
@@ -991,7 +987,7 @@ namespace GameServer
             CartridgesClip = 1;
             AmmoInStock = CartridgesClip * 2;
             MaxAmmo = CartridgesClip * 4;
-            FiringRange = 0;
+            FiringRange = 30;
             MaxDamage = 40;
             MinDamage = 25;
             RecoilY = 0;

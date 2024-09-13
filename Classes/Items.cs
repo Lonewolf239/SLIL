@@ -939,8 +939,8 @@ namespace SLIL.Classes
             AmmoInStock = CartridgesClip * 4;
             MaxAmmo = CartridgesClip * 4;
             FiringRange = 16;
-            MaxDamage = 55;
-            MinDamage = 50;
+            MaxDamage = 50;
+            MinDamage = 45;
             RecoilY = 350;
             RecoilX = 10;
             BurstShots = 1;
@@ -993,7 +993,7 @@ namespace SLIL.Classes
             CartridgesClip = 1;
             AmmoInStock = CartridgesClip * 2;
             MaxAmmo = CartridgesClip * 4;
-            FiringRange = 0;
+            FiringRange = 30;
             MaxDamage = 40;
             MinDamage = 25;
             RecoilY = 0;

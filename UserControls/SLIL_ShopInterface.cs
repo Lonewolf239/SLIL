@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Play_Sound;
 using SLIL.Classes;
@@ -96,6 +98,54 @@ namespace SLIL.UserControls
             UpdateInfo();
         }
 
+        private Image GetAmmoIcon()
+        {
+            switch (weapon.AmmoType)
+            {
+                case AmmoTypes.Magic: return Properties.Resources.magic;
+                case AmmoTypes.Bubbles: return Properties.Resources.bubbles;
+                case AmmoTypes.Bullet: return Properties.Resources.bullet;
+                case AmmoTypes.Shell: return Properties.Resources.shell;
+                case AmmoTypes.Rifle: return Properties.Resources.rifle_bullet;
+                case AmmoTypes.Rocket: return Properties.Resources.rocket;
+                case AmmoTypes.C4: return Properties.Resources.c4;
+                default: return Properties.Resources.bullet;
+            }
+        }
+
+        private int GetDamage()
+        {
+            double maxDamage = 40.0;
+            double totalMinDamage = weapon.MinDamage * weapon.BulletCount;
+            double damagePercentage = totalMinDamage / maxDamage;
+            return (int)(damagePercentage * 336);
+        }
+
+        private Image DrawWeaponParametrs()
+        {
+            Bitmap result = new Bitmap(500, 120);
+            using (Graphics g = Graphics.FromImage(result))
+            {
+                Brush progressbar_background = new SolidBrush(Color.Blue);
+                g.DrawImage(Properties.Resources.bullet, 0, 0, 30, 30);
+                g.DrawImage(Properties.Resources.magic, 0, 38, 30, 30);
+                g.DrawImage(Properties.Resources.rocket, 0, 76, 30, 30);
+                g.FillRectangle(progressbar_background, 35, 0, 340, 30);
+                g.FillRectangle(progressbar_background, 35, 38, 340, 30);
+                g.FillRectangle(progressbar_background, 35, 76, 340, 30);
+                using (LinearGradientBrush progressBrush = new LinearGradientBrush(new RectangleF(37, 2, 336, 26), Color.Red, Color.Lime, LinearGradientMode.Horizontal))
+                {
+                    g.FillRectangle(progressBrush, new RectangleF(37, 2, 336, 26));
+                    g.FillRectangle(progressBrush, new RectangleF(37, 40, 336, 26));
+                    g.FillRectangle(progressBrush, new RectangleF(37, 78, 336, 26));
+                }
+                g.FillRectangle(progressbar_background, 37 + GetDamage(), 2, 336 - GetDamage(), 26);
+                g.FillRectangle(progressbar_background, 37 + (int)(weapon.FiringRange / 30 * 336), 40, 336 - (int)(weapon.FiringRange / 30 * 336), 26);
+                g.FillRectangle(progressbar_background, 37 + (int)((weapon.Accuracy * 100) / 100 * 336), 78, 336 - (int)((weapon.Accuracy * 100) / 100 * 336), 26);
+            }
+            return result;
+        }
+
         private void Update_button_Click(object sender, EventArgs e)
         {
             weapon_icon.Focus();
@@ -107,9 +157,8 @@ namespace SLIL.UserControls
                 weapon_name.Text = GetWeaponName() + $" {weapon.Level}";
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
                 update_button.Text = $"${weapon.UpdateCost}";
-                damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-11")} {weapon.MinDamage}-{weapon.MaxDamage}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
-                ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
-                ammo_count.Left = damage_text.Right;
+                ammo_count.Text = $"{weapon.AmmoInStock}/{weapon.AmmoCount}";
+                parametrs_image.Image = DrawWeaponParametrs();
                 update_button.Visible = weapon.CanUpdate();
             }
             else if (MainMenu.sounds)
@@ -124,14 +173,12 @@ namespace SLIL.UserControls
             weapon_name.Text = weapon.Upgradeable ? GetWeaponName() + $" {weapon.Level}" : GetWeaponName();
             if (weapon_icon.Image != SLIL.IconDict[weapon.GetType()][weapon.GetLevel()])
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
-            ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {ammo}" : $"Ammo: {ammo}";
+            ammo_count.Text = ammo;
+            ammo_icon.Image = GetAmmoIcon();
             buy_button.Text = GetBuyText() + $" ${cost}";
             update_button.Text = $"${weapon.UpdateCost}";
-            string shotgun = weapon is Shotgun ? $" x {weapon.BulletCount}" : null;
-            damage_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-11")} {weapon.MinDamage}-{weapon.MaxDamage}{shotgun}" : $"Damage: {weapon.MinDamage}-{weapon.MaxDamage}";
-            accuracy_text.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-13")} {weapon.Accuracy * 100}%" : $"Accuracy: {weapon.Accuracy * 100}%";
-            ammo_count.Left = damage_text.Right;
             update_button.Left = buy_button.Right + 6;
+            parametrs_image.Image = DrawWeaponParametrs();
             update_button.Visible = weapon.CanUpdate() && weapon.HasIt;
         }
 
@@ -139,6 +186,7 @@ namespace SLIL.UserControls
         {
             UpdateInfo();
             Width = width;
+            ammo_panel.Left = (weapon_icon.Width - ammo_panel.Width) / 2;
         }
     }
 }
