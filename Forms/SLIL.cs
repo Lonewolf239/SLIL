@@ -2739,16 +2739,18 @@ namespace SLIL
         private void DrawWeapon(Player player, int index)
         {
             if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-            else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
             else if (player.OnBike)
             {
-                if (player.StrafeDirection == Directions.LEFT)
+                if (player.InParkour)
+                    graphicsWeapon.DrawImage(Properties.Resources.bike_jump, 0, 0, WEAPON.Width, WEAPON.Height);
+                else if (player.StrafeDirection == Directions.LEFT)
                     graphicsWeapon.DrawImage(Properties.Resources.using_bike_left, 0, 0, WEAPON.Width, WEAPON.Height);
                 else if (player.StrafeDirection == Directions.RIGHT)
                     graphicsWeapon.DrawImage(Properties.Resources.using_bike_right, 0, 0, WEAPON.Width, WEAPON.Height);
                 else
                     graphicsWeapon.DrawImage(Properties.Resources.on_bike, 0, 0, WEAPON.Width, WEAPON.Height);
             }
+            else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
             else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index], 0, 0, WEAPON.Width, WEAPON.Height);
         }
 

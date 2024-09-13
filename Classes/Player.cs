@@ -412,8 +412,11 @@ namespace SLIL.Classes
             InParkour = false;
             InSelectingMode = false;
             BlockInput = false;
-            BlockCamera = false;
-            CanUnblockCamera = true;
+            if (!OnBike)
+            {
+                BlockCamera = false;
+                CanUnblockCamera = true;
+            }
             PlayerDirection = Directions.STOP;
             StrafeDirection = Directions.STOP;
             PlayerMoveStyle = Directions.WALK;

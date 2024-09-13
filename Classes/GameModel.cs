@@ -1526,7 +1526,7 @@ namespace SLIL.Classes
                 if (ent.ID == playerID)
                 {
                     Player p = (Player)ent;
-                    if (p.EffectCheck(3) || p.EffectCheck(4)) return false;
+                    if (p.EffectCheck(3)) return false;
                     p.ParkourState = 0;
                     p.X = x + 0.5;
                     p.Y = y + 0.5;
