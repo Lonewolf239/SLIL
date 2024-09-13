@@ -437,7 +437,7 @@ namespace SLIL
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################",
-            bikeMap = @"##########################.........####..........##..F......####..........##.......................##.......................##....####......####.....##...##..##....##..##....##...#....#....#....#....##...#....#....#....#....##...#....#....##..##....##...#....#.....####.....##...#....#..............##...#....#..............##...#....#..............##...#....#.....####.....##...#....#....##..##....##...#....#....#....#....##...#....#....#....#....##...##..##....##..##....##....####......####.....##.......................##.............5.........##.........####.......P..##.........####..........##########################";
+            bikeMap = @"############################.......####........#####........####.........###.......................##.......................##....####......####.....##...######....######....##...######....######....##...##F###....######....##...######....######....##...######.....####.....##...######..............##...######..............##...######..............##...######.....####.....##...######....######....##...######....######....##...######....######....##...######....######....##....####......####..5..##.......................##.......................###........####.......P.#####.......####........############################";
         public static float Volume = 0.4f;
         private int burst_shots = 0, reload_frames = 0;
         public static int ost_index = 0;
@@ -1891,8 +1891,9 @@ namespace SLIL
                     newY += moveCos;
                     break;
                 case Directions.BACK:
-                    newX -= moveSin * 0.65;
-                    newY -= moveCos * 0.65;
+                    double factor = player.OnBike ? 0.25 : 0.65;
+                    newX -= moveSin * factor;
+                    newY -= moveCos * factor;
                     break;
             }
             if (!(HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2))
@@ -2626,7 +2627,7 @@ namespace SLIL
             }
             graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
             graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
-            if (!player.IsPetting && !player.InParkour && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
+            if (!player.IsPetting && !player.InParkour && !player.OnBike && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
@@ -2659,7 +2660,7 @@ namespace SLIL
             }
             SmoothingMode save = graphicsWeapon.SmoothingMode;
             graphicsWeapon.SmoothingMode = SmoothingMode.None;
-            if (player.GetCurrentGun().ShowScope && !player.IsPetting && !player.InParkour && !InSelectingMode)
+            if (player.GetCurrentGun().ShowScope && !player.IsPetting && !player.InParkour && !player.OnBike && !InSelectingMode)
             {
                 if (resolution == 0)
                 {
@@ -2696,7 +2697,7 @@ namespace SLIL
                 if (IsTutorial) text += "Tutorial";
                 else if (inDebug == 1) text += "Debug";
                 else if (inDebug == 2) text += "Debug Boss";
-                else if (inDebug == 3) text += "Bike";
+                else if (inDebug == 3) text += "Debug Bike";
                 else if (difficulty == 4) text += "Custom";
                 else text += (player.Stage + 1).ToString();
                 SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
