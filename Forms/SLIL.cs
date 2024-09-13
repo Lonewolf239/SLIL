@@ -2583,20 +2583,11 @@ namespace SLIL
             try
             {
                 UpdateMoveStyle(player);
-                if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-                else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-                else if (player.OnBike) graphicsWeapon.DrawImage(Properties.Resources.on_bike, 0, 0, WEAPON.Width, WEAPON.Height);
-                else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), player.GunState], 0, 0, WEAPON.Width, WEAPON.Height);
+                DrawWeapon(player, player.GunState);
             }
             catch
             {
-                try
-                {
-                    if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-                    else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-                    else if (player.OnBike) graphicsWeapon.DrawImage(Properties.Resources.on_bike, 0, 0, WEAPON.Width, WEAPON.Height);
-                    else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0], 0, 0, WEAPON.Width, WEAPON.Height);
-                }
+                try { DrawWeapon(player, 0); }
                 catch { }
             }
             if (player.EffectCheck(2))
@@ -2727,6 +2718,22 @@ namespace SLIL
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
             }
+        }
+
+        private void DrawWeapon(Player player, int index)
+        {
+            if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+            else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+            else if (player.OnBike)
+            {
+                if (player.StrafeDirection == Directions.LEFT)
+                    graphicsWeapon.DrawImage(Properties.Resources.using_bike_left, 0, 0, WEAPON.Width, WEAPON.Height);
+                else if (player.StrafeDirection == Directions.RIGHT)
+                    graphicsWeapon.DrawImage(Properties.Resources.using_bike_right, 0, 0, WEAPON.Width, WEAPON.Height);
+                else
+                    graphicsWeapon.DrawImage(Properties.Resources.on_bike, 0, 0, WEAPON.Width, WEAPON.Height);
+            }
+            else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index], 0, 0, WEAPON.Width, WEAPON.Height);
         }
 
         private Bitmap DrawMiniMap()

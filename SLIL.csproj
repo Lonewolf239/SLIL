@@ -1225,5 +1225,11 @@
   <ItemGroup>
     <None Include="Images\on_bike.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\using_bike_left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\using_bike_right.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
