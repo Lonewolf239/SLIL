@@ -254,10 +254,7 @@ namespace GameServer
     public abstract class NPC : Friend
     {
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', '=', 'W', 'S'];
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
         protected override int GetTexture() => Texture;

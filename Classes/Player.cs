@@ -39,6 +39,10 @@ namespace SLIL.Classes
         public bool Fast { get; set; }
         public bool NoClip { get; set; }
         public bool OnBike { get; set; }
+        public bool InSelectingMode { get; set; }
+        public bool BlockInput { get; set; }
+        public bool BlockCamera { get; set; }
+        public bool CanUnblockCamera { get; set; }
         public Directions PlayerDirection { get; set; }
         public Directions StrafeDirection { get; set; }
         public Directions PlayerMoveStyle { get; set; }
@@ -404,6 +408,10 @@ namespace SLIL.Classes
             LevelUpdated = false;
             IsPetting = false;
             InParkour = false;
+            InSelectingMode = false;
+            BlockInput = false;
+            BlockCamera = false;
+            CanUnblockCamera = true;
             if (OnBike)
                 StopDrivingOnBike();
             PlayerDirection = Directions.STOP;
@@ -499,6 +507,11 @@ namespace SLIL.Classes
                 Biker effect = new Biker();
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
+                CanUnblockCamera = false;
+                BlockCamera = true;
+                CanShoot = false;
+                Look = 0;
+                OnBike = true;
                 Fast = true;
                 MOVE_SPEED += 1.75;
             }
@@ -543,9 +556,11 @@ namespace SLIL.Classes
                 if (Effects[i].ID == 4)
                 {
                     Effects.RemoveAt(i);
+                    BlockCamera = false;
+                    CanShoot = true;
+                    OnBike = false;
                     Fast = false;
                     MOVE_SPEED -= 1.75;
-                    OnBike = false;
                     break;
                 }
             }
@@ -562,9 +577,11 @@ namespace SLIL.Classes
                 }
                 else if (Effects[i].ID == 4)
                 {
+                    BlockCamera = false;
+                    CanShoot = true;
+                    OnBike = false;
                     Fast = false;
                     MOVE_SPEED -= 1.75;
-                    OnBike = false;
                 }
             }
             Effects.Clear();
