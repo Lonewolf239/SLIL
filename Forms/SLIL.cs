@@ -2679,7 +2679,7 @@ namespace SLIL
                 else text += (player.Stage + 1).ToString();
                 SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
                 SolidBrush brush = (SolidBrush)whiteBrush.Clone();
-                brush.Color = Color.FromArgb((int)(255 * StageOpacity), brush.Color);
+                brush.Color = Color.FromArgb((int)(brush.Color.R * StageOpacity), (int)(brush.Color.G * StageOpacity), (int)(brush.Color.B * StageOpacity));
                 graphicsWeapon.DrawString(text, consolasFont[interface_size, resolution + 1], brush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }
             if (player.Effects.Count > 0)

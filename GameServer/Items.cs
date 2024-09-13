@@ -1049,19 +1049,19 @@ namespace GameServer
             EffectID = 0;
             HasLVMechanics = true;
             HasCuteDescription = true;
-            GunCost = 50;
-            Name = new[]
-            {
+            GunCost = 30;
+            Name =
+            [
                 "4-0", "First Aid Kit",
                 "4-1", "Beans"
-            };
-            Description = new[]
-            {
+            ];
+            Description =
+            [
                 "4-2",
                 "Restores health",
                 "4-3",
                 "A tasty snack"
-            };
+            ];
         }
 
         public override int GetItemID() => 12;
@@ -1073,13 +1073,13 @@ namespace GameServer
         {
             EffectID = 1;
             RechargeTime = 530;
-            GunCost = 75;
-            Name = new[] { "4-4", "Adrenalin" };
-            Description = new[]
-            {
+            GunCost = 60;
+            Name = ["4-4", "Adrenalin"];
+            Description =
+            [
                 "4-5",
                 "Increases movement speed for 20 sec",
-            };
+            ];
         }
 
         public override int GetItemID() => 13;
@@ -1093,12 +1093,12 @@ namespace GameServer
             ReloadFrames = 4;
             RechargeTime = 1000;
             GunCost = 75;
-            Name = new[] { "4-6", "Helmet" };
-            Description = new[]
-            {
+            Name = ["4-6", "Helmet"];
+            Description =
+            [
                 "4-7",
                 "Reduces incoming damage by 20% for 2 minutes",
-            };
+            ];
         }
 
         public override int GetItemID() => 14;

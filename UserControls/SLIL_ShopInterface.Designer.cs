@@ -49,10 +49,10 @@
             this.weapon_name.ForeColor = System.Drawing.Color.White;
             this.weapon_name.Location = new System.Drawing.Point(3, 128);
             this.weapon_name.Name = "weapon_name";
-            this.weapon_name.Size = new System.Drawing.Size(245, 24);
+            this.weapon_name.Size = new System.Drawing.Size(275, 53);
             this.weapon_name.TabIndex = 1;
             this.weapon_name.Text = "[NAME]";
-            this.weapon_name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.weapon_name.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // buy_button
             // 
@@ -60,7 +60,7 @@
             this.buy_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buy_button.Font = new System.Drawing.Font("Consolas", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buy_button.ForeColor = System.Drawing.Color.White;
-            this.buy_button.Location = new System.Drawing.Point(253, 137);
+            this.buy_button.Location = new System.Drawing.Point(283, 137);
             this.buy_button.Name = "buy_button";
             this.buy_button.Size = new System.Drawing.Size(221, 44);
             this.buy_button.TabIndex = 3;
@@ -72,12 +72,12 @@
             // ammo_count
             // 
             this.ammo_count.Dock = System.Windows.Forms.DockStyle.Right;
-            this.ammo_count.Font = new System.Drawing.Font("Consolas", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ammo_count.Font = new System.Drawing.Font("Consolas", 20.25F);
             this.ammo_count.ForeColor = System.Drawing.Color.White;
-            this.ammo_count.Location = new System.Drawing.Point(35, 0);
+            this.ammo_count.Location = new System.Drawing.Point(50, 0);
             this.ammo_count.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.ammo_count.Name = "ammo_count";
-            this.ammo_count.Size = new System.Drawing.Size(115, 30);
+            this.ammo_count.Size = new System.Drawing.Size(169, 44);
             this.ammo_count.TabIndex = 4;
             this.ammo_count.Text = "[AMMO]";
             this.ammo_count.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -90,7 +90,7 @@
             this.update_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.update_button.Font = new System.Drawing.Font("Consolas", 20.25F, System.Drawing.FontStyle.Bold);
             this.update_button.ForeColor = System.Drawing.Color.White;
-            this.update_button.Location = new System.Drawing.Point(480, 137);
+            this.update_button.Location = new System.Drawing.Point(510, 137);
             this.update_button.Name = "update_button";
             this.update_button.Size = new System.Drawing.Size(71, 44);
             this.update_button.TabIndex = 6;
@@ -104,7 +104,7 @@
             this.weapon_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.weapon_icon.Location = new System.Drawing.Point(3, 3);
             this.weapon_icon.Name = "weapon_icon";
-            this.weapon_icon.Size = new System.Drawing.Size(245, 122);
+            this.weapon_icon.Size = new System.Drawing.Size(275, 122);
             this.weapon_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.weapon_icon.TabIndex = 0;
             this.weapon_icon.TabStop = false;
@@ -114,7 +114,7 @@
             this.ammo_icon.Dock = System.Windows.Forms.DockStyle.Left;
             this.ammo_icon.Location = new System.Drawing.Point(0, 0);
             this.ammo_icon.Name = "ammo_icon";
-            this.ammo_icon.Size = new System.Drawing.Size(30, 30);
+            this.ammo_icon.Size = new System.Drawing.Size(44, 44);
             this.ammo_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.ammo_icon.TabIndex = 8;
             this.ammo_icon.TabStop = false;
@@ -123,16 +123,16 @@
             // 
             this.ammo_panel.Controls.Add(this.ammo_count);
             this.ammo_panel.Controls.Add(this.ammo_icon);
-            this.ammo_panel.Location = new System.Drawing.Point(25, 155);
+            this.ammo_panel.Location = new System.Drawing.Point(587, 137);
             this.ammo_panel.Name = "ammo_panel";
-            this.ammo_panel.Size = new System.Drawing.Size(150, 30);
+            this.ammo_panel.Size = new System.Drawing.Size(219, 44);
             this.ammo_panel.TabIndex = 15;
             // 
             // parametrs_image
             // 
-            this.parametrs_image.Location = new System.Drawing.Point(254, 8);
+            this.parametrs_image.Location = new System.Drawing.Point(284, 8);
             this.parametrs_image.Name = "parametrs_image";
-            this.parametrs_image.Size = new System.Drawing.Size(500, 120);
+            this.parametrs_image.Size = new System.Drawing.Size(500, 117);
             this.parametrs_image.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.parametrs_image.TabIndex = 16;
             this.parametrs_image.TabStop = false;

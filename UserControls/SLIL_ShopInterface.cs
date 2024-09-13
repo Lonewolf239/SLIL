@@ -89,8 +89,13 @@ namespace SLIL.UserControls
                     ParentSLILForm.BuyWeapon(weapon);
                     buy_button.Text = GetBuyText() + $" ${weapon.AmmoCost}";
                     ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
-                    update_button.Left = buy_button.Right + 6;
                     update_button.Visible = weapon.CanUpdate();
+                    if (weapon.CanUpdate())
+                    {
+                        update_button.Left = buy_button.Right + 6;
+                        ammo_panel.Left = update_button.Right + 12;
+                    }
+                    else ammo_panel.Left = buy_button.Right + 12;
                 }
                 else if (MainMenu.sounds)
                     cant_pressed?.Play(SLIL.Volume);
@@ -123,7 +128,7 @@ namespace SLIL.UserControls
 
         private Image DrawWeaponParametrs()
         {
-            Bitmap result = new Bitmap(500, 120);
+            Bitmap result = new Bitmap(500, 117);
             using (Graphics g = Graphics.FromImage(result))
             {
                 Brush progressbar_background = new SolidBrush(Color.Blue);
@@ -177,7 +182,12 @@ namespace SLIL.UserControls
             ammo_icon.Image = GetAmmoIcon();
             buy_button.Text = GetBuyText() + $" ${cost}";
             update_button.Text = $"${weapon.UpdateCost}";
-            update_button.Left = buy_button.Right + 6;
+            if (weapon.CanUpdate() && weapon.HasIt)
+            {
+                update_button.Left = buy_button.Right + 6;
+                ammo_panel.Left = update_button.Right + 12;
+            }
+            else ammo_panel.Left = buy_button.Right + 12;
             parametrs_image.Image = DrawWeaponParametrs();
             update_button.Visible = weapon.CanUpdate() && weapon.HasIt;
         }
@@ -186,7 +196,6 @@ namespace SLIL.UserControls
         {
             UpdateInfo();
             Width = width;
-            ammo_panel.Left = (weapon_icon.Width - ammo_panel.Width) / 2;
         }
     }
 }

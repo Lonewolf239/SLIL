@@ -40,31 +40,31 @@
             this.icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.icon.Location = new System.Drawing.Point(3, 3);
             this.icon.Name = "icon";
-            this.icon.Size = new System.Drawing.Size(190, 121);
+            this.icon.Size = new System.Drawing.Size(275, 122);
             this.icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.icon.TabIndex = 1;
             this.icon.TabStop = false;
             // 
             // name
             // 
-            this.name.AutoSize = true;
-            this.name.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.name.Font = new System.Drawing.Font("Consolas", 15.75F);
             this.name.ForeColor = System.Drawing.Color.White;
-            this.name.Location = new System.Drawing.Point(199, 3);
+            this.name.Location = new System.Drawing.Point(3, 128);
             this.name.Name = "name";
-            this.name.Size = new System.Drawing.Size(70, 22);
+            this.name.Size = new System.Drawing.Size(275, 47);
             this.name.TabIndex = 2;
             this.name.Text = "[NAME]";
+            this.name.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // buy_button
             // 
             this.buy_button.AutoSize = true;
             this.buy_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buy_button.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buy_button.Font = new System.Drawing.Font("Consolas", 20.25F);
             this.buy_button.ForeColor = System.Drawing.Color.White;
-            this.buy_button.Location = new System.Drawing.Point(199, 90);
+            this.buy_button.Location = new System.Drawing.Point(284, 131);
             this.buy_button.Name = "buy_button";
-            this.buy_button.Size = new System.Drawing.Size(82, 34);
+            this.buy_button.Size = new System.Drawing.Size(116, 44);
             this.buy_button.TabIndex = 4;
             this.buy_button.TabStop = false;
             this.buy_button.Text = "Купить";
@@ -74,14 +74,15 @@
             // descryption
             // 
             this.descryption.AutoEllipsis = true;
-            this.descryption.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.descryption.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.descryption.ForeColor = System.Drawing.Color.White;
-            this.descryption.Location = new System.Drawing.Point(199, 28);
+            this.descryption.Location = new System.Drawing.Point(284, 3);
             this.descryption.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.descryption.Name = "descryption";
-            this.descryption.Size = new System.Drawing.Size(250, 59);
+            this.descryption.Size = new System.Drawing.Size(426, 122);
             this.descryption.TabIndex = 6;
             this.descryption.Text = "[DESCRIPTION]\r\n[DESCRIPTION]\r\n";
+            this.descryption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // SLIL_PetShopInterface
             // 
@@ -93,7 +94,7 @@
             this.Controls.Add(this.name);
             this.Controls.Add(this.icon);
             this.Name = "SLIL_PetShopInterface";
-            this.Size = new System.Drawing.Size(452, 127);
+            this.Size = new System.Drawing.Size(773, 188);
             this.SizeChanged += new System.EventHandler(this.SLIL_PetShopInterface_SizeChanged);
             this.VisibleChanged += new System.EventHandler(this.SLIL_PetShopInterface_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize)(this.icon)).EndInit();

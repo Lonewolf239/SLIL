@@ -1055,7 +1055,7 @@ namespace SLIL.Classes
             EffectID = 0;
             HasLVMechanics = true;
             HasCuteDescription = true;
-            GunCost = 50;
+            GunCost = 30;
             Name = new[]
             {
                 "4-0", "First Aid Kit",
@@ -1079,7 +1079,7 @@ namespace SLIL.Classes
         {
             EffectID = 1;
             RechargeTime = 530;
-            GunCost = 75;
+            GunCost = 60;
             Name = new[] { "4-4", "Adrenalin" };
             Description = new[]
             {
