@@ -694,12 +694,21 @@ namespace SLIL.Classes
             if (!GameStarted) return;
             for (int i = 0; i < Entities.Count; i++)
             {
-                if (Entities[i] is Player)
+                if (Entities[i] is Player player)
                 {
                     if ((Entities[i] as Player).ID == playerID)
                     {
                         Entities[i].X += dX;
                         Entities[i].Y += dY;
+                        if (player.EffectCheck(4))
+                        {
+                            double extendedX = Entities[i].X + Math.Sin(player.A) * 0.3;
+                            double extendedY = Entities[i].Y + Math.Cos(player.A) * 0.3;
+                            if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
+                            {
+                                DoParkour(player.ID, (int)extendedX, (int)extendedY);
+                            }
+                        }
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
                         {
                             if (!IsMultiplayer)

@@ -829,6 +829,15 @@ namespace GameServer
                         Entities[i].Y = dY;
                         ((Player)Entities[i]).A = newA;
                         ((Player)Entities[i]).Look = newLook;
+                        if (player.EffectCheck(4))
+                        {
+                            double extendedX = Entities[i].X + Math.Sin(player.A) * 0.3;
+                            double extendedY = Entities[i].Y + Math.Cos(player.A) * 0.3;
+                            if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
+                            {
+                                DoParkour(player.ID, (int)extendedX, (int)extendedY);
+                            }
+                        }
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
                         {
                             GameOver(1);
