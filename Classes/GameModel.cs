@@ -1172,9 +1172,13 @@ namespace SLIL.Classes
 
         internal void RemoveEntity(int id)
         {
-            foreach (Entity entity in Entities)
+            for(int i = 0; i < Entities.Count; i++)
             {
-                if (entity.ID == id) Entities.Remove(entity);
+                if (Entities[i].ID == id)
+                {
+                    Entities.RemoveAt(i);
+                    break;
+                }
             }
         }
 
@@ -1522,7 +1526,7 @@ namespace SLIL.Classes
                 if (ent.ID == playerID)
                 {
                     Player p = (Player)ent;
-                    if (p.EffectCheck(3)) return false;
+                    if (p.EffectCheck(3) || p.EffectCheck(4)) return false;
                     p.ParkourState = 0;
                     p.X = x + 0.5;
                     p.Y = y + 0.5;

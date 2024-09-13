@@ -791,7 +791,8 @@ namespace SLIL.UserControls
                                 { "SillyCat", "14" },
                                 { "GreenGnome", "15" },
                                 { "EnergyDrink", "16" },
-                                { "Pyro", "17" }
+                                { "Pyro", "17" },
+                                { "Bike", "18" },
                             };
                             for (int i = 0; i < entities.GetLength(0); i++)
                             {
@@ -808,7 +809,7 @@ namespace SLIL.UserControls
                             {
                                 int x = Convert.ToInt32(cheat.Split('_')[1]);
                                 int y = Convert.ToInt32(cheat.Split('_')[3]);
-                                if (x >= 0 && x < 18)
+                                if (x >= 0 && x < 19)
                                 {
                                     if (y < 0 || y > 1)
                                     {

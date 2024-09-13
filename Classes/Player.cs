@@ -404,7 +404,8 @@ namespace SLIL.Classes
             LevelUpdated = false;
             IsPetting = false;
             InParkour = false;
-            OnBike = false;
+            if (OnBike)
+                StopDrivingOnBike();
             PlayerDirection = Directions.STOP;
             StrafeDirection = Directions.STOP;
             PlayerMoveStyle = Directions.WALK;
@@ -492,6 +493,15 @@ namespace SLIL.Classes
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
             }
+            else if (index == 4)
+            {
+                if (EffectCheck(4)) return;
+                Biker effect = new Biker();
+                effect.UpdateTimeRemaining();
+                Effects.Add(effect);
+                Fast = true;
+                MOVE_SPEED += 1.75;
+            }
         }
 
         public int GetEffectID() => DisposableItems[SelectedItem].EffectID;
@@ -526,6 +536,21 @@ namespace SLIL.Classes
             }
         }
 
+        public void StopDrivingOnBike()
+        {
+            for (int i = 0; i < Effects.Count; i++)
+            {
+                if (Effects[i].ID == 4)
+                {
+                    Effects.RemoveAt(i);
+                    Fast = false;
+                    MOVE_SPEED -= 1.75;
+                    OnBike = false;
+                    break;
+                }
+            }
+        }
+
         public void StopEffects()
         {
             for (int i = 0; i < Effects.Count; i++)
@@ -534,6 +559,12 @@ namespace SLIL.Classes
                 {
                     Fast = false;
                     MOVE_SPEED -= 1.5;
+                }
+                else if (Effects[i].ID == 4)
+                {
+                    Fast = false;
+                    MOVE_SPEED -= 1.75;
+                    OnBike = false;
                 }
             }
             Effects.Clear();

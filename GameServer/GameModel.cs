@@ -1268,10 +1268,13 @@ namespace GameServer
 
         internal void RemoveEntity(int id)
         {
-            foreach (Entity entity in Entities)
+            for (int i = 0; i < Entities.Count; i++)
             {
-                if (entity.ID == id)
-                    Entities.Remove(entity);
+                if (Entities[i].ID == id)
+                {
+                    Entities.RemoveAt(i);
+                    break;
+                }
             }
         }
 

@@ -288,6 +288,7 @@ namespace SLIL
             { typeof(Adrenaline), Properties.Resources.adrenalin_effect },
             { typeof(Protection), Properties.Resources.protection_effect },
             { typeof(Fatigue), Properties.Resources.food_count },
+            { typeof(Biker), Properties.Resources.im_biker },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
@@ -846,6 +847,9 @@ namespace SLIL
                     break;
                 case 17: // pyro
                     entity = new Pyro(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 18: // bike
+                    entity = new Bike(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
             }
             if (entity == null) return false;
@@ -1685,7 +1689,7 @@ namespace SLIL
                                                 Color color = GetColorForPixel(rays[stripe][y]);
                                                 if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && player.GetCurrentGun().FiringRange >= Distance)
                                                 {
-                                                    if (Distance <= 2)
+                                                    if (Distance <= 2 && entity.HasAI)
                                                     {
                                                         switch (entity.Interaction())
                                                         {
@@ -1717,9 +1721,9 @@ namespace SLIL
                                                                 }).Start();
                                                                 break;
                                                             case 4:
-                                                                //Controller.RemoveEntity(entity.ID);
+                                                                Controller.RemoveEntity(entity.ID);
                                                                 BlockCamera = true;
-                                                                player.GiveEffect(1, true, 0, true);
+                                                                player.GiveEffect(4, true);
                                                                 player.Look = 0;
                                                                 player.CanShoot = false;
                                                                 player.OnBike = true;
@@ -1872,7 +1876,14 @@ namespace SLIL
                         newY -= strafeSin;
                     }
                     else
-                        Controller.ChangePlayerA(0.0175);
+                    {
+                        if (player.PlayerDirection == Directions.FORWARD)
+                            Controller.ChangePlayerA(0.0175);
+                        else if (player.PlayerDirection == Directions.BACK)
+                            Controller.ChangePlayerA(-0.0175);
+                        else
+                            Controller.ChangePlayerA(0.01);
+                    }
                     break;
                 case Directions.RIGHT:
                     if (!player.OnBike)
@@ -1881,7 +1892,14 @@ namespace SLIL
                         newY += strafeSin;
                     }
                     else
-                        Controller.ChangePlayerA(-0.0175);
+                    {
+                        if (player.PlayerDirection == Directions.FORWARD)
+                            Controller.ChangePlayerA(-0.0175);
+                        else if (player.PlayerDirection == Directions.BACK)
+                            Controller.ChangePlayerA(0.0175);
+                        else
+                            Controller.ChangePlayerA(-0.01);
+                    }
                     break;
             }
             switch (player.PlayerDirection)
