@@ -1550,8 +1550,11 @@ namespace SLIL
                                         distance += 0.1d;
                                         int x1 = (int)(player.X + ray_x * distance);
                                         int y1 = (int)(player.Y + ray_y * distance);
-                                        if(!HasImpassibleCells(y1 * Controller.GetMapWidth() + x1))
+                                        if (!HasImpassibleCells(y1 * Controller.GetMapWidth() + x1))
+                                        {
                                             DoParkour(y, x);
+                                            break;
+                                        }
                                     }
                                     hit = true;
                                     break;
@@ -1711,8 +1714,7 @@ namespace SLIL
                                                                 }).Start();
                                                                 break;
                                                             case 4:
-                                                                Controller.RemoveEntity(entity.ID);
-                                                                player.GiveEffect(4, true);
+                                                                Controller.GetOnABike(entity.ID);
                                                                 break;
                                                         }
                                                     }

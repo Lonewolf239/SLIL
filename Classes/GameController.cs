@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Play_Sound;
 using System.Linq.Expressions;
+using System;
 
 namespace SLIL.Classes
 {
@@ -134,6 +135,10 @@ namespace SLIL.Classes
                     double Y = dataReader.GetDouble();
                     int deathSound = dataReader.GetInt();
                     PlaySoundHandle(SLIL.DeathSounds[deathSound, GetPlayer().CuteMode ? 1 : 0], X, Y);
+                }
+                if(packetType == 1334)
+                {
+                    Game.DeserializePlayer(playerID, dataReader.GetRemainingBytes());
                 }
                 dataReader.Recycle();
             };
@@ -372,7 +377,21 @@ namespace SLIL.Classes
 
         internal bool IsMultiplayer() => peer != null;
 
-        internal bool DoParkour(int y, int x) => Game.DoParkour(playerID, y, x);
+        internal bool DoParkour(int y, int x) {
+            if (peer == null)
+            {
+                return Game.DoParkour(playerID, y, x);
+            }
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(1333);
+                writer.Put(y);
+                writer.Put(x);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+                return true;
+            }
+        }
 
         internal void StopParkour() => Game.StopParkour(playerID);
 
@@ -478,5 +497,20 @@ namespace SLIL.Classes
         }
 
         internal void SetEnemyDamageOffset(double value) => Game.SetEnemyDamageOffset(value);
+
+        internal void GetOnABike(int ID)
+        {
+            if (peer == null)
+            { 
+                Game.GetOnABike(ID, playerID);
+            }
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(1777);
+                writer.Put(ID);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
     }
 }

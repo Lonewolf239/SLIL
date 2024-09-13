@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -32,10 +33,9 @@ namespace SLIL.Classes
         private readonly PlaySoundDelegate PlaySoundHandle;
         private readonly SetPlayerIDDelegate SetPlayerID;
         public bool IsMultiplayer;
-        private static Timer RespawnTimer;
-        private static Timer EnemyTimer;
-        private static Timer TimeRemain;
-        private static Timer ParkourTimer;
+        private static System.Windows.Forms.Timer RespawnTimer;
+        private static System.Windows.Forms.Timer EnemyTimer;
+        private static System.Windows.Forms.Timer TimeRemain;
         public int MaxEntityID;
         
         public GameModel(StopGameDelegate stopGame, SetPlayerIDDelegate setPlayerID, PlaySoundDelegate playSound)
@@ -48,26 +48,21 @@ namespace SLIL.Classes
             MAP_HEIGHT = 16;
             rand = new Random();
             difficulty = MainMenu.difficulty;
-            RespawnTimer = new Timer
+            RespawnTimer = new System.Windows.Forms.Timer
             {
                 Interval = 1000
             };
             RespawnTimer.Tick += RespawnTimer_Tick;
-            EnemyTimer = new Timer
+            EnemyTimer = new System.Windows.Forms.Timer
             {
                 Interval = 100
             };
             EnemyTimer.Tick += EnemyTimer_Tick;
-            TimeRemain = new Timer
+            TimeRemain = new System.Windows.Forms.Timer
             {
                 Interval = 1000
             };
             TimeRemain.Tick += TimeRemain_Tick;
-            ParkourTimer = new Timer
-            {
-                Interval = 250
-            };
-            ParkourTimer.Tick += ParkourTimer_Tick;
             PlaySoundHandle = playSound;
         }
 
@@ -403,6 +398,11 @@ namespace SLIL.Classes
                         explosion.Deserialize(reader);
                         tempEntities.Add(explosion);
                         break;
+                    case 18:
+                        Bike bike = new Bike(0, 0, MAP_WIDTH, ID);
+                        bike.Deserialize(reader);
+                        tempEntities.Add(bike);
+                        break;
                     default:
                         break;
                 }
@@ -530,6 +530,11 @@ namespace SLIL.Classes
                         Explosion explosion = new Explosion(0, 0, MAP_WIDTH, ID);
                         explosion.Deserialize(reader);
                         tempEntities.Add(explosion);
+                        break;
+                    case 18:
+                        Bike bike = new Bike(0, 0, MAP_WIDTH, ID);
+                        bike.Deserialize(reader);
+                        tempEntities.Add(bike);
                         break;
                     default:
                         break;
@@ -704,6 +709,7 @@ namespace SLIL.Classes
                 {
                     if ((Entities[i] as Player).ID == playerID)
                     {
+                        if (player.BlockInput) return;
                         Entities[i].X += dX;
                         Entities[i].Y += dY;
                         if (player.EffectCheck(4))
@@ -712,7 +718,7 @@ namespace SLIL.Classes
                             double extendedY = Entities[i].Y + Math.Cos(player.A) * 0.3;
                             if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
                             {
-                                DoParkour(player.ID, (int)extendedX, (int)extendedY);
+                                DoParkour(player.ID, (int)extendedY, (int)extendedX);
                             }
                         }
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
@@ -1454,6 +1460,7 @@ namespace SLIL.Classes
             {
                 if (ent is Player p && ent.ID == playerID)
                 {
+                    if (p.BlockCamera) return;
                     p.Look += lookDif;
                     if (p.Look < -360)
                         p.Look = -360;
@@ -1544,12 +1551,6 @@ namespace SLIL.Classes
             return null;
         }
 
-        private void ParkourTimer_Tick(object sender, EventArgs e)
-        {
-            ParkourTimer?.Stop();
-            if (GameStarted) Parkour();
-        }
-
         internal bool DoParkour(int playerID, int y, int x)
         {
             Player p = GetPlayer(playerID);
@@ -1563,22 +1564,12 @@ namespace SLIL.Classes
             p.CanUnblockCamera = false;
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
-            ParkourTimer?.Start();
+            new Thread(() => {
+                Thread.Sleep(500);
+                StopParkour(playerID);
+                p.ParkourState++;
+            }).Start();
             return true;
-        }
-
-        private void Parkour()
-        {
-            foreach (Entity ent in Entities)
-            {
-                if (ent is Player player)
-                {
-                    if (player == null || !player.InParkour) continue;
-                    if (player.ParkourState == 0) ParkourTimer?.Start();
-                    else StopParkour(player.ID);
-                    player.ParkourState++;
-                }
-            }
         }
 
         internal void StopParkour(int playerID)
@@ -1705,5 +1696,25 @@ namespace SLIL.Classes
         }
 
         internal void SetEnemyDamageOffset(double value) => EnemyDamageOffset = value;
+
+        internal void GetOnABike(int ID, int playerID)
+        {
+            RemoveEntity(ID);
+            GetPlayer(playerID).GiveEffect(4, true);
+        }
+
+        internal void DeserializePlayer(int playerID, byte[] rawData)
+        {
+            foreach(Entity ent in Entities)
+            {
+                if(ent.ID == playerID)
+                {
+                    Player p = (Player)ent;
+                    NetDataReader reader = new NetDataReader(rawData);
+                    p.Deserialize(reader);
+                    return;
+                }
+            }
+        }
     }
 }

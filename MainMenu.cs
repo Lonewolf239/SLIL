@@ -1504,7 +1504,6 @@ namespace SLIL
             }
             else if (multiplayer.Checked)
             {
-                return;
                 multiplayer_panel.Visible = true;
                 multiplayer_panel.BringToFront();
             }

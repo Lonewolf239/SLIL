@@ -79,6 +79,12 @@ namespace GameServer
                 case 89:
                     Game.SpawnRockets(dreader.GetDouble(), dreader.GetDouble(), dreader.GetInt(), dreader.GetDouble());
                     break;
+                case 1333:
+                    Game.DoParkour(playerIDfromPeer, dreader.GetInt(), dreader.GetInt());
+                    break;
+                case 1777:
+                    Game.GetOnABike(dreader.GetInt(), playerIDfromPeer);
+                    break;
                 default:
                     break;
             }
@@ -170,6 +176,20 @@ namespace GameServer
                     writer.Put(reader.GetDouble());
                     writer.Put(reader.GetDouble());
                     writer.Put(reader.GetInt());
+                    break;
+                case 1334:
+                    playerID = reader.GetInt();
+                    foreach (KeyValuePair<int, int> entry in PeerPlayerIDs)
+                    {
+                        if (entry.Value == playerID)
+                        {
+                            NetDataWriter peerWriter = new();
+                            peerWriter.Put(packetID);
+                            peerWriter.Put(reader.GetRemainingBytes());
+                            server.GetPeerById(entry.Key).Send(peerWriter, DeliveryMethod.ReliableOrdered);
+                            return;
+                        }
+                    }
                     break;
                 default:
                     break;

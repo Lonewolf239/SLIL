@@ -53,8 +53,6 @@ namespace GameServer
             EnemyTimer.Elapsed += EnemyTimer_Tick;
             TimeRemain = new System.Timers.Timer(1000);
             TimeRemain.Elapsed += TimeRemain_Tick;
-            ParkourTimer = new System.Timers.Timer(250);
-            ParkourTimer.Elapsed += ParkourTimer_Tick;
         }
 
         public void StartGame()
@@ -422,6 +420,11 @@ namespace GameServer
                         explosion.Deserialize(reader);
                         tempEntities.Add(explosion);
                         break;
+                    case 18:
+                        Bike bike = new(0, 0, MAP_WIDTH, ID);
+                        bike.Deserialize(reader);
+                        tempEntities.Add(bike);
+                        break;
                     default:
                         break;
                 }
@@ -549,6 +552,11 @@ namespace GameServer
                         Explosion explosion = new(0, 0, MAP_WIDTH, ID);
                         explosion.Deserialize(reader);
                         tempEntities.Add(explosion);
+                        break;
+                    case 18:
+                        Bike bike = new(0, 0, MAP_WIDTH, ID);
+                        bike.Deserialize(reader);
+                        tempEntities.Add(bike);
                         break;
                     default:
                         break;
@@ -828,6 +836,7 @@ namespace GameServer
                 {
                     if (player.ID == playerID)
                     {
+                        if (player.BlockInput) return;
                         Entities[i].X = dX;
                         Entities[i].Y = dY;
                         ((Player)Entities[i]).A = newA;
@@ -837,7 +846,9 @@ namespace GameServer
                             double extendedX = Entities[i].X + Math.Sin(player.A) * 0.3;
                             double extendedY = Entities[i].Y + Math.Cos(player.A) * 0.3;
                             if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
-                                DoParkour(player.ID, (int)extendedX, (int)extendedY);
+                            {
+                                DoParkour(player.ID, (int)extendedY, (int)extendedX);
+                            }
                         }
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
                         {
@@ -1472,6 +1483,7 @@ namespace GameServer
             {
                 if (ent is Player p && ent.ID == playerID)
                 {
+                    if (p.BlockCamera) return;
                     p.Look += lookDif;
                     if (p.Look < -360) p.Look = -360;
                     else if (p.Look > 360) p.Look = 360;
@@ -1556,15 +1568,9 @@ namespace GameServer
             return null;
         }
 
-        private void ParkourTimer_Tick(object? sender, EventArgs e)
-        {
-            ParkourTimer?.Stop();
-            if (GameStarted) Parkour();
-        }
-
         internal bool DoParkour(int playerID, int y, int x)
         {
-            Player? p = GetPlayer(playerID);
+            Player p = GetPlayer(playerID);
             if (p == null) return false;
             if (p.EffectCheck(3)) return false;
             p.ParkourState = 0;
@@ -1575,22 +1581,20 @@ namespace GameServer
             p.CanUnblockCamera = false;
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
-            ParkourTimer?.Start();
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put(p.ID);
+            p.Serialize(writer);
+            sendMessageFromGameCallback(1334, writer.Data);
+            new Thread(() => {
+                Thread.Sleep(500);
+                StopParkour(playerID);
+                p.ParkourState++;
+                writer = new NetDataWriter();
+                writer.Put(p.ID);
+                p.Serialize(writer);
+                sendMessageFromGameCallback(1334, writer.Data);
+            }).Start();
             return true;
-        }
-
-        private void Parkour()
-        {
-            foreach (Entity ent in Entities)
-            {
-                if (ent is Player player)
-                {
-                    if (player == null || !player.InParkour) continue;
-                    if (player.ParkourState == 0) ParkourTimer?.Start();
-                    else StopParkour(player.ID);
-                    player.ParkourState++;
-                }
-            }
         }
 
         internal void StopParkour(int playerID)
@@ -1737,6 +1741,11 @@ namespace GameServer
         {
             _gameMode = gameMode;
             if(GameStarted) StopGame(2);
+        }
+        internal void GetOnABike(int ID, int playerID)
+        {
+            RemoveEntity(ID);
+            GetPlayer(playerID)?.GiveEffect(4, true);
         }
     }
 }

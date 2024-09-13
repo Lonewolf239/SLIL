@@ -74,6 +74,10 @@ namespace SLIL.Classes
             writer.Put(CurrentGun);
             writer.Put(A);
             writer.Put(Look);
+            writer.Put(InParkour);
+            writer.Put(OnBike);
+            writer.Put(BlockCamera);
+            writer.Put(BlockInput);
             writer.Put(this.GUNS.Length);
             foreach(Gun gun in this.GUNS)
                 writer.Put(gun.HasIt);
@@ -100,6 +104,10 @@ namespace SLIL.Classes
             this.CurrentGun = reader.GetInt();
             this.A = reader.GetDouble();
             this.Look = reader.GetDouble();
+            this.InParkour = reader.GetBool();
+            this.OnBike = reader.GetBool();
+            this.BlockCamera = reader.GetBool();
+            this.BlockInput = reader.GetBool();
             int GUNSLength = reader.GetInt();
             for(int i = 0; i < GUNSLength; i++)
                 this.GUNS[i].HasIt = reader.GetBool();
@@ -234,6 +242,10 @@ namespace SLIL.Classes
                 this.Money = reader.GetInt();
                 this.CurrentGun = reader.GetInt();
                 reader.GetDouble(); reader.GetDouble();
+                this.InParkour = reader.GetBool();
+                this.OnBike = reader.GetBool();
+                this.BlockCamera = reader.GetBool();
+                this.BlockInput = reader.GetBool();
                 int GUNSLength = reader.GetInt();
                 for(int i = 0; i < GUNSLength; i++)
                     this.GUNS[i].HasIt = reader.GetBool();
