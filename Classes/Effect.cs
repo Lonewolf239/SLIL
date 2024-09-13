@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SLIL.Classes
+﻿namespace SLIL.Classes
 {
     public class Effect
     {
@@ -10,9 +8,13 @@ namespace SLIL.Classes
         public int EffectTotalTime { get; set; }
         public int EffectTimeRemaining { get; set; }
         public bool Debaf { get; set; }
+        public bool Infinity { get; set; }
+
+        public Effect() => Infinity = false;
 
         public bool ReducingTimeRemaining()
         {
+            if (Infinity) return false;
             EffectTimeRemaining--;
             if (EffectTimeRemaining < 0)
                 return true;
@@ -26,7 +28,7 @@ namespace SLIL.Classes
 
     public class Regeneration : Effect
     {
-        public Regeneration()
+        public Regeneration() : base()
         {
             ID = 0;
             EffectTotalTime = 15;
@@ -38,7 +40,7 @@ namespace SLIL.Classes
 
     public class Adrenaline : Effect
     {
-        public Adrenaline()
+        public Adrenaline() : base()
         {
             ID = 1;
             EffectTotalTime = 20;
@@ -50,7 +52,7 @@ namespace SLIL.Classes
 
     public class Protection : Effect
     {
-        public Protection()
+        public Protection() : base()
         {
             ID = 2;
             EffectTotalTime = 120;
@@ -62,7 +64,7 @@ namespace SLIL.Classes
 
     public class Fatigue : Effect
     {
-        public Fatigue()
+        public Fatigue() : base()
         {
             ID = 3;
             Debaf = true;

@@ -91,14 +91,17 @@ namespace SLIL.UserControls
                     else if (cheat == "DEBUG")
                     {
                         show_message = false;
-                        SLIL slil = Parent.FindForm() as SLIL;
-                        SLIL.GoDebug(slil, 1);
+                        SLIL.GoDebug(parent, 1);
                     }
                     else if (cheat == "DEBUG_BOSS")
                     {
                         show_message = false;
-                        SLIL slil = Parent.FindForm() as SLIL;
-                        SLIL.GoDebug(slil, 2);
+                        SLIL.GoDebug(parent, 2);
+                    }
+                    else if (cheat == "DEBUG_BIKE")
+                    {
+                        show_message = false;
+                        SLIL.GoDebug(parent, 3);
                     }
                     else if (cheat == "CHEATS")
                     {

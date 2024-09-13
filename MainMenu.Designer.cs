@@ -209,8 +209,9 @@
             this.changes_list = new System.Windows.Forms.ListBox();
             this.game_mode_panel = new System.Windows.Forms.Panel();
             this.game_mode_background = new System.Windows.Forms.Panel();
-            this.singleplayer = new System.Windows.Forms.RadioButton();
             this.multiplayer = new System.Windows.Forms.RadioButton();
+            this.singleplayer = new System.Windows.Forms.RadioButton();
+            this.tutorial1_btn_cp = new System.Windows.Forms.RadioButton();
             this.close_game_mode_panel_l = new System.Windows.Forms.Button();
             this.select_mode_btn_r = new System.Windows.Forms.Button();
             this.multiplayer_panel = new System.Windows.Forms.Panel();
@@ -254,7 +255,6 @@
             this.tutorial_btn_cp = new System.Windows.Forms.Button();
             this.hilf_mir_close_btn_r = new System.Windows.Forms.Button();
             this.show_hilf_mir = new System.Windows.Forms.CheckBox();
-            this.tutorial1_btn_cp = new System.Windows.Forms.RadioButton();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -1093,10 +1093,10 @@
             this.video_settings.Controls.Add(this.display_size_panel);
             this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 33);
+            this.video_settings.Location = new System.Drawing.Point(4, 22);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 183);
+            this.video_settings.Size = new System.Drawing.Size(482, 194);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
@@ -1615,7 +1615,7 @@
             this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 151);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
@@ -2528,6 +2528,21 @@
             this.game_mode_background.Size = new System.Drawing.Size(490, 276);
             this.game_mode_background.TabIndex = 45;
             // 
+            // multiplayer
+            // 
+            this.multiplayer.Appearance = System.Windows.Forms.Appearance.Button;
+            this.multiplayer.BackgroundImage = global::SLIL.Properties.Resources.multiplayer;
+            this.multiplayer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.multiplayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.multiplayer.ForeColor = System.Drawing.Color.White;
+            this.multiplayer.Image = global::SLIL.Properties.Resources.Soon;
+            this.multiplayer.Location = new System.Drawing.Point(270, 45);
+            this.multiplayer.Name = "multiplayer";
+            this.multiplayer.Size = new System.Drawing.Size(125, 125);
+            this.multiplayer.TabIndex = 54;
+            this.multiplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.multiplayer.UseVisualStyleBackColor = false;
+            // 
             // singleplayer
             // 
             this.singleplayer.Appearance = System.Windows.Forms.Appearance.Button;
@@ -2543,20 +2558,20 @@
             this.singleplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.singleplayer.UseVisualStyleBackColor = false;
             // 
-            // multiplayer
+            // tutorial1_btn_cp
             // 
-            this.multiplayer.Appearance = System.Windows.Forms.Appearance.Button;
-            this.multiplayer.BackgroundImage = global::SLIL.Properties.Resources.multiplayer;
-            this.multiplayer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.multiplayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.multiplayer.ForeColor = System.Drawing.Color.White;
-            this.multiplayer.Image = global::SLIL.Properties.Resources.Soon;
-            this.multiplayer.Location = new System.Drawing.Point(270, 45);
-            this.multiplayer.Name = "multiplayer";
-            this.multiplayer.Size = new System.Drawing.Size(125, 125);
-            this.multiplayer.TabIndex = 54;
-            this.multiplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.multiplayer.UseVisualStyleBackColor = false;
+            this.tutorial1_btn_cp.Appearance = System.Windows.Forms.Appearance.Button;
+            this.tutorial1_btn_cp.AutoSize = true;
+            this.tutorial1_btn_cp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.tutorial1_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.tutorial1_btn_cp.ForeColor = System.Drawing.Color.White;
+            this.tutorial1_btn_cp.Location = new System.Drawing.Point(175, 184);
+            this.tutorial1_btn_cp.Name = "tutorial1_btn_cp";
+            this.tutorial1_btn_cp.Size = new System.Drawing.Size(139, 39);
+            this.tutorial1_btn_cp.TabIndex = 61;
+            this.tutorial1_btn_cp.Text = "Обучение";
+            this.tutorial1_btn_cp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.tutorial1_btn_cp.UseVisualStyleBackColor = false;
             // 
             // close_game_mode_panel_l
             // 
@@ -3104,21 +3119,6 @@
             this.show_hilf_mir.Text = "Показывать обучение";
             this.show_hilf_mir.UseVisualStyleBackColor = true;
             this.show_hilf_mir.CheckedChanged += new System.EventHandler(this.Show_hilf_mir_CheckedChanged);
-            // 
-            // tutorial1_btn_cp
-            // 
-            this.tutorial1_btn_cp.Appearance = System.Windows.Forms.Appearance.Button;
-            this.tutorial1_btn_cp.AutoSize = true;
-            this.tutorial1_btn_cp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.tutorial1_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.tutorial1_btn_cp.ForeColor = System.Drawing.Color.White;
-            this.tutorial1_btn_cp.Location = new System.Drawing.Point(175, 184);
-            this.tutorial1_btn_cp.Name = "tutorial1_btn_cp";
-            this.tutorial1_btn_cp.Size = new System.Drawing.Size(139, 39);
-            this.tutorial1_btn_cp.TabIndex = 61;
-            this.tutorial1_btn_cp.Text = "Обучение";
-            this.tutorial1_btn_cp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.tutorial1_btn_cp.UseVisualStyleBackColor = false;
             // 
             // MainMenu
             // 

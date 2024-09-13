@@ -324,6 +324,8 @@ namespace SLIL.Classes
                 Game.ChangePlayerLook(lookDif, playerID);
         }
 
+        internal void RemoveEntity(int id) => Game.RemoveEntity(id);
+
         internal void StopGame(int win) => Game.StopGame(win);
 
         public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, double customX, double customY) => Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);

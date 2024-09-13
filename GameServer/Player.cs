@@ -37,6 +37,7 @@ namespace GameServer
         public int SelectedItem { get; set; }
         public bool Fast { get; set; }
         public bool NoClip { get; set; }
+        public bool OnBike { get; set; }
         public Directions PlayerDirection { get; set; }
         public Directions StrafeDirection { get; set; }
         public Directions PlayerMoveStyle { get; set; }
@@ -402,6 +403,7 @@ namespace GameServer
             LevelUpdated = false;
             IsPetting = false;
             InParkour = false;
+            OnBike = false;
             PlayerDirection = Directions.STOP;
             StrafeDirection = Directions.STOP;
             PlayerMoveStyle = Directions.WALK;
@@ -444,7 +446,7 @@ namespace GameServer
             }
         }
 
-        public void GiveEffect(int index, bool standart_time, int time = 0)
+        public void GiveEffect(int index, bool standart_time, int time = 0, bool infinity = false)
         {
             UseItem = false;
             if (index == 0)
@@ -453,6 +455,7 @@ namespace GameServer
                 Regeneration effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
+                effect.Infinity = infinity;
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
             }
@@ -462,6 +465,7 @@ namespace GameServer
                 Adrenaline effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
+                effect.Infinity = infinity;
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
                 Fast = true;
@@ -473,6 +477,7 @@ namespace GameServer
                 Protection effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
+                effect.Infinity = infinity;
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
             }
@@ -482,6 +487,7 @@ namespace GameServer
                 Fatigue effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
+                effect.Infinity = infinity;
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
             }

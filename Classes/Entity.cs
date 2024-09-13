@@ -672,6 +672,20 @@ namespace SLIL.Classes
         }
     }
 
+    public class Bike : GameObject
+    {
+        public Bike(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Bike(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 53;
+            base.AnimationsToStatic();
+        }
+        protected override int GetEntityID() => 18;
+        public override int Interaction() => 4;
+    }
+
     public class Box : Boxes
     {
         protected override int GetEntityID() => 14;

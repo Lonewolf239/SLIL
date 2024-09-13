@@ -13,7 +13,8 @@ namespace SLIL.Classes
     {
         private StringBuilder MAP = new StringBuilder();
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
+            debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################",
+            bikeMap = @"##########################.........####..........##..F......####..........##.......................##.......................##....####......####.....##...##..##....##..##....##...#....#....#....#....##...#....#....#....#....##...#....#....##..##....##...#....#.....####.....##...#....#..............##...#....#..............##...#....#..............##...#....#.....####.....##...#....#....##..##....##...#....#....#....#....##...#....#....#....#....##...##..##....##..##....##....####......####.....##.......................##.............5.........##.........####.......P..##.........####..........##########################";
         private int inDebug = 0;
         private readonly Pet[] PETS;
         public List<Entity> Entities = new List<Entity>();
@@ -766,6 +767,10 @@ namespace SLIL.Classes
                     SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 3);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
+                case '5':
+                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 4);
+                    MAP[y * MAP_WIDTH + x] = '.';
+                    break;
             }
             return entity;
         }
@@ -800,6 +805,11 @@ namespace SLIL.Classes
                 {
                     MazeHeight = 7;
                     MazeWidth = 7;
+                }
+                else if (inDebug == 3)
+                {
+                    MazeHeight = 8;
+                    MazeWidth = 8;
                 }
             }
             if (difficulty < 4)
@@ -849,6 +859,13 @@ namespace SLIL.Classes
                         MazeHeight = 7;
                         MazeWidth = 7;
                     }
+                    else if (inDebug == 3)
+                    {
+                        player.X = 21.5;
+                        player.Y = 22.5;
+                        MazeHeight = 8;
+                        MazeWidth = 8;
+                    }
                 }
                 if (difficulty < 4)
                 {
@@ -888,6 +905,8 @@ namespace SLIL.Classes
                     MAP.AppendLine(debugMap);
                 else if (inDebug == 2)
                     MAP.AppendLine(bossMap);
+                else if (inDebug == 3)
+                    MAP.AppendLine(bikeMap);
                 for (int x = 0; x < MAP_WIDTH; x++)
                 {
                     for (int y = 0; y < MAP_HEIGHT; y++)
@@ -1082,7 +1101,7 @@ namespace SLIL.Classes
             }
         }
 
-        private void SpawnEnemis(double x, double y, int size, bool ai = true,int type=-1)
+        private void SpawnEnemis(double x, double y, int size, bool ai = true, int type = -1)
         {
             if (type == -1)
             {
@@ -1143,6 +1162,19 @@ namespace SLIL.Classes
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
+            }
+            else if (type == 4)
+            {
+                Bike bike = new Bike(x, y, size, ref MaxEntityID);
+                Entities.Add(bike);
+            }
+        }
+
+        internal void RemoveEntity(int id)
+        {
+            foreach (Entity entity in Entities)
+            {
+                if (entity.ID == id) Entities.Remove(entity);
             }
         }
 

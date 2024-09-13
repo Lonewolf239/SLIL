@@ -38,6 +38,7 @@ namespace SLIL.Classes
         public int SelectedItem { get; set; }
         public bool Fast { get; set; }
         public bool NoClip { get; set; }
+        public bool OnBike { get; set; }
         public Directions PlayerDirection { get; set; }
         public Directions StrafeDirection { get; set; }
         public Directions PlayerMoveStyle { get; set; }
@@ -403,6 +404,7 @@ namespace SLIL.Classes
             LevelUpdated = false;
             IsPetting = false;
             InParkour = false;
+            OnBike = false;
             PlayerDirection = Directions.STOP;
             StrafeDirection = Directions.STOP;
             PlayerMoveStyle = Directions.WALK;
@@ -445,7 +447,7 @@ namespace SLIL.Classes
             }
         }
 
-        public void GiveEffect(int index, bool standart_time, int time = 0)
+        public void GiveEffect(int index, bool standart_time, int time = 0, bool infinity = false)
         {
             UseItem = false;
             if (index == 0)
@@ -454,6 +456,7 @@ namespace SLIL.Classes
                 Regeneration effect = new Regeneration();
                 if (!standart_time)
                     effect.SetTotalTime(time);
+                effect.Infinity = infinity;
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
             }
@@ -463,6 +466,7 @@ namespace SLIL.Classes
                 Adrenaline effect = new Adrenaline();
                 if (!standart_time)
                     effect.SetTotalTime(time);
+                effect.Infinity = infinity;
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
                 Fast = true;
@@ -474,6 +478,7 @@ namespace SLIL.Classes
                 Protection effect = new Protection();
                 if (!standart_time)
                     effect.SetTotalTime(time);
+                effect.Infinity = infinity;
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
             }
@@ -483,6 +488,7 @@ namespace SLIL.Classes
                 Fatigue effect = new Fatigue();
                 if (!standart_time)
                     effect.SetTotalTime(time);
+                effect.Infinity = infinity;
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
             }

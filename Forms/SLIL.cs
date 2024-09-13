@@ -436,7 +436,8 @@ namespace SLIL
         public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine, climb;
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################";
+            debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################",
+            bikeMap = @"##########################.........####..........##..F......####..........##.......................##.......................##....####......####.....##...##..##....##..##....##...#....#....#....#....##...#....#....#....#....##...#....#....##..##....##...#....#.....####.....##...#....#..............##...#....#..............##...#....#..............##...#....#.....####.....##...#....#....##..##....##...#....#....#....#....##...#....#....#....#....##...##..##....##..##....##....####......####.....##.......................##.............5.........##.........####.......P..##.........####..........##########################";
         public static float Volume = 0.4f;
         private int burst_shots = 0, reload_frames = 0;
         public static int ost_index = 0;
@@ -1715,6 +1716,14 @@ namespace SLIL
                                                                     player.IsPetting = false;
                                                                 }).Start();
                                                                 break;
+                                                            case 4:
+                                                                //Controller.RemoveEntity(entity.ID);
+                                                                BlockCamera = true;
+                                                                player.GiveEffect(1, true, 0, true);
+                                                                player.Look = 0;
+                                                                player.CanShoot = false;
+                                                                player.OnBike = true;
+                                                                break;
                                                         }
                                                     }
                                                     return;
@@ -1774,7 +1783,7 @@ namespace SLIL
             Player player = Controller.GetPlayer();
             double delta = e.Delta / 10;
             if (ShowSing) UpdateScrollPosition(-delta);
-            if (GameStarted && !Paused && !BlockInput && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
+            if (GameStarted && !Paused && !BlockInput && player.CanShoot && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
             {
                 int new_gun = player.CurrentGun;
                 if (delta > 0) new_gun--;
@@ -1857,12 +1866,22 @@ namespace SLIL
             switch (player.StrafeDirection)
             {
                 case Directions.LEFT:
-                    newX += strafeCos;
-                    newY -= strafeSin;
+                    if (!player.OnBike)
+                    {
+                        newX += strafeCos;
+                        newY -= strafeSin;
+                    }
+                    else
+                        Controller.ChangePlayerA(0.0175);
                     break;
                 case Directions.RIGHT:
-                    newX -= strafeCos;
-                    newY += strafeSin;
+                    if (!player.OnBike)
+                    {
+                        newX -= strafeCos;
+                        newY += strafeSin;
+                    }
+                    else
+                        Controller.ChangePlayerA(-0.0175);
                     break;
             }
             switch (player.PlayerDirection)
@@ -2565,6 +2584,7 @@ namespace SLIL
                 UpdateMoveStyle(player);
                 if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
                 else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+                else if (player.OnBike) graphicsWeapon.DrawImage(Properties.Resources.on_bike, 0, 0, WEAPON.Width, WEAPON.Height);
                 else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), player.GunState], 0, 0, WEAPON.Width, WEAPON.Height);
             }
             catch
@@ -2573,6 +2593,7 @@ namespace SLIL
                 {
                     if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
                     else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+                    else if (player.OnBike) graphicsWeapon.DrawImage(Properties.Resources.on_bike, 0, 0, WEAPON.Width, WEAPON.Height);
                     else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
                 catch { }
@@ -2675,6 +2696,7 @@ namespace SLIL
                 if (IsTutorial) text += "Tutorial";
                 else if (inDebug == 1) text += "Debug";
                 else if (inDebug == 2) text += "Debug Boss";
+                else if (inDebug == 3) text += "Bike";
                 else if (difficulty == 4) text += "Custom";
                 else text += (player.Stage + 1).ToString();
                 SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
@@ -3517,6 +3539,8 @@ namespace SLIL
                     DISPLAYED_MAP.Append(debugMap);
                 else if (inDebug == 2)
                     DISPLAYED_MAP.Append(bossMap);
+                else if (inDebug == 3)
+                    DISPLAYED_MAP.Append(bikeMap);
             }
         }
 
