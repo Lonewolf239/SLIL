@@ -402,7 +402,7 @@ namespace SLIL.Classes
                 Money = 15;
                 CurseCureChance = 0.08;
                 Stage = 0;
-                MAX_MOVE_SPEED = 1.75;
+                MAX_MOVE_SPEED = 1.8;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                 RUN_SPEED = 2.25;
                 DEPTH = 8;
