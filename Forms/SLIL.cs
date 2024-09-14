@@ -1907,10 +1907,8 @@ namespace SLIL
             double factor = 1;
             if (player.MOVE_SPEED < 0)
             {
-                if (player.InTransport)
-                    factor = 0.25;
-                else
-                    factor = 0.65;
+                if (player.InTransport) factor = 0.25;
+                else factor = 0.65;
             }
             newX += moveSin * factor;
             newY += moveCos * factor;
@@ -1921,10 +1919,10 @@ namespace SLIL
             }
             else
             {
-                if (player.PlayerDirection == Directions.FORWARD)
-                    Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
-                else if (player.PlayerDirection == Directions.BACK)
+                if (player.MOVE_SPEED < 0)
                     Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
+                else
+                    Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
             }
             if (!(HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2))
                 || HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX - playerWidth / 2))))
