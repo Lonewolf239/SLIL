@@ -2894,15 +2894,19 @@ namespace SLIL
                 {
                     if (player.MOVE_SPEED > 0)
                         graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], 0, 0, WEAPON.Width, WEAPON.Height);
-                    else
+                    else if (player.MOVE_SPEED < 0)
                         graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], 0, 0, WEAPON.Width, WEAPON.Height);
+                    else
+                        graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
                 else if (player.STRAFE_SPEED < 0)
                 {
                     if (player.MOVE_SPEED < 0)
                         graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], 0, 0, WEAPON.Width, WEAPON.Height);
-                    else
+                    else if (player.MOVE_SPEED > 0)
                         graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], 0, 0, WEAPON.Width, WEAPON.Height);
+                    else
+                        graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
                 else
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], 0, 0, WEAPON.Width, WEAPON.Height);
