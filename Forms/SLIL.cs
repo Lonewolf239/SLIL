@@ -303,6 +303,17 @@ namespace SLIL
                 }
             } },
         };
+        public static readonly Dictionary<Type, Image[]> TransportImages = new Dictionary<Type, Image[]>
+        {
+            { typeof(Bike), new[] 
+            { 
+                Properties.Resources.im_biker,
+                Properties.Resources.on_bike,
+                Properties.Resources.using_bike_left,
+                Properties.Resources.using_bike_right,
+                Properties.Resources.bike_jump,
+            } },
+        };
         public static readonly Dictionary<Type, Image> EffectIcon = new Dictionary<Type, Image>
         {
             { typeof(Regeneration), Properties.Resources.regeneration_effect },
@@ -1893,48 +1904,27 @@ namespace SLIL
             double newY = player.Y;
             double tempX = player.X;
             double tempY = player.Y;
-            switch (player.StrafeDirection)
+            double factor = 1;
+            if (player.MOVE_SPEED < 0)
             {
-                case Directions.LEFT:
-                    if (!player.InTransport)
-                    {
-                        newX += strafeCos;
-                        newY -= strafeSin;
-                    }
-                    else
-                    {
-                        if (player.PlayerDirection == Directions.FORWARD)
-                            Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
-                        else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
-                    }
-                    break;
-                case Directions.RIGHT:
-                    if (!player.InTransport)
-                    {
-                        newX += strafeCos;
-                        newY -= strafeSin;
-                    }
-                    else
-                    {
-                        if (player.PlayerDirection == Directions.FORWARD)
-                            Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
-                        else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
-                    }
-                    break;
+                if (player.InTransport)
+                    factor = 0.25;
+                else
+                    factor = 0.65;
             }
-            switch (player.PlayerDirection)
+            newX += moveSin * factor;
+            newY += moveCos * factor;
+            if (!player.InTransport)
             {
-                case Directions.FORWARD:
-                    newX += moveSin;
-                    newY += moveCos;
-                    break;
-                case Directions.BACK:
-                    double factor = player.InTransport ? 0.25 : 0.65;
-                    newX += moveSin * factor;
-                    newY += moveCos * factor;
-                    break;
+                newX += strafeCos;
+                newY -= strafeSin;
+            }
+            else
+            {
+                if (player.PlayerDirection == Directions.FORWARD)
+                    Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
+                else if (player.PlayerDirection == Directions.BACK)
+                    Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
             }
             if (!(HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2))
                 || HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX - playerWidth / 2))))
@@ -1961,73 +1951,108 @@ namespace SLIL
 
         private void ChangeSpeed(Player player)
         {
+            int speedFactor;
             double walk = 0.075, transport = 0.05;
             switch (player.StrafeDirection)
             {
                 case Directions.LEFT:
-                    if (player.STRAFE_SPEED < 0)
-                        player.STRAFE_SPEED = 0;
+                    if (player.STRAFE_SPEED < 0) speedFactor = 3;
+                    else speedFactor = 1;
                     if (!player.InTransport)
                     {
-                        if (player.STRAFE_SPEED + walk <= player.MAX_STRAFE_SPEED + 0.01)
-                            player.STRAFE_SPEED += walk;
+                        if (player.STRAFE_SPEED + (walk* speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
+                            player.STRAFE_SPEED += walk * speedFactor;
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED + transport <= player.MAX_STRAFE_SPEED + 0.01)
-                            player.STRAFE_SPEED += transport * 1.75;
+                        if (player.STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
+                            player.STRAFE_SPEED += (transport * 1.75) * speedFactor;
                     }
                     break;
                 case Directions.RIGHT:
-                    if (player.STRAFE_SPEED > 0)
-                        player.STRAFE_SPEED = 0;
+                    if (player.STRAFE_SPEED > 0) speedFactor = 3;
+                    else speedFactor = 1;
                     if (!player.InTransport)
                     {
-                        if (player.STRAFE_SPEED - walk >= -player.MAX_STRAFE_SPEED - 0.01)
-                            player.STRAFE_SPEED -= walk;
+                        if (player.STRAFE_SPEED - (walk * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
+                            player.STRAFE_SPEED -= walk * speedFactor;
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED - transport >= -player.MAX_STRAFE_SPEED - 0.01)
-                            player.STRAFE_SPEED -= transport * 1.75;
+                        if (player.STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
+                            player.STRAFE_SPEED -= (transport * 1.75) * speedFactor;
                     }
                     break;
                 case Directions.STOP:
-                    player.STRAFE_SPEED = 0;
+                    if (!player.InTransport)
+                    {
+                        if (player.STRAFE_SPEED + walk <= 0)
+                            player.STRAFE_SPEED += walk;
+                        else if (player.STRAFE_SPEED - walk >= 0)
+                            player.STRAFE_SPEED -= walk;
+                        else
+                            player.STRAFE_SPEED = 0;
+                    }
+                    else
+                    {
+                        if (player.STRAFE_SPEED + (transport * 1.75) <= 0)
+                            player.STRAFE_SPEED += transport * 1.75;
+                        else if (player.STRAFE_SPEED - (transport * 1.75) >= 0)
+                            player.STRAFE_SPEED -= transport * 1.75;
+                        else
+                            player.STRAFE_SPEED = 0;
+                    }
                     break;
             }
             switch (player.PlayerDirection)
             {
                 case Directions.FORWARD:
-                    if (player.MOVE_SPEED < 0)
-                        player.MOVE_SPEED = 0;
+                    if (player.MOVE_SPEED < 0) speedFactor = 2;
+                    else speedFactor = 1;
                     if (!player.InTransport)
                     {
-                        if (player.MOVE_SPEED + walk <= player.MAX_MOVE_SPEED + 0.01)
-                            player.MOVE_SPEED += walk;
+                        if (player.MOVE_SPEED + (walk * speedFactor) <= player.MAX_MOVE_SPEED + 0.01)
+                            player.MOVE_SPEED += walk * speedFactor;
                     }
                     else
                     {
-                        if (player.MOVE_SPEED + transport <= player.MAX_MOVE_SPEED + 0.01)
-                            player.MOVE_SPEED += transport;
+                        if (player.MOVE_SPEED + (transport * speedFactor) <= player.MAX_MOVE_SPEED + 0.01)
+                            player.MOVE_SPEED += transport * speedFactor;
                     }
                     break;
                 case Directions.BACK:
-                    if (player.MOVE_SPEED > 0)
-                        player.MOVE_SPEED = 0;
+                    if (player.MOVE_SPEED > 0) speedFactor = 2;
+                    else speedFactor = 1;
                     if (!player.InTransport)
                     {
-                        if (player.MOVE_SPEED - walk >= -player.MAX_MOVE_SPEED - 0.01)
-                            player.MOVE_SPEED -= walk;
+                        if (player.MOVE_SPEED - (walk * speedFactor) >= -player.MAX_MOVE_SPEED - 0.01)
+                            player.MOVE_SPEED -= walk * speedFactor;
                     }
                     else
                     {
-                        if (player.MOVE_SPEED - transport >= -player.MAX_MOVE_SPEED - 0.01)
-                            player.MOVE_SPEED -= transport;
+                        if (player.MOVE_SPEED - (transport * speedFactor) >= -player.MAX_MOVE_SPEED - 0.01)
+                            player.MOVE_SPEED -= transport * speedFactor;
                     }
                     break;
                 case Directions.STOP:
-                    player.MOVE_SPEED = 0;
+                    if (!player.InTransport)
+                    {
+                        if (player.MOVE_SPEED + walk <= 0)
+                            player.MOVE_SPEED += walk;
+                        else if (player.MOVE_SPEED - walk >= 0)
+                            player.MOVE_SPEED -= walk;
+                        else
+                            player.MOVE_SPEED = 0;
+                    }
+                    else
+                    {
+                        if (player.MOVE_SPEED + transport <= 0)
+                            player.MOVE_SPEED += transport;
+                        else if (player.MOVE_SPEED - transport >= 0)
+                            player.MOVE_SPEED -= transport;
+                        else
+                            player.MOVE_SPEED = 0;
+                    }
                     break;
             }
         }
@@ -2708,20 +2733,16 @@ namespace SLIL
                 graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
             if (ShowFPS)
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
-            if (!player.CuteMode)
+            if (player.InTransport)
+                graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][0], 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+            else if (!player.CuteMode)
             {
-                if (player.InTransport)
-                    graphicsWeapon.DrawImage(Properties.Resources.im_biker, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                else
-                    graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
                 graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
-                if (player.InTransport)
-                    graphicsWeapon.DrawImage(Properties.Resources.im_biker, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                else
-                    graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
                 graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (Controller.IsMultiplayer())
@@ -2737,7 +2758,8 @@ namespace SLIL
                 graphicsWeapon.DrawString($"{ping}ms", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, ShowFPS ? fpsSize.Height : 0);
             }
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
-            graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
+            if (!player.InTransport)
+                graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             if (!player.IsPetting && !player.InParkour && !player.InTransport && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
@@ -2859,13 +2881,13 @@ namespace SLIL
             else if (player.InTransport)
             {
                 if (player.InParkour)
-                    graphicsWeapon.DrawImage(Properties.Resources.bike_jump, 0, 0, WEAPON.Width, WEAPON.Height);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][4], 0, 0, WEAPON.Width, WEAPON.Height);
                 else if (player.StrafeDirection == Directions.LEFT)
-                    graphicsWeapon.DrawImage(Properties.Resources.using_bike_left, 0, 0, WEAPON.Width, WEAPON.Height);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], 0, 0, WEAPON.Width, WEAPON.Height);
                 else if (player.StrafeDirection == Directions.RIGHT)
-                    graphicsWeapon.DrawImage(Properties.Resources.using_bike_right, 0, 0, WEAPON.Width, WEAPON.Height);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], 0, 0, WEAPON.Width, WEAPON.Height);
                 else
-                    graphicsWeapon.DrawImage(Properties.Resources.on_bike, 0, 0, WEAPON.Width, WEAPON.Height);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], 0, 0, WEAPON.Width, WEAPON.Height);
             }
             else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
             else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index], 0, 0, WEAPON.Width, WEAPON.Height);
@@ -3746,6 +3768,7 @@ namespace SLIL
             }
             for (int i = Controller.GetTransports().Length - 1; i >= 0; i--)
             {
+                if (!Controller.GetTransports()[i].AddToShop) continue;
                 SLIL_TransportStoreInterface ShopInterface = new SLIL_TransportStoreInterface()
                 {
                     index = MainMenu.DownloadedLocalizationList ? 0 : 1,

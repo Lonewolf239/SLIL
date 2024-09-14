@@ -518,6 +518,7 @@ namespace GameServer
         public int Index { get; set; }
         public int Cost { get; set; }
         public bool CanJump { get; set; }
+        public bool AddToShop { get; set; }
         public double TransportHP { get; set; } //max: 300
         public double Speed { get; set; } //max: 7.5
         public int Controllability { get; set; } //max: 175
@@ -538,6 +539,7 @@ namespace GameServer
             Texture = 5;
             Index = 0;
             CanJump = true;
+            AddToShop = true;
             Cost = 150;
             TransportHP = 150;
             Speed = 2.35;
