@@ -547,7 +547,7 @@ namespace GameServer
                 Look = 0;
                 OnBike = true;
                 Fast = true;
-                MAX_MOVE_SPEED += 2.15;
+                MAX_MOVE_SPEED += 2.25;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                 MOVE_SPEED = 0;
                 STRAFE_SPEED = 0;
@@ -609,7 +609,7 @@ namespace GameServer
                         CanShoot = true;
                         OnBike = false;
                         Fast = false;
-                        MAX_MOVE_SPEED -= 2.15;
+                        MAX_MOVE_SPEED -= 2.25;
                         MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
@@ -638,7 +638,7 @@ namespace GameServer
                     CanShoot = true;
                     OnBike = false;
                     Fast = false;
-                    MAX_MOVE_SPEED -= 2.15;
+                    MAX_MOVE_SPEED -= 2.25;
                     MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                     MOVE_SPEED = 0;
                     STRAFE_SPEED = 0;
