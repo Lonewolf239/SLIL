@@ -1962,13 +1962,14 @@ namespace SLIL
 
         private void ChangeSpeed(Player player)
         {
+            double dx = 0.05;
             switch (player.StrafeDirection)
             {
                 case Directions.LEFT:
                     if (!player.OnBike)
                     {
-                        if (player.STRAFE_SPEED < player.MAX_STRAFE_SPEED)
-                            player.STRAFE_SPEED += 0.05;
+                        if (player.STRAFE_SPEED + dx <= player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED += dx;
                     }
                     else
                     {
@@ -1977,18 +1978,18 @@ namespace SLIL
                 case Directions.RIGHT:
                     if (!player.OnBike)
                     {
-                        if (player.STRAFE_SPEED > -player.MAX_STRAFE_SPEED)
-                            player.STRAFE_SPEED -= 0.05;
+                        if (player.STRAFE_SPEED - dx >= -player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED -= dx;
                     }
                     else
                     {
                     }
                     break;
                 case Directions.STOP:
-                    if (player.STRAFE_SPEED > 0)
-                        player.STRAFE_SPEED -= 0.05;
-                    else if (player.STRAFE_SPEED < 0)
-                        player.STRAFE_SPEED += 0.05;
+                    if (player.STRAFE_SPEED + dx >= dx)
+                        player.STRAFE_SPEED -= dx;
+                    if (player.STRAFE_SPEED - dx <= dx)
+                        player.STRAFE_SPEED += dx;
                     break;
             }
             switch (player.PlayerDirection)
@@ -1996,8 +1997,8 @@ namespace SLIL
                 case Directions.FORWARD:
                     if (!player.OnBike)
                     {
-                        if (player.MOVE_SPEED < player.MAX_MOVE_SPEED)
-                            player.MOVE_SPEED += 0.05;
+                        if (player.MOVE_SPEED + dx <= player.MAX_MOVE_SPEED)
+                            player.MOVE_SPEED += dx;
                     }
                     else
                     {
@@ -2006,16 +2007,16 @@ namespace SLIL
                 case Directions.BACK:
                     if (!player.OnBike)
                     {
-                        if (player.MOVE_SPEED > -player.MAX_MOVE_SPEED)
-                            player.MOVE_SPEED -= 0.05;
+                        if (player.MOVE_SPEED - dx >= -player.MAX_MOVE_SPEED)
+                            player.MOVE_SPEED -= dx;
                     }
                     else { }
                     break;
                 case Directions.STOP:
-                    if (player.MOVE_SPEED > 0)
-                        player.MOVE_SPEED -= 0.05;
-                    if (player.MOVE_SPEED < 0)
-                        player.MOVE_SPEED += 0.05;
+                    if (player.MOVE_SPEED + dx >= dx)
+                        player.MOVE_SPEED -= dx;
+                    if (player.MOVE_SPEED - dx <= dx)
+                        player.MOVE_SPEED += dx;
                     break;
             }
         }
