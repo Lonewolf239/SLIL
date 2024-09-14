@@ -416,6 +416,7 @@ namespace GameServer
             Look = 0;
             GunState = 0;
             MOVE_SPEED = 0;
+            STRAFE_SPEED = 0;
             CanShoot = true;
             Dead = false;
             Invulnerable = false;
@@ -473,6 +474,8 @@ namespace GameServer
                         Fast = false;
                         MAX_MOVE_SPEED -= 1.5;
                         MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MOVE_SPEED = 0;
+                        STRAFE_SPEED = 0;
                     }
                     Effects.RemoveAt(i);
                 }
@@ -504,6 +507,8 @@ namespace GameServer
                 Fast = true;
                 MAX_MOVE_SPEED += 1.5;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MOVE_SPEED = 0;
+                STRAFE_SPEED = 0;
             }
             else if (index == 2)
             {
@@ -541,6 +546,8 @@ namespace GameServer
                 Fast = true;
                 MAX_MOVE_SPEED += 2.15;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MOVE_SPEED = 0;
+                STRAFE_SPEED = 0;
             }
         }
 
@@ -569,6 +576,8 @@ namespace GameServer
                 Fast = true;
                 MAX_MOVE_SPEED += 1.5;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MOVE_SPEED = 0;
+                STRAFE_SPEED = 0;
             }
             else if (SelectedItem == 2)
             {
@@ -588,6 +597,8 @@ namespace GameServer
                         Fast = false;
                         MAX_MOVE_SPEED -= 1.5;
                         MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MOVE_SPEED = 0;
+                        STRAFE_SPEED = 0;
                     }
                     else if (Effects[i].ID == 4)
                     {
@@ -597,6 +608,8 @@ namespace GameServer
                         Fast = false;
                         MAX_MOVE_SPEED -= 2.15;
                         MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MOVE_SPEED = 0;
+                        STRAFE_SPEED = 0;
                         HP = MAX_HP;
                     }
                     Effects.RemoveAt(i);
@@ -614,6 +627,8 @@ namespace GameServer
                     Fast = false;
                     MAX_MOVE_SPEED -= 1.5;
                     MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                    MOVE_SPEED = 0;
+                    STRAFE_SPEED = 0;
                 }
                 else if (Effects[i].ID == 4)
                 {
@@ -623,6 +638,8 @@ namespace GameServer
                     Fast = false;
                     MAX_MOVE_SPEED -= 2.15;
                     MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                    MOVE_SPEED = 0;
+                    STRAFE_SPEED = 0;
                     HP = MAX_HP;
                 }
             }

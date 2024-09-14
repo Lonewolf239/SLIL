@@ -1962,61 +1962,73 @@ namespace SLIL
 
         private void ChangeSpeed(Player player)
         {
-            double dx = 0.2;
+            double walk = 0.1, bike = 0.05;
             switch (player.StrafeDirection)
             {
                 case Directions.LEFT:
+                    if (player.STRAFE_SPEED < 0)
+                        player.STRAFE_SPEED = 0;
                     if (!player.OnBike)
                     {
-                        if (player.STRAFE_SPEED + dx <= player.MAX_STRAFE_SPEED)
-                            player.STRAFE_SPEED += dx;
+                        if (player.STRAFE_SPEED + walk <= player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED += walk;
                     }
                     else
                     {
+                        if (player.STRAFE_SPEED + bike <= player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED += bike;
                     }
                     break;
                 case Directions.RIGHT:
+                    if (player.STRAFE_SPEED > 0)
+                        player.STRAFE_SPEED = 0;
                     if (!player.OnBike)
                     {
-                        if (player.STRAFE_SPEED - dx >= -player.MAX_STRAFE_SPEED)
-                            player.STRAFE_SPEED -= dx;
+                        if (player.STRAFE_SPEED - walk >= -player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED -= walk;
                     }
                     else
                     {
+                        if (player.STRAFE_SPEED - bike >= -player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED -= bike;
                     }
                     break;
                 case Directions.STOP:
-                    if (player.STRAFE_SPEED + dx >= dx)
-                        player.STRAFE_SPEED -= dx;
-                    if (player.STRAFE_SPEED - dx <= dx)
-                        player.STRAFE_SPEED += dx;
+                    player.STRAFE_SPEED = 0;
                     break;
             }
             switch (player.PlayerDirection)
             {
                 case Directions.FORWARD:
+                    if (player.MOVE_SPEED < 0)
+                        player.MOVE_SPEED = 0;
                     if (!player.OnBike)
                     {
-                        if (player.MOVE_SPEED + dx <= player.MAX_MOVE_SPEED)
-                            player.MOVE_SPEED += dx;
+                        if (player.MOVE_SPEED + walk <= player.MAX_MOVE_SPEED)
+                            player.MOVE_SPEED += walk;
                     }
                     else
                     {
+                        if (player.MOVE_SPEED + bike <= player.MAX_MOVE_SPEED)
+                            player.MOVE_SPEED += bike;
                     }
                     break;
                 case Directions.BACK:
+                    if (player.MOVE_SPEED > 0)
+                        player.MOVE_SPEED = 0;
                     if (!player.OnBike)
                     {
-                        if (player.MOVE_SPEED - dx >= -player.MAX_MOVE_SPEED)
-                            player.MOVE_SPEED -= dx;
+                        if (player.MOVE_SPEED - walk >= -player.MAX_MOVE_SPEED)
+                            player.MOVE_SPEED -= walk;
                     }
-                    else { }
+                    else
+                    {
+                        if (player.MOVE_SPEED - bike >= -player.MAX_MOVE_SPEED)
+                            player.MOVE_SPEED -= bike;
+                    }
                     break;
                 case Directions.STOP:
-                    if (player.MOVE_SPEED + dx >= dx)
-                        player.MOVE_SPEED -= dx;
-                    if (player.MOVE_SPEED - dx <= dx)
-                        player.MOVE_SPEED += dx;
+                    player.MOVE_SPEED = 0;
                     break;
             }
         }
