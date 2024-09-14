@@ -1962,7 +1962,7 @@ namespace SLIL
 
         private void ChangeSpeed(Player player)
         {
-            double dx = 0.05;
+            double dx = 0.1;
             switch (player.StrafeDirection)
             {
                 case Directions.LEFT:

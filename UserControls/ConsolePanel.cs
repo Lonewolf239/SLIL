@@ -141,6 +141,7 @@ namespace SLIL.UserControls
                                  "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Issue effect under X id for Y seconds       ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -ENTITIES-    ~│~ List of entities                            ~│~\n" +
+                                 "~│~ -ENT_-*X*       ~│~ Spawn entity under ID X, with AI          ~│~\n" +
                                  "~│~ -ENT_-*X*-_AI_-*Y*  ~│~ Spawn entity under ID X, Y = 1 - with AI    ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -NOCLIP-      ~│~ Enables/disables noclip                     ~│~\n" +
@@ -801,45 +802,76 @@ namespace SLIL.UserControls
                                 message += $"~│~ *{id}*~│~ -{name}-~│~\n";
                             }
                             message += "~└─────┴──────────────────┘~\n" +
-                                "-ENT_-*X*-_AI_-*Y* Spawn entity under ID X, Y = 1 - with AI";
+                                "-ENT_-*X*-_AI_-*Y* Spawn entity under ID X, Y = 1 - with AI\n" +
+                                "-ENT_-*X* Spawn entity under ID X, with AI\n";
                         }
-                        else if (cheat.StartsWith("ENT_") && cheat.Contains("_AI_"))
+                        else if (cheat.StartsWith("ENT_"))
                         {
-                            try
+                            if (cheat.Contains("_AI_"))
                             {
-                                int x = Convert.ToInt32(cheat.Split('_')[1]);
-                                int y = Convert.ToInt32(cheat.Split('_')[3]);
-                                if (x >= 0 && x < 19)
+                                try
                                 {
-                                    if (y < 0 || y > 1)
+                                    int x = Convert.ToInt32(cheat.Split('_')[1]);
+                                    int y = Convert.ToInt32(cheat.Split('_')[3]);
+                                    if (x >= 0 && x < 19)
                                     {
-                                        color = Color.Red;
-                                        message = "Incorrect value! Y must be 0 or 1";
+                                        if (y < 0 || y > 1)
+                                        {
+                                            color = Color.Red;
+                                            message = "Incorrect value! Y must be 0 or 1";
+                                        }
+                                        else
+                                        {
+                                            if (parent.SpawnEntity(x, y == 1))
+                                            {
+                                                if (y == 0) message = $"Creature with ID {x} successfully spawned with AI disabled";
+                                                else message = $"Creature with ID {x} successfully spawned with AI enabled";
+                                            }
+                                            else
+                                            {
+                                                color = Color.Red;
+                                                message = $"There was an error while spawning the enemy. Most likely a wall got in the way.";
+                                            }
+                                        }
                                     }
                                     else
                                     {
-                                        if (parent.SpawnEntity(x, y == 1))
-                                        {
-                                            if (y == 0) message = $"Creature with ID {x} successfully spawned with AI disabled";
-                                            else message = $"Creature with ID {x} successfully spawned with AI enabled";
-                                        }
+                                        color = Color.Red;
+                                        message = $"There is no entity under ID {x}";
+                                    }
+                                }
+                                catch
+                                {
+                                    color = Color.Red;
+                                    message = "Incorrect data entered! X or Y is not a number.";
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    int x = Convert.ToInt32(cheat.Split('_')[1]);
+                                    if (x >= 0 && x < 19)
+                                    {
+                                        if (parent.SpawnEntity(x, true))
+                                            message = $"Creature with ID {x} successfully spawned with AI enabled";
                                         else
                                         {
                                             color = Color.Red;
                                             message = $"There was an error while spawning the enemy. Most likely a wall got in the way.";
                                         }
                                     }
+                                    else
+                                    {
+                                        color = Color.Red;
+                                        message = $"There is no entity under ID {x}";
+                                    }
                                 }
-                                else
+                                catch
                                 {
                                     color = Color.Red;
-                                    message = $"There is no entity under ID {x}";
+                                    message = "Incorrect data entered! X or Y is not a number.";
                                 }
-                            }
-                            catch
-                            {
-                                color = Color.Red;
-                                message = "Incorrect data entered! X or Y is not a number.";
                             }
                         }
                         else if (cheat == "NOCLIP")
