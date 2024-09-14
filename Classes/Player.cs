@@ -12,6 +12,7 @@ namespace SLIL.Classes
         public double A { get; set; }
         public double Look { get; set; }
         public double HP { get; set; }
+        public double BIKE_HP { get; set; }
         public bool Invulnerable { get; set; }
         public int TimeoutInvulnerable { get; set; }
         public double STAMINE { get; set; }
@@ -611,7 +612,6 @@ namespace SLIL.Classes
                         MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
-                        HP = MAX_HP;
                     }
                     Effects.RemoveAt(i);
                     break;
@@ -641,7 +641,6 @@ namespace SLIL.Classes
                     MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                     MOVE_SPEED = 0;
                     STRAFE_SPEED = 0;
-                    HP = MAX_HP;
                 }
             }
             Effects.Clear();
@@ -672,14 +671,12 @@ namespace SLIL.Classes
         public bool DealDamage(double damage)
         {
             if (EffectCheck(2) || EffectCheck(4)) damage *= 0.8;
-            HP -= damage;
+            if (OnBike) BIKE_HP -= damage;
+            else HP -= damage;
             TimeoutInvulnerable = 2;
             Invulnerable = true;
-            if (HP <= 0)
-            {
-                if (OnBike) StopEffect(4);
-                else this.Dead = true;
-            }
+            if (HP <= 0) this.Dead = true;
+            if (BIKE_HP <= 0) StopEffect(4);
             return Dead;
         }
     }

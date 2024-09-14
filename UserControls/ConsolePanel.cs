@@ -44,7 +44,22 @@ namespace SLIL.UserControls
 
         private void GetItem(int index) => player.DisposableItems[index].AddItem();
 
-        private void Console_KeyDown(object sender, KeyEventArgs e) => e.SuppressKeyPress = true;
+        private void Console_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.SuppressKeyPress = true;
+            if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
+            {
+                if (console.Text[console.Text.Length - 2] == ':' && console.Text[console.Text.Length - 1] == ' ') return;
+                if (command.Length > 0)
+                {
+                    int start = command.Length - 1;
+                    if (start < 0) start = 0;
+                    command = command.Remove(start);
+                }
+                ConsoleDeleteText(1);
+                return;
+            }
+        }
 
         private void Console_KeyUp(object sender, KeyEventArgs e)
         {
@@ -69,6 +84,11 @@ namespace SLIL.UserControls
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -IMHONEST-    ~│~ Disable cheats                              ~│~\n" +
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
+                             "~│~ -DEBUG-       ~│~ Go to debug map                             ~│~\n" +
+                             "~│~ -DEBUG_BOSS-  ~│~ Go to boss debug map                        ~│~\n" +
+                             "~│~ -DEBUG_BIKE-  ~│~ Go to bike debug map                        ~│~\n" +
+                             "~│~ -DEBUGSPEED-  ~│~ Show/hide debug player speed                ~│~\n" +
+                             "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -FPS-         ~│~ Show/hide FPS                               ~│~\n" +
                              "~│~ -MINIMAP-     ~│~ Show/hide Minimap                           ~│~\n" +
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
@@ -87,6 +107,14 @@ namespace SLIL.UserControls
                              "~│~ -CHEATS-      ~│~ View list of cheats                         ~│~\n" +
                              "~└─────────────┴─────────────────────────────────────────────┘~";
 
+                    }
+                    else if (cheat == "DEBUGSPEED")
+                    {
+                        parent.ShowDebugSpeed = !parent.ShowDebugSpeed;
+                        if (parent.ShowDebugSpeed)
+                            message = "Display debug player speed enabled";
+                        else
+                            message = "Display debug player speed disabled";
                     }
                     else if (cheat == "DEBUG")
                     {
@@ -1065,18 +1093,6 @@ namespace SLIL.UserControls
             {
                 if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
                     return;
-                if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
-                {
-                    if (console.Text[console.Text.Length - 2] == ':' && console.Text[console.Text.Length - 1] == ' ') return;
-                    if (command.Length > 0)
-                    {
-                        int start = command.Length - 1;
-                        if (start < 0) start = 0;
-                        command = command.Remove(start);
-                    }
-                    ConsoleDeleteText(1);
-                    return;
-                }
                 char c = (char)e.KeyValue;
                 if (!char.IsLetterOrDigit(c) && e.KeyCode != Keys.OemMinus && e.KeyCode != Keys.OemPeriod && e.KeyCode != Keys.Oemcomma && e.KeyCode != Keys.Space)
                     return;

@@ -15,7 +15,6 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
-using SLIL.Properties;
 
 namespace SLIL
 {
@@ -30,7 +29,7 @@ namespace SLIL
         private readonly GameController Controller;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
-        public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
+        public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true, ShowDebugSpeed = false;
         public bool inv_y = false, inv_x = false;
         public static int difficulty = 1;
         private int inDebug = 0;
@@ -455,7 +454,7 @@ namespace SLIL
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################",
-            bikeMap = @"############################.......####........#####........####.........###.......................##.......................##....####......####.....##...######....######....##...######....######....##...##F###....######....##...######....######....##...######.....####.....##...######..............##...######..............##...######..............##...######.....####.....##...######....######....##...######....######....##...######....######....##...######....######....##....####......####..5..##.......................##.......................###........####.......P.#####.......####........############################";
+            bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####.....##...######....######....##...######====#dd###....##...##$###....#dd###....##...##D###....######....##...##.b##.....####.....##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################";
         public static float Volume = 0.4f;
         private int burst_shots = 0, reload_frames = 0;
         public static int ost_index = 0;
@@ -1058,9 +1057,7 @@ namespace SLIL
             try
             {
                 Player player = Controller.GetPlayer();
-                if (burst_shots >= player.GetCurrentGun().BurstShots)
-                    shot_timer.Stop();
-                else
+                if (burst_shots < player.GetCurrentGun().BurstShots)
                 {
                     if (player.GetCurrentGun().FireType != FireTypes.Single)
                         player.GunState = player.GunState == 1 ? 0 : 1;
@@ -1127,6 +1124,8 @@ namespace SLIL
                     }
                 }
                 burst_shots++;
+                if (burst_shots >= player.GetCurrentGun().BurstShots)
+                    shot_timer.Stop();
                 if (!shot_timer.Enabled || player.GetCurrentGun().FireType == FireTypes.Single)
                     scope_hit = null;
             }
@@ -1908,9 +1907,9 @@ namespace SLIL
                     else
                     {
                         if (player.PlayerDirection == Directions.FORWARD)
-                            Controller.ChangePlayerA(0.03);
+                            Controller.ChangePlayerA(player.STRAFE_SPEED / 125);
                         else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(-0.025);
+                            Controller.ChangePlayerA(-player.STRAFE_SPEED / 150);
                     }
                     break;
                 case Directions.RIGHT:
@@ -1922,9 +1921,9 @@ namespace SLIL
                     else
                     {
                         if (player.PlayerDirection == Directions.FORWARD)
-                            Controller.ChangePlayerA(-0.03);
+                            Controller.ChangePlayerA(player.STRAFE_SPEED / 125);
                         else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(0.025);
+                            Controller.ChangePlayerA(-player.STRAFE_SPEED / 150);
                     }
                     break;
             }
@@ -1935,7 +1934,7 @@ namespace SLIL
                     newY += moveCos;
                     break;
                 case Directions.BACK:
-                    double factor = player.OnBike ? 0.1 : 0.65;
+                    double factor = player.OnBike ? 0.25 : 0.65;
                     newX += moveSin * factor;
                     newY += moveCos * factor;
                     break;
@@ -1965,7 +1964,7 @@ namespace SLIL
 
         private void ChangeSpeed(Player player)
         {
-            double walk = 0.1, bike = 0.05;
+            double walk = 0.075, bike = 0.05;
             switch (player.StrafeDirection)
             {
                 case Directions.LEFT:
@@ -1979,7 +1978,7 @@ namespace SLIL
                     else
                     {
                         if (player.STRAFE_SPEED + bike <= player.MAX_STRAFE_SPEED + 0.01)
-                            player.STRAFE_SPEED += bike;
+                            player.STRAFE_SPEED += bike * 1.75;
                     }
                     break;
                 case Directions.RIGHT:
@@ -1993,7 +1992,7 @@ namespace SLIL
                     else
                     {
                         if (player.STRAFE_SPEED - bike >= -player.MAX_STRAFE_SPEED - 0.01)
-                            player.STRAFE_SPEED -= bike;
+                            player.STRAFE_SPEED -= bike * 1.75;
                     }
                     break;
                 case Directions.STOP:
@@ -2692,7 +2691,8 @@ namespace SLIL
             if (resolution == 1) icon_size *= 2;
             int size = resolution == 0 ? 1 : 2;
             int add = resolution == 0 ? 2 : 4;
-            SizeF hpSize = graphicsWeapon.MeasureString(player.HP.ToString("0"), consolasFont[interface_size, resolution]);
+            double hp = player.OnBike ? player.BIKE_HP : player.HP;
+            SizeF hpSize = graphicsWeapon.MeasureString(hp.ToString("0"), consolasFont[interface_size, resolution]);
             SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), consolasFont[interface_size, resolution]);
             int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
             int ammo_x = ammo_icon_x + icon_size;
@@ -2739,7 +2739,7 @@ namespace SLIL
                 graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, ShowFPS ? fpsSize.Height : 0, icon_size, icon_size);
                 graphicsWeapon.DrawString($"{ping}ms", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, ShowFPS ? fpsSize.Height : 0);
             }
-            graphicsWeapon.DrawString(player.HP.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
+            graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
             graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             if (!player.IsPetting && !player.InParkour && !player.OnBike && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
@@ -2836,11 +2836,24 @@ namespace SLIL
                     DrawItemSelecter(icon, icon_size, i, selected);
                 }
             }
+            ShowDebugs(player);
             if (resolution == 1)
             {
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
             }
+        }
+
+        private void ShowDebugs(Player player)
+        {
+            if (ShowDebugSpeed)
+                graphicsWeapon.DrawString(
+                    $"MMS: {player.MAX_MOVE_SPEED:0.##}\n" +
+                    $"MS: {player.MOVE_SPEED:0.##}\n" +
+                    $"MSS: {player.MAX_STRAFE_SPEED:0.##}\n" +
+                    $"SS: {player.STRAFE_SPEED:0.##}\n" +
+                    $"MRS: {player.RUN_SPEED:0.##}\n" +
+                    $"RS: {player.MOVE_SPEED * player.RUN_SPEED:0.##}", consolasFont[0, 0], whiteBrush, 0, 16);
         }
 
         private void DrawWeapon(Player player, int index)
