@@ -23,6 +23,8 @@ namespace GameServer
         public bool CanAiming { get; set; }
         public bool ShowAmmo { get; set; }
         public bool ShowScope { get; set; }
+        public bool ShowHitScope { get; set; }
+        public bool InfinityAmmo { get; set; }
         public int BulletCount { get; set; }
         public int AimingState { get; set; }
         public int AimingFactor { get; set; }
@@ -66,6 +68,8 @@ namespace GameServer
             CanShoot = true;
             ShowAmmo = true;
             ShowScope = true;
+            ShowHitScope = true;
+            InfinityAmmo = false;
         }
 
         public abstract int GetItemID();
@@ -264,6 +268,7 @@ namespace GameServer
     {
         public Knife() : base()
         {
+            InfinityAmmo = true;
             LowWeight = true;
             Upgradeable = false;
             ShowAmmo = false;
@@ -315,11 +320,13 @@ namespace GameServer
     {
         public Petition() : base()
         {
-            FiringRate = 1500;
+            FiringRate = 2900;
+            PauseBetweenShooting = 3000;
             FiringRange = 2.5;
             MaxDamage = 12.5;
             MinDamage = 7.5;
             ShowScope = false;
+            ShowHitScope = false;
             HasIt = false;
             Name = ["3-14", "Petition"];
         }

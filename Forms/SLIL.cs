@@ -141,7 +141,7 @@ namespace SLIL
             { typeof(Flashlight), new[,] { { Properties.Resources.flashlight, Properties.Resources.flashlight_run } } },
             { typeof(Knife), new[,] { { Properties.Resources.knife, Properties.Resources.knife_hit, Properties.Resources.knife_run } } },
             { typeof(Candy), new[,] { { Properties.Resources.candy, Properties.Resources.candy_shoot, Properties.Resources.candy_run } } },
-            { typeof(Petition), new[,] { { Properties.Resources.candy, Properties.Resources.candy_shoot, Properties.Resources.candy_run } } },
+            { typeof(Petition), new[,] { { Properties.Resources.petition, Properties.Resources.petition_shoot, Properties.Resources.petition_run } } },
             { typeof(Rainblower), new[,]
             {
                    { Properties.Resources.rainblower, Properties.Resources.rainblower_shoot, Properties.Resources.rainblower_run },
@@ -1066,7 +1066,7 @@ namespace SLIL
                         player.GunState = player.GunState == 1 ? 0 : 1;
                     else
                         player.GunState = player.Aiming ? 3 : 0;
-                    if (!(player.GetCurrentGun() is Knife) && !(player.GetCurrentGun() is Candy) && !(player.GetCurrentGun() is Petition))
+                    if (!player.GetCurrentGun().InfinityAmmo)
                         Controller.AmmoCountDecrease();
                     if (player.GetCurrentGun().CanShoot && player.GetCurrentGun().FireType != FireTypes.Single)
                     {
@@ -1973,12 +1973,12 @@ namespace SLIL
                         player.STRAFE_SPEED = 0;
                     if (!player.OnBike)
                     {
-                        if (player.STRAFE_SPEED + walk <= player.MAX_STRAFE_SPEED)
+                        if (player.STRAFE_SPEED + walk <= player.MAX_STRAFE_SPEED + 0.01)
                             player.STRAFE_SPEED += walk;
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED + bike <= player.MAX_STRAFE_SPEED)
+                        if (player.STRAFE_SPEED + bike <= player.MAX_STRAFE_SPEED + 0.01)
                             player.STRAFE_SPEED += bike;
                     }
                     break;
@@ -1987,12 +1987,12 @@ namespace SLIL
                         player.STRAFE_SPEED = 0;
                     if (!player.OnBike)
                     {
-                        if (player.STRAFE_SPEED - walk >= -player.MAX_STRAFE_SPEED)
+                        if (player.STRAFE_SPEED - walk >= -player.MAX_STRAFE_SPEED - 0.01)
                             player.STRAFE_SPEED -= walk;
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED - bike >= -player.MAX_STRAFE_SPEED)
+                        if (player.STRAFE_SPEED - bike >= -player.MAX_STRAFE_SPEED - 0.01)
                             player.STRAFE_SPEED -= bike;
                     }
                     break;
@@ -2007,12 +2007,12 @@ namespace SLIL
                         player.MOVE_SPEED = 0;
                     if (!player.OnBike)
                     {
-                        if (player.MOVE_SPEED + walk <= player.MAX_MOVE_SPEED)
+                        if (player.MOVE_SPEED + walk <= player.MAX_MOVE_SPEED + 0.01)
                             player.MOVE_SPEED += walk;
                     }
                     else
                     {
-                        if (player.MOVE_SPEED + bike <= player.MAX_MOVE_SPEED)
+                        if (player.MOVE_SPEED + bike <= player.MAX_MOVE_SPEED + 0.01)
                             player.MOVE_SPEED += bike;
                     }
                     break;
@@ -2021,12 +2021,12 @@ namespace SLIL
                         player.MOVE_SPEED = 0;
                     if (!player.OnBike)
                     {
-                        if (player.MOVE_SPEED - walk >= -player.MAX_MOVE_SPEED)
+                        if (player.MOVE_SPEED - walk >= -player.MAX_MOVE_SPEED - 0.01)
                             player.MOVE_SPEED -= walk;
                     }
                     else
                     {
-                        if (player.MOVE_SPEED - bike >= -player.MAX_MOVE_SPEED)
+                        if (player.MOVE_SPEED - bike >= -player.MAX_MOVE_SPEED - 0.01)
                             player.MOVE_SPEED -= bike;
                     }
                     break;
@@ -2791,7 +2791,7 @@ namespace SLIL
                         graphicsWeapon.DrawImage(h_scope[scope_type], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
             }
-            if (scope_hit != null)
+            if (player.GetCurrentGun().ShowHitScope && scope_hit != null)
                 graphicsWeapon.DrawImage(scope_hit, 0, 0, WEAPON.Width, WEAPON.Height);
             DisplayStamine(player, icon_size, size);
             int money_y = 2;

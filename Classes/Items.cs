@@ -25,6 +25,8 @@ namespace SLIL.Classes
         public bool CanAiming { get; set; }
         public bool ShowAmmo { get; set; }
         public bool ShowScope { get; set; }
+        public bool ShowHitScope { get; set; }
+        public bool InfinityAmmo { get; set; }
         public int BulletCount { get; set; }
         public int AimingState { get; set; }
         public int AimingFactor { get; set; }
@@ -68,6 +70,8 @@ namespace SLIL.Classes
             CanShoot = true;
             ShowAmmo = true;
             ShowScope = true;
+            ShowHitScope = true;
+            InfinityAmmo = false;
         }
 
         public abstract int GetItemID();
@@ -270,6 +274,7 @@ namespace SLIL.Classes
     {
         public Knife() : base()
         {
+            InfinityAmmo = true;
             LowWeight = true;
             Upgradeable = false;
             ShowAmmo = false;
@@ -321,11 +326,13 @@ namespace SLIL.Classes
     {
         public Petition() : base()
         {
-            FiringRate = 1500;
+            FiringRate = 2900;
+            PauseBetweenShooting = 3000;
             FiringRange = 2.5;
             MaxDamage = 12.5;
             MinDamage = 7.5;
             ShowScope = false;
+            ShowHitScope = false;
             HasIt = false;
             Name = new[] { "3-14", "Petition" };
         }

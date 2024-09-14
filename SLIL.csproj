@@ -1237,5 +1237,14 @@
   <ItemGroup>
     <None Include="Images\fatigue_effect.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\petition.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\petition_run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\petition_shoot.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
