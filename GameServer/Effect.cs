@@ -10,6 +10,12 @@
         public bool Debaf { get; set; }
         public bool Infinity { get; set; }
 
+        public Effect()
+        {
+            Debaf = false;
+            Infinity = false;
+        }
+
         public bool ReducingTimeRemaining()
         {
             if (Infinity) return false;
@@ -25,7 +31,7 @@
 
     public class Regeneration : Effect
     {
-        public Regeneration()
+        public Regeneration() : base()
         {
             ID = 0;
             EffectTotalTime = 15;
@@ -37,7 +43,7 @@
 
     public class Adrenaline : Effect
     {
-        public Adrenaline()
+        public Adrenaline() : base()
         {
             ID = 1;
             EffectTotalTime = 20;
@@ -49,7 +55,7 @@
 
     public class Protection : Effect
     {
-        public Protection()
+        public Protection() : base()
         {
             ID = 2;
             EffectTotalTime = 120;
@@ -61,7 +67,7 @@
 
     public class Fatigue : Effect
     {
-        public Fatigue()
+        public Fatigue() : base()
         {
             ID = 3;
             Debaf = true;
@@ -74,7 +80,7 @@
 
     public class Biker : Effect
     {
-        public Biker()
+        public Biker() : base()
         {
             ID = 4;
             Infinity = true;

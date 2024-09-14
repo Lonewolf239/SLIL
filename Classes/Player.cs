@@ -79,16 +79,16 @@ namespace SLIL.Classes
             writer.Put(BlockCamera);
             writer.Put(BlockInput);
             writer.Put(this.GUNS.Length);
-            foreach(Gun gun in this.GUNS)
+            foreach (Gun gun in this.GUNS)
                 writer.Put(gun.HasIt);
             writer.Put(Guns.Count);
-            foreach(Gun gun in this.Guns)
+            foreach (Gun gun in this.Guns)
             {
                 writer.Put(gun.ItemID);
                 gun.Serialize(writer);
             }
             writer.Put(DisposableItems.Count);
-            foreach(DisposableItem item in this.DisposableItems)
+            foreach (DisposableItem item in this.DisposableItems)
             {
                 writer.Put(item.ItemID);
                 item.Serialize(writer);
@@ -109,11 +109,11 @@ namespace SLIL.Classes
             this.BlockCamera = reader.GetBool();
             this.BlockInput = reader.GetBool();
             int GUNSLength = reader.GetInt();
-            for(int i = 0; i < GUNSLength; i++)
+            for (int i = 0; i < GUNSLength; i++)
                 this.GUNS[i].HasIt = reader.GetBool();
             int GunsCount = reader.GetInt();
             List<Gun> tempGuns = new List<Gun>();
-            for(int i = 0; i< GunsCount; i++)
+            for (int i = 0; i < GunsCount; i++)
             {
                 int gunID = reader.GetInt();
                 switch (gunID)
@@ -204,7 +204,7 @@ namespace SLIL.Classes
             }
             int disposableItemsCount = reader.GetInt();
             List<DisposableItem> tempDisposableItems = new List<DisposableItem>();
-            for(int i = 0; i < disposableItemsCount; i++)
+            for (int i = 0; i < disposableItemsCount; i++)
             {
                 int itemID = reader.GetInt();
                 switch (itemID)
@@ -247,11 +247,11 @@ namespace SLIL.Classes
                 this.BlockCamera = reader.GetBool();
                 this.BlockInput = reader.GetBool();
                 int GUNSLength = reader.GetInt();
-                for(int i = 0; i < GUNSLength; i++)
+                for (int i = 0; i < GUNSLength; i++)
                     this.GUNS[i].HasIt = reader.GetBool();
                 int GunsCount = reader.GetInt();
                 List<Gun> tempGuns = new List<Gun>();
-                for(int i = 0; i< GunsCount; i++)
+                for (int i = 0; i < GunsCount; i++)
                 {
                     int gunID = reader.GetInt();
                     switch (gunID)
@@ -342,7 +342,7 @@ namespace SLIL.Classes
                 }
                 int disposableItemsCount = reader.GetInt();
                 List<DisposableItem> tempDisposableItems = new List<DisposableItem>();
-                for(int i = 0; i < disposableItemsCount; i++)
+                for (int i = 0; i < disposableItemsCount; i++)
                 {
                     int itemID = reader.GetInt();
                     switch (itemID)
@@ -407,13 +407,11 @@ namespace SLIL.Classes
                 CuteMode = false;
                 Fast = false;
                 NoClip = false;
-                if (OnBike)
-                    StopDrivingOnBike();
+                if (OnBike) StopEffect(4);
             }
             EnemiesKilled = 0;
             Look = 0;
             GunState = 0;
-            CanShoot = true;
             Dead = false;
             Invulnerable = false;
             TimeoutInvulnerable = 2;
@@ -426,6 +424,7 @@ namespace SLIL.Classes
             BlockInput = false;
             if (!OnBike)
             {
+                CanShoot = true;
                 BlockCamera = false;
                 CanUnblockCamera = true;
             }
@@ -459,7 +458,7 @@ namespace SLIL.Classes
             for (int i = Effects.Count - 1; i >= 0; i--)
             {
                 if (Effects[i].ID == 0) HealHP(rand.Next(2, 6));
-                if (Effects[i].ID == 3 &&Effects[i].ReducingTimeRemaining())
+                if (Effects[i].ReducingTimeRemaining())
                 {
                     if (Effects[i].ID == 1)
                     {
@@ -486,7 +485,7 @@ namespace SLIL.Classes
             }
             else if (index == 1)
             {
-                if (EffectCheck(1)) return;
+                if (EffectCheck(1) || EffectCheck(4)) return;
                 Adrenaline effect = new Adrenaline();
                 if (!standart_time)
                     effect.SetTotalTime(time);
@@ -519,6 +518,8 @@ namespace SLIL.Classes
             else if (index == 4)
             {
                 if (EffectCheck(4)) return;
+                StopEffect(0);
+                StopEffect(1);
                 Biker effect = new Biker();
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
@@ -529,7 +530,6 @@ namespace SLIL.Classes
                 OnBike = true;
                 Fast = true;
                 MOVE_SPEED += 2.15;
-                HP = MAX_HP;
             }
         }
 
@@ -553,7 +553,7 @@ namespace SLIL.Classes
             }
             else if (SelectedItem == 1)
             {
-                if (EffectCheck(1)) return;
+                if (EffectCheck(1) || EffectCheck(4)) return;
                 Effects.Add(new Adrenaline());
                 Fast = true;
                 MOVE_SPEED += 1.5;
@@ -565,19 +565,27 @@ namespace SLIL.Classes
             }
         }
 
-        public void StopDrivingOnBike()
+        public void StopEffect(int id)
         {
             for (int i = 0; i < Effects.Count; i++)
             {
-                if (Effects[i].ID == 4)
+                if (Effects[i].ID == id)
                 {
+                    if (Effects[i].ID == 1)
+                    {
+                        Fast = false;
+                        MOVE_SPEED -= 1.5;
+                    }
+                    else if (Effects[i].ID == 4)
+                    {
+                        BlockCamera = false;
+                        CanShoot = true;
+                        OnBike = false;
+                        Fast = false;
+                        MOVE_SPEED -= 2.15;
+                        HP = MAX_HP;
+                    }
                     Effects.RemoveAt(i);
-                    BlockCamera = false;
-                    CanShoot = true;
-                    OnBike = false;
-                    Fast = false;
-                    MOVE_SPEED -= 2.15;
-                    HP = MAX_HP;
                     break;
                 }
             }
@@ -635,10 +643,8 @@ namespace SLIL.Classes
             Invulnerable = true;
             if (HP <= 0)
             {
-                if (OnBike)
-                    StopDrivingOnBike();
-                else
-                    this.Dead = true;
+                if (OnBike) StopEffect(4);
+                else this.Dead = true;
             }
             return Dead;
         }

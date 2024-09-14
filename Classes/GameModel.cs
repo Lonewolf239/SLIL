@@ -14,7 +14,7 @@ namespace SLIL.Classes
     {
         private StringBuilder MAP = new StringBuilder();
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################",
+            debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=5#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################",
             bikeMap = @"############################.......####........#####........####.........###.......................##.......................##....####......####.....##...######....######....##...######....######....##...##F###....######....##...######....######....##...######.....####.....##...######..............##...######..............##...######..............##...######.....####.....##...######....######....##...######....######....##...######....######....##...######....######....##....####......####..5..##.......................##.......................###........####.......P.#####.......####........############################";
         private int inDebug = 0;
         private readonly Pet[] PETS;
@@ -718,7 +718,18 @@ namespace SLIL.Classes
                             double extendedY = Entities[i].Y + Math.Cos(player.A) * 0.3;
                             if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
                             {
-                                DoParkour(player.ID, (int)extendedY, (int)extendedX);
+                                double distance = 1;
+                                while (distance <= 2)
+                                {
+                                    distance += 0.1d;
+                                    int x1 = (int)(Entities[i].X + Math.Sin(player.A) * distance);
+                                    int y1 = (int)(Entities[i].Y + Math.Cos(player.A) * distance);
+                                    if (!HasImpassibleCells(playerID, y1 * MAP_WIDTH + x1))
+                                    {
+                                        DoParkour(player.ID, (int)extendedY, (int)extendedX);
+                                        break;
+                                    }
+                                }
                             }
                         }
                         if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
@@ -1193,7 +1204,7 @@ namespace SLIL.Classes
 
         internal void RemoveEntity(int id)
         {
-            for(int i = 0; i < Entities.Count; i++)
+            for (int i = 0; i < Entities.Count; i++)
             {
                 if (Entities[i].ID == id)
                 {
@@ -1201,6 +1212,20 @@ namespace SLIL.Classes
                     break;
                 }
             }
+        }
+
+        internal Entity GetEntity(int id)
+        {
+            Entity entity = null;
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                if (Entities[i].ID == id)
+                {
+                    entity = Entities[i];
+                    break;
+                }
+            }
+            return entity;
         }
 
         public StringBuilder GetMap() => MAP;
@@ -1526,26 +1551,32 @@ namespace SLIL.Classes
             return false;
         }
 
+        internal void GettingOffTheBike(int playerID)
+        {
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            Bike bike = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID)
+            {
+                BikeHP = p.HP
+            };
+            p.StopEffect(4);
+            AddEntity(bike);
+        }
+
         internal bool HasImpassibleCells(int index, int playerID)
         {
-            foreach (Entity ent in Entities)
-            {
-                if (ent.ID == playerID)
-                {
-                    Player p = (Player)ent;
-                    char[] impassibleCells = { '#', 'D', '=', 'd', 'S' };
-                    if (HasNoClip(playerID) || p.InParkour) return false;
-                    return impassibleCells.Contains(GetMap()[index]);
-                }
-            }
-            return false;
+            Player p = GetPlayer(playerID);
+            if (p == null) return false;
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S' };
+            if (HasNoClip(playerID) || p.InParkour) return false;
+            return impassibleCells.Contains(GetMap()[index]);
         }
 
         internal Player GetPlayer(int playerID)
         {
             foreach (Entity ent in Entities)
             {
-                if (ent.ID == playerID)
+                if (ent.ID == playerID)                   
                     return (Player)ent;
             }
             return null;
@@ -1556,14 +1587,16 @@ namespace SLIL.Classes
             Player p = GetPlayer(playerID);
             if (p == null) return false;
             if (p.EffectCheck(3)) return false;
+            p.InParkour = true;
             p.ParkourState = 0;
             p.X = x + 0.5;
             p.Y = y + 0.5;
             p.Look = 0;
-            p.InParkour = true;
             p.CanUnblockCamera = false;
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
+            p.StrafeDirection = Directions.STOP;
+            p.PlayerMoveStyle = Directions.STOP;
             new Thread(() => {
                 Thread.Sleep(500);
                 StopParkour(playerID);
@@ -1578,6 +1611,7 @@ namespace SLIL.Classes
             if (p == null) return;
             double new_x = p.X + Math.Sin(p.A);
             double new_y = p.Y + Math.Cos(p.A);
+            p.InParkour = false;
             while (HasImpassibleCells((int)new_y * MAP_WIDTH + (int)(new_x), playerID))
             {
                 new_x += Math.Sin(p.A) / 4;
@@ -1586,10 +1620,8 @@ namespace SLIL.Classes
             p.X = new_x;
             p.Y = new_y;
             p.GiveEffect(3, true);
-            p.InParkour = false;
             p.BlockInput = false;
-            if (!p.OnBike)
-                p.BlockCamera = false;
+            if (!p.OnBike) p.BlockCamera = false;
         }
 
         internal void ChangeWeapon(int playerID, int new_gun)
@@ -1699,8 +1731,16 @@ namespace SLIL.Classes
 
         internal void GetOnABike(int ID, int playerID)
         {
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            Entity entity = GetEntity(ID);
+            if (entity != null)
+            {
+                double hp = ((Bike)entity).BikeHP;
+                p.HP = hp;
+            }
             RemoveEntity(ID);
-            GetPlayer(playerID).GiveEffect(4, true);
+            p.GiveEffect(4, true);
         }
 
         internal void DeserializePlayer(int playerID, byte[] rawData)

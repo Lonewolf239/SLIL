@@ -377,11 +377,20 @@ namespace SLIL.Classes
 
         internal bool IsMultiplayer() => peer != null;
 
-        internal bool DoParkour(int y, int x) {
-            if (peer == null)
+        internal void GettingOffTheBike()
+        {
+            if (peer == null) Game.GettingOffTheBike(playerID);
+            else
             {
-                return Game.DoParkour(playerID, y, x);
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(1344);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
+        }
+
+        internal bool DoParkour(int y, int x)
+        {
+            if (peer == null) return Game.DoParkour(playerID, y, x);
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -501,9 +510,7 @@ namespace SLIL.Classes
         internal void GetOnABike(int ID)
         {
             if (peer == null)
-            { 
                 Game.GetOnABike(ID, playerID);
-            }
             else
             {
                 NetDataWriter writer = new NetDataWriter();

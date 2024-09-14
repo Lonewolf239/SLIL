@@ -11,7 +11,7 @@ namespace SLIL.Classes
             Properties.Resources.wall,
             Properties.Resources.door,
             Properties.Resources.shop_door,
-            Properties.Resources.teleport,
+            Properties.Resources.bike, //5
             Properties.Resources.floor,
             Properties.Resources.ceiling,
             Properties.Resources.enemy_0, //8
@@ -59,14 +59,13 @@ namespace SLIL.Classes
             Properties.Resources.rpg_explosion_0, //50
             Properties.Resources.rpg_explosion_1,
             Properties.Resources.wall_with_sing, //52
-            Properties.Resources.bike, //53
         };
         private readonly Image[] cute_textures =
         {
             Properties.Resources.c_wall,
             Properties.Resources.c_door,
             Properties.Resources.c_shop_door,
-            Properties.Resources.teleport,
+            Properties.Resources.bike, //5
             Properties.Resources.c_floor,
             Properties.Resources.c_ceiling,
             Properties.Resources.c_enemy_0, //8
@@ -114,7 +113,6 @@ namespace SLIL.Classes
             Properties.Resources.rpg_explosion_0, //50
             Properties.Resources.rpg_explosion_1,
             Properties.Resources.wall_with_sing, //52
-            Properties.Resources.bike, //53
         };
         private readonly Color[] COLORS =
         {
@@ -145,12 +143,6 @@ namespace SLIL.Classes
             }
             for (int id = COLORS.Length; id < textureCount; id++)
             {
-                if (id - CUTE_COLORS.Length == 3)
-                {
-                    textureColorCache[id] = new Color[1, 1];
-                    textureColorCache[id][0, 0] = COLORS[0];
-                    continue;
-                }
                 Bitmap textureBitmap = new Bitmap(textures[id - COLORS.Length]);
                 BitmapData bitmapData = textureBitmap.LockBits(new Rectangle(0, 0, textureBitmap.Width, textureBitmap.Height), ImageLockMode.ReadOnly, textureBitmap.PixelFormat);
                 int bytesPerPixel = Bitmap.GetPixelFormatSize(textureBitmap.PixelFormat) / 8;
@@ -168,12 +160,6 @@ namespace SLIL.Classes
             }
             for (int id = CUTE_COLORS.Length; id < textureCount; id++)
             {
-                if (id - CUTE_COLORS.Length == 3 )
-                {
-                    textureColorCache[id] = new Color[1, 1];
-                    textureColorCache[id][0, 0] = COLORS[0];
-                    continue;
-                }
                 Bitmap textureBitmap = new Bitmap(cute_textures[id - CUTE_COLORS.Length]);
                 BitmapData bitmapData = textureBitmap.LockBits(new Rectangle(0, 0, textureBitmap.Width, textureBitmap.Height), ImageLockMode.ReadOnly, textureBitmap.PixelFormat);
                 int bytesPerPixel = Bitmap.GetPixelFormatSize(textureBitmap.PixelFormat) / 8;

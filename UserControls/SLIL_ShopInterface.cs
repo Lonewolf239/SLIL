@@ -128,25 +128,20 @@ namespace SLIL.UserControls
 
         private Image DrawWeaponParametrs()
         {
-            Bitmap result = new Bitmap(500, 117);
+            Bitmap result = new Bitmap(parametrs_image.Width, parametrs_image.Height);
             using (Graphics g = Graphics.FromImage(result))
             {
-                Brush progressbar_background = new SolidBrush(Color.Blue);
+                Brush progressbar_background = new SolidBrush(Color.FromArgb(77, 79, 86));
+                Brush progressbar = new SolidBrush(Color.FromArgb(195, 195, 195));
                 g.DrawImage(Properties.Resources.bullet, 0, 0, 30, 30);
                 g.DrawImage(Properties.Resources.magic, 0, 38, 30, 30);
                 g.DrawImage(Properties.Resources.rocket, 0, 76, 30, 30);
                 g.FillRectangle(progressbar_background, 35, 0, 340, 30);
                 g.FillRectangle(progressbar_background, 35, 38, 340, 30);
                 g.FillRectangle(progressbar_background, 35, 76, 340, 30);
-                using (LinearGradientBrush progressBrush = new LinearGradientBrush(new RectangleF(37, 2, 336, 26), Color.Red, Color.Lime, LinearGradientMode.Horizontal))
-                {
-                    g.FillRectangle(progressBrush, new RectangleF(37, 2, 336, 26));
-                    g.FillRectangle(progressBrush, new RectangleF(37, 40, 336, 26));
-                    g.FillRectangle(progressBrush, new RectangleF(37, 78, 336, 26));
-                }
-                g.FillRectangle(progressbar_background, 37 + GetDamage(), 2, 336 - GetDamage(), 26);
-                g.FillRectangle(progressbar_background, 37 + (int)(weapon.FiringRange / 30 * 336), 40, 336 - (int)(weapon.FiringRange / 30 * 336), 26);
-                g.FillRectangle(progressbar_background, 37 + (int)((weapon.Accuracy * 100) / 100 * 336), 78, 336 - (int)((weapon.Accuracy * 100) / 100 * 336), 26);
+                g.FillRectangle(progressbar, 37, 2, GetDamage(), 26);
+                g.FillRectangle(progressbar, 37, 40, (int)(weapon.FiringRange / 30 * 336), 26);
+                g.FillRectangle(progressbar, 37, 78, (int)((weapon.Accuracy * 100) / 100 * 336), 26);
             }
             return result;
         }

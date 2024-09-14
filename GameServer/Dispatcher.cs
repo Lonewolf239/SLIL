@@ -82,6 +82,9 @@ namespace GameServer
                 case 1333:
                     Game.DoParkour(playerIDfromPeer, dreader.GetInt(), dreader.GetInt());
                     break;
+                case 1344:
+                    Game.GettingOffTheBike(playerIDfromPeer);
+                    break;
                 case 1777:
                     Game.GetOnABike(dreader.GetInt(), playerIDfromPeer);
                     break;

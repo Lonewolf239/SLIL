@@ -653,6 +653,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap fatigue_effect {
+            get {
+                object obj = ResourceManager.GetObject("fatigue_effect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap fingershot {
             get {
                 object obj = ResourceManager.GetObject("fingershot", resourceCulture);
@@ -3136,16 +3146,6 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap telegram {
             get {
                 object obj = ResourceManager.GetObject("telegram", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap teleport {
-            get {
-                object obj = ResourceManager.GetObject("teleport", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

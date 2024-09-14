@@ -229,9 +229,6 @@
   <data name="c_enemy_2_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\c_enemy_2_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="teleport" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\teleport.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="gnome" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\gnome.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1086,5 +1083,8 @@
   </data>
   <data name="bike_jump" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\bike_jump.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="fatigue_effect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\fatigue_effect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

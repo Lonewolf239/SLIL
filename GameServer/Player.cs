@@ -406,8 +406,7 @@ namespace GameServer
                 CuteMode = false;
                 Fast = false;
                 NoClip = false;
-                if (OnBike)
-                    StopDrivingOnBike();
+                if (OnBike) StopEffect(4);
             }
             EnemiesKilled = 0;
             Look = 0;
@@ -485,7 +484,7 @@ namespace GameServer
             }
             else if (index == 1)
             {
-                if (EffectCheck(1)) return;
+                if (EffectCheck(1) || EffectCheck(4)) return;
                 Adrenaline effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
@@ -518,6 +517,8 @@ namespace GameServer
             else if (index == 4)
             {
                 if (EffectCheck(4)) return;
+                StopEffect(0);
+                StopEffect(1);
                 Biker effect = new();
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
@@ -528,7 +529,6 @@ namespace GameServer
                 OnBike = true;
                 Fast = true;
                 MOVE_SPEED += 2.15;
-                HP = MAX_HP;
             }
         }
 
@@ -552,7 +552,7 @@ namespace GameServer
             }
             else if (SelectedItem == 1)
             {
-                if (EffectCheck(1)) return;
+                if (EffectCheck(1) || EffectCheck(4)) return;
                 Effects.Add(new Adrenaline());
                 Fast = true;
                 MOVE_SPEED += 1.5;
@@ -564,19 +564,27 @@ namespace GameServer
             }
         }
 
-        public void StopDrivingOnBike()
+        public void StopEffect(int id)
         {
             for (int i = 0; i < Effects.Count; i++)
             {
-                if (Effects[i].ID == 4)
+                if (Effects[i].ID == id)
                 {
+                    if (Effects[i].ID == 1)
+                    {
+                        Fast = false;
+                        MOVE_SPEED -= 1.5;
+                    }
+                    else if (Effects[i].ID == 4)
+                    {
+                        BlockCamera = false;
+                        CanShoot = true;
+                        OnBike = false;
+                        Fast = false;
+                        MOVE_SPEED -= 2.15;
+                        HP = MAX_HP;
+                    }
                     Effects.RemoveAt(i);
-                    BlockCamera = false;
-                    CanShoot = true;
-                    OnBike = false;
-                    Fast = false;
-                    MOVE_SPEED -= 2.15;
-                    HP = MAX_HP;
                     break;
                 }
             }
@@ -634,10 +642,8 @@ namespace GameServer
             Invulnerable = true;
             if (HP <= 0)
             {
-                if (OnBike)
-                    StopDrivingOnBike();
-                else
-                    this.Dead = true;
+                if (OnBike) StopEffect(4);
+                else this.Dead = true;
             }
             return Dead;
         }

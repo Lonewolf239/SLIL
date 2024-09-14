@@ -530,9 +530,6 @@
     <None Include="Images\telegram.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\teleport.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\teleport_0.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1236,6 +1233,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\bike_jump.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\fatigue_effect.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

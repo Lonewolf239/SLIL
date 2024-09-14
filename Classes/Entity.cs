@@ -674,12 +674,15 @@ namespace SLIL.Classes
 
     public class Bike : GameObject
     {
+        public double BikeHP { get; set; }
+
         public Bike(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Bike(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
         private void Init()
         {
-            Texture = 53;
+            Texture = 5;
+            BikeHP = 100;
             base.AnimationsToStatic();
         }
         protected override int GetEntityID() => 18;

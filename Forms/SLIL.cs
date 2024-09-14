@@ -15,7 +15,7 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
-using System.Runtime.Remoting.Messaging;
+using SLIL.Properties;
 
 namespace SLIL
 {
@@ -287,7 +287,7 @@ namespace SLIL
             { typeof(Regeneration), Properties.Resources.regeneration_effect },
             { typeof(Adrenaline), Properties.Resources.adrenalin_effect },
             { typeof(Protection), Properties.Resources.protection_effect },
-            { typeof(Fatigue), Properties.Resources.food_count },
+            { typeof(Fatigue), Properties.Resources.fatigue_effect },
             { typeof(Biker), Properties.Resources.im_biker },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
@@ -1495,8 +1495,15 @@ namespace SLIL
             {
                 RunKeyPressed = false;
                 if (player != null)
-                    player.PlayerMoveStyle = Directions.WALK;
-                chill_timer.Start();
+                {
+                    if (player.OnBike)
+                        Controller.GettingOffTheBike();
+                    else
+                    {
+                        player.PlayerMoveStyle = Directions.WALK;
+                        chill_timer.Start();
+                    }
+                }
             }
             if (e.KeyCode == Bind.Forward || e.KeyCode == Bind.Back)
             {
@@ -3400,7 +3407,6 @@ namespace SLIL
                 display.MouseWheel += new MouseEventHandler(Display_Scroll);
                 Controls.Add(display);
             }
-            player.BlockCamera = player.CanUnblockCamera = true;
             UpdateBitmap();
             Activate();
             ResetDefault(player);
@@ -3474,7 +3480,6 @@ namespace SLIL
             scope_shotgun[scope_type] = GetScope(scope_shotgun[scope_type]);
             h_scope_shotgun[scope_type] = GetScope(h_scope_shotgun[scope_type]);
             display.Refresh();
-            player.BlockCamera = player.CanUnblockCamera = true;
             int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
             int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
             Cursor.Position = new Point(x, y);
