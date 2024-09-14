@@ -1921,7 +1921,7 @@ namespace SLIL
             {
                 if (player.MOVE_SPEED < 0)
                     Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
-                else
+                else if (player.MOVE_SPEED > 0)
                     Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
             }
             if (!(HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2))
