@@ -11,7 +11,7 @@ namespace GameServer
         public double A { get; set; }
         public double Look { get; set; }
         public double HP { get; set; }
-        public double BIKE_HP { get; set; }
+        public double TRANSPORT_HP { get; set; }
         public bool Invulnerable { get; set; }
         public int TimeoutInvulnerable { get; set; }
         public double STAMINE { get; set; }
@@ -41,7 +41,7 @@ namespace GameServer
         public int SelectedItem { get; set; }
         public bool Fast { get; set; }
         public bool NoClip { get; set; }
-        public bool OnBike { get; set; }
+        public bool InTransport { get; set; }
         public bool InSelectingMode { get; set; }
         public bool BlockInput { get; set; }
         public bool BlockCamera { get; set; }
@@ -63,6 +63,7 @@ namespace GameServer
         public List<Gun> Guns = [];
         public List<DisposableItem> DisposableItems = [];
         public Pet? PET = null;
+        public Transport? TRANSPORT = null;
         public double MAX_HP { get; set; }
         public double MAX_STAMINE { get; set; }
 
@@ -79,7 +80,7 @@ namespace GameServer
             writer.Put(A);
             writer.Put(Look);
             writer.Put(InParkour);
-            writer.Put(OnBike);
+            writer.Put(InTransport);
             writer.Put(BlockCamera);
             writer.Put(BlockInput);
             writer.Put(this.GUNS.Length);
@@ -109,7 +110,7 @@ namespace GameServer
             this.A = reader.GetDouble();
             this.Look = reader.GetDouble();
             this.InParkour = reader.GetBool();
-            this.OnBike = reader.GetBool();
+            this.InTransport = reader.GetBool();
             this.BlockCamera = reader.GetBool();
             this.BlockInput = reader.GetBool();
             int GUNSLength = reader.GetInt();
@@ -247,7 +248,7 @@ namespace GameServer
                 this.CurrentGun = reader.GetInt();
                 reader.GetDouble(); reader.GetDouble();
                 this.InParkour = reader.GetBool();
-                this.OnBike = reader.GetBool();
+                this.InTransport = reader.GetBool();
                 this.BlockCamera = reader.GetBool();
                 this.BlockInput = reader.GetBool();
                 int GUNSLength = reader.GetInt();
@@ -412,7 +413,7 @@ namespace GameServer
                 CuteMode = false;
                 Fast = false;
                 NoClip = false;
-                if (OnBike) StopEffect(4);
+                if (InTransport) StopEffect(4);
             }
             EnemiesKilled = 0;
             Look = 0;
@@ -429,7 +430,7 @@ namespace GameServer
             InParkour = false;
             InSelectingMode = false;
             BlockInput = false;
-            if (!OnBike)
+            if (!InTransport)
             {
                 CanShoot = true;
                 BlockCamera = false;
@@ -451,7 +452,7 @@ namespace GameServer
 
         public double GetDrawDistance()
         {
-            if (OnBike) return DEPTH + 2;
+            if (InTransport) return DEPTH + 2;
             return DEPTH + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
         }
 
@@ -535,19 +536,19 @@ namespace GameServer
             }
             else if (index == 4)
             {
-                if (EffectCheck(4)) return;
+                if (EffectCheck(4) || TRANSPORT == null) return;
                 StopEffect(0);
                 StopEffect(1);
-                Biker effect = new();
+                Rider effect = new();
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
                 CanUnblockCamera = false;
                 BlockMouse = true;
                 CanShoot = false;
                 Look = 0;
-                OnBike = true;
+                InTransport = true;
                 Fast = true;
-                MAX_MOVE_SPEED += 2.25;
+                MAX_MOVE_SPEED += TRANSPORT.Speed;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                 MOVE_SPEED = 0;
                 STRAFE_SPEED = 0;
@@ -605,14 +606,18 @@ namespace GameServer
                     }
                     else if (Effects[i].ID == 4)
                     {
-                        BlockMouse = false;
-                        CanShoot = true;
-                        OnBike = false;
-                        Fast = false;
-                        MAX_MOVE_SPEED -= 2.25;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
-                        MOVE_SPEED = 0;
-                        STRAFE_SPEED = 0;
+                        if (TRANSPORT != null)
+                        {
+                            BlockMouse = false;
+                            CanShoot = true;
+                            InTransport = false;
+                            Fast = false;
+                            MAX_MOVE_SPEED -= TRANSPORT.Speed;
+                            MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                            MOVE_SPEED = 0;
+                            STRAFE_SPEED = 0;
+                            TRANSPORT = null;
+                        }
                     }
                     Effects.RemoveAt(i);
                     break;
@@ -634,14 +639,18 @@ namespace GameServer
                 }
                 else if (Effects[i].ID == 4)
                 {
-                    BlockMouse = false;
-                    CanShoot = true;
-                    OnBike = false;
-                    Fast = false;
-                    MAX_MOVE_SPEED -= 2.25;
-                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
-                    MOVE_SPEED = 0;
-                    STRAFE_SPEED = 0;
+                    if (TRANSPORT != null)
+                    {
+                        BlockMouse = false;
+                        CanShoot = true;
+                        InTransport = false;
+                        Fast = false;
+                        MAX_MOVE_SPEED -= TRANSPORT.Speed;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MOVE_SPEED = 0;
+                        STRAFE_SPEED = 0;
+                        TRANSPORT = null;
+                    }
                 }
             }
             Effects.Clear();
@@ -672,12 +681,12 @@ namespace GameServer
         public bool DealDamage(double damage)
         {
             if (EffectCheck(2) || EffectCheck(4)) damage *= 0.8;
-            if (OnBike) BIKE_HP -= damage;
+            if (InTransport) TRANSPORT_HP -= damage;
             else HP -= damage;
             TimeoutInvulnerable = 2;
             Invulnerable = true;
             if (HP <= 0) this.Dead = true;
-            if (BIKE_HP <= 0) StopEffect(4);
+            if (TRANSPORT_HP <= 0) StopEffect(4);
             return Dead;
         }
     }

@@ -36,7 +36,8 @@ namespace SLIL
         private SLIL_Editor Editor;
         private bool ChangeControlButton = false, CanClose = false;
         private readonly PlaySound MainMenuTheme;
-        private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine, climb;
+        private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
+        private readonly PlaySound[] climb;
         public static Player player;
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
@@ -124,7 +125,7 @@ namespace SLIL
             tp = new PlaySound(CGFReader.GetFile("tp.wav"), false);
             screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
             low_stamine = new PlaySound(CGFReader.GetFile("low_stamine.wav"), false);
-            climb = new PlaySound(CGFReader.GetFile("climb.wav"), false);
+            climb = new PlaySound[] { new PlaySound(CGFReader.GetFile("climb.wav"), false), new PlaySound(CGFReader.GetFile("climb_bike.wav"), false) };
             AddSeparators();
         }
 

@@ -274,7 +274,7 @@ namespace GameServer
             ShowAmmo = false;
             AddToShop = false;
             HasIt = true;
-            Name = new[] { "3-1", "Knife" };
+            Name = ["3-1", "Knife"];
             FireType = FireTypes.Single;
             Accuracy = 1;
             PauseBetweenShooting = 500;
@@ -325,8 +325,6 @@ namespace GameServer
             FiringRange = 2.5;
             MaxDamage = 12.5;
             MinDamage = 7.5;
-            Accuracy = 0.2;
-            BulletCount = 6;
             ShowScope = false;
             ShowHitScope = false;
             HasIt = false;

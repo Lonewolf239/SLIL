@@ -158,18 +158,27 @@ namespace GameServer
                                     if (!player.Invulnerable)
                                     {
                                         player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
-                                        if (player.CuteMode)
+                                        if (player.InTransport)
                                         {
-                                            //PlaySoundHandle(SLIL.hungry);
+                                            //PlaySoundHandle(SLIL.hit[1]);
                                             NetDataWriter writer = new();
                                             writer.Put(player.ID);
                                             writer.Put(1);
                                             byte[] data = writer.Data;
                                             sendMessageFromGameCallback(1000, data);
                                         }
+                                        else if (player.CuteMode)
+                                        {
+                                            //PlaySoundHandle(SLIL.hungry);
+                                            NetDataWriter writer = new();
+                                            writer.Put(player.ID);
+                                            writer.Put(2);
+                                            byte[] data = writer.Data;
+                                            sendMessageFromGameCallback(1000, data);
+                                        }
                                         else
                                         {
-                                            //PlaySoundHandle(SLIL.hit);
+                                            //PlaySoundHandle(SLIL.hit[0]);
                                             NetDataWriter writer = new();
                                             writer.Put(player.ID);
                                             writer.Put(0);
@@ -565,17 +574,25 @@ namespace GameServer
             Entities = new List<Entity>(tempEntities);
         }
 
+        public void AddTransport(int playerID, int index)
+        {
+            Player? p = GetPlayer(playerID);
+            if (p == null) return;
+            Transport? transport = index switch
+            {
+                0 => new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID),
+                _ => null
+            };
+            if (transport != null)
+            {
+                p.ChangeMoney(-transport.Cost);
+                AddEntity(transport);
+            }
+        }
+
         public void AddPet(int playerID, int index)
         {
-            Player? player = null;
-            foreach (Entity ent in Entities)
-            {
-                if (ent is Player player1)
-                {
-                    if (ent.ID == playerID)
-                        player = player1;
-                }
-            }
+            Player? player = GetPlayer(playerID);
             if (player == null) return;
             Pet pet = PETS[index];
             pet.ID = MaxEntityID;
@@ -830,46 +847,36 @@ namespace GameServer
         public void MovePlayer(double dX, double dY, double newA, double newLook, int playerID)
         {
             if (!GameStarted) return;
-            for (int i = 0; i < Entities.Count; i++)
+            Player? p = GetPlayer(playerID);
+            if (p == null || p.BlockInput) return;
+            p.X = dX;
+            p.Y = dY;
+            ((Player)p).A = newA;
+            ((Player)p).Look = newLook;
+            if (p.TRANSPORT != null)
             {
-                if (Entities[i] is Player player)
+                if (p.EffectCheck(4) && p.TRANSPORT.CanJump)
                 {
-                    if (player.ID == playerID)
+                    double extendedX = p.X + Math.Sin(p.A) * 0.3;
+                    double extendedY = p.Y + Math.Cos(p.A) * 0.3;
+                    if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
                     {
-                        if (player.BlockInput) return;
-                        Entities[i].X = dX;
-                        Entities[i].Y = dY;
-                        ((Player)Entities[i]).A = newA;
-                        ((Player)Entities[i]).Look = newLook;
-                        if (player.EffectCheck(4))
+                        double distance = 1;
+                        while (distance <= 2)
                         {
-                            double extendedX = Entities[i].X + Math.Sin(player.A) * 0.3;
-                            double extendedY = Entities[i].Y + Math.Cos(player.A) * 0.3;
-                            if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
+                            distance += 0.1d;
+                            int x1 = (int)(p.X + Math.Sin(p.A) * distance);
+                            int y1 = (int)(p.Y + Math.Cos(p.A) * distance);
+                            if (!HasImpassibleCells(playerID, y1 * MAP_WIDTH + x1))
                             {
-                                double distance = 1;
-                                while (distance <= 2)
-                                {
-                                    distance += 0.1d;
-                                    int x1 = (int)(Entities[i].X + Math.Sin(player.A) * distance);
-                                    int y1 = (int)(Entities[i].Y + Math.Cos(player.A) * distance);
-                                    if (!HasImpassibleCells(playerID, y1 * MAP_WIDTH + x1))
-                                    {
-                                        DoParkour(player.ID, (int)extendedY, (int)extendedX);
-                                        break;
-                                    }
-                                }
+                                DoParkour(playerID, (int)extendedY, (int)extendedX);
+                                return;
                             }
                         }
-                        if (MAP[(int)Entities[i].Y * MAP_WIDTH + (int)Entities[i].X] == 'F')
-                        {
-                            GameOver(1);
-                            return;
-                        }
-                        return;
                     }
                 }
             }
+            if (MAP[(int)p.Y * MAP_WIDTH + (int)p.X] == 'F') GameOver(1);
         }
 
         public void GoDebug(int debug)
@@ -1575,17 +1582,22 @@ namespace GameServer
             return false;
         }
 
-        internal void GettingOffTheBike(int playerID)
+        internal void GettingOffTheTransport(int playerID)
         {
             Player? p = GetPlayer(playerID);
             if (p == null || p.BlockInput) return;
-            Bike bike = new(p.X, p.Y, MAP_WIDTH, MaxEntityID)
+            Transport? transport = null;
+            if (p.TRANSPORT is Bike)
             {
-                BikeHP = p.BIKE_HP,
-                A = p.A
-            };
+                transport = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID)
+                {
+                    TransportHP = p.TRANSPORT_HP,
+                    A = p.A
+                };
+            }
             p.StopEffect(4);
-            AddEntity(bike);
+            if (transport != null)
+                AddEntity(transport);
         }
 
         internal bool HasImpassibleCells(int index, int playerID)
@@ -1627,7 +1639,7 @@ namespace GameServer
             p.Serialize(writer);
             sendMessageFromGameCallback(1334, writer.Data);
             new Thread(() => {
-                Thread.Sleep(p.OnBike ? 250 : 500);
+                Thread.Sleep(p.InTransport ? 250 : 500);
                 StopParkour(playerID);
                 p.ParkourState++;
                 writer = new NetDataWriter();
@@ -1652,7 +1664,7 @@ namespace GameServer
             }
             p.X = new_x;
             p.Y = new_y;
-            if (p.OnBike) p.GiveEffect(3, false, 6);
+            if (p.InTransport) p.GiveEffect(3, false, 5);
             else p.GiveEffect(3, true);
             p.BlockInput = false;
             p.BlockCamera = false;
@@ -1784,15 +1796,16 @@ namespace GameServer
             if(GameStarted) StopGame(2);
         }
 
-        internal void GetOnABike(int ID, int playerID)
+        internal void GetOnATransport(int ID, int playerID)
         {
             Player? p = GetPlayer(playerID);
             if (p == null) return;
             Entity? entity = GetEntity(ID);
             if (entity != null)
             {
-                p.BIKE_HP = ((Bike)entity).BikeHP;
-                p.A = ((Bike)entity).A;
+                p.TRANSPORT = (Transport)entity;
+                p.TRANSPORT_HP = ((Transport)entity).TransportHP;
+                p.A = ((Transport)entity).A;
                 p.X = entity.X;
                 p.Y = entity.Y;
             }

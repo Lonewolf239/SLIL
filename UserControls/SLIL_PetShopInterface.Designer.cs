@@ -40,7 +40,7 @@
             this.icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.icon.Location = new System.Drawing.Point(3, 3);
             this.icon.Name = "icon";
-            this.icon.Size = new System.Drawing.Size(275, 122);
+            this.icon.Size = new System.Drawing.Size(228, 128);
             this.icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.icon.TabIndex = 1;
             this.icon.TabStop = false;
@@ -49,9 +49,9 @@
             // 
             this.name.Font = new System.Drawing.Font("Consolas", 15.75F);
             this.name.ForeColor = System.Drawing.Color.White;
-            this.name.Location = new System.Drawing.Point(3, 128);
+            this.name.Location = new System.Drawing.Point(3, 134);
             this.name.Name = "name";
-            this.name.Size = new System.Drawing.Size(275, 47);
+            this.name.Size = new System.Drawing.Size(228, 47);
             this.name.TabIndex = 2;
             this.name.Text = "[NAME]";
             this.name.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -62,7 +62,7 @@
             this.buy_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buy_button.Font = new System.Drawing.Font("Consolas", 20.25F);
             this.buy_button.ForeColor = System.Drawing.Color.White;
-            this.buy_button.Location = new System.Drawing.Point(284, 131);
+            this.buy_button.Location = new System.Drawing.Point(236, 137);
             this.buy_button.Name = "buy_button";
             this.buy_button.Size = new System.Drawing.Size(116, 44);
             this.buy_button.TabIndex = 4;
@@ -76,7 +76,7 @@
             this.descryption.AutoEllipsis = true;
             this.descryption.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.descryption.ForeColor = System.Drawing.Color.White;
-            this.descryption.Location = new System.Drawing.Point(284, 3);
+            this.descryption.Location = new System.Drawing.Point(237, 3);
             this.descryption.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.descryption.Name = "descryption";
             this.descryption.Size = new System.Drawing.Size(426, 122);

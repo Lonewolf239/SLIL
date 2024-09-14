@@ -1,6 +1,6 @@
 ﻿namespace SLIL.UserControls
 {
-    partial class SLIL_ConsumablesShopInterface
+    partial class SLIL_TransportStoreInterface
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -30,8 +30,9 @@
         {
             this.buy_button = new System.Windows.Forms.Button();
             this.name = new System.Windows.Forms.Label();
+            this.parametrs_image = new System.Windows.Forms.PictureBox();
             this.icon = new System.Windows.Forms.PictureBox();
-            this.descryption = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.parametrs_image)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.icon)).BeginInit();
             this.SuspendLayout();
             // 
@@ -41,10 +42,10 @@
             this.buy_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buy_button.Font = new System.Drawing.Font("Consolas", 20.25F);
             this.buy_button.ForeColor = System.Drawing.Color.White;
-            this.buy_button.Location = new System.Drawing.Point(236, 137);
+            this.buy_button.Location = new System.Drawing.Point(237, 137);
             this.buy_button.Name = "buy_button";
             this.buy_button.Size = new System.Drawing.Size(116, 44);
-            this.buy_button.TabIndex = 5;
+            this.buy_button.TabIndex = 9;
             this.buy_button.TabStop = false;
             this.buy_button.Text = "Купить";
             this.buy_button.UseVisualStyleBackColor = true;
@@ -57,9 +58,18 @@
             this.name.Location = new System.Drawing.Point(3, 134);
             this.name.Name = "name";
             this.name.Size = new System.Drawing.Size(228, 47);
-            this.name.TabIndex = 6;
+            this.name.TabIndex = 8;
             this.name.Text = "[NAME]";
             this.name.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // parametrs_image
+            // 
+            this.parametrs_image.Location = new System.Drawing.Point(237, 8);
+            this.parametrs_image.Name = "parametrs_image";
+            this.parametrs_image.Size = new System.Drawing.Size(500, 117);
+            this.parametrs_image.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.parametrs_image.TabIndex = 17;
+            this.parametrs_image.TabStop = false;
             // 
             // icon
             // 
@@ -68,34 +78,22 @@
             this.icon.Name = "icon";
             this.icon.Size = new System.Drawing.Size(228, 128);
             this.icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.icon.TabIndex = 2;
+            this.icon.TabIndex = 7;
             this.icon.TabStop = false;
             // 
-            // descryption
-            // 
-            this.descryption.AutoEllipsis = true;
-            this.descryption.Font = new System.Drawing.Font("Consolas", 15.75F);
-            this.descryption.ForeColor = System.Drawing.Color.White;
-            this.descryption.Location = new System.Drawing.Point(237, 3);
-            this.descryption.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.descryption.Name = "descryption";
-            this.descryption.Size = new System.Drawing.Size(426, 122);
-            this.descryption.TabIndex = 7;
-            this.descryption.Text = "[DESCRIPTION]\r\n[DESCRIPTION]\r\n";
-            this.descryption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // SLIL_ConsumablesShopInterface
+            // SLIL_TransportStoreInterface
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Controls.Add(this.descryption);
-            this.Controls.Add(this.name);
+            this.Controls.Add(this.parametrs_image);
             this.Controls.Add(this.buy_button);
+            this.Controls.Add(this.name);
             this.Controls.Add(this.icon);
-            this.Name = "SLIL_ConsumablesShopInterface";
-            this.Size = new System.Drawing.Size(773, 188);
-            this.VisibleChanged += new System.EventHandler(this.SLIL_ConsumablesShopInterface_VisibleChanged);
+            this.Name = "SLIL_TransportStoreInterface";
+            this.Size = new System.Drawing.Size(884, 188);
+            this.VisibleChanged += new System.EventHandler(this.SLIL_TransportStoreInterface_VisibleChanged);
+            ((System.ComponentModel.ISupportInitialize)(this.parametrs_image)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.icon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -103,10 +101,9 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox icon;
         public System.Windows.Forms.Button buy_button;
         private System.Windows.Forms.Label name;
-        private System.Windows.Forms.Label descryption;
+        private System.Windows.Forms.PictureBox icon;
+        private System.Windows.Forms.PictureBox parametrs_image;
     }
 }

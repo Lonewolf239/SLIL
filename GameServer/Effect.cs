@@ -78,9 +78,9 @@
         }
     }
 
-    public class Biker : Effect
+    public class Rider : Effect
     {
-        public Biker() : base()
+        public Rider() : base()
         {
             ID = 4;
             Infinity = true;

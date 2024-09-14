@@ -209,6 +209,12 @@
     <Compile Include="UserControls\SLIL_ShopInterface.Designer.cs">
       <DependentUpon>SLIL_ShopInterface.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\SLIL_TransportStoreInterface.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\SLIL_TransportStoreInterface.Designer.cs">
+      <DependentUpon>SLIL_TransportStoreInterface.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Forms\SLIL_Editor.resx">
       <DependentUpon>SLIL_Editor.cs</DependentUpon>
     </EmbeddedResource>
@@ -246,6 +252,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\SLIL_ShopInterface.resx">
       <DependentUpon>SLIL_ShopInterface.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\SLIL_TransportStoreInterface.resx">
+      <DependentUpon>SLIL_TransportStoreInterface.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />
@@ -1245,6 +1254,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\petition_shoot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\durability.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\speed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\сontrollability.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\bike_icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

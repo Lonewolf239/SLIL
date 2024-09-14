@@ -47,9 +47,9 @@
             this.weapon_name.AutoEllipsis = true;
             this.weapon_name.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.weapon_name.ForeColor = System.Drawing.Color.White;
-            this.weapon_name.Location = new System.Drawing.Point(3, 128);
+            this.weapon_name.Location = new System.Drawing.Point(3, 134);
             this.weapon_name.Name = "weapon_name";
-            this.weapon_name.Size = new System.Drawing.Size(275, 53);
+            this.weapon_name.Size = new System.Drawing.Size(228, 47);
             this.weapon_name.TabIndex = 1;
             this.weapon_name.Text = "[NAME]";
             this.weapon_name.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -60,7 +60,7 @@
             this.buy_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buy_button.Font = new System.Drawing.Font("Consolas", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buy_button.ForeColor = System.Drawing.Color.White;
-            this.buy_button.Location = new System.Drawing.Point(283, 137);
+            this.buy_button.Location = new System.Drawing.Point(236, 137);
             this.buy_button.Name = "buy_button";
             this.buy_button.Size = new System.Drawing.Size(221, 44);
             this.buy_button.TabIndex = 3;
@@ -90,7 +90,7 @@
             this.update_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.update_button.Font = new System.Drawing.Font("Consolas", 20.25F, System.Drawing.FontStyle.Bold);
             this.update_button.ForeColor = System.Drawing.Color.White;
-            this.update_button.Location = new System.Drawing.Point(510, 137);
+            this.update_button.Location = new System.Drawing.Point(463, 137);
             this.update_button.Name = "update_button";
             this.update_button.Size = new System.Drawing.Size(71, 44);
             this.update_button.TabIndex = 6;
@@ -104,7 +104,7 @@
             this.weapon_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.weapon_icon.Location = new System.Drawing.Point(3, 3);
             this.weapon_icon.Name = "weapon_icon";
-            this.weapon_icon.Size = new System.Drawing.Size(275, 122);
+            this.weapon_icon.Size = new System.Drawing.Size(228, 128);
             this.weapon_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.weapon_icon.TabIndex = 0;
             this.weapon_icon.TabStop = false;
@@ -123,14 +123,14 @@
             // 
             this.ammo_panel.Controls.Add(this.ammo_count);
             this.ammo_panel.Controls.Add(this.ammo_icon);
-            this.ammo_panel.Location = new System.Drawing.Point(587, 137);
+            this.ammo_panel.Location = new System.Drawing.Point(540, 141);
             this.ammo_panel.Name = "ammo_panel";
             this.ammo_panel.Size = new System.Drawing.Size(219, 44);
             this.ammo_panel.TabIndex = 15;
             // 
             // parametrs_image
             // 
-            this.parametrs_image.Location = new System.Drawing.Point(284, 8);
+            this.parametrs_image.Location = new System.Drawing.Point(237, 8);
             this.parametrs_image.Name = "parametrs_image";
             this.parametrs_image.Size = new System.Drawing.Size(500, 117);
             this.parametrs_image.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;

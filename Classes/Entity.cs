@@ -1,6 +1,7 @@
 ﻿using LiteNetLib.Utils;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace SLIL.Classes
 {
@@ -515,6 +516,44 @@ namespace SLIL.Classes
         }
     }
 
+    public abstract class Transport : GameObject
+    {
+        public double A { get; set; }
+        public string[] Name { get; set; }
+        public int Index { get; set; }
+        public int Cost { get; set; }
+        public bool CanJump { get; set; }
+        public double TransportHP { get; set; } //max: 300
+        public double Speed { get; set; } //max: 7.5
+        public int Controllability { get; set; } //max: 175
+
+        public Transport(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Transport(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init() => A = rand.NextDouble();
+    }
+
+    public class Bike : Transport
+    {
+        public Bike(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Bike(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 5;
+            Index = 0;
+            CanJump = true;
+            Cost = 150;
+            TransportHP = 150;
+            Speed = 2.35;
+            Controllability = 125;
+            Name = new string[] { "7-0", "Motorbike" };
+            base.AnimationsToStatic();
+        }
+        protected override int GetEntityID() => 18;
+        public override int Interaction() => 4;
+    }
+
     public class RpgRocket : Rockets
     {
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'S' };
@@ -670,25 +709,6 @@ namespace SLIL.Classes
             Animated = true;
             base.SetAnimations(1, 0);
         }
-    }
-
-    public class Bike : GameObject
-    {
-        public double A { get; set; }
-        public double BikeHP { get; set; }
-
-        public Bike(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Bike(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
-
-        private void Init()
-        {
-            Texture = 5;
-            BikeHP = 150;
-            A = rand.NextDouble();
-            base.AnimationsToStatic();
-        }
-        protected override int GetEntityID() => 18;
-        public override int Interaction() => 4;
     }
 
     public class Box : Boxes

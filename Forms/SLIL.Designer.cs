@@ -60,6 +60,7 @@ namespace SLIL
             this.restart_btn = new System.Windows.Forms.Button();
             this.shotgun_pull_timer = new System.Windows.Forms.Timer(this.components);
             this.mouse_hold_timer = new System.Windows.Forms.Timer(this.components);
+            this.transport_shop_page = new System.Windows.Forms.TabPage();
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -94,6 +95,7 @@ namespace SLIL
             this.shop_tab_control.Controls.Add(this.weapon_shop_page);
             this.shop_tab_control.Controls.Add(this.pet_shop_page);
             this.shop_tab_control.Controls.Add(this.consumables_shop_page);
+            this.shop_tab_control.Controls.Add(this.transport_shop_page);
             this.shop_tab_control.Dock = System.Windows.Forms.DockStyle.Fill;
             this.shop_tab_control.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.shop_tab_control.Location = new System.Drawing.Point(0, 0);
@@ -348,6 +350,18 @@ namespace SLIL
             this.mouse_hold_timer.Interval = 500;
             this.mouse_hold_timer.Tick += new System.EventHandler(this.Mouse_hold_timer_Tick);
             // 
+            // transport_shop_page
+            // 
+            this.transport_shop_page.AutoScroll = true;
+            this.transport_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.transport_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.transport_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.transport_shop_page.Name = "transport_shop_page";
+            this.transport_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.transport_shop_page.Size = new System.Drawing.Size(446, 249);
+            this.transport_shop_page.TabIndex = 3;
+            this.transport_shop_page.Text = "Транспорт";
+            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -415,5 +429,6 @@ namespace SLIL
         private Button exit_restart_btn;
         private Timer shotgun_pull_timer;
         private Timer mouse_hold_timer;
+        private TabPage transport_shop_page;
     }
 }

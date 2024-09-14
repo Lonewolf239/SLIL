@@ -122,6 +122,9 @@ namespace SLIL.Classes
                             sound = SLIL.hit[0];
                             break;
                         case 1:
+                            sound = SLIL.hit[1];
+                            break;
+                        case 2:
                             sound = SLIL.hungry;
                             break;
                         default:
@@ -206,6 +209,19 @@ namespace SLIL.Classes
         public void AddEntity(Entity entity) => Game.AddEntity(entity);
 
         public void SetPlayerIDInvoker(int id) => this.playerID = id;
+
+        public void AddTransport(int index)
+        {
+            if (peer == null)
+                Game.AddTransport(playerID, index);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(1889);
+                writer.Put(index);
+                peer.Send(writer, DeliveryMethod.ReliableUnordered);
+            }
+        }
 
         public void AddPet(int index)
         {
@@ -301,6 +317,8 @@ namespace SLIL.Classes
 
         public Pet[] GetPets() => Game.GetPets();
 
+        public Transport[] GetTransports() => Game.GetTransports();
+
         public void AddHittingTheWall(double X, double Y, double vMove) 
         {
             if (_isInSpectatorMode) return;
@@ -379,7 +397,7 @@ namespace SLIL.Classes
 
         internal void GettingOffTheBike()
         {
-            if (peer == null) Game.GettingOffTheBike(playerID);
+            if (peer == null) Game.GettingOffTheTransport(playerID);
             else
             {
                 NetDataWriter writer = new NetDataWriter();
@@ -510,7 +528,7 @@ namespace SLIL.Classes
         internal void GetOnABike(int ID)
         {
             if (peer == null)
-                Game.GetOnABike(ID, playerID);
+                Game.GetOnATransport(ID, playerID);
             else
             {
                 NetDataWriter writer = new NetDataWriter();

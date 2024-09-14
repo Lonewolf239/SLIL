@@ -1,5 +1,6 @@
 ﻿using LiteNetLib.Utils;
 using LiteNetLib;
+using System;
 
 namespace GameServer
 {
@@ -83,10 +84,13 @@ namespace GameServer
                     Game.DoParkour(playerIDfromPeer, dreader.GetInt(), dreader.GetInt());
                     break;
                 case 1344:
-                    Game.GettingOffTheBike(playerIDfromPeer);
+                    Game.GettingOffTheTransport(playerIDfromPeer);
                     break;
                 case 1777:
-                    Game.GetOnABike(dreader.GetInt(), playerIDfromPeer);
+                    Game.GetOnATransport(dreader.GetInt(), playerIDfromPeer);
+                    break;
+                case 1889:
+                    Game.AddPet(playerIDfromPeer, dreader.GetInt());
                     break;
                 default:
                     break;

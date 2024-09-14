@@ -284,13 +284,32 @@ namespace SLIL
                    { new PlaySound(MainMenu.CGFReader.GetFile("rpg.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("rpg_reloading.wav"), false), new PlaySound(null, false) }
             } },
         };
+        public static readonly Dictionary<Type, PlaySound[,]> TransportsSoundsDict = new Dictionary<Type, PlaySound[,]>
+        {
+            {typeof(Bike), new[,] {
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_4.wav"), false)
+                },
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_4.wav"), false)
+                }
+            } },
+        };
         public static readonly Dictionary<Type, Image> EffectIcon = new Dictionary<Type, Image>
         {
             { typeof(Regeneration), Properties.Resources.regeneration_effect },
             { typeof(Adrenaline), Properties.Resources.adrenalin_effect },
             { typeof(Protection), Properties.Resources.protection_effect },
             { typeof(Fatigue), Properties.Resources.fatigue_effect },
-            { typeof(Biker), Properties.Resources.im_biker },
+            { typeof(Rider), Properties.Resources.im_biker },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
@@ -310,10 +329,11 @@ namespace SLIL
             { typeof(GreenGnome), Properties.Resources.pet_gnome_icon },
             { typeof(EnergyDrink), Properties.Resources.pet_energy_drink_icon },
             { typeof(Pyro), Properties.Resources.pet_pyro_icon },
+            { typeof(Bike), Properties.Resources.bike_icon}
         };
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
-        public static PlaySound[] hit = { new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("hit_bike.wav"), false) };
+        public static PlaySound[] hit = { new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("hit_transport.wav"), false) };
         public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
         private PlaySound step;
         public static PlaySound[,] steps = new PlaySound[,]
@@ -346,20 +366,6 @@ namespace SLIL
                     new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_3.wav"), false),
                     new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_4.wav"), false)
                 },
-                {
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_0.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_1.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_2.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_3.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_4.wav"), false)
-                },
-                {
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_0.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_1.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_2.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_3.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_4.wav"), false)
-                }
             };
         public static PlaySound[] ost = new PlaySound[]
         {
@@ -450,7 +456,8 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
             }
         };
-        public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine, climb;
+        public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
+        public PlaySound[] climb;
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"####################.................##.................##..............#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=.#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################",
@@ -580,6 +587,7 @@ namespace SLIL
                 weapon_shop_page.Text = "Weapons";
                 pet_shop_page.Text = "Pets";
                 consumables_shop_page.Text = "Other";
+                transport_shop_page.Text = "Transport";
                 pause_text.Text = "PAUSE";
                 pause_btn.Text = "CONTINUE";
                 exit_btn.Text = "EXIT";
@@ -590,6 +598,7 @@ namespace SLIL
                 weapon_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-2");
                 pet_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-3");
                 consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-4");
+                transport_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-14");
                 pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-5");
                 pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-6");
                 exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-7");
@@ -993,17 +1002,10 @@ namespace SLIL
                     currentIndex = 0;
                 }
                 int i = player.PlayerMoveStyle == Directions.RUN || player.Fast ? 1 : 0;
-                if (player.OnBike)
-                {
-                    if (player.CuteMode) i = 5;
-                    else i = 4;
-                }
+                if (player.InTransport && player.TRANSPORT != null)
+                    step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
                 else
-                {
-                    if (player.CuteMode) i += 2;
-                }
-                int j = soundIndices[currentIndex];
-                step = steps[i, j];
+                    step = steps[player.CuteMode ? i + 2 : i, soundIndices[currentIndex]];
                 step.PlayWithWait(Volume);
                 currentIndex++;
             }
@@ -1349,7 +1351,7 @@ namespace SLIL
                         player.StrafeDirection = Directions.LEFT;
                     if (e.KeyCode == Bind.Right)
                         player.StrafeDirection = Directions.RIGHT;
-                    if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.OnBike && player != null)
+                    if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.InTransport && player != null)
                     {
                         int count = player.Guns.Count;
                         if (player.Guns.Contains(player.GUNS[0])) count--;
@@ -1520,7 +1522,7 @@ namespace SLIL
                 RunKeyPressed = false;
                 if (player != null)
                 {
-                    if (player.OnBike)
+                    if (player.InTransport)
                         Controller.GettingOffTheBike();
                     else
                     {
@@ -1568,7 +1570,7 @@ namespace SLIL
                 if (player == null) return;
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.IsPetting)
                 {
-                    if (player.OnBike) return;
+                    if (player.InTransport) return;
                     if (e.KeyCode == Bind.Flashlight) TakeFlashlight(true);
                     if (e.KeyCode == Bind.Climb)
                     {
@@ -1894,7 +1896,7 @@ namespace SLIL
             switch (player.StrafeDirection)
             {
                 case Directions.LEFT:
-                    if (!player.OnBike)
+                    if (!player.InTransport)
                     {
                         newX += strafeCos;
                         newY -= strafeSin;
@@ -1902,13 +1904,13 @@ namespace SLIL
                     else
                     {
                         if (player.PlayerDirection == Directions.FORWARD)
-                            Controller.ChangePlayerA(player.STRAFE_SPEED / 125);
+                            Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
                         else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(-player.STRAFE_SPEED / 150);
+                            Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
                     }
                     break;
                 case Directions.RIGHT:
-                    if (!player.OnBike)
+                    if (!player.InTransport)
                     {
                         newX += strafeCos;
                         newY -= strafeSin;
@@ -1916,9 +1918,9 @@ namespace SLIL
                     else
                     {
                         if (player.PlayerDirection == Directions.FORWARD)
-                            Controller.ChangePlayerA(player.STRAFE_SPEED / 125);
+                            Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
                         else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(-player.STRAFE_SPEED / 150);
+                            Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
                     }
                     break;
             }
@@ -1929,7 +1931,7 @@ namespace SLIL
                     newY += moveCos;
                     break;
                 case Directions.BACK:
-                    double factor = player.OnBike ? 0.25 : 0.65;
+                    double factor = player.InTransport ? 0.25 : 0.65;
                     newX += moveSin * factor;
                     newY += moveCos * factor;
                     break;
@@ -1959,35 +1961,35 @@ namespace SLIL
 
         private void ChangeSpeed(Player player)
         {
-            double walk = 0.075, bike = 0.05;
+            double walk = 0.075, transport = 0.05;
             switch (player.StrafeDirection)
             {
                 case Directions.LEFT:
                     if (player.STRAFE_SPEED < 0)
                         player.STRAFE_SPEED = 0;
-                    if (!player.OnBike)
+                    if (!player.InTransport)
                     {
                         if (player.STRAFE_SPEED + walk <= player.MAX_STRAFE_SPEED + 0.01)
                             player.STRAFE_SPEED += walk;
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED + bike <= player.MAX_STRAFE_SPEED + 0.01)
-                            player.STRAFE_SPEED += bike * 1.75;
+                        if (player.STRAFE_SPEED + transport <= player.MAX_STRAFE_SPEED + 0.01)
+                            player.STRAFE_SPEED += transport * 1.75;
                     }
                     break;
                 case Directions.RIGHT:
                     if (player.STRAFE_SPEED > 0)
                         player.STRAFE_SPEED = 0;
-                    if (!player.OnBike)
+                    if (!player.InTransport)
                     {
                         if (player.STRAFE_SPEED - walk >= -player.MAX_STRAFE_SPEED - 0.01)
                             player.STRAFE_SPEED -= walk;
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED - bike >= -player.MAX_STRAFE_SPEED - 0.01)
-                            player.STRAFE_SPEED -= bike * 1.75;
+                        if (player.STRAFE_SPEED - transport >= -player.MAX_STRAFE_SPEED - 0.01)
+                            player.STRAFE_SPEED -= transport * 1.75;
                     }
                     break;
                 case Directions.STOP:
@@ -1999,29 +2001,29 @@ namespace SLIL
                 case Directions.FORWARD:
                     if (player.MOVE_SPEED < 0)
                         player.MOVE_SPEED = 0;
-                    if (!player.OnBike)
+                    if (!player.InTransport)
                     {
                         if (player.MOVE_SPEED + walk <= player.MAX_MOVE_SPEED + 0.01)
                             player.MOVE_SPEED += walk;
                     }
                     else
                     {
-                        if (player.MOVE_SPEED + bike <= player.MAX_MOVE_SPEED + 0.01)
-                            player.MOVE_SPEED += bike;
+                        if (player.MOVE_SPEED + transport <= player.MAX_MOVE_SPEED + 0.01)
+                            player.MOVE_SPEED += transport;
                     }
                     break;
                 case Directions.BACK:
                     if (player.MOVE_SPEED > 0)
                         player.MOVE_SPEED = 0;
-                    if (!player.OnBike)
+                    if (!player.InTransport)
                     {
                         if (player.MOVE_SPEED - walk >= -player.MAX_MOVE_SPEED - 0.01)
                             player.MOVE_SPEED -= walk;
                     }
                     else
                     {
-                        if (player.MOVE_SPEED - bike >= -player.MAX_MOVE_SPEED - 0.01)
-                            player.MOVE_SPEED -= bike;
+                        if (player.MOVE_SPEED - transport >= -player.MAX_MOVE_SPEED - 0.01)
+                            player.MOVE_SPEED -= transport;
                     }
                     break;
                 case Directions.STOP:
@@ -2686,7 +2688,7 @@ namespace SLIL
             if (resolution == 1) icon_size *= 2;
             int size = resolution == 0 ? 1 : 2;
             int add = resolution == 0 ? 2 : 4;
-            double hp = player.OnBike ? player.BIKE_HP : player.HP;
+            double hp = player.InTransport ? player.TRANSPORT_HP : player.HP;
             SizeF hpSize = graphicsWeapon.MeasureString(hp.ToString("0"), consolasFont[interface_size, resolution]);
             SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), consolasFont[interface_size, resolution]);
             int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
@@ -2708,7 +2710,7 @@ namespace SLIL
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
             if (!player.CuteMode)
             {
-                if (player.OnBike)
+                if (player.InTransport)
                     graphicsWeapon.DrawImage(Properties.Resources.im_biker, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
                 else
                     graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
@@ -2716,7 +2718,7 @@ namespace SLIL
             }
             else
             {
-                if (player.OnBike)
+                if (player.InTransport)
                     graphicsWeapon.DrawImage(Properties.Resources.im_biker, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
                 else
                     graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
@@ -2736,7 +2738,7 @@ namespace SLIL
             }
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
             graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
-            if (!player.IsPetting && !player.InParkour && !player.OnBike && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
+            if (!player.IsPetting && !player.InParkour && !player.InTransport && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
@@ -2769,7 +2771,7 @@ namespace SLIL
             }
             SmoothingMode save = graphicsWeapon.SmoothingMode;
             graphicsWeapon.SmoothingMode = SmoothingMode.None;
-            if (player.GetCurrentGun().ShowScope && !player.IsPetting && !player.InParkour && !player.OnBike && !player.InSelectingMode)
+            if (player.GetCurrentGun().ShowScope && !player.IsPetting && !player.InParkour && !player.InTransport && !player.InSelectingMode)
             {
                 if (resolution == 0)
                 {
@@ -2854,7 +2856,7 @@ namespace SLIL
         private void DrawWeapon(Player player, int index)
         {
             if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-            else if (player.OnBike)
+            else if (player.InTransport)
             {
                 if (player.InParkour)
                     graphicsWeapon.DrawImage(Properties.Resources.bike_jump, 0, 0, WEAPON.Width, WEAPON.Height);
@@ -3382,7 +3384,13 @@ namespace SLIL
         private void DoParkour(int y, int x)
         {
             if (!Controller.DoParkour(y, x)) return;
-            if (MainMenu.sounds) climb.Play(Volume);
+            if (MainMenu.sounds)
+            {
+                if (Controller.GetPlayer().InTransport)
+                    climb[1].Play(Volume);
+                else
+                    climb[0].Play(Volume);
+            }
         }
 
         //  #====    ChangeWeapon   ====#
@@ -3625,6 +3633,7 @@ namespace SLIL
             shop_tab_control.Controls.Add(weapon_shop_page);
             shop_tab_control.Controls.Add(pet_shop_page);
             shop_tab_control.Controls.Add(consumables_shop_page);
+            shop_tab_control.Controls.Add(transport_shop_page);
         }
 
         private void Pause()
@@ -3682,7 +3691,11 @@ namespace SLIL
             weapon_shop_page.Controls.Clear();
             pet_shop_page.Controls.Clear();
             consumables_shop_page.Controls.Clear();
+            transport_shop_page.Controls.Clear();
             Player player = Controller.GetPlayer();
+            player.PlayerDirection = Directions.STOP;
+            player.StrafeDirection = Directions.STOP;
+            player.PlayerMoveStyle = Directions.WALK;
             if (!player.CuteMode)
             {
                 for (int i = player.GUNS.Length - 1; i >= 0; i--)
@@ -3731,6 +3744,18 @@ namespace SLIL
                     consumables_shop_page.Controls.Add(ShopInterface);
                 }
             }
+            for (int i = Controller.GetTransports().Length - 1; i >= 0; i--)
+            {
+                SLIL_TransportStoreInterface ShopInterface = new SLIL_TransportStoreInterface()
+                {
+                    index = MainMenu.DownloadedLocalizationList ? 0 : 1,
+                    transport = Controller.GetTransports()[i],
+                    player = player,
+                    BackColor = shop_panel.BackColor,
+                    Dock = DockStyle.Top
+                };
+                transport_shop_page.Controls.Add(ShopInterface);
+            }
             shop_panel.BringToFront();
             shop_panel.Visible = true;
         }
@@ -3760,6 +3785,12 @@ namespace SLIL
             }
         }
 
+        public void AddTransport(int index)
+        {
+            Controller.AddTransport(index);
+            HideShop();
+        }
+
         public void AddPet(int index)
         {
             foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true).Cast<SLIL_PetShopInterface>())
@@ -3775,6 +3806,7 @@ namespace SLIL
                 shop_tab_control.Controls.Clear();
                 shop_tab_control.Controls.Add(pet_shop_page);
                 shop_tab_control.Controls.Add(consumables_shop_page);
+                shop_tab_control.Controls.Add(transport_shop_page);
             }
             else if (!shop_tab_control.Controls.ContainsKey("weapon_shop_page"))
             {
@@ -3782,6 +3814,7 @@ namespace SLIL
                 shop_tab_control.Controls.Add(weapon_shop_page);
                 shop_tab_control.Controls.Add(pet_shop_page);
                 shop_tab_control.Controls.Add(consumables_shop_page);
+                shop_tab_control.Controls.Add(transport_shop_page);
             }
         }
 
