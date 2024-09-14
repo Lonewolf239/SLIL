@@ -1474,31 +1474,36 @@ namespace SLIL.Classes
 
         internal void ChangePlayerA(double v, int playerID)
         {
-            foreach (Entity ent in Entities)
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            if (p.BlockCamera)
             {
-                if (ent is Player p && ent.ID == playerID)
+                if (p.CanUnblockCamera)
                 {
-                    p.A += v;
-                    return;
+                    p.BlockCamera = false;
+                    p.CanUnblockCamera = false;
                 }
+                return;
             }
+            p.A += v;
         }
 
         internal void ChangePlayerLook(double lookDif, int playerID)
         {
-            foreach (Entity ent in Entities)
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            if (p.BlockCamera)
             {
-                if (ent is Player p && ent.ID == playerID)
+                if (p.CanUnblockCamera)
                 {
-                    if (p.BlockCamera) return;
-                    p.Look += lookDif;
-                    if (p.Look < -360)
-                        p.Look = -360;
-                    else if (p.Look > 360)
-                        p.Look = 360;
-                    return;
+                    p.BlockCamera = false;
+                    p.CanUnblockCamera = false;
                 }
+                return;
             }
+            p.Look += lookDif;
+            if (p.Look < -360) p.Look = -360;
+            else if (p.Look > 360) p.Look = 360;
         }
 
         internal void StopGame(int win) => GameOver(win);
@@ -1559,10 +1564,11 @@ namespace SLIL.Classes
         internal void GettingOffTheBike(int playerID)
         {
             Player p = GetPlayer(playerID);
-            if (p == null) return;
+            if (p == null || p.BlockInput) return;
             Bike bike = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID)
             {
-                BikeHP = p.BIKE_HP
+                BikeHP = p.BIKE_HP,
+                A = p.A
             };
             p.StopEffect(4);
             AddEntity(bike);
@@ -1603,7 +1609,7 @@ namespace SLIL.Classes
             p.StrafeDirection = Directions.STOP;
             p.PlayerMoveStyle = Directions.STOP;
             new Thread(() => {
-                Thread.Sleep(500);
+                Thread.Sleep(p.OnBike ? 250 : 500);
                 StopParkour(playerID);
                 p.ParkourState++;
             }).Start();
@@ -1624,9 +1630,10 @@ namespace SLIL.Classes
             }
             p.X = new_x;
             p.Y = new_y;
-            p.GiveEffect(3, true);
+            if (p.OnBike) p.GiveEffect(3, false, 6);
+            else p.GiveEffect(3, true);
             p.BlockInput = false;
-            if (!p.OnBike) p.BlockCamera = false;
+            p.BlockCamera = false;
         }
 
         internal void ChangeWeapon(int playerID, int new_gun)
@@ -1741,8 +1748,10 @@ namespace SLIL.Classes
             Entity entity = GetEntity(ID);
             if (entity != null)
             {
-                double hp = ((Bike)entity).BikeHP;
-                p.BIKE_HP = hp;
+                p.BIKE_HP = ((Bike)entity).BikeHP;
+                p.A = ((Bike)entity).A;
+                p.X = entity.X;
+                p.Y = entity.Y;
             }
             RemoveEntity(ID);
             p.GiveEffect(4, true);

@@ -1336,11 +1336,11 @@ namespace SLIL
                 else Pause();
                 return;
             }
-            if (GameStarted && !Paused && !player.BlockInput)
+            if (GameStarted && !Paused)
             {
                 if (!console_panel.Visible && !open_shop)
                 {
-                    if (e.KeyCode == Bind.Run) RunKeyPressed = true;
+                    if (e.KeyCode == Bind.Run && !player.BlockInput) RunKeyPressed = true;
                     if (e.KeyCode == Bind.Forward)
                         player.PlayerDirection = Directions.FORWARD;
                     if (e.KeyCode == Bind.Back)
@@ -1349,7 +1349,7 @@ namespace SLIL
                         player.StrafeDirection = Directions.LEFT;
                     if (e.KeyCode == Bind.Right)
                         player.StrafeDirection = Directions.RIGHT;
-                    if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.OnBike && player != null)
+                    if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.OnBike && player != null)
                     {
                         int count = player.Guns.Count;
                         if (player.Guns.Contains(player.GUNS[0])) count--;
@@ -1554,10 +1554,10 @@ namespace SLIL
                 ShowSing = player.BlockInput = player.BlockCamera = false;
                 return;
             }
-            if (GameStarted && !Paused && !player.BlockInput && !console_panel.Visible && !open_shop)
+            if (GameStarted && !Paused && !console_panel.Visible && !open_shop)
             {
                 if (e.KeyCode == Bind.Screenshot) DoScreenshot();
-                if (e.KeyCode == Bind.Show_map_0 || e.KeyCode == Bind.Show_map_1)
+                if ((e.KeyCode == Bind.Show_map_0 || e.KeyCode == Bind.Show_map_1) && !player.BlockInput)
                 {
                     if (!ShowSing)
                     {
@@ -1566,7 +1566,7 @@ namespace SLIL
                     }
                 }
                 if (player == null) return;
-                if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
+                if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.IsPetting)
                 {
                     if (player.OnBike) return;
                     if (e.KeyCode == Bind.Flashlight) TakeFlashlight(true);
@@ -1777,22 +1777,18 @@ namespace SLIL
             if (GameStarted && active && !console_panel.Visible && !shop_panel.Visible)
             {
                 Player player = Controller.GetPlayer();
-                if (player == null) return;
+                if (player == null || player.BlockMouse) return;
                 double x = display.Width / 2, y = display.Height / 2;
                 double X = e.X - x, Y = e.Y - y;
                 cursor_x = (int)X; cursor_y = (int)Y;
                 if (!player.InSelectingMode)
                 {
-                    if (!player.BlockCamera)
-                    {
-                        int invY = inv_y ? -1 : 1;
-                        int invX = inv_x ? -1 : 1;
-                        double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
-                        double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
-                        Controller.ChangePlayerA(A * invX);
-                        Controller.ChangePlayerLook(Look * invY);
-                    }
-                    else if (player.CanUnblockCamera) player.BlockCamera = player.CanUnblockCamera = false;
+                    int invY = inv_y ? -1 : 1;
+                    int invX = inv_x ? -1 : 1;
+                    double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
+                    double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
+                    Controller.ChangePlayerA(A * invX);
+                    Controller.ChangePlayerLook(Look * invY);
                     Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
                 }
                 else
@@ -1874,8 +1870,7 @@ namespace SLIL
         private void PlayerMove()
         {
             Player player = Controller.GetPlayer();
-            if (player == null) return;
-            if (player.Aiming) return;
+            if (player == null || player.Aiming) return;
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == 'P')
             {
                 Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '.';

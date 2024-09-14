@@ -331,6 +331,8 @@ namespace SLIL.Classes
             FiringRange = 2.5;
             MaxDamage = 12.5;
             MinDamage = 7.5;
+            Accuracy = 0.2;
+            BulletCount = 6;
             ShowScope = false;
             ShowHitScope = false;
             HasIt = false;

@@ -46,6 +46,7 @@ namespace SLIL.Classes
         public bool InSelectingMode { get; set; }
         public bool BlockInput { get; set; }
         public bool BlockCamera { get; set; }
+        public bool BlockMouse { get; set; }
         public bool CanUnblockCamera { get; set; }
         public Directions PlayerDirection { get; set; }
         public Directions StrafeDirection { get; set; }
@@ -433,6 +434,7 @@ namespace SLIL.Classes
             {
                 CanShoot = true;
                 BlockCamera = false;
+                BlockMouse = false;
                 CanUnblockCamera = true;
             }
             PlayerDirection = Directions.STOP;
@@ -541,7 +543,7 @@ namespace SLIL.Classes
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
                 CanUnblockCamera = false;
-                BlockCamera = true;
+                BlockMouse = true;
                 CanShoot = false;
                 Look = 0;
                 OnBike = true;
@@ -604,7 +606,7 @@ namespace SLIL.Classes
                     }
                     else if (Effects[i].ID == 4)
                     {
-                        BlockCamera = false;
+                        BlockMouse = false;
                         CanShoot = true;
                         OnBike = false;
                         Fast = false;
@@ -633,7 +635,7 @@ namespace SLIL.Classes
                 }
                 else if (Effects[i].ID == 4)
                 {
-                    BlockCamera = false;
+                    BlockMouse = false;
                     CanShoot = true;
                     OnBike = false;
                     Fast = false;

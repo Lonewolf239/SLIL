@@ -45,6 +45,7 @@ namespace GameServer
         public bool InSelectingMode { get; set; }
         public bool BlockInput { get; set; }
         public bool BlockCamera { get; set; }
+        public bool BlockMouse { get; set; }
         public bool CanUnblockCamera { get; set; }
         public Directions PlayerDirection { get; set; }
         public Directions StrafeDirection { get; set; }
@@ -418,7 +419,6 @@ namespace GameServer
             GunState = 0;
             MOVE_SPEED = 0;
             STRAFE_SPEED = 0;
-            CanShoot = true;
             Dead = false;
             Invulnerable = false;
             TimeoutInvulnerable = 2;
@@ -431,7 +431,9 @@ namespace GameServer
             BlockInput = false;
             if (!OnBike)
             {
+                CanShoot = true;
                 BlockCamera = false;
+                BlockMouse = false;
                 CanUnblockCamera = true;
             }
             PlayerDirection = Directions.STOP;
@@ -540,7 +542,7 @@ namespace GameServer
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
                 CanUnblockCamera = false;
-                BlockCamera = true;
+                BlockMouse = true;
                 CanShoot = false;
                 Look = 0;
                 OnBike = true;
@@ -603,7 +605,7 @@ namespace GameServer
                     }
                     else if (Effects[i].ID == 4)
                     {
-                        BlockCamera = false;
+                        BlockMouse = false;
                         CanShoot = true;
                         OnBike = false;
                         Fast = false;
@@ -632,7 +634,7 @@ namespace GameServer
                 }
                 else if (Effects[i].ID == 4)
                 {
-                    BlockCamera = false;
+                    BlockMouse = false;
                     CanShoot = true;
                     OnBike = false;
                     Fast = false;

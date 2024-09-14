@@ -669,6 +669,7 @@ namespace GameServer
 
     public class Bike : GameObject
     {
+        public double A { get; set; }
         public double BikeHP { get; set; }
 
         public Bike(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
@@ -677,7 +678,8 @@ namespace GameServer
         private void Init()
         {
             Texture = 5;
-            BikeHP = 100;
+            BikeHP = 150;
+            A = rand.NextDouble();
             base.AnimationsToStatic();
         }
         protected override int GetEntityID() => 18;
