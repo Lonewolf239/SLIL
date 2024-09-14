@@ -311,7 +311,7 @@ namespace SLIL
         };
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
-        public static PlaySound hit = new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false);
+        public static PlaySound[] hit = { new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("hit_bike.wav"), false) };
         public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
         private PlaySound step;
         public static PlaySound[,] steps = new PlaySound[,]
@@ -343,6 +343,20 @@ namespace SLIL
                     new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_2.wav"), false),
                     new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_3.wav"), false),
                     new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_4.wav"), false)
+                },
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_4.wav"), false)
+                },
+                {
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_0.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_1.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_2.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_3.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_4.wav"), false)
                 }
             };
         public static PlaySound[] ost = new PlaySound[]
@@ -977,7 +991,15 @@ namespace SLIL
                     currentIndex = 0;
                 }
                 int i = player.PlayerMoveStyle == Directions.RUN || player.Fast ? 1 : 0;
-                if (player.CuteMode) i += 2;
+                if (player.OnBike)
+                {
+                    if (player.CuteMode) i = 5;
+                    else i = 4;
+                }
+                else
+                {
+                    if (player.CuteMode) i += 2;
+                }
                 int j = soundIndices[currentIndex];
                 step = steps[i, j];
                 step.PlayWithWait(Volume);
@@ -1505,15 +1527,25 @@ namespace SLIL
                     }
                 }
             }
-            if (e.KeyCode == Bind.Forward || e.KeyCode == Bind.Back)
+            if (e.KeyCode == Bind.Forward)
             {
-                if (player != null)
-                    player.PlayerDirection = Directions.STOP;
+                if (player == null || player.PlayerDirection != Directions.FORWARD) return;
+                player.PlayerDirection = Directions.STOP;
             }
-            if (e.KeyCode == Bind.Left || e.KeyCode == Bind.Right)
+            if (e.KeyCode == Bind.Back)
             {
-                if (player != null)
-                    player.StrafeDirection = Directions.STOP;
+                if (player == null || player.PlayerDirection != Directions.BACK) return;
+                player.PlayerDirection = Directions.STOP;
+            }
+            if (e.KeyCode == Bind.Left)
+            {
+                if (player == null || player.StrafeDirection != Directions.LEFT) return;
+                player.StrafeDirection = Directions.STOP;
+            }
+            if (e.KeyCode == Bind.Right)
+            {
+                if (player == null || player.StrafeDirection != Directions.RIGHT) return;
+                player.StrafeDirection = Directions.STOP;
             }
             if ((e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1) && ShowSing)
             {
@@ -1852,10 +1884,11 @@ namespace SLIL
             if (player.PlayerMoveStyle == Directions.RUN && player.PlayerDirection == Directions.FORWARD)
                 run = player.RUN_SPEED;
             double move = player.MOVE_SPEED * run * elapsed_time;
+            double strafe = player.STRAFE_SPEED * run * elapsed_time;
             double moveSin = Math.Sin(player.A) * move;
             double moveCos = Math.Cos(player.A) * move;
-            double strafeSin = moveSin / 1.4;
-            double strafeCos = moveCos / 1.4;
+            double strafeSin = Math.Sin(player.A) * strafe;
+            double strafeCos = Math.Cos(player.A) * strafe;
             double newX = player.X;
             double newY = player.Y;
             double tempX = player.X;
@@ -1865,46 +1898,66 @@ namespace SLIL
                 case Directions.LEFT:
                     if (!player.OnBike)
                     {
+                        if (player.STRAFE_SPEED < player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED += 0.05;
                         newX += strafeCos;
                         newY -= strafeSin;
                     }
                     else
                     {
+                        if (player.STRAFE_SPEED < player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED += 0.05;
                         if (player.PlayerDirection == Directions.FORWARD)
                             Controller.ChangePlayerA(0.03);
                         else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(-0.03);
-                        else
-                            Controller.ChangePlayerA(0.02);
+                            Controller.ChangePlayerA(-0.025);
                     }
                     break;
                 case Directions.RIGHT:
                     if (!player.OnBike)
                     {
-                        newX -= strafeCos;
-                        newY += strafeSin;
+                        if (player.STRAFE_SPEED > -player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED -= 0.05;
+                        newX += strafeCos;
+                        newY -= strafeSin;
                     }
                     else
                     {
+                        if (player.STRAFE_SPEED > -player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED -= 0.05;
                         if (player.PlayerDirection == Directions.FORWARD)
                             Controller.ChangePlayerA(-0.03);
                         else if (player.PlayerDirection == Directions.BACK)
-                            Controller.ChangePlayerA(0.03);
-                        else
-                            Controller.ChangePlayerA(-0.02);
+                            Controller.ChangePlayerA(0.025);
                     }
+                    break;
+                case Directions.STOP:
+                    if (player.STRAFE_SPEED > 0)
+                        player.STRAFE_SPEED -= 0.05;
+                    else if (player.STRAFE_SPEED < 0)
+                        player.STRAFE_SPEED += 0.05;
                     break;
             }
             switch (player.PlayerDirection)
             {
                 case Directions.FORWARD:
+                    if (player.MOVE_SPEED < player.MAX_MOVE_SPEED)
+                        player.MOVE_SPEED += 0.05;
                     newX += moveSin;
                     newY += moveCos;
                     break;
                 case Directions.BACK:
-                    double factor = player.OnBike ? 0.2 : 0.65;
-                    newX -= moveSin * factor;
-                    newY -= moveCos * factor;
+                    if (player.MOVE_SPEED > -player.MAX_MOVE_SPEED)
+                        player.MOVE_SPEED -= 0.05;
+                    double factor = player.OnBike ? 0.1 : 0.65;
+                    newX += moveSin * factor;
+                    newY += moveCos * factor;
+                    break;
+                case Directions.STOP:
+                    if (player.MOVE_SPEED > 0)
+                        player.MOVE_SPEED -= 0.05;
+                    if (player.MOVE_SPEED < 0)
+                        player.MOVE_SPEED += 0.05;
                     break;
             }
             if (!(HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2))

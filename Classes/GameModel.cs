@@ -169,7 +169,12 @@ namespace SLIL.Classes
                                         if (player.CuteMode)
                                             PlaySoundHandle(SLIL.hungry, player.X, player.Y);
                                         else
-                                            PlaySoundHandle(SLIL.hit, player.X, player.Y);
+                                        {
+                                            if (player.OnBike)
+                                                PlaySoundHandle(SLIL.hit[1], player.X, player.Y);
+                                            else
+                                                PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
+                                        }
                                         if (player.HP <= 0)
                                         {
                                             Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
@@ -216,7 +221,7 @@ namespace SLIL.Classes
                             Entities.Add(new Explosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
                         }
                         if (!Entities.Contains(entity)) continue;
-                        foreach(Entity ent in Entities)
+                        foreach (Entity ent in Entities)
                         {
                             if (ent == entity) continue;
                             if (ent is Creature creature && (creature.DEAD || !creature.CanHit || !creature.HasAI)) continue;

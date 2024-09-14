@@ -94,16 +94,16 @@ namespace SLIL.Classes
                     Game.Deserialize(dataReader);
                     this._isInSpectatorMode = GetPlayer().Dead;
                 }
-                if(packetType == 403)
+                if (packetType == 403)
                 {
                     closeForm();
                 }
                 if (packetType == 666)
                 {
                     _isInSpectatorMode = true;
-                    foreach(Entity ent in Game.Entities)
+                    foreach (Entity ent in Game.Entities)
                     {
-                        if(ent is Player p)
+                        if (ent is Player p)
                         {
                             if (!p.Dead)
                             {
@@ -119,7 +119,7 @@ namespace SLIL.Classes
                     switch (dataReader.GetInt())
                     {
                         case 0:
-                            sound = SLIL.hit; 
+                            sound = SLIL.hit[0];
                             break;
                         case 1:
                             sound = SLIL.hungry;
@@ -129,14 +129,14 @@ namespace SLIL.Classes
                     }
                     PlaySoundHandle(sound, GetPlayer().X, GetPlayer().Y);
                 }
-                if(packetType == 1001)
+                if (packetType == 1001)
                 {
                     double X = dataReader.GetDouble();
                     double Y = dataReader.GetDouble();
                     int deathSound = dataReader.GetInt();
                     PlaySoundHandle(SLIL.DeathSounds[deathSound, GetPlayer().CuteMode ? 1 : 0], X, Y);
                 }
-                if(packetType == 1334)
+                if (packetType == 1334)
                 {
                     Game.DeserializePlayer(playerID, dataReader.GetRemainingBytes());
                 }

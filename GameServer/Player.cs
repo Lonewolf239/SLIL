@@ -31,7 +31,10 @@ namespace GameServer
         public int Stage { get; set; }
         public bool CuteMode { get; set; }
         public int EnemiesKilled { get; set; }
+        public double MAX_MOVE_SPEED { get; set; }
+        public double MAX_STRAFE_SPEED { get; set; }
         public double MOVE_SPEED { get; set; }
+        public double STRAFE_SPEED { get; set; }
         public double RUN_SPEED { get; set; }
         public double DEPTH { get; set; }
         public int SelectedItem { get; set; }
@@ -398,7 +401,8 @@ namespace GameServer
                 Money = 15;
                 CurseCureChance = 0.08;
                 Stage = 0;
-                MOVE_SPEED = 1.75;
+                MAX_MOVE_SPEED = 1.75;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                 RUN_SPEED = 2.25;
                 DEPTH = 8;
                 SelectedItem = 0;
@@ -411,6 +415,7 @@ namespace GameServer
             EnemiesKilled = 0;
             Look = 0;
             GunState = 0;
+            MOVE_SPEED = 0;
             CanShoot = true;
             Dead = false;
             Invulnerable = false;
@@ -440,7 +445,11 @@ namespace GameServer
             }
         }
 
-        public double GetDrawDistance() => DEPTH + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
+        public double GetDrawDistance()
+        {
+            if (OnBike) return DEPTH + 2;
+            return DEPTH + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
+        }
 
         public Gun GetCurrentGun() => Guns[CurrentGun];
 
@@ -462,7 +471,8 @@ namespace GameServer
                     if (Effects[i].ID == 1)
                     {
                         Fast = false;
-                        MOVE_SPEED -= 1.5;
+                        MAX_MOVE_SPEED -= 1.5;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                     }
                     Effects.RemoveAt(i);
                 }
@@ -492,7 +502,8 @@ namespace GameServer
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
                 Fast = true;
-                MOVE_SPEED += 1.5;
+                MAX_MOVE_SPEED += 1.5;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
             }
             else if (index == 2)
             {
@@ -528,7 +539,8 @@ namespace GameServer
                 Look = 0;
                 OnBike = true;
                 Fast = true;
-                MOVE_SPEED += 2.15;
+                MAX_MOVE_SPEED += 2.15;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
             }
         }
 
@@ -555,7 +567,8 @@ namespace GameServer
                 if (EffectCheck(1) || EffectCheck(4)) return;
                 Effects.Add(new Adrenaline());
                 Fast = true;
-                MOVE_SPEED += 1.5;
+                MAX_MOVE_SPEED += 1.5;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
             }
             else if (SelectedItem == 2)
             {
@@ -573,7 +586,8 @@ namespace GameServer
                     if (Effects[i].ID == 1)
                     {
                         Fast = false;
-                        MOVE_SPEED -= 1.5;
+                        MAX_MOVE_SPEED -= 1.5;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                     }
                     else if (Effects[i].ID == 4)
                     {
@@ -581,7 +595,8 @@ namespace GameServer
                         CanShoot = true;
                         OnBike = false;
                         Fast = false;
-                        MOVE_SPEED -= 2.15;
+                        MAX_MOVE_SPEED -= 2.15;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                         HP = MAX_HP;
                     }
                     Effects.RemoveAt(i);
@@ -597,7 +612,8 @@ namespace GameServer
                 if (Effects[i].ID == 1)
                 {
                     Fast = false;
-                    MOVE_SPEED -= 1.5;
+                    MAX_MOVE_SPEED -= 1.5;
+                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                 }
                 else if (Effects[i].ID == 4)
                 {
@@ -605,7 +621,8 @@ namespace GameServer
                     CanShoot = true;
                     OnBike = false;
                     Fast = false;
-                    MOVE_SPEED -= 2.15;
+                    MAX_MOVE_SPEED -= 2.15;
+                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
                     HP = MAX_HP;
                 }
             }

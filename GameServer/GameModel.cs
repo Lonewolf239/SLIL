@@ -1293,7 +1293,7 @@ namespace GameServer
             }
             else if (type == 4)
             {
-                Bike bike = new Bike(x, y, size, ref MaxEntityID);
+                Bike bike = new(x, y, size, ref MaxEntityID);
                 Entities.Add(bike);
             }
         }
