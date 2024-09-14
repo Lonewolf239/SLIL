@@ -1925,7 +1925,7 @@ namespace SLIL
                     Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
             }
             if (!(HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2))
-                || HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX - playerWidth / 2))))
+            || HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX - playerWidth / 2))))
                 tempX = newX;
             if (!(HasImpassibleCells((int)(newY + playerWidth / 2) * Controller.GetMapWidth() + (int)newX)
                 || HasImpassibleCells((int)(newY - playerWidth / 2) * Controller.GetMapWidth() + (int)newX)))
@@ -2087,9 +2087,7 @@ namespace SLIL
                 {
                     rays[i] = new Pixel[SCREEN_HEIGHT[resolution]];
                     for (int j = 0; j < SCREEN_HEIGHT[resolution]; j++)
-                    {
                         rays[i][j] = new Pixel(i, j, 100, 1, 1, 0);
-                    }
                 }
                 return rays;
             }
@@ -2098,11 +2096,7 @@ namespace SLIL
             planeX = Math.Sin(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
             planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
             int mapX = (int)(player.X);
-            int mapY = (int)(player.Y);         
-            if (player == null)
-            {
-                return rays;
-            }
+            int mapY = (int)(player.Y);
             StringBuilder MAP = Controller.GetMap();
             int MAP_WIDTH = Controller.GetMapWidth();
             int MAP_HEIGHT = Controller.GetMapHeight();
@@ -2880,9 +2874,9 @@ namespace SLIL
             {
                 if (player.InParkour)
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][4], 0, 0, WEAPON.Width, WEAPON.Height);
-                else if (player.StrafeDirection == Directions.LEFT)
+                else if (player.STRAFE_SPEED > 0)
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], 0, 0, WEAPON.Width, WEAPON.Height);
-                else if (player.StrafeDirection == Directions.RIGHT)
+                else if (player.STRAFE_SPEED < 0)
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], 0, 0, WEAPON.Width, WEAPON.Height);
                 else
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], 0, 0, WEAPON.Width, WEAPON.Height);
