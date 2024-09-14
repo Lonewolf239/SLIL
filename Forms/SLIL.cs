@@ -1958,7 +1958,7 @@ namespace SLIL
                     else speedFactor = 1;
                     if (!player.InTransport)
                     {
-                        if (player.STRAFE_SPEED + (walk* speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
+                        if (player.STRAFE_SPEED + (walk * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
                             player.STRAFE_SPEED += walk * speedFactor;
                     }
                     else
@@ -1984,19 +1984,19 @@ namespace SLIL
                 case Directions.STOP:
                     if (!player.InTransport)
                     {
-                        if (player.STRAFE_SPEED + walk <= 0)
-                            player.STRAFE_SPEED += walk;
-                        else if (player.STRAFE_SPEED - walk >= 0)
-                            player.STRAFE_SPEED -= walk;
+                        if (player.STRAFE_SPEED + (walk * 2) <= 0)
+                            player.STRAFE_SPEED += walk * 2;
+                        else if (player.STRAFE_SPEED - (walk * 2) >= 0)
+                            player.STRAFE_SPEED -= walk * 2;
                         else
                             player.STRAFE_SPEED = 0;
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED + (transport * 1.75) <= 0)
-                            player.STRAFE_SPEED += transport * 1.75;
-                        else if (player.STRAFE_SPEED - (transport * 1.75) >= 0)
-                            player.STRAFE_SPEED -= transport * 1.75;
+                        if (player.STRAFE_SPEED + ((transport * 1.75) * 2) <= 0)
+                            player.STRAFE_SPEED += (transport * 1.75) * 2;
+                        else if (player.STRAFE_SPEED - ((transport * 1.75) * 2) >= 0)
+                            player.STRAFE_SPEED -= (transport * 1.75) * 2;
                         else
                             player.STRAFE_SPEED = 0;
                     }
@@ -2035,19 +2035,19 @@ namespace SLIL
                 case Directions.STOP:
                     if (!player.InTransport)
                     {
-                        if (player.MOVE_SPEED + walk <= 0)
-                            player.MOVE_SPEED += walk;
-                        else if (player.MOVE_SPEED - walk >= 0)
-                            player.MOVE_SPEED -= walk;
+                        if (player.MOVE_SPEED + (walk * 2) <= 0)
+                            player.MOVE_SPEED += walk * 2;
+                        else if (player.MOVE_SPEED - (walk * 2) >= 0)
+                            player.MOVE_SPEED -= walk * 2;
                         else
                             player.MOVE_SPEED = 0;
                     }
                     else
                     {
-                        if (player.MOVE_SPEED + transport <= 0)
-                            player.MOVE_SPEED += transport;
-                        else if (player.MOVE_SPEED - transport >= 0)
-                            player.MOVE_SPEED -= transport;
+                        if (player.MOVE_SPEED + (transport * 2) <= 0)
+                            player.MOVE_SPEED += transport * 2;
+                        else if (player.MOVE_SPEED - (transport * 2) >= 0)
+                            player.MOVE_SPEED -= transport * 2;
                         else
                             player.MOVE_SPEED = 0;
                     }
