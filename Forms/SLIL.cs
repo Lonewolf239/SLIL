@@ -1883,6 +1883,7 @@ namespace SLIL
             double run = 1;
             if (player.PlayerMoveStyle == Directions.RUN && player.PlayerDirection == Directions.FORWARD)
                 run = player.RUN_SPEED;
+            ChangeSpeed(player);
             double move = player.MOVE_SPEED * run * elapsed_time;
             double strafe = player.STRAFE_SPEED * run * elapsed_time;
             double moveSin = Math.Sin(player.A) * move;
@@ -1898,15 +1899,11 @@ namespace SLIL
                 case Directions.LEFT:
                     if (!player.OnBike)
                     {
-                        if (player.STRAFE_SPEED < player.MAX_STRAFE_SPEED)
-                            player.STRAFE_SPEED += 0.05;
                         newX += strafeCos;
                         newY -= strafeSin;
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED < player.MAX_STRAFE_SPEED)
-                            player.STRAFE_SPEED += 0.05;
                         if (player.PlayerDirection == Directions.FORWARD)
                             Controller.ChangePlayerA(0.03);
                         else if (player.PlayerDirection == Directions.BACK)
@@ -1916,48 +1913,28 @@ namespace SLIL
                 case Directions.RIGHT:
                     if (!player.OnBike)
                     {
-                        if (player.STRAFE_SPEED > -player.MAX_STRAFE_SPEED)
-                            player.STRAFE_SPEED -= 0.05;
                         newX += strafeCos;
                         newY -= strafeSin;
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED > -player.MAX_STRAFE_SPEED)
-                            player.STRAFE_SPEED -= 0.05;
                         if (player.PlayerDirection == Directions.FORWARD)
                             Controller.ChangePlayerA(-0.03);
                         else if (player.PlayerDirection == Directions.BACK)
                             Controller.ChangePlayerA(0.025);
                     }
                     break;
-                case Directions.STOP:
-                    if (player.STRAFE_SPEED > 0)
-                        player.STRAFE_SPEED -= 0.05;
-                    else if (player.STRAFE_SPEED < 0)
-                        player.STRAFE_SPEED += 0.05;
-                    break;
             }
             switch (player.PlayerDirection)
             {
                 case Directions.FORWARD:
-                    if (player.MOVE_SPEED < player.MAX_MOVE_SPEED)
-                        player.MOVE_SPEED += 0.05;
                     newX += moveSin;
                     newY += moveCos;
                     break;
                 case Directions.BACK:
-                    if (player.MOVE_SPEED > -player.MAX_MOVE_SPEED)
-                        player.MOVE_SPEED -= 0.05;
                     double factor = player.OnBike ? 0.1 : 0.65;
                     newX += moveSin * factor;
                     newY += moveCos * factor;
-                    break;
-                case Directions.STOP:
-                    if (player.MOVE_SPEED > 0)
-                        player.MOVE_SPEED -= 0.05;
-                    if (player.MOVE_SPEED < 0)
-                        player.MOVE_SPEED += 0.05;
                     break;
             }
             if (!(HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2))
@@ -1981,6 +1958,66 @@ namespace SLIL
             }
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == '.')
                 DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
+        }
+
+        private void ChangeSpeed(Player player)
+        {
+            switch (player.StrafeDirection)
+            {
+                case Directions.LEFT:
+                    if (!player.OnBike)
+                    {
+                        if (player.STRAFE_SPEED < player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED += 0.05;
+                    }
+                    else
+                    {
+                    }
+                    break;
+                case Directions.RIGHT:
+                    if (!player.OnBike)
+                    {
+                        if (player.STRAFE_SPEED > -player.MAX_STRAFE_SPEED)
+                            player.STRAFE_SPEED -= 0.05;
+                    }
+                    else
+                    {
+                    }
+                    break;
+                case Directions.STOP:
+                    if (player.STRAFE_SPEED > 0)
+                        player.STRAFE_SPEED -= 0.05;
+                    else if (player.STRAFE_SPEED < 0)
+                        player.STRAFE_SPEED += 0.05;
+                    break;
+            }
+            switch (player.PlayerDirection)
+            {
+                case Directions.FORWARD:
+                    if (!player.OnBike)
+                    {
+                        if (player.MOVE_SPEED < player.MAX_MOVE_SPEED)
+                            player.MOVE_SPEED += 0.05;
+                    }
+                    else
+                    {
+                    }
+                    break;
+                case Directions.BACK:
+                    if (!player.OnBike)
+                    {
+                        if (player.MOVE_SPEED > -player.MAX_MOVE_SPEED)
+                            player.MOVE_SPEED -= 0.05;
+                    }
+                    else { }
+                    break;
+                case Directions.STOP:
+                    if (player.MOVE_SPEED > 0)
+                        player.MOVE_SPEED -= 0.05;
+                    if (player.MOVE_SPEED < 0)
+                        player.MOVE_SPEED += 0.05;
+                    break;
+            }
         }
 
         //  #====     RayCasting    ====#
