@@ -83,6 +83,7 @@ namespace SLIL
             { typeof(Flashlight), new[] { Properties.Resources.missing } },
             { typeof(Knife), new[] { Properties.Resources.missing } },
             { typeof(Candy), new[] { Properties.Resources.missing } },
+            { typeof(Petition), new[] { Properties.Resources.missing } },
             { typeof(Rainblower), new[] { Properties.Resources.missing } },
             { typeof(Pistol), new[]
             {
@@ -140,6 +141,7 @@ namespace SLIL
             { typeof(Flashlight), new[,] { { Properties.Resources.flashlight, Properties.Resources.flashlight_run } } },
             { typeof(Knife), new[,] { { Properties.Resources.knife, Properties.Resources.knife_hit, Properties.Resources.knife_run } } },
             { typeof(Candy), new[,] { { Properties.Resources.candy, Properties.Resources.candy_shoot, Properties.Resources.candy_run } } },
+            { typeof(Petition), new[,] { { Properties.Resources.candy, Properties.Resources.candy_shoot, Properties.Resources.candy_run } } },
             { typeof(Rainblower), new[,]
             {
                    { Properties.Resources.rainblower, Properties.Resources.rainblower_shoot, Properties.Resources.rainblower_run },
@@ -215,6 +217,7 @@ namespace SLIL
             { typeof(Flashlight), new[,] { { new PlaySound(null, false), } } },
             { typeof(Knife), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } } },
             { typeof(Candy), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("candy.wav"), false) } } },
+            { typeof(Petition), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("petition.wav"), false) } } },
             { typeof(Rainblower),  new[,]
             {
                    { new PlaySound(MainMenu.CGFReader.GetFile("rainblower.wav"), false), new PlaySound(null, false), new PlaySound(null, false) },
@@ -1063,7 +1066,7 @@ namespace SLIL
                         player.GunState = player.GunState == 1 ? 0 : 1;
                     else
                         player.GunState = player.Aiming ? 3 : 0;
-                    if (!(player.GetCurrentGun() is Knife))
+                    if (!(player.GetCurrentGun() is Knife) && !(player.GetCurrentGun() is Candy) && !(player.GetCurrentGun() is Petition))
                         Controller.AmmoCountDecrease();
                     if (player.GetCurrentGun().CanShoot && player.GetCurrentGun().FireType != FireTypes.Single)
                     {

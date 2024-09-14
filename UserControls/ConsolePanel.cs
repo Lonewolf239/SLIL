@@ -124,6 +124,7 @@ namespace SLIL.UserControls
                                  "~│~ -BIGGUY-      ~│~ Give out \"The Smallest Pistol in the World\" ~│~\n" +
                                  "~│~ -YHRII-       ~│~ Issue \"Fingershot\"                          ~│~\n" +
                                  "~│~ -IMGNOME-     ~│~ Issue \"Wizard Gnome\"                        ~│~\n" +
+                                 "~│~ -ILLKLURDOG-  ~│~ Issue \"Petition\"                            ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -CAT-         ~│~ Issue a pet: \"Silly cat\"                    ~│~\n" +
                                  "~│~ -GNOME-       ~│~ Issue a pet: \"Wizard Gnome\"                 ~│~\n" +
@@ -991,6 +992,22 @@ namespace SLIL.UserControls
                             {
                                 color = Color.Red;
                                 message = "Code not applied! You already have \"Wizard Gnome\"";
+                            }
+                        }
+                        else if (cheat == "ILLKLURDOG")
+                        {
+                            if (!player.GUNS[16].HasIt)
+                            {
+                                player.GUNS[16].HasIt = true;
+                                player.GUNS[16].AmmoInStock = player.GUNS[16].MaxAmmo;
+                                if (!player.Guns.Contains(player.GUNS[16]))
+                                    player.Guns.Add(player.GUNS[16]);
+                                message += "\"Petition\" has been issued.";
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You already have \"Petition\"";
                             }
                         }
                         else if (cheat == "GKIFK")

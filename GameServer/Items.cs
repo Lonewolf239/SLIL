@@ -311,6 +311,22 @@ namespace GameServer
         public override int GetItemID() => 2;
     }
 
+    public class Petition : Knife
+    {
+        public Petition() : base()
+        {
+            FiringRate = 1500;
+            FiringRange = 2.5;
+            MaxDamage = 12.5;
+            MinDamage = 7.5;
+            ShowScope = false;
+            HasIt = false;
+            Name = ["3-14", "Petition"];
+        }
+
+        public override int GetItemID() => 17;
+    }
+
     public class Rainblower : Gun
     {
         public Rainblower() : base()
