@@ -1920,7 +1920,7 @@ namespace SLIL
             else
             {
                 if (player.MOVE_SPEED < 0)
-                    Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
+                    Controller.ChangePlayerA(player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
                 else if (player.MOVE_SPEED > 0)
                     Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
             }
@@ -1963,8 +1963,16 @@ namespace SLIL
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
-                            player.STRAFE_SPEED += (transport * 1.75) * speedFactor;
+                        if (player.MOVE_SPEED < 0)
+                        {
+                            if (player.STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
+                                player.STRAFE_SPEED -= (transport * 1.75) * speedFactor;
+                        }
+                        else
+                        {
+                            if (player.STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
+                                player.STRAFE_SPEED += (transport * 1.75) * speedFactor;
+                        }
                     }
                     break;
                 case Directions.RIGHT:
@@ -1977,8 +1985,16 @@ namespace SLIL
                     }
                     else
                     {
-                        if (player.STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
-                            player.STRAFE_SPEED -= (transport * 1.75) * speedFactor;
+                        if (player.MOVE_SPEED > 0)
+                        {
+                            if (player.STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
+                                player.STRAFE_SPEED -= (transport * 1.75) * speedFactor;
+                        }
+                        else
+                        {
+                            if (player.STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
+                                player.STRAFE_SPEED += (transport * 1.75) * speedFactor;
+                        }
                     }
                     break;
                 case Directions.STOP:
@@ -2859,12 +2875,12 @@ namespace SLIL
         {
             if (ShowDebugSpeed)
                 graphicsWeapon.DrawString(
-                    $"MMS: {player.MAX_MOVE_SPEED:0.##}\n" +
-                    $"MS: {player.MOVE_SPEED:0.##}\n" +
-                    $"MSS: {player.MAX_STRAFE_SPEED:0.##}\n" +
-                    $"SS: {player.STRAFE_SPEED:0.##}\n" +
-                    $"MRS: {player.RUN_SPEED:0.##}\n" +
-                    $"RS: {player.MOVE_SPEED * player.RUN_SPEED:0.##}", consolasFont[0, 0], whiteBrush, 0, 16);
+                    $"MMS: {player.MAX_MOVE_SPEED}\n" +
+                    $"MS: {player.MOVE_SPEED}\n" +
+                    $"MSS: {player.MAX_STRAFE_SPEED}\n" +
+                    $"SS: {player.STRAFE_SPEED}\n" +
+                    $"MRS: {player.RUN_SPEED}\n" +
+                    $"RS: {player.MOVE_SPEED * player.RUN_SPEED}", consolasFont[0, 0], whiteBrush, 0, 16);
         }
 
         private void DrawWeapon(Player player, int index)
@@ -2875,9 +2891,19 @@ namespace SLIL
                 if (player.InParkour)
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][4], 0, 0, WEAPON.Width, WEAPON.Height);
                 else if (player.STRAFE_SPEED > 0)
-                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], 0, 0, WEAPON.Width, WEAPON.Height);
+                {
+                    if (player.MOVE_SPEED > 0)
+                        graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], 0, 0, WEAPON.Width, WEAPON.Height);
+                    else
+                        graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], 0, 0, WEAPON.Width, WEAPON.Height);
+                }
                 else if (player.STRAFE_SPEED < 0)
-                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], 0, 0, WEAPON.Width, WEAPON.Height);
+                {
+                    if (player.MOVE_SPEED < 0)
+                        graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], 0, 0, WEAPON.Width, WEAPON.Height);
+                    else
+                        graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], 0, 0, WEAPON.Width, WEAPON.Height);
+                }
                 else
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], 0, 0, WEAPON.Width, WEAPON.Height);
             }
