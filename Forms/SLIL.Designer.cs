@@ -38,6 +38,7 @@ namespace SLIL
             this.weapon_shop_page = new System.Windows.Forms.TabPage();
             this.pet_shop_page = new System.Windows.Forms.TabPage();
             this.consumables_shop_page = new System.Windows.Forms.TabPage();
+            this.transport_shop_page = new System.Windows.Forms.TabPage();
             this.shop_title_panel = new System.Windows.Forms.Panel();
             this.shop_title = new System.Windows.Forms.Label();
             this.shop_money = new System.Windows.Forms.Label();
@@ -60,7 +61,6 @@ namespace SLIL
             this.restart_btn = new System.Windows.Forms.Button();
             this.shotgun_pull_timer = new System.Windows.Forms.Timer(this.components);
             this.mouse_hold_timer = new System.Windows.Forms.Timer(this.components);
-            this.transport_shop_page = new System.Windows.Forms.TabPage();
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -139,6 +139,18 @@ namespace SLIL
             this.consumables_shop_page.Size = new System.Drawing.Size(446, 249);
             this.consumables_shop_page.TabIndex = 2;
             this.consumables_shop_page.Text = "Прочее";
+            // 
+            // transport_shop_page
+            // 
+            this.transport_shop_page.AutoScroll = true;
+            this.transport_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.transport_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.transport_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.transport_shop_page.Name = "transport_shop_page";
+            this.transport_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.transport_shop_page.Size = new System.Drawing.Size(446, 249);
+            this.transport_shop_page.TabIndex = 3;
+            this.transport_shop_page.Text = "Транспорт";
             // 
             // shop_title_panel
             // 
@@ -349,18 +361,6 @@ namespace SLIL
             // 
             this.mouse_hold_timer.Interval = 500;
             this.mouse_hold_timer.Tick += new System.EventHandler(this.Mouse_hold_timer_Tick);
-            // 
-            // transport_shop_page
-            // 
-            this.transport_shop_page.AutoScroll = true;
-            this.transport_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.transport_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.transport_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.transport_shop_page.Name = "transport_shop_page";
-            this.transport_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.transport_shop_page.Size = new System.Drawing.Size(446, 249);
-            this.transport_shop_page.TabIndex = 3;
-            this.transport_shop_page.Text = "Транспорт";
             // 
             // SLIL
             // 

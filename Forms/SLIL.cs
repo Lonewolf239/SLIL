@@ -288,18 +288,16 @@ namespace SLIL
         {
             {typeof(Bike), new[,] {
                 {
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_0.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_1.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_2.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_3.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_4.wav"), false)
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_idle.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_accelerating.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_stopping.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_full_speed.wav"), false)
                 },
                 {
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_0.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_1.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_2.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_3.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_4.wav"), false)
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_idle.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_accelerating.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_stopping.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_full_speed.wav"), false)
                 }
             } },
         };
@@ -1011,8 +1009,8 @@ namespace SLIL
                 || player.MOVE_SPEED != 0
                 || player.STRAFE_SPEED != 0
                 )
-                && !player.InParkour 
-                && !player.Aiming 
+                && !player.InParkour
+                && !player.Aiming
                 && (step == null || !step.IsPlaying)
                 )
             {
@@ -1026,19 +1024,19 @@ namespace SLIL
                 {
                     if (Math.Abs(player.MOVE_SPEED) < player.MAX_MOVE_SPEED)
                     {
-                        if(player.PlayerDirection == Directions.STOP 
-                            || (player.PlayerDirection == Directions.FORWARD && player.MOVE_SPEED<0)
-                            || (player.PlayerDirection == Directions.BACK && player.MOVE_SPEED>0))
+                        if (player.PlayerDirection == Directions.STOP
+                            || (player.PlayerDirection == Directions.FORWARD && player.MOVE_SPEED < 0)
+                            || (player.PlayerDirection == Directions.BACK && player.MOVE_SPEED > 0))
                             //stopping
-                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
+                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, 2];
                         else
-                        //accelerating
-                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
+                            //accelerating
+                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, 1];
                     }
                     else
                     {
                         //full speed
-                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
+                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, 3];
                     }
                 }
                 else
@@ -1046,7 +1044,7 @@ namespace SLIL
                 step.PlayWithWait(Volume);
                 currentIndex++;
             }
-            else if(player.InTransport && player.TRANSPORT!=null && player.MOVE_SPEED == 0 && player.STRAFE_SPEED == 0)
+            else if (player.InTransport && player.TRANSPORT != null && player.MOVE_SPEED == 0 && player.STRAFE_SPEED == 0)
             {
                 if (currentIndex >= soundIndices.Count)
                 {
@@ -1054,7 +1052,7 @@ namespace SLIL
                     currentIndex = 0;
                 }
                 //IDLE
-                step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
+                step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, 0];
                 step.PlayWithWait(Volume);
                 currentIndex++;
             }

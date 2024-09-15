@@ -170,7 +170,7 @@ namespace SLIL.UserControls
                                  "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Issue effect under X id for Y seconds       ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -ENTITIES-    ~│~ List of entities                            ~│~\n" +
-                                 "~│~ -ENT_-*X*       ~│~ Spawn entity under ID X, with AI          ~│~\n" +
+                                 "~│~ -ENT_-*X*       ~│~ Spawn entity under ID X, with AI            ~│~\n" +
                                  "~│~ -ENT_-*X*-_AI_-*Y*  ~│~ Spawn entity under ID X, Y = 1 - with AI    ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -NOCLIP-      ~│~ Enables/disables noclip                     ~│~\n" +

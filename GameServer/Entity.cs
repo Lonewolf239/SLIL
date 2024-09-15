@@ -1,5 +1,4 @@
 ﻿using LiteNetLib.Utils;
-using System.ComponentModel.DataAnnotations;
 
 namespace GameServer
 {
