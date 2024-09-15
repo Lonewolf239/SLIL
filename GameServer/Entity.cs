@@ -410,6 +410,12 @@ namespace GameServer
         }
     }
 
+    public abstract class Decoration : GameObject
+    {
+        public Decoration(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) { }
+        public Decoration(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) { }
+    }
+
     public abstract class Enemy : Creature
     {
         protected enum Stages { Roaming, Chasing };
@@ -1186,5 +1192,18 @@ namespace GameServer
                 Y = tempY;
             }
         }
+    }
+
+    public class Ob1 : Decoration
+    {
+        public Ob1(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) { }
+        public Ob1(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) { }
+        protected override int GetEntityID() => 19;
+    }
+    public class Ob2 : Decoration
+    {
+        public Ob2(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) { }
+        public Ob2(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) { }
+        protected override int GetEntityID() => 20;
     }
 }

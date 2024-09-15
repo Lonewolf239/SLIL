@@ -434,6 +434,16 @@ namespace GameServer
                         bike.Deserialize(reader);
                         tempEntities.Add(bike);
                         break;
+                    case 19:
+                        Ob1 ob1 = new(0, 0, MAP_WIDTH, ID);
+                        ob1.Deserialize(reader);
+                        tempEntities.Add(ob1);
+                        break;
+                    case 20:
+                        Ob2 ob2 = new(0, 0, MAP_WIDTH, ID);
+                        ob2.Deserialize(reader);
+                        tempEntities.Add(ob2);
+                        break;
                     default:
                         break;
                 }
@@ -566,6 +576,16 @@ namespace GameServer
                         Bike bike = new(0, 0, MAP_WIDTH, ID);
                         bike.Deserialize(reader);
                         tempEntities.Add(bike);
+                        break;
+                    case 19:
+                        Ob1 ob1 = new(0, 0, MAP_WIDTH, ID);
+                        ob1.Deserialize(reader);
+                        tempEntities.Add(ob1);
+                        break;
+                    case 20:
+                        Ob2 ob2 = new(0, 0, MAP_WIDTH, ID);
+                        ob2.Deserialize(reader);
+                        tempEntities.Add(ob2);
                         break;
                     default:
                         break;
