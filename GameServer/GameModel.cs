@@ -1632,8 +1632,6 @@ namespace GameServer
             p.CanUnblockCamera = false;
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
-            p.StrafeDirection = Directions.STOP;
-            p.PlayerMoveStyle = Directions.STOP;
             NetDataWriter writer = new();
             writer.Put(p.ID);
             p.Serialize(writer);

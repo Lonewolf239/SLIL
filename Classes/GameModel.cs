@@ -1611,8 +1611,6 @@ namespace SLIL.Classes
             p.CanUnblockCamera = false;
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
-            p.StrafeDirection = Directions.STOP;
-            p.PlayerMoveStyle = Directions.STOP;
             new Thread(() => {
                 Thread.Sleep(p.InTransport ? 250 : 500);
                 StopParkour(playerID);

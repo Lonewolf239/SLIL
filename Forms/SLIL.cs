@@ -1920,7 +1920,7 @@ namespace SLIL
             else
             {
                 if (player.MOVE_SPEED < 0)
-                    Controller.ChangePlayerA(player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
+                    Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
                 else if (player.MOVE_SPEED > 0)
                     Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
             }
@@ -1954,7 +1954,7 @@ namespace SLIL
             switch (player.StrafeDirection)
             {
                 case Directions.LEFT:
-                    if (player.STRAFE_SPEED < 0) speedFactor = 3;
+                    if (player.STRAFE_SPEED < 0) speedFactor = 4;
                     else speedFactor = 1;
                     if (!player.InTransport)
                     {
@@ -1963,20 +1963,15 @@ namespace SLIL
                     }
                     else
                     {
-                        if (player.MOVE_SPEED < 0)
-                        {
-                            if (player.STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
-                                player.STRAFE_SPEED -= (transport * 1.75) * speedFactor;
-                        }
-                        else
-                        {
-                            if (player.STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
-                                player.STRAFE_SPEED += (transport * 1.75) * speedFactor;
-                        }
+                        if ((player.MOVE_SPEED < 0.25 && player.PlayerDirection == Directions.FORWARD)||
+                            (player.MOVE_SPEED > -0.25 && player.PlayerDirection == Directions.BACK))
+                            player.STRAFE_SPEED = 0;
+                        if (player.STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
+                            player.STRAFE_SPEED += (transport * 1.75) * speedFactor;
                     }
                     break;
                 case Directions.RIGHT:
-                    if (player.STRAFE_SPEED > 0) speedFactor = 3;
+                    if (player.STRAFE_SPEED > 0) speedFactor = 4;
                     else speedFactor = 1;
                     if (!player.InTransport)
                     {
@@ -1985,16 +1980,11 @@ namespace SLIL
                     }
                     else
                     {
-                        if (player.MOVE_SPEED > 0)
-                        {
-                            if (player.STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
-                                player.STRAFE_SPEED -= (transport * 1.75) * speedFactor;
-                        }
-                        else
-                        {
-                            if (player.STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
-                                player.STRAFE_SPEED += (transport * 1.75) * speedFactor;
-                        }
+                        if ((player.MOVE_SPEED < 0.25 && player.PlayerDirection == Directions.FORWARD) ||
+                            (player.MOVE_SPEED > -0.25 && player.PlayerDirection == Directions.BACK))
+                            player.STRAFE_SPEED = 0;
+                        if (player.STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
+                            player.STRAFE_SPEED -= (transport * 1.75) * speedFactor;
                     }
                     break;
                 case Directions.STOP:
@@ -2009,6 +1999,9 @@ namespace SLIL
                     }
                     else
                     {
+                        if ((player.MOVE_SPEED < 0.25 && player.PlayerDirection == Directions.FORWARD) ||
+                            (player.MOVE_SPEED > -0.25 && player.PlayerDirection == Directions.BACK))
+                            player.STRAFE_SPEED = 0;
                         if (player.STRAFE_SPEED + ((transport * 1.75) * 2) <= 0)
                             player.STRAFE_SPEED += (transport * 1.75) * 2;
                         else if (player.STRAFE_SPEED - ((transport * 1.75) * 2) >= 0)
