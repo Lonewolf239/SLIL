@@ -3636,8 +3636,6 @@ namespace SLIL
             player.SetDefault();
             player.LevelUpdated = false;
             open_shop = false;
-            player.StrafeDirection = player.PlayerDirection = Directions.STOP;
-            player.PlayerMoveStyle = Directions.WALK;
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
             if (MainMenu.sounds)
             {

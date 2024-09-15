@@ -543,7 +543,7 @@ namespace GameServer
             Cost = 150;
             TransportHP = 150;
             Speed = 2.35;
-            Controllability = 118;
+            Controllability = 105;
             Name = ["7-0", "Motorbike"];
             base.AnimationsToStatic();
         }

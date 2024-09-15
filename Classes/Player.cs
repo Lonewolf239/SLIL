@@ -414,6 +414,9 @@ namespace SLIL.Classes
                 CuteMode = false;
                 Fast = false;
                 NoClip = false;
+                PlayerDirection = Directions.STOP;
+                StrafeDirection = Directions.STOP;
+                PlayerMoveStyle = Directions.WALK;
                 if (InTransport) StopEffect(4);
             }
             EnemiesKilled = 0;
@@ -438,9 +441,6 @@ namespace SLIL.Classes
                 BlockMouse = false;
                 CanUnblockCamera = true;
             }
-            PlayerDirection = Directions.STOP;
-            StrafeDirection = Directions.STOP;
-            PlayerMoveStyle = Directions.WALK;
             ParkourState = 0;
             PreviousGun = CurrentGun = 1;
             STAMINE = MAX_STAMINE;
