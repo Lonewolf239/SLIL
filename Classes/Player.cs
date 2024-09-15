@@ -100,6 +100,12 @@ namespace SLIL.Classes
                 writer.Put(item.ItemID);
                 item.Serialize(writer);
             }
+            writer.Put(this.Effects.Count);
+            foreach(Effect effect in this.Effects)
+            {
+                writer.Put(effect.ID);
+                effect.Serialize(writer);
+            }
         }
 
         public override void Deserialize(NetDataReader reader)
@@ -235,8 +241,44 @@ namespace SLIL.Classes
                         break;
                 }
             }
+            int effectsCount = reader.GetInt();
+            List<Effect> tempEffects = new List<Effect>();
+            for(int i = 0; i < effectsCount; i++)
+            {
+                switch(reader.GetInt())
+                {
+                    case 0:
+                        Regeneration regeneration = new Regeneration();
+                        regeneration.Deserialize(reader);
+                        tempEffects.Add(regeneration);
+                        break;
+                    case 1:
+                        Adrenaline adrenaline = new Adrenaline();
+                        adrenaline.Deserialize(reader);
+                        tempEffects.Add(adrenaline);
+                        break;
+                    case 2:
+                        Protection protection = new Protection();
+                        protection.Deserialize(reader);
+                        tempEffects.Add(protection);
+                        break;
+                    case 3:
+                        Fatigue fatigue = new Fatigue();
+                        fatigue.Deserialize(reader);
+                        tempEffects.Add(fatigue);
+                        break;
+                    case 4:
+                        Rider rider = new Rider();
+                        rider.Deserialize(reader);
+                        tempEffects.Add(rider);
+                        break;
+                    default:
+                        break;
+                }
+            }
             Guns = tempGuns;
             DisposableItems = tempDisposableItems;
+            Effects = tempEffects;
         }
 
         public void Deserialize(NetDataReader reader, bool updateCoordinates)
@@ -373,8 +415,44 @@ namespace SLIL.Classes
                             break;
                     }
                 }
+                int effectsCount = reader.GetInt();
+                List<Effect> tempEffects = new List<Effect>();
+                for(int i = 0; i < effectsCount; i++)
+                {
+                    switch(reader.GetInt())
+                    {
+                        case 0:
+                            Regeneration regeneration = new Regeneration();
+                            regeneration.Deserialize(reader);
+                            tempEffects.Add(regeneration);
+                            break;
+                        case 1:
+                            Adrenaline adrenaline = new Adrenaline();
+                            adrenaline.Deserialize(reader);
+                            tempEffects.Add(adrenaline);
+                            break;
+                        case 2:
+                            Protection protection = new Protection();
+                            protection.Deserialize(reader);
+                            tempEffects.Add(protection);
+                            break;
+                        case 3:
+                            Fatigue fatigue = new Fatigue();
+                            fatigue.Deserialize(reader);
+                            tempEffects.Add(fatigue);
+                            break;
+                        case 4:
+                            Rider rider = new Rider();
+                            rider.Deserialize(reader);
+                            tempEffects.Add(rider);
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 Guns = tempGuns;
                 DisposableItems = tempDisposableItems;
+                Effects = tempEffects;
             }
             else
                 base.Deserialize(reader);

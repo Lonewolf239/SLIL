@@ -1,6 +1,8 @@
-﻿namespace GameServer
+﻿using LiteNetLib.Utils;
+
+namespace GameServer
 {
-    public class Effect
+    public class Effect : INetSerializable
     {
         public int ID { get; set; }
         public string? Name { get; set; }
@@ -27,6 +29,17 @@
         public void UpdateTimeRemaining() => EffectTimeRemaining = EffectTotalTime;
 
         public void SetTotalTime(int value) => EffectTotalTime = value;
+
+        public void Serialize(NetDataWriter writer)
+        {
+            writer.Put(EffectTimeRemaining);
+        }
+
+        public void Deserialize(NetDataReader reader)
+        {
+            this.EffectTimeRemaining = reader.GetInt();
+        }
+
     }
 
     public class Regeneration : Effect

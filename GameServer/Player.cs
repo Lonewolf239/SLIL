@@ -99,6 +99,12 @@ namespace GameServer
                 writer.Put(item.ItemID);
                 item.Serialize(writer);
             }
+            writer.Put(this.Effects.Count);
+            foreach(Effect effect in this.Effects)
+            {
+                writer.Put(effect.ID);
+                effect.Serialize(writer);
+            }
         }
 
         public override void Deserialize(NetDataReader reader)
@@ -234,8 +240,44 @@ namespace GameServer
                         break;
                 }
             }
+            int effectsCount = reader.GetInt();
+            List<Effect> tempEffects = [];
+            for(int i = 0; i < effectsCount; i++)
+            {
+                switch(reader.GetInt())
+                {
+                    case 0:
+                        Regeneration regeneration = new();
+                        regeneration.Deserialize(reader);
+                        tempEffects.Add(regeneration);
+                        break;
+                    case 1:
+                        Adrenaline adrenaline = new();
+                        adrenaline.Deserialize(reader);
+                        tempEffects.Add(adrenaline);
+                        break;
+                    case 2:
+                        Protection protection = new();
+                        protection.Deserialize(reader);
+                        tempEffects.Add(protection);
+                        break;
+                    case 3:
+                        Fatigue fatigue = new();
+                        fatigue.Deserialize(reader);
+                        tempEffects.Add(fatigue);
+                        break;
+                    case 4:
+                        Rider rider = new();
+                        rider.Deserialize(reader);
+                        tempEffects.Add(rider);
+                        break;
+                    default:
+                        break;
+                }
+            }
             Guns = tempGuns;
             DisposableItems = tempDisposableItems;
+            Effects = tempEffects;
         }
 
         public void Deserialize(NetDataReader reader, bool updateCoordinates)
@@ -372,8 +414,44 @@ namespace GameServer
                             break;
                     }
                 }
+                int effectsCount = reader.GetInt();
+                List<Effect> tempEffects = [];
+                for(int i = 0; i < effectsCount; i++)
+                {
+                    switch(reader.GetInt())
+                    {
+                        case 0:
+                            Regeneration regeneration = new();
+                            regeneration.Deserialize(reader);
+                            tempEffects.Add(regeneration);
+                            break;
+                        case 1:
+                            Adrenaline adrenaline = new();
+                            adrenaline.Deserialize(reader);
+                            tempEffects.Add(adrenaline);
+                            break;
+                        case 2:
+                            Protection protection = new();
+                            protection.Deserialize(reader);
+                            tempEffects.Add(protection);
+                            break;
+                        case 3:
+                            Fatigue fatigue = new();
+                            fatigue.Deserialize(reader);
+                            tempEffects.Add(fatigue);
+                            break;
+                        case 4:
+                            Rider rider = new();
+                            rider.Deserialize(reader);
+                            tempEffects.Add(rider);
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 Guns = tempGuns;
                 DisposableItems = tempDisposableItems;
+                Effects = tempEffects;
             }
             else
                 base.Deserialize(reader);

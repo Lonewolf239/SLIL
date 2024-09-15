@@ -1,4 +1,6 @@
-﻿namespace SLIL.Classes
+﻿using LiteNetLib.Utils;
+
+namespace SLIL.Classes
 {
     public class Effect
     {
@@ -28,6 +30,17 @@
         public void UpdateTimeRemaining() => EffectTimeRemaining = EffectTotalTime;
 
         public void SetTotalTime(int value) => EffectTotalTime = value;
+
+        public void Serialize(NetDataWriter writer)
+        {
+            writer.Put(EffectTimeRemaining);
+        }
+
+        public void Deserialize(NetDataReader reader)
+        {
+            this.EffectTimeRemaining = reader.GetInt();
+        }
+
     }
 
     public class Regeneration : Effect
