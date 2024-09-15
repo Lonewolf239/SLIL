@@ -37,6 +37,7 @@ namespace SLIL.Classes
         public double MAX_STRAFE_SPEED { get; set; }
         public double MOVE_SPEED { get; set; }
         public double STRAFE_SPEED { get; set; }
+        public double MAX_RUN_SPEED { get; set; }
         public double RUN_SPEED { get; set; }
         public double DEPTH { get; set; }
         public int SelectedItem { get; set; }
@@ -407,7 +408,7 @@ namespace SLIL.Classes
                 Stage = 0;
                 MAX_MOVE_SPEED = 1.8;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
-                RUN_SPEED = 2.25;
+                MAX_RUN_SPEED = 2.25;
                 DEPTH = 8;
                 SelectedItem = 0;
                 PET = null;
@@ -424,6 +425,7 @@ namespace SLIL.Classes
             GunState = 0;
             MOVE_SPEED = 0;
             STRAFE_SPEED = 0;
+            RUN_SPEED = 0;
             Dead = false;
             Invulnerable = false;
             TimeoutInvulnerable = 2;

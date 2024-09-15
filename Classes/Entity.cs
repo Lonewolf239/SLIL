@@ -524,7 +524,7 @@ namespace SLIL.Classes
         public int Cost { get; set; }
         public bool CanJump { get; set; }
         public bool AddToShop { get; set; }
-        public double TransportHP { get; set; } //max: 300
+        public double TransportHP { get; set; } //max: 500
         public double Speed { get; set; } //max: 7.5
         public int Controllability { get; set; } //max: 175
 

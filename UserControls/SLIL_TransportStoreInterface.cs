@@ -38,7 +38,7 @@ namespace SLIL.UserControls
                 return (int)(transport.Speed / 7.5 * 336);
             else if (type == 1)
                 return (175 - transport.Controllability) * 336 / (175 - 100);
-            return (int)(transport.TransportHP / 300 * 336);
+            return (int)(transport.TransportHP / 500 * 336);
         }
 
         private Image DrawWeaponParametrs()

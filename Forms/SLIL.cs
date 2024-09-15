@@ -1890,12 +1890,9 @@ namespace SLIL
                 DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '.';
             }
             DISPLAYED_MAP.Replace('P', '.');
-            double run = 1;
-            if (player.PlayerMoveStyle == Directions.RUN && player.PlayerDirection == Directions.FORWARD)
-                run = player.RUN_SPEED;
             ChangeSpeed(player);
-            double move = player.MOVE_SPEED * run * elapsed_time;
-            double strafe = player.STRAFE_SPEED * run * elapsed_time;
+            double move = player.MOVE_SPEED * player.RUN_SPEED * elapsed_time;
+            double strafe = player.STRAFE_SPEED * player.RUN_SPEED * elapsed_time;
             double moveSin = Math.Sin(player.A) * move;
             double moveCos = Math.Cos(player.A) * move;
             double strafeSin = Math.Sin(player.A) * strafe;
@@ -2060,6 +2057,17 @@ namespace SLIL
                         else
                             player.MOVE_SPEED = 0;
                     }
+                    break;
+            }
+            switch (player.PlayerMoveStyle)
+            {
+                case Directions.RUN:
+                    if (player.RUN_SPEED + walk <= player.MAX_RUN_SPEED + 0.01)
+                        player.RUN_SPEED += walk;
+                    break;
+                default:
+                    if (player.RUN_SPEED > 1) player.RUN_SPEED -= walk * 2;
+                    else player.RUN_SPEED = 1;
                     break;
             }
         }
@@ -2867,13 +2875,26 @@ namespace SLIL
         private void ShowDebugs(Player player)
         {
             if (ShowDebugSpeed)
-                graphicsWeapon.DrawString(
-                    $"MMS: {player.MAX_MOVE_SPEED}\n" +
-                    $"MS: {player.MOVE_SPEED}\n" +
-                    $"MSS: {player.MAX_STRAFE_SPEED}\n" +
-                    $"SS: {player.STRAFE_SPEED}\n" +
-                    $"MRS: {player.RUN_SPEED}\n" +
-                    $"RS: {player.MOVE_SPEED * player.RUN_SPEED}", consolasFont[0, 0], whiteBrush, 0, 16);
+            {
+                string debugInfo = string.Format(
+                    "MMS: {0,5:0.##}  MSS: {1,5:0.##}\n" +
+                    "MRS: {2,5:0.##}  RS:  {3,5:0.##}\n" +
+                    "MS:  {4,5:0.##}  CMS: {5,5:0.##}\n" +
+                    "SS:  {6,5:0.##}  CSS: {7,5:0.##}\n" +
+                    "MST: {8,5:0.##}  ST:  {9,5:0.##}",
+                    player.MAX_MOVE_SPEED,
+                    player.MAX_STRAFE_SPEED,
+                    player.MAX_RUN_SPEED,
+                    player.RUN_SPEED,
+                    player.MOVE_SPEED,
+                    player.MOVE_SPEED * player.RUN_SPEED,
+                    player.STRAFE_SPEED,
+                    player.STRAFE_SPEED * player.RUN_SPEED,
+                    player.MAX_STAMINE,
+                    player.STAMINE
+                );
+                graphicsWeapon.DrawString(debugInfo, consolasFont[0, 0], whiteBrush, 0, 16);
+            }
         }
 
         private void DrawWeapon(Player player, int index)
@@ -3714,6 +3735,7 @@ namespace SLIL
             consumables_shop_page.Controls.Clear();
             transport_shop_page.Controls.Clear();
             Player player = Controller.GetPlayer();
+            player.BlockInput = player.BlockCamera = true;
             player.PlayerDirection = Directions.STOP;
             player.StrafeDirection = Directions.STOP;
             player.PlayerMoveStyle = Directions.WALK;
@@ -3790,6 +3812,8 @@ namespace SLIL
             int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
             Cursor.Position = new Point(x, y);
             shop_panel.Visible = false;
+            Player player = Controller.GetPlayer();
+            player.BlockInput = player.BlockCamera = false;
         }
 
         private void CuteMode()

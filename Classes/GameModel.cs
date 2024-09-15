@@ -581,8 +581,9 @@ namespace SLIL.Classes
                                 break;
                             case 2: //Energy Drink
                                 player.MAX_STAMINE -= 150;
-                                player.MOVE_SPEED -= 0.15;
-                                player.RUN_SPEED -= 0.15;
+                                player.MAX_MOVE_SPEED -= 0.15;
+                                player.MAX_RUN_SPEED -= 0.1;
+                                player.MAX_STRAFE_SPEED = player.MAX_MOVE_SPEED / 1.4;
                                 player.STAMINE = player.MAX_STAMINE;
                                 break;
                             case 3: //Pyro
@@ -604,8 +605,9 @@ namespace SLIL.Classes
                         break;
                     case 2: //Energy Drink
                         player.MAX_STAMINE += 150;
-                        player.MOVE_SPEED += 0.15;
-                        player.RUN_SPEED += 0.15;
+                        player.MAX_MOVE_SPEED += 0.15;
+                        player.MAX_RUN_SPEED += 0.1;
+                        player.MAX_STRAFE_SPEED = player.MAX_MOVE_SPEED / 1.4;
                         player.STAMINE = player.MAX_STAMINE;
                         break;
                     case 3: //Pyro
