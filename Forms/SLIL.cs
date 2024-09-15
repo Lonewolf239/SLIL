@@ -1005,7 +1005,16 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if ((player.PlayerDirection != Directions.STOP || player.StrafeDirection != Directions.STOP) && !player.InParkour && !player.Aiming && (step == null || !step.IsPlaying))
+            if ((
+                player.PlayerDirection != Directions.STOP
+                || player.StrafeDirection != Directions.STOP
+                || player.MOVE_SPEED != 0
+                || player.STRAFE_SPEED != 0
+                )
+                && !player.InParkour 
+                && !player.Aiming 
+                && (step == null || !step.IsPlaying)
+                )
             {
                 if (currentIndex >= soundIndices.Count)
                 {
@@ -1014,9 +1023,38 @@ namespace SLIL
                 }
                 int i = player.PlayerMoveStyle == Directions.RUN || player.Fast ? 1 : 0;
                 if (player.InTransport && player.TRANSPORT != null)
-                    step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
+                {
+                    if (Math.Abs(player.MOVE_SPEED) < player.MAX_MOVE_SPEED)
+                    {
+                        if(player.PlayerDirection == Directions.STOP 
+                            || (player.PlayerDirection == Directions.FORWARD && player.MOVE_SPEED<0)
+                            || (player.PlayerDirection == Directions.BACK && player.MOVE_SPEED>0))
+                            //stopping
+                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
+                        else
+                        //accelerating
+                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
+                    }
+                    else
+                    {
+                        //full speed
+                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
+                    }
+                }
                 else
                     step = steps[player.CuteMode ? i + 2 : i, soundIndices[currentIndex]];
+                step.PlayWithWait(Volume);
+                currentIndex++;
+            }
+            else if(player.InTransport && player.TRANSPORT!=null && player.MOVE_SPEED == 0 && player.STRAFE_SPEED == 0)
+            {
+                if (currentIndex >= soundIndices.Count)
+                {
+                    soundIndices = soundIndices.OrderBy(x => rand.Next()).ToList();
+                    currentIndex = 0;
+                }
+                //IDLE
+                step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, soundIndices[currentIndex]];
                 step.PlayWithWait(Volume);
                 currentIndex++;
             }
