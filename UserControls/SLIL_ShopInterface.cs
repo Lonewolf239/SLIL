@@ -133,9 +133,9 @@ namespace SLIL.UserControls
             {
                 Brush progressbar_background = new SolidBrush(Color.FromArgb(77, 79, 86));
                 Brush progressbar = new SolidBrush(Color.FromArgb(195, 195, 195));
-                g.DrawImage(Properties.Resources.bullet, 0, 0, 30, 30);
-                g.DrawImage(Properties.Resources.magic, 0, 38, 30, 30);
-                g.DrawImage(Properties.Resources.rocket, 0, 76, 30, 30);
+                g.DrawImage(Properties.Resources.damage, 0, 0, 30, 30);
+                g.DrawImage(Properties.Resources.firing_range, 0, 38, 30, 30);
+                g.DrawImage(Properties.Resources.accuracy, 0, 76, 30, 30);
                 g.FillRectangle(progressbar_background, 35, 0, 340, 30);
                 g.FillRectangle(progressbar_background, 35, 38, 340, 30);
                 g.FillRectangle(progressbar_background, 35, 76, 340, 30);

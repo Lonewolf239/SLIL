@@ -1267,5 +1267,14 @@
   <ItemGroup>
     <None Include="Images\bike_icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\accuracy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\damage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\firing_range.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

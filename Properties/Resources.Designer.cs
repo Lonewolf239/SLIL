@@ -63,6 +63,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap accuracy {
+            get {
+                object obj = ResourceManager.GetObject("accuracy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap adrenalin {
             get {
                 object obj = ResourceManager.GetObject("adrenalin", resourceCulture);
@@ -493,6 +503,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap damage {
+            get {
+                object obj = ResourceManager.GetObject("damage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap done {
             get {
                 object obj = ResourceManager.GetObject("done", resourceCulture);
@@ -726,6 +746,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap fingershot_shoot {
             get {
                 object obj = ResourceManager.GetObject("fingershot_shoot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap firing_range {
+            get {
+                object obj = ResourceManager.GetObject("firing_range", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
