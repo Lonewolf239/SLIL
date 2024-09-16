@@ -1809,18 +1809,22 @@ namespace SLIL
             if (ip_connect_input.Text == "000.000.000.000:0000") return;
             game_mode_panel.Visible = false;
             if (sounds) MainMenuTheme.Stop();
-            SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]))
+            try
             {
-                game_over = game_over,
-                draw = draw,
-                buy = buy,
-                wall = wall,
-                tp = tp,
-                screenshot = screenshot,
-                low_stamine = low_stamine,
-                climb = climb
-            };
-            form.ShowDialog();
+                SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]))
+                {
+                    game_over = game_over,
+                    draw = draw,
+                    buy = buy,
+                    wall = wall,
+                    tp = tp,
+                    screenshot = screenshot,
+                    low_stamine = low_stamine,
+                    climb = climb
+                };
+                form.ShowDialog();
+            }
+            catch { }
             if (sounds) MainMenuTheme.Play(Volume);
             difficulty_panel.Visible = false;
         }

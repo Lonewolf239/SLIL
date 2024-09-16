@@ -32,7 +32,7 @@ namespace GameServer
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        private static readonly NetPacketProcessor processor = new();
+        //private static readonly NetPacketProcessor processor = new();
         private static readonly EventBasedNetListener listener = new();
         private static NetManager server = new(listener);
         private static readonly Dispatcher dispatcher = new();
