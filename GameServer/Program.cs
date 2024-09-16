@@ -242,7 +242,6 @@ namespace GameServer
             Console.SetWindowSize(width, height);
 #if WIN64 || (PLATFORM_WINDOWS && ENV64BIT)
     Console.SetBufferSize(width, height);
-#endif
             int screenWidth = GetSystemMetrics(SM_CXSCREEN);
             int screenHeight = GetSystemMetrics(SM_CYSCREEN);
             IntPtr consoleWindow = GetConsoleWindow();
@@ -256,6 +255,7 @@ namespace GameServer
             style &= ~WS_SIZEBOX;
             style &= ~WS_MAXIMIZEBOX;
             _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
+#endif
         }
 
         private static void SendOutcomingMessageInvoker(int packetID, byte[]? data = null)
