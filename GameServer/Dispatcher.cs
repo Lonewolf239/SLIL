@@ -234,6 +234,7 @@ namespace GameServer
         public void SerializeGame(NetDataWriter writer) => Game.Serialize(writer);
 
         public void StartGame() => Game.StartGame();
+
         public void ChangeDifficulty(int difficulty) => Game.ChangeDifficulty(difficulty);
 
         internal void StopGame()
