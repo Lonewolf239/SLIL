@@ -374,7 +374,7 @@ namespace GameServer
                 Console.WriteLine('╔' + new string('═', windowWidth - 2) + '╗');
                 Console.WriteLine('║' + CenterText(prompt, windowWidth - 2) + '║');
                 Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
-                if (options.Length > 1)
+                if (options.Length > 0)
                 {
                     for (int i = 0; i < options.Length; i++)
                     {
@@ -401,14 +401,14 @@ namespace GameServer
                     Console.Write("║\n");
                 }
                 Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
-                if (options.Length > 1)
+                if (options.Length > 0)
                     Console.WriteLine('║' + CenterText($"↑↓: Move  ESC: {button1}  Enter: {button2}", windowWidth - 2) + '║');
                 else
                     Console.WriteLine('║' + CenterText($"↑↓: Move  ESC: {button1}", windowWidth - 2) + '║');
                 Console.WriteLine('╚' + new string('═', windowWidth - 2) + '╝');
                 Console.ResetColor();
                 keyInfo = Console.ReadKey(true);
-                if (options.Length > 1)
+                if (options.Length > 0)
                 {
                     if (keyInfo.Key == ConsoleKey.UpArrow)
                         selectedIndex = (selectedIndex - 1 + options.Length) % options.Length;
@@ -418,7 +418,7 @@ namespace GameServer
                 if (keyInfo.Key == ConsoleKey.Escape) return -1;
             } while (keyInfo.Key != ConsoleKey.Enter);
             Console.Clear();
-            if (options.Length > 1) return selectedIndex;
+            if (options.Length > 0) return selectedIndex;
             return -1;
         }
 
