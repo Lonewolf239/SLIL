@@ -6,16 +6,6 @@ namespace GameServer
 {
     class GameServerProgramm
     {
-        private static readonly NetPacketProcessor processor = new();
-        private static readonly EventBasedNetListener listener = new();
-        private static NetManager server = new(listener);
-        private static readonly Dispatcher dispatcher = new();
-        private static SendOutcomingMessageDelegate? sendOutcomingMessageHandle;
-        private const string version = "1.2.2.2";
-        private static bool exit = false;
-        private const int MAX_CONNECTIONS = 4;
-        //server.UnsyncedEvents = true;
-        //server.UpdateTime = 1;
         private const int GWL_STYLE = -16;
         private const int WS_SIZEBOX = 0x00040000;
         private const int WS_MAXIMIZEBOX = 0x00010000;
@@ -29,7 +19,6 @@ namespace GameServer
             public int Right;
             public int Bottom;
         }
-
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         private static extern IntPtr GetConsoleWindow();
         [DllImport("user32.dll", SetLastError = true)]
@@ -43,27 +32,16 @@ namespace GameServer
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        private static void SetupConsoleSettings()
-        {
-            int width = 80;
-            int height = 25;
-            Console.Title = $"GameServer for SLIL v{version}";
-            Console.SetWindowSize(width, height);
-            Console.SetBufferSize(width, height);
-            int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-            int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-            IntPtr consoleWindow = GetConsoleWindow();
-            GetWindowRect(consoleWindow, out RECT rect);
-            int consoleWidthPixels = rect.Right - rect.Left;
-            int consoleHeightPixels = rect.Bottom - rect.Top;
-            int posX = (screenWidth - consoleWidthPixels) / 2;
-            int posY = (screenHeight - consoleHeightPixels) / 2;
-            MoveWindow(consoleWindow, posX, posY, consoleWidthPixels, consoleHeightPixels, true);
-            int style = GetWindowLong(consoleWindow, GWL_STYLE);
-            style &= ~WS_SIZEBOX;
-            style &= ~WS_MAXIMIZEBOX;
-            _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
-        }
+        private static readonly NetPacketProcessor processor = new();
+        private static readonly EventBasedNetListener listener = new();
+        private static NetManager server = new(listener);
+        private static readonly Dispatcher dispatcher = new();
+        private static SendOutcomingMessageDelegate? sendOutcomingMessageHandle;
+        private const string version = "1.2.2.2";
+        private static bool exit = false;
+        private const int MAX_CONNECTIONS = 4;
+        //server.UnsyncedEvents = true;
+        //server.UpdateTime = 1;
 
         public static void Main()
         {
@@ -99,10 +77,31 @@ namespace GameServer
             ConsoleMenu();
         }
 
+        private static void SetupConsoleSettings()
+        {
+            int width = 80;
+            int height = 25;
+            Console.Title = $"GameServer for SLIL v{version}";
+            Console.SetWindowSize(width, height);
+            Console.SetBufferSize(width, height);
+            int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+            int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+            IntPtr consoleWindow = GetConsoleWindow();
+            GetWindowRect(consoleWindow, out RECT rect);
+            int consoleWidthPixels = rect.Right - rect.Left;
+            int consoleHeightPixels = rect.Bottom - rect.Top;
+            int posX = (screenWidth - consoleWidthPixels) / 2;
+            int posY = (screenHeight - consoleHeightPixels) / 2;
+            MoveWindow(consoleWindow, posX, posY, consoleWidthPixels, consoleHeightPixels, true);
+            int style = GetWindowLong(consoleWindow, GWL_STYLE);
+            style &= ~WS_SIZEBOX;
+            style &= ~WS_MAXIMIZEBOX;
+            _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
+        }
+
         private static void SendOutcomingMessageInvoker(int packetID, byte[]? data = null)
         {
-            if (data != null)
-                dispatcher.SendOutcomingMessage(packetID, ref server, data);
+            if (data != null) dispatcher.SendOutcomingMessage(packetID, ref server, data);
         }
 
         private static void StartThread()
@@ -149,7 +148,7 @@ namespace GameServer
             if (message != "none")
             {
                 Console.Write('│');
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.Write(CenterText(message, windowWidth - 2));
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine('│');
