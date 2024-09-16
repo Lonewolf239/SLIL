@@ -240,8 +240,8 @@ namespace GameServer
             int height = 25;
             Console.Title = $"GameServer for SLIL v{version}";
             Console.SetWindowSize(width, height);
-#if WIN64 || (PLATFORM_WINDOWS && ENV64BIT)
-    Console.SetBufferSize(width, height);
+#if WINDOWS || WIN32 || WIN64 || PLATFORM_WINDOWS
+            Console.SetBufferSize(width, height);
             int screenWidth = GetSystemMetrics(SM_CXSCREEN);
             int screenHeight = GetSystemMetrics(SM_CYSCREEN);
             IntPtr consoleWindow = GetConsoleWindow();
