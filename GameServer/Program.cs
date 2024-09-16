@@ -91,16 +91,17 @@ namespace GameServer
                             "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
                             "║ 2   ║ start            ║ Start the server                            ║",
                             "║ 3   ║ stop             ║ Stop the server                             ║",
-                            "║ 4   ║ exit             ║ Exit the program                            ║",
                             "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
-                            "║ 5   ║ ip               ║ Display server IP address                   ║",
-                            "║ 6   ║ kick             ║ Kick the player from server                 ║",
+                            "║ 4   ║ ip               ║ Display server IP address                   ║",
+                            "║ 5   ║ kick             ║ Kick the player from server                 ║",
                             "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
-                            "║ 7   ║ set_difficulty   ║ Set the difficulty on the server            ║",
-                            "║ 8   ║ set_game_mode    ║ Set the game mode on the server             ║",
+                            "║ 6   ║ set_difficulty   ║ Set the difficulty on the server            ║",
+                            "║ 7   ║ set_game_mode    ║ Set the game mode on the server             ║",
                             "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
-                            "║ 9   ║ start_game       ║ Start a new game on the server              ║",
-                            "║ 10  ║ stop_game        ║ Stop the game on the server                 ║",
+                            "║ 8   ║ start_game       ║ Start a new game on the server              ║",
+                            "║ 9   ║ stop_game        ║ Stop the game on the server                 ║",
+                            "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
+                            "║ 10  ║ exit             ║ Exit the program                            ║",
                             "╚═════╩══════════════════╩═════════════════════════════════════════════╝"
                         ];
                         DisplayTextMessage(helpText, true);
@@ -160,15 +161,10 @@ namespace GameServer
                         DisplayWelcomeText("Server stopped successfully");
                         break;
                     case "4":
-                    case "exit":
-                        server.Stop();
-                        exit = true;
-                        break;
-                    case "5":
                     case "ip":
                         DisplayWelcomeText($"Server IP address: {"127.0.0.1:9999"}");
                         break;
-                    case "6":
+                    case "5":
                     case "kick":
                         try
                         {
@@ -184,7 +180,7 @@ namespace GameServer
                         }
                         catch (Exception e) { DisplayWelcomeText($"Error kicking player: {e.Message}"); }
                         break;
-                    case "7":
+                    case "6":
                     case "set_difficulty":
                         try
                         {
@@ -200,7 +196,7 @@ namespace GameServer
                         }
                         catch (Exception e) { DisplayWelcomeText($"Error setting difficulty: {e.Message}"); }
                         break;
-                    case "8":
+                    case "7":
                     case "set_game_mode":
                         try
                         {
@@ -217,15 +213,20 @@ namespace GameServer
                         }
                         catch (Exception e) { DisplayWelcomeText($"Error setting game mode: {e.Message}"); }
                         break;
-                    case "9":
+                    case "8":
                     case "start_game":
                         dispatcher.StartGame();
                         DisplayWelcomeText("New game started on the server");
                         break;
-                    case "10":
+                    case "9":
                     case "stop_game":
                         dispatcher.StopGame();
                         DisplayWelcomeText("Game stopped on the server");
+                        break;
+                    case "10":
+                    case "exit":
+                        server.Stop();
+                        exit = true;
                         break;
                     default:
                         DisplayWelcomeText("Unknown command. Type \"help\" for a list of available commands");
@@ -240,22 +241,23 @@ namespace GameServer
             int height = 25;
             Console.Title = $"GameServer for SLIL v{version}";
             Console.SetWindowSize(width, height);
-#if WINDOWS || WIN32 || WIN64 || PLATFORM_WINDOWS
-            Console.SetBufferSize(width, height);
-            int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-            int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-            IntPtr consoleWindow = GetConsoleWindow();
-            GetWindowRect(consoleWindow, out RECT rect);
-            int consoleWidthPixels = rect.Right - rect.Left;
-            int consoleHeightPixels = rect.Bottom - rect.Top;
-            int posX = (screenWidth - consoleWidthPixels) / 2;
-            int posY = (screenHeight - consoleHeightPixels) / 2;
-            MoveWindow(consoleWindow, posX, posY, consoleWidthPixels, consoleHeightPixels, true);
-            int style = GetWindowLong(consoleWindow, GWL_STYLE);
-            style &= ~WS_SIZEBOX;
-            style &= ~WS_MAXIMIZEBOX;
-            _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
-#endif
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Console.SetBufferSize(width, height);
+                int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+                int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+                IntPtr consoleWindow = GetConsoleWindow();
+                GetWindowRect(consoleWindow, out RECT rect);
+                int consoleWidthPixels = rect.Right - rect.Left;
+                int consoleHeightPixels = rect.Bottom - rect.Top;
+                int posX = (screenWidth - consoleWidthPixels) / 2;
+                int posY = (screenHeight - consoleHeightPixels) / 2;
+                MoveWindow(consoleWindow, posX, posY, consoleWidthPixels, consoleHeightPixels, true);
+                int style = GetWindowLong(consoleWindow, GWL_STYLE);
+                style &= ~WS_SIZEBOX;
+                style &= ~WS_MAXIMIZEBOX;
+                _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
+            }
         }
 
         private static void SendOutcomingMessageInvoker(int packetID, byte[]? data = null)
