@@ -208,6 +208,42 @@ namespace GameServer
 
         private static string CenterText(string text, int width) => text.PadLeft((width - text.Length) / 2 + text.Length).PadRight(width);
 
+        private static void DisplayTextMessage(string[] message, bool do_split = false)
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            foreach (string line in message)
+            {
+                if (line.StartsWith('│'))
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write('│');
+                    int rightStartIndex = 1;
+                    if (do_split)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(line[1..line.IndexOf('│', 1)]);
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write('│');
+                        rightStartIndex = line.IndexOf('│', 1) + 1;
+                    }
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(line.Substring(rightStartIndex, line.Length - rightStartIndex - 1));
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine('│');
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine(line);
+                }
+            }
+            Console.ResetColor();
+            Console.Write("\nPress any key to return to the main menu...");
+            Console.ReadKey();
+            DisplayWelcomeText();
+        }
+
         private static void ConsoleMenu()
         {
             while (!exit)
@@ -216,51 +252,57 @@ namespace GameServer
                 switch (command)
                 {
                     case "help":
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Cyan;
                         string[] helpText =
                         [
                             "┌──────────────────┬─────────────────────────────────────────────┐",
                             "│ Command          │ Description                                 │",
                             "├──────────────────┼─────────────────────────────────────────────┤",
-                            "│ exit             │ Exit the program                            │",
                             "│ help             │ Display this help menu                      │",
+                            "│ how_play         │ Explanation of how to play together         │",
+                            "├──────────────────┼─────────────────────────────────────────────┤",
                             "│ start            │ Start the server                            │",
                             "│ stop             │ Stop the server                             │",
+                            "│ exit             │ Exit the program                            │",
+                            "├──────────────────┼─────────────────────────────────────────────┤",
                             "│ ip               │ Display server IP address                   │",
                             "│ kick_{ID}        │ Kick the player with ID from server         │",
+                            "├──────────────────┼─────────────────────────────────────────────┤",
                             "│ set_difficulty   │ Set the difficulty on the server            │",
                             "│ set_game_mode    │ Set the game mode on the server             │",
+                            "├──────────────────┼─────────────────────────────────────────────┤",
                             "│ start_game       │ Start a new game on the server              │",
                             "│ stop_game        │ Stop the game on the server                 │",
                             "└──────────────────┴─────────────────────────────────────────────┘"
                         ];
-                        foreach (string line in helpText)
-                        {
-                            if (line.StartsWith('│'))
-                            {
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                Console.Write('│');
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write(line.Substring(1, line.IndexOf('│', 1) - 1));
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                Console.Write('│');
-                                int rightStartIndex = line.IndexOf('│', 1) + 1;
-                                Console.ForegroundColor = ConsoleColor.Yellow;
-                                Console.Write(line.Substring(rightStartIndex, line.Length - rightStartIndex - 1));
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                Console.WriteLine('│');
-                            }
-                            else
-                            {
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                Console.WriteLine(line);
-                            }
-                        }
-                        Console.ResetColor();
-                        Console.WriteLine("\nPress any key to return to the main menu...");
-                        Console.ReadKey();
-                        DisplayWelcomeText();
+                        DisplayTextMessage(helpText, true);
+                        break;
+                    case "how_play":
+                        string[] howPlayText =
+                        [
+                            "┌────────────────────────────────────────────────────────────────┐",
+                            "│                                                                │",
+                            "│   ATTENTION THIS IS NOT THE FINAL VERSION OF THE MULTIPLAYER   │",
+                            "│         IF YOU FIND ANY BUGS, PLEASE REPORT THEM TO US         │",
+                            "│                                                                │",
+                            "├────────────────────────────────────────────────────────────────┤",
+                            "│  How to play together:                                         │",
+                            "│                                                                │",
+                            "│   I do it later :)                                             │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "│                                                                │",
+                            "└────────────────────────────────────────────────────────────────┘"
+                        ];
+                        DisplayTextMessage(howPlayText);
                         break;
                     case "start":
                         Console.Write("\nEnter port (0 for default): ");
@@ -310,7 +352,7 @@ namespace GameServer
                     case { } when command.StartsWith("set_difficulty"):
                         try
                         {
-                            string[] difficulties = { "Easy", "Normal", "Hard", "Very hard" };
+                            string[] difficulties = ["Easy", "Normal", "Hard", "Very hard"];
                             int selectedIndex = SelectOption("Select difficulty:", difficulties);
                             dispatcher.ChangeDifficulty(selectedIndex);
                             DisplayWelcomeText($"Difficulty set to {difficulties[selectedIndex]}");
