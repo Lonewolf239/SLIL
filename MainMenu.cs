@@ -1794,6 +1794,7 @@ namespace SLIL
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
+                e.Handled = true;
                 ConnectToGame();
             }
         }
