@@ -240,7 +240,8 @@ namespace GameServer
             int height = 25;
             Console.Title = $"GameServer for SLIL v{version}";
             Console.SetWindowSize(width, height);
-            Console.SetBufferSize(width, height);
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                Console.SetBufferSize(width, height);
             int screenWidth = GetSystemMetrics(SM_CXSCREEN);
             int screenHeight = GetSystemMetrics(SM_CYSCREEN);
             IntPtr consoleWindow = GetConsoleWindow();
@@ -258,7 +259,7 @@ namespace GameServer
 
         private static void SendOutcomingMessageInvoker(int packetID, byte[]? data = null)
         {
-            if (data != null) dispatcher.SendOutcomingMessage(packetID, ref server, data);
+            dispatcher.SendOutcomingMessage(packetID, ref server, data);
         }
 
         private static void PacketsThread()
