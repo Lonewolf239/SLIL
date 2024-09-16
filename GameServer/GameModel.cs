@@ -923,8 +923,8 @@ namespace GameServer
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
             if (_gameMode == GameMode.Deathmatch)
             {
-                MAP_HEIGHT = 13;
-                MAP_WIDTH = 13;
+                MAP_HEIGHT = 15;
+                MAP_WIDTH = 15;
                 MAP.Clear();
                 MAP.AppendLine(deathmatchMap);
                 double[,] pos = { { 3.5, 2.5 }, { 2.5, 3.5 }, { 12.5, 11.5 }, { 11.5, 12.5 } };
