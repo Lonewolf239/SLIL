@@ -91,6 +91,19 @@ namespace SLIL.Classes
                 {
                     Game.Deserialize(dataReader);
                     this._isInSpectatorMode = GetPlayer(true).Dead;
+                    if (_isInSpectatorMode) {
+                        foreach (Entity ent in Game.Entities)
+                        {
+                            if (ent is Player p)
+                            {
+                                if (!p.Dead)
+                                {
+                                    _spectatingForPlayerID = p.ID;
+                                    break;
+                                }
+                            }
+                        } 
+                    }
                 }
                 if (packetType == 403)
                 {
