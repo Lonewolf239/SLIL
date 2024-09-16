@@ -236,6 +236,42 @@ namespace SLIL.Classes
 
         public void AddPlayer() => playerID = Game.AddPlayer();
 
+        public void ChangeSpectatedPlayer(int button)
+        {
+            List<int> players = GetPlayersListForSpectatorMode();
+            if (players.Count == 0) return;
+            int currentIndex = players.IndexOf(_spectatingForPlayerID);
+            if (button == 1)
+            {
+                if (players.Count != currentIndex)
+                    _spectatingForPlayerID++;
+                else
+                    _spectatingForPlayerID = players[0];
+            }
+            else if (button == 2)
+            {
+                if (players.Count != 0)
+                    _spectatingForPlayerID--;
+                else
+                    _spectatingForPlayerID = players[currentIndex];
+            }
+        }
+
+        public List<int> GetPlayersListForSpectatorMode()
+        {
+            List<int> players = new List<int>();
+            List<Entity> Entities = Game.GetEntities();
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                if (Entities[i] is Player player1)
+                {
+                    if (player1.ID != playerID && !player1.Dead)
+                        players.Add(player1.ID);
+                }
+            }
+            return players;
+        }
+
         public Player GetPlayer()
         {
             Player player = null;

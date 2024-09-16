@@ -1873,32 +1873,41 @@ namespace SLIL
 
         private void Display_MouseDown(object sender, MouseEventArgs e)
         {
-            Player player = Controller.GetPlayer();
-            if (GameStarted && !Paused && !player.BlockInput && !player.InSelectingMode && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled && !Controller.IsInSpectatorMode())
+            if (!Controller.IsInSpectatorMode())
+            {
+                Player player = Controller.GetPlayer();
+                if (GameStarted && !Paused && !player.BlockInput && !player.InSelectingMode && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled && !Controller.IsInSpectatorMode())
+                {
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1 && reload_timer.Enabled)
+                            cancelReload = true;
+                        else if (!reload_timer.Enabled && !mouse_hold_timer.Enabled && player.CanShoot && player.GetCurrentGun().CanShoot)
+                        {
+                            if (Shoot(player))
+                                mouse_hold_timer.Start();
+                        }
+                    }
+                    else if (e.Button == MouseButtons.Right && !reload_timer.Enabled)
+                    {
+                        if (player.GetCurrentGun().CanAiming && player.CanShoot && player.GetCurrentGun().CanShoot)
+                        {
+                            if (MainMenu.sounds)
+                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3].Play(Volume);
+                            player.Aiming = !player.Aiming;
+                            player.GunState = player.Aiming ? player.GetCurrentGun().AimingState : 0;
+                        }
+                    }
+                }
+                if (ShowSing) ShowSing = player.BlockInput = player.BlockCamera = false;
+            }
+            else
             {
                 if (e.Button == MouseButtons.Left)
-                {
-                    if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1 && reload_timer.Enabled)
-                        cancelReload = true;
-                    else if (!reload_timer.Enabled && !mouse_hold_timer.Enabled && player.CanShoot && player.GetCurrentGun().CanShoot)
-                    {
-                        if (Shoot(player))
-                            mouse_hold_timer.Start();
-                    }
-                }
-                else if (e.Button == MouseButtons.Right && !reload_timer.Enabled)
-                {
-                    if (player.GetCurrentGun().CanAiming && player.CanShoot && player.GetCurrentGun().CanShoot)
-                    {
-                        if (MainMenu.sounds)
-                            SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3].Play(Volume);
-                        player.Aiming = !player.Aiming;
-                        player.GunState = player.Aiming ? player.GetCurrentGun().AimingState : 0;
-                    }
-                }
+                    Controller.ChangeSpectatedPlayer(1);
+                else if (e.Button == MouseButtons.Right)
+                    Controller.ChangeSpectatedPlayer(2);
             }
-            if (ShowSing)
-                ShowSing = player.BlockInput = player.BlockCamera = false;
         }
 
         private void Display_MouseUp(object sender, MouseEventArgs e)
