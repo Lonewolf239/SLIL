@@ -240,23 +240,22 @@ namespace GameServer
             int height = 25;
             Console.Title = $"GameServer for SLIL v{version}";
             Console.SetWindowSize(width, height);
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                Console.SetBufferSize(width, height);
-                int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-                int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-                IntPtr consoleWindow = GetConsoleWindow();
-                GetWindowRect(consoleWindow, out RECT rect);
-                int consoleWidthPixels = rect.Right - rect.Left;
-                int consoleHeightPixels = rect.Bottom - rect.Top;
-                int posX = (screenWidth - consoleWidthPixels) / 2;
-                int posY = (screenHeight - consoleHeightPixels) / 2;
-                MoveWindow(consoleWindow, posX, posY, consoleWidthPixels, consoleHeightPixels, true);
-                int style = GetWindowLong(consoleWindow, GWL_STYLE);
-                style &= ~WS_SIZEBOX;
-                style &= ~WS_MAXIMIZEBOX;
-                _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
-            }
+#if WIN64 || (PLATFORM_WINDOWS && ENV64BIT)
+    Console.SetBufferSize(width, height);
+#endif
+            int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+            int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+            IntPtr consoleWindow = GetConsoleWindow();
+            GetWindowRect(consoleWindow, out RECT rect);
+            int consoleWidthPixels = rect.Right - rect.Left;
+            int consoleHeightPixels = rect.Bottom - rect.Top;
+            int posX = (screenWidth - consoleWidthPixels) / 2;
+            int posY = (screenHeight - consoleHeightPixels) / 2;
+            MoveWindow(consoleWindow, posX, posY, consoleWidthPixels, consoleHeightPixels, true);
+            int style = GetWindowLong(consoleWindow, GWL_STYLE);
+            style &= ~WS_SIZEBOX;
+            style &= ~WS_MAXIMIZEBOX;
+            _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
         }
 
         private static void SendOutcomingMessageInvoker(int packetID, byte[]? data = null)
