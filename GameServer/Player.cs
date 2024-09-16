@@ -484,7 +484,7 @@ namespace GameServer
                 CurseCureChance = 0.08;
                 Stage = 0;
                 MAX_MOVE_SPEED = 1.8;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.6;
                 MAX_RUN_SPEED = 2.25;
                 DEPTH = 8;
                 SelectedItem = 0;
@@ -557,7 +557,7 @@ namespace GameServer
                     {
                         Fast = false;
                         MAX_MOVE_SPEED -= 1.5;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.6;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
                     }
@@ -590,7 +590,7 @@ namespace GameServer
                 Effects.Add(effect);
                 Fast = true;
                 MAX_MOVE_SPEED += 1.5;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.6;
                 MOVE_SPEED = 0;
                 STRAFE_SPEED = 0;
             }
@@ -629,7 +629,7 @@ namespace GameServer
                 InTransport = true;
                 Fast = true;
                 MAX_MOVE_SPEED += TRANSPORT.Speed;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.6;
                 MOVE_SPEED = 0;
                 STRAFE_SPEED = 0;
             }
@@ -659,7 +659,7 @@ namespace GameServer
                 Effects.Add(new Adrenaline());
                 Fast = true;
                 MAX_MOVE_SPEED += 1.5;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.6;
                 MOVE_SPEED = 0;
                 STRAFE_SPEED = 0;
             }
@@ -680,7 +680,7 @@ namespace GameServer
                     {
                         Fast = false;
                         MAX_MOVE_SPEED -= 1.5;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.6;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
                     }
@@ -693,7 +693,7 @@ namespace GameServer
                             InTransport = false;
                             Fast = false;
                             MAX_MOVE_SPEED -= TRANSPORT.Speed;
-                            MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                            MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.6;
                             MOVE_SPEED = 0;
                             STRAFE_SPEED = 0;
                             TRANSPORT = null;
@@ -713,7 +713,7 @@ namespace GameServer
                 {
                     Fast = false;
                     MAX_MOVE_SPEED -= 1.5;
-                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.6;
                     MOVE_SPEED = 0;
                     STRAFE_SPEED = 0;
                 }
@@ -726,7 +726,7 @@ namespace GameServer
                         InTransport = false;
                         Fast = false;
                         MAX_MOVE_SPEED -= TRANSPORT.Speed;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.6;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
                         TRANSPORT = null;

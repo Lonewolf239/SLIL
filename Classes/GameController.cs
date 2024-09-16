@@ -315,7 +315,8 @@ namespace SLIL.Classes
                 Game.StartGame(true);
         }
 
-        public void SpawnRockets(double x, double y, int id, double a) {
+        public void SpawnRockets(double x, double y, int id, double a)
+        {
             if (!IsMultiplayer()) Game.SpawnRockets(x, y, id, a);
             else
             {

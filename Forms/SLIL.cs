@@ -1398,7 +1398,7 @@ namespace SLIL
                         player.StrafeDirection = Directions.LEFT;
                     if (e.KeyCode == Bind.Right)
                         player.StrafeDirection = Directions.RIGHT;
-                    if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.InTransport && player != null)
+                    if (player != null && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.InTransport)
                     {
                         int count = player.Guns.Count;
                         if (player.Guns.Contains(player.GUNS[0])) count--;
