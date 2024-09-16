@@ -90,7 +90,7 @@ namespace SLIL.Classes
                 if (packetType == 103)
                 {
                     Game.Deserialize(dataReader);
-                    this._isInSpectatorMode = GetPlayer().Dead;
+                    this._isInSpectatorMode = GetPlayer(true).Dead;
                 }
                 if (packetType == 403)
                 {
@@ -272,7 +272,7 @@ namespace SLIL.Classes
             return players;
         }
 
-        public Player GetPlayer()
+        public Player GetPlayer(bool ignoreSpectatorMode = false)
         {
             Player player = null;
             List<Entity> Entities = Game.GetEntities();
@@ -280,7 +280,7 @@ namespace SLIL.Classes
             {
                 if (Entities[i] is Player player1)
                 {
-                    if (!_isInSpectatorMode)
+                    if (!_isInSpectatorMode || ignoreSpectatorMode)
                     {
                         if ((Entities[i] as Player).ID == playerID)
                         {

@@ -191,7 +191,7 @@ namespace GameServer
                                         }
                                         if (player.HP <= 0)
                                         {
-                                            Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                            if(_gameMode == GameMode.Deathmatch) Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
                                             sendMessageFromGameCallback(666);
                                             //GameOver(0);
                                             return;
