@@ -3158,6 +3158,7 @@
             this.Load += new System.EventHandler(this.MainMenu_Load);
             this.Shown += new System.EventHandler(this.MainMenu_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainMenu_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainMenu_KeyUp);
             this.buttons_panel.ResumeLayout(false);
             this.button_background.ResumeLayout(false);
             this.button_background.PerformLayout();

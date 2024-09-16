@@ -1512,6 +1512,41 @@ namespace SLIL
                 GoToTutorial();
         }
 
+        private void MainMenu_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                lose_focus.Focus();
+                if (developers_panel.Visible)
+                    developers_panel.Visible = false;
+                if (settings_panel.Visible)
+                {
+                    settings_panel.Visible = false;
+                    SaveSettings();
+                }
+                if (exit_panel.Visible)
+                    exit_panel.Visible = false;
+                if (difficulty_panel.Visible)
+                    difficulty_panel.Visible = false;
+                if (change_logs_panel.Visible)
+                    change_logs_panel.Visible = false;
+                if (game_mode_panel.Visible)
+                    game_mode_panel.Visible = false;
+                if (account_panel.Visible)
+                    account_panel.Visible = false;
+                if (hilf_mir_panel.Visible)
+                    hilf_mir_panel.Visible = false;
+                if (host_panel.Visible)
+                    host_panel.Visible = false;
+                if (connect_panel.Visible)
+                    connect_panel.Visible = false;
+                if (multiplayer_panel.Visible)
+                    multiplayer_panel.Visible = false;
+                if (help_panel.Visible)
+                    help_panel.Visible = false;
+            }
+        }
+
         private void Difficulty_CheckedChanged(object sender, EventArgs e)
         {
             if (custom_btn.Checked)
