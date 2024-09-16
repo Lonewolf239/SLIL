@@ -8,7 +8,8 @@ namespace GameServer
     enum GameMode
     {
         Classic,
-        Deathmatch
+        Deathmatch,
+        BikersInMyHome
     }
 
     internal class GameModel : INetSerializable
@@ -946,6 +947,28 @@ namespace GameServer
                 }
                 return;
             }
+            if (_gameMode == GameMode.BikersInMyHome)
+            {
+                MAP_HEIGHT = 25;
+                MAP_WIDTH = 25;
+                MAP.Clear();
+                MAP.AppendLine(bikeMap);
+                foreach (Entity ent in Entities)
+                {
+                    if (ent is not Player player) continue;
+                    player.X = 21.5;
+                    player.Y = 22.5;
+                }
+                for (int x = 0; x < MAP_WIDTH; x++)
+                {
+                    for (int y = 0; y < MAP_HEIGHT; y++)
+                    {
+                        Entity? entity = GetEntityForInitMap(MAP[y * MAP_WIDTH + x], x, y);
+                        if (entity != null) Entities.Add(entity);
+                    }
+                }
+                return;
+            }
             if (difficulty == 0)
                 enemy_count = 0.07;
             else if (difficulty == 1)
@@ -1833,7 +1856,7 @@ namespace GameServer
         internal void ChangeGameMode(GameMode gameMode)
         {
             _gameMode = gameMode;
-            if(GameStarted) StopGame(2);
+            if (GameStarted) StopGame(2);
         }
 
         internal void GetOnATransport(int ID, int playerID)
