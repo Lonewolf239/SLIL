@@ -203,6 +203,7 @@ namespace GameServer
             }
             server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
         }
+
         public void SendOutcomingMessage(int packetID, ref NetPeer peer)
         {
             NetDataWriter writer = new();
@@ -237,10 +238,9 @@ namespace GameServer
 
         public void ChangeDifficulty(int difficulty) => Game.ChangeDifficulty(difficulty);
 
-        internal void StopGame()
-        {
-            Game.StopGame(3);
-        }
+        internal void StopGame() => Game.StopGame(3);
+
+        internal Dictionary<int, int> GetPlayers() => PeerPlayerIDs;
 
         internal void KickPlayer(int playerID, ref NetManager server)
         {
@@ -257,9 +257,7 @@ namespace GameServer
             }
             Game.RemovePlayer(playerID);
         }
-        internal void ChangeGameMode(GameMode gameMode)
-        {
-            Game.ChangeGameMode(gameMode);
-        }
+
+        internal void ChangeGameMode(GameMode gameMode) => Game.ChangeGameMode(gameMode);
     }
 }
