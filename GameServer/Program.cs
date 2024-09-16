@@ -1,5 +1,4 @@
 ﻿using LiteNetLib;
-using LiteNetLib.Utils;
 using System.Runtime.InteropServices;
 
 namespace GameServer
@@ -51,8 +50,7 @@ namespace GameServer
             {
                 if (server.ConnectedPeersCount < MAX_CONNECTIONS)
                     request.AcceptIfKey("SomeKey");
-                else
-                    request.Reject();
+                else request.Reject();
             };
             listener.PeerConnectedEvent += peer =>
             {
@@ -93,7 +91,7 @@ namespace GameServer
                             "║ 3   ║ stop             ║ Stop the server                             ║",
                             "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
                             "║ 4   ║ ip               ║ Display server IP address                   ║",
-                            "║ 5   ║ kick             ║ Kick the player from server                 ║",
+                            "║ 5   ║ lobby            ║ Browse lobby                                ║",
                             "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
                             "║ 6   ║ set_difficulty   ║ Set the difficulty on the server            ║",
                             "║ 7   ║ set_game_mode    ║ Set the game mode on the server             ║",
@@ -165,20 +163,19 @@ namespace GameServer
                         DisplayWelcomeText($"Server IP address: {"127.0.0.1:9999"}");
                         break;
                     case "5":
-                    case "kick":
-                        try
+                    case "lobby":
+                        string[] players = dispatcher.GetPlayers().Select(p => p.Value.ToString()).ToArray();
+                        int playerId = SelectOption("Lobby:", players, "Lobby is empty...", "Exit", "Kick Player");
+                        if (playerId != -1)
                         {
-                            string[] playerStrings = dispatcher.GetPlayers().Select(p => p.Value.ToString()).ToArray();
-                            int playerId = SelectOption("Select player to kick from server:", playerStrings);
-                            if(playerId == -1)
+                            if (YesNoMessage())
                             {
-                                DisplayWelcomeText("The operation was rejected");
-                                continue;
+                                dispatcher.KickPlayer(playerId, ref server);
+                                DisplayWelcomeText($"Player with ID {playerId} has been kicked from the server");
                             }
-                            dispatcher.KickPlayer(playerId, ref server);
-                            DisplayWelcomeText($"Player with ID {playerId} has been kicked from the server");
+                            else DisplayWelcomeText();
                         }
-                        catch (Exception e) { DisplayWelcomeText($"Error kicking player: {e.Message}"); }
+                        else DisplayWelcomeText();
                         break;
                     case "6":
                     case "set_difficulty":
@@ -325,17 +322,17 @@ namespace GameServer
             Console.Write("\nEnter the command or command ID: ");
         }
 
-        private static int SelectOption(string prompt, string[] options)
+        private static bool YesNoMessage()
         {
             const int windowWidth = 40;
             int selectedIndex = 0;
+            string[] options = ["Yes", "No"];
             ConsoleKeyInfo keyInfo;
             do
             {
                 Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine('╔' + new string('═', windowWidth - 2) + '╗');
-                Console.WriteLine('║' + CenterText(prompt, windowWidth - 2) + '║');
+                Console.WriteLine('║' + CenterText("Are you sure?", windowWidth - 2) + '║');
                 Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
                 for (int i = 0; i < options.Length; i++)
                 {
@@ -353,18 +350,74 @@ namespace GameServer
                     Console.WriteLine(" ║");
                 }
                 Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
-                Console.WriteLine('║' + CenterText("↑↓: Move  ESC: Cancel  Enter: Select", windowWidth - 2) + '║');
+                Console.WriteLine('║' + CenterText($"↑↓: Move  Enter: Select", windowWidth - 2) + '║');
                 Console.WriteLine('╚' + new string('═', windowWidth - 2) + '╝');
-                Console.ResetColor();
                 keyInfo = Console.ReadKey(true);
                 if (keyInfo.Key == ConsoleKey.UpArrow)
                     selectedIndex = (selectedIndex - 1 + options.Length) % options.Length;
                 else if (keyInfo.Key == ConsoleKey.DownArrow)
                     selectedIndex = (selectedIndex + 1) % options.Length;
+            } while (keyInfo.Key != ConsoleKey.Enter);
+            Console.Clear();
+            return selectedIndex == 0;
+        }
+
+        private static int SelectOption(string prompt, string[] options, string empty_string = "List is empty...", string button1 = "Cancel", string button2 = "Select")
+        {
+            const int windowWidth = 50;
+            int selectedIndex = 0;
+            ConsoleKeyInfo keyInfo;
+            do
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine('╔' + new string('═', windowWidth - 2) + '╗');
+                Console.WriteLine('║' + CenterText(prompt, windowWidth - 2) + '║');
+                Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
+                if (options.Length > 1)
+                {
+                    for (int i = 0; i < options.Length; i++)
+                    {
+                        Console.Write("║ ");
+                        if (i == selectedIndex)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.Write("> " + options[i].PadRight(windowWidth - 6));
+                            Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                        }
+                        else
+                            Console.Write("  " + options[i].PadRight(windowWidth - 6));
+                        Console.WriteLine(" ║");
+                    }
+                }
+                else
+                {
+                    Console.Write('║');
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write(CenterText(empty_string, windowWidth - 2));
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write("║\n");
+                }
+                Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
+                Console.WriteLine('║' + CenterText($"↑↓: Move  ESC: {button1}  Enter: {button2}", windowWidth - 2) + '║');
+                Console.WriteLine('╚' + new string('═', windowWidth - 2) + '╝');
+                Console.ResetColor();
+                keyInfo = Console.ReadKey(true);
+                if (options.Length > 1)
+                {
+                    if (keyInfo.Key == ConsoleKey.UpArrow)
+                        selectedIndex = (selectedIndex - 1 + options.Length) % options.Length;
+                    else if (keyInfo.Key == ConsoleKey.DownArrow)
+                        selectedIndex = (selectedIndex + 1) % options.Length;
+                }
                 if (keyInfo.Key == ConsoleKey.Escape) return -1;
             } while (keyInfo.Key != ConsoleKey.Enter);
             Console.Clear();
-            return selectedIndex;
+            if (options.Length > 1)
+                return selectedIndex;
+            return -1;
         }
 
         private static string CenterText(string text, int width) => text.PadLeft((width - text.Length) / 2 + text.Length).PadRight(width);
