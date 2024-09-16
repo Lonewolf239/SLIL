@@ -2918,12 +2918,14 @@ namespace SLIL
             if (player.DisposableItems.Count > 0)
                 item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].AmmoInStock;
             int icon_size = 12 + (2 * interface_size);
+            if (resolution == 1) icon_size *= 2;
+            int size = resolution == 0 ? 1 : 2;
             int add = resolution == 0 ? 2 : 4;
             double hp = player.InTransport ? player.TRANSPORT_HP : player.HP;
             SizeF hpSize = graphicsWeapon.MeasureString(hp.ToString("0"), consolasFont[interface_size, resolution]);
+            SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), consolasFont[interface_size, resolution]);
             int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
             int ammo_x = ammo_icon_x + icon_size;
-            int size = resolution == 0 ? 1 : 2;
             graphicsWeapon.Clear(Color.Transparent);
             try
             {
@@ -2962,11 +2964,6 @@ namespace SLIL
                 else connection_status = 3;
                 graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, ShowFPS ? fpsSize.Height : 0, icon_size, icon_size);
                 graphicsWeapon.DrawString($"{ping}ms", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, ShowFPS ? fpsSize.Height : 0);
-                if (resolution == 1)
-                {
-                    graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
-                    graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
-                }
             }
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
             if (!player.InTransport)
@@ -3002,6 +2999,9 @@ namespace SLIL
                         break;
                 }
             }
+            SmoothingMode save = graphicsWeapon.SmoothingMode;
+            graphicsWeapon.SmoothingMode = SmoothingMode.None;
+            DisplayStamine(player, icon_size, size);
             int money_y = 2;
             if (ShowMiniMap)
             {
@@ -3010,11 +3010,19 @@ namespace SLIL
                 graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH[resolution] - mini_map.Width - 1, size);
                 mini_map.Dispose();
             }
+            graphicsWeapon.SmoothingMode = save;
             graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH[resolution], money_y, rightToLeft);
+            graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH[resolution] - moneySize.Width - icon_size, money_y, icon_size, icon_size);
             if (player.Effects.Count > 0)
             {
                 for (int i = 0; i < player.Effects.Count; i++)
                     DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], icon_size, i, player.Effects[i].Debaf);
+            }
+            ShowDebugs(player);
+            if (resolution == 1)
+            {
+                graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
+                graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
             }
         }
 
