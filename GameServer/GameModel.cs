@@ -1,6 +1,7 @@
 ﻿using MazeGenerator;
 using LiteNetLib.Utils;
 using System.Text;
+using System.Net;
 
 namespace GameServer
 {
@@ -317,14 +318,12 @@ namespace GameServer
             writer.Put(MAP_WIDTH);
             writer.Put(MAP_HEIGHT);
             writer.Put(Entities.Count);
-            lock (Entities)
+            List<Entity> entities = new List<Entity>(Entities);
+            foreach (var entity in entities)
             {
-                foreach (var entity in Entities)
-                {
-                    writer.Put(entity.EntityID);
-                    writer.Put(entity.ID);
-                    entity.Serialize(writer);
-                }
+                writer.Put(entity.EntityID);
+                writer.Put(entity.ID);
+                entity.Serialize(writer);
             }
         }
 
