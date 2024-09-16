@@ -1273,6 +1273,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap lamp {
+            get {
+                object obj = ResourceManager.GetObject("lamp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap language {
             get {
                 object obj = ResourceManager.GetObject("language", resourceCulture);
@@ -3326,6 +3336,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap using_bike_right {
             get {
                 object obj = ResourceManager.GetObject("using_bike_right", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap vine {
+            get {
+                object obj = ResourceManager.GetObject("vine", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1276,5 +1276,11 @@
   <ItemGroup>
     <None Include="Images\firing_range.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\lamp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\vine.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

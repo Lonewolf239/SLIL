@@ -1117,4 +1117,10 @@
   <data name="firing_range" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\firing_range.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="lamp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\lamp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="vine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\vine.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

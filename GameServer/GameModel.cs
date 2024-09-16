@@ -15,8 +15,9 @@ namespace GameServer
     {
         private StringBuilder MAP = new();
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"####################.................##.................##..1..2..3..4..#..##.................##..b..............##..............d..##..B..............##.................##........P.....=..##..#b.............##..###............##..#B..........F..##.................##..WWW.B=5#D#..#..##..WEW====#$#.#d=.##..WWW.=b.###..=..##.................####################",
-            bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################";
+            debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L#####d##=##...=b.###.#.L.#.l#.##............#......######################",
+            bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################",
+            deathmatchMap = @"##############b.=.....=.B##..=.....=..##L##.....##.##...........##....B#b....##....###....##....b#B....##...........##.##.....##L##..=.....=..##B.=.....=.b##############";
         private int inDebug = 0;
         private readonly Pet[] PETS;
         public List<Entity> Entities = [];
@@ -435,12 +436,12 @@ namespace GameServer
                         tempEntities.Add(bike);
                         break;
                     case 19:
-                        Ob1 ob1 = new(0, 0, MAP_WIDTH, ID);
+                        Vine ob1 = new(0, 0, MAP_WIDTH, ID);
                         ob1.Deserialize(reader);
                         tempEntities.Add(ob1);
                         break;
                     case 20:
-                        Ob2 ob2 = new(0, 0, MAP_WIDTH, ID);
+                        Lamp ob2 = new(0, 0, MAP_WIDTH, ID);
                         ob2.Deserialize(reader);
                         tempEntities.Add(ob2);
                         break;
@@ -578,14 +579,14 @@ namespace GameServer
                         tempEntities.Add(bike);
                         break;
                     case 19:
-                        Ob1 ob1 = new(0, 0, MAP_WIDTH, ID);
-                        ob1.Deserialize(reader);
-                        tempEntities.Add(ob1);
+                        Vine vine = new(0, 0, MAP_WIDTH, ID);
+                        vine.Deserialize(reader);
+                        tempEntities.Add(vine);
                         break;
                     case 20:
-                        Ob2 ob2 = new(0, 0, MAP_WIDTH, ID);
-                        ob2.Deserialize(reader);
-                        tempEntities.Add(ob2);
+                        Lamp lamp = new(0, 0, MAP_WIDTH, ID);
+                        lamp.Deserialize(reader);
+                        tempEntities.Add(lamp);
                         break;
                     default:
                         break;
@@ -697,6 +698,18 @@ namespace GameServer
                     Barrel barrel = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = barrel;
                     break;
+                case 'L':
+                    Vine vine = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = vine;
+                    break;
+                case 'l':
+                    Lamp lamp = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = lamp;
+                    break;
+                case '5':
+                    Bike bike = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = bike;
+                    break;
                 case 'E':
                     SpawnEnemis(x, y, MAP_WIDTH);
                     MAP[y * MAP_WIDTH + x] = '.';
@@ -719,10 +732,6 @@ namespace GameServer
                     break;
                 case '4':
                     SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 3);
-                    MAP[y * MAP_WIDTH + x] = '.';
-                    break;
-                case '5':
-                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 4);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
             }
@@ -913,23 +922,26 @@ namespace GameServer
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
             if (_gameMode == GameMode.Deathmatch)
             {
-                MAP_HEIGHT = 22;
-                MAP_WIDTH = 22;
+                MAP_HEIGHT = 13;
+                MAP_WIDTH = 13;
                 MAP.Clear();
-                MAP.AppendLine(bossMap);
+                MAP.AppendLine(deathmatchMap);
+                double[,] pos = { { 2.5, 2.5 }, { 2.5, 10.5 }, { 10.5, 2.5 }, { 10.5, 10.5 } };
+                int i = 0;
                 foreach (Entity ent in Entities)
                 {
                     if (ent is not Player player) continue;
-                    player.X = 10.5;
-                    player.Y = 19.5;
+                    player.X = pos[i, 0];
+                    player.Y = pos[i, 1];
+                    i++;
+                    if (i >= pos.GetLength(0)) i = 0;
                 }
                 for (int x = 0; x < MAP_WIDTH; x++)
                 {
                     for (int y = 0; y < MAP_HEIGHT; y++)
                     {
                         Entity? entity = GetEntityForInitMap(MAP[y * MAP_WIDTH + x], x, y);
-                        if (entity != null)
-                            Entities.Add(entity);
+                        if (entity != null) Entities.Add(entity);
                     }
                 }
                 return;
@@ -953,18 +965,18 @@ namespace GameServer
             {
                 if (inDebug == 1)
                 {
-                    MazeHeight = 6;
-                    MazeWidth = 6;
+                    MazeHeight = 21;
+                    MazeWidth = 21;
                 }
                 else if (inDebug == 2)
                 {
-                    MazeHeight = 7;
-                    MazeWidth = 7;
+                    MazeHeight = 22;
+                    MazeWidth = 22;
                 }
                 else if (inDebug == 3)
                 {
-                    MazeHeight = 8;
-                    MazeWidth = 8;
+                    MazeHeight = 25;
+                    MazeWidth = 25;
                 }
             }
             if (difficulty < 4)
@@ -1002,24 +1014,24 @@ namespace GameServer
                 {
                     if (inDebug == 1)
                     {
-                        player.X = 9;
-                        player.Y = 9;
-                        MazeHeight = 6;
-                        MazeWidth = 6;
+                        player.X = 10.5;
+                        player.Y = 10.5;
+                        MazeHeight = 21;
+                        MazeWidth = 21;
                     }
                     else if (inDebug == 2)
                     {
                         player.X = 10.5;
                         player.Y = 19.5;
-                        MazeHeight = 7;
-                        MazeWidth = 7;
+                        MazeHeight = 22;
+                        MazeWidth = 22;
                     }
                     else if (inDebug == 3)
                     {
                         player.X = 21.5;
                         player.Y = 22.5;
-                        MazeHeight = 8;
-                        MazeWidth = 8;
+                        MazeHeight = 25;
+                        MazeWidth = 25;
                     }
                 }
                 if (difficulty < 4)
@@ -1051,8 +1063,16 @@ namespace GameServer
                     }
                 }
             }
-            MAP_WIDTH = MazeWidth * 3 + 1;
-            MAP_HEIGHT = MazeHeight * 3 + 1;
+            if (difficulty == 5)
+            {
+                MAP_WIDTH = MazeWidth;
+                MAP_HEIGHT = MazeHeight;
+            }
+            else
+            {
+                MAP_WIDTH = MazeWidth * 3 + 1;
+                MAP_HEIGHT = MazeHeight * 3 + 1;
+            }
             MAP.Clear();
             if (difficulty == 5)
             {

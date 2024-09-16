@@ -59,6 +59,8 @@ namespace SLIL.Classes
             Properties.Resources.rpg_explosion_0, //50
             Properties.Resources.rpg_explosion_1,
             Properties.Resources.wall_with_sing, //52
+            Properties.Resources.vine, //53
+            Properties.Resources.lamp, //54
         };
         private readonly Image[] cute_textures =
         {
@@ -113,6 +115,8 @@ namespace SLIL.Classes
             Properties.Resources.rpg_explosion_0, //50
             Properties.Resources.rpg_explosion_1,
             Properties.Resources.wall_with_sing, //52
+            Properties.Resources.vine, //53
+            Properties.Resources.lamp, //54
         };
         private readonly Color[] COLORS =
         {

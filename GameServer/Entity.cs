@@ -1194,16 +1194,31 @@ namespace GameServer
         }
     }
 
-    public class Ob1 : Decoration
+    public class Vine : Decoration
     {
-        public Ob1(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) { }
-        public Ob1(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) { }
+        public Vine(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Vine(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 53;
+            base.AnimationsToStatic();
+        }
+
         protected override int GetEntityID() => 19;
     }
-    public class Ob2 : Decoration
+
+    public class Lamp : Decoration
     {
-        public Ob2(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) { }
-        public Ob2(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) { }
+        public Lamp(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Lamp(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 54;
+            base.AnimationsToStatic();
+        }
+
         protected override int GetEntityID() => 20;
     }
 }
