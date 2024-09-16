@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Play_Sound;
-using System.Linq.Expressions;
-using System;
 
 namespace SLIL.Classes
 {
@@ -354,6 +352,9 @@ namespace SLIL.Classes
         public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, double customX, double customY) => Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);
 
         public int GetPing() => peer.Ping;
+
+        //TODO:
+        public bool IsDeathmatch() => true;
 
         internal void AmmoCountDecrease()
         {

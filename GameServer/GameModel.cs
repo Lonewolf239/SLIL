@@ -9,7 +9,8 @@ namespace GameServer
     {
         Classic,
         Deathmatch,
-        BikersInMyHome
+        BikersInMyHome,
+        Debug
     }
 
     internal class GameModel : INetSerializable
@@ -958,6 +959,28 @@ namespace GameServer
                     if (ent is not Player player) continue;
                     player.X = 21.5;
                     player.Y = 22.5;
+                }
+                for (int x = 0; x < MAP_WIDTH; x++)
+                {
+                    for (int y = 0; y < MAP_HEIGHT; y++)
+                    {
+                        Entity? entity = GetEntityForInitMap(MAP[y * MAP_WIDTH + x], x, y);
+                        if (entity != null) Entities.Add(entity);
+                    }
+                }
+                return;
+            }
+            if (_gameMode == GameMode.Debug)
+            {
+                MAP_HEIGHT = 21;
+                MAP_WIDTH = 21;
+                MAP.Clear();
+                MAP.AppendLine(debugMap);
+                foreach (Entity ent in Entities)
+                {
+                    if (ent is not Player player) continue;
+                    player.X = 10.5;
+                    player.Y = 10.5;
                 }
                 for (int x = 0; x < MAP_WIDTH; x++)
                 {
