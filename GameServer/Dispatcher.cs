@@ -220,6 +220,7 @@ namespace GameServer
                     {
                         NetDataWriter netDataWriter = new();
                         netDataWriter.Put(102);
+                        Game.Serialize(netDataWriter);
                         peer.Send(netDataWriter, DeliveryMethod.ReliableOrdered);
                     }
                     break;

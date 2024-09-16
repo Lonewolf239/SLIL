@@ -317,11 +317,14 @@ namespace GameServer
             writer.Put(MAP_WIDTH);
             writer.Put(MAP_HEIGHT);
             writer.Put(Entities.Count);
-            foreach (var entity in Entities)
+            lock (Entities)
             {
-                writer.Put(entity.EntityID);
-                writer.Put(entity.ID);
-                entity.Serialize(writer);
+                foreach (var entity in Entities)
+                {
+                    writer.Put(entity.EntityID);
+                    writer.Put(entity.ID);
+                    entity.Serialize(writer);
+                }
             }
         }
 
@@ -804,15 +807,15 @@ namespace GameServer
                     }
                     player.ChangeMoney(50 + (5 * player.EnemiesKilled));
                     //StartGame();
-                    UpdatePet(player);
+                    //UpdatePet(player);
                     players.Add(player);
                 }
                 Entities.Clear();
                 foreach(Player p in players)
                     Entities.Add(p);
                 StartGame();
-                foreach(Entity ent in Entities)
-                    if (ent is Player p) UpdatePet(p);
+                foreach (Player p in players)
+                    UpdatePet(p);
                 sendMessageFromGameCallback(102);
                 
             }

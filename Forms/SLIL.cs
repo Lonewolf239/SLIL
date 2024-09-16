@@ -2134,7 +2134,7 @@ namespace SLIL
         {
             Pixel[][] rays = new Pixel[SCREEN_WIDTH[resolution]][];
             Player player = Controller.GetPlayer();
-            if (player == null)
+            if (player == null || !GameStarted)
             {
                 for (int i = 0; i < SCREEN_WIDTH[resolution]; i++)
                 {
@@ -2531,6 +2531,7 @@ namespace SLIL
         private Color GetColorForPixel(Pixel pixel)
         {
             Player player = Controller.GetPlayer();
+            if(player==null) return Color.White;
             bool cute = false;
             if (player != null) cute = player.CuteMode;
             int textureSize = 128;
@@ -3228,7 +3229,7 @@ namespace SLIL
         {
             scope_hit = null;
             Player player = Controller.GetPlayer();
-            if (player == null) return;
+            if (player == null || !GameStarted) return;
             List<Entity> Entities = Controller.GetEntities();
             if (player.GetCurrentGun() is RPG) Controller.SpawnRockets(player.X, player.Y, 0, player.A);
             else
