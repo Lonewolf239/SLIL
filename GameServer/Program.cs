@@ -6,11 +6,12 @@ namespace GameServer
 {
     class GameServerProgramm
     {
-        private static NetPacketProcessor processor = new();
-        private static EventBasedNetListener listener = new();
+        private static readonly NetPacketProcessor processor = new();
+        private static readonly EventBasedNetListener listener = new();
         private static NetManager server = new(listener);
-        private static Dispatcher dispatcher = new();
+        private static readonly Dispatcher dispatcher = new();
         private static SendOutcomingMessageDelegate? sendOutcomingMessageHandle;
+        private const string version = "1.2.2.2";
         private static bool exit = false;
         private const int MAX_CONNECTIONS = 4;
         //server.UnsyncedEvents = true;
@@ -46,6 +47,7 @@ namespace GameServer
         {
             int width = 80;
             int height = 25;
+            Console.Title = $"GameServer for SLIL v{version}";
             Console.SetWindowSize(width, height);
             Console.SetBufferSize(width, height);
             int screenWidth = GetSystemMetrics(SM_CXSCREEN);
@@ -129,7 +131,7 @@ namespace GameServer
             Console.WriteLine('│');
             Console.Write('│');
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write(CenterText("Version 1.2.2.2", windowWidth - 2));
+            Console.Write(CenterText($"Version {version}", windowWidth - 2));
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine('│');
             Console.WriteLine('├' + new string('─', windowWidth - 2) + '┤');
