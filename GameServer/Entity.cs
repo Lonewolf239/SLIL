@@ -526,7 +526,7 @@ namespace GameServer
         public bool AddToShop { get; set; }
         public double TransportHP { get; set; } //max: 500
         public double Speed { get; set; } //max: 7.5
-        public int Controllability { get; set; } //max: 175
+        public int Controllability { get; set; } //90-175
 
         public Transport(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Transport(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
@@ -548,7 +548,7 @@ namespace GameServer
             Cost = 150;
             TransportHP = 150;
             Speed = 2.35;
-            Controllability = 105;
+            Controllability = 95;
             Name = ["7-0", "Motorbike"];
             base.AnimationsToStatic();
         }

@@ -485,7 +485,7 @@ namespace SLIL.Classes
                 CurseCureChance = 0.08;
                 Stage = 0;
                 MAX_MOVE_SPEED = 1.8;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                 MAX_RUN_SPEED = 2.25;
                 DEPTH = 8;
                 SelectedItem = 0;
@@ -558,7 +558,7 @@ namespace SLIL.Classes
                     {
                         Fast = false;
                         MAX_MOVE_SPEED -= 1.5;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
                     }
@@ -591,7 +591,7 @@ namespace SLIL.Classes
                 Effects.Add(effect);
                 Fast = true;
                 MAX_MOVE_SPEED += 1.5;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                 MOVE_SPEED = 0;
                 STRAFE_SPEED = 0;
             }
@@ -630,7 +630,7 @@ namespace SLIL.Classes
                 InTransport = true;
                 Fast = true;
                 MAX_MOVE_SPEED += TRANSPORT.Speed;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                 MOVE_SPEED = 0;
                 STRAFE_SPEED = 0;
             }
@@ -660,7 +660,7 @@ namespace SLIL.Classes
                 Effects.Add(new Adrenaline());
                 Fast = true;
                 MAX_MOVE_SPEED += 1.5;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                 MOVE_SPEED = 0;
                 STRAFE_SPEED = 0;
             }
@@ -681,7 +681,7 @@ namespace SLIL.Classes
                     {
                         Fast = false;
                         MAX_MOVE_SPEED -= 1.5;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
                     }
@@ -694,7 +694,7 @@ namespace SLIL.Classes
                             InTransport = false;
                             Fast = false;
                             MAX_MOVE_SPEED -= TRANSPORT.Speed;
-                            MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                            MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                             MOVE_SPEED = 0;
                             STRAFE_SPEED = 0;
                             TRANSPORT = null;
@@ -714,7 +714,7 @@ namespace SLIL.Classes
                 {
                     Fast = false;
                     MAX_MOVE_SPEED -= 1.5;
-                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                     MOVE_SPEED = 0;
                     STRAFE_SPEED = 0;
                 }
@@ -727,7 +727,7 @@ namespace SLIL.Classes
                         InTransport = false;
                         Fast = false;
                         MAX_MOVE_SPEED -= TRANSPORT.Speed;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 1.4;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
                         TRANSPORT = null;

@@ -37,7 +37,7 @@ namespace SLIL.UserControls
             if (type == 0)
                 return (int)(transport.Speed / 7.5 * 336);
             else if (type == 1)
-                return (175 - transport.Controllability) * 336 / (175 - 100);
+                return (175 - transport.Controllability) * 336 / (175 - 90);
             return (int)(transport.TransportHP / 500 * 336);
         }
 
