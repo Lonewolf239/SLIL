@@ -3,8 +3,6 @@ using LiteNetLib.Utils;
 using GameServer;
 
 NetPacketProcessor processor = new();
-//processor.RegisterNestedType<Player>(() => { return new Player(0,0,0,0); });
-//processor.RegisterNestedType<GameModel>(() => { return new GameModel(null); });
 EventBasedNetListener listener = new();
 NetManager server = new(listener);
 Dispatcher dispatcher = new();
@@ -25,7 +23,7 @@ listener.ConnectionRequestEvent += request =>
 
 listener.PeerConnectedEvent += peer =>
 {
-    Console.WriteLine("We got connection: {0}", peer);
+    Console.WriteLine($"We got connection: {peer}");
     dispatcher.SendOutcomingMessage(100, ref peer);
 };
 
@@ -41,7 +39,7 @@ listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
 {
     dispatcher.RemovePlayer(dispatcher.PeerPlayerIDs[peer.Id]);
     dispatcher.PeerPlayerIDs.Remove(peer.Id);
-    Console.WriteLine("Closed connection: {0}", peer);
+    Console.WriteLine($"Closed connection: {peer}");
 };
 
 void SendOutcomingMessageInvoker(int packetID, byte[] data = null)
