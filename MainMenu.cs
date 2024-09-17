@@ -19,6 +19,7 @@ namespace SLIL
     public partial class MainMenu : Form
     {
         private readonly string current_version = Program.current_version;
+        private readonly Random rand;
         public bool UpdateVerified = false;
         public static string iniFolder = "config.ini";
         public bool downloadedLocalizationList = false;
@@ -28,7 +29,7 @@ namespace SLIL
         public static Localization Localizations;
         private Dictionary<string, string> SupportedLanguages;
         public static string Language = "English";
-        public string PlayerName = "Player";
+        public string PlayerName;
         public static bool sounds = true, ConsoleEnabled = false;
         private readonly TextureCache textureCache = new TextureCache();
         public static CGF_Reader CGFReader;
@@ -127,6 +128,8 @@ namespace SLIL
             screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
             low_stamine = new PlaySound(CGFReader.GetFile("low_stamine.wav"), false);
             climb = new PlaySound[] { new PlaySound(CGFReader.GetFile("climb.wav"), false), new PlaySound(CGFReader.GetFile("climb_bike.wav"), false) };
+            rand = new Random();
+            PlayerName = $"Player#{rand.Next(10000, 99999)}";
             AddSeparators();
         }
 
@@ -446,7 +449,7 @@ namespace SLIL
             Language = INIReader.GetString(iniFolder, "CONFIG", "language", Language);
             if (!SupportedLanguages.Values.Contains(Language)) Language = "English";
             PlayerName = INIReader.GetString(iniFolder, "CONFIG", "player_name", PlayerName);
-            if (PlayerName.Length > nickname.MaxLength) PlayerName = "Player";
+            if (PlayerName.Length > nickname.MaxLength) PlayerName = $"Player#{rand.Next(10000, 99999)}";
             ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             Volume = INIReader.GetSingle(iniFolder, "CONFIG", "volume", 0.4f);
@@ -499,6 +502,7 @@ namespace SLIL
         private void SaveSettings()
         {
             INIReader.ClearFile(iniFolder);
+            if (PlayerName.Length == 0) PlayerName = $"Player#{rand.Next(10000, 99999)}";
             INIReader.SetKey(iniFolder, "CONFIG", "player_name", PlayerName);
             INIReader.SetKey(iniFolder, "CONFIG", "language", Language);
             INIReader.SetKey(iniFolder, "CONFIG", "sounds", sounds);
@@ -650,7 +654,6 @@ namespace SLIL
             gamma_choice.Value = Gamma;
             sensitivity.Value = (int)(LOOK_SPEED * 100);
             volume.Value = (int)(Volume * 100);
-            nickname.Text = PlayerName;
             if (hight_fps)
                 fps_label.Text = "FPS: 60";
             else
@@ -1705,11 +1708,35 @@ namespace SLIL
 
         private void Nickname_TextChanged(object sender, EventArgs e) => PlayerName = nickname.Text;
 
+        private void Nickname_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                e.Handled = true;
+                lose_focus.Focus();
+            }
+        }
+
+        private void Nickname_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                e.Handled = true;
+        }
+
         private void Account_btn_c_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
+            nickname.Text = PlayerName;
             account_panel.Visible = true;
             account_panel.BringToFront();
+        }
+
+        private void Reset_nickname_btn_c_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            PlayerName = $"Player#{rand.Next(10000, 99999)}";
+            nickname.Text = PlayerName;
         }
 
         //  #====      Tutorial      ====#
