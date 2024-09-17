@@ -34,7 +34,7 @@ namespace GameServer
         //private static readonly NetPacketProcessor processor = new();
         private static readonly EventBasedNetListener listener = new();
         private static NetManager server = new(listener);
-        private static readonly Dispatcher dispatcher = new();
+        private static readonly Dispatcher dispatcher = new();  
         private static SendOutcomingMessageDelegate? sendOutcomingMessageHandle;
         private const string version = "1.2.2.2";
         private static bool exit = false, stoped_thread = true;
@@ -48,8 +48,12 @@ namespace GameServer
             dispatcher.sendMessageDelegate = sendOutcomingMessageHandle;
             listener.ConnectionRequestEvent += request =>
             {
-                if (server.ConnectedPeersCount < MAX_CONNECTIONS)
-                    request.AcceptIfKey("SomeKey");
+                string data = request.Data.GetString();
+                if (server.ConnectedPeersCount < MAX_CONNECTIONS && data.StartsWith("SomeKey:"))
+                {
+                    string name = data.Replace("SomeKey:","");
+                    dispatcher.AppendPlayerPeerDictionary(request.Accept().Id, name);
+                }
                 else request.Reject();
             };
             listener.PeerConnectedEvent += peer =>
@@ -69,6 +73,7 @@ namespace GameServer
                 dispatcher.RemovePlayer(dispatcher.PeerPlayerIDs[peer.Id]);
                 dispatcher.PeerPlayerIDs.Remove(peer.Id);
                 DisplayWelcomeText($"Closed connection: {peer}");
+                dispatcher.PeerPlayerName.Remove(peer.Id);
             };
             SetupConsoleSettings();
             DisplayWelcomeText();

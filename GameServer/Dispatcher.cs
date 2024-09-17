@@ -11,6 +11,7 @@ namespace GameServer
     {
         private readonly GameModel Game;
         public Dictionary<int, int> PeerPlayerIDs = [];
+        public Dictionary<int, string> PeerPlayerName = [];
         public SendOutcomingMessageDelegate? sendMessageDelegate;
         public SendMessageFromGameCallback sendMessageFromGameCallback;
 
@@ -212,7 +213,7 @@ namespace GameServer
             switch (packetID)
             {
                 case 100:
-                    int newPlayerId = AddPlayer();
+                    int newPlayerId = AddPlayer(PeerPlayerName[peer.Id]);
                     PeerPlayerIDs.Add(peer.Id, newPlayerId);
                     writer.Put(newPlayerId);
                     SerializeGame(writer);
@@ -230,7 +231,7 @@ namespace GameServer
             }
         }
 
-        public int AddPlayer() => Game.AddPlayer();
+        public int AddPlayer(string name) => Game.AddPlayer(name);
 
         public void RemovePlayer(int playerID) => Game.RemovePlayer(playerID);
 
@@ -261,5 +262,10 @@ namespace GameServer
         }
 
         internal void ChangeGameMode(GameMode gameMode) => Game.ChangeGameMode(gameMode);
+
+        internal void AppendPlayerPeerDictionary(int id, string name)
+        {
+            this.PeerPlayerName.Add(id, name);
+        }
     }
 }

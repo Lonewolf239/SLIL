@@ -14,6 +14,7 @@ namespace SLIL.Classes
     {
         private readonly GameModel Game;
         public int playerID;
+        public string playerName;
         private bool _isInSpectatorMode;
         private int _spectatingForPlayerID;
         private readonly EventBasedNetListener listener;
@@ -37,9 +38,10 @@ namespace SLIL.Classes
             Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
         }
 
-        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound, CloseFormDelegate closeForm)
+        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound, CloseFormDelegate closeForm, string playerName)
         {
             playerID = -1;
+            this.playerName = playerName;
             StopGameHandle = stopGame;
             PlaySoundHandle = playSound;
             CloseForm = closeForm;
@@ -52,7 +54,7 @@ namespace SLIL.Classes
             client = new NetManager(listener);
             processor = new NetPacketProcessor();
             client.Start();
-            client.Connect(adress, port, "SomeKey");
+            client.Connect(adress, port, $"SomeKey:{this.playerName}");
             Application.ApplicationExit += (sender, e) => client.Stop();
             listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
             {

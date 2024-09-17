@@ -103,10 +103,7 @@ namespace SLIL.Classes
 
         public int AddPlayer()
         {
-            Player player = new Player(3, 3, MAP_WIDTH, ref MaxEntityID)
-            {
-                Name = MainMenu.PlayerName
-            };
+            Player player = new Player(3, 3, MAP_WIDTH, ref MaxEntityID);
             Entities.Add(player);
             return MaxEntityID - 1;
         }

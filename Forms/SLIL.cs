@@ -27,6 +27,7 @@ namespace SLIL
     public partial class SLIL : Form
     {
         private readonly GameController Controller;
+        public string PlayerName;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
         public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true, ShowDebugSpeed = false;
@@ -572,16 +573,17 @@ namespace SLIL
             Controller.StartGame();
             if (IsTutorial) Controller.GetPlayer().ChangeMoney(485);
         }
-        public SLIL(TextureCache textures, string adress, int port)
+        public SLIL(TextureCache textures, string adress, int port, string PlayerName)
         {
             InitializeComponent();
             SetLocalization();
+            this.PlayerName = PlayerName;
             StartGameHandle = StartGameInvokerMultiPlayer;
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
             PlaySoundHandle = PlaySoundInvoker;
             CloseFormHandle = CloseFormInvoker;
-            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle);
+            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             SetParameters();

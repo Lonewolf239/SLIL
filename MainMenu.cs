@@ -27,7 +27,8 @@ namespace SLIL
         public static bool DownloadedLocalizationList = false;
         public static Localization Localizations;
         private Dictionary<string, string> SupportedLanguages;
-        public static string Language = "English", PlayerName = "Player";
+        public static string Language = "English";
+        public string PlayerName = "Player";
         public static bool sounds = true, ConsoleEnabled = false;
         private readonly TextureCache textureCache = new TextureCache();
         public static CGF_Reader CGFReader;
@@ -1593,7 +1594,8 @@ namespace SLIL
                     tp = tp,
                     screenshot = screenshot,
                     low_stamine = low_stamine,
-                    climb = climb
+                    climb = climb,
+                    PlayerName = this.PlayerName
                 };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(Volume);
@@ -1626,7 +1628,8 @@ namespace SLIL
                     tp = tp,
                     screenshot = screenshot,
                     low_stamine = low_stamine,
-                    climb = climb
+                    climb = climb,
+                    PlayerName = this.PlayerName
                 };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(Volume);
@@ -1747,7 +1750,8 @@ namespace SLIL
                 tp = tp,
                 screenshot = screenshot,
                 low_stamine = low_stamine,
-                climb = climb
+                climb = climb,
+                PlayerName = this.PlayerName
             };
             form.ShowDialog();
             game_mode_panel.Visible = false;
@@ -1825,7 +1829,7 @@ namespace SLIL
                     ip = ip_connect_input.Text;
                     port = "9999";
                 }
-                SLIL form = new SLIL(textureCache, ip, int.Parse(port))
+                SLIL form = new SLIL(textureCache, ip, int.Parse(port), this.PlayerName)
                 {
                     game_over = game_over,
                     draw = draw,

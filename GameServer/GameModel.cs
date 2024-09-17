@@ -69,7 +69,7 @@ namespace GameServer
 
         public bool IsGameStarted() => GameStarted;
 
-        public int AddPlayer()
+        public int AddPlayer(string name)
         {
             if (MAP.Length > 0)
             {
@@ -83,6 +83,7 @@ namespace GameServer
                         OK = true;
                 }
                 Player p = new(X + 0.5, Y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                p.Name = name;
                 if (difficulty == 3 || difficulty == 2)
                     p.Guns[1].LevelUpdate();
                 Entities.Add(p);
@@ -92,6 +93,7 @@ namespace GameServer
                 Player p = new(1.5, 1.5, MAP_WIDTH, ref MaxEntityID);
                 if (difficulty == 3 || difficulty == 2)
                     p.Guns[1].LevelUpdate();
+                p.Name = name;
                 Entities.Add(p);
             }
             return MaxEntityID - 1;
@@ -820,15 +822,17 @@ namespace GameServer
                 EnemyTimer?.Stop();
                 RespawnTimer?.Stop();
                 TimeRemain?.Stop();
-                List<int> playerIDs = [];
+                List<(int, string)> playerIDs = [];
                 foreach(Entity ent in Entities)
                 {
-                    if(ent is Player p) playerIDs.Add(p.ID);
+                    if(ent is Player p) playerIDs.Add((p.ID, p.Name));
                 }
                 Entities.Clear();
-                foreach(int pID in playerIDs)
+                foreach((int, string) pInfo in playerIDs)
                 {
-                    Entities.Add(new Player(1.5, 1.5, MAP_WIDTH, pID));
+                    Player p = new Player(1.5, 1.5, MAP_WIDTH, pInfo.Item1);
+                    p.Name = pInfo.Item2;
+                    Entities.Add(p);
                 }
                 sendMessageFromGameCallback(101);
             }
