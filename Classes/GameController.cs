@@ -83,7 +83,7 @@ namespace SLIL.Classes
                 if (packetType == 102)
                 {
                     Game.Deserialize(dataReader);
-                    this._isInSpectatorMode = GetPlayer().Dead;
+                    this._isInSpectatorMode = GetPlayer(true).Dead;
                     Game.StartGame(false);
                     startGame();
                 }
