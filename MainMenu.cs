@@ -399,6 +399,44 @@ namespace SLIL
             }
         }
 
+        private void MainMenu_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                lose_focus.Focus();
+                if (developers_panel.Visible)
+                    developers_panel.Visible = false;
+                if (settings_panel.Visible)
+                {
+                    settings_panel.Visible = false;
+                    SaveSettings();
+                }
+                if (exit_panel.Visible)
+                    exit_panel.Visible = false;
+                if (difficulty_panel.Visible)
+                    difficulty_panel.Visible = false;
+                if (change_logs_panel.Visible)
+                    change_logs_panel.Visible = false;
+                if (game_mode_panel.Visible)
+                    game_mode_panel.Visible = false;
+                if (account_panel.Visible)
+                {
+                    account_panel.Visible = false;
+                    SaveSettings();
+                }
+                if (hilf_mir_panel.Visible)
+                    hilf_mir_panel.Visible = false;
+                if (host_panel.Visible)
+                    host_panel.Visible = false;
+                if (connect_panel.Visible)
+                    connect_panel.Visible = false;
+                if (multiplayer_panel.Visible)
+                    multiplayer_panel.Visible = false;
+                if (help_panel.Visible)
+                    help_panel.Visible = false;
+            }
+        }
+
         //  #====   Game Parametrs   ====#
 
         private void GetGameParametrs()
@@ -407,6 +445,8 @@ namespace SLIL
             show_tutorial.Checked = show_hilf_mir.Checked;
             Language = INIReader.GetString(iniFolder, "CONFIG", "language", Language);
             if (!SupportedLanguages.Values.Contains(Language)) Language = "English";
+            PlayerName = INIReader.GetString(iniFolder, "CONFIG", "player_name", PlayerName);
+            if (PlayerName.Length > nickname.MaxLength) PlayerName = "Player";
             ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             Volume = INIReader.GetSingle(iniFolder, "CONFIG", "volume", 0.4f);
@@ -459,6 +499,7 @@ namespace SLIL
         private void SaveSettings()
         {
             INIReader.ClearFile(iniFolder);
+            INIReader.SetKey(iniFolder, "CONFIG", "player_name", PlayerName);
             INIReader.SetKey(iniFolder, "CONFIG", "language", Language);
             INIReader.SetKey(iniFolder, "CONFIG", "sounds", sounds);
             INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
@@ -609,6 +650,7 @@ namespace SLIL
             gamma_choice.Value = Gamma;
             sensitivity.Value = (int)(LOOK_SPEED * 100);
             volume.Value = (int)(Volume * 100);
+            nickname.Text = PlayerName;
             if (hight_fps)
                 fps_label.Text = "FPS: 60";
             else
@@ -1096,8 +1138,8 @@ namespace SLIL
 
         private void Close_settings_Click(object sender, EventArgs e)
         {
-            SaveSettings();
             settings_panel.Visible = false;
+            SaveSettings();
         }
 
         private void Exit_no_btn_Click(object sender, EventArgs e)
@@ -1134,6 +1176,7 @@ namespace SLIL
         {
             lose_focus.Focus();
             account_panel.Visible = false;
+            SaveSettings();
         }
 
         private void Hilf_mir_close_btn_r_Click(object sender, EventArgs e)
@@ -1513,41 +1556,6 @@ namespace SLIL
                 GoToTutorial();
         }
 
-        private void MainMenu_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Escape)
-            {
-                lose_focus.Focus();
-                if (developers_panel.Visible)
-                    developers_panel.Visible = false;
-                if (settings_panel.Visible)
-                {
-                    settings_panel.Visible = false;
-                    SaveSettings();
-                }
-                if (exit_panel.Visible)
-                    exit_panel.Visible = false;
-                if (difficulty_panel.Visible)
-                    difficulty_panel.Visible = false;
-                if (change_logs_panel.Visible)
-                    change_logs_panel.Visible = false;
-                if (game_mode_panel.Visible)
-                    game_mode_panel.Visible = false;
-                if (account_panel.Visible)
-                    account_panel.Visible = false;
-                if (hilf_mir_panel.Visible)
-                    hilf_mir_panel.Visible = false;
-                if (host_panel.Visible)
-                    host_panel.Visible = false;
-                if (connect_panel.Visible)
-                    connect_panel.Visible = false;
-                if (multiplayer_panel.Visible)
-                    multiplayer_panel.Visible = false;
-                if (help_panel.Visible)
-                    help_panel.Visible = false;
-            }
-        }
-
         private void Difficulty_CheckedChanged(object sender, EventArgs e)
         {
             if (custom_btn.Checked)
@@ -1694,6 +1702,8 @@ namespace SLIL
         }
 
         //  #====      Account       ====#
+
+        private void Nickname_TextChanged(object sender, EventArgs e) => PlayerName = nickname.Text;
 
         private void Account_btn_c_Click(object sender, EventArgs e)
         {
