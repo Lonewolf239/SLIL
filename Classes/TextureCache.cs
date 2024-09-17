@@ -375,6 +375,8 @@ namespace SLIL.Classes
                 foreach (var innerKvp in innerDict)
                     textureColorCache[id][innerKvp.Key] = ProcessImage(innerKvp.Value);
             }
+            textures.Clear();
+            textures = null;
             for (int i = 0; i < CUTE_COLORS.Length; i++)
             {
                 textureCuteColorCache.Add(i, new Dictionary<SpriteStates, Color[,]>() { { SpriteStates.Static, new Color[1, 1] } });
@@ -389,6 +391,8 @@ namespace SLIL.Classes
                 foreach (var innerKvp in innerDict)
                     textureCuteColorCache[id][innerKvp.Key] = ProcessImage(innerKvp.Value);
             }
+            cute_textures.Clear();
+            cute_textures = null;
         }
 
         private Color[,] ProcessImage(Image image)

@@ -2473,8 +2473,8 @@ namespace SLIL
                                     Creature creature = entity as Creature;
                                     if (!creature.DEAD)
                                     {
-                                        if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && creature is Pet && ((Pet)creature).Stoped && ((Pet)creature).HasStopAnimation)
-                                            rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
+                                        if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && entity is Pet pet && pet.Stoped && pet.HasStopAnimation)
+                                            rays[stripe][y].SpriteState = GetSpriteRotation(creature, 0, false, true);
                                         else
                                         {
                                             if (player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight)
@@ -2545,22 +2545,26 @@ namespace SLIL
             }
         }
 
-        //TODO:
-        private SpriteStates GetSpriteRotation(Entity entity, long timeNow, bool useTimeNow = true)
+        private SpriteStates GetSpriteRotation(Entity entity, long timeNow, bool useTimeNow = true, bool returnStopState = false)
         {
             if (entity.HasStaticAnimation) return SpriteStates.Static;
-            //if (entity.HasSpriteRotation)
-            //{
-            //}
-            //else
-            //{
             int state = entity.Animations[0][0];
             if (useTimeNow) state = entity.Animations[0][timeNow % entity.Frames];
-            if (entity is GameObject && ((GameObject)entity).Animated && ((GameObject)entity).Temporarily)
-                state = entity.Animations[0][((GameObject)entity).CurrentFrame];
-            if (state == 0) return SpriteStates.StepForward_0;
-            return SpriteStates.StepForward_1;
-            //}
+            if (entity is GameObject @object && @object.Animated && @object.Temporarily)
+                state = entity.Animations[0][@object.CurrentFrame];
+            if (entity.HasSpriteRotation)
+            {
+                //TODO:
+                if (returnStopState) return SpriteStates.StopForward;
+                if (state == 0) return SpriteStates.StepForward_0;
+                return SpriteStates.StepForward_1;
+            }
+            else
+            {
+                if (returnStopState) return SpriteStates.StopForward;
+                if (state == 0) return SpriteStates.StepForward_0;
+                return SpriteStates.StepForward_1;
+            }
         }
 
         private Color GetColorForPixel(Pixel pixel)
