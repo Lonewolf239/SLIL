@@ -96,6 +96,7 @@ namespace GameServer
                     break;
             }
         }
+
         public void SendOutcomingMessage(int packetID, ref NetManager server, byte[]? data = null) 
         {
             NetDataWriter writer = new();

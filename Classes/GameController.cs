@@ -401,7 +401,11 @@ namespace SLIL.Classes
 
         public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, double customX, double customY) => Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);
 
-        public int GetPing() => peer.Ping;
+        public int GetPing()
+        {
+            if (peer == null) return 0;
+            return peer.Ping;
+        }
 
         //TODO:
         public bool IsDeathmatch() => true;

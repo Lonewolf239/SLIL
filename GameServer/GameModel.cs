@@ -1,11 +1,9 @@
 ﻿using MazeGenerator;
 using LiteNetLib.Utils;
 using System.Text;
-using System.Net;
 
 namespace GameServer
 {
-
     enum GameMode
     {
         Classic,
@@ -38,7 +36,6 @@ namespace GameServer
         private static System.Timers.Timer? RespawnTimer;
         private static System.Timers.Timer? EnemyTimer;
         private static System.Timers.Timer? TimeRemain;
-        private static System.Timers.Timer? ParkourTimer;
         public int MaxEntityID;
         private readonly SendMessageFromGameCallback sendMessageFromGameCallback;
 

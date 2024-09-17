@@ -13,7 +13,6 @@ using SLIL.Classes;
 using Play_Sound;
 using SLIL.SLIL_Localization;
 using System.Linq;
-using System.Security.Claims;
 
 namespace SLIL
 {
@@ -28,7 +27,7 @@ namespace SLIL
         public static bool DownloadedLocalizationList = false;
         public static Localization Localizations;
         private Dictionary<string, string> SupportedLanguages;
-        public static string Language = "English";
+        public static string Language = "English", PlayerName = "Player";
         public static bool sounds = true, ConsoleEnabled = false;
         private readonly TextureCache textureCache = new TextureCache();
         public static CGF_Reader CGFReader;
@@ -79,7 +78,8 @@ namespace SLIL
         public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true, IsTutorial = false;
         public static bool inv_y = false, inv_x = false;
         public static double LOOK_SPEED = 6.5;
-        public static float Volume = 0.4f, Gamma = 1;
+        public static float Volume = 0.4f;
+        public static int Gamma = 1;
 
         public MainMenu()
         {
@@ -409,7 +409,7 @@ namespace SLIL
             ConsoleEnabled = INIReader.GetBool(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             sounds = INIReader.GetBool(iniFolder, "CONFIG", "sounds", true);
             Volume = INIReader.GetSingle(iniFolder, "CONFIG", "volume", 0.4f);
-            Gamma = INIReader.GetSingle(iniFolder, "CONFIG", "gamma", 0.8f);
+            Gamma = INIReader.GetInt(iniFolder, "CONFIG", "gamma", 100);
             LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL", "look_speed", 6.5);
             inv_y = INIReader.GetBool(iniFolder, "SlIL", "inv_y", false);
             inv_x = INIReader.GetBool(iniFolder, "SlIL", "inv_x", false);
@@ -447,8 +447,8 @@ namespace SLIL
                 LOOK_SPEED = 6.5;
             if (Volume < 0 || Volume > 1)
                 Volume = 0.4f;
-            if (Gamma < 0.4 || Gamma > 1.2)
-                Gamma = 1;
+            if (Gamma < 40 || Gamma > 120)
+                Gamma = 100;
             if (scope_color < 0 || scope_color > 8)
                 scope_color = 0;
             if (scope_type < 0 || scope_type > 4)
@@ -605,7 +605,7 @@ namespace SLIL
             show_minimap.Checked = ShowMiniMap;
             scope_choice.Value = scope_type;
             scope_color_choice.Value = scope_color;
-            gamma_choice.Value = (int)(Gamma * 100);
+            gamma_choice.Value = Gamma;
             sensitivity.Value = (int)(LOOK_SPEED * 100);
             volume.Value = (int)(Volume * 100);
             if (hight_fps)
@@ -1007,7 +1007,7 @@ namespace SLIL
             }
         }
 
-        private string GetGamma() => $"{Gamma * 100}%";
+        private string GetGamma() => $"{Gamma}%";
 
         private string GetInterfaceSize()
         {
@@ -1375,7 +1375,7 @@ namespace SLIL
 
         private void Gamma_choice_Scroll(object sender, EventArgs e)
         {
-            Gamma = (float)gamma_choice.Value / 100;
+            Gamma = gamma_choice.Value;
             if (DownloadedLocalizationList)
                 gamma_label.Text = Localizations.GetLString(Language, "0-121") + $" {GetGamma()}";
             else

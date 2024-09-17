@@ -119,6 +119,8 @@
     <Compile Include="Classes\ConvertBitmap.cs" />
     <Compile Include="Classes\Effect.cs" />
     <Compile Include="Classes\Entity.cs" />
+    <Compile Include="Classes\GameChat\ChatMessage.cs" />
+    <Compile Include="Classes\GameChat\GameChat.cs" />
     <Compile Include="Classes\GameController.cs" />
     <Compile Include="Classes\GameModel.cs" />
     <Compile Include="Classes\INIReader.cs" />

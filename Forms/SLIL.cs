@@ -665,9 +665,9 @@ namespace SLIL
             imageAttributes = new ImageAttributes(); 
             float[][] colorMatrixElements =
             {
-                new float[] { MainMenu.Gamma, 0.0f, 0.0f, 0.0f, 0.0f},
-                new float[] {0.0f, MainMenu.Gamma, 0.0f, 0.0f, 0.0f},
-                new float[] {0.0f, 0.0f, MainMenu.Gamma, 0.0f, 0.0f},
+                new float[] { (float)MainMenu.Gamma / 100, 0.0f, 0.0f, 0.0f, 0.0f},
+                new float[] {0.0f, (float)MainMenu.Gamma / 100, 0.0f, 0.0f, 0.0f},
+                new float[] {0.0f, 0.0f, (float)MainMenu.Gamma / 100, 0.0f, 0.0f},
                 new float[] {0.0f, 0.0f, 0.0f, 1.0f, 0.0f},
                 new float[] {0.0f, 0.0f, 0.0f, 0.0f, 1.0f}
             };
@@ -2801,18 +2801,8 @@ namespace SLIL
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
                 graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
-            if (Controller.IsMultiplayer())
-            {
                 SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
-                int ping = Controller.GetPing();
-                int connection_status;
-                if (ping < 100) connection_status = 0;
-                else if (ping < 150) connection_status = 1;
-                else if (ping < 300) connection_status = 2;
-                else connection_status = 3;
-                graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, ShowFPS ? fpsSize.Height : 0, icon_size, icon_size);
-                graphicsWeapon.DrawString($"{ping}ms", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, ShowFPS ? fpsSize.Height : 0);
-            }
+            if (Controller.IsMultiplayer()) DrawPing(fpsSize, icon_size);
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
             if (!player.InTransport)
                 graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
@@ -2962,18 +2952,11 @@ namespace SLIL
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
                 graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
-            if (Controller.IsMultiplayer())
-            {
-                SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
-                int ping = Controller.GetPing();
-                int connection_status;
-                if (ping < 100) connection_status = 0;
-                else if (ping < 150) connection_status = 1;
-                else if (ping < 300) connection_status = 2;
-                else connection_status = 3;
-                graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, ShowFPS ? fpsSize.Height : 0, icon_size, icon_size);
-                graphicsWeapon.DrawString($"{ping}ms", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, ShowFPS ? fpsSize.Height : 0);
-            }
+            SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
+            DrawPing(fpsSize, icon_size);
+            string playerName = player.Name.Length == 0 ? "NoName" : player.Name;
+            SizeF textSize = graphicsWeapon.MeasureString(playerName, consolasFont[0, 0]);
+            graphicsWeapon.DrawString(playerName, consolasFont[0, 0], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 2);
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
             if (!player.InTransport)
                 graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
@@ -3033,6 +3016,18 @@ namespace SLIL
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
             }
+        }
+
+        private void DrawPing(SizeF fpsSize, int icon_size)
+        {
+            int ping = Controller.GetPing();
+            int connection_status;
+            if (ping < 100) connection_status = 0;
+            else if (ping < 150) connection_status = 1;
+            else if (ping < 300) connection_status = 2;
+            else connection_status = 3;
+            graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, ShowFPS ? fpsSize.Height : 0, icon_size, icon_size);
+            graphicsWeapon.DrawString($"{ping}ms", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, ShowFPS ? fpsSize.Height : 0);
         }
 
         private void ShowDebugs(Player player)
