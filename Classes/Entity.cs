@@ -177,8 +177,7 @@ namespace SLIL.Classes
         public virtual bool DealDamage(double damage)
         {
             HP -= damage;
-            if (HP <= 0)
-                Kill();
+            if (HP <= 0) Kill();
             return DEAD;
         }
 

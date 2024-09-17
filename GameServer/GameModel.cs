@@ -1442,7 +1442,7 @@ namespace GameServer
             }
             if (target is Player p)
             {
-                if (!p.HasAI) return false;
+                if (!p.HasAI || p.Dead) return false;
                 if (attacker is Player attackerPlayer && p.DealDamage(damage))
                 {
                     double multiplier = 1;
@@ -1460,7 +1460,7 @@ namespace GameServer
             }
             if (target is Creature c)
             {
-                if (!c.HasAI) return false;
+                if (!c.HasAI || c.DEAD) return false;
                 if (c.DealDamage(damage))
                 {
                     if (attacker is Player attackerPlayer)
