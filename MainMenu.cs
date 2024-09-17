@@ -1791,11 +1791,13 @@ namespace SLIL
 
         private void Ip_connect_input_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            Keys key = e.KeyCode;
+            if (key == Keys.Escape || key == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
                 e.Handled = true;
-                ConnectToGame();
+                if (key == Keys.Enter)
+                    ConnectToGame();
             }
         }
 
@@ -1812,7 +1814,18 @@ namespace SLIL
             if (sounds) MainMenuTheme.Stop();
             try
             {
-                SLIL form = new SLIL(textureCache, ip_connect_input.Text.Split(':')[0], int.Parse(ip_connect_input.Text.Split(':')[1]))
+                string ip, port;
+                if (ip_connect_input.Text.Contains(':'))
+                {
+                    ip = ip_connect_input.Text.Split(':')[0];
+                    port = ip_connect_input.Text.Split(':')[1];
+                }
+                else
+                {
+                    ip = ip_connect_input.Text;
+                    port = "9999";
+                }
+                SLIL form = new SLIL(textureCache, ip, int.Parse(port))
                 {
                     game_over = game_over,
                     draw = draw,
