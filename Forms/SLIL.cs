@@ -62,10 +62,10 @@ namespace SLIL
         private ImageAttributes imageAttributes;
         private readonly Font[,] consolasFont =
         {
-            { new Font("Consolas", 8F), new Font("Consolas", 14F), new Font("Consolas", 22F) },
-            { new Font("Consolas", 8F), new Font("Consolas", 16F), new Font("Consolas", 22F) },
-            { new Font("Consolas", 10F), new Font("Consolas", 18F), new Font("Consolas", 22F) },
-            { new Font("Consolas", 12F), new Font("Consolas", 20F), new Font("Consolas", 22F) },
+            { new Font("Consolas", 8F), new Font("Consolas", 14F), new Font("Consolas", 20F) },
+            { new Font("Consolas", 8F), new Font("Consolas", 16F), new Font("Consolas", 20F) },
+            { new Font("Consolas", 10F), new Font("Consolas", 18F), new Font("Consolas", 20F) },
+            { new Font("Consolas", 12F), new Font("Consolas", 18F), new Font("Consolas", 20F) },
         };
         private readonly SolidBrush whiteBrush = new SolidBrush(Color.White), blackBrush = new SolidBrush(Color.Black);
         private readonly StringFormat rightToLeft = new StringFormat() { FormatFlags = StringFormatFlags.DirectionRightToLeft };
@@ -835,13 +835,13 @@ namespace SLIL
                     entity = new PlayerDeadBody(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
                 case 2: // zombie
-                    entity = new Man(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Zombie(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
                 case 3: // dog
                     entity = new Dog(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
                 case 4: // abomination
-                    entity = new Abomination(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Ogr(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
                 case 5: // bat
                     entity = new Bat(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
@@ -1763,9 +1763,10 @@ namespace SLIL
                                             if (rays[stripe].Length > y && y >= 0)
                                             {
                                                 if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
-                                                    rays[stripe][y].TextureId = textures[i] + 2;
+                                                    rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
                                                 else
-                                                    rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
+                                                    rays[stripe][y].SpriteState = GetSpriteRotation(entity, timeNow);
+                                                rays[stripe][y].TextureId = entity.Texture;
                                                 rays[stripe][y].Blackout = 0;
                                                 rays[stripe][y].TextureX = texX;
                                                 rays[stripe][y].TextureY = texY;
@@ -2149,7 +2150,7 @@ namespace SLIL
                 {
                     rays[i] = new Pixel[SCREEN_HEIGHT[resolution]];
                     for (int j = 0; j < SCREEN_HEIGHT[resolution]; j++)
-                        rays[i][j] = new Pixel(i, j, 100, 1, 1, 0);
+                        rays[i][j] = new Pixel(i, j, 100, 1, 1, 0, SpriteStates.Static);
                 }
                 return rays;
             }
@@ -2326,14 +2327,14 @@ namespace SLIL
                 {
                     textureId = 2;
                     if (hit_wall == 1)
-                        textureId = 52;
+                        textureId = 18;
                     if (hit_door)
                         textureId = 3;
                     if (is_bound)
                         textureId = 0;
                     blackout = (int)(Math.Min(Math.Max(0, Math.Floor((distance / player.GetDrawDistance()) * 100)), 100));
                 }
-                result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId);
+                result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId, SpriteStates.Static);
                 if (y <= ceiling)
                 {
                     int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
@@ -2342,7 +2343,7 @@ namespace SLIL
                     double floorY = player.Y - rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
-                    result[y].TextureId = 7;
+                    result[y].TextureId = 6;
                     result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((-rowDistance / player.GetDrawDistance()) * 100)), 100));
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
@@ -2356,7 +2357,7 @@ namespace SLIL
                     double floorY = player.Y + rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
-                    result[y].TextureId = 6;
+                    result[y].TextureId = 5;
                     result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((rowDistance / player.GetDrawDistance()) * 100)), 100));
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
@@ -2425,11 +2426,12 @@ namespace SLIL
             Array.Sort(spriteInfo, (a, b) => b.Distance.CompareTo(a.Distance));
             for (int i = 0; i < spriteInfo.Length; i++)
             {
-                if (Entities[spriteInfo[i].Order] is Player pl && player.ID == pl.ID) continue;
-                double Distance = Math.Sqrt((player.X - Entities[spriteInfo[i].Order].X) * (player.X - Entities[spriteInfo[i].Order].X) + (player.Y - Entities[spriteInfo[i].Order].Y) * (player.Y - Entities[spriteInfo[i].Order].Y));
+                Entity entity = Entities[spriteInfo[i].Order];
+                if (entity is Player pl && player.ID == pl.ID) continue;
+                double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
                 if (Distance > player.GetDrawDistance() || Distance == 0) continue;
-                double spriteX = Entities[spriteInfo[i].Order].X - player.X;
-                double spriteY = Entities[spriteInfo[i].Order].Y - player.Y;
+                double spriteX = entity.X - player.X;
+                double spriteY = entity.Y - player.Y;
                 double transformX = invDet * (dirY * spriteX - dirX * spriteY);
                 double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
                 int spriteScreenX = (int)((SCREEN_WIDTH[resolution] / 2) * (1 + transformX / transformY));
@@ -2440,7 +2442,7 @@ namespace SLIL
                 int drawEndY = (int)spriteBottom;
                 int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
                 int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
-                double vMove = Entities[spriteInfo[i].Order].VMove;
+                double vMove = entity.VMove;
                 int vMoveScreen = (int)(vMove / transformY);
                 int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
                 if (drawStartX < 0) drawStartX = 0;
@@ -2465,60 +2467,65 @@ namespace SLIL
                                 int tempBlackout = rays[stripe][y].Blackout;
                                 double tempTextureX = rays[stripe][y].TextureX;
                                 double tempTextureY = rays[stripe][y].TextureY;
-                                if (Entities[spriteInfo[i].Order] is Creature)
+                                SpriteStates tempSpriteState = rays[stripe][y].SpriteState;
+                                if (entity is Creature)
                                 {
-                                    Creature creature = Entities[spriteInfo[i].Order] as Creature;
+                                    Creature creature = entity as Creature;
                                     if (!creature.DEAD)
                                     {
-                                        if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && creature is Pet && (creature as Pet).Stoped && (creature as Pet).HasStopAnimation)
-                                            rays[stripe][y].TextureId = spriteInfo[i].Texture + 3;
+                                        if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && creature is Pet && ((Pet)creature).Stoped && ((Pet)creature).HasStopAnimation)
+                                            rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
                                         else
                                         {
                                             if (player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight)
-                                                rays[stripe][y].TextureId = spriteInfo[i].Texture + 2;
+                                                rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
                                             else
-                                                rays[stripe][y].TextureId = creature.Animations[0][timeNow % creature.Frames];
+                                            {
+                                                if (creature.HasStaticAnimation)
+                                                    rays[stripe][y].SpriteState = SpriteStates.Static;
+                                                else
+                                                    rays[stripe][y].SpriteState = GetSpriteRotation(creature, timeNow);
+                                            }
                                         }
                                         if (creature is Enemy)
                                         {
-                                            int coords = (int)Entities[spriteInfo[i].Order].Y * mapWidth + (int)Entities[spriteInfo[i].Order].X;
+                                            int coords = (int)entity.Y * mapWidth + (int)entity.X;
                                             if (!enemiesCoords.Contains(coords))
-                                            {
                                                 enemiesCoords.Add(coords);
-                                            }
                                         }
                                     }
                                     else
                                     {
                                         if (creature.RespondsToFlashlight)
-                                            rays[stripe][y].TextureId = spriteInfo[i].Texture + 3;
+                                            rays[stripe][y].SpriteState = SpriteStates.DeadBodyBlinded;
                                         else
-                                            rays[stripe][y].TextureId = spriteInfo[i].Texture + 2;
+                                            rays[stripe][y].SpriteState = SpriteStates.DeadBody;
                                     }
                                 }
-                                else if (Entities[spriteInfo[i].Order] is Player)
+                                else if (entity is Player)
                                 {
-                                    Player playerTar = Entities[spriteInfo[i].Order] as Player;
+                                    Player playerTar = entity as Player;
                                     if (!playerTar.Dead)
-                                        rays[stripe][y].TextureId = playerTar.Animations[0][timeNow % playerTar.Frames];
+                                        rays[stripe][y].SpriteState = GetSpriteRotation(playerTar, timeNow);
                                     else
-                                        rays[stripe][y].TextureId = spriteInfo[i].Texture + 2;
+                                        rays[stripe][y].SpriteState = SpriteStates.DeadBody;
                                 }
                                 else
                                 {
-                                    if (Entities[spriteInfo[i].Order] is GameObject)
+                                    if (entity is GameObject)
                                     {
-                                        GameObject gameObject = Entities[spriteInfo[i].Order] as GameObject;
+                                        GameObject gameObject = entity as GameObject;
                                         if (gameObject.Animated && gameObject.Temporarily)
-                                            rays[stripe][y].TextureId = gameObject.Animations[0][gameObject.CurrentFrame];
+                                            rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, 0, false);
                                         else if (gameObject.Animated)
-                                            rays[stripe][y].TextureId = gameObject.Animations[0][timeNow % gameObject.Frames];
+                                            rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, timeNow);
                                         else
-                                            rays[stripe][y].TextureId = spriteInfo[i].Texture;
+                                            rays[stripe][y].SpriteState = SpriteStates.Static;
                                     }
                                     else
-                                        rays[stripe][y].TextureId = spriteInfo[i].Texture;
+                                        rays[stripe][y].SpriteState = SpriteStates.Static;
                                 }
+                                rays[stripe][y].TextureId = entity.Texture;
                                 rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / player.GetDrawDistance()) * 100)), 100));
                                 rays[stripe][y].TextureX = texX;
                                 rays[stripe][y].TextureY = texY;
@@ -2529,12 +2536,31 @@ namespace SLIL
                                     rays[stripe][y].Blackout = tempBlackout;
                                     rays[stripe][y].TextureX = tempTextureX;
                                     rays[stripe][y].TextureY = tempTextureY;
+                                    rays[stripe][y].SpriteState = tempSpriteState;
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+
+        //TODO:
+        private SpriteStates GetSpriteRotation(Entity entity, long timeNow, bool useTimeNow = true)
+        {
+            if (entity.HasStaticAnimation) return SpriteStates.Static;
+            //if (entity.HasSpriteRotation)
+            //{
+            //}
+            //else
+            //{
+            int state = entity.Animations[0][0];
+            if (useTimeNow) state = entity.Animations[0][timeNow % entity.Frames];
+            if (entity is GameObject && ((GameObject)entity).Animated && ((GameObject)entity).Temporarily)
+                state = entity.Animations[0][((GameObject)entity).CurrentFrame];
+            if (state == 0) return SpriteStates.StepForward_0;
+            return SpriteStates.StepForward_1;
+            //}
         }
 
         private Color GetColorForPixel(Pixel pixel)
@@ -2550,7 +2576,7 @@ namespace SLIL
                 x = (int)WrapTexture((int)(pixel.TextureX * textureSize), textureSize);
                 y = (int)WrapTexture((int)(pixel.TextureY * textureSize), textureSize);
             }
-            Color color = textureCache.GetTextureColor(pixel.TextureId, x, y, pixel.Blackout, cute);
+            Color color = textureCache.GetTextureColor(pixel.TextureId, pixel.SpriteState, x, y, pixel.Blackout, cute);
             return color;
         }
 
@@ -3455,9 +3481,10 @@ namespace SLIL
                                 if (rays[stripe].Length > y && y >= 0)
                                 {
                                     if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
-                                        rays[stripe][y].TextureId = textures[i] + 2;
+                                        rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
                                     else
-                                        rays[stripe][y].TextureId = entity.Animations[0][timeNow % entity.Frames];
+                                        rays[stripe][y].SpriteState = GetSpriteRotation(entity, timeNow);
+                                    rays[stripe][y].TextureId = entity.Texture;
                                     rays[stripe][y].Blackout = 0;
                                     rays[stripe][y].TextureX = texX;
                                     rays[stripe][y].TextureY = texY;

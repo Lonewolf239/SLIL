@@ -464,7 +464,7 @@ namespace SLIL.Classes
             DisposableItems.Add((FirstAidKit)GUNS[10]);
             DisposableItems.Add((Adrenalin)GUNS[13]);
             DisposableItems.Add((Helmet)GUNS[14]);
-            Texture = 38;
+            Texture = 26;
             base.SetAnimations(1, 0);
             Dead = true;
             SetDefault();

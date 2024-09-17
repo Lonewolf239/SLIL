@@ -1,122 +1,343 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace SLIL.Classes
 {
+    public enum SpriteStates
+    {
+        Static,
+        StepForward_0,
+        StepForward_1,
+        StopForward,
+        StepBack_0,
+        StepBack_1,
+        StopBack,
+        StepLeft_0,
+        StepLeft_1,
+        StopLeft,
+        StepRight_0,
+        StepRight_1,
+        StopRight,
+        DeadBody,
+        DeadBodyBlinded,
+        FlashlightBlinded,
+        PlayerAiming,
+        PlayerShooted,
+    } 
+
     public class TextureCache
     {
-        private readonly Image[] textures =
-        { 
-            Properties.Resources.wall,
-            Properties.Resources.door,
-            Properties.Resources.shop_door,
-            Properties.Resources.bike, //5
-            Properties.Resources.floor,
-            Properties.Resources.ceiling,
-            Properties.Resources.enemy_0, //8
-            Properties.Resources.enemy_0_1,
-            Properties.Resources.enemy_0_DEAD,
-            Properties.Resources.enemy_1, //11
-            Properties.Resources.enemy_1_1,
-            Properties.Resources.enemy_1_DEAD,
-            Properties.Resources.enemy_2, //14
-            Properties.Resources.enemy_2_1,
-            Properties.Resources.enemy_2_DEAD,
-            Properties.Resources.pet_cat_0, //17
-            Properties.Resources.pet_cat_1,
-            Properties.Resources.pet_cat_3,
-            Properties.Resources.pet_cat_2,
-            Properties.Resources.shop_man_0, //21
-            Properties.Resources.shop_man_0,
-            Properties.Resources.shop_man_1,
-            Properties.Resources.pet_gnome_0, //24
-            Properties.Resources.pet_gnome_1,
-            Properties.Resources.pet_gnome_2,
-            Properties.Resources.pet_energy_drink_0, //27
-            Properties.Resources.enemy_3, //28
-            Properties.Resources.enemy_3_1,
-            Properties.Resources.enemy_3_DEAD,
-            Properties.Resources.pet_pyro_0, //31
-            Properties.Resources.pet_pyro_1,
-            Properties.Resources.pet_pyro_3,
-            Properties.Resources.teleport_0, //34
-            Properties.Resources.teleport_1,
-            Properties.Resources.hit_0, //36
-            Properties.Resources.hit_1,
-            Properties.Resources.player, //38
-            Properties.Resources.player_1,
-            Properties.Resources.player_stoped,
-            Properties.Resources.player_aiming,
-            Properties.Resources.player_shooted,
-            Properties.Resources.player_DEAD, //43
-            Properties.Resources.box, //44
-            Properties.Resources.box_broken,
-            Properties.Resources.barrel, //46
-            Properties.Resources.barrel_broken,
-            Properties.Resources.rpg_rocket_0, //48
-            Properties.Resources.rpg_rocket_1,
-            Properties.Resources.rpg_explosion_0, //50
-            Properties.Resources.rpg_explosion_1,
-            Properties.Resources.wall_with_sing, //52
-            Properties.Resources.vine, //53
-            Properties.Resources.lamp, //54
-        };
-        private readonly Image[] cute_textures =
+        private readonly Dictionary<int, Dictionary<SpriteStates, Image>> textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
         {
-            Properties.Resources.c_wall,
-            Properties.Resources.c_door,
-            Properties.Resources.c_shop_door,
-            Properties.Resources.bike, //5
-            Properties.Resources.c_floor,
-            Properties.Resources.c_ceiling,
-            Properties.Resources.c_enemy_0, //8
-            Properties.Resources.c_enemy_0_1,
-            Properties.Resources.c_enemy_0_DEAD,
-            Properties.Resources.c_enemy_1, //11
-            Properties.Resources.c_enemy_1_1,
-            Properties.Resources.c_enemy_1_DEAD,
-            Properties.Resources.c_enemy_2, //14
-            Properties.Resources.c_enemy_2_1,
-            Properties.Resources.c_enemy_2_DEAD,
-            Properties.Resources.pet_cat_0, //17
-            Properties.Resources.pet_cat_1,
-            Properties.Resources.pet_cat_3,
-            Properties.Resources.pet_cat_2,
-            Properties.Resources.shop_man_0, //21
-            Properties.Resources.shop_man_0,
-            Properties.Resources.shop_man_1,
-            Properties.Resources.pet_gnome_0, //24
-            Properties.Resources.pet_gnome_1,
-            Properties.Resources.pet_gnome_2,
-            Properties.Resources.pet_energy_drink_0, //27
-            Properties.Resources.c_enemy_3, //28
-            Properties.Resources.c_enemy_3_1,
-            Properties.Resources.c_enemy_3_DEAD,
-            Properties.Resources.pet_pyro_0, //31
-            Properties.Resources.pet_pyro_1,
-            Properties.Resources.pet_pyro_3,
-            Properties.Resources.c_teleport_0, //34
-            Properties.Resources.c_teleport_1,
-            Properties.Resources.hit_0, //36
-            Properties.Resources.hit_1,
-            Properties.Resources.player, //38
-            Properties.Resources.player_1,
-            Properties.Resources.player_stoped,
-            Properties.Resources.player_aiming,
-            Properties.Resources.player_shooted,
-            Properties.Resources.player_DEAD, //43
-            Properties.Resources.box, //44
-            Properties.Resources.box_broken,
-            Properties.Resources.barrel, //46
-            Properties.Resources.barrel_broken,
-            Properties.Resources.rpg_rocket_0, //48
-            Properties.Resources.rpg_rocket_1,
-            Properties.Resources.rpg_explosion_0, //50
-            Properties.Resources.rpg_explosion_1,
-            Properties.Resources.wall_with_sing, //52
-            Properties.Resources.vine, //53
-            Properties.Resources.lamp, //54
+            { 2, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.wall }
+                }
+            },
+            { 3, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.door }
+                }
+            },
+            { 4, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.shop_door }
+                }
+            },
+            { 5, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.floor }
+                }
+            },
+            { 6, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.ceiling }
+                }
+            },
+            { 7, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.enemy_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.enemy_0_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.enemy_0_DEAD },
+                }
+            },
+            { 8, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.enemy_1 },
+                    { SpriteStates.StepForward_1, Properties.Resources.enemy_1_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.enemy_1_DEAD },
+                }
+            },
+            { 9, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.enemy_2 },
+                    { SpriteStates.StepForward_1, Properties.Resources.enemy_2_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.enemy_2_DEAD },
+                }
+            },
+            { 10, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.enemy_3 },
+                    { SpriteStates.StepForward_1, Properties.Resources.enemy_3_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.enemy_3_DEAD },
+                }
+            },
+            { 11, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.teleport_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.teleport_1 }
+                }
+            },
+            { 12, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.shop_man_0 },
+                    { SpriteStates.FlashlightBlinded, Properties.Resources.shop_man_1 }
+                }
+            },
+            { 13, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.hit_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.hit_1 }
+                }
+            },
+            { 14, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.box },
+                    { SpriteStates.DeadBody, Properties.Resources.box_broken }
+                }
+            },
+            { 15, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.barrel },
+                    { SpriteStates.DeadBody, Properties.Resources.barrel_broken }
+                }
+            },
+            { 16, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.vine },
+                }
+            },
+            { 17, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.lamp },
+                }
+            },
+            { 18, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.wall_with_sing },
+                }
+            },
+            { 19, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.bike },
+                }
+            },
+            { 20, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.pet_cat_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.pet_cat_1 },
+                    { SpriteStates.StopForward, Properties.Resources.pet_cat_2 },
+                    { SpriteStates.FlashlightBlinded, Properties.Resources.pet_cat_3 },
+                }
+            },
+            { 21, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.pet_gnome_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.pet_gnome_1 },
+                    { SpriteStates.FlashlightBlinded, Properties.Resources.pet_gnome_2 },
+                }
+            },
+            { 22, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.pet_energy_drink_0 },
+                }
+            },
+            { 23, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.pet_pyro_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.pet_pyro_1 },
+                    { SpriteStates.FlashlightBlinded, Properties.Resources.pet_pyro_3 },
+                }
+            },
+            { 24, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.rpg_rocket_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.rpg_rocket_1 },
+                }
+            },
+            { 25, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.rpg_explosion_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.rpg_explosion_1 },
+                }
+            },
+            { 26, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.player },
+                    { SpriteStates.StepForward_1, Properties.Resources.player_1 },
+                    { SpriteStates.StopForward, Properties.Resources.player_stoped },
+                    { SpriteStates.PlayerAiming, Properties.Resources.player_aiming },
+                    { SpriteStates.PlayerShooted, Properties.Resources.player_shooted },
+                    { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
+                }
+            }
+        };
+        private readonly Dictionary<int, Dictionary<SpriteStates, Image>> cute_textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
+        {
+            { 2, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.c_wall }
+                }
+            },
+            { 3, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.c_door }
+                }
+            },
+            { 4, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.c_shop_door }
+                }
+            },
+            { 5, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.c_floor }
+                }
+            },
+            { 6, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.c_ceiling }
+                }
+            },
+            { 7, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.c_enemy_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.c_enemy_0_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_0_DEAD },
+                }
+            },
+            { 8, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.c_enemy_1 },
+                    { SpriteStates.StepForward_1, Properties.Resources.c_enemy_1_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_1_DEAD },
+                }
+            },
+            { 9, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.c_enemy_2 },
+                    { SpriteStates.StepForward_1, Properties.Resources.c_enemy_2_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_2_DEAD },
+                }
+            },
+            { 10, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.c_enemy_3 },
+                    { SpriteStates.StepForward_1, Properties.Resources.c_enemy_3_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_3_DEAD },
+                }
+            },
+            { 11, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.c_teleport_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.c_teleport_1 }
+                }
+            },
+            { 12, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.shop_man_0 },
+                    { SpriteStates.FlashlightBlinded, Properties.Resources.shop_man_1 }
+                }
+            },
+            { 13, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.hit_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.hit_1 }
+                }
+            },
+            { 14, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.box },
+                    { SpriteStates.DeadBody, Properties.Resources.box_broken }
+                }
+            },
+            { 15, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.barrel },
+                    { SpriteStates.DeadBody, Properties.Resources.barrel_broken }
+                }
+            },
+            { 16, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.vine },
+                }
+            },
+            { 17, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.lamp },
+                }
+            },
+            { 18, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.wall_with_sing },
+                }
+            },
+            { 19, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.bike },
+                }
+            },
+            { 20, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.pet_cat_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.pet_cat_1 },
+                    { SpriteStates.StopForward, Properties.Resources.pet_cat_2 },
+                    { SpriteStates.FlashlightBlinded, Properties.Resources.pet_cat_3 },
+                }
+            },
+            { 21, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.pet_gnome_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.pet_gnome_1 },
+                    { SpriteStates.FlashlightBlinded, Properties.Resources.pet_gnome_2 },
+                }
+            },
+            { 22, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.pet_energy_drink_0 },
+                }
+            },
+            { 23, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.pet_pyro_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.pet_pyro_1 },
+                    { SpriteStates.FlashlightBlinded, Properties.Resources.pet_pyro_3 },
+                }
+            },
+            { 24, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.rpg_rocket_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.rpg_rocket_1 },
+                }
+            },
+            { 25, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.rpg_explosion_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.rpg_explosion_1 },
+                }
+            },
+            { 26, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.player },
+                    { SpriteStates.StepForward_1, Properties.Resources.player_1 },
+                    { SpriteStates.StopForward, Properties.Resources.player_stoped },
+                    { SpriteStates.PlayerAiming, Properties.Resources.player_aiming },
+                    { SpriteStates.PlayerShooted, Properties.Resources.player_shooted },
+                    { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
+                }
+            }
         };
         private readonly Color[] COLORS =
         {
@@ -132,61 +353,67 @@ namespace SLIL.Classes
             //dark
             Color.White
         };
-        private readonly Color[][,] textureColorCache;
-        private readonly Color[][,] textureCuteColorCache;
+        private readonly Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureColorCache;
+        private readonly Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureCuteColorCache;
 
         public TextureCache()
         {
-            int textureCount = textures.Length + COLORS.Length;
-            textureColorCache = new Color[textureCount][,];
-            textureCuteColorCache = new Color[textureCount][,];
-            for (int id = 0; id < COLORS.Length; id++)
+            int textureCount = textures.Count + COLORS.Length;
+            textureColorCache = new Dictionary<int, Dictionary<SpriteStates, Color[,]>>();
+            textureCuteColorCache = new Dictionary<int, Dictionary<SpriteStates, Color[,]>>();
+            for (int i = 0; i < COLORS.Length; i++)
             {
-                textureColorCache[id] = new Color[1, 1];
-                textureColorCache[id][0, 0] = COLORS[id];
+                textureColorCache.Add(i, new Dictionary<SpriteStates, Color[,]>() { { SpriteStates.Static, new Color[1, 1] } });
+                textureColorCache[i][SpriteStates.Static][0, 0] = COLORS[i];
             }
-            for (int id = COLORS.Length; id < textureCount; id++)
+            for (int i = COLORS.Length; i < textureCount; i++)
             {
-                Bitmap textureBitmap = new Bitmap(textures[id - COLORS.Length]);
-                BitmapData bitmapData = textureBitmap.LockBits(new Rectangle(0, 0, textureBitmap.Width, textureBitmap.Height), ImageLockMode.ReadOnly, textureBitmap.PixelFormat);
-                int bytesPerPixel = Bitmap.GetPixelFormatSize(textureBitmap.PixelFormat) / 8;
-                int byteCount = bitmapData.Stride * textureBitmap.Height;
-                byte[] pixels = new byte[byteCount];
-                System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, pixels, 0, byteCount);
-                textureBitmap.UnlockBits(bitmapData);
-                textureColorCache[id] = new Color[textureBitmap.Width, textureBitmap.Height];
-                textureColorCache[id] = CacheTextureColors(pixels, bitmapData.Stride, textureBitmap.Width, textureBitmap.Height, bytesPerPixel);
+                int id = i - COLORS.Length;
+                if (!textures.ContainsKey(id)) continue;
+                var innerDict = textures[id];
+                textureColorCache[id] = new Dictionary<SpriteStates, Color[,]>();
+                foreach (var innerKvp in innerDict)
+                    textureColorCache[id][innerKvp.Key] = ProcessImage(innerKvp.Value);
             }
-            for (int id = 0; id < CUTE_COLORS.Length; id++)
+            for (int i = 0; i < CUTE_COLORS.Length; i++)
             {
-                textureCuteColorCache[id] = new Color[1, 1];
-                textureCuteColorCache[id][0, 0] = CUTE_COLORS[id];
+                textureCuteColorCache.Add(i, new Dictionary<SpriteStates, Color[,]>() { { SpriteStates.Static, new Color[1, 1] } });
+                textureCuteColorCache[i][SpriteStates.Static][0, 0] = COLORS[i];
             }
-            for (int id = CUTE_COLORS.Length; id < textureCount; id++)
+            for (int i = CUTE_COLORS.Length; i < textureCount; i++)
             {
-                Bitmap textureBitmap = new Bitmap(cute_textures[id - CUTE_COLORS.Length]);
-                BitmapData bitmapData = textureBitmap.LockBits(new Rectangle(0, 0, textureBitmap.Width, textureBitmap.Height), ImageLockMode.ReadOnly, textureBitmap.PixelFormat);
-                int bytesPerPixel = Bitmap.GetPixelFormatSize(textureBitmap.PixelFormat) / 8;
-                int byteCount = bitmapData.Stride * textureBitmap.Height;
-                byte[] pixels = new byte[byteCount];
-                System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, pixels, 0, byteCount);
-                textureBitmap.UnlockBits(bitmapData);
-                textureCuteColorCache[id] = new Color[textureBitmap.Width, textureBitmap.Height];
-                textureCuteColorCache[id] = CacheTextureColors(pixels, bitmapData.Stride, textureBitmap.Width, textureBitmap.Height, bytesPerPixel);
+                int id = i - CUTE_COLORS.Length;
+                if (!cute_textures.ContainsKey(id)) continue;
+                var innerDict = cute_textures[id];
+                textureCuteColorCache[id] = new Dictionary<SpriteStates, Color[,]>();
+                foreach (var innerKvp in innerDict)
+                    textureCuteColorCache[id][innerKvp.Key] = ProcessImage(innerKvp.Value);
             }
         }
 
-        public Color GetTextureColor(int textureId, int x, int y, int blackout, bool cute)
+        private Color[,] ProcessImage(Image image)
+        {
+            Bitmap textureBitmap = new Bitmap(image);
+            BitmapData bitmapData = textureBitmap.LockBits(new Rectangle(0, 0, textureBitmap.Width, textureBitmap.Height), ImageLockMode.ReadOnly, textureBitmap.PixelFormat);
+            int bytesPerPixel = Bitmap.GetPixelFormatSize(textureBitmap.PixelFormat) / 8;
+            int byteCount = bitmapData.Stride * textureBitmap.Height;
+            byte[] pixels = new byte[byteCount];
+            System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, pixels, 0, byteCount);
+            textureBitmap.UnlockBits(bitmapData);
+            return CacheTextureColors(pixels, bitmapData.Stride, textureBitmap.Width, textureBitmap.Height, bytesPerPixel);
+        }
+
+        public Color GetTextureColor(int textureId, SpriteStates spriteState, int x, int y, int blackout, bool cute)
         {
             if (cute)
             {
                 if (blackout >= 96)
                     return CUTE_COLORS[1];
-                return LightenColor(textureCuteColorCache[textureId][x, y], blackout);
+                return LightenColor(textureCuteColorCache[textureId][spriteState][x, y], blackout);
             }
             if (blackout >= 96)
                 return COLORS[1];
-            return DarkenColor(textureColorCache[textureId][x, y], blackout);
+            return DarkenColor(textureColorCache[textureId][spriteState][x, y], blackout);
         }
 
         private Color[,] CacheTextureColors(byte[] pixels, int stride, int width, int height, int bytesPerPixel)

@@ -343,7 +343,7 @@ namespace GameServer
                         tempEntities.Add(p);
                         break;
                     case 1:
-                        Man man = new(0, 0, MAP_WIDTH, ID);
+                        Zombie man = new(0, 0, MAP_WIDTH, ID);
                         man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
@@ -355,7 +355,7 @@ namespace GameServer
                         tempEntities.Add(dog);
                         break;
                     case 3:
-                        Abomination abomination = new(0, 0, MAP_WIDTH, ID);
+                        Ogr abomination = new(0, 0, MAP_WIDTH, ID);
                         abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
@@ -486,7 +486,7 @@ namespace GameServer
                         tempEntities.Add(p);
                         break;
                     case 1:
-                        Man man = new(0, 0, MAP_WIDTH, ID);
+                        Zombie man = new(0, 0, MAP_WIDTH, ID);
                         man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
@@ -498,7 +498,7 @@ namespace GameServer
                         tempEntities.Add(dog);
                         break;
                     case 3:
-                        Abomination abomination = new(0, 0, MAP_WIDTH, ID);
+                        Ogr abomination = new(0, 0, MAP_WIDTH, ID);
                         abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
@@ -1330,7 +1330,7 @@ namespace GameServer
                 double dice = rand.NextDouble();
                 if (dice <= 0.4) // 40%
                 {
-                    Man enemy = new(x, y, size, ref MaxEntityID);
+                    Zombie enemy = new(x, y, size, ref MaxEntityID);
                     enemy.SetDamage(EnemyDamageOffset);
                     enemy.HasAI = ai;
                     Entities.Add(enemy);
@@ -1351,7 +1351,7 @@ namespace GameServer
                 }
                 else // 15%
                 {
-                    Abomination enemy = new(x, y, size, ref MaxEntityID);
+                    Ogr enemy = new(x, y, size, ref MaxEntityID);
                     enemy.SetDamage(EnemyDamageOffset);
                     enemy.HasAI = ai;
                     Entities.Add(enemy);
@@ -1359,7 +1359,7 @@ namespace GameServer
             }
             else if (type == 0)
             {
-                Man enemy = new(x, y, size, ref MaxEntityID);
+                Zombie enemy = new(x, y, size, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
@@ -1373,7 +1373,7 @@ namespace GameServer
             }
             else if (type == 2)
             {
-                Abomination enemy = new(x, y, size, ref MaxEntityID);
+                Ogr enemy = new(x, y, size, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);

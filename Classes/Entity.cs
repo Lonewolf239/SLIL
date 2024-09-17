@@ -19,6 +19,8 @@ namespace SLIL.Classes
         public int[][] Animations { get; set; }
         public bool RespondsToFlashlight { get; set; }
         public int Frames { get; set; }
+        public bool HasStaticAnimation { get; set; }
+        public bool HasSpriteRotation { get; set; }
         protected readonly Random rand;
 
         protected abstract int GetEntityID();
@@ -39,6 +41,8 @@ namespace SLIL.Classes
             RespondsToFlashlight = false;
             Texture = this.GetTexture();
             HasAI = true;
+            HasStaticAnimation = false;
+            HasSpriteRotation = false;
             X = x;
             Y = y;
             IntX = (int)x;
@@ -56,6 +60,8 @@ namespace SLIL.Classes
             RespondsToFlashlight = false;
             Texture = this.GetTexture();
             HasAI = true;
+            HasStaticAnimation = false;
+            HasSpriteRotation = false;
             X = x;
             Y = y;
             IntX = (int)x;
@@ -74,13 +80,7 @@ namespace SLIL.Classes
             this.Y = reader.GetDouble();
         }
 
-        protected void AnimationsToStatic()
-        {
-            Animations = new int[1][];
-            Animations[0] = new int[Frames];
-            for (int item = 0; item < Frames; item++)
-                Animations[0][item] = Texture;
-        }
+        protected void AnimationsToStatic() => HasStaticAnimation = true;
 
         protected void SetAnimations(int pause, int mode)
         {
@@ -92,24 +92,25 @@ namespace SLIL.Classes
                 if (mode == 1)
                 {
                     if (item % pause == 0)
-                        Animations[0][item] = Texture + 1;
+                        Animations[0][item] = 1;
                     else
-                        Animations[0][item] = Texture;
+                        Animations[0][item] = 0;
                 }
                 else if (mode == 2)
                 {
                     if (item >= pause)
-                        Animations[0][item] = Texture + 1;
+                        Animations[0][item] = 1;
                     else
-                        Animations[0][item] = Texture;
+                        Animations[0][item] = 0;
                 }
                 else
                 {
                     if (item % pause == 0) state = state == 1 ? 0 : 1;
-                    Animations[0][item] = Texture + state;
+                    Animations[0][item] = state;
                 }
             }
         }
+
         protected virtual double GetVMove() => 0;
     }
 
@@ -500,23 +501,13 @@ namespace SLIL.Classes
                 BoxWithMoney = true;
         }
 
-        public void BreakTheBox()
-        {
-            CanHit = false;
-            Texture++;
-            base.AnimationsToStatic();
-        }
-
         public override bool DealDamage(double damage)
         {
             if (!CanHit) return false;
             HP -= damage;
             if (HP <= 0)
-            {
-                BreakTheBox();
-                return true;
-            }
-            return false;
+                DEAD = true;
+            return DEAD;
         }
     }
 
@@ -545,7 +536,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 5;
+            Texture = 19;
             Index = 0;
             CanJump = true;
             AddToShop = true;
@@ -572,7 +563,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 48;
+            Texture = 24;
             base.SetAnimations(1, 0);
         }
     }
@@ -589,7 +580,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 50;
+            Texture = 25;
             LifeTime = 0;
             TotalLifeTime = 4;
             Temporarily = true;
@@ -598,14 +589,15 @@ namespace SLIL.Classes
         }
     }
 
-    public class PlayerDeadBody : GameObject
+    public class PlayerDeadBody : NPC
     {
         public PlayerDeadBody(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public PlayerDeadBody(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
         private void Init()
         {
-            Texture = 43;
+            DEAD = true;
+            Texture = 26;
             base.AnimationsToStatic();
         }
         protected override int GetEntityID() => 13;
@@ -622,7 +614,7 @@ namespace SLIL.Classes
             Cost = 150;
             Name = new[] { "5-0", "Silly Cat" };
             Descryption = new[] { "5-1", "Restores 2 HP every 8 seconds" };
-            Texture = 17;
+            Texture = 20;
             PetAbility = 0;
             AbilityReloadTime = 8;
             HasStopAnimation = true;
@@ -644,7 +636,7 @@ namespace SLIL.Classes
             Cost = 60;
             Name = new[] { "5-2", "Green Gnome" };
             Descryption = new[] { "5-3", "Increases maximum health by 25" };
-            Texture = 24;
+            Texture = 21;
             PetAbility = 1;
             IsInstantAbility = 1;
             RespondsToFlashlight = true;
@@ -665,7 +657,7 @@ namespace SLIL.Classes
             Cost = 60;
             Name = new[] { "5-4", "Energy Drink" };
             Descryption = new[] { "5-5", "Increases endurance and speed" };
-            Texture = 27;
+            Texture = 22;
             PetAbility = 2;
             IsInstantAbility = 1;
             RespondsToFlashlight = false;
@@ -692,7 +684,7 @@ namespace SLIL.Classes
             Cost = 666;
             Name = new[] { "5-6", "Podseratel" };
             Descryption = new[] { "5-7", "The world is a fairy tale..." };
-            Texture = 31;
+            Texture = 23;
             PetAbility = 3;
             IsInstantAbility = 2;
             AbilityReloadTime = 15;
@@ -711,7 +703,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 34;
+            Texture = 11;
             Animated = true;
             base.SetAnimations(1, 0);
         }
@@ -726,7 +718,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 44;
+            Texture = 14;
             DeathSound = 4;
             MoneyChance = 0.25;
             SetMoneyChance();
@@ -743,7 +735,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 46;
+            Texture = 15;
             DeathSound = 4;
             MoneyChance = 0.75;
             SetMoneyChance();
@@ -771,7 +763,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 36;
+            Texture = 13;
             LifeTime = 0;
             TotalLifeTime = 4;
             Temporarily = true;
@@ -802,13 +794,13 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 21;
+            Texture = 12;
             RespondsToFlashlight = true;
             base.AnimationsToStatic();
         }
     }
 
-    public class Man : Enemy
+    public class Zombie : Enemy
     {
         protected override int GetEntityID() => 1;
         protected override double GetEntityWidth() => 0.4;
@@ -825,13 +817,13 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 35;
         protected override int GetMIN_DAMAGE() => 15;
 
-        public Man(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Man(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Zombie(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Zombie(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
         private void Init()
         {
             DeathSound = 0;
-            Texture = 8;
+            Texture = 7;
             detectionRange = 8;
             base.SetAnimations(1, 0);
         }
@@ -928,7 +920,7 @@ namespace SLIL.Classes
         private void Init()
         {
             DeathSound = 1;
-            Texture = 11;
+            Texture = 8;
             detectionRange = 8;
             Fast = true;
             base.SetAnimations(1, 0);
@@ -1003,7 +995,7 @@ namespace SLIL.Classes
         }
     }
 
-    public class Abomination : Enemy
+    public class Ogr : Enemy
     {
         protected override int GetEntityID() => 3;
         protected override double GetEntityWidth() => 0.4;
@@ -1020,13 +1012,13 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 30;
         protected override int GetMIN_DAMAGE() => 20;
 
-        public Abomination(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Abomination(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Ogr(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public Ogr(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
 
         private void Init()
         {
             DeathSound = 2;
-            Texture = 14;
+            Texture = 9;
             detectionRange = 8;
             base.SetAnimations(2, 0);
         }
@@ -1123,7 +1115,7 @@ namespace SLIL.Classes
         private void Init()
         {
             DeathSound = 3;
-            Texture = 28;
+            Texture = 10;
             detectionRange = 8;
             Fast = true;
             base.SetAnimations(1, 0);
@@ -1205,7 +1197,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 53;
+            Texture = 16;
             base.AnimationsToStatic();
         }
 
@@ -1219,7 +1211,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 54;
+            Texture = 17;
             base.AnimationsToStatic();
         }
 

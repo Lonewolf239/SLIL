@@ -11,8 +11,9 @@
         public double TextureX { get; set; }
         public double TextureY { get; set; }
         public int Side { get; set; }
+        public SpriteStates SpriteState { get; set; }
 
-        public Pixel(int x, int y, int blackout, double distance, double wallHeight, int textureId)
+        public Pixel(int x, int y, int blackout, double distance, double wallHeight, int textureId, SpriteStates spriteState)
         {
             X = x;
             Y = y;
@@ -20,6 +21,7 @@
             Distance = distance;
             WallHeight = wallHeight;
             TextureId = textureId;
+            SpriteState = spriteState;
         }
     }
 }

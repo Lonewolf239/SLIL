@@ -318,7 +318,7 @@ namespace SLIL.Classes
                         tempEntities.Add(p);
                         break;
                     case 1:
-                        Man man = new Man(0, 0, MAP_WIDTH, ID);
+                        Zombie man = new Zombie(0, 0, MAP_WIDTH, ID);
                         man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
@@ -330,7 +330,7 @@ namespace SLIL.Classes
                         tempEntities.Add(dog);
                         break;
                     case 3:
-                        Abomination abomination = new Abomination(0, 0, MAP_WIDTH, ID);
+                        Ogr abomination = new Ogr(0, 0, MAP_WIDTH, ID);
                         abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
@@ -461,7 +461,7 @@ namespace SLIL.Classes
                         tempEntities.Add(p);
                         break;
                     case 1:
-                        Man man = new Man(0, 0, MAP_WIDTH, ID);
+                        Zombie man = new Zombie(0, 0, MAP_WIDTH, ID);
                         man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
@@ -473,7 +473,7 @@ namespace SLIL.Classes
                         tempEntities.Add(dog);
                         break;
                     case 3:
-                        Abomination abomination = new Abomination(0, 0, MAP_WIDTH, ID);
+                        Ogr abomination = new Ogr(0, 0, MAP_WIDTH, ID);
                         abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
@@ -1184,7 +1184,7 @@ namespace SLIL.Classes
                 double dice = rand.NextDouble();
                 if (dice <= 0.4) // 40%
                 {
-                    Man enemy = new Man(x, y, size, ref MaxEntityID);
+                    Zombie enemy = new Zombie(x, y, size, ref MaxEntityID);
                     enemy.SetDamage(EnemyDamageOffset);
                     enemy.HasAI = ai;
                     Entities.Add(enemy);
@@ -1205,7 +1205,7 @@ namespace SLIL.Classes
                 }
                 else // 15%
                 {
-                    Abomination enemy = new Abomination(x, y, size, ref MaxEntityID);
+                    Ogr enemy = new Ogr(x, y, size, ref MaxEntityID);
                     enemy.SetDamage(EnemyDamageOffset);
                     enemy.HasAI = ai;
                     Entities.Add(enemy);
@@ -1213,7 +1213,7 @@ namespace SLIL.Classes
             }
             else if (type == 0)
             {
-                Man enemy = new Man(x, y, size, ref MaxEntityID);
+                Zombie enemy = new Zombie(x, y, size, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
@@ -1227,7 +1227,7 @@ namespace SLIL.Classes
             }
             else if (type == 2)
             {
-                Abomination enemy = new Abomination(x, y, size, ref MaxEntityID);
+                Ogr enemy = new Ogr(x, y, size, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
