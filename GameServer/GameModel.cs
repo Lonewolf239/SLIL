@@ -187,16 +187,7 @@ namespace GameServer
                                             byte[] data = writer.Data;
                                             sendMessageFromGameCallback(1000, data);
                                         }
-                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
-                                        if (player.HP <= 0)
-                                        {
-                                            if (_gameMode == GameMode.Deathmatch)
-                                                Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
-                                            sendMessageFromGameCallback(666);
-                                            //GameOver(0);
-                                            return;
-                                        }
-                                        else
+                                        if (!player.Invulnerable)
                                         {
                                             if (entity is Dog)
                                             {
@@ -212,6 +203,15 @@ namespace GameServer
                                                 else
                                                     player.ResetEffectTime(6);
                                             }
+                                        }
+                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
+                                        if (player.HP <= 0)
+                                        {
+                                            if (_gameMode == GameMode.Deathmatch)
+                                                Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                            sendMessageFromGameCallback(666);
+                                            //GameOver(0);
+                                            return;
                                         }
                                     }
                                 }

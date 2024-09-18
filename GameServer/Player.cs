@@ -270,6 +270,16 @@ namespace GameServer
                         rider.Deserialize(reader);
                         tempEffects.Add(rider);
                         break;
+                    case 5:
+                        Bleeding bleeding = new();
+                        bleeding.Deserialize(reader);
+                        tempEffects.Add(bleeding);
+                        break;
+                    case 6:
+                        Blindness blindness = new();
+                        blindness.Deserialize(reader);
+                        tempEffects.Add(blindness);
+                        break;
                     default:
                         break;
                 }
@@ -443,6 +453,16 @@ namespace GameServer
                             Rider rider = new();
                             rider.Deserialize(reader);
                             tempEffects.Add(rider);
+                            break;
+                        case 5:
+                            Bleeding bleeding = new();
+                            bleeding.Deserialize(reader);
+                            tempEffects.Add(bleeding);
+                            break;
+                        case 6:
+                            Blindness blindness = new();
+                            blindness.Deserialize(reader);
+                            tempEffects.Add(blindness);
                             break;
                         default:
                             break;

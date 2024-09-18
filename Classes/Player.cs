@@ -271,6 +271,16 @@ namespace SLIL.Classes
                         rider.Deserialize(reader);
                         tempEffects.Add(rider);
                         break;
+                    case 5:
+                        Bleeding bleeding = new Bleeding();
+                        bleeding.Deserialize(reader);
+                        tempEffects.Add(bleeding);
+                        break;
+                    case 6:
+                        Blindness blindness = new Blindness();
+                        blindness.Deserialize(reader);
+                        tempEffects.Add(blindness);
+                        break;
                     default:
                         break;
                 }
@@ -444,6 +454,16 @@ namespace SLIL.Classes
                             Rider rider = new Rider();
                             rider.Deserialize(reader);
                             tempEffects.Add(rider);
+                            break;
+                        case 5:
+                            Bleeding bleeding = new Bleeding();
+                            bleeding.Deserialize(reader);
+                            tempEffects.Add(bleeding);
+                            break;
+                        case 6:
+                            Blindness blindness = new Blindness();
+                            blindness.Deserialize(reader);
+                            tempEffects.Add(blindness);
                             break;
                         default:
                             break;

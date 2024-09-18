@@ -174,14 +174,7 @@ namespace SLIL.Classes
                                             PlaySoundHandle(SLIL.hungry, player.X, player.Y);
                                         else
                                             PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
-                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
-                                        if (player.HP <= 0)
-                                        {
-                                            Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
-                                            GameOver(0);
-                                            return;
-                                        }
-                                        else
+                                        if (!player.Invulnerable)
                                         {
                                             if (entity is Dog)
                                             {
@@ -197,6 +190,13 @@ namespace SLIL.Classes
                                                 else
                                                     player.ResetEffectTime(6);
                                             }
+                                        }
+                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
+                                        if (player.HP <= 0)
+                                        {
+                                            Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                            GameOver(0);
+                                            return;
                                         }
                                     }
                                 }
