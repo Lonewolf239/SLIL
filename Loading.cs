@@ -22,7 +22,7 @@ namespace SLIL
 
         private bool CheckInternet() => false;
 
-        private async Task SetLocalizationsAsync(string[] codes, string[] languages)
+        private async Task SetLocalizations(string[] codes, string[] languages)
         {
             SupportedLanguages.Clear();
             for (int i = 0; i < languages.Length; i++)
@@ -60,7 +60,7 @@ namespace SLIL
                             codes[i] = lines[i].Split('-')[0];
                             languages[i] = lines[i].Split('-')[1];
                         }
-                        await SetLocalizationsAsync(codes, languages);
+                        await SetLocalizations(codes, languages);
                     }
                 }
                 catch

@@ -8,6 +8,7 @@ using System.Globalization;
 using System;
 using IniReader;
 using System.Net;
+using System.Net.Http;
 using System.Diagnostics;
 using SLIL.Classes;
 using Play_Sound;
@@ -543,14 +544,13 @@ namespace SLIL
 
         //  #====    Localization    ====#
 
-        private void DownloadLocalizationList()
+        private async Task DownloadLocalizationList()
         {
-            using (WebClient webClient = new WebClient())
+            using (HttpClient httpClient = new HttpClient())
             {
-                webClient.Encoding = Encoding.UTF8;
                 try
                 {
-                    string result = webClient.DownloadString(new Uri("https://base-escape.ru/SLILLocalization/LocalizationList.txt"));
+                    string result = await httpClient.GetStringAsync("https://base-escape.ru/SLILLocalization/LocalizationList.txt");
                     string[] lines = result.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                     string[] languages = new string[lines.Length];
                     string[] codes = new string[lines.Length];
@@ -563,7 +563,7 @@ namespace SLIL
                         }
                         language_list.Items.Clear();
                         language_list.Items.AddRange(languages.Distinct().ToArray());
-                        SetLocalizations(codes, languages);
+                        await SetLocalizations(codes, languages);
                     }
                 }
                 catch (WebException e)
@@ -600,11 +600,12 @@ namespace SLIL
             Localizations = localizations;
         }
 
-        private async void SetLocalizations(string[] codes, string[] languages)
+        private async Task SetLocalizations(string[] codes, string[] languages)
         {
             SupportedLanguages.Clear();
             for (int i = 0; i < languages.Length; i++)
                 SupportedLanguages.Add(codes[i], languages[i]);
+
             for (int i = 0; i < languages.Length; i++)
             {
                 try
@@ -1353,11 +1354,12 @@ namespace SLIL
             SetLanguage();
         }
 
-        private void Localization_update_btn_Click(object sender, EventArgs e)
+        private async void Localization_update_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
             DownloadedLocalizationList = false;
-            DownloadLocalizationList();
+            await DownloadLocalizationList();
+            Language = INIReader.GetString(iniFolder, "CONFIG", "language", Language);
             SetVisualSettings();
             SetLanguage();
         }

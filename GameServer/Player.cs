@@ -539,7 +539,7 @@ namespace GameServer
         public void ReducesStamine()
         {
             int x = 3;
-            if (GetCurrentGun().Weight <= 0.15) x = 2;
+            if (GetWeight() >= 0.95) x = 2;
             STAMINE -= x;
         }
 
@@ -812,7 +812,7 @@ namespace GameServer
             else if (index == 6)
             {
                 if (EffectCheck(6)) return;
-                Blind effect = new();
+                Blindness effect = new();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.Infinity = infinity;

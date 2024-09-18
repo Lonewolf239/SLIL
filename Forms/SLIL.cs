@@ -322,7 +322,7 @@ namespace SLIL
             { typeof(Fatigue), Properties.Resources.fatigue_effect },
             { typeof(Rider), Properties.Resources.im_biker },
             { typeof(Bleeding), Properties.Resources.bleeding },
-            { typeof(Blind), Properties.Resources.box },
+            { typeof(Blindness), Properties.Resources.box },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
@@ -2949,7 +2949,8 @@ namespace SLIL
                     "MRS: {2,5:0.##}  RS:  {3,5:0.##}\n" +
                     "MS:  {4,5:0.##}  CMS: {5,5:0.##}\n" +
                     "SS:  {6,5:0.##}  CSS: {7,5:0.##}\n" +
-                    "MST: {8,5:0.##}  ST:  {9,5:0.##}",
+                    "MST: {8,5:0.##}  ST:  {9,5:0.##}\n" +
+                    "CW:  {10,5:0.##}",
                     player.MAX_MOVE_SPEED,
                     player.MAX_STRAFE_SPEED,
                     player.MAX_RUN_SPEED,
@@ -2959,7 +2960,8 @@ namespace SLIL
                     player.STRAFE_SPEED,
                     player.GetStrafeSpeed(elapsed_time),
                     player.MAX_STAMINE,
-                    player.STAMINE
+                    player.STAMINE,
+                    player.GetWeight()
                 );
             if (ShowPositongDebug)
                 debugInfo = string.Format(

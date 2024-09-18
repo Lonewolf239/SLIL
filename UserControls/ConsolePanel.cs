@@ -17,7 +17,13 @@ namespace SLIL.UserControls
     {
         private static bool ImHonest = false;
         private int cheat_index = 0, color_index = 0;
-        private readonly Effect[] effects = { new Regeneration(), new Adrenaline(), new Protection(), new Fatigue() };
+        private readonly Effect[] effects =
+        {
+            new Regeneration(), new Adrenaline(),
+            new Protection(), new Fatigue(),
+            new Rider(), new Bleeding(),
+            new Blindness()
+        };
         private readonly List<string> previous_cheat = new List<string>();
         public List<Entity> Entities;
         public Player player;
@@ -159,24 +165,25 @@ namespace SLIL.UserControls
                                  "~│~ -SPEED_-*X*     ~│~ Changing player movement speed              ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -BIGGUY-      ~│~ Give out \"The Smallest Pistol in the World\" ~│~\n" +
-                                 "~│~ -YHRII-       ~│~ Issue \"Fingershot\"                          ~│~\n" +
-                                 "~│~ -IMGNOME-     ~│~ Issue \"Wizard Gnome\"                        ~│~\n" +
-                                 "~│~ -ILLKLURDOG-  ~│~ Issue \"Petition\"                            ~│~\n" +
+                                 "~│~ -YHRII-       ~│~ Give \"Fingershot\"                          ~│~\n" +
+                                 "~│~ -IMGNOME-     ~│~ Give \"Wizard Gnome\"                        ~│~\n" +
+                                 "~│~ -ILLKLURDOG-  ~│~ Give \"Petition\"                            ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -CAT-         ~│~ Issue a pet: \"Silly cat\"                    ~│~\n" +
-                                 "~│~ -GNOME-       ~│~ Issue a pet: \"Wizard Gnome\"                 ~│~\n" +
-                                 "~│~ -ENERGY-      ~│~ Issue a pet: \"Energy Drink\"                 ~│~\n" +
-                                 "~│~ -ILOVEFURRY-  ~│~ Issue a pet: \"Podseratel\"                   ~│~\n" +
+                                 "~│~ -CAT-         ~│~ Give a pet: \"Silly cat\"                    ~│~\n" +
+                                 "~│~ -GNOME-       ~│~ Give a pet: \"Wizard Gnome\"                 ~│~\n" +
+                                 "~│~ -ENERGY-      ~│~ Give a pet: \"Energy Drink\"                 ~│~\n" +
+                                 "~│~ -ILOVEFURRY-  ~│~ Give a pet: \"Podseratel\"                   ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -BEFWK-       ~│~ Issue out all weapons                       ~│~\n" +
+                                 "~│~ -BEFWK-       ~│~ Give out all weapons                       ~│~\n" +
                                  "~│~ -FYTLG-       ~│~ Maximum amount of ammunition                ~│~\n" +
                                  "~│~ -IDDQD-       ~│~ Upgrade all weapons by one level            ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -EFFECTS-     ~│~ List of effects                             ~│~\n" +
                                  "~│~ -EFALLGV-     ~│~ Give all effects                            ~│~\n" +
                                  "~│~ -EFCLEAR-     ~│~ Cleaning up effects                         ~│~\n" +
-                                 "~│~ -EFGIVE_-*X*    ~│~ Issue effect under X id                     ~│~\n" +
-                                 "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Issue effect under X id for Y seconds       ~│~\n" +
+                                 "~│~ -EFGIVE_-*X*    ~│~ Give effect under X id                     ~│~\n" +
+                                 "~│~ -EFGINF_-*X*    ~│~ Give infinite effect under X id             ~│~\n" +
+                                 "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Give effect under X id for Y seconds       ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -ENTITIES-    ~│~ List of entities                            ~│~\n" +
                                  "~│~ -ENT_-*X*       ~│~ Spawn entity under ID X, with AI            ~│~\n" +
@@ -184,11 +191,11 @@ namespace SLIL.UserControls
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -NOCLIP-      ~│~ Enables/disables noclip                     ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -EGTRE-       ~│~ Issue first aid kits                        ~│~\n" +
-                                 "~│~ -DHURF-       ~│~ Issue adrenaline                            ~│~\n" +
-                                 "~│~ -KVISE-       ~│~ Issue helmet                                ~│~\n" +
+                                 "~│~ -EGTRE-       ~│~ Give first aid kit                         ~│~\n" +
+                                 "~│~ -DHURF-       ~│~ Give adrenaline                            ~│~\n" +
+                                 "~│~ -KVISE-       ~│~ Give helmet                                ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -GKIFK-       ~│~ Issue 999 HP                                ~│~\n" +
+                                 "~│~ -GKIFK-       ~│~ Give 999 HP                                ~│~\n" +
                                  "~│~ -KILL-        ~│~ Kill a player                               ~│~\n" +
                                  "~│~ -LPFJY-       ~│~ Cause 99 damage                             ~│~\n" +
                                  "~└─────────────┴─────────────────────────────────────────────┘~";
@@ -619,8 +626,54 @@ namespace SLIL.UserControls
                                     }
                                     else
                                     {
-                                        player.GiveEffect(x, true);
-                                        message = $"The effect under ID {x} is issued";
+                                        if (x == 4)
+                                        {
+                                            color = Color.Red;
+                                            message = $"It is impossible to issue this effect with the command";
+                                        }
+                                        else
+                                        {
+                                            player.GiveEffect(x, true);
+                                            message = $"The effect under ID {x} is issued";
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    color = Color.Red;
+                                    message = $"There is no effect under ID {x}";
+                                }
+                            }
+                            catch
+                            {
+                                color = Color.Red;
+                                message = "Incorrect data entered! X is not a number.";
+                            }
+                        }
+                        else if (cheat.StartsWith("EFGINF_"))
+                        {
+                            try
+                            {
+                                int x = Convert.ToInt32(cheat.Split('_')[1]);
+                                if (x >= 0 && x < effects.Length)
+                                {
+                                    if (player.EffectCheck(x))
+                                    {
+                                        color = Color.Red;
+                                        message = $"You already have an effect under ID {x}";
+                                    }
+                                    else
+                                    {
+                                        if (x == 4)
+                                        {
+                                            color = Color.Red;
+                                            message = $"It is impossible to issue this effect with the command";
+                                        }
+                                        else
+                                        {
+                                            player.GiveEffect(x, true, 0, true);
+                                            message = $"The effect under ID {x} is issued";
+                                        }
                                     }
                                 }
                                 else
@@ -650,8 +703,16 @@ namespace SLIL.UserControls
                                     }
                                     else
                                     {
-                                        player.GiveEffect(x, false, y);
-                                        message = $"Effect at ID {x} was issued for {y} seconds";
+                                        if (x == 4)
+                                        {
+                                            color = Color.Red;
+                                            message = $"It is impossible to issue this effect with the command";
+                                        }
+                                        else
+                                        {
+                                            player.GiveEffect(x, false, y);
+                                            message = $"Effect at ID {x} was issued for {y} seconds";
+                                        }
                                     }
                                 }
                                 else

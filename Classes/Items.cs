@@ -257,7 +257,7 @@ namespace SLIL.Classes
         public Flashlight() : base()
         {
             AimingFactor = 8;
-            Weight = 0.95;
+            Weight = 1;
             HasIt = true;
             Name = new[] { "3-0", "Flashlight" };
         }
@@ -275,7 +275,7 @@ namespace SLIL.Classes
         public Knife() : base()
         {
             InfinityAmmo = true;
-            Weight = 0.95;
+            Weight = 1;
             Upgradeable = false;
             ShowAmmo = false;
             AddToShop = false;
@@ -352,7 +352,7 @@ namespace SLIL.Classes
             HasIt = false;
             ShowAmmoAsNumber = true;
             Name = new[] { "3-3", "Rainblower" };
-            Accuracy = 0.8;
+            Accuracy = 0.9;
             Weight = 0.8;
             BulletCount = 2;
             PauseBetweenShooting = 500;
@@ -388,7 +388,7 @@ namespace SLIL.Classes
         {
             AmmoType = AmmoTypes.Bullet;
             FireType = FireTypes.Single;
-            Weight = 0.9;
+            Weight = 1;
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;
@@ -424,6 +424,7 @@ namespace SLIL.Classes
             {
                 UpdateCost = 20;
                 Accuracy = 0.85;
+                Weight = 1;
                 RechargeTime = 600;
                 CartridgesClip = 8;
                 MaxAmmo = CartridgesClip * 6;
@@ -440,6 +441,7 @@ namespace SLIL.Classes
             else if (Level == Levels.LV2)
             {
                 Accuracy = 0.95;
+                Weight = 1;
                 RechargeTime = 350;
                 CartridgesClip = 12;
                 MaxAmmo = CartridgesClip * 7;
@@ -456,6 +458,7 @@ namespace SLIL.Classes
             else if (Level == Levels.LV3)
             {
                 Accuracy = 0.9;
+                Weight = 1;
                 RechargeTime = 400;
                 CartridgesClip = 7;
                 MaxAmmo = CartridgesClip * 6;
@@ -472,6 +475,7 @@ namespace SLIL.Classes
             else
             {
                 Accuracy = 1;
+                Weight = 0.98;
                 RechargeTime = 400;
                 CartridgesClip = 6;
                 MaxAmmo = CartridgesClip * 6;
@@ -577,6 +581,7 @@ namespace SLIL.Classes
             {
                 UpdateCost = 30;
                 BulletCount = 5;
+                Weight = 0.85;
                 PauseBetweenShooting = 350;
                 RechargeTime = 425;
                 FiringRate = 200;
@@ -595,6 +600,7 @@ namespace SLIL.Classes
             else if (Level == Levels.LV2)
             {
                 BulletCount = 8;
+                Weight = 0.85;
                 PauseBetweenShooting = 500;
                 RechargeTime = 325;
                 FiringRate = 200;
@@ -613,6 +619,7 @@ namespace SLIL.Classes
             else
             {
                 BulletCount = 9;
+                Weight = 0.78;
                 PauseBetweenShooting = 500;
                 RechargeTime = 325;
                 FiringRate = 200;
@@ -645,7 +652,7 @@ namespace SLIL.Classes
             HaveLV4 = false;
             Name = new[] { "3-6", "Submachine gun" };
             Accuracy = 0.85;
-            Weight = 0.35;
+            Weight = 0.85;
             RechargeTime = 375;
             BulletCount = 1;
             PauseBetweenShooting = 60;
@@ -672,6 +679,7 @@ namespace SLIL.Classes
             if (Level == Levels.LV1)
             {
                 UpdateCost = 40;
+                Weight = 0.85;
                 Accuracy = 0.65;
                 BulletCount = 1;
                 PauseBetweenShooting = 60;
@@ -691,6 +699,7 @@ namespace SLIL.Classes
             else if (Level == Levels.LV2)
             {
                 Accuracy = 0.8;
+                Weight = 0.9;
                 RechargeTime = 350;
                 BulletCount = 1;
                 PauseBetweenShooting = 50;
@@ -708,6 +717,7 @@ namespace SLIL.Classes
             else
             {
                 Accuracy = 0.5;
+                Weight = 0.88;
                 RechargeTime = 350;
                 BulletCount = 2;
                 PauseBetweenShooting = 35;
@@ -738,8 +748,8 @@ namespace SLIL.Classes
             HasIt = false;
             HaveLV4 = false;
             Name = new[] { "3-7", "Assault rifle" };
-            Accuracy = 0.75;
-            Weight = 0.8;
+            Accuracy = 0.8;
+            Weight = 0.75;
             PauseBetweenShooting = 750;
             RechargeTime = 700;
             FiringRate = 100;
@@ -767,6 +777,7 @@ namespace SLIL.Classes
                 UpdateCost = 50;
                 FireType = FireTypes.SemiAutomatic;
                 Accuracy = 0.75;
+                Weight = 0.75;
                 PauseBetweenShooting = 750;
                 RechargeTime = 700;
                 FiringRate = 100;
@@ -785,6 +796,7 @@ namespace SLIL.Classes
             {
                 FireType = FireTypes.SemiAutomatic;
                 Accuracy = 0.85;
+                Weight = 0.8;
                 PauseBetweenShooting = 650;
                 RechargeTime = 450;
                 FiringRate = 100;
@@ -803,6 +815,7 @@ namespace SLIL.Classes
             {
                 FireType = FireTypes.Single;
                 Accuracy = 0.9;
+                Weight = 0.85;
                 PauseBetweenShooting = 500;
                 RechargeTime = 400;
                 CartridgesClip = 20;
@@ -864,6 +877,7 @@ namespace SLIL.Classes
                 AimingFactor = 4;
                 CanRun = true;
                 Accuracy = 0.96;
+                Weight = 0.75;
                 RechargeTime = 650;
                 CartridgesClip = 1;
                 MaxAmmo = CartridgesClip * 15;
@@ -881,6 +895,7 @@ namespace SLIL.Classes
                 AimingFactor = 5;
                 CanRun = true;
                 Accuracy = 0.98;
+                Weight = 0.75;
                 RechargeTime = 650;
                 CartridgesClip = 10;
                 MaxAmmo = CartridgesClip * 4;
@@ -897,6 +912,7 @@ namespace SLIL.Classes
             {
                 AimingFactor = 12;
                 CanRun = false;
+                Weight = 0.55;
                 Accuracy = 1;
                 RechargeTime = 772;
                 CartridgesClip = 10;
@@ -928,6 +944,7 @@ namespace SLIL.Classes
             InMultiplayer = false;
             Name = new[] { "3-9", "Fingershot" };
             Accuracy = 1;
+            Weight = 0.9;
             RechargeTime = 600;
             FiringRate = 175;
             CartridgesClip = 1;
@@ -990,6 +1007,7 @@ namespace SLIL.Classes
             Name = new[] { "3-11", "Wizard Gnome" };
             RecoilY = 35;
             RecoilX = 2;
+            Weight = 0.88;
             RechargeTime = 300;
             AmmoInStock = 99;
             MaxAmmo = 99;
@@ -1016,7 +1034,7 @@ namespace SLIL.Classes
             InMultiplayer = true;
             Name = new[] { "3-12", "RPG7" };
             Accuracy = 1;
-            Weight = 0.5;
+            Weight = 0.65;
             GunCost = 150;
             AmmoCost = 50;
             RechargeTime = 440;

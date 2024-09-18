@@ -813,7 +813,7 @@ namespace SLIL.Classes
             else if (index == 6)
             {
                 if (EffectCheck(6)) return;
-                Blind effect = new Blind();
+                Blindness effect = new Blindness();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.Infinity = infinity;

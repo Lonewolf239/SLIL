@@ -119,14 +119,14 @@ namespace SLIL.Classes
         }
     }
 
-    public class Blind : Debaf
+    public class Blindness : Debaf
     {
-        public Blind() : base()
+        public Blindness() : base()
         {
             ID = 6;
             EffectTotalTime = 10;
-            Name = "Blind";
-            Description = "Gradually reduces health";
+            Name = "Blindness";
+            Description = "Reduces visibility range";
             UpdateTimeRemaining();
         }
     }
