@@ -322,6 +322,7 @@ namespace SLIL
             { typeof(Fatigue), Properties.Resources.fatigue_effect },
             { typeof(Rider), Properties.Resources.im_biker },
             { typeof(Bleeding), Properties.Resources.bleeding },
+            { typeof(Blind), Properties.Resources.box },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
@@ -1062,7 +1063,7 @@ namespace SLIL
         private void Stamina_timer_Tick(object sender, EventArgs e)
         {
             Player player = Controller.GetPlayer();
-            if (player == null) return;
+            if (player == null || Controller.IsInSpectatorMode()) return;
             if (RunKeyPressed && PlayerCanRun() && player.PlayerDirection == Directions.FORWARD)
             {
                 if (player.STAMINE >= player.MAX_STAMINE / 2.5)
@@ -1078,13 +1079,13 @@ namespace SLIL
                     chill_timer.Start();
                     if (MainMenu.sounds) low_stamine.Play(Volume);
                 }
-                else player.STAMINE -= player.GetCurrentGun().LowWeight ? 2 : 3;
+                else player.ReducesStamine();
             }
             else
             {
                 player.PlayerMoveStyle = Directions.WALK;
                 if (player.STAMINE < player.MAX_STAMINE)
-                    player.STAMINE += 2;
+                    player.RestoreStamine();
             }
         }
 
@@ -1937,9 +1938,9 @@ namespace SLIL
                 DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '.';
             }
             DISPLAYED_MAP.Replace('P', '.');
-            ChangeSpeed(player);
-            double move = player.MOVE_SPEED * player.RUN_SPEED * elapsed_time;
-            double strafe = player.STRAFE_SPEED * player.RUN_SPEED * elapsed_time;
+            player.ChangeSpeed();
+            double move = player.GetMoveSpeed(elapsed_time);
+            double strafe = player.GetStrafeSpeed(elapsed_time);
             double moveSin = Math.Sin(player.A) * move;
             double moveCos = Math.Cos(player.A) * move;
             double strafeSin = Math.Sin(player.A) * strafe;
@@ -1989,134 +1990,6 @@ namespace SLIL
             }
             if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == '.')
                 DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
-        }
-
-        private void ChangeSpeed(Player player)
-        {
-            int speedFactor;
-            double walk = 0.075, transport = 0.05;
-            switch (player.StrafeDirection)
-            {
-                case Directions.LEFT:
-                    if (player.STRAFE_SPEED < 0) speedFactor = 4;
-                    else speedFactor = 1;
-                    if (!player.InTransport)
-                    {
-                        if (player.STRAFE_SPEED + (walk * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
-                            player.STRAFE_SPEED += walk * speedFactor;
-                    }
-                    else
-                    {
-                        if ((player.MOVE_SPEED < 0.25 && player.PlayerDirection == Directions.FORWARD)||
-                            (player.MOVE_SPEED > -0.25 && player.PlayerDirection == Directions.BACK))
-                            player.STRAFE_SPEED = 0;
-                        if (player.STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= player.MAX_STRAFE_SPEED + 0.01)
-                            player.STRAFE_SPEED += (transport * 1.75) * speedFactor;
-                    }
-                    break;
-                case Directions.RIGHT:
-                    if (player.STRAFE_SPEED > 0) speedFactor = 4;
-                    else speedFactor = 1;
-                    if (!player.InTransport)
-                    {
-                        if (player.STRAFE_SPEED - (walk * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
-                            player.STRAFE_SPEED -= walk * speedFactor;
-                    }
-                    else
-                    {
-                        if ((player.MOVE_SPEED < 0.25 && player.PlayerDirection == Directions.FORWARD) ||
-                            (player.MOVE_SPEED > -0.25 && player.PlayerDirection == Directions.BACK))
-                            player.STRAFE_SPEED = 0;
-                        if (player.STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -player.MAX_STRAFE_SPEED - 0.01)
-                            player.STRAFE_SPEED -= (transport * 1.75) * speedFactor;
-                    }
-                    break;
-                case Directions.STOP:
-                    if (!player.InTransport)
-                    {
-                        if (player.STRAFE_SPEED + (walk * 2) <= 0)
-                            player.STRAFE_SPEED += walk * 2;
-                        else if (player.STRAFE_SPEED - (walk * 2) >= 0)
-                            player.STRAFE_SPEED -= walk * 2;
-                        else
-                            player.STRAFE_SPEED = 0;
-                    }
-                    else
-                    {
-                        if ((player.MOVE_SPEED < 0.25 && player.PlayerDirection == Directions.FORWARD) ||
-                            (player.MOVE_SPEED > -0.25 && player.PlayerDirection == Directions.BACK))
-                            player.STRAFE_SPEED = 0;
-                        if (player.STRAFE_SPEED + ((transport * 1.75) * 2) <= 0)
-                            player.STRAFE_SPEED += (transport * 1.75) * 2;
-                        else if (player.STRAFE_SPEED - ((transport * 1.75) * 2) >= 0)
-                            player.STRAFE_SPEED -= (transport * 1.75) * 2;
-                        else
-                            player.STRAFE_SPEED = 0;
-                    }
-                    break;
-            }
-            switch (player.PlayerDirection)
-            {
-                case Directions.FORWARD:
-                    if (player.MOVE_SPEED < 0) speedFactor = 2;
-                    else speedFactor = 1;
-                    if (!player.InTransport)
-                    {
-                        if (player.MOVE_SPEED + (walk * speedFactor) <= player.MAX_MOVE_SPEED + 0.01)
-                            player.MOVE_SPEED += walk * speedFactor;
-                    }
-                    else
-                    {
-                        if (player.MOVE_SPEED + (transport * speedFactor) <= player.MAX_MOVE_SPEED + 0.01)
-                            player.MOVE_SPEED += transport * speedFactor;
-                    }
-                    break;
-                case Directions.BACK:
-                    if (player.MOVE_SPEED > 0) speedFactor = 2;
-                    else speedFactor = 1;
-                    if (!player.InTransport)
-                    {
-                        if (player.MOVE_SPEED - (walk * speedFactor) >= -player.MAX_MOVE_SPEED - 0.01)
-                            player.MOVE_SPEED -= walk * speedFactor;
-                    }
-                    else
-                    {
-                        if (player.MOVE_SPEED - (transport * speedFactor) >= -player.MAX_MOVE_SPEED - 0.01)
-                            player.MOVE_SPEED -= transport * speedFactor;
-                    }
-                    break;
-                case Directions.STOP:
-                    if (!player.InTransport)
-                    {
-                        if (player.MOVE_SPEED + (walk * 2) <= 0)
-                            player.MOVE_SPEED += walk * 2;
-                        else if (player.MOVE_SPEED - (walk * 2) >= 0)
-                            player.MOVE_SPEED -= walk * 2;
-                        else
-                            player.MOVE_SPEED = 0;
-                    }
-                    else
-                    {
-                        if (player.MOVE_SPEED + (transport * 2) <= 0)
-                            player.MOVE_SPEED += transport * 2;
-                        else if (player.MOVE_SPEED - (transport * 2) >= 0)
-                            player.MOVE_SPEED -= transport * 2;
-                        else
-                            player.MOVE_SPEED = 0;
-                    }
-                    break;
-            }
-            switch (player.PlayerMoveStyle)
-            {
-                case Directions.RUN:
-                    if (player.RUN_SPEED + walk <= player.MAX_RUN_SPEED + 0.01)
-                        player.RUN_SPEED += walk;
-                    break;
-                default:
-                    if (player.RUN_SPEED > 1) player.RUN_SPEED -= walk * 2;
-                    else player.RUN_SPEED = 1;
-                    break;
-            }
         }
 
         //  #====     RayCasting    ====#
@@ -2544,9 +2417,9 @@ namespace SLIL
             int state = 0;
             if (!entity.HasStaticAnimation)
             {
-                if (useTimeNow) state = entity.Animations[0][timeNow % entity.Frames];
+                if (useTimeNow) state = entity.Animations[timeNow % entity.Frames];
                 if (entity is GameObject @object && @object.Animated && @object.Temporarily)
-                    state = entity.Animations[0][@object.CurrentFrame];
+                    state = entity.Animations[@object.CurrentFrame];
             }
             if (entity.HasSpriteRotation)
             {
@@ -3082,9 +2955,9 @@ namespace SLIL
                     player.MAX_RUN_SPEED,
                     player.RUN_SPEED,
                     player.MOVE_SPEED,
-                    player.MOVE_SPEED * player.RUN_SPEED,
+                    player.GetMoveSpeed(elapsed_time),
                     player.STRAFE_SPEED,
-                    player.STRAFE_SPEED * player.RUN_SPEED,
+                    player.GetStrafeSpeed(elapsed_time),
                     player.MAX_STAMINE,
                     player.STAMINE
                 );

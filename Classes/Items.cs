@@ -12,7 +12,6 @@ namespace SLIL.Classes
     {
         public int ItemID { get; set; }
         public string[] Name { get; set; }
-        public bool LowWeight { get; set; }
         public bool Upgradeable { get; set; }
         public bool InMultiplayer { get; set; }
         public bool CanRun { get; set; }
@@ -44,6 +43,7 @@ namespace SLIL.Classes
         public int MaxAmmo { get; set; }
         public int RadiusSound { get; set; }
         public int ReloadFrames { get; set; }
+        public double Weight { get; set; }
         public double Accuracy { get; set; }
         public double FiringRange { get; set; }
         public double MaxDamage { get; set; }
@@ -55,14 +55,14 @@ namespace SLIL.Classes
 
         public Gun()
         {
-            this.ItemID = this.GetItemID();
+            ItemID = GetItemID();
             Level = Levels.LV1;
             Accuracy = 1;
             BulletCount = 1;
             PauseBetweenShooting = 500;
             Upgradeable = true;
             CanRun = true;
-            LowWeight = false;
+            Weight = 1;
             InMultiplayer = true;
             ShowAmmoAsNumber = false;
             IsMagic = false;
@@ -138,29 +138,29 @@ namespace SLIL.Classes
             }
         }
 
-        public virtual bool CanUpdate() => (!HaveLV4 && Level != Levels.LV3) || (HaveLV4 && Level != Levels.LV4);
+        public virtual bool CanUpdate() => !HaveLV4 && Level != Levels.LV3 || HaveLV4 && Level != Levels.LV4;
 
         public virtual bool CanDowngrade() => Level != Levels.LV1;
 
         public void Serialize(NetDataWriter writer)
         {
-            writer.Put((int)this.Level);
-            writer.Put((int)this.AmmoCount);
-            writer.Put(this.AmmoInStock);
+            writer.Put((int)Level);
+            writer.Put(AmmoCount);
+            writer.Put(AmmoInStock);
             writer.Put(HasIt);
         }
 
         public void Deserialize(NetDataReader reader)
         {
             Levels level = (Levels)reader.GetInt();
-            if (level > this.Level && level<=Enum.GetValues(typeof(Levels)).Cast<Levels>().Max())
+            if (level > Level && level <= Enum.GetValues(typeof(Levels)).Cast<Levels>().Max())
             {
-                while (this.Level != level)
-                    this.LevelUpdate();
+                while (Level != level)
+                    LevelUpdate();
             }
-            this.AmmoCount = reader.GetInt();
-            this.AmmoInStock = reader.GetInt();
-            this.HasIt = reader.GetBool();
+            AmmoCount = reader.GetInt();
+            AmmoInStock = reader.GetInt();
+            HasIt = reader.GetBool();
         }
     }
 
@@ -257,7 +257,7 @@ namespace SLIL.Classes
         public Flashlight() : base()
         {
             AimingFactor = 8;
-            LowWeight = true;
+            Weight = 0.95;
             HasIt = true;
             Name = new[] { "3-0", "Flashlight" };
         }
@@ -275,7 +275,7 @@ namespace SLIL.Classes
         public Knife() : base()
         {
             InfinityAmmo = true;
-            LowWeight = true;
+            Weight = 0.95;
             Upgradeable = false;
             ShowAmmo = false;
             AddToShop = false;
@@ -353,6 +353,7 @@ namespace SLIL.Classes
             ShowAmmoAsNumber = true;
             Name = new[] { "3-3", "Rainblower" };
             Accuracy = 0.8;
+            Weight = 0.8;
             BulletCount = 2;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
@@ -387,7 +388,7 @@ namespace SLIL.Classes
         {
             AmmoType = AmmoTypes.Bullet;
             FireType = FireTypes.Single;
-            LowWeight = true;
+            Weight = 0.9;
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;
@@ -503,6 +504,7 @@ namespace SLIL.Classes
             HaveLV4 = false;
             Name = new[] { "3-5", "Shotgun" };
             Accuracy = 0.4;
+            Weight = 0.85;
             BulletCount = 5;
             PauseBetweenShooting = 350;
             RechargeTime = 425;
@@ -555,7 +557,7 @@ namespace SLIL.Classes
                 {
                     if (AmmoInStock - ammo < 0)
                     {
-                        if (AmmoInStock - (ammo / 2) >= 0)
+                        if (AmmoInStock - ammo / 2 >= 0)
                         {
                             AmmoInStock -= ammo / 2;
                             AmmoCount += ammo / 2;
@@ -642,7 +644,8 @@ namespace SLIL.Classes
             HasIt = false;
             HaveLV4 = false;
             Name = new[] { "3-6", "Submachine gun" };
-            Accuracy = 0.65;
+            Accuracy = 0.85;
+            Weight = 0.35;
             RechargeTime = 375;
             BulletCount = 1;
             PauseBetweenShooting = 60;
@@ -736,6 +739,7 @@ namespace SLIL.Classes
             HaveLV4 = false;
             Name = new[] { "3-7", "Assault rifle" };
             Accuracy = 0.75;
+            Weight = 0.8;
             PauseBetweenShooting = 750;
             RechargeTime = 700;
             FiringRate = 100;
@@ -833,6 +837,7 @@ namespace SLIL.Classes
             Name = new[] { "3-8", "Sniper rifle" };
             RechargeTime = 650;
             Accuracy = 0.96;
+            Weight = 0.75;
             FiringRate = 200;
             UpdateCost = 60;
             GunCost = 55;
@@ -956,6 +961,7 @@ namespace SLIL.Classes
             InMultiplayer = false;
             Name = new[] { "3-10", "TSPitW" };
             Accuracy = 0.8;
+            Weight = 0.5;
             RechargeTime = 750;
             FiringRate = 175;
             CartridgesClip = 7;
@@ -1010,6 +1016,7 @@ namespace SLIL.Classes
             InMultiplayer = true;
             Name = new[] { "3-12", "RPG7" };
             Accuracy = 1;
+            Weight = 0.5;
             GunCost = 150;
             AmmoCost = 50;
             RechargeTime = 440;
@@ -1047,6 +1054,7 @@ namespace SLIL.Classes
             InMultiplayer = true;
             Name = new[] { "3-13", "C4" };
             Accuracy = 1;
+            Weight = 0.9;
             GunCost = 100;
             AmmoCost = 50;
             RechargeTime = 350;

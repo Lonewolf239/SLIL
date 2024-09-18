@@ -532,9 +532,162 @@ namespace SLIL.Classes
 
         public double GetDrawDistance()
         {
+            if (EffectCheck(6)) return 3.25;
             if (InTransport) return DEPTH + 2;
             return DEPTH + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
         }
+
+        public void ReducesStamine()
+        {
+            int x = 3;
+            if (GetWeight() >= 0.95) x = 2;
+            STAMINE -= x;
+        }
+
+        public void RestoreStamine()
+        {
+            int x = 2;
+            if (EffectCheck(3)) x = 1;
+            STAMINE += x;
+        }
+
+        public double GetWeight()
+        {
+            if (InTransport) return 1;
+            return GetCurrentGun().Weight;
+        }
+
+        public void ChangeSpeed()
+        {
+            int speedFactor;
+            double walk = 0.075, transport = 0.05;
+            switch (StrafeDirection)
+            {
+                case Directions.LEFT:
+                    if (STRAFE_SPEED < 0) speedFactor = 4;
+                    else speedFactor = 1;
+                    if (!InTransport)
+                    {
+                        if (STRAFE_SPEED + (walk * speedFactor) <= MAX_STRAFE_SPEED + 0.01)
+                            STRAFE_SPEED += walk * speedFactor;
+                    }
+                    else
+                    {
+                        if ((MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD) ||
+                            (MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK))
+                            STRAFE_SPEED = 0;
+                        if (STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= MAX_STRAFE_SPEED + 0.01)
+                            STRAFE_SPEED += (transport * 1.75) * speedFactor;
+                    }
+                    break;
+                case Directions.RIGHT:
+                    if (STRAFE_SPEED > 0) speedFactor = 4;
+                    else speedFactor = 1;
+                    if (!InTransport)
+                    {
+                        if (STRAFE_SPEED - (walk * speedFactor) >= -MAX_STRAFE_SPEED - 0.01)
+                            STRAFE_SPEED -= walk * speedFactor;
+                    }
+                    else
+                    {
+                        if ((MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD) ||
+                            (MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK))
+                            STRAFE_SPEED = 0;
+                        if (STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -MAX_STRAFE_SPEED - 0.01)
+                            STRAFE_SPEED -= (transport * 1.75) * speedFactor;
+                    }
+                    break;
+                case Directions.STOP:
+                    if (!InTransport)
+                    {
+                        if (STRAFE_SPEED + (walk * 2) <= 0)
+                            STRAFE_SPEED += walk * 2;
+                        else if (STRAFE_SPEED - (walk * 2) >= 0)
+                            STRAFE_SPEED -= walk * 2;
+                        else
+                            STRAFE_SPEED = 0;
+                    }
+                    else
+                    {
+                        if ((MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD) ||
+                            (MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK))
+                            STRAFE_SPEED = 0;
+                        if (STRAFE_SPEED + ((transport * 1.75) * 2) <= 0)
+                            STRAFE_SPEED += (transport * 1.75) * 2;
+                        else if (STRAFE_SPEED - ((transport * 1.75) * 2) >= 0)
+                            STRAFE_SPEED -= (transport * 1.75) * 2;
+                        else
+                            STRAFE_SPEED = 0;
+                    }
+                    break;
+            }
+            switch (PlayerDirection)
+            {
+                case Directions.FORWARD:
+                    if (MOVE_SPEED < 0) speedFactor = 2;
+                    else speedFactor = 1;
+                    if (!InTransport)
+                    {
+                        if (MOVE_SPEED + (walk * speedFactor) <= MAX_MOVE_SPEED + 0.01)
+                            MOVE_SPEED += walk * speedFactor;
+                    }
+                    else
+                    {
+                        if (MOVE_SPEED + (transport * speedFactor) <= MAX_MOVE_SPEED + 0.01)
+                            MOVE_SPEED += transport * speedFactor;
+                    }
+                    break;
+                case Directions.BACK:
+                    if (MOVE_SPEED > 0) speedFactor = 2;
+                    else speedFactor = 1;
+                    if (!InTransport)
+                    {
+                        if (MOVE_SPEED - (walk * speedFactor) >= -MAX_MOVE_SPEED - 0.01)
+                            MOVE_SPEED -= walk * speedFactor;
+                    }
+                    else
+                    {
+                        if (MOVE_SPEED - (transport * speedFactor) >= -MAX_MOVE_SPEED - 0.01)
+                            MOVE_SPEED -= transport * speedFactor;
+                    }
+                    break;
+                case Directions.STOP:
+                    if (!InTransport)
+                    {
+                        if (MOVE_SPEED + (walk * 2) <= 0)
+                            MOVE_SPEED += walk * 2;
+                        else if (MOVE_SPEED - (walk * 2) >= 0)
+                            MOVE_SPEED -= walk * 2;
+                        else
+                            MOVE_SPEED = 0;
+                    }
+                    else
+                    {
+                        if (MOVE_SPEED + (transport * 2) <= 0)
+                            MOVE_SPEED += transport * 2;
+                        else if (MOVE_SPEED - (transport * 2) >= 0)
+                            MOVE_SPEED -= transport * 2;
+                        else
+                            MOVE_SPEED = 0;
+                    }
+                    break;
+            }
+            switch (PlayerMoveStyle)
+            {
+                case Directions.RUN:
+                    if (RUN_SPEED + walk <= MAX_RUN_SPEED + 0.01)
+                        RUN_SPEED += walk;
+                    break;
+                default:
+                    if (RUN_SPEED > 1) RUN_SPEED -= walk * 2;
+                    else RUN_SPEED = 1;
+                    break;
+            }
+        }
+
+        public double GetMoveSpeed(double elapsed_time) => MOVE_SPEED * GetWeight() * RUN_SPEED * elapsed_time;
+
+        public double GetStrafeSpeed(double elapsed_time) => STRAFE_SPEED * GetWeight() * RUN_SPEED * elapsed_time;
 
         public Gun GetCurrentGun() => Guns[CurrentGun];
 
@@ -555,7 +708,7 @@ namespace SLIL.Classes
                 {
                     int damage = rand.Next(1, 3);
                     if (HP - damage >= 1)
-                        DealDamage(damage);
+                        DealDamage(damage, false);
                 }
                 if (Effects[i].ReducingTimeRemaining())
                 {
@@ -566,6 +719,11 @@ namespace SLIL.Classes
                         MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
+                    }
+                    else if (Effects[i].ID == 3)
+                    {
+                        MAX_STAMINE += 450;
+                        STAMINE = MAX_STAMINE;
                     }
                     Effects.RemoveAt(i);
                 }
@@ -620,6 +778,8 @@ namespace SLIL.Classes
                 effect.Infinity = infinity;
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
+                MAX_STAMINE -= 450;
+                STAMINE = MAX_STAMINE;
             }
             else if (index == 4)
             {
@@ -644,6 +804,16 @@ namespace SLIL.Classes
             {
                 if (EffectCheck(5) || EffectCheck(0)) return;
                 Bleeding effect = new Bleeding();
+                if (!standart_time)
+                    effect.SetTotalTime(time);
+                effect.Infinity = infinity;
+                effect.UpdateTimeRemaining();
+                Effects.Add(effect);
+            }
+            else if (index == 6)
+            {
+                if (EffectCheck(6)) return;
+                Blind effect = new Blind();
                 if (!standart_time)
                     effect.SetTotalTime(time);
                 effect.Infinity = infinity;
@@ -687,6 +857,18 @@ namespace SLIL.Classes
             }
         }
 
+        public void ResetEffectTime(int id)
+        {
+            for (int i = 0; i < Effects.Count; i++)
+            {
+                if (Effects[i].ID == id)
+                {
+                    Effects[i].UpdateTimeRemaining();
+                    break;
+                }
+            }
+        }
+
         public void StopEffect(int id)
         {
             for (int i = 0; i < Effects.Count; i++)
@@ -700,6 +882,11 @@ namespace SLIL.Classes
                         MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                         MOVE_SPEED = 0;
                         STRAFE_SPEED = 0;
+                    }
+                    else if (Effects[i].ID == 3)
+                    {
+                        MAX_STAMINE += 450;
+                        STAMINE = MAX_STAMINE;
                     }
                     else if (Effects[i].ID == 4)
                     {
@@ -733,6 +920,11 @@ namespace SLIL.Classes
                     MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                     MOVE_SPEED = 0;
                     STRAFE_SPEED = 0;
+                }
+                else if (Effects[i].ID == 3)
+                {
+                    MAX_STAMINE += 450;
+                    STAMINE = MAX_STAMINE;
                 }
                 else if (Effects[i].ID == 4)
                 {
@@ -775,13 +967,16 @@ namespace SLIL.Classes
 
         protected override double GetEntityWidth() => 0.4;
 
-        public bool DealDamage(double damage)
+        public bool DealDamage(double damage, bool give_invulnerable = true)
         {
             if (EffectCheck(2) || EffectCheck(4)) damage *= 0.8;
             if (InTransport) TRANSPORT_HP -= damage;
             else HP -= damage;
-            TimeoutInvulnerable = 2;
-            Invulnerable = true;
+            if (give_invulnerable)
+            {
+                TimeoutInvulnerable = 2;
+                Invulnerable = true;
+            }
             if (HP <= 0) this.Dead = true;
             if (TRANSPORT_HP <= 0) StopEffect(4);
             return Dead;

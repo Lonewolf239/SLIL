@@ -29,8 +29,7 @@ namespace Play_Sound
 
         public void Play(float volume)
         {
-            if (file == null)
-                return;
+            if (file == null) return;
             try
             {
                 file.Position = 0;
@@ -42,6 +41,7 @@ namespace Play_Sound
 
         public void PlayFromThe(float volume, long position)
         {
+            if (file == null) return;
             try
             {
                 file.Position = position;
@@ -53,6 +53,7 @@ namespace Play_Sound
 
         public void PlayWithWait(float volume)
         {
+            if (file == null) return;
             if (IsPlaying) return;
             try
             {
@@ -74,6 +75,7 @@ namespace Play_Sound
 
         public void PlayWithDispose(float volume)
         {
+            if (file == null) return;
             try
             {
                 file.Position = 0;

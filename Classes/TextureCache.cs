@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace SLIL.Classes
 {
@@ -374,12 +375,11 @@ namespace SLIL.Classes
             }
             for (int i = COLORS.Length; i < textureCount; i++)
             {
-                int id = i - COLORS.Length;
-                if (!textures.ContainsKey(id)) continue;
-                var innerDict = textures[id];
-                textureColorCache[id] = new Dictionary<SpriteStates, Color[,]>();
+                if (!textures.ContainsKey(i)) continue;
+                var innerDict = textures[i];
+                textureColorCache[i] = new Dictionary<SpriteStates, Color[,]>();
                 foreach (var innerKvp in innerDict)
-                    textureColorCache[id][innerKvp.Key] = ProcessImage(innerKvp.Value);
+                    textureColorCache[i][innerKvp.Key] = ProcessImage(innerKvp.Value);
             }
             textures.Clear();
             textures = null;
@@ -390,12 +390,11 @@ namespace SLIL.Classes
             }
             for (int i = CUTE_COLORS.Length; i < textureCount; i++)
             {
-                int id = i - CUTE_COLORS.Length;
-                if (!cute_textures.ContainsKey(id)) continue;
-                var innerDict = cute_textures[id];
-                textureCuteColorCache[id] = new Dictionary<SpriteStates, Color[,]>();
+                if (!cute_textures.ContainsKey(i)) continue;
+                var innerDict = cute_textures[i];
+                textureCuteColorCache[i] = new Dictionary<SpriteStates, Color[,]>();
                 foreach (var innerKvp in innerDict)
-                    textureCuteColorCache[id][innerKvp.Key] = ProcessImage(innerKvp.Value);
+                    textureCuteColorCache[i][innerKvp.Key] = ProcessImage(innerKvp.Value);
             }
             cute_textures.Clear();
             cute_textures = null;

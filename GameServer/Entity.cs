@@ -15,7 +15,7 @@ namespace GameServer
         public int IntY { get; set; }
         public double VMove { get; set; }
         public int Texture { get; set; }
-        public int[][] Animations { get; set; }
+        public int[]? Animations { get; set; }
         public bool RespondsToFlashlight { get; set; }
         public int Frames { get; set; }
         public bool HasStaticAnimation { get; set; }
@@ -83,29 +83,28 @@ namespace GameServer
 
         protected void SetAnimations(int pause, int mode)
         {
-            Animations = new int[1][];
-            Animations[0] = new int[Frames];
+            Animations = new int[Frames];
             int state = 0;
             for (int item = 0; item < Frames; item++)
             {
                 if (mode == 1)
                 {
                     if (item % pause == 0)
-                        Animations[0][item] = 1;
+                        Animations[item] = 1;
                     else
-                        Animations[0][item] = 0;
+                        Animations[item] = 0;
                 }
                 else if (mode == 2)
                 {
                     if (item >= pause)
-                        Animations[0][item] = 1;
+                        Animations[item] = 1;
                     else
-                        Animations[0][item] = 0;
+                        Animations[item] = 0;
                 }
                 else
                 {
                     if (item % pause == 0) state = state == 1 ? 0 : 1;
-                    Animations[0][item] = state;
+                    Animations[item] = state;
                 }
             }
         }

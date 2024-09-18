@@ -20,6 +20,8 @@ namespace SLIL
 
         public Loading() => InitializeComponent();
 
+        private bool CheckInternet() => false;
+
         private async Task SetLocalizationsAsync(string[] codes, string[] languages)
         {
             SupportedLanguages.Clear();
@@ -120,6 +122,7 @@ namespace SLIL
         {
             try
             {
+                if (!CheckInternet()) Stage = 2;
                 if (Stage == 0)
                 {
                     await Check_Update();

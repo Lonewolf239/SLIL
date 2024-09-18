@@ -118,4 +118,16 @@ namespace SLIL.Classes
             UpdateTimeRemaining();
         }
     }
+
+    public class Blind : Debaf
+    {
+        public Blind() : base()
+        {
+            ID = 6;
+            EffectTotalTime = 10;
+            Name = "Blind";
+            Description = "Gradually reduces health";
+            UpdateTimeRemaining();
+        }
+    }
 }

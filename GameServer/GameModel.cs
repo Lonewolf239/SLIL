@@ -187,10 +187,19 @@ namespace GameServer
                                             byte[] data = writer.Data;
                                             sendMessageFromGameCallback(1000, data);
                                         }
-                                        if (entity is Dog || entity is Bat)
+                                        if (entity is Dog)
                                         {
                                             if (!player.EffectCheck(5))
                                                 player.GiveEffect(5, true);
+                                            else
+                                                player.ResetEffectTime(5);
+                                        }
+                                        if (entity is Bat)
+                                        {
+                                            if (!player.EffectCheck(6))
+                                                player.GiveEffect(6, true);
+                                            else
+                                                player.ResetEffectTime(6);
                                         }
                                         player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
                                         if (player.HP <= 0)
