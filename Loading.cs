@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -20,14 +21,27 @@ namespace SLIL
 
         public Loading() => InitializeComponent();
 
-        private bool CheckInternet() => false;
+        private bool CheckInternet()
+        {
+            try
+            {
+                using (Ping ping = new Ping())
+                {
+                    PingReply reply = ping.Send("8.8.8.8", 2000);
+                    return (reply != null && reply.Status == IPStatus.Success);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         private async Task SetLocalizations(string[] codes, string[] languages)
         {
             SupportedLanguages.Clear();
             for (int i = 0; i < languages.Length; i++)
                 SupportedLanguages.Add(codes[i], languages[i]);
-
             for (int i = 0; i < languages.Length; i++)
             {
                 try
@@ -84,9 +98,7 @@ namespace SLIL
                         using (var stream = await response.Content.ReadAsStreamAsync())
                         {
                             using (var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                            {
                                 await stream.CopyToAsync(fileStream);
-                            }
                         }
                     }
                 }

@@ -173,10 +173,7 @@ namespace GameServer
                         if (!server_started)
                             DisplayWelcomeText("Please start the server first");
                         else
-                        {
-
                             DisplayWelcomeText($"Server IP address: {GetLocalIPAddress()}:{server.LocalPort}");
-                        }
                         break;
                     case "5":
                     case "lobby":
@@ -279,9 +276,7 @@ namespace GameServer
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
                     return ip.ToString();
-                }
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
