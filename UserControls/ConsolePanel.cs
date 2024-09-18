@@ -164,24 +164,24 @@ namespace SLIL.UserControls
                                  "~│~ -STAMIN_-*X*    ~│~ Changing player maximum stamina             ~│~\n" +
                                  "~│~ -SPEED_-*X*     ~│~ Changing player movement speed              ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -BIGGUY-      ~│~ Give out \"The Smallest Pistol in the World\" ~│~\n" +
-                                 "~│~ -YHRII-       ~│~ Give \"Fingershot\"                          ~│~\n" +
-                                 "~│~ -IMGNOME-     ~│~ Give \"Wizard Gnome\"                        ~│~\n" +
-                                 "~│~ -ILLKLURDOG-  ~│~ Give \"Petition\"                            ~│~\n" +
+                                 "~│~ -BIGGUY-      ~│~ Give out \"The Smallest Pistol in the World\"   ~│~\n" +
+                                 "~│~ -YHRII-       ~│~ Give \"Fingershot\"                           ~│~\n" +
+                                 "~│~ -IMGNOME-     ~│~ Give \"Wizard Gnome\"                         ~│~\n" +
+                                 "~│~ -ILLKLURDOG-  ~│~ Give \"Petition\"                             ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -CAT-         ~│~ Give a pet: \"Silly cat\"                    ~│~\n" +
                                  "~│~ -GNOME-       ~│~ Give a pet: \"Wizard Gnome\"                 ~│~\n" +
                                  "~│~ -ENERGY-      ~│~ Give a pet: \"Energy Drink\"                 ~│~\n" +
                                  "~│~ -ILOVEFURRY-  ~│~ Give a pet: \"Podseratel\"                   ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -BEFWK-       ~│~ Give out all weapons                       ~│~\n" +
+                                 "~│~ -BEFWK-       ~│~ Give out all weapons                        ~│~\n" +
                                  "~│~ -FYTLG-       ~│~ Maximum amount of ammunition                ~│~\n" +
                                  "~│~ -IDDQD-       ~│~ Upgrade all weapons by one level            ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -EFFECTS-     ~│~ List of effects                             ~│~\n" +
                                  "~│~ -EFALLGV-     ~│~ Give all effects                            ~│~\n" +
                                  "~│~ -EFCLEAR-     ~│~ Cleaning up effects                         ~│~\n" +
-                                 "~│~ -EFGIVE_-*X*    ~│~ Give effect under X id                     ~│~\n" +
+                                 "~│~ -EFGIVE_-*X*    ~│~ Give effect under X id                      ~│~\n" +
                                  "~│~ -EFGINF_-*X*    ~│~ Give infinite effect under X id             ~│~\n" +
                                  "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Give effect under X id for Y seconds       ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
@@ -191,11 +191,11 @@ namespace SLIL.UserControls
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -NOCLIP-      ~│~ Enables/disables noclip                     ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -EGTRE-       ~│~ Give first aid kit                         ~│~\n" +
-                                 "~│~ -DHURF-       ~│~ Give adrenaline                            ~│~\n" +
-                                 "~│~ -KVISE-       ~│~ Give helmet                                ~│~\n" +
+                                 "~│~ -EGTRE-       ~│~ Give first aid kit                          ~│~\n" +
+                                 "~│~ -DHURF-       ~│~ Give adrenaline                             ~│~\n" +
+                                 "~│~ -KVISE-       ~│~ Give helmet                                 ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -GKIFK-       ~│~ Give 999 HP                                ~│~\n" +
+                                 "~│~ -GKIFK-       ~│~ Give 999 HP                                 ~│~\n" +
                                  "~│~ -KILL-        ~│~ Kill a player                               ~│~\n" +
                                  "~│~ -LPFJY-       ~│~ Cause 99 damage                             ~│~\n" +
                                  "~└─────────────┴─────────────────────────────────────────────┘~";
@@ -851,7 +851,7 @@ namespace SLIL.UserControls
                                 if (x >= 0.1 && x <= 20)
                                 {
                                     message += $"Player speed is now {x}. *Default: 1,75*";
-                                    player.MOVE_SPEED = x;
+                                    player.MAX_MOVE_SPEED = x;
                                 }
                                 else
                                 {

@@ -93,6 +93,15 @@ namespace GameServer
                 case 1889:
                     Game.AddPet(playerIDfromPeer, dreader.GetInt());
                     break;
+                case 1556:
+                    Game.DrawItem(playerIDfromPeer);
+                    break;
+                case 1566:
+                    Game.UseItem(playerIDfromPeer);
+                    break;
+                case 1577:
+                    Game.ChangeItem(playerIDfromPeer, dreader.GetInt());
+                    break;
                 default:
                     break;
             }

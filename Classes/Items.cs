@@ -217,6 +217,7 @@ namespace SLIL.Classes
 
     public abstract class DisposableItem : Item
     {
+        public int Count { get; set; }
         public int EffectID { get; set; }
         public bool HasLVMechanics { get; set; }
 
@@ -228,8 +229,7 @@ namespace SLIL.Classes
             HasCuteDescription = false;
             HasLVMechanics = false;
             RechargeTime = 980;
-            AmmoCount = 0;
-            AmmoInStock = 0;
+            Count = 0;
             MaxAmmo = 2;
             FiringRate = 150;
             ReloadFrames = 3;
@@ -237,15 +237,13 @@ namespace SLIL.Classes
 
         public void AddItem()
         {
-            AmmoCount = CartridgesClip;
-            AmmoInStock = CartridgesClip;
+            Count = 2;
             HasIt = true;
         }
 
         public override void SetDefault()
         {
-            AmmoCount = 0;
-            AmmoInStock = 0;
+            Count = 0;
             HasIt = false;
         }
 

@@ -18,6 +18,7 @@ namespace SLIL.Classes
         private int inDebug = 0;
         private readonly Pet[] PETS;
         private readonly Transport[] TRANSPORTS;
+        private readonly DisposableItem[] ITEMS;
         public List<Entity> Entities = new List<Entity>();
         private double EnemyDamageOffset = 1;
         private const double playerWidth = 0.4;
@@ -43,8 +44,10 @@ namespace SLIL.Classes
             StopGameHandle = stopGame;
             SetPlayerID = setPlayerID;
             Pet[] pets = { new SillyCat(0, 0, 0, 0), new GreenGnome(0, 0, 0, 0), new EnergyDrink(0, 0, 0, 0), new Pyro(0, 0, 0, 0) };
+            DisposableItem[] items = { new FirstAidKit(), new Adrenalin(), new Helmet() };
             Transport[] transports = { new Bike(0, 0, 0, 0) };
             PETS = pets;
+            ITEMS = items;
             TRANSPORTS = transports;
             MAP_WIDTH = 16;
             MAP_HEIGHT = 16;
@@ -1636,6 +1639,64 @@ namespace SLIL.Classes
             char[] impassibleCells = { '#', 'D', '=', 'd', 'S' };
             if (HasNoClip(playerID) || p.InParkour) return false;
             return impassibleCells.Contains(GetMap()[index]);
+        }
+
+        internal void DrawItem(int playerID)
+        {
+            Player p = GetPlayer(playerID);
+            if (p == null || p.DISPOSABLE_ITEM == null) return;
+            if (p.DISPOSABLE_ITEM.HasLVMechanics)
+            {
+                if (p.CuteMode)
+                    p.DISPOSABLE_ITEM.Level = Levels.LV4;
+                else
+                {
+                    if (rand.NextDouble() <= p.CurseCureChance)
+                    {
+                        if (rand.NextDouble() <= 0.5)
+                            p.DISPOSABLE_ITEM.Level = Levels.LV2;
+                        else
+                            p.DISPOSABLE_ITEM.Level = Levels.LV3;
+                    }
+                    else
+                        p.DISPOSABLE_ITEM.Level = Levels.LV1;
+                }
+            }
+            else
+                p.DISPOSABLE_ITEM.Level = Levels.LV1;
+            p.ItemFrame = 0;
+            p.GunState = 1;
+            p.Aiming = p.CanShoot = false;
+            p.UseItem = true;
+        }
+
+        internal void UseItem(int playerID)
+        {
+            Player p = GetPlayer(playerID);
+            if (p == null || p.DISPOSABLE_ITEM == null) return;
+            new Thread(() =>
+            {
+                while (p.UseItem)
+                {
+                    if (p.ItemFrame > p.DISPOSABLE_ITEM.ReloadFrames)
+                    {
+                        p.SetEffect();
+                        p.DISPOSABLE_ITEM.Count--;
+                        if (p.DISPOSABLE_ITEM.Count == 0)
+                            p.DISPOSABLE_ITEM.SetDefault();
+                        p.GunState = p.MoveStyle;
+                        p.CanShoot = true;
+                    }
+                    Thread.Sleep(p.DISPOSABLE_ITEM.RechargeTime);
+                    p.ItemFrame++;
+                }
+            }).Start();
+        }
+
+        internal void ChangeItem(int playerID, int index)
+        {
+            Player p = GetPlayer(playerID);
+            p?.ChangeItem(index);
         }
 
         internal Player GetPlayer(int playerID)

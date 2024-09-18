@@ -412,6 +412,43 @@ namespace SLIL.Classes
         //TODO:
         public bool IsDeathmatch() => true;
 
+        internal void DrawItem()
+        {
+            if (peer == null)
+                Game.DrawItem(playerID);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(1556);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        } 
+        
+        internal void UseItem()
+        {
+            if (peer == null)
+                Game.UseItem(playerID);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(1566);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        internal void ChangeItem(int index)
+        {
+            if (peer == null)
+                Game.ChangeItem(playerID, index);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(1577);
+                writer.Put(index);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
         internal void AmmoCountDecrease()
         {
             if (peer == null) Game.AmmoCountDecrease(playerID);

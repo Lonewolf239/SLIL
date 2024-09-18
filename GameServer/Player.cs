@@ -62,6 +62,8 @@ namespace GameServer
         ];
         public List<Gun> Guns = [];
         public List<DisposableItem> DisposableItems = [];
+        public DisposableItem? DISPOSABLE_ITEM = null;
+        public int ItemFrame { get; set; }
         public Pet? PET = null;
         public Transport? TRANSPORT = null;
         public double MAX_HP { get; set; }
@@ -83,23 +85,24 @@ namespace GameServer
             writer.Put(InTransport);
             writer.Put(BlockCamera);
             writer.Put(BlockInput);
-            writer.Put(this.GUNS.Length);
-            foreach(Gun gun in this.GUNS)
+            writer.Put(SelectedItem);
+            writer.Put(GUNS.Length);
+            foreach (Gun gun in GUNS)
                 writer.Put(gun.HasIt);
             writer.Put(Guns.Count);
-            foreach(Gun gun in this.Guns)
+            foreach (Gun gun in Guns)
             {
                 writer.Put(gun.ItemID);
                 gun.Serialize(writer);
             }
             writer.Put(DisposableItems.Count);
-            foreach(DisposableItem item in this.DisposableItems)
+            foreach (DisposableItem item in DisposableItems)
             {
                 writer.Put(item.ItemID);
                 item.Serialize(writer);
             }
-            writer.Put(this.Effects.Count);
-            foreach(Effect effect in this.Effects)
+            writer.Put(Effects.Count);
+            foreach (Effect effect in Effects)
             {
                 writer.Put(effect.ID);
                 effect.Serialize(writer);
@@ -109,22 +112,23 @@ namespace GameServer
         public override void Deserialize(NetDataReader reader)
         {
             base.Deserialize(reader);
-            this.HP = reader.GetDouble();
-            this.Dead = reader.GetBool();
-            this.Money = reader.GetInt();
-            this.CurrentGun = reader.GetInt();
-            this.A = reader.GetDouble();
-            this.Look = reader.GetDouble();
-            this.InParkour = reader.GetBool();
-            this.InTransport = reader.GetBool();
-            this.BlockCamera = reader.GetBool();
-            this.BlockInput = reader.GetBool();
+            HP = reader.GetDouble();
+            Dead = reader.GetBool();
+            Money = reader.GetInt();
+            CurrentGun = reader.GetInt();
+            A = reader.GetDouble();
+            Look = reader.GetDouble();
+            InParkour = reader.GetBool();
+            InTransport = reader.GetBool();
+            BlockCamera = reader.GetBool();
+            BlockInput = reader.GetBool();
+            SelectedItem = reader.GetInt();
             int GUNSLength = reader.GetInt();
-            for(int i = 0; i < GUNSLength; i++)
-                this.GUNS[i].HasIt = reader.GetBool();
+            for (int i = 0; i < GUNSLength; i++)
+                GUNS[i].HasIt = reader.GetBool();
             int GunsCount = reader.GetInt();
             List<Gun> tempGuns = [];
-            for(int i = 0; i< GunsCount; i++)
+            for (int i = 0; i < GunsCount; i++)
             {
                 int gunID = reader.GetInt();
                 switch (gunID)
@@ -215,7 +219,7 @@ namespace GameServer
             }
             int disposableItemsCount = reader.GetInt();
             List<DisposableItem> tempDisposableItems = [];
-            for(int i = 0; i < disposableItemsCount; i++)
+            for (int i = 0; i < disposableItemsCount; i++)
             {
                 int itemID = reader.GetInt();
                 switch (itemID)
@@ -241,9 +245,9 @@ namespace GameServer
             }
             int effectsCount = reader.GetInt();
             List<Effect> tempEffects = [];
-            for(int i = 0; i < effectsCount; i++)
+            for (int i = 0; i < effectsCount; i++)
             {
-                switch(reader.GetInt())
+                switch (reader.GetInt())
                 {
                     case 0:
                         Regeneration regeneration = new();
@@ -294,21 +298,22 @@ namespace GameServer
             if (!updateCoordinates)
             {
                 reader.GetDouble(); reader.GetDouble();
-                this.HP = reader.GetDouble();
-                this.Dead = reader.GetBool();
-                this.Money = reader.GetInt();
-                this.CurrentGun = reader.GetInt();
+                HP = reader.GetDouble();
+                Dead = reader.GetBool();
+                Money = reader.GetInt();
+                CurrentGun = reader.GetInt();
                 reader.GetDouble(); reader.GetDouble();
-                this.InParkour = reader.GetBool();
-                this.InTransport = reader.GetBool();
-                this.BlockCamera = reader.GetBool();
-                this.BlockInput = reader.GetBool();
+                InParkour = reader.GetBool();
+                InTransport = reader.GetBool();
+                BlockCamera = reader.GetBool();
+                BlockInput = reader.GetBool();
+                SelectedItem = reader.GetInt();
                 int GUNSLength = reader.GetInt();
-                for(int i = 0; i < GUNSLength; i++)
-                    this.GUNS[i].HasIt = reader.GetBool();
+                for (int i = 0; i < GUNSLength; i++)
+                    GUNS[i].HasIt = reader.GetBool();
                 int GunsCount = reader.GetInt();
                 List<Gun> tempGuns = [];
-                for(int i = 0; i< GunsCount; i++)
+                for (int i = 0; i < GunsCount; i++)
                 {
                     int gunID = reader.GetInt();
                     switch (gunID)
@@ -399,7 +404,7 @@ namespace GameServer
                 }
                 int disposableItemsCount = reader.GetInt();
                 List<DisposableItem> tempDisposableItems = [];
-                for(int i = 0; i < disposableItemsCount; i++)
+                for (int i = 0; i < disposableItemsCount; i++)
                 {
                     int itemID = reader.GetInt();
                     switch (itemID)
@@ -425,9 +430,9 @@ namespace GameServer
                 }
                 int effectsCount = reader.GetInt();
                 List<Effect> tempEffects = [];
-                for(int i = 0; i < effectsCount; i++)
+                for (int i = 0; i < effectsCount; i++)
                 {
-                    switch(reader.GetInt())
+                    switch (reader.GetInt())
                     {
                         case 0:
                             Regeneration regeneration = new();
@@ -483,7 +488,7 @@ namespace GameServer
             DisposableItems.Add((Adrenalin)GUNS[13]);
             DisposableItems.Add((Helmet)GUNS[14]);
             Texture = 26;
-            base.SetAnimations(1, 0);
+            SetAnimations(1, 0);
             Dead = true;
             SetDefault();
         }
@@ -507,6 +512,7 @@ namespace GameServer
                 MAX_RUN_SPEED = 2.25;
                 DEPTH = 8;
                 SelectedItem = 0;
+                DISPOSABLE_ITEM = DisposableItems[SelectedItem];
                 PET = null;
                 CuteMode = false;
                 Fast = false;
@@ -516,12 +522,13 @@ namespace GameServer
                 PlayerMoveStyle = Directions.WALK;
                 if (InTransport) StopEffect(4);
             }
+            ItemFrame = 0;
             EnemiesKilled = 0;
             Look = 0;
             GunState = 0;
             MOVE_SPEED = 0;
             STRAFE_SPEED = 0;
-            //RUN_SPEED = 0;
+            RUN_SPEED = 0;
             Dead = false;
             Invulnerable = false;
             TimeoutInvulnerable = 2;
@@ -580,10 +587,30 @@ namespace GameServer
 
         public double GetStrafeSpeed(double elapsed_time) => STRAFE_SPEED * GetWeight() * RUN_SPEED * elapsed_time;
 
+        public void ChangeItem(int index)
+        {
+            SelectedItem = index;
+            DISPOSABLE_ITEM = DisposableItems[SelectedItem];
+        }
+
         public void ChangeSpeed()
         {
             int speedFactor;
             double walk = 0.075, transport = 0.05;
+            if (!InTransport)
+            {
+                if (STRAFE_SPEED > MAX_STRAFE_SPEED)
+                    STRAFE_SPEED -= walk;
+                if (MOVE_SPEED > MAX_MOVE_SPEED)
+                    MOVE_SPEED -= walk;
+            }
+            else
+            {
+                if (STRAFE_SPEED > MAX_STRAFE_SPEED)
+                    STRAFE_SPEED -= transport * 1.75;
+                if (MOVE_SPEED > MAX_MOVE_SPEED)
+                    MOVE_SPEED -= transport * 1.75;
+            }
             switch (StrafeDirection)
             {
                 case Directions.LEFT:
@@ -591,16 +618,16 @@ namespace GameServer
                     else speedFactor = 1;
                     if (!InTransport)
                     {
-                        if (STRAFE_SPEED + (walk * speedFactor) <= MAX_STRAFE_SPEED + 0.01)
+                        if (STRAFE_SPEED + walk * speedFactor <= MAX_STRAFE_SPEED + 0.01)
                             STRAFE_SPEED += walk * speedFactor;
                     }
                     else
                     {
-                        if ((MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD) ||
-                            (MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK))
+                        if (MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD ||
+                            MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK)
                             STRAFE_SPEED = 0;
-                        if (STRAFE_SPEED + ((transport * 1.75) * speedFactor) <= MAX_STRAFE_SPEED + 0.01)
-                            STRAFE_SPEED += (transport * 1.75) * speedFactor;
+                        if (STRAFE_SPEED + transport * 1.75 * speedFactor <= MAX_STRAFE_SPEED + 0.01)
+                            STRAFE_SPEED += transport * 1.75 * speedFactor;
                     }
                     break;
                 case Directions.RIGHT:
@@ -608,37 +635,37 @@ namespace GameServer
                     else speedFactor = 1;
                     if (!InTransport)
                     {
-                        if (STRAFE_SPEED - (walk * speedFactor) >= -MAX_STRAFE_SPEED - 0.01)
+                        if (STRAFE_SPEED - walk * speedFactor >= -MAX_STRAFE_SPEED - 0.01)
                             STRAFE_SPEED -= walk * speedFactor;
                     }
                     else
                     {
-                        if ((MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD) ||
-                            (MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK))
+                        if (MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD ||
+                            MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK)
                             STRAFE_SPEED = 0;
-                        if (STRAFE_SPEED - ((transport * 1.75) * speedFactor) >= -MAX_STRAFE_SPEED - 0.01)
-                            STRAFE_SPEED -= (transport * 1.75) * speedFactor;
+                        if (STRAFE_SPEED - transport * 1.75 * speedFactor >= -MAX_STRAFE_SPEED - 0.01)
+                            STRAFE_SPEED -= transport * 1.75 * speedFactor;
                     }
                     break;
                 case Directions.STOP:
                     if (!InTransport)
                     {
-                        if (STRAFE_SPEED + (walk * 2) <= 0)
+                        if (STRAFE_SPEED + walk * 2 <= 0)
                             STRAFE_SPEED += walk * 2;
-                        else if (STRAFE_SPEED - (walk * 2) >= 0)
+                        else if (STRAFE_SPEED - walk * 2 >= 0)
                             STRAFE_SPEED -= walk * 2;
                         else
                             STRAFE_SPEED = 0;
                     }
                     else
                     {
-                        if ((MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD) ||
-                            (MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK))
+                        if (MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD ||
+                            MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK)
                             STRAFE_SPEED = 0;
-                        if (STRAFE_SPEED + ((transport * 1.75) * 2) <= 0)
-                            STRAFE_SPEED += (transport * 1.75) * 2;
-                        else if (STRAFE_SPEED - ((transport * 1.75) * 2) >= 0)
-                            STRAFE_SPEED -= (transport * 1.75) * 2;
+                        if (STRAFE_SPEED + transport * 1.75 * 2 <= 0)
+                            STRAFE_SPEED += transport * 1.75 * 2;
+                        else if (STRAFE_SPEED - transport * 1.75 * 2 >= 0)
+                            STRAFE_SPEED -= transport * 1.75 * 2;
                         else
                             STRAFE_SPEED = 0;
                     }
@@ -651,12 +678,12 @@ namespace GameServer
                     else speedFactor = 1;
                     if (!InTransport)
                     {
-                        if (MOVE_SPEED + (walk * speedFactor) <= MAX_MOVE_SPEED + 0.01)
+                        if (MOVE_SPEED + walk * speedFactor <= MAX_MOVE_SPEED + 0.01)
                             MOVE_SPEED += walk * speedFactor;
                     }
                     else
                     {
-                        if (MOVE_SPEED + (transport * speedFactor) <= MAX_MOVE_SPEED + 0.01)
+                        if (MOVE_SPEED + transport * speedFactor <= MAX_MOVE_SPEED + 0.01)
                             MOVE_SPEED += transport * speedFactor;
                     }
                     break;
@@ -665,30 +692,30 @@ namespace GameServer
                     else speedFactor = 1;
                     if (!InTransport)
                     {
-                        if (MOVE_SPEED - (walk * speedFactor) >= -MAX_MOVE_SPEED - 0.01)
+                        if (MOVE_SPEED - walk * speedFactor >= -MAX_MOVE_SPEED - 0.01)
                             MOVE_SPEED -= walk * speedFactor;
                     }
                     else
                     {
-                        if (MOVE_SPEED - (transport * speedFactor) >= -MAX_MOVE_SPEED - 0.01)
+                        if (MOVE_SPEED - transport * speedFactor >= -MAX_MOVE_SPEED - 0.01)
                             MOVE_SPEED -= transport * speedFactor;
                     }
                     break;
                 case Directions.STOP:
                     if (!InTransport)
                     {
-                        if (MOVE_SPEED + (walk * 2) <= 0)
+                        if (MOVE_SPEED + walk * 2 <= 0)
                             MOVE_SPEED += walk * 2;
-                        else if (MOVE_SPEED - (walk * 2) >= 0)
+                        else if (MOVE_SPEED - walk * 2 >= 0)
                             MOVE_SPEED -= walk * 2;
                         else
                             MOVE_SPEED = 0;
                     }
                     else
                     {
-                        if (MOVE_SPEED + (transport * 2) <= 0)
+                        if (MOVE_SPEED + transport * 2 <= 0)
                             MOVE_SPEED += transport * 2;
-                        else if (MOVE_SPEED - (transport * 2) >= 0)
+                        else if (MOVE_SPEED - transport * 2 >= 0)
                             MOVE_SPEED -= transport * 2;
                         else
                             MOVE_SPEED = 0;
@@ -736,8 +763,6 @@ namespace GameServer
                         Fast = false;
                         MAX_MOVE_SPEED -= 1.5;
                         MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                        MOVE_SPEED = 0;
-                        STRAFE_SPEED = 0;
                     }
                     else if (Effects[i].ID == 3)
                     {
@@ -775,8 +800,6 @@ namespace GameServer
                 Fast = true;
                 MAX_MOVE_SPEED += 1.5;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                MOVE_SPEED = 0;
-                STRAFE_SPEED = 0;
             }
             else if (index == 2)
             {
@@ -854,9 +877,11 @@ namespace GameServer
         public void SetEffect()
         {
             UseItem = false;
+            ItemFrame = 0;
             if (SelectedItem == 0)
             {
                 if (EffectCheck(0)) return;
+                if (EffectCheck(5)) StopEffect(5);
                 Effects.Add(new Regeneration());
             }
             else if (SelectedItem == 1)
@@ -866,8 +891,6 @@ namespace GameServer
                 Fast = true;
                 MAX_MOVE_SPEED += 1.5;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                MOVE_SPEED = 0;
-                STRAFE_SPEED = 0;
             }
             else if (SelectedItem == 2)
             {
@@ -899,8 +922,6 @@ namespace GameServer
                         Fast = false;
                         MAX_MOVE_SPEED -= 1.5;
                         MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                        MOVE_SPEED = 0;
-                        STRAFE_SPEED = 0;
                     }
                     else if (Effects[i].ID == 3)
                     {
@@ -937,8 +958,6 @@ namespace GameServer
                     Fast = false;
                     MAX_MOVE_SPEED -= 1.5;
                     MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                    MOVE_SPEED = 0;
-                    STRAFE_SPEED = 0;
                 }
                 else if (Effects[i].ID == 3)
                 {
@@ -996,7 +1015,7 @@ namespace GameServer
                 TimeoutInvulnerable = 2;
                 Invulnerable = true;
             }
-            if (HP <= 0) this.Dead = true;
+            if (HP <= 0) Dead = true;
             if (TRANSPORT_HP <= 0) StopEffect(4);
             return Dead;
         }

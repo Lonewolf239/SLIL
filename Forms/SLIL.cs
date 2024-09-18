@@ -195,18 +195,18 @@ namespace SLIL
             } },
             { typeof(FirstAidKit), new[,]
             {
-                   { Properties.Resources.medkit, Properties.Resources.medkit, Properties.Resources.medkit_using_0, Properties.Resources.medkit_using_1, Properties.Resources.medkit_using_2 },
-                   { Properties.Resources.syringe, Properties.Resources.syringe, Properties.Resources.syringe_using_0, Properties.Resources.syringe_using_1, Properties.Resources.syringe_using_2 },
-                   { Properties.Resources.hand, Properties.Resources.hand, Properties.Resources.hand_using_0, Properties.Resources.hand_using_1, Properties.Resources.hand_using_2 },
-                   { Properties.Resources.food, Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2 },
+                   { Properties.Resources.medkit, Properties.Resources.medkit_using_0, Properties.Resources.medkit_using_1, Properties.Resources.medkit_using_2 },
+                   { Properties.Resources.syringe, Properties.Resources.syringe_using_0, Properties.Resources.syringe_using_1, Properties.Resources.syringe_using_2 },
+                   { Properties.Resources.hand, Properties.Resources.hand_using_0, Properties.Resources.hand_using_1, Properties.Resources.hand_using_2 },
+                   { Properties.Resources.food, Properties.Resources.food_using_0, Properties.Resources.food_using_1, Properties.Resources.food_using_2 },
             } },
             { typeof(Adrenalin), new[,]
             {
-                   { Properties.Resources.adrenalin, Properties.Resources.adrenalin, Properties.Resources.adrenalin_using_0, Properties.Resources.adrenalin_using_1, Properties.Resources.adrenalin_using_2 },
+                   { Properties.Resources.adrenalin, Properties.Resources.adrenalin_using_0, Properties.Resources.adrenalin_using_1, Properties.Resources.adrenalin_using_2 },
             } },
             { typeof(Helmet), new[,]
             {
-                   { Properties.Resources.helmet, Properties.Resources.helmet, Properties.Resources.helmet_using_0, Properties.Resources.helmet_using_1, Properties.Resources.helmet_using_2, Properties.Resources.helmet_using_3 }
+                   { Properties.Resources.helmet, Properties.Resources.helmet_using_0, Properties.Resources.helmet_using_1, Properties.Resources.helmet_using_2, Properties.Resources.helmet_using_3 }
             } },
             { typeof(RPG), new[,]
             {
@@ -268,18 +268,18 @@ namespace SLIL
             } },
             { typeof(FirstAidKit), new[,]
             {
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("medkit_using.wav"), false), new PlaySound(null, false) },
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("syringe_using.wav"), false), new PlaySound(null, false) },
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("hand_using.wav"), false), new PlaySound(null, false) },
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("food_using.wav"), false), new PlaySound(null, false) }
+                   { new PlaySound(MainMenu.CGFReader.GetFile("medkit_using.wav"), false) },
+                   { new PlaySound(MainMenu.CGFReader.GetFile("syringe_using.wav"), false) },
+                   { new PlaySound(MainMenu.CGFReader.GetFile("hand_using.wav"), false) },
+                   { new PlaySound(MainMenu.CGFReader.GetFile("food_using.wav"), false) }
             } },
             { typeof(Adrenalin), new[,]
             {
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("adrenalin_using.wav"), false), new PlaySound(null, false) }
+                   { new PlaySound(MainMenu.CGFReader.GetFile("adrenalin_using.wav"), false) }
             } },
             { typeof(Helmet), new[,]
             {
-                   { new PlaySound(null, false), new PlaySound(MainMenu.CGFReader.GetFile("helmet_using.wav"), false), new PlaySound(null, false) }
+                   { new PlaySound(MainMenu.CGFReader.GetFile("helmet_using.wav"), false) }
             } },
             { typeof(RPG), new[,]
             {
@@ -1124,7 +1124,7 @@ namespace SLIL
                         else player.Look = -360;
                         player.A += player.GetCurrentGun().GetRecoilX(rand.NextDouble());
                     }
-                    if (player.GetCurrentGun() is DisposableItem || (player.GetCurrentGun().AmmoCount <= 0 && player.GetCurrentGun().AmmoInStock > 0))
+                    if (player.GetCurrentGun().AmmoCount <= 0 && player.GetCurrentGun().AmmoInStock > 0)
                     {
                         player.GunState = 2;
                         if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4)
@@ -1192,7 +1192,7 @@ namespace SLIL
                 {
                     int index = 1;
                     Player player = Controller.GetPlayer();
-                    if (player.GetCurrentGun().AmmoCount == 0 && player.GetCurrentGun().AmmoInStock == 0 && !(player.GetCurrentGun() is DisposableItem)) reload_timer.Stop();
+                    if (player.GetCurrentGun().AmmoCount == 0 && player.GetCurrentGun().AmmoInStock == 0) reload_timer.Stop();
                     if (player.GetCurrentGun() is Shotgun && (player.GetCurrentGun().AmmoInStock == 0 || pressed_r))
                     {
                         if (player.GetCurrentGun().Level == Levels.LV1) index = 2;
@@ -1228,7 +1228,6 @@ namespace SLIL
                             pressed_r = false;
                             player.CanShoot = true;
                             Controller.ReloadClip();
-                            if (player.UseItem) player.SetEffect();
                             reload_timer.Stop();
                             reload_frames = 0;
                             return;
@@ -1288,17 +1287,6 @@ namespace SLIL
             shop_money.Text = $"$: {player.Money}";
             try
             {
-                if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !pressed_h)
-                {
-                    if (player.DisposableItems.Count > 0 && player.Guns.Contains(player.DisposableItems[player.SelectedItem]))
-                    {
-                        ChangeWeapon(player.PreviousGun);
-                        player.PreviousGun = player.CurrentGun;
-                        player.Guns.Remove(player.DisposableItems[player.SelectedItem]);
-                        if (player.DisposableItems[player.SelectedItem].AmmoCount <= 0 && player.DisposableItems[player.SelectedItem].AmmoInStock <= 0)
-                            player.DisposableItems[player.SelectedItem].HasIt = false;
-                    }
-                }
                 if (player.GetCurrentGun() is Flashlight)
                     shot_timer.Enabled = reload_timer.Enabled = shotgun_pull_timer.Enabled = false;
                 if (!player.GetCurrentGun().CanRun)
@@ -1406,6 +1394,7 @@ namespace SLIL
                         if (player.Guns.Contains(player.GUNS[0])) count--;
                         if (e.KeyCode == Bind.Reloading)
                         {
+                            if (player.UseItem) return;
                             if (player.GetCurrentGun().AmmoCount != player.GetCurrentGun().CartridgesClip && player.GetCurrentGun().AmmoInStock > 0)
                             {
                                 pressed_r = true;
@@ -1431,47 +1420,28 @@ namespace SLIL
                         }
                         if (e.KeyCode == Bind.Item)
                         {
-                            if (player.DisposableItems.Count > 0 && player.DisposableItems[player.SelectedItem].HasIt)
+                            if (player.DISPOSABLE_ITEM == null)
+                                Controller.ChangeItem(player.SelectedItem);
+                            if (player.DisposableItems.Count > 0 && player.DISPOSABLE_ITEM.HasIt)
                             {
+                                if (player.UseItem) return;
                                 if (player.EffectCheck(player.GetEffectID())) return;
                                 if (player.SelectedItem == 0 && player.HP == player.MAX_HP) return;
                                 TakeFlashlight(false);
-                                pressed_h = true;
-                                if (!player.Guns.Contains(player.DisposableItems[player.SelectedItem]))
-                                    player.Guns.Add(player.DisposableItems[player.SelectedItem]);
-                                player.PreviousGun = player.CurrentGun;
-                                if (player.DisposableItems[player.SelectedItem].HasLVMechanics)
+                                Controller.DrawItem();
+                                new Thread(() =>
                                 {
-                                    if (player.CuteMode)
-                                        player.DisposableItems[player.SelectedItem].Level = Levels.LV4;
-                                    else
-                                    {
-                                        if (rand.NextDouble() <= player.CurseCureChance)
-                                        {
-                                            if (rand.NextDouble() <= 0.5)
-                                                player.DisposableItems[player.SelectedItem].Level = Levels.LV2;
-                                            else
-                                                player.DisposableItems[player.SelectedItem].Level = Levels.LV3;
-                                        }
-                                        else
-                                            player.DisposableItems[player.SelectedItem].Level = Levels.LV1;
-                                    }
-                                }
-                                else
-                                    player.DisposableItems[player.SelectedItem].Level = Levels.LV1;
-                                ChangeWeapon(player.Guns.IndexOf(player.DisposableItems[player.SelectedItem]));
-                                player.GunState = 1;
-                                player.Aiming = false;
-                                player.CanShoot = false;
-                                player.UseItem = true;
-                                burst_shots = 0;
-                                shot_timer.Start();
-                                pressed_h = false;
+                                    Thread.Sleep(150);
+                                    player.ItemFrame = 1;
+                                }).Start();
+                                if (MainMenu.sounds)
+                                    SoundsDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), 0].Play(Volume);
+                                Controller.UseItem();
                             }
                         }
                         if (e.KeyCode == Bind.Select_item)
                         {
-                            if (!player.InSelectingMode)
+                            if (!player.InSelectingMode || player.UseItem)
                             {
                                 int x = Width / 2, y = Height / 2;
                                 if (player.SelectedItem == 0) x = 0;
@@ -1619,7 +1589,7 @@ namespace SLIL
                 if (player == null) return;
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.IsPetting)
                 {
-                    if (player.InTransport) return;
+                    if (player.InTransport || player.UseItem) return;
                     if (e.KeyCode == Bind.Flashlight) TakeFlashlight(true);
                     if (e.KeyCode == Bind.Climb)
                     {
@@ -1846,13 +1816,13 @@ namespace SLIL
                 else
                 {
                     if (cursor_x < 0 && player.DisposableItems.Count >= 1)
-                        player.SelectedItem = 0;
+                        Controller.ChangeItem(0);
                     else if (cursor_y < 0 && player.DisposableItems.Count >= 2)
-                        player.SelectedItem = 1;
+                        Controller.ChangeItem(1);
                     else if (cursor_x > 0 && player.DisposableItems.Count >= 3)
-                        player.SelectedItem = 2;
+                        Controller.ChangeItem(2);
                     else if (cursor_y > 0 && player.DisposableItems.Count >= 4)
-                        player.SelectedItem = 3;
+                        Controller.ChangeItem(3);
                 }
             }
         }
@@ -2673,8 +2643,8 @@ namespace SLIL
                 return;
             }
             int item_count = 0;
-            if (player.DisposableItems.Count > 0)
-                item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].AmmoInStock;
+            if (player.DISPOSABLE_ITEM != null)
+                item_count = player.DISPOSABLE_ITEM.Count;
             int icon_size = 12 + (2 * interface_size);
             if (resolution == 1) icon_size *= 2;
             int size = resolution == 0 ? 1 : 2;
@@ -2704,14 +2674,16 @@ namespace SLIL
             else if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
+                if (player.DISPOSABLE_ITEM != null)
+                    graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
+                if (player.DISPOSABLE_ITEM != null)
+                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
-                SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
+            SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             if (Controller.IsMultiplayer()) DrawPing(fpsSize, icon_size);
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
             if (!player.InTransport)
@@ -2824,8 +2796,8 @@ namespace SLIL
             Player player = Controller.GetPlayer();
             if (player == null) return;
             int item_count = 0;
-            if (player.DisposableItems.Count > 0)
-                item_count = player.DisposableItems[player.SelectedItem].AmmoCount + player.DisposableItems[player.SelectedItem].AmmoInStock;
+            if (player.DISPOSABLE_ITEM != null)
+                item_count = player.DISPOSABLE_ITEM.Count;
             int icon_size = 12 + (2 * interface_size);
             if (resolution == 1) icon_size *= 2;
             int size = resolution == 0 ? 1 : 2;
@@ -2855,12 +2827,14 @@ namespace SLIL
             else if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
+                if (player.DISPOSABLE_ITEM != null)
+                    graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItems[player.SelectedItem].GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
+                if (player.DISPOSABLE_ITEM != null)
+                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             DrawPing(fpsSize, icon_size);
@@ -2990,6 +2964,7 @@ namespace SLIL
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], 0, 0, WEAPON.Width, WEAPON.Height);
             }
             else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+            else if (player.UseItem) graphicsWeapon.DrawImage(ImagesDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), player.ItemFrame], 0, 0, WEAPON.Width, WEAPON.Height);
             else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index], 0, 0, WEAPON.Width, WEAPON.Height);
         }
 
@@ -3523,7 +3498,7 @@ namespace SLIL
         private void ChangeWeapon(int new_gun)
         {
             Player player = Controller.GetPlayer();
-            if (player == null) return;
+            if (player == null || player.UseItem) return;
             if ((new_gun != player.CurrentGun || player.LevelUpdated) && !player.InSelectingMode && player.Guns[new_gun].HasIt)
             {
                 if (MainMenu.sounds) draw.Play(Volume);
@@ -3553,7 +3528,7 @@ namespace SLIL
         {
             if (Controller.IsMultiplayer()) return;
             Player player = Controller.GetPlayer();
-            if (player.CuteMode) return;
+            if (player.CuteMode || player.UseItem) return;
             if (player.Guns.Contains((Flashlight)player.GUNS[0]))
             {
                 player.Guns.Remove((Flashlight)player.GUNS[0]);
@@ -3628,7 +3603,8 @@ namespace SLIL
             return player.GetCurrentGun().CanRun && !player.InParkour &&
                 !player.Fast && !player.IsPetting && !player.Aiming &&
                 !shot_timer.Enabled && !reload_timer.Enabled &&
-                !shotgun_pull_timer.Enabled && !chill_timer.Enabled && !mouse_hold_timer.Enabled;
+                !shotgun_pull_timer.Enabled && !chill_timer.Enabled && 
+                !mouse_hold_timer.Enabled && !player.UseItem;
         }
 
         private void StartGame()
