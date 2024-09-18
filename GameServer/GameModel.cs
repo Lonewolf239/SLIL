@@ -908,8 +908,8 @@ namespace GameServer
             if (p == null || p.BlockInput) return;
             p.X = dX;
             p.Y = dY;
-            ((Player)p).A = newA;
-            ((Player)p).Look = newLook;
+            p.A = newA;
+            p.Look = newLook;
             if (p.TRANSPORT != null)
             {
                 if (p.EffectCheck(4) && p.TRANSPORT.CanJump)

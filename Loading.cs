@@ -70,9 +70,9 @@ namespace SLIL
             var progress = new Progress<int>(percent =>
             {
                 if (percent == 100)
-                    UpdateProgress = startProgress + 20;
+                    UpdateProgress = startProgress + 10;
                 else
-                    UpdateProgress = startProgress + (percent * 20 / 100);
+                    UpdateProgress = startProgress + (percent * 10 / 100);
             });
             await DownloadLocalizationList(progress);
         }
@@ -282,9 +282,7 @@ namespace SLIL
         private void Progress_refresh_Tick(object sender, EventArgs e)
         {
             if (CompletedProgress < UpdateProgress)
-            {
                 CompletedProgress++;
-            }
             progress.Width = (int)(CompletedProgress / 100 * background_progress.Width);
         }
 
