@@ -42,7 +42,7 @@ namespace GameServer
 
     public class Debaf : Effect
     {
-        public Debaf() { }
+        public Debaf() : base() { }
     }
 
     public class Regeneration : Effect

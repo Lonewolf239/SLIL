@@ -1358,8 +1358,8 @@ namespace SLIL
         {
             lose_focus.Focus();
             DownloadedLocalizationList = false;
-            await DownloadLocalizationList();
             Language = INIReader.GetString(iniFolder, "CONFIG", "language", Language);
+            await DownloadLocalizationList();
             SetVisualSettings();
             SetLanguage();
         }

@@ -43,7 +43,7 @@ namespace SLIL.Classes
 
     public class Debaf : Effect
     {
-        public Debaf() { }
+        public Debaf() : base() { }
     }
 
     public class Regeneration : Effect

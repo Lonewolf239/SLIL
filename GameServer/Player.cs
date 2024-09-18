@@ -966,7 +966,7 @@ namespace GameServer
 
         protected override double GetEntityWidth() => 0.4;
 
-        public bool DealDamage(double damage, bool give_invulnerable = true)
+        public bool DealDamage(double damage, bool give_invulnerable)
         {
             if (EffectCheck(2) || EffectCheck(4)) damage *= 0.8;
             if (InTransport) TRANSPORT_HP -= damage;

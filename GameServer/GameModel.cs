@@ -135,7 +135,7 @@ namespace GameServer
                                         if (distanceSquared > 3) continue;
                                         double damage = rand.Next(25, 50);
                                         if (ent is Player playerTarget)
-                                            playerTarget.DealDamage(damage);
+                                            playerTarget.DealDamage(damage, true);
                                         if (ent is NPC npc)
                                             npc.DealDamage(damage);
                                         if (ent is Enemy enemy)
@@ -187,27 +187,31 @@ namespace GameServer
                                             byte[] data = writer.Data;
                                             sendMessageFromGameCallback(1000, data);
                                         }
-                                        if (entity is Dog)
-                                        {
-                                            if (!player.EffectCheck(5))
-                                                player.GiveEffect(5, true);
-                                            else
-                                                player.ResetEffectTime(5);
-                                        }
-                                        if (entity is Bat)
-                                        {
-                                            if (!player.EffectCheck(6))
-                                                player.GiveEffect(6, true);
-                                            else
-                                                player.ResetEffectTime(6);
-                                        }
-                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
+                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
                                         if (player.HP <= 0)
                                         {
-                                            if(_gameMode == GameMode.Deathmatch) Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                            if (_gameMode == GameMode.Deathmatch)
+                                                Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
                                             sendMessageFromGameCallback(666);
                                             //GameOver(0);
                                             return;
+                                        }
+                                        else
+                                        {
+                                            if (entity is Dog)
+                                            {
+                                                if (!player.EffectCheck(5))
+                                                    player.GiveEffect(5, true);
+                                                else
+                                                    player.ResetEffectTime(5);
+                                            }
+                                            if (entity is Bat)
+                                            {
+                                                if (!player.EffectCheck(6))
+                                                    player.GiveEffect(6, true);
+                                                else
+                                                    player.ResetEffectTime(6);
+                                            }
                                         }
                                     }
                                 }
@@ -1458,7 +1462,7 @@ namespace GameServer
             if (target is Player p)
             {
                 if (!p.HasAI || p.Dead) return false;
-                if (attacker is Player attackerPlayer && p.DealDamage(damage))
+                if (attacker is Player attackerPlayer && p.DealDamage(damage, true))
                 {
                     double multiplier = 1;
                     if (difficulty == 3)

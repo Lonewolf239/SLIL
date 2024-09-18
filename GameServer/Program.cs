@@ -1,4 +1,5 @@
 ﻿using LiteNetLib;
+using System.Net;
 using System.Runtime.InteropServices;
 
 namespace GameServer
@@ -37,7 +38,7 @@ namespace GameServer
         private static readonly Dispatcher dispatcher = new();  
         private static SendOutcomingMessageDelegate? sendOutcomingMessageHandle;
         private const string version = "1.2.2.2";
-        private static bool exit = false, stoped_thread = true;
+        private static bool exit = false, server_started = false, stoped_thread = true;
         private const int MAX_CONNECTIONS = 4;
         //server.UnsyncedEvents = true;
         //server.UpdateTime = 1;
@@ -148,82 +149,117 @@ namespace GameServer
                         try
                         {
                             server.Start(port);
+                            server_started = true;
                             stoped_thread = false;
                             PacketsThread();
                             DisplayWelcomeText($"Server started successfully on port: {port}");
                         }
                         catch (Exception e)
                         {
+                            server_started = false;
+                            stoped_thread = true;
                             DisplayWelcomeText($"Error when starting server: {e.Message}");
                         }
                         break;
                     case "3":
                     case "stop":
                         server.Stop();
+                        server_started = false;
                         stoped_thread = true;
                         DisplayWelcomeText("Server stopped successfully");
                         break;
                     case "4":
                     case "ip":
-                        DisplayWelcomeText($"Server IP address: {"127.0.0.1:9999"}");
+                        if (!server_started)
+                            DisplayWelcomeText("Please start the server first");
+                        else
+                        {
+
+                            DisplayWelcomeText($"Server IP address: {GetLocalIPAddress()}:{server.LocalPort}");
+                        }
                         break;
                     case "5":
                     case "lobby":
-                        string[] players = dispatcher.GetPlayers().Select(p => p.Value.ToString()).ToArray();
-                        int playerId = SelectOption("Lobby:", players, "Lobby is empty...", "Exit", "Kick Player");
-                        if (playerId != -1)
+                        if (!server_started)
+                            DisplayWelcomeText("Please start the server first");
+                        else
                         {
-                            if (YesNoMessage())
+                            string[] players = dispatcher.GetPlayers().Select(p => p.Value.ToString()).ToArray();
+                            int playerId = SelectOption("Lobby:", players, "Lobby is empty...", "Exit", "Kick Player");
+                            if (playerId != -1)
                             {
-                                dispatcher.KickPlayer(playerId, ref server);
-                                DisplayWelcomeText($"Player with ID {playerId} has been kicked from the server");
+                                if (YesNoMessage())
+                                {
+                                    dispatcher.KickPlayer(playerId, ref server);
+                                    DisplayWelcomeText($"Player with ID {playerId} has been kicked from the server");
+                                }
+                                else DisplayWelcomeText();
                             }
                             else DisplayWelcomeText();
                         }
-                        else DisplayWelcomeText();
                         break;
                     case "6":
                     case "set_difficulty":
-                        try
+                        if (!server_started)
+                            DisplayWelcomeText("Please start the server first");
+                        else
                         {
-                            string[] difficulties = ["Easy", "Normal", "Hard", "Very hard"];
-                            int selectedIndex = SelectOption("Select difficulty:", difficulties);
-                            if(selectedIndex == -1)
+                            try
                             {
-                                DisplayWelcomeText("The difficulty change has been cancelled.");
-                                continue;
+                                string[] difficulties = ["Easy", "Normal", "Hard", "Very hard"];
+                                int selectedIndex = SelectOption("Select difficulty:", difficulties);
+                                if (selectedIndex == -1)
+                                {
+                                    DisplayWelcomeText("The difficulty change has been cancelled.");
+                                    continue;
+                                }
+                                dispatcher.ChangeDifficulty(selectedIndex);
+                                DisplayWelcomeText($"Difficulty set to {difficulties[selectedIndex]}");
                             }
-                            dispatcher.ChangeDifficulty(selectedIndex);
-                            DisplayWelcomeText($"Difficulty set to {difficulties[selectedIndex]}");
+                            catch (Exception e) { DisplayWelcomeText($"Error setting difficulty: {e.Message}"); }
                         }
-                        catch (Exception e) { DisplayWelcomeText($"Error setting difficulty: {e.Message}"); }
                         break;
                     case "7":
                     case "set_game_mode":
-                        try
+                        if (!server_started)
+                            DisplayWelcomeText("Please start the server first");
+                        else
                         {
-                            string[] gameModes = Enum.GetNames(typeof(GameMode));
-                            int selectedIndex = SelectOption("Select game mode:", gameModes);
-                            if (selectedIndex == -1)
+                            try
                             {
-                                DisplayWelcomeText("The game mode change has been cancelled.");
-                                continue;
+                                string[] gameModes = Enum.GetNames(typeof(GameMode));
+                                int selectedIndex = SelectOption("Select game mode:", gameModes);
+                                if (selectedIndex == -1)
+                                {
+                                    DisplayWelcomeText("The game mode change has been cancelled.");
+                                    continue;
+                                }
+                                GameMode selectedMode = (GameMode)selectedIndex;
+                                dispatcher.ChangeGameMode(selectedMode);
+                                DisplayWelcomeText($"Game mode set to {selectedMode}");
                             }
-                            GameMode selectedMode = (GameMode)selectedIndex;
-                            dispatcher.ChangeGameMode(selectedMode);
-                            DisplayWelcomeText($"Game mode set to {selectedMode}");
+                            catch (Exception e) { DisplayWelcomeText($"Error setting game mode: {e.Message}"); }
                         }
-                        catch (Exception e) { DisplayWelcomeText($"Error setting game mode: {e.Message}"); }
                         break;
                     case "8":
                     case "start_game":
-                        dispatcher.StartGame();
-                        DisplayWelcomeText("New game started on the server");
+                        if (!server_started)
+                            DisplayWelcomeText("Please start the server first");
+                        else
+                        {
+                            dispatcher.StartGame();
+                            DisplayWelcomeText("New game started on the server");
+                        }
                         break;
                     case "9":
                     case "stop_game":
-                        dispatcher.StopGame();
-                        DisplayWelcomeText("Game stopped on the server");
+                        if (!server_started)
+                            DisplayWelcomeText("Please start the server first");
+                        else
+                        {
+                            dispatcher.StopGame();
+                            DisplayWelcomeText("Game stopped on the server");
+                        }
                         break;
                     case "10":
                     case "exit":
@@ -235,6 +271,19 @@ namespace GameServer
                         break;
                 }
             }
+        }
+
+        private static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
         private static void SetupConsoleSettings()
