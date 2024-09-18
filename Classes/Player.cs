@@ -9,7 +9,6 @@ namespace SLIL.Classes
     {
         public int DeathSound { get; set; }
         public string Name { get; set; }
-        public double A { get; set; }
         public double Look { get; set; }
         public double HP { get; set; }
         public double TRANSPORT_HP { get; set; }

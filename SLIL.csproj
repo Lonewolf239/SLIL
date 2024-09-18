@@ -1228,9 +1228,6 @@
     <None Include="Images\no_animation.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\bike.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\on_bike.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1283,6 +1280,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\vine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\bike_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\bike_forward.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\bike_left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\bike_right.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

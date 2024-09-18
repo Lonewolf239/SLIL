@@ -173,9 +173,19 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap bike {
+        internal static System.Drawing.Bitmap bike_back {
             get {
-                object obj = ResourceManager.GetObject("bike", resourceCulture);
+                object obj = ResourceManager.GetObject("bike_back", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap bike_forward {
+            get {
+                object obj = ResourceManager.GetObject("bike_forward", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -196,6 +206,26 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap bike_jump {
             get {
                 object obj = ResourceManager.GetObject("bike_jump", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap bike_left {
+            get {
+                object obj = ResourceManager.GetObject("bike_left", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap bike_right {
+            get {
+                object obj = ResourceManager.GetObject("bike_right", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

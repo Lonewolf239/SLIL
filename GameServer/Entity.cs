@@ -7,6 +7,7 @@ namespace GameServer
         public int ID { get; set; }
         public int EntityID { get; set; }
         public bool HasAI { get; set; }
+        public double A { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public double EntityWidth;
@@ -115,7 +116,6 @@ namespace GameServer
     public abstract class Creature : Entity
     {
         protected double HP { get; set; }
-        public double A { get; set; }
         protected char[] ImpassibleCells;
         protected int MovesInARow;
         protected int NumberOfMovesLeft;
@@ -509,7 +509,6 @@ namespace GameServer
 
     public abstract class Transport : GameObject
     {
-        public double A { get; set; }
         public string[]? Name { get; set; }
         public int Index { get; set; }
         public int Cost { get; set; }
@@ -536,6 +535,7 @@ namespace GameServer
             Index = 0;
             CanJump = true;
             AddToShop = true;
+            HasSpriteRotation = true;
             Cost = 150;
             TransportHP = 150;
             Speed = 2.35;

@@ -2482,12 +2482,7 @@ namespace SLIL
                                             if (player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight)
                                                 rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
                                             else
-                                            {
-                                                if (creature.HasStaticAnimation)
-                                                    rays[stripe][y].SpriteState = SpriteStates.Static;
-                                                else
-                                                    rays[stripe][y].SpriteState = GetSpriteRotation(creature, timeNow);
-                                            }
+                                                rays[stripe][y].SpriteState = GetSpriteRotation(creature, timeNow);
                                         }
                                         if (creature is Enemy)
                                         {
@@ -2519,10 +2514,8 @@ namespace SLIL
                                         GameObject gameObject = entity as GameObject;
                                         if (gameObject.Animated && gameObject.Temporarily)
                                             rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, 0, false);
-                                        else if (gameObject.Animated)
-                                            rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, timeNow);
                                         else
-                                            rays[stripe][y].SpriteState = SpriteStates.Static;
+                                            rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, timeNow);
                                     }
                                     else
                                         rays[stripe][y].SpriteState = SpriteStates.Static;
@@ -2549,20 +2542,33 @@ namespace SLIL
 
         private SpriteStates GetSpriteRotation(Entity entity, long timeNow, bool useTimeNow = true, bool returnStopState = false)
         {
-            if (entity.HasStaticAnimation) return SpriteStates.Static;
-            int state = entity.Animations[0][0];
-            if (useTimeNow) state = entity.Animations[0][timeNow % entity.Frames];
-            if (entity is GameObject @object && @object.Animated && @object.Temporarily)
-                state = entity.Animations[0][@object.CurrentFrame];
+            int state = 0;
+            if (!entity.HasStaticAnimation)
+            {
+                if (useTimeNow) state = entity.Animations[0][timeNow % entity.Frames];
+                if (entity is GameObject @object && @object.Animated && @object.Temporarily)
+                    state = entity.Animations[0][@object.CurrentFrame];
+            }
             if (entity.HasSpriteRotation)
             {
                 //TODO:
-                if (returnStopState) return SpriteStates.StopForward;
-                if (state == 0) return SpriteStates.StepForward_0;
-                return SpriteStates.StepForward_1;
+                if (returnStopState)
+                {
+                    return SpriteStates.StopForward;
+                }
+                if (entity.HasStaticAnimation)
+                {
+                    return SpriteStates.StopForward;
+                }
+                else
+                {
+                    if (state == 0) return SpriteStates.StepForward_0;
+                    return SpriteStates.StepForward_1;
+                }
             }
             else
             {
+                if (entity.HasStaticAnimation) return SpriteStates.Static;
                 if (returnStopState) return SpriteStates.StopForward;
                 if (state == 0) return SpriteStates.StepForward_0;
                 return SpriteStates.StepForward_1;
