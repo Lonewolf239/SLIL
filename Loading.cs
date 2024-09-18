@@ -1,5 +1,4 @@
-﻿using SLIL.SLIL_Localization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +6,10 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CGFReader;
+using IniReader;
+using SLIL.Classes;
+using SLIL.SLIL_Localization;
 
 namespace SLIL
 {
@@ -14,9 +17,13 @@ namespace SLIL
     {
         private readonly string current_version = Program.current_version;
         private int Stage = 0;
+        private double UpdateProgress = 0, CompletedProgress = 0;
         private bool UpdateVerified = false, CurrentVersion = false;
         private bool DownloadedLocalizationList = false;
         public static Localization Localizations = new Localization();
+        private TextureCache textureCache;
+        private CGF_Reader CGFReader;
+        private MainMenu mainMenu;
         private readonly Dictionary<string, string> SupportedLanguages = new Dictionary<string, string>();
 
         public Loading() => InitializeComponent();
@@ -130,11 +137,41 @@ namespace SLIL
             }
         }
 
+        public async Task ProcessFileWithProgressAsync()
+        {
+            double startProgress = UpdateProgress;
+            var progress = new Progress<int>(percent =>
+            {
+                if (percent == 100)
+                    UpdateProgress = startProgress + 40;
+                else
+                    UpdateProgress = startProgress + (percent * 40 / 100);
+            });
+            await CGFReader.ProcessFileAsync(progress);
+        }
+
+        public async Task ProcessTexturesWithProgressAsync()
+        {
+            double startProgress = UpdateProgress;
+            var progress = new Progress<int>(percent =>
+            {
+                if (percent == 100)
+                    UpdateProgress = startProgress + 40;
+                else
+                    UpdateProgress = startProgress + (percent * 40 / 100);
+            });
+            await textureCache.LoadTextures(progress);
+        }
+
         private async Task LoadingMainMenu()
         {
             try
             {
-                if (!CheckInternet()) Stage = 2;
+                if (!CheckInternet())
+                {
+                    Stage = 2;
+                    UpdateProgress = 20;
+                }
                 if (Stage == 0)
                 {
                     await Check_Update();
@@ -145,21 +182,68 @@ namespace SLIL
                         return;
                     }
                     Stage++;
+                    UpdateProgress = 10;
                 }
                 if (Stage == 1)
                 {
                     status_label.Text = "Downloading localization...";
                     await DownloadLocalizationList();
                     Stage++;
+                    UpdateProgress = 20;
                 }
                 if (Stage == 2)
                 {
-                    status_label.Text = "Loading game resources...";
-                    MainMenu mainMenu = await CreateMainMenuAsync(this);
+                    status_label.Text = "Unpacking \"data.cgf\" file...";
+                    if (File.Exists("data.cgf"))
+                    {
+                        CGFReader = new CGF_Reader("data.cgf");
+                        await ProcessFileWithProgressAsync();
+                        Stage++;
+                    }
+                    else
+                    {
+                        string title = "Missing \"data.cgf\" file!", message = $"The file \"data.cgf\" is missing! It may have been renamed, moved, or deleted. Do you want to download the installer again?";
+                        if (DownloadedLocalizationList)
+                        {
+                            title = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-92");
+                            message = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-93");
+                        }
+                        if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                        {
+                            if (!File.Exists("UpdateDownloader.exe"))
+                            {
+                                message = "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
+                                string caption = "Error";
+                                if (DownloadedLocalizationList)
+                                {
+                                    caption = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-94");
+                                    message = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-95");
+                                }
+                                MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                                await DownloadFileAsync("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
+                            }
+                            Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
+                            Application.Exit();
+                        }
+                        else
+                            Application.Exit();
+                    }
+                }
+                if (Stage == 3)
+                {
+                    status_label.Text = "Texture caching...";
+                    textureCache = new TextureCache();
+                    await ProcessTexturesWithProgressAsync();
+                    Stage++;
+                }
+                if (Stage == 4)
+                {
+                    status_label.Text = "Loading main menu...";
+                    mainMenu = await CreateMainMenuAsync(this);
                     mainMenu.FormClosing += MainMenu_FormCLosing;
+                    progress_refresh.Stop();
                     mainMenu.Show();
                     Hide();
-                    Stage++;
                 }
             }
             catch { }
@@ -169,7 +253,7 @@ namespace SLIL
         {
             return await Task.Run(() =>
             {
-                MainMenu mainMenu = new MainMenu()
+                MainMenu mainMenu = new MainMenu(loading.CGFReader, loading.textureCache)
                 {
                     UpdateVerified = loading.UpdateVerified,
                     downloadedLocalizationList = loading.DownloadedLocalizationList,
@@ -178,6 +262,15 @@ namespace SLIL
                 };
                 return mainMenu;
             });
+        }
+
+        private void Progress_refresh_Tick(object sender, EventArgs e)
+        {
+            if (CompletedProgress < UpdateProgress)
+            {
+                CompletedProgress++;
+            }
+            progress.Width = (int)(CompletedProgress / 100 * background_progress.Width);
         }
 
         private async void Loading_Load(object sender, EventArgs e) => await LoadingMainMenu();

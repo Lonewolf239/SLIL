@@ -33,7 +33,7 @@ namespace SLIL
         public static string Language = "English";
         public string PlayerName;
         public static bool sounds = true, ConsoleEnabled = false;
-        private readonly TextureCache textureCache = new TextureCache();
+        public TextureCache textureCache;
         public static CGF_Reader CGFReader;
         private string SelectButtonName;
         private SLIL_Editor Editor;
@@ -85,42 +85,13 @@ namespace SLIL
         public static float Volume = 0.4f;
         public static int Gamma = 100;
 
-        public MainMenu()
+        public MainMenu(CGF_Reader data, TextureCache textures)
         {
             InitializeComponent();
+            CGFReader = data;
+            textureCache = textures;
             if (!File.Exists("UpdateDownloader.exe"))
                 DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
-            if (File.Exists("data.cgf"))
-                CGFReader = new CGF_Reader("data.cgf");
-            else
-            {
-                string title = "Missing \"data.cgf\" file!", message = $"The file \"data.cgf\" is missing! It may have been renamed, moved, or deleted. Do you want to download the installer again?";
-                if (DownloadedLocalizationList)
-                {
-                    title = Localizations.GetLString(Language, "0-92");
-                    message = Localizations.GetLString(Language, "0-93");
-                }
-                if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
-                {
-                    if (!File.Exists("UpdateDownloader.exe"))
-                    {
-                        message = "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
-                        string caption = "Error";
-                        if (DownloadedLocalizationList)
-                        {
-                            caption = Localizations.GetLString(Language, "0-94");
-                            message = Localizations.GetLString(Language, "0-95");
-                        }
-                        MessageBox.Show(message, caption, MessageBoxButtons.OK);
-                        DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
-                    }
-                    Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
-                    CanClose = true;
-                    Application.Exit();
-                }
-                else
-                    Application.Exit();
-            }
             MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
             game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
             draw = new PlaySound(CGFReader.GetFile("draw.wav"), false);

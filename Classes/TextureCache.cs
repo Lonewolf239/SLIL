@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
+using System.Threading.Tasks;
 
 namespace SLIL.Classes
 {
@@ -30,7 +30,7 @@ namespace SLIL.Classes
 
     public class TextureCache
     {
-        private readonly Dictionary<int, Dictionary<SpriteStates, Image>> textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
+        private Dictionary<int, Dictionary<SpriteStates, Image>> textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
         {
             { 2, new Dictionary<SpriteStates, Image>()
                 {
@@ -188,7 +188,7 @@ namespace SLIL.Classes
                 }
             }
         };
-        private readonly Dictionary<int, Dictionary<SpriteStates, Image>> cute_textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
+        private Dictionary<int, Dictionary<SpriteStates, Image>> cute_textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
         {
             { 2, new Dictionary<SpriteStates, Image>()
                 {
@@ -360,19 +360,27 @@ namespace SLIL.Classes
             //dark
             Color.White
         };
-        private readonly Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureColorCache;
-        private readonly Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureCuteColorCache;
+        private Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureColorCache;
+        private Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureCuteColorCache;
 
-        public TextureCache()
+        public TextureCache() { }
+
+        public async Task LoadTextures(IProgress<int> progress)
         {
             int textureCount = textures.Count + COLORS.Length;
             textureColorCache = new Dictionary<int, Dictionary<SpriteStates, Color[,]>>();
             textureCuteColorCache = new Dictionary<int, Dictionary<SpriteStates, Color[,]>>();
-            for (int i = 0; i < COLORS.Length; i++)
+            int stageCount = COLORS.Length;
+            for (int i = 0; i < stageCount; i++)
             {
                 textureColorCache.Add(i, new Dictionary<SpriteStates, Color[,]>() { { SpriteStates.Static, new Color[1, 1] } });
                 textureColorCache[i][SpriteStates.Static][0, 0] = COLORS[i];
+                progress?.Report(i * 100 / stageCount);
+                await Task.Delay(100);
             }
+            stageCount = textureCount - COLORS.Length;
+            int currentStage;
+            int processedTextures = 0;
             for (int i = COLORS.Length; i < textureCount; i++)
             {
                 if (!textures.ContainsKey(i)) continue;
@@ -380,14 +388,23 @@ namespace SLIL.Classes
                 textureColorCache[i] = new Dictionary<SpriteStates, Color[,]>();
                 foreach (var innerKvp in innerDict)
                     textureColorCache[i][innerKvp.Key] = ProcessImage(innerKvp.Value);
+                processedTextures++;
+                currentStage = COLORS.Length + processedTextures;
+                progress.Report(currentStage * 100 / stageCount);
+                await Task.Delay(100);
             }
             textures.Clear();
             textures = null;
-            for (int i = 0; i < CUTE_COLORS.Length; i++)
+            stageCount = CUTE_COLORS.Length;
+            for (int i = 0; i < stageCount; i++)
             {
                 textureCuteColorCache.Add(i, new Dictionary<SpriteStates, Color[,]>() { { SpriteStates.Static, new Color[1, 1] } });
-                textureCuteColorCache[i][SpriteStates.Static][0, 0] = COLORS[i];
+                textureCuteColorCache[i][SpriteStates.Static][0, 0] = CUTE_COLORS[i];
+                progress?.Report(i * 100 / stageCount);
+                await Task.Delay(100);
             }
+            stageCount = textureCount - CUTE_COLORS.Length;
+            processedTextures = 0;
             for (int i = CUTE_COLORS.Length; i < textureCount; i++)
             {
                 if (!cute_textures.ContainsKey(i)) continue;
@@ -395,6 +412,10 @@ namespace SLIL.Classes
                 textureCuteColorCache[i] = new Dictionary<SpriteStates, Color[,]>();
                 foreach (var innerKvp in innerDict)
                     textureCuteColorCache[i][innerKvp.Key] = ProcessImage(innerKvp.Value);
+                processedTextures++;
+                currentStage = CUTE_COLORS.Length + processedTextures;
+                progress.Report(currentStage * 100 / stageCount);
+                await Task.Delay(100);
             }
             cute_textures.Clear();
             cute_textures = null;

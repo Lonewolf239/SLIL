@@ -28,28 +28,68 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Loading));
             this.status_label = new System.Windows.Forms.Label();
+            this.background_progress = new System.Windows.Forms.Panel();
+            this.progress = new System.Windows.Forms.Panel();
+            this.progress_refresh = new System.Windows.Forms.Timer(this.components);
+            this.background_progress.SuspendLayout();
             this.SuspendLayout();
             // 
             // status_label
             // 
-            this.status_label.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.status_label.BackColor = System.Drawing.Color.Transparent;
+            this.status_label.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.status_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.status_label.Location = new System.Drawing.Point(0, 0);
+            this.status_label.ForeColor = System.Drawing.Color.White;
+            this.status_label.Location = new System.Drawing.Point(0, 171);
             this.status_label.Name = "status_label";
-            this.status_label.Size = new System.Drawing.Size(334, 61);
+            this.status_label.Size = new System.Drawing.Size(484, 30);
             this.status_label.TabIndex = 0;
             this.status_label.Text = "Check for updates...";
-            this.status_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.status_label.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.status_label.UseWaitCursor = true;
+            // 
+            // background_progress
+            // 
+            this.background_progress.BackColor = System.Drawing.Color.Transparent;
+            this.background_progress.Controls.Add(this.progress);
+            this.background_progress.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.background_progress.Location = new System.Drawing.Point(0, 201);
+            this.background_progress.Name = "background_progress";
+            this.background_progress.Size = new System.Drawing.Size(484, 10);
+            this.background_progress.TabIndex = 1;
+            this.background_progress.UseWaitCursor = true;
+            // 
+            // progress
+            // 
+            this.progress.BackColor = System.Drawing.Color.Navy;
+            this.progress.Dock = System.Windows.Forms.DockStyle.Left;
+            this.progress.Location = new System.Drawing.Point(0, 0);
+            this.progress.Name = "progress";
+            this.progress.Size = new System.Drawing.Size(0, 10);
+            this.progress.TabIndex = 0;
+            this.progress.UseWaitCursor = true;
+            // 
+            // progress_refresh
+            // 
+            this.progress_refresh.Enabled = true;
+            this.progress_refresh.Interval = 10;
+            this.progress_refresh.Tick += new System.EventHandler(this.Progress_refresh_Tick);
             // 
             // Loading
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(334, 61);
+            this.BackColor = System.Drawing.Color.Black;
+            this.BackgroundImage = global::SLIL.Properties.Resources.loading_background;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ClientSize = new System.Drawing.Size(484, 211);
             this.ControlBox = false;
             this.Controls.Add(this.status_label);
+            this.Controls.Add(this.background_progress);
+            this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -63,6 +103,7 @@
             this.TopMost = true;
             this.UseWaitCursor = true;
             this.Load += new System.EventHandler(this.Loading_Load);
+            this.background_progress.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -70,5 +111,8 @@
         #endregion
 
         private System.Windows.Forms.Label status_label;
+        private System.Windows.Forms.Panel background_progress;
+        private System.Windows.Forms.Panel progress;
+        private System.Windows.Forms.Timer progress_refresh;
     }
 }
