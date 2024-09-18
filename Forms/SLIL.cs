@@ -2393,19 +2393,37 @@ namespace SLIL
             }
             if (entity.HasSpriteRotation)
             {
+                Player player = Controller.GetPlayer();
                 //TODO:
-                if (returnStopState)
+                if (returnStopState || entity.HasStaticAnimation)
                 {
-                    return SpriteStates.StopForward;
-                }
-                if (entity.HasStaticAnimation)
-                {
-                    return SpriteStates.StopForward;
+                    if (player.A < 1.5)
+                        return SpriteStates.StopForward;
+                    if (player.A < 3)
+                        return SpriteStates.StopLeft;
+                    if (player.A < 4.5)
+                        return SpriteStates.StopBack;
+                    return SpriteStates.StopRight;
                 }
                 else
                 {
-                    if (state == 0) return SpriteStates.StepForward_0;
-                    return SpriteStates.StepForward_1;
+                    if (player.A < 1.5)
+                    {
+                        if (state == 0) return SpriteStates.StepForward_0;
+                        return SpriteStates.StepForward_1;
+                    }
+                    if (player.A < 3)
+                    {
+                        if (state == 0) return SpriteStates.StepLeft_0;
+                        return SpriteStates.StepLeft_1;
+                    }
+                    if (player.A < 4.5)
+                    {
+                        if (state == 0) return SpriteStates.StepBack_0;
+                        return SpriteStates.StepBack_1;
+                    }
+                    if (state == 0) return SpriteStates.StepRight_0;
+                    return SpriteStates.StepRight_1;
                 }
             }
             else
