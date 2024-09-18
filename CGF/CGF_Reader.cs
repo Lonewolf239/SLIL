@@ -41,10 +41,7 @@ namespace CGFReader
                     Files file = new Files(index, name, bytes);
                     FilesList.Add(file);
                 }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                catch (Exception ex) { throw ex; }
                 progress?.Report((int)(((i + 1) / (double)compressed_file.Count) * 100));
             }
             compressed_file.Clear();

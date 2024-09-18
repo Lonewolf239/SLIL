@@ -64,7 +64,20 @@ namespace SLIL
             DownloadedLocalizationList = true;
         }
 
-        private async Task DownloadLocalizationList()
+        private async Task DownloadLocalizationListTask()
+        {
+            double startProgress = UpdateProgress;
+            var progress = new Progress<int>(percent =>
+            {
+                if (percent == 100)
+                    UpdateProgress = startProgress + 20;
+                else
+                    UpdateProgress = startProgress + (percent * 20 / 100);
+            });
+            await DownloadLocalizationList(progress);
+        }
+
+        private async Task DownloadLocalizationList(IProgress<int> progress)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -76,11 +89,14 @@ namespace SLIL
                     string[] codes = new string[lines.Length];
                     if (lines.Length > 0)
                     {
+                        int totalProgressSteps = lines.Length + 1;
                         for (int i = 0; i < lines.Length; i++)
                         {
+                            progress.Report((i + 1) * 100 / totalProgressSteps);
                             codes[i] = lines[i].Split('-')[0];
                             languages[i] = lines[i].Split('-')[1];
                         }
+                        progress.Report(100);
                         await SetLocalizations(codes, languages);
                     }
                 }
@@ -187,9 +203,8 @@ namespace SLIL
                 if (Stage == 1)
                 {
                     status_label.Text = "Downloading localization...";
-                    await DownloadLocalizationList();
+                    await DownloadLocalizationListTask();
                     Stage++;
-                    UpdateProgress = 20;
                 }
                 if (Stage == 2)
                 {
