@@ -820,7 +820,7 @@ namespace GameServer
         {
             DeathSound = 0;
             Texture = 7;
-            detectionRange = 8;
+            detectionRange = 5;
             base.SetAnimations(1, 0);
         }
         public override void UpdateCoordinates(string map, double playerX, double playerY)
@@ -907,8 +907,8 @@ namespace GameServer
         public override double GetMove() => 0.125;
         protected override int GetMAX_MONEY() => 15;
         protected override int GetMIN_MONEY() => 10;
-        protected override int GetMAX_DAMAGE() => 40;
-        protected override int GetMIN_DAMAGE() => 25;
+        protected override int GetMAX_DAMAGE() => 15;
+        protected override int GetMIN_DAMAGE() => 10;
 
         public Dog(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Dog(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
@@ -917,7 +917,7 @@ namespace GameServer
         {
             DeathSound = 1;
             Texture = 8;
-            detectionRange = 8;
+            detectionRange = 7;
             Fast = true;
             base.SetAnimations(1, 0);
         }
@@ -1005,8 +1005,8 @@ namespace GameServer
         public override double GetMove() => 0.125;
         protected override int GetMAX_MONEY() => 18;
         protected override int GetMIN_MONEY() => 12;
-        protected override int GetMAX_DAMAGE() => 30;
-        protected override int GetMIN_DAMAGE() => 20;
+        protected override int GetMAX_DAMAGE() => 35;
+        protected override int GetMIN_DAMAGE() => 25;
 
         public Ogr(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Ogr(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
@@ -1102,8 +1102,8 @@ namespace GameServer
         public override double GetMove() => 0.13;
         protected override int GetMAX_MONEY() => 18;
         protected override int GetMIN_MONEY() => 13;
-        protected override int GetMAX_DAMAGE() => 30;
-        protected override int GetMIN_DAMAGE() => 22;
+        protected override int GetMAX_DAMAGE() => 8;
+        protected override int GetMIN_DAMAGE() => 3;
 
         public Bat(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
         public Bat(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
@@ -1112,7 +1112,7 @@ namespace GameServer
         {
             DeathSound = 3;
             Texture = 10;
-            detectionRange = 8;
+            detectionRange = 6;
             Fast = true;
             base.SetAnimations(1, 0);
         }

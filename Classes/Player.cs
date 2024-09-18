@@ -551,6 +551,12 @@ namespace SLIL.Classes
             for (int i = Effects.Count - 1; i >= 0; i--)
             {
                 if (Effects[i].ID == 0) HealHP(rand.Next(2, 6));
+                if (Effects[i].ID == 5)
+                {
+                    int damage = rand.Next(1, 3);
+                    if (HP - damage >= 1)
+                        DealDamage(damage);
+                }
                 if (Effects[i].ReducingTimeRemaining())
                 {
                     if (Effects[i].ID == 1)
@@ -572,6 +578,7 @@ namespace SLIL.Classes
             if (index == 0)
             {
                 if (EffectCheck(0)) return;
+                if (EffectCheck(5)) StopEffect(5);
                 Regeneration effect = new Regeneration();
                 if (!standart_time)
                     effect.SetTotalTime(time);
@@ -632,6 +639,16 @@ namespace SLIL.Classes
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                 MOVE_SPEED = 0;
                 STRAFE_SPEED = 0;
+            }
+            else if (index == 5)
+            {
+                if (EffectCheck(5) || EffectCheck(0)) return;
+                Bleeding effect = new Bleeding();
+                if (!standart_time)
+                    effect.SetTotalTime(time);
+                effect.Infinity = infinity;
+                effect.UpdateTimeRemaining();
+                Effects.Add(effect);
             }
         }
 

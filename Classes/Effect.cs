@@ -9,12 +9,10 @@ namespace SLIL.Classes
         public string Description { get; set; }
         public int EffectTotalTime { get; set; }
         public int EffectTimeRemaining { get; set; }
-        public bool Debaf { get; set; }
         public bool Infinity { get; set; }
 
         public Effect()
         {
-            Debaf = false;
             Infinity = false;
         }
 
@@ -41,6 +39,11 @@ namespace SLIL.Classes
             this.EffectTimeRemaining = reader.GetInt();
         }
 
+    }
+
+    public class Debaf : Effect
+    {
+        public Debaf() { }
     }
 
     public class Regeneration : Effect
@@ -79,12 +82,11 @@ namespace SLIL.Classes
         }
     }
 
-    public class Fatigue : Effect
+    public class Fatigue : Debaf
     {
         public Fatigue() : base()
         {
             ID = 3;
-            Debaf = true;
             EffectTotalTime = 15;
             Name = "Fatigue";
             Description = "Prevents window entry";
@@ -101,6 +103,18 @@ namespace SLIL.Classes
             EffectTotalTime = 1;
             Name = "Biker";
             Description = "I'm a Biker bitch!";
+            UpdateTimeRemaining();
+        }
+    }
+
+    public class Bleeding : Debaf
+    {
+        public Bleeding() : base()
+        {
+            ID = 5;
+            EffectTotalTime = 6;
+            Name = "Bleeding";
+            Description = "Gradually reduces health";
             UpdateTimeRemaining();
         }
     }

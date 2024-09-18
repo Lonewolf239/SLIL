@@ -321,6 +321,7 @@ namespace SLIL
             { typeof(Protection), Properties.Resources.protection_effect },
             { typeof(Fatigue), Properties.Resources.fatigue_effect },
             { typeof(Rider), Properties.Resources.im_biker },
+            { typeof(Bleeding), Properties.Resources.bleeding },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
@@ -2923,7 +2924,7 @@ namespace SLIL
             if (player.Effects.Count > 0)
             {
                 for (int i = 0; i < player.Effects.Count; i++)
-                    DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], icon_size, i, player.Effects[i].Debaf);
+                    DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], icon_size, i, player.Effects[i] is Debaf);
             }
             if (player.InSelectingMode)
             {
@@ -3044,7 +3045,7 @@ namespace SLIL
             if (player.Effects.Count > 0)
             {
                 for (int i = 0; i < player.Effects.Count; i++)
-                    DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], icon_size, i, player.Effects[i].Debaf);
+                    DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], icon_size, i, player.Effects[i] is Debaf);
             }
             ShowDebugs(player);
             if (resolution == 1)

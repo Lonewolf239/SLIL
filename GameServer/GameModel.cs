@@ -160,7 +160,6 @@ namespace GameServer
                                 {
                                     if (!player.Invulnerable)
                                     {
-                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
                                         if (player.InTransport)
                                         {
                                             //PlaySoundHandle(SLIL.hit[1]);
@@ -188,6 +187,12 @@ namespace GameServer
                                             byte[] data = writer.Data;
                                             sendMessageFromGameCallback(1000, data);
                                         }
+                                        if (entity is Dog || entity is Bat)
+                                        {
+                                            if (!player.EffectCheck(5))
+                                                player.GiveEffect(5, true);
+                                        }
+                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
                                         if (player.HP <= 0)
                                         {
                                             if(_gameMode == GameMode.Deathmatch) Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
@@ -1449,7 +1454,7 @@ namespace GameServer
                     double multiplier = 1;
                     if (difficulty == 3)
                         multiplier = 1.5;
-                    attackerPlayer.ChangeMoney(rand.Next((int)(50 * multiplier), (int)(100 * multiplier)));
+                    attackerPlayer.ChangeMoney(rand.Next((int)(20 * multiplier), (int)(30 * multiplier)));
                     attackerPlayer.EnemiesKilled++;
                     Entities.Add(new PlayerDeadBody(p.X, p.Y, MAP_WIDTH, ref MaxEntityID));
                     NetDataWriter writer = new();
