@@ -504,7 +504,8 @@ namespace SLIL
             INIReader.ClearFile(iniFolder);
             if (PlayerName.Length == 0) PlayerName = $"Player#{rand.Next(10000, 99999)}";
             INIReader.SetKey(iniFolder, "CONFIG", "player_name", PlayerName);
-            INIReader.SetKey(iniFolder, "CONFIG", "language", Language);
+            if (DownloadedLocalizationList)
+                INIReader.SetKey(iniFolder, "CONFIG", "language", Language);
             INIReader.SetKey(iniFolder, "CONFIG", "sounds", sounds);
             INIReader.SetKey(iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             INIReader.SetKey(iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
@@ -598,7 +599,7 @@ namespace SLIL
             Localizations = localizations;
         }
 
-        private void SetLocalizations(string[] codes, string[] languages)
+        private async void SetLocalizations(string[] codes, string[] languages)
         {
             SupportedLanguages.Clear();
             for (int i = 0; i < languages.Length; i++)
@@ -607,7 +608,7 @@ namespace SLIL
             {
                 try
                 {
-                    Localizations.DownloadLocalization(languages[i]);
+                    await Localizations.DownloadLocalization(languages[i]);
                 }
                 catch (Exception e)
                 {

@@ -87,7 +87,8 @@ namespace SLIL.UserControls
                              "~│~ -DEBUG-       ~│~ Go to debug map                             ~│~\n" +
                              "~│~ -DEBUG_BOSS-  ~│~ Go to boss debug map                        ~│~\n" +
                              "~│~ -DEBUG_BIKE-  ~│~ Go to bike debug map                        ~│~\n" +
-                             "~│~ -DEBUGSPEED-  ~│~ Show/hide debug player speed                ~│~\n" +
+                             "~│~ -DEBUG_SPEED- ~│~ Show/hide debug player speed                ~│~\n" +
+                             "~│~ -DEBUG_POS-   ~│~ Show/hide debug player position             ~│~\n" +
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -FPS-         ~│~ Show/hide FPS                               ~│~\n" +
                              "~│~ -MINIMAP-     ~│~ Show/hide Minimap                           ~│~\n" +
@@ -108,13 +109,21 @@ namespace SLIL.UserControls
                              "~└─────────────┴─────────────────────────────────────────────┘~";
 
                     }
-                    else if (cheat == "DEBUGSPEED")
+                    else if (cheat == "DEBUG_SPEED")
                     {
                         parent.ShowDebugSpeed = !parent.ShowDebugSpeed;
                         if (parent.ShowDebugSpeed)
                             message = "Display debug player speed enabled";
                         else
                             message = "Display debug player speed disabled";
+                    }
+                    else if (cheat == "DEBUG_POS")
+                    {
+                        parent.ShowPositongDebug = !parent.ShowPositongDebug;
+                        if (parent.ShowPositongDebug)
+                            message = "Display debug player position enabled";
+                        else
+                            message = "Display debug player position disabled";
                     }
                     else if (cheat == "DEBUG")
                     {

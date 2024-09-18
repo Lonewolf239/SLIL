@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Text;
-using System.Net;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SLIL.SLIL_Localization
 {
@@ -11,19 +11,27 @@ namespace SLIL.SLIL_Localization
 
         public Localization() => SLILLocalizations = new List<SLILLocalization>();
 
-        public void DownloadLocalization(string language)
+        public async Task DownloadLocalization(string language)
         {
-            using (WebClient webClient = new WebClient())
+            using (HttpClient httpClient = new HttpClient())
             {
-                webClient.Encoding = Encoding.UTF8;
                 try
                 {
-                    string result = webClient.DownloadString($"https://base-escape.ru/SLILLocalization/{language}.txt");
-                    ProcessDownloadedData(language, result);
+                    httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/text"));
+                    HttpResponseMessage response = await httpClient.GetAsync($"https://base-escape.ru/SLILLocalization/{language}.txt");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = await response.Content.ReadAsStringAsync();
+                        ProcessDownloadedData(language, result);
+                    }
+                    else
+                    {
+                        throw new HttpRequestException($"Request failed with status code: {response.StatusCode}");
+                    }
                 }
-                catch (WebException e)
+                catch (HttpRequestException e)
                 {
-                    if (e.Status == WebExceptionStatus.ConnectFailure)
+                    if (e.InnerException is System.Net.Sockets.SocketException)
                         throw new Exception("Failed to establish a connection with the localizations server. Please check your internet connection.");
                     else
                         throw new Exception($"An error occurred while downloading the localization: {e.Message}");
@@ -59,7 +67,7 @@ namespace SLIL.SLIL_Localization
             }
         }
 
-        public string GetLString(string language, string index)
+        public async Task<string> GetString(string language, string index)
         {
             bool all_ok = false;
             int i = 0;
@@ -73,10 +81,12 @@ namespace SLIL.SLIL_Localization
                         break;
                     }
                 }
-                if (!all_ok) try { DownloadLocalization(language); } catch { return "Error"; }
+                if (!all_ok) try { await DownloadLocalization(language); } catch { return "Error"; }
             }
             return SLILLocalizations[i].GetString(index);
         }
+
+        public string GetLString(string language, string index) => GetString(language, index).Result;
 
         public void RemoveDuplicates()
         {

@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SLIL
@@ -12,7 +14,7 @@ namespace SLIL
     public partial class Loading : Form
     {
         private readonly string current_version = Program.current_version;
-        private int sec = 0;
+        private int Stage = 0;
         private bool UpdateVerified = false, CurrentVersion = false;
         private bool DownloadedLocalizationList = false;
         public static Localization Localizations = new Localization();
@@ -20,16 +22,17 @@ namespace SLIL
 
         public Loading() => InitializeComponent();
 
-        private void SetLocalizations(string[] codes, string[] languages)
+        private async Task SetLocalizationsAsync(string[] codes, string[] languages)
         {
             SupportedLanguages.Clear();
             for (int i = 0; i < languages.Length; i++)
                 SupportedLanguages.Add(codes[i], languages[i]);
+
             for (int i = 0; i < languages.Length; i++)
             {
                 try
                 {
-                    Localizations.DownloadLocalization(languages[i]);
+                    await Localizations.DownloadLocalization(languages[i]);
                 }
                 catch
                 {
@@ -40,14 +43,13 @@ namespace SLIL
             DownloadedLocalizationList = true;
         }
 
-        private void DownloadLocalizationList()
+        private async Task DownloadLocalizationList()
         {
-            using (WebClient webClient = new WebClient())
+            using (HttpClient httpClient = new HttpClient())
             {
-                webClient.Encoding = Encoding.UTF8;
                 try
                 {
-                    string result = webClient.DownloadString(new Uri("https://base-escape.ru/SLILLocalization/LocalizationList.txt"));
+                    string result = await httpClient.GetStringAsync("https://base-escape.ru/SLILLocalization/LocalizationList.txt");
                     string[] lines = result.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                     string[] languages = new string[lines.Length];
                     string[] codes = new string[lines.Length];
@@ -58,7 +60,7 @@ namespace SLIL
                             codes[i] = lines[i].Split('-')[0];
                             languages[i] = lines[i].Split('-')[1];
                         }
-                        SetLocalizations(codes, languages);
+                        await SetLocalizationsAsync(codes, languages);
                     }
                 }
                 catch
@@ -70,29 +72,40 @@ namespace SLIL
             Localizations.RemoveDuplicates();
         }
 
-        private void DownloadFile(string url, string outputPath)
+        private async Task DownloadFileAsync(string url, string outputPath)
         {
-            using (WebClient client = new WebClient())
+            using (var httpClient = new HttpClient())
             {
                 try
                 {
-                    client.DownloadFile(new Uri(url), outputPath);
+                    using (var response = await httpClient.GetAsync(url))
+                    {
+                        response.EnsureSuccessStatusCode();
+                        using (var stream = await response.Content.ReadAsStreamAsync())
+                        {
+                            using (var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                            {
+                                await stream.CopyToAsync(fileStream);
+                            }
+                        }
+                    }
                 }
                 catch { }
             }
         }
 
-        private void Check_Update()
+        private async Task Check_Update()
         {
             try
             {
-                using (WebClient webClient = new WebClient())
+                using (HttpClient httpClient = new HttpClient())
                 {
-                    string line = webClient.DownloadString(new Uri("https://base-escape.ru/version_SLIL.txt")).Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)[0];
+                    string content = await httpClient.GetStringAsync("https://base-escape.ru/version_SLIL.txt");
+                    string line = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)[0];
                     if (!line.Contains(current_version))
                     {
                         if (!File.Exists("UpdateDownloader.exe"))
-                            DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
+                            await DownloadFileAsync("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
                     }
                     else CurrentVersion = true;
                     UpdateVerified = true;
@@ -105,37 +118,56 @@ namespace SLIL
             }
         }
 
-        private void Start_timer_Tick(object sender, EventArgs e)
+        private async Task LoadingMainMenu()
         {
-            status_label.Text = "Loading game resources...";
-            if (sec == 0)
+            try
             {
-                sec++;
-                Check_Update();
-                if (CurrentVersion) sec++;
-                else
+                if (Stage == 0)
                 {
-                    start_timer.Stop();
-                    Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
-                    Application.Exit();
+                    await Check_Update();
+                    if (!CurrentVersion)
+                    {
+                        Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
+                        Application.Exit();
+                        return;
+                    }
+                    Stage++;
+                }
+                if (Stage == 1)
+                {
+                    status_label.Text = "Downloading localization...";
+                    await DownloadLocalizationList();
+                    Stage++;
+                }
+                if (Stage == 2)
+                {
+                    status_label.Text = "Loading game resources...";
+                    MainMenu mainMenu = await CreateMainMenuAsync(this);
+                    mainMenu.FormClosing += MainMenu_FormCLosing;
+                    mainMenu.Show();
+                    Hide();
+                    Stage++;
                 }
             }
-            else if (sec == 2)
-            {
-                start_timer.Stop();
-                DownloadLocalizationList();
-                MainMenu form = new MainMenu()
-                {
-                    UpdateVerified = UpdateVerified,
-                    downloadedLocalizationList = DownloadedLocalizationList,
-                    localizations = Localizations,
-                    supportedLanguages = SupportedLanguages
-                };
-                form.FormClosing += new FormClosingEventHandler(MainMenu_FormCLosing);
-                form.Show();
-                Hide();
-            }
+            catch { }
         }
+
+        public static async Task<MainMenu> CreateMainMenuAsync(Loading loading)
+        {
+            return await Task.Run(() =>
+            {
+                MainMenu mainMenu = new MainMenu()
+                {
+                    UpdateVerified = loading.UpdateVerified,
+                    downloadedLocalizationList = loading.DownloadedLocalizationList,
+                    localizations = Localizations,
+                    supportedLanguages = loading.SupportedLanguages
+                };
+                return mainMenu;
+            });
+        }
+
+        private async void Loading_Load(object sender, EventArgs e) => await LoadingMainMenu();
 
         private void MainMenu_FormCLosing(object sender, FormClosingEventArgs e) => Application.Exit();
     }

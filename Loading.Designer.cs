@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Loading));
             this.status_label = new System.Windows.Forms.Label();
-            this.start_timer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // status_label
@@ -45,12 +43,6 @@
             this.status_label.Text = "Check for updates...";
             this.status_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.status_label.UseWaitCursor = true;
-            // 
-            // start_timer
-            // 
-            this.start_timer.Enabled = true;
-            this.start_timer.Interval = 1000;
-            this.start_timer.Tick += new System.EventHandler(this.Start_timer_Tick);
             // 
             // Loading
             // 
@@ -70,6 +62,7 @@
             this.Text = "Loading...";
             this.TopMost = true;
             this.UseWaitCursor = true;
+            this.Load += new System.EventHandler(this.Loading_Load);
             this.ResumeLayout(false);
 
         }
@@ -77,6 +70,5 @@
         #endregion
 
         private System.Windows.Forms.Label status_label;
-        private System.Windows.Forms.Timer start_timer;
     }
 }

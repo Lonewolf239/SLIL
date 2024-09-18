@@ -30,7 +30,8 @@ namespace SLIL
         public string PlayerName;
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
-        public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true, ShowDebugSpeed = false;
+        public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
+        public bool ShowDebugSpeed = false, ShowPositongDebug = false;
         public bool inv_y = false, inv_x = false;
         public static int difficulty = 1;
         private int inDebug = 0;
@@ -988,10 +989,7 @@ namespace SLIL
                 double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
                 Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
                 DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<int> enemiesCoords);
-                foreach (int i in enemiesCoords)
-                {
-                    DISPLAYED_MAP[i] = 'E';
-                }
+                foreach (int i in enemiesCoords) DISPLAYED_MAP[i] = 'E';
                 DrawRaysOnScreen(rays);
                 if (!Controller.IsInSpectatorMode()) DrawGameInterface();
                 else DrawSpectatorInterface();
@@ -3070,9 +3068,9 @@ namespace SLIL
 
         private void ShowDebugs(Player player)
         {
+            string debugInfo = null;
             if (ShowDebugSpeed)
-            {
-                string debugInfo = string.Format(
+                debugInfo = string.Format(
                     "MMS: {0,5:0.##}  MSS: {1,5:0.##}\n" +
                     "MRS: {2,5:0.##}  RS:  {3,5:0.##}\n" +
                     "MS:  {4,5:0.##}  CMS: {5,5:0.##}\n" +
@@ -3089,8 +3087,16 @@ namespace SLIL
                     player.MAX_STAMINE,
                     player.STAMINE
                 );
-                graphicsWeapon.DrawString(debugInfo, consolasFont[0, 0], whiteBrush, 0, 16);
-            }
+            if (ShowPositongDebug)
+                debugInfo = string.Format(
+                    "PX: {0,5:0.##}  PY: {1,5:0.##}\n" +
+                    "PA: {2,5:0.##}  PL:  {3,5:0.##}\n",
+                    player.X,
+                    player.Y,
+                    player.A,
+                    player.Look
+                );
+            graphicsWeapon.DrawString(debugInfo, consolasFont[0, 0], whiteBrush, 0, 16);
         }
 
         private void DrawWeapon(Player player, int index)
