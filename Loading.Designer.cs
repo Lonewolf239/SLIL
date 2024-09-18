@@ -49,28 +49,26 @@
             this.status_label.TabIndex = 0;
             this.status_label.Text = "Check for updates...";
             this.status_label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.status_label.UseWaitCursor = true;
             // 
             // background_progress
             // 
-            this.background_progress.BackColor = System.Drawing.Color.Transparent;
+            this.background_progress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(131)))), ((int)(((byte)(182)))));
+            this.background_progress.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.background_progress.Controls.Add(this.progress);
             this.background_progress.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.background_progress.Location = new System.Drawing.Point(0, 201);
             this.background_progress.Name = "background_progress";
             this.background_progress.Size = new System.Drawing.Size(484, 10);
             this.background_progress.TabIndex = 1;
-            this.background_progress.UseWaitCursor = true;
             // 
             // progress
             // 
-            this.progress.BackColor = System.Drawing.Color.Navy;
+            this.progress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(104)))), ((int)(((byte)(213)))), ((int)(((byte)(248)))));
             this.progress.Dock = System.Windows.Forms.DockStyle.Left;
             this.progress.Location = new System.Drawing.Point(0, 0);
             this.progress.Name = "progress";
-            this.progress.Size = new System.Drawing.Size(0, 10);
+            this.progress.Size = new System.Drawing.Size(0, 8);
             this.progress.TabIndex = 0;
-            this.progress.UseWaitCursor = true;
             // 
             // progress_refresh
             // 
@@ -88,7 +86,7 @@
             this.ControlBox = false;
             this.Controls.Add(this.status_label);
             this.Controls.Add(this.background_progress);
-            this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+            this.Cursor = System.Windows.Forms.Cursors.Default;
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -101,7 +99,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Loading...";
             this.TopMost = true;
-            this.UseWaitCursor = true;
             this.Load += new System.EventHandler(this.Loading_Load);
             this.background_progress.ResumeLayout(false);
             this.ResumeLayout(false);

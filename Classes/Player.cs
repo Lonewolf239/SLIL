@@ -845,7 +845,7 @@ namespace SLIL.Classes
             }
             else if (index == 5)
             {
-                if (EffectCheck(5) || EffectCheck(0)) return;
+                if (EffectCheck(5) || EffectCheck(4) || EffectCheck(0)) return;
                 Bleeding effect = new Bleeding();
                 if (!standart_time)
                     effect.SetTotalTime(time);
