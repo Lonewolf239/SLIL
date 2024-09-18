@@ -13,6 +13,7 @@ using SLIL.Classes;
 using Play_Sound;
 using SLIL.SLIL_Localization;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SLIL
 {
@@ -81,7 +82,7 @@ namespace SLIL
         public static bool inv_y = false, inv_x = false;
         public static double LOOK_SPEED = 6.5;
         public static float Volume = 0.4f;
-        public static int Gamma = 1;
+        public static int Gamma = 100;
 
         public MainMenu()
         {
@@ -1268,7 +1269,7 @@ namespace SLIL
             scope_color = 0;
             LOOK_SPEED = 6.5;
             Volume = 0.4f;
-            Gamma = 1;
+            Gamma = 100;
             BindControls.Clear();
             foreach (var kvp in ClassicBindControls)
                 BindControls.Add(kvp.Key, kvp.Value);
