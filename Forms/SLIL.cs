@@ -518,7 +518,8 @@ namespace SLIL
         private bool ShowSing = false;
         private int SingID, scrollPosition = 0;
         private const int ScrollBarWidth = 4, ScrollPadding = 5;
-        private bool open_shop = false, pressed_r = false, cancelReload = false, pressed_h = false;
+        private bool open_shop = false, pressed_r = false, cancelReload = false;
+        private float xOffset = 0, yOffset = 0, xOffsetDirection = 0.25f, yOffsetDirection = 0.25f;
         private Display display;
         private Bitmap map;
         private ConsolePanel console_panel;
@@ -1344,6 +1345,29 @@ namespace SLIL
                     if (!Shoot(player))
                         mouse_hold_timer.Stop();
                 }
+            }
+        }
+
+        private void Camera_shaking_timer_Tick(object sender, EventArgs e)
+        {
+            Player player = Controller.GetPlayer();
+            if (player.MOVE_SPEED == 0 && player.STRAFE_SPEED == 0)
+            {
+                xOffset = 0;
+                yOffset = 0;
+            }
+            else
+            {
+                if (xOffset > 4)
+                    xOffsetDirection = -0.25f;
+                if (xOffset < 1)
+                    xOffsetDirection = 0.25f;
+                xOffset += xOffsetDirection;
+                if (yOffset > 4)
+                    yOffsetDirection = -0.25f;
+                if (yOffset < 1)
+                    yOffsetDirection = 0.25f;
+                yOffset += yOffsetDirection;
             }
         }
 
@@ -2397,27 +2421,27 @@ namespace SLIL
                 //TODO:
                 if (returnStopState || entity.HasStaticAnimation)
                 {
-                    if (player.A < 1.5)
+                    if (player.A < 1.57)
                         return SpriteStates.StopForward;
-                    if (player.A < 3)
+                    if (player.A < 3.14)
                         return SpriteStates.StopLeft;
-                    if (player.A < 4.5)
+                    if (player.A < 4.71)
                         return SpriteStates.StopBack;
                     return SpriteStates.StopRight;
                 }
                 else
                 {
-                    if (player.A < 1.5)
+                    if (player.A < 1.57)
                     {
                         if (state == 0) return SpriteStates.StepForward_0;
                         return SpriteStates.StepForward_1;
                     }
-                    if (player.A < 3)
+                    if (player.A < 3.14)
                     {
                         if (state == 0) return SpriteStates.StepLeft_0;
                         return SpriteStates.StepLeft_1;
                     }
-                    if (player.A < 4.5)
+                    if (player.A < 4.71)
                     {
                         if (state == 0) return SpriteStates.StepBack_0;
                         return SpriteStates.StepBack_1;
@@ -2969,21 +2993,22 @@ namespace SLIL
 
         private void DrawWeapon(Player player, int index)
         {
-            if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, 0, 0, WEAPON.Width, WEAPON.Height);
+            float x = (float)WEAPON.Width + xOffset, y = (float)WEAPON.Height + yOffset;
+            if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, xOffset, yOffset, x, y);
             else if (player.InTransport)
             {
                 if (player.InParkour)
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][4], 0, 0, WEAPON.Width, WEAPON.Height);
                 else if (player.StrafeDirection == Directions.LEFT)
-                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], 0, 0, WEAPON.Width, WEAPON.Height);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], xOffset, yOffset, x, y);
                 else if (player.StrafeDirection == Directions.RIGHT)
-                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], 0, 0, WEAPON.Width, WEAPON.Height);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], xOffset, yOffset, x, y);
                 else
-                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], 0, 0, WEAPON.Width, WEAPON.Height);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], xOffset, yOffset, x, y);
             }
             else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-            else if (player.UseItem) graphicsWeapon.DrawImage(ImagesDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), player.ItemFrame], 0, 0, WEAPON.Width, WEAPON.Height);
-            else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index], 0, 0, WEAPON.Width, WEAPON.Height);
+            else if (player.UseItem) graphicsWeapon.DrawImage(ImagesDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), player.ItemFrame], xOffset, yOffset, x, y);
+            else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index], xOffset, yOffset, x, y);
         }
 
         private Bitmap DrawMiniMap()
@@ -3672,6 +3697,7 @@ namespace SLIL
             raycast.Start();
             stamina_timer.Start();
             mouse_timer.Start();
+            camera_shaking_timer.Start();
             if (MainMenu.sounds) step_sound_timer.Start();
             GameStarted = true;
             game_over_panel.Visible = false;
@@ -3689,6 +3715,7 @@ namespace SLIL
             step_sound_timer.Stop();
             stamina_timer.Stop();
             mouse_timer.Stop();
+            camera_shaking_timer.Stop();
             ShowMap = false;
             shop_panel.Visible = false;
             console_panel.Visible = false;
