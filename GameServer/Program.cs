@@ -45,49 +45,52 @@ namespace GameServer
 
         public static void Main()
         {
-            sendOutcomingMessageHandle = SendOutcomingMessageInvoker;
-            dispatcher.sendMessageDelegate = sendOutcomingMessageHandle;
-            listener.ConnectionRequestEvent += request =>
+            Mutex mutex = new(true, "SLIL_GameServer_Unique_Mutex");
+            if (mutex.WaitOne(TimeSpan.Zero, true))
             {
-                string data = request.Data.GetString();
-                if (server.ConnectedPeersCount < MAX_CONNECTIONS && data.StartsWith("SomeKey:"))
+                sendOutcomingMessageHandle = SendOutcomingMessageInvoker;
+                dispatcher.sendMessageDelegate = sendOutcomingMessageHandle;
+                listener.ConnectionRequestEvent += request =>
                 {
-                    string name = data.Replace("SomeKey:","");
-                    dispatcher.AppendPlayerPeerDictionary(request.Accept().Id, name);
-                }
-                else request.Reject();
-            };
-            listener.PeerConnectedEvent += peer =>
-            {
-                DisplayWelcomeText($"We got connection: {peer}");
-                dispatcher.SendOutcomingMessage(100, ref peer);
-            };
-            listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
-            {
-                Packet pack = new();
-                pack.Deserialize(dataReader);
-                int playerIDFromPeer = dispatcher.PeerPlayerIDs[fromPeer.Id];
-                dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref server, playerIDFromPeer);
-            };
-            listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
-            {
-                dispatcher.RemovePlayer(dispatcher.PeerPlayerIDs[peer.Id]);
-                dispatcher.PeerPlayerIDs.Remove(peer.Id);
-                DisplayWelcomeText($"Closed connection: {peer}");
-                dispatcher.PeerPlayerName.Remove(peer.Id);
-            };
-            SetupConsoleSettings();
-            DisplayWelcomeText();
-            while (!exit)
-            {
-                string? command = Console.ReadLine()?.Replace(" ", null).ToLower();
-                switch (command)
+                    string data = request.Data.GetString();
+                    if (server.ConnectedPeersCount < MAX_CONNECTIONS && data.StartsWith("SomeKey:"))
+                    {
+                        string name = data.Replace("SomeKey:", "");
+                        dispatcher.AppendPlayerPeerDictionary(request.Accept().Id, name);
+                    }
+                    else request.Reject();
+                };
+                listener.PeerConnectedEvent += peer =>
                 {
-                    case "0":
-                    case "help":
-                        string[] helpText =
-                        [
-                            "╔═════╦══════════════════╦═════════════════════════════════════════════╗",
+                    DisplayWelcomeText($"We got connection: {peer}");
+                    dispatcher.SendOutcomingMessage(100, ref peer);
+                };
+                listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
+                {
+                    Packet pack = new();
+                    pack.Deserialize(dataReader);
+                    int playerIDFromPeer = dispatcher.PeerPlayerIDs[fromPeer.Id];
+                    dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref server, playerIDFromPeer);
+                };
+                listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
+                {
+                    dispatcher.RemovePlayer(dispatcher.PeerPlayerIDs[peer.Id]);
+                    dispatcher.PeerPlayerIDs.Remove(peer.Id);
+                    DisplayWelcomeText($"Closed connection: {peer}");
+                    dispatcher.PeerPlayerName.Remove(peer.Id);
+                };
+                SetupConsoleSettings();
+                DisplayWelcomeText();
+                while (!exit)
+                {
+                    string? command = Console.ReadLine()?.Replace(" ", null).ToLower();
+                    switch (command)
+                    {
+                        case "0":
+                        case "help":
+                            string[] helpText =
+                            [
+                                "╔═════╦══════════════════╦═════════════════════════════════════════════╗",
                             "║ ID  ║ Command          ║ Description                                 ║",
                             "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
                             "║ 0   ║ help             ║ Display this help menu                      ║",
@@ -107,14 +110,14 @@ namespace GameServer
                             "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
                             "║ 10  ║ exit             ║ Exit the program                            ║",
                             "╚═════╩══════════════════╩═════════════════════════════════════════════╝"
-                        ];
-                        DisplayTextMessage(helpText, true);
-                        break;
-                    case "1":
-                    case "how_play":
-                        string[] howPlayText =
-                        [
-                            "╔════════════════════════════════════════════════════════════════╗",
+                            ];
+                            DisplayTextMessage(helpText, true);
+                            break;
+                        case "1":
+                        case "how_play":
+                            string[] howPlayText =
+                            [
+                                "╔════════════════════════════════════════════════════════════════╗",
                             "║                                                                ║",
                             "║   ATTENTION THIS IS NOT THE FINAL VERSION OF THE MULTIPLAYER   ║",
                             "║         IF YOU FIND ANY BUGS, PLEASE REPORT THEM TO US         ║",
@@ -136,137 +139,139 @@ namespace GameServer
                             "║                                                                ║",
                             "║                                                                ║",
                             "╚════════════════════════════════════════════════════════════════╝"
-                        ];
-                        DisplayTextMessage(howPlayText);
-                        break;
-                    case "2":
-                    case "start":
-                        Console.Write("\nEnter port (1000-9999, 0 to set default): ");
-                        int port;
-                        try { port = Convert.ToInt32(Console.ReadLine()); }
-                        catch { port = 9999; }
-                        if (port < 1000 || port > 9999) port = 9999;
-                        try
-                        {
-                            server.Start(port);
-                            server_started = true;
-                            stoped_thread = false;
-                            PacketsThread();
-                            DisplayWelcomeText($"Server started successfully on port: {port}");
-                        }
-                        catch (Exception e)
-                        {
+                            ];
+                            DisplayTextMessage(howPlayText);
+                            break;
+                        case "2":
+                        case "start":
+                            Console.Write("\nEnter port (1000-9999, 0 to set default): ");
+                            int port;
+                            try { port = Convert.ToInt32(Console.ReadLine()); }
+                            catch { port = 9999; }
+                            if (port < 1000 || port > 9999) port = 9999;
+                            try
+                            {
+                                server.Start(port);
+                                server_started = true;
+                                stoped_thread = false;
+                                PacketsThread();
+                                DisplayWelcomeText($"Server started successfully on port: {port}");
+                            }
+                            catch (Exception e)
+                            {
+                                server_started = false;
+                                stoped_thread = true;
+                                DisplayWelcomeText($"Error when starting server: {e.Message}");
+                            }
+                            break;
+                        case "3":
+                        case "stop":
+                            server.Stop();
                             server_started = false;
                             stoped_thread = true;
-                            DisplayWelcomeText($"Error when starting server: {e.Message}");
-                        }
-                        break;
-                    case "3":
-                    case "stop":
-                        server.Stop();
-                        server_started = false;
-                        stoped_thread = true;
-                        DisplayWelcomeText("Server stopped successfully");
-                        break;
-                    case "4":
-                    case "ip":
-                        if (!server_started)
-                            DisplayWelcomeText("Please start the server first");
-                        else
-                            DisplayWelcomeText($"Server IP address: {GetLocalIPAddress()}:{server.LocalPort}");
-                        break;
-                    case "5":
-                    case "lobby":
-                        if (!server_started)
-                            DisplayWelcomeText("Please start the server first");
-                        else
-                        {
-                            string[] players = dispatcher.GetPlayers().Select(p => p.Value.ToString()).ToArray();
-                            int playerId = SelectOption("Lobby:", players, "Lobby is empty...", "Exit", "Kick Player");
-                            if (playerId != -1)
+                            DisplayWelcomeText("Server stopped successfully");
+                            break;
+                        case "4":
+                        case "ip":
+                            if (!server_started)
+                                DisplayWelcomeText("Please start the server first");
+                            else
+                                DisplayWelcomeText($"Server IP address: {GetLocalIPAddress()}:{server.LocalPort}");
+                            break;
+                        case "5":
+                        case "lobby":
+                            if (!server_started)
+                                DisplayWelcomeText("Please start the server first");
+                            else
                             {
-                                if (YesNoMessage())
+                                string[] players = dispatcher.GetPlayers().Select(p => p.Value.ToString()).ToArray();
+                                int playerId = SelectOption("Lobby:", players, "Lobby is empty...", "Exit", "Kick Player");
+                                if (playerId != -1)
                                 {
-                                    dispatcher.KickPlayer(playerId, ref server);
-                                    DisplayWelcomeText($"Player with ID {playerId} has been kicked from the server");
+                                    if (YesNoMessage())
+                                    {
+                                        dispatcher.KickPlayer(playerId, ref server);
+                                        DisplayWelcomeText($"Player with ID {playerId} has been kicked from the server");
+                                    }
+                                    else DisplayWelcomeText();
                                 }
                                 else DisplayWelcomeText();
                             }
-                            else DisplayWelcomeText();
-                        }
-                        break;
-                    case "6":
-                    case "set_difficulty":
-                        if (!server_started)
-                            DisplayWelcomeText("Please start the server first");
-                        else
-                        {
-                            try
+                            break;
+                        case "6":
+                        case "set_difficulty":
+                            if (!server_started)
+                                DisplayWelcomeText("Please start the server first");
+                            else
                             {
-                                string[] difficulties = ["Easy", "Normal", "Hard", "Very hard"];
-                                int selectedIndex = SelectOption("Select difficulty:", difficulties);
-                                if (selectedIndex == -1)
+                                try
                                 {
-                                    DisplayWelcomeText("The difficulty change has been cancelled.");
-                                    continue;
+                                    string[] difficulties = ["Easy", "Normal", "Hard", "Very hard"];
+                                    int selectedIndex = SelectOption("Select difficulty:", difficulties);
+                                    if (selectedIndex == -1)
+                                    {
+                                        DisplayWelcomeText("The difficulty change has been cancelled.");
+                                        continue;
+                                    }
+                                    dispatcher.ChangeDifficulty(selectedIndex);
+                                    DisplayWelcomeText($"Difficulty set to {difficulties[selectedIndex]}");
                                 }
-                                dispatcher.ChangeDifficulty(selectedIndex);
-                                DisplayWelcomeText($"Difficulty set to {difficulties[selectedIndex]}");
+                                catch (Exception e) { DisplayWelcomeText($"Error setting difficulty: {e.Message}"); }
                             }
-                            catch (Exception e) { DisplayWelcomeText($"Error setting difficulty: {e.Message}"); }
-                        }
-                        break;
-                    case "7":
-                    case "set_game_mode":
-                        if (!server_started)
-                            DisplayWelcomeText("Please start the server first");
-                        else
-                        {
-                            try
+                            break;
+                        case "7":
+                        case "set_game_mode":
+                            if (!server_started)
+                                DisplayWelcomeText("Please start the server first");
+                            else
                             {
-                                string[] gameModes = Enum.GetNames(typeof(GameMode));
-                                int selectedIndex = SelectOption("Select game mode:", gameModes);
-                                if (selectedIndex == -1)
+                                try
                                 {
-                                    DisplayWelcomeText("The game mode change has been cancelled.");
-                                    continue;
+                                    string[] gameModes = Enum.GetNames(typeof(GameMode));
+                                    int selectedIndex = SelectOption("Select game mode:", gameModes);
+                                    if (selectedIndex == -1)
+                                    {
+                                        DisplayWelcomeText("The game mode change has been cancelled.");
+                                        continue;
+                                    }
+                                    GameMode selectedMode = (GameMode)selectedIndex;
+                                    dispatcher.ChangeGameMode(selectedMode);
+                                    DisplayWelcomeText($"Game mode set to {selectedMode}");
                                 }
-                                GameMode selectedMode = (GameMode)selectedIndex;
-                                dispatcher.ChangeGameMode(selectedMode);
-                                DisplayWelcomeText($"Game mode set to {selectedMode}");
+                                catch (Exception e) { DisplayWelcomeText($"Error setting game mode: {e.Message}"); }
                             }
-                            catch (Exception e) { DisplayWelcomeText($"Error setting game mode: {e.Message}"); }
-                        }
-                        break;
-                    case "8":
-                    case "start_game":
-                        if (!server_started)
-                            DisplayWelcomeText("Please start the server first");
-                        else
-                        {
-                            dispatcher.StartGame();
-                            DisplayWelcomeText("New game started on the server");
-                        }
-                        break;
-                    case "9":
-                    case "stop_game":
-                        if (!server_started)
-                            DisplayWelcomeText("Please start the server first");
-                        else
-                        {
-                            dispatcher.StopGame();
-                            DisplayWelcomeText("Game stopped on the server");
-                        }
-                        break;
-                    case "10":
-                    case "exit":
-                        server.Stop();
-                        exit = true;
-                        break;
-                    default:
-                        DisplayWelcomeText("Unknown command. Type \"help\" for a list of available commands");
-                        break;
+                            break;
+                        case "8":
+                        case "start_game":
+                            if (!server_started)
+                                DisplayWelcomeText("Please start the server first");
+                            else
+                            {
+                                dispatcher.StartGame();
+                                DisplayWelcomeText("New game started on the server");
+                            }
+                            break;
+                        case "9":
+                        case "stop_game":
+                            if (!server_started)
+                                DisplayWelcomeText("Please start the server first");
+                            else
+                            {
+                                dispatcher.StopGame();
+                                DisplayWelcomeText("Game stopped on the server");
+                            }
+                            break;
+                        case "10":
+                        case "exit":
+                            server.Stop();
+                            exit = true;
+                            break;
+                        default:
+                            DisplayWelcomeText("Unknown command. Type \"help\" for a list of available commands");
+                            break;
+                    }
                 }
+                mutex.ReleaseMutex();
             }
         }
 

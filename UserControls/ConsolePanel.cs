@@ -164,7 +164,7 @@ namespace SLIL.UserControls
                                  "~│~ -STAMIN_-*X*    ~│~ Changing player maximum stamina             ~│~\n" +
                                  "~│~ -SPEED_-*X*     ~│~ Changing player movement speed              ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -BIGGUY-      ~│~ Give out \"The Smallest Pistol in the World\"   ~│~\n" +
+                                 "~│~ -BIGGUY-      ~│~ Give out \"The Smallest Pistol in the World\" ~│~\n" +
                                  "~│~ -YHRII-       ~│~ Give \"Fingershot\"                           ~│~\n" +
                                  "~│~ -IMGNOME-     ~│~ Give \"Wizard Gnome\"                         ~│~\n" +
                                  "~│~ -ILLKLURDOG-  ~│~ Give \"Petition\"                             ~│~\n" +
@@ -183,7 +183,7 @@ namespace SLIL.UserControls
                                  "~│~ -EFCLEAR-     ~│~ Cleaning up effects                         ~│~\n" +
                                  "~│~ -EFGIVE_-*X*    ~│~ Give effect under X id                      ~│~\n" +
                                  "~│~ -EFGINF_-*X*    ~│~ Give infinite effect under X id             ~│~\n" +
-                                 "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Give effect under X id for Y seconds       ~│~\n" +
+                                 "~│~ -EFG_-*X*-_TM_-*Y*  ~│~ Give effect under X id for Y seconds        ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -ENTITIES-    ~│~ List of entities                            ~│~\n" +
                                  "~│~ -ENT_-*X*       ~│~ Spawn entity under ID X, with AI            ~│~\n" +

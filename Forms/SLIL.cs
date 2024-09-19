@@ -1358,14 +1358,14 @@ namespace SLIL
             }
             else
             {
-                if (xOffset > 4)
+                if (xOffset > 2)
                     xOffsetDirection = -0.25f;
-                if (xOffset < 1)
+                if (xOffset <= 0)
                     xOffsetDirection = 0.25f;
                 xOffset += xOffsetDirection;
-                if (yOffset > 4)
+                if (yOffset > 2)
                     yOffsetDirection = -0.25f;
-                if (yOffset < 1)
+                if (yOffset <= 0)
                     yOffsetDirection = 0.25f;
                 yOffset += yOffsetDirection;
             }
@@ -2993,22 +2993,22 @@ namespace SLIL
 
         private void DrawWeapon(Player player, int index)
         {
-            float x = (float)WEAPON.Width + xOffset, y = (float)WEAPON.Height + yOffset;
-            if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, xOffset, yOffset, x, y);
+            float x = (float)WEAPON.Width - xOffset, y = (float)WEAPON.Height - yOffset;
+            if (player.IsPetting) graphicsWeapon.DrawImage(Properties.Resources.pet_animation, -xOffset, -yOffset, x, y);
             else if (player.InTransport)
             {
                 if (player.InParkour)
                     graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][4], 0, 0, WEAPON.Width, WEAPON.Height);
                 else if (player.StrafeDirection == Directions.LEFT)
-                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], xOffset, yOffset, x, y);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][2], -xOffset, -yOffset, x, y);
                 else if (player.StrafeDirection == Directions.RIGHT)
-                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], xOffset, yOffset, x, y);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][3], -xOffset, -yOffset, x, y);
                 else
-                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], xOffset, yOffset, x, y);
+                    graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][1], -xOffset, -yOffset, x, y);
             }
             else if (player.InParkour) graphicsWeapon.DrawImage(Properties.Resources.no_animation, 0, 0, WEAPON.Width, WEAPON.Height);
-            else if (player.UseItem) graphicsWeapon.DrawImage(ImagesDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), player.ItemFrame], xOffset, yOffset, x, y);
-            else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index], xOffset, yOffset, x, y);
+            else if (player.UseItem) graphicsWeapon.DrawImage(ImagesDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), player.ItemFrame], -xOffset, -yOffset, x, y);
+            else graphicsWeapon.DrawImage(ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index], -xOffset, -yOffset, x, y);
         }
 
         private Bitmap DrawMiniMap()
