@@ -1351,6 +1351,7 @@ namespace SLIL
         private void Camera_shaking_timer_Tick(object sender, EventArgs e)
         {
             Player player = Controller.GetPlayer();
+            if (player == null) return;
             if (player.MOVE_SPEED == 0 && player.STRAFE_SPEED == 0)
             {
                 xOffset = 0;
@@ -1358,15 +1359,18 @@ namespace SLIL
             }
             else
             {
-                if (xOffset > 2)
-                    xOffsetDirection = -0.25f;
-                if (xOffset <= 0)
-                    xOffsetDirection = 0.25f;
+                double move = Math.Max(0.005, Math.Abs(player.GetMoveSpeed(elapsed_time) * player.GetMoveSpeed(elapsed_time)));
+                double strafe = Math.Max(0.0025, Math.Abs(player.GetStrafeSpeed(elapsed_time) * player.GetStrafeSpeed(elapsed_time)));
+                float offSet = (float)Math.Sqrt(move + strafe) * (25 * (player.PlayerMoveStyle == Directions.RUN ? 2 : 1));
+                if (xOffset > 3)
+                    xOffsetDirection = -0.2f * offSet;
+                if (xOffset < 0)
+                    xOffsetDirection = 0.2f * offSet;
                 xOffset += xOffsetDirection;
-                if (yOffset > 2)
-                    yOffsetDirection = -0.25f;
-                if (yOffset <= 0)
-                    yOffsetDirection = 0.25f;
+                if (yOffset > 3)
+                    yOffsetDirection = -0.15f * offSet;
+                if (yOffset < 0)
+                    yOffsetDirection = 0.15f * offSet;
                 yOffset += yOffsetDirection;
             }
         }
@@ -3026,7 +3030,6 @@ namespace SLIL
             graphicsWeapon.DrawImage(imageToDraw, destRect, sourceRect, GraphicsUnit.Pixel);
         }
 
-
         private Bitmap DrawMiniMap()
         {
             Player player = Controller.GetPlayer();
@@ -3715,6 +3718,7 @@ namespace SLIL
             mouse_timer.Start();
             camera_shaking_timer.Start();
             if (MainMenu.sounds) step_sound_timer.Start();
+            player.CanUnblockCamera = player.BlockCamera = true;
             GameStarted = true;
             game_over_panel.Visible = false;
             display.BringToFront();
