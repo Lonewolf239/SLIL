@@ -1623,6 +1623,8 @@ namespace GameServer
                 return;
             }
             p.A += v;
+            if (p.A >= Math.PI * 2) p.A = 0;
+            if (p.A <= -Math.PI * 2) p.A = 0;
         }
 
         internal void ChangePlayerLook(double lookDif, int playerID)
