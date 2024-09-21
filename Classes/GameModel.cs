@@ -1636,7 +1636,7 @@ namespace SLIL.Classes
         {
             Player p = GetPlayer(playerID);
             if (p == null) return false;
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S' };
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$' };
             if (HasNoClip(playerID) || p.InParkour) return false;
             return impassibleCells.Contains(GetMap()[index]);
         }

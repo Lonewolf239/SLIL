@@ -411,6 +411,14 @@ namespace SLIL
                 if (help_panel.Visible)
                     help_panel.Visible = false;
             }
+            else if (e.KeyCode== Keys.Enter)
+            {
+                if (exit_panel.Visible)
+                {
+                    CanClose = true;
+                    Application.Exit();
+                }
+            }
         }
 
         //  #====   Game Parametrs   ====#

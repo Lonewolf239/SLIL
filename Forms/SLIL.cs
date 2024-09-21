@@ -1352,7 +1352,8 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if (player.MOVE_SPEED == 0 && player.STRAFE_SPEED == 0)
+            if (!player.InTransport && player.MOVE_SPEED == 0 && player.STRAFE_SPEED == 0 ||
+                player.InTransport && player.MOVE_SPEED == 0)
             {
                 xOffset = 0;
                 yOffset = 0;
@@ -1921,7 +1922,7 @@ namespace SLIL
 
         private bool HasImpassibleCells(int index)
         {
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S' };
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$' };
             if (Controller.HasNoClip() || Controller.GetPlayer().InParkour) return false;
             return impassibleCells.Contains(Controller.GetMap()[index]);
         }

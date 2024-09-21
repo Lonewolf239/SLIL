@@ -365,7 +365,7 @@ namespace SLIL
             // 
             // camera_shaking_timer
             // 
-            this.camera_shaking_timer.Interval = 50;
+            this.camera_shaking_timer.Interval = 75;
             this.camera_shaking_timer.Tick += new System.EventHandler(this.Camera_shaking_timer_Tick);
             // 
             // SLIL

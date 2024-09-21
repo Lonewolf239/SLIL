@@ -3146,13 +3146,13 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1924, 896);
+            this.Controls.Add(this.exit_panel);
             this.Controls.Add(this.account_panel);
             this.Controls.Add(this.hilf_mir_panel);
             this.Controls.Add(this.account_btn_c);
             this.Controls.Add(this.game_mode_panel);
             this.Controls.Add(this.developers_panel);
             this.Controls.Add(this.help_panel);
-            this.Controls.Add(this.exit_panel);
             this.Controls.Add(this.connect_panel);
             this.Controls.Add(this.host_panel);
             this.Controls.Add(this.multiplayer_panel);
