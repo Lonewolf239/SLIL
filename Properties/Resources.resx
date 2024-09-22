@@ -763,9 +763,6 @@
   <data name="hipolink" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\hipolink.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="scope_shotgun1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\scope_shotgun.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="candy_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\candy_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -903,9 +900,6 @@
   </data>
   <data name="sniper_lv3_reload_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\sniper_lv3_reload_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="setting" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\setting.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="rifle_lv1_run" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\rifle_lv1_run.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1152,5 +1146,8 @@
   </data>
   <data name="driver" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\driver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="control" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\SLIL_v0_1\Images\control.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

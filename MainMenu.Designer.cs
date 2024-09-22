@@ -264,6 +264,7 @@
             this.update_error_icon = new System.Windows.Forms.PictureBox();
             this.update_error_label = new System.Windows.Forms.Label();
             this.errors_panel = new System.Windows.Forms.Panel();
+            this.SLIL_v0_1_btn_c = new System.Windows.Forms.Button();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -3240,6 +3241,20 @@
             this.errors_panel.Size = new System.Drawing.Size(496, 74);
             this.errors_panel.TabIndex = 67;
             // 
+            // SLIL_v0_1_btn_c
+            // 
+            this.SLIL_v0_1_btn_c.AutoSize = true;
+            this.SLIL_v0_1_btn_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.SLIL_v0_1_btn_c.ForeColor = System.Drawing.Color.White;
+            this.SLIL_v0_1_btn_c.Location = new System.Drawing.Point(1536, 95);
+            this.SLIL_v0_1_btn_c.Name = "SLIL_v0_1_btn_c";
+            this.SLIL_v0_1_btn_c.Size = new System.Drawing.Size(308, 47);
+            this.SLIL_v0_1_btn_c.TabIndex = 68;
+            this.SLIL_v0_1_btn_c.TabStop = false;
+            this.SLIL_v0_1_btn_c.Text = "Forward to the Past";
+            this.SLIL_v0_1_btn_c.UseVisualStyleBackColor = false;
+            this.SLIL_v0_1_btn_c.Click += new System.EventHandler(this.SLIL_v0_1_btn_c_Click);
+            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3247,6 +3262,7 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1924, 896);
+            this.Controls.Add(this.SLIL_v0_1_btn_c);
             this.Controls.Add(this.errors_panel);
             this.Controls.Add(this.exit_panel);
             this.Controls.Add(this.account_panel);
@@ -3645,5 +3661,6 @@
         private System.Windows.Forms.PictureBox update_error_icon;
         private System.Windows.Forms.Label update_error_label;
         private System.Windows.Forms.Panel errors_panel;
+        private System.Windows.Forms.Button SLIL_v0_1_btn_c;
     }
 }

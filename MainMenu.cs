@@ -16,6 +16,7 @@ using Play_Sound;
 using SLIL.SLIL_Localization;
 using System.Linq;
 using System.Threading.Tasks;
+using SLIL.SLIL_v0_1;
 
 namespace SLIL
 {
@@ -82,6 +83,8 @@ namespace SLIL
         public static int resolution = 0, display_size = 0, smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
         public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true, IsTutorial = false;
         public static bool inv_y = false, inv_x = false;
+        public static double SLIL_v0_1_LOOK_SPEED = 1.75;
+        public static int SLIL_v0_1_difficulty = 1;
         public static double LOOK_SPEED = 6.5;
         public static float Volume = 0.4f;
         public static int Gamma = 100;
@@ -336,6 +339,7 @@ namespace SLIL
             errors_panel.Location = new Point(buttons_panel.Left, Height - errors_panel.Height - 16);
             exit_size_panel.Left = (exit_panel.Width - exit_size_panel.Width) / 2;
             account_btn_c.Location = new Point(Width - account_btn_c.Width - 15, 15);
+            SLIL_v0_1_btn_c.Location = new Point(account_btn_c.Right - SLIL_v0_1_btn_c.Width, account_btn_c.Bottom + 6);
             if (sounds) MainMenuTheme.Play(Volume);
         }
 
@@ -475,6 +479,8 @@ namespace SLIL
             BindControls["select_item"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "select_item", Keys.Q);
             BindControls["run"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "run", Keys.ShiftKey);
             BindControls["climb"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "climb", Keys.Space);
+            SLIL_v0_1_LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL_V0_1", "look_speed", 1.75);
+            SLIL_v0_1_difficulty = INIReader.GetInt(iniFolder, "SLIL_V0_1", "difficulty", 1);
             if (interface_size < 0 || interface_size > 3)
                 interface_size = 2;
             //if (display_size < 0 || display_size > 5)
@@ -532,6 +538,8 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "HOTKEYS", "select_item", BindControls["select_item"]);
             INIReader.SetKey(iniFolder, "HOTKEYS", "run", BindControls["run"]);
             INIReader.SetKey(iniFolder, "HOTKEYS", "climb", BindControls["climb"]);
+            INIReader.SetKey(iniFolder, "SLIL_V0_1", "look_speed", SLIL_v0_1_LOOK_SPEED);
+            INIReader.SetKey(iniFolder, "SLIL_V0_1", "difficulty", difficulty);
         }
 
         //  #====    Localization    ====#
@@ -1613,6 +1621,7 @@ namespace SLIL
             }
             else
             {
+                if (sounds) MainMenuTheme.Stop();
                 Editor = new SLIL_Editor
                 {
                     Owner = this,
@@ -1621,6 +1630,7 @@ namespace SLIL
                 };
                 Editor.FormClosing += EditorForm_FormClosing;
                 Editor.ShowDialog();
+                if (sounds) MainMenuTheme.Play(Volume);
             }
         }
 
@@ -1802,6 +1812,20 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
         }
 
+        //  #====      SLIL v0.1     ====#
+
+        private void SLIL_v0_1_btn_c_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            if (sounds) MainMenuTheme.Stop();
+            SLILv0_1 sLILv0_1 = new SLILv0_1()
+            {
+                game_over = game_over
+            };
+            sLILv0_1.ShowDialog();
+            if (sounds) MainMenuTheme.Play(Volume);
+        }
+
         //  #====     Multiplayer    ====#
 
         private void UnpackGameServerZip()
@@ -1826,12 +1850,16 @@ namespace SLIL
         private void Host_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
+
+            //  #====    TEMP    ====#
             if (!File.Exists(@"GameServer\GameServer.exe"))
             {
                 DownloadFile("https://base-escape.ru/downloads/GameServer.zip", "GameServer.zip");
                 UnpackGameServerZip();
             }
             Process.Start(new ProcessStartInfo(@"GameServer\GameServer.exe") { UseShellExecute = true });
+            //  #====    TEMP    ====#
+
             //host_panel.Visible = true;
             //host_panel.BringToFront();
             ip_connect_input.Text = "000.000.000.000:0000";

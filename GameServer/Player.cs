@@ -561,6 +561,7 @@ namespace GameServer
         {
             if (EffectCheck(6)) return 4;
             if (InTransport) return DEPTH + 2;
+            if (InParkour) return DEPTH;
             return DEPTH + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
         }
 
