@@ -846,7 +846,7 @@ namespace GameServer
                 List<(int, string)> playerIDs = [];
                 foreach(Entity ent in Entities)
                 {
-                    if(ent is Player p) playerIDs.Add((p.ID, p.Name));
+                    if (ent is Player p) playerIDs.Add((p.ID, p.Name));
                 }
                 Entities.Clear();
                 foreach((int, string) pInfo in playerIDs)

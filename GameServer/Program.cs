@@ -1,11 +1,13 @@
 ﻿using LiteNetLib;
+using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 
 namespace GameServer
 {
-    class GameServerProgramm
+    public class GameServerConsole
     {
+        public const string version = "|1.2.2.2|";
         private const int GWL_STYLE = -16;
         private const int WS_SIZEBOX = 0x00040000;
         private const int WS_MAXIMIZEBOX = 0x00010000;
@@ -32,12 +34,84 @@ namespace GameServer
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
+        public static void SetupConsoleSettings()
+        {
+            int width = 80;
+            int height = 25;
+            Console.Title = $"GameServer for SLIL v{version}";
+            Console.SetWindowSize(width, height);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Console.SetBufferSize(width, height);
+                int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+                int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+                IntPtr consoleWindow = GetConsoleWindow();
+                GetWindowRect(consoleWindow, out RECT rect);
+                int consoleWidthPixels = rect.Right - rect.Left;
+                int consoleHeightPixels = rect.Bottom - rect.Top;
+                int posX = (screenWidth - consoleWidthPixels) / 2;
+                int posY = (screenHeight - consoleHeightPixels) / 2;
+                MoveWindow(consoleWindow, posX, posY, consoleWidthPixels, consoleHeightPixels, true);
+                int style = GetWindowLong(consoleWindow, GWL_STYLE);
+                style &= ~WS_SIZEBOX;
+                style &= ~WS_MAXIMIZEBOX;
+                _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
+            }
+        }
+
+        private async static Task DownloadFileAsync(string url, string outputPath)
+        {
+            using var httpClient = new HttpClient();
+            try
+            {
+                using var response = await httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                using var stream = await response.Content.ReadAsStreamAsync();
+                using var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None);
+                await stream.CopyToAsync(fileStream);
+            }
+            catch { }
+        }
+
+        public async static Task<bool> CheckUpdate()
+        {
+            Console.Write("Checking for game server updates...");
+            Thread.Sleep(500);
+            try
+            {
+                using HttpClient httpClient = new();
+                string content = await httpClient.GetStringAsync("https://base-escape.ru/version_SLIL_GameServer.txt");
+                string line = content.Split(["\r\n", "\r", "\n"], StringSplitOptions.None)[0];
+                if (!line.Contains(version))
+                {
+                    if (!File.Exists("UpdateDownloader.exe"))
+                        await DownloadFileAsync("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
+                    Console.Write("\nThe game server version is out of date!");
+                    Console.Write("\nPress any button to download the update...");
+                    Console.ReadKey();
+                    Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/GameServer.zip GameServer true"));
+                    return false;
+                }
+                else return true;
+            }
+            catch
+            {
+                Console.Write("\nError checking for updates!");
+                Console.Write("\nPress any key to exit...");
+                Console.ReadKey();
+                return false;
+            }
+        }
+    }
+
+    public class GameServerProgramm
+    {
+
         //private static readonly NetPacketProcessor processor = new();
         private static readonly EventBasedNetListener listener = new();
         private static NetManager server = new(listener);
-        private static readonly Dispatcher dispatcher = new();  
+        private static readonly Dispatcher dispatcher = new();
         private static SendOutcomingMessageDelegate? sendOutcomingMessageHandle;
-        private const string version = "1.2.2.2";
         private static bool exit = false, server_started = false, stoped_thread = true;
         private const int MAX_CONNECTIONS = 4;
         //server.UnsyncedEvents = true;
@@ -45,8 +119,9 @@ namespace GameServer
 
         public static void Main()
         {
+            GameServerConsole.SetupConsoleSettings();
             Mutex mutex = new(true, "SLIL_GameServer_Unique_Mutex");
-            if (mutex.WaitOne(TimeSpan.Zero, true))
+            if (mutex.WaitOne(TimeSpan.Zero, true) && GameServerConsole.CheckUpdate().Result)
             {
                 sendOutcomingMessageHandle = SendOutcomingMessageInvoker;
                 dispatcher.sendMessageDelegate = sendOutcomingMessageHandle;
@@ -79,7 +154,6 @@ namespace GameServer
                     DisplayWelcomeText($"Closed connection: {peer}");
                     dispatcher.PeerPlayerName.Remove(peer.Id);
                 };
-                SetupConsoleSettings();
                 DisplayWelcomeText();
                 while (!exit)
                 {
@@ -286,31 +360,6 @@ namespace GameServer
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
-        private static void SetupConsoleSettings()
-        {
-            int width = 80;
-            int height = 25;
-            Console.Title = $"GameServer for SLIL v{version}";
-            Console.SetWindowSize(width, height);
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                Console.SetBufferSize(width, height);
-                int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-                int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-                IntPtr consoleWindow = GetConsoleWindow();
-                GetWindowRect(consoleWindow, out RECT rect);
-                int consoleWidthPixels = rect.Right - rect.Left;
-                int consoleHeightPixels = rect.Bottom - rect.Top;
-                int posX = (screenWidth - consoleWidthPixels) / 2;
-                int posY = (screenHeight - consoleHeightPixels) / 2;
-                MoveWindow(consoleWindow, posX, posY, consoleWidthPixels, consoleHeightPixels, true);
-                int style = GetWindowLong(consoleWindow, GWL_STYLE);
-                style &= ~WS_SIZEBOX;
-                style &= ~WS_MAXIMIZEBOX;
-                _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
-            }
-        }
-
         private static void SendOutcomingMessageInvoker(int packetID, byte[]? data = null)
         {
             dispatcher.SendOutcomingMessage(packetID, ref server, data);
@@ -342,7 +391,7 @@ namespace GameServer
             Console.WriteLine('║');
             Console.Write('║');
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write(CenterText($"Version {version}", windowWidth - 2));
+            Console.Write(CenterText($"Version {GameServerConsole.version.Trim('|')}", windowWidth - 2));
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine('║');
             Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');

@@ -92,6 +92,8 @@ namespace SLIL
             textureCache = textures;
             if (!File.Exists("UpdateDownloader.exe"))
                 DownloadFile("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
+            if (!File.Exists("GameServer.exe"))
+                DownloadFile("https://base-escape.ru/downloads/GameServer.exe", "GameServer.exe");
             MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
             game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
             draw = new PlaySound(CGFReader.GetFile("draw.wav"), false);
@@ -1791,8 +1793,11 @@ namespace SLIL
         private void Host_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            host_panel.Visible = true;
-            host_panel.BringToFront();
+            if (!File.Exists(@"GameServer\GameServer.exe"))
+                DownloadFile("https://base-escape.ru/downloads/GameServer.exe", "GameServer.exe");
+            Process.Start(new ProcessStartInfo(@"GameServer\GameServer.exe") { UseShellExecute = true });
+            //host_panel.Visible = true;
+            //host_panel.BringToFront();
         }
 
         private void Copy_ip_btn_Click(object sender, EventArgs e)
