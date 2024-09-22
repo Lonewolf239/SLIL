@@ -3949,7 +3949,6 @@ namespace SLIL
         private void CuteMode()
         {
             Player player = Controller.GetPlayer();
-            player.CurrentGun = 1;
             if (player.CuteMode && ost_index != 7)
             {
                 prev_ost = ost_index;

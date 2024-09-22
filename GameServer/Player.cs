@@ -547,7 +547,7 @@ namespace GameServer
                 CanUnblockCamera = true;
             }
             ParkourState = 0;
-            PreviousGun = CurrentGun = 1;
+            PreviousGun = CurrentGun = 2;
             STAMINE = MAX_STAMINE;
             if (Guns.Count == 0)
             {

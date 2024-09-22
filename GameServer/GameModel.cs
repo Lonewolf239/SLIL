@@ -696,7 +696,6 @@ namespace GameServer
                         player.CuteMode = true;
                         CuteMode(player);
                         break;
-
                 }
             }
             player.PET = pet;
@@ -790,6 +789,7 @@ namespace GameServer
                         player.Guns.Add(player.GUNS[i]);
                 }
             }
+            player.CurrentGun = 2;
         }
 
         private void UpdatePet(Player player)

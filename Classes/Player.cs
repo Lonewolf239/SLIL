@@ -548,8 +548,8 @@ namespace SLIL.Classes
                 CanUnblockCamera = true;
             }
             ParkourState = 0;
-            PreviousGun = CurrentGun = 1;
             STAMINE = MAX_STAMINE;
+            PreviousGun = CurrentGun = 2;
             if (Guns.Count == 0)
             {
                 Guns.Add(GUNS[0]);

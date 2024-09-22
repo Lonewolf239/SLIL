@@ -672,7 +672,6 @@ namespace SLIL.Classes
         private void CuteMode(Player player)
         {
             player.Guns.Clear();
-            player.CurrentGun = 1;
             if (player.CuteMode)
             {
                 player.GUNS[11].HasIt = true;
@@ -691,6 +690,7 @@ namespace SLIL.Classes
                         player.Guns.Add(player.GUNS[i]);
                 }
             }
+            player.CurrentGun = 2;
         }
 
         private void UpdatePet(Player player)
