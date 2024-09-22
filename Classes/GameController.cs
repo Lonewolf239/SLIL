@@ -619,7 +619,7 @@ namespace SLIL.Classes
 
         internal void SetEnemyDamageOffset(double value) => Game.SetEnemyDamageOffset(value);
 
-        internal void GetOnABike(int ID)
+        internal void GetOnATransport(int ID)
         {
             if (peer == null)
                 Game.GetOnATransport(ID, playerID);

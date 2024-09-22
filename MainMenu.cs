@@ -172,6 +172,8 @@ namespace SLIL
                         }
                         UpdateVerified = false;
                         update_error_pic.Visible = true;
+                        update_errors_background.Visible = true;
+                        errors_panel.Visible = true;
                     }
                     else
                     {
@@ -202,9 +204,10 @@ namespace SLIL
                             if (DownloadedLocalizationList)
                                 MessageBox.Show(Localizations.GetLString(Language, "0-104"), Localizations.GetLString(Language, "0-105"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             else
-                                MessageBox.Show("You already have the latest version of the program installed.", "Version is current", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("You already have the latest version of the SLIL installed.", "Version is current", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             UpdateVerified = true;
                             update_error_pic.Visible = false;
+                            update_errors_background.Visible = false;
                         }
                     }
                 };
@@ -310,7 +313,11 @@ namespace SLIL
             GetGameParametrs();
             SetVisualSettings();
             SetLanguage();
-            if (UpdateVerified) update_error_pic.Visible = false;
+            if (UpdateVerified)
+            {
+                update_error_pic.Visible = false;
+                update_errors_background.Visible = false;
+            }
             buttons_panel.Location = new Point((Width - buttons_panel.Width) / 2, (Height - buttons_panel.Height) / 2 + 75);
             difficulty_panel.Location = buttons_panel.Location;
             developers_panel.Location = buttons_panel.Location;
@@ -325,6 +332,7 @@ namespace SLIL
             connect_panel.Location = buttons_panel.Location;
             account_panel.Location = buttons_panel.Location;
             hilf_mir_panel.Location = buttons_panel.Location;
+            errors_panel.Location = new Point(buttons_panel.Left, Height - errors_panel.Height - 16);
             exit_size_panel.Left = (exit_panel.Width - exit_size_panel.Width) / 2;
             account_btn_c.Location = new Point(Width - account_btn_c.Width - 15, 15);
             if (sounds) MainMenuTheme.Play(Volume);
@@ -422,6 +430,8 @@ namespace SLIL
                 }
             }
         }
+
+        private void ErrorsPanel_VisibleChanged(object sender, EventArgs e) => errors_panel.Visible = localization_errors_background.Visible || update_errors_background.Visible;
 
         //  #====   Game Parametrs   ====#
 
@@ -586,7 +596,6 @@ namespace SLIL
             SupportedLanguages.Clear();
             for (int i = 0; i < languages.Length; i++)
                 SupportedLanguages.Add(codes[i], languages[i]);
-
             for (int i = 0; i < languages.Length; i++)
             {
                 try
@@ -620,10 +629,10 @@ namespace SLIL
             select_item_btn_c.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
             run_btn_c.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
             climb_btn_c.Text = BindControls["climb"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            language_list.SelectedIndex = DownloadedLocalizationList
-                ? language_list.Items.IndexOf(Language) : 0;
+            language_list.SelectedIndex = language_list.Items.IndexOf(Language);
             show_tutorial.Checked = show_hilf_mir.Checked;
             localization_error_pic.Visible = !DownloadedLocalizationList;
+            errors_panel.Visible = localization_errors_background.Visible = !DownloadedLocalizationList;
             display_size_list.SelectedIndex = display_size;
             interface_size_choice.Value = interface_size;
             smoothing_list.SelectedIndex = smoothing;
@@ -763,6 +772,8 @@ namespace SLIL
                 select_item_label.Text = Localizations.GetLString(Language, "0-59");
                 run_label.Text = Localizations.GetLString(Language, "0-60");
                 climb_label.Text = Localizations.GetLString(Language, "0-120");
+                update_error_label.Text = Localizations.GetLString(Language, "0-122");
+                localization_error_label.Text = Localizations.GetLString(Language, "0-123");
             }
             else
             {
@@ -849,6 +860,8 @@ namespace SLIL
                 select_item_label.Text = "Select item";
                 run_label.Text = "Run (hold)";
                 climb_label.Text = "Climb over";
+                update_error_label.Text = "Error checking for update";
+                localization_error_label.Text = "Error loading localization";
             }
             if (show_tutorial.Checked)
             {

@@ -256,6 +256,14 @@
             this.tutorial_btn_cp = new System.Windows.Forms.Button();
             this.hilf_mir_close_btn_r = new System.Windows.Forms.Button();
             this.show_hilf_mir = new System.Windows.Forms.CheckBox();
+            this.errors_background = new System.Windows.Forms.Panel();
+            this.localization_errors_background = new System.Windows.Forms.Panel();
+            this.localization_error_icon = new System.Windows.Forms.PictureBox();
+            this.localization_error_label = new System.Windows.Forms.Label();
+            this.update_errors_background = new System.Windows.Forms.Panel();
+            this.update_error_icon = new System.Windows.Forms.PictureBox();
+            this.update_error_label = new System.Windows.Forms.Label();
+            this.errors_panel = new System.Windows.Forms.Panel();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -347,6 +355,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.player_icon)).BeginInit();
             this.hilf_mir_panel.SuspendLayout();
             this.hilf_mir_background_top.SuspendLayout();
+            this.errors_background.SuspendLayout();
+            this.localization_errors_background.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.localization_error_icon)).BeginInit();
+            this.update_errors_background.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.update_error_icon)).BeginInit();
+            this.errors_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -3139,6 +3153,93 @@
             this.show_hilf_mir.UseVisualStyleBackColor = true;
             this.show_hilf_mir.CheckedChanged += new System.EventHandler(this.Show_hilf_mir_CheckedChanged);
             // 
+            // errors_background
+            // 
+            this.errors_background.BackColor = System.Drawing.Color.Black;
+            this.errors_background.Controls.Add(this.localization_errors_background);
+            this.errors_background.Controls.Add(this.update_errors_background);
+            this.errors_background.Location = new System.Drawing.Point(3, 3);
+            this.errors_background.Name = "errors_background";
+            this.errors_background.Size = new System.Drawing.Size(490, 68);
+            this.errors_background.TabIndex = 66;
+            // 
+            // localization_errors_background
+            // 
+            this.localization_errors_background.Controls.Add(this.localization_error_icon);
+            this.localization_errors_background.Controls.Add(this.localization_error_label);
+            this.localization_errors_background.Dock = System.Windows.Forms.DockStyle.Top;
+            this.localization_errors_background.Location = new System.Drawing.Point(0, 34);
+            this.localization_errors_background.Name = "localization_errors_background";
+            this.localization_errors_background.Size = new System.Drawing.Size(490, 34);
+            this.localization_errors_background.TabIndex = 55;
+            this.localization_errors_background.VisibleChanged += new System.EventHandler(this.ErrorsPanel_VisibleChanged);
+            // 
+            // localization_error_icon
+            // 
+            this.localization_error_icon.Dock = System.Windows.Forms.DockStyle.Right;
+            this.localization_error_icon.Image = global::SLIL.Properties.Resources.warning1;
+            this.localization_error_icon.Location = new System.Drawing.Point(54, 0);
+            this.localization_error_icon.Name = "localization_error_icon";
+            this.localization_error_icon.Size = new System.Drawing.Size(34, 34);
+            this.localization_error_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.localization_error_icon.TabIndex = 53;
+            this.localization_error_icon.TabStop = false;
+            // 
+            // localization_error_label
+            // 
+            this.localization_error_label.AutoEllipsis = true;
+            this.localization_error_label.Dock = System.Windows.Forms.DockStyle.Right;
+            this.localization_error_label.ForeColor = System.Drawing.Color.White;
+            this.localization_error_label.Location = new System.Drawing.Point(88, 0);
+            this.localization_error_label.Name = "localization_error_label";
+            this.localization_error_label.Size = new System.Drawing.Size(402, 34);
+            this.localization_error_label.TabIndex = 52;
+            this.localization_error_label.Text = "Ошибка загрузки локализации";
+            this.localization_error_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // update_errors_background
+            // 
+            this.update_errors_background.Controls.Add(this.update_error_icon);
+            this.update_errors_background.Controls.Add(this.update_error_label);
+            this.update_errors_background.Dock = System.Windows.Forms.DockStyle.Top;
+            this.update_errors_background.Location = new System.Drawing.Point(0, 0);
+            this.update_errors_background.Name = "update_errors_background";
+            this.update_errors_background.Size = new System.Drawing.Size(490, 34);
+            this.update_errors_background.TabIndex = 54;
+            this.update_errors_background.VisibleChanged += new System.EventHandler(this.ErrorsPanel_VisibleChanged);
+            // 
+            // update_error_icon
+            // 
+            this.update_error_icon.Dock = System.Windows.Forms.DockStyle.Right;
+            this.update_error_icon.Image = global::SLIL.Properties.Resources.warning1;
+            this.update_error_icon.Location = new System.Drawing.Point(54, 0);
+            this.update_error_icon.Name = "update_error_icon";
+            this.update_error_icon.Size = new System.Drawing.Size(34, 34);
+            this.update_error_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.update_error_icon.TabIndex = 53;
+            this.update_error_icon.TabStop = false;
+            // 
+            // update_error_label
+            // 
+            this.update_error_label.AutoEllipsis = true;
+            this.update_error_label.Dock = System.Windows.Forms.DockStyle.Right;
+            this.update_error_label.ForeColor = System.Drawing.Color.White;
+            this.update_error_label.Location = new System.Drawing.Point(88, 0);
+            this.update_error_label.Name = "update_error_label";
+            this.update_error_label.Size = new System.Drawing.Size(402, 34);
+            this.update_error_label.TabIndex = 52;
+            this.update_error_label.Text = "Ошибка проверки наличия обновления";
+            this.update_error_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // errors_panel
+            // 
+            this.errors_panel.BackColor = System.Drawing.Color.DarkGray;
+            this.errors_panel.Controls.Add(this.errors_background);
+            this.errors_panel.Location = new System.Drawing.Point(1518, 787);
+            this.errors_panel.Name = "errors_panel";
+            this.errors_panel.Size = new System.Drawing.Size(496, 74);
+            this.errors_panel.TabIndex = 67;
+            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3146,6 +3247,7 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1924, 896);
+            this.Controls.Add(this.errors_panel);
             this.Controls.Add(this.exit_panel);
             this.Controls.Add(this.account_panel);
             this.Controls.Add(this.hilf_mir_panel);
@@ -3296,6 +3398,12 @@
             this.hilf_mir_panel.ResumeLayout(false);
             this.hilf_mir_background_top.ResumeLayout(false);
             this.hilf_mir_background_top.PerformLayout();
+            this.errors_background.ResumeLayout(false);
+            this.localization_errors_background.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.localization_error_icon)).EndInit();
+            this.update_errors_background.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.update_error_icon)).EndInit();
+            this.errors_panel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3529,5 +3637,13 @@
         private System.Windows.Forms.Label gamma_label;
         private System.Windows.Forms.RadioButton tutorial1_btn_cp;
         private System.Windows.Forms.Button reset_nickname_btn_c;
+        private System.Windows.Forms.Panel errors_background;
+        private System.Windows.Forms.Panel localization_errors_background;
+        private System.Windows.Forms.PictureBox localization_error_icon;
+        private System.Windows.Forms.Label localization_error_label;
+        private System.Windows.Forms.Panel update_errors_background;
+        private System.Windows.Forms.PictureBox update_error_icon;
+        private System.Windows.Forms.Label update_error_label;
+        private System.Windows.Forms.Panel errors_panel;
     }
 }

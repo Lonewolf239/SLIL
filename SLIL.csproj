@@ -1299,5 +1299,17 @@
   <ItemGroup>
     <None Include="Images\loading_background.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\blindness.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\c_vine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\blindness_display_effect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\blindness_display_cute_effect.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

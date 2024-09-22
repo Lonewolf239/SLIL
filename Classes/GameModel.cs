@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace SLIL.Classes
 {
@@ -593,12 +594,19 @@ namespace SLIL.Classes
             Player p = GetPlayer(playerID);
             if (p == null) return;
             Transport transport = null;
-            if (index == 0) transport = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID);
+            if (index == 0)
+                transport = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID);
             if (transport != null)
             {
+                AddTransportOnMap(transport.Index, (int)(p.Y * MAP_WIDTH + p.X));
                 p.ChangeMoney(-transport.Cost);
                 AddEntity(transport);
             }
+        }
+
+        private void AddTransportOnMap(int map_index, int index)
+        {
+            if (index == 0) MAP[map_index] = '5';
         }
 
         public void AddPet(int playerID, int index)
@@ -1622,16 +1630,17 @@ namespace SLIL.Classes
             if (p == null || p.BlockInput) return;
             Transport transport = null;
             if (p.TRANSPORT is Bike)
-            {
                 transport = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID)
                 {
                     TransportHP = p.TRANSPORT_HP,
                     A = p.A
                 };
-            }
             p.StopEffect(4);
             if (transport != null)
+            {
+                AddTransportOnMap(transport.Index, (int)(p.Y * MAP_WIDTH + p.X));
                 AddEntity(transport);
+            }
         }
 
         internal bool HasImpassibleCells(int index, int playerID)
@@ -1864,6 +1873,7 @@ namespace SLIL.Classes
             Entity entity = GetEntity(ID);
             if (entity != null)
             {
+                MAP[(int)entity.Y * MAP_WIDTH + (int)entity.X] = '.';
                 p.TRANSPORT = (Transport)entity;
                 p.TRANSPORT_HP = ((Transport)entity).TransportHP;
                 p.A = ((Transport)entity).A;

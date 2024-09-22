@@ -275,7 +275,7 @@ namespace SLIL.Classes
             },
             { 16, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.Static, Properties.Resources.vine },
+                    { SpriteStates.Static, Properties.Resources.c_vine },
                 }
             },
             { 17, new Dictionary<SpriteStates, Image>()

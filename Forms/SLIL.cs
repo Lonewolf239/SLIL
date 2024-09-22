@@ -61,7 +61,7 @@ namespace SLIL
         private double elapsed_time = 0;
         private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
         private Bitmap SCREEN, WEAPON, BUFFER;
-        private ImageAttributes imageAttributes;
+        private ImageAttributes imageAttributes, imageCuteAttributes;
         private readonly Font[,] consolasFont =
         {
             { new Font("Consolas", 8F), new Font("Consolas", 14F), new Font("Consolas", 20F) },
@@ -322,7 +322,7 @@ namespace SLIL
             { typeof(Fatigue), Properties.Resources.fatigue_effect },
             { typeof(Rider), Properties.Resources.im_biker },
             { typeof(Bleeding), Properties.Resources.bleeding },
-            { typeof(Blindness), Properties.Resources.box },
+            { typeof(Blindness), Properties.Resources.blindness },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
@@ -668,7 +668,8 @@ namespace SLIL
             SCREEN = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             WEAPON = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
             BUFFER = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
-            imageAttributes = new ImageAttributes(); 
+            imageAttributes = new ImageAttributes();
+            imageCuteAttributes = new ImageAttributes();
             float[][] colorMatrixElements =
             {
                 new float[] { (float)MainMenu.Gamma / 100, 0.0f, 0.0f, 0.0f, 0.0f},
@@ -677,8 +678,18 @@ namespace SLIL
                 new float[] {0.0f, 0.0f, 0.0f, 1.0f, 0.0f},
                 new float[] {0.0f, 0.0f, 0.0f, 0.0f, 1.0f}
             };
+            float[][] colorCuteMatrixElements =
+            {
+                new float[] { (float)MainMenu.Gamma / 125, 0.0f, 0.0f, 0.0f, 0.0f},
+                new float[] {0.0f, (float)MainMenu.Gamma / 125, 0.0f, 0.0f, 0.0f},
+                new float[] {0.0f, 0.0f, (float)MainMenu.Gamma / 125, 0.0f, 0.0f},
+                new float[] {0.0f, 0.0f, 0.0f, 1.0f, 0.0f},
+                new float[] {0.0f, 0.0f, 0.0f, 0.0f, 1.0f}
+            };
             ColorMatrix colorMatrix = new ColorMatrix(colorMatrixElements);
+            ColorMatrix colorCuteMatrix = new ColorMatrix(colorCuteMatrixElements);
             imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+            imageCuteAttributes.SetColorMatrix(colorCuteMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             graphicsWeapon = Graphics.FromImage(WEAPON);
             graphicsWeapon.SmoothingMode = smoothingModes[smoothing];
             display.ResizeImage(DISPLAY_SIZE[display_size, 0], DISPLAY_SIZE[display_size, 1]);
@@ -1806,7 +1817,7 @@ namespace SLIL
                                                                 }).Start();
                                                                 break;
                                                             case 4:
-                                                                Controller.GetOnABike(entity.ID);
+                                                                Controller.GetOnATransport(entity.ID);
                                                                 break;
                                                         }
                                                     }
@@ -2115,9 +2126,6 @@ namespace SLIL
                 char test_wall = MAP[mapY * MAP_WIDTH + mapX];
                 switch (test_wall)
                 {
-                    case 'W':
-                        DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX] = 'W';
-                        break;
                     case '#':
                         hit_wall = 0;
                         DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '#';
@@ -2130,29 +2138,13 @@ namespace SLIL
                         hit_wall = 1;
                         DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'S';
                         break;
-                    case 'B':
-                    case 'b':
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'b';
-                        break;
                     case 'd':
                         hit_door = true;
                         DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'D';
                         break;
-                    case 'D':
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'D';
-                        break;
-                    case '$':
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '$';
-                        break;
-                    case 'F':
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'F';
-                        break;
-                    case 'E':
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'E';
-                        break;
-                    case '.':
-                    case '*':
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '*';
+                    default:
+                        if (test_wall == '.') test_wall = '*';
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = test_wall;
                         break;
                 }
             }
@@ -2513,11 +2505,12 @@ namespace SLIL
 
         private void UpdateDisplay()
         {
+            bool cute = Controller.GetPlayer() != null && Controller.GetPlayer().CuteMode;
             using (Graphics g = Graphics.FromImage(BUFFER))
             {
                 g.Clear(Color.Black);
-                g.DrawImage(SCREEN, new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), 0, 0, SCREEN.Width, SCREEN.Height, GraphicsUnit.Pixel, imageAttributes);
-                g.DrawImage(WEAPON, new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), 0, 0, WEAPON.Width, WEAPON.Height, GraphicsUnit.Pixel, imageAttributes);
+                g.DrawImage(SCREEN, new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), 0, 0, SCREEN.Width, SCREEN.Height, GraphicsUnit.Pixel, cute ? imageCuteAttributes : imageAttributes);
+                g.DrawImage(WEAPON, new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), 0, 0, WEAPON.Width, WEAPON.Height, GraphicsUnit.Pixel, cute ? imageCuteAttributes : imageAttributes);
             }
             SharpDX.Direct2D1.Bitmap dxBitmap = ConvertBitmap.ToDX(BUFFER, display.renderTarget);
             display.SCREEN = dxBitmap;
@@ -2714,6 +2707,13 @@ namespace SLIL
             }
             if (player.EffectCheck(2))
                 graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
+            if (player.EffectCheck(6))
+            {
+                if (player.CuteMode)
+                    graphicsWeapon.DrawImage(Properties.Resources.blindness_display_cute_effect, 0, 0, WEAPON.Width, WEAPON.Height);
+                else
+                    graphicsWeapon.DrawImage(Properties.Resources.blindness_display_effect, 0, 0, WEAPON.Width, WEAPON.Height);
+            }
             if (ShowFPS)
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
             if (player.InTransport)
@@ -3097,6 +3097,7 @@ namespace SLIL
                 case 'o':
                 case 'D':
                 case 'O': return Color.FromArgb(255, 165, 0);
+                case '5': return Color.Yellow;
                 case 'L': return Color.OliveDrab;
                 case 'l': return Color.DarkGoldenrod;
                 case '$': return Color.Pink;
@@ -3140,10 +3141,10 @@ namespace SLIL
             int x = WEAPON.Width - icon_size - 4 - ((icon_size + 4) * index);
             int y = WEAPON.Height - icon_size - 4;
             RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
-            using (Pen pen =  new Pen(debaf ? Color.FromArgb(200, 80, 80) : Color.FromArgb(90, 131, 182), 1.75f))
+            using (Pen pen =  new Pen(debaf ? Color.FromArgb(96, 90, 121) : Color.FromArgb(90, 131, 182), 1.75f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
             float sweepAngle = (float)player.Effects[index].EffectTimeRemaining / player.Effects[index].EffectTotalTime * 360;
-            using (Pen pen = new Pen(debaf ? Color.FromArgb(255, 165, 0) : Color.FromArgb(104, 213, 248), 3))
+            using (Pen pen = new Pen(debaf ? Color.FromArgb(126, 199, 138) : Color.FromArgb(104, 213, 248), 3))
             using (GraphicsPath path = new GraphicsPath())
             {
                 path.AddArc(circleRect, -90, sweepAngle);
@@ -3942,6 +3943,7 @@ namespace SLIL
         private void CuteMode()
         {
             Player player = Controller.GetPlayer();
+            player.CurrentGun = 1;
             if (player.CuteMode && ost_index != 7)
             {
                 prev_ost = ost_index;

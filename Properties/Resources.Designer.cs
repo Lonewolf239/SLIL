@@ -243,6 +243,36 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap blindness {
+            get {
+                object obj = ResourceManager.GetObject("blindness", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap blindness_display_cute_effect {
+            get {
+                object obj = ResourceManager.GetObject("blindness_display_cute_effect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap blindness_display_effect {
+            get {
+                object obj = ResourceManager.GetObject("blindness_display_effect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap box {
             get {
                 object obj = ResourceManager.GetObject("box", resourceCulture);
@@ -456,6 +486,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap c_teleport_1 {
             get {
                 object obj = ResourceManager.GetObject("c_teleport_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap c_vine {
+            get {
+                object obj = ResourceManager.GetObject("c_vine", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

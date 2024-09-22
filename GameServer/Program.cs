@@ -106,7 +106,6 @@ namespace GameServer
 
     public class GameServerProgramm
     {
-
         //private static readonly NetPacketProcessor processor = new();
         private static readonly EventBasedNetListener listener = new();
         private static NetManager server = new(listener);

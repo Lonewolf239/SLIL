@@ -14,7 +14,7 @@ namespace SLIL
         public int MazeHeight, MazeWidth;
         private int old_MazeHeight;
         private int old_MazeWidth;
-        public static int x, y;
+        public static double x, y;
         private int x_panel, y_panel;
         private Panel[,] panels;
         private bool playerExist = false;
@@ -24,13 +24,15 @@ namespace SLIL
         private readonly Random rand;
         private Panel panel;
         private int element = -1;
-        private const int elements_count = 10;
+        private const int elements_count = 13;
         private readonly Color[] elements_color =
         {
             //игрок
              Color.Red,
             //враг
              Color.Navy,
+            //мотоцикл
+             Color.Yellow,
             //стена
              Color.Gray,
             //дверь
@@ -45,6 +47,10 @@ namespace SLIL
              Color.Brown,
             //бочка
              Color.RosyBrown,
+            //лоза
+             Color.OliveDrab,
+            //светильник
+             Color.DarkGoldenrod,
             //невидимая стена
              Color.Purple,
         };
@@ -62,7 +68,8 @@ namespace SLIL
             return c == '.' || c == '#' || c == '=' ||
                 c == 'D' || c == 'd' || c == 'b' ||
                 c == 'B' || c == 'F' || c == 'P' ||
-                c == 'E' || c == '$' || c == 'W';
+                c == 'E' || c == '$' || c == 'W' ||
+                c == 'L' || c == 'l' || c == '5';
         }
 
         private string GetElementsName(int index)
@@ -79,32 +86,44 @@ namespace SLIL
                     return "Enemy";
                 case 2:
                     if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-26");
+                    return "Motorbike";
+                case 3:
+                    if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-18");
                     return "Wall";
-                case 3:
+                case 4:
                     if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-19");
                     return "Door";
-                case 4:
+                case 5:
                     if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-20");
                     return "Window";
-                case 5:
+                case 6:
                     if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-21");
                     return "Finish";
-                case 6:
+                case 7:
                     if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-22");
                     return "Shop";
-                case 7:
+                case 8:
                     if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-23");
                     return "Box";
-                case 8:
+                case 9:
                     if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-24");
                     return "Barrel";
+                case 10:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-27");
+                    return "Vine";
+                case 11:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-28");
+                    return "Lamp";
                 default:
                     if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-25");
@@ -313,6 +332,12 @@ namespace SLIL
                             color = Color.RosyBrown;
                         else if (c == 'E')
                             color = Color.Navy;
+                        else if (c == '5')
+                            color = Color.Yellow;
+                        else if (c == 'L')
+                            color = Color.OliveDrab;
+                        else if (c == 'l')
+                            color = Color.DarkGoldenrod;
                     }
                     Panel panel = new Panel
                     {
@@ -375,12 +400,18 @@ namespace SLIL
                         MAP.Append("B");
                     else if (panels[i, j].BackColor == Color.Red)
                     {
+                        x = j + 0.5;
+                        y = i + 0.5;
                         MAP.Append("P");
-                        x = j;
-                        y = i;
                     }
                     else if (panels[i, j].BackColor == Color.Navy)
                         MAP.Append("E");
+                    else if (panels[i, j].BackColor == Color.Yellow)
+                        MAP.Append("5");
+                    else if (panels[i, j].BackColor == Color.OliveDrab)
+                        MAP.Append("L");
+                    else if (panels[i, j].BackColor == Color.DarkGoldenrod)
+                        MAP.Append("l");
                 }
             }
             return MAP;
@@ -558,17 +589,19 @@ namespace SLIL
                     else if (index == 1)
                         panel.BackColor = Color.Navy;
                     else if (index == 2)
-                        panel.BackColor = Color.Gray;
+                        panel.BackColor = Color.Yellow;
                     else if (index == 3)
-                        panel.BackColor = Color.Orange;
+                        panel.BackColor = Color.Gray;
                     else if (index == 4)
-                        panel.BackColor = Color.Blue;
+                        panel.BackColor = Color.Orange;
                     else if (index == 5)
+                        panel.BackColor = Color.Blue;
+                    else if (index == 6)
                     {
                         panel.BackColor = Color.Lime;
                         finishCount++;
                     }
-                    else if (index == 6)
+                    else if (index == 7)
                     {
                         panel.BackColor = Color.Pink;
                         for (int i = x_panel - 1; i <= x_panel + 1; i++)
@@ -643,11 +676,15 @@ namespace SLIL
                                 panels[x_panel + 1, y_panel].BackColor = Color.DarkOrange;
                         }
                     }
-                    else if (index == 7)
-                        panel.BackColor = Color.Brown;
                     else if (index == 8)
-                        panel.BackColor = Color.RosyBrown;
+                        panel.BackColor = Color.Brown;
                     else if (index == 9)
+                        panel.BackColor = Color.RosyBrown;
+                    else if (index == 10)
+                        panel.BackColor = Color.OliveDrab;
+                    else if (index == 11)
+                        panel.BackColor = Color.DarkGoldenrod;
+                    else if (index == 12)
                         panel.BackColor = Color.Purple;
                 }
             }
