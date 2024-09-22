@@ -320,7 +320,7 @@ namespace SLIL
             { typeof(Adrenaline), Properties.Resources.adrenalin_effect },
             { typeof(Protection), Properties.Resources.protection_effect },
             { typeof(Fatigue), Properties.Resources.fatigue_effect },
-            { typeof(Rider), Properties.Resources.im_biker },
+            { typeof(Rider), Properties.Resources.driver },
             { typeof(Bleeding), Properties.Resources.bleeding },
             { typeof(Blindness), Properties.Resources.blindness },
         };
@@ -1431,7 +1431,6 @@ namespace SLIL
                     if (player != null && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.InTransport)
                     {
                         int count = player.Guns.Count;
-                        if (player.Guns.Contains(player.GUNS[0])) count--;
                         if (e.KeyCode == Bind.Reloading)
                         {
                             if (player.UseItem) return;
@@ -1492,55 +1491,55 @@ namespace SLIL
                                 Cursor.Position = display.PointToScreen(new Point(x, y));
                             }
                         }
-                        if (e.KeyCode == Keys.D1)
-                        {
-                            TakeFlashlight(false);
-                            ChangeWeapon(0);
-                        }
-                        if (e.KeyCode == Keys.D2 && count > 1)
+                        if (e.KeyCode == Keys.D1 && count > 1)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(1);
                         }
-                        if (e.KeyCode == Keys.D3 && count > 2)
+                        if (e.KeyCode == Keys.D2 && count > 2)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(2);
                         }
-                        if (e.KeyCode == Keys.D4 && count > 3)
+                        if (e.KeyCode == Keys.D3 && count > 3)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(3);
                         }
-                        if (e.KeyCode == Keys.D5 && count > 4)
+                        if (e.KeyCode == Keys.D4 && count > 4)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(4);
                         }
-                        if (e.KeyCode == Keys.D6 && count > 5)
+                        if (e.KeyCode == Keys.D5 && count > 5)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(5);
                         }
-                        if (e.KeyCode == Keys.D7 && count > 6)
+                        if (e.KeyCode == Keys.D6 && count > 6)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(6);
                         }
-                        if (e.KeyCode == Keys.D8 && count > 7)
+                        if (e.KeyCode == Keys.D7 && count > 7)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(7);
                         }
-                        if (e.KeyCode == Keys.D9 && count > 8)
+                        if (e.KeyCode == Keys.D8 && count > 8)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(8);
                         }
-                        if (e.KeyCode == Keys.D0 && count > 9)
+                        if (e.KeyCode == Keys.D9 && count > 9)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(9);
+                        }
+                        if (e.KeyCode == Keys.D0 && count > 10)
+                        {
+                            TakeFlashlight(false);
+                            ChangeWeapon(10);
                         }
                     }
                 }
@@ -1582,7 +1581,11 @@ namespace SLIL
                 if (player != null)
                 {
                     if (player.InTransport)
-                        Controller.GettingOffTheBike();
+                    {
+                        if (player.TRANSPORT is Bike)
+                            DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '5';
+                        Controller.GettingOffTheTransport();
+                    }
                     else
                     {
                         player.PlayerMoveStyle = Directions.WALK;
@@ -1630,7 +1633,11 @@ namespace SLIL
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.IsPetting)
                 {
                     if (player.InTransport || player.UseItem) return;
-                    if (e.KeyCode == Bind.Flashlight) TakeFlashlight(true);
+                    if (e.KeyCode == Bind.Flashlight)
+                    {
+                        if (player.GetCurrentGun() is Flashlight) TakeFlashlight(false);
+                        else TakeFlashlight(true);
+                    }
                     if (e.KeyCode == Bind.Climb)
                     {
                         double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
@@ -1877,8 +1884,8 @@ namespace SLIL
                 int new_gun = player.CurrentGun;
                 if (delta > 0) new_gun--;
                 else new_gun++;
-                if (new_gun < 0) new_gun = player.Guns.Count - 1;
-                else if (new_gun > player.Guns.Count - 1) new_gun = 0;
+                if (new_gun < 1) new_gun = player.Guns.Count - 1;
+                else if (new_gun > player.Guns.Count - 1) new_gun = 1;
                 TakeFlashlight(false);
                 ChangeWeapon(new_gun);
             }
@@ -3021,7 +3028,7 @@ namespace SLIL
             int safeXOffset = Math.Max(0, Math.Min((int)xOffset, imageToDraw.Width - WEAPON.Width));
             int safeYOffset = Math.Max(0, Math.Min((int)yOffset, imageToDraw.Height - WEAPON.Height));
             Rectangle sourceRect = new Rectangle(safeXOffset, safeYOffset, WEAPON.Width, WEAPON.Height);
-            if (player.InParkour)
+            if (player.InParkour || player.Aiming)
                 sourceRect.X = sourceRect.Y = 0;
             Rectangle destRect = new Rectangle(0, 0, WEAPON.Width, WEAPON.Height);
             if (sourceRect.Right > imageToDraw.Width)
@@ -3571,6 +3578,9 @@ namespace SLIL
                 player.Aiming = false;
                 reload_timer.Interval = player.GetCurrentGun().RechargeTime;
                 shot_timer.Interval = player.GetCurrentGun().FiringRate;
+                mouse_hold_timer.Interval = player.GetCurrentGun().PauseBetweenShooting;
+                if (player.GetCurrentGun() is Shotgun shotgun)
+                    shotgun_pull_timer.Interval = shotgun.PullTime;
                 if (player.GetCurrentGun() is Gnome)
                 {
                     prev_ost = ost_index;
@@ -3588,22 +3598,17 @@ namespace SLIL
             }
         }
 
-        private void TakeFlashlight(bool change)
+        private void TakeFlashlight(bool take)
         {
-            if (Controller.IsMultiplayer()) return;
             Player player = Controller.GetPlayer();
             if (player.CuteMode || player.UseItem) return;
-            if (player.Guns.Contains((Flashlight)player.GUNS[0]))
+            if (take)
             {
-                player.Guns.Remove((Flashlight)player.GUNS[0]);
-                ChangeWeapon(player.PreviousGun);
-            }
-            else if (change)
-            {
-                player.Guns.Add((Flashlight)player.GUNS[0]);
                 player.PreviousGun = player.CurrentGun;
-                ChangeWeapon(player.Guns.IndexOf((Flashlight)player.GUNS[0]));
+                ChangeWeapon(0);
             }
+            else
+                ChangeWeapon(player.PreviousGun);
         }
 
         //  #====     Screenshot    ====#
@@ -3775,6 +3780,7 @@ namespace SLIL
             Cursor.Position = new Point(x, y);
             if (player.Guns.Count == 0)
             {
+                player.Guns.Add(player.GUNS[0]);
                 player.Guns.Add(player.GUNS[1]);
                 player.Guns.Add(player.GUNS[2]);
             }

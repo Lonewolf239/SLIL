@@ -551,6 +551,7 @@ namespace GameServer
             STAMINE = MAX_STAMINE;
             if (Guns.Count == 0)
             {
+                Guns.Add(GUNS[0]);
                 Guns.Add(GUNS[1]);
                 Guns.Add(GUNS[2]);
             }

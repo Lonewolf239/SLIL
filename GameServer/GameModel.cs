@@ -631,13 +631,13 @@ namespace GameServer
             };
             if (transport != null)
             {
-                AddTransportOnMap(transport.Index, (int)(p.Y * MAP_WIDTH + p.X));
+                AddTransportOnMap(transport.Index, (int)p.Y * MAP_WIDTH + (int)p.X);
                 p.ChangeMoney(-transport.Cost);
                 AddEntity(transport);
             }
         }
 
-        private void AddTransportOnMap(int map_index, int index)
+        private void AddTransportOnMap(int index, int map_index)
         {
             if (index == 0) MAP[map_index] = '5';
         }
@@ -776,6 +776,7 @@ namespace GameServer
             {
                 player.GUNS[11].HasIt = true;
                 player.GUNS[12].HasIt = true;
+                player.Guns.Add(player.GUNS[0]);
                 player.Guns.Add(player.GUNS[11]);
                 player.Guns.Add(player.GUNS[12]);
             }
@@ -783,7 +784,7 @@ namespace GameServer
             {
                 player.GUNS[11].HasIt = false;
                 player.GUNS[12].HasIt = false;
-                for (int i = 0; i < 11; i++)
+                for (int i = 0; i < player.GUNS.Length; i++)
                 {
                     if (player.GUNS[i].HasIt)
                         player.Guns.Add(player.GUNS[i]);
@@ -1717,7 +1718,7 @@ namespace GameServer
             p.StopEffect(4);
             if (transport != null)
             {
-                AddTransportOnMap(transport.Index, (int)(p.Y * MAP_WIDTH + p.X));
+                AddTransportOnMap(transport.Index, (int)p.Y * MAP_WIDTH + (int)p.X);
                 AddEntity(transport);
             }
         }
@@ -1850,14 +1851,8 @@ namespace GameServer
 
         internal void ChangeWeapon(int playerID, int new_gun)
         {
-            foreach (Entity entity in Entities)
-            {
-                if (entity.ID == playerID)
-                {
-                    ((Player)entity).CurrentGun = new_gun;
-                    return;
-                }
-            }
+            Player? p = GetPlayer(playerID);
+            if (p != null) p.CurrentGun = new_gun;
         }
 
         internal void BuyAmmo(int playerID, int weaponID)

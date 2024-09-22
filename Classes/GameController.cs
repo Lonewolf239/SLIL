@@ -489,7 +489,7 @@ namespace SLIL.Classes
 
         internal bool IsMultiplayer() => peer != null;
 
-        internal void GettingOffTheBike()
+        internal void GettingOffTheTransport()
         {
             if (peer == null) Game.GettingOffTheTransport(playerID);
             else

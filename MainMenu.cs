@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.IO.Compression;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -1803,14 +1804,39 @@ namespace SLIL
 
         //  #====     Multiplayer    ====#
 
+        private void UnpackGameServerZip()
+        {
+            Directory.CreateDirectory("GameServer");
+            using (ZipArchive archive = ZipFile.OpenRead("GameServer.zip"))
+            {
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    if (entry.FullName.ToLower() != "readme.txt")
+                    {
+                        string filePath = Path.Combine("GameServer", entry.FullName);
+                        string directory = Path.GetDirectoryName(filePath);
+                        if (!string.IsNullOrEmpty(directory))
+                            Directory.CreateDirectory(directory);
+                        entry.ExtractToFile(filePath, true);
+                    }
+                }
+            }
+        }
+
         private void Host_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
             if (!File.Exists(@"GameServer\GameServer.exe"))
-                DownloadFile("https://base-escape.ru/downloads/GameServer.exe", "GameServer.exe");
+            {
+                DownloadFile("https://base-escape.ru/downloads/GameServer.zip", "GameServer.zip");
+                UnpackGameServerZip();
+            }
             Process.Start(new ProcessStartInfo(@"GameServer\GameServer.exe") { UseShellExecute = true });
             //host_panel.Visible = true;
             //host_panel.BringToFront();
+            ip_connect_input.Text = "000.000.000.000:0000";
+            connect_panel.Visible = true;
+            connect_panel.BringToFront();
         }
 
         private void Copy_ip_btn_Click(object sender, EventArgs e)
