@@ -1369,6 +1369,7 @@
     <None Include="SLIL_v0_1\Images\control.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Images\player_parkour.png" />
     <Content Include="SLIL_v0_1\sounds\game_over.wav" />
     <Content Include="SLIL_v0_1\sounds\step_0.wav" />
     <Content Include="SLIL_v0_1\sounds\step_1.wav" />

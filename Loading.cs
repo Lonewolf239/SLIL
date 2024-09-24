@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Net.Http;
 using System.Net.NetworkInformation;
@@ -25,6 +26,9 @@ namespace SLIL
         private CGF_Reader CGFReader;
         private MainMenu mainMenu;
         private readonly Dictionary<string, string> SupportedLanguages = new Dictionary<string, string>();
+        private bool isDragging = false;
+        private Point lastCursor;
+        private Point lastForm;
 
         public Loading() => InitializeComponent();
 
@@ -289,5 +293,30 @@ namespace SLIL
         private async void Loading_Load(object sender, EventArgs e) => await LoadingMainMenu();
 
         private void MainMenu_FormCLosing(object sender, FormClosingEventArgs e) => Application.Exit();
+
+        private void Loading_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                isDragging = true;
+                lastCursor = Cursor.Position;
+                lastForm = Location;
+            }
+        }
+
+        private void Loading_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                Point delta = Point.Subtract(Cursor.Position, new Size(lastCursor));
+                Location = Point.Add(lastForm, new Size(delta));
+            }
+        }
+
+        private void Loading_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                isDragging = false;
+        }
     }
 }

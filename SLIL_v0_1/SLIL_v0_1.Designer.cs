@@ -201,7 +201,7 @@
             this.MinimizeBox = false;
             this.Name = "SLILv0_1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "SLIL v0.1";
+            this.Text = "SLIL v0.0.1";
             this.TopMost = true;
             this.Deactivate += new System.EventHandler(this.SLIL_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SLIL_FormClosing);

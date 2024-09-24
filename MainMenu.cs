@@ -40,6 +40,7 @@ namespace SLIL
         private string SelectButtonName;
         private SLIL_Editor Editor;
         private bool ChangeControlButton = false, CanClose = false;
+        private readonly PlaySound hmm, omg;
         private readonly PlaySound MainMenuTheme;
         private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
         private readonly PlaySound[] climb;
@@ -88,6 +89,7 @@ namespace SLIL
         public static double LOOK_SPEED = 6.5;
         public static float Volume = 0.4f;
         public static int Gamma = 100;
+        private int ShowingSLIL_v0_0_1 = 0;
 
         public MainMenu(CGF_Reader data, TextureCache textures)
         {
@@ -99,6 +101,8 @@ namespace SLIL
             if (!File.Exists("GameServer.exe"))
                 DownloadFile("https://base-escape.ru/downloads/GameServer.exe", "GameServer.exe");
             MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
+            hmm = new PlaySound(CGFReader.GetFile("hmm.wav"), false);
+            omg = new PlaySound(CGFReader.GetFile("OMG.wav"), false);
             game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
             draw = new PlaySound(CGFReader.GetFile("draw.wav"), false);
             buy = new PlaySound(CGFReader.GetFile("buy.wav"), false);
@@ -339,7 +343,7 @@ namespace SLIL
             errors_panel.Location = new Point(buttons_panel.Left, Height - errors_panel.Height - 16);
             exit_size_panel.Left = (exit_panel.Width - exit_size_panel.Width) / 2;
             account_btn_c.Location = new Point(Width - account_btn_c.Width - 15, 15);
-            SLIL_v0_1_btn_c.Location = new Point(account_btn_c.Right - SLIL_v0_1_btn_c.Width, account_btn_c.Bottom + 6);
+            SLIL_v0_1_btn_c.Location = new Point((Width - SLIL_v0_1_btn_c.Width) / 2, (Height - buttons_panel.Height) / 2 - 75);
             if (sounds) MainMenuTheme.Play(Volume);
         }
 
@@ -479,8 +483,8 @@ namespace SLIL
             BindControls["select_item"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "select_item", Keys.Q);
             BindControls["run"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "run", Keys.ShiftKey);
             BindControls["climb"] = INIReader.GetKeys(iniFolder, "HOTKEYS", "climb", Keys.Space);
-            SLIL_v0_1_LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL_V0_1", "look_speed", 1.75);
-            SLIL_v0_1_difficulty = INIReader.GetInt(iniFolder, "SLIL_V0_1", "difficulty", 1);
+            SLIL_v0_1_LOOK_SPEED = INIReader.GetDouble(iniFolder, "SLIL_V0_0_1", "look_speed", 1.75);
+            SLIL_v0_1_difficulty = INIReader.GetInt(iniFolder, "SLIL_V0_0_1", "difficulty", 1);
             if (interface_size < 0 || interface_size > 3)
                 interface_size = 2;
             //if (display_size < 0 || display_size > 5)
@@ -538,8 +542,8 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "HOTKEYS", "select_item", BindControls["select_item"]);
             INIReader.SetKey(iniFolder, "HOTKEYS", "run", BindControls["run"]);
             INIReader.SetKey(iniFolder, "HOTKEYS", "climb", BindControls["climb"]);
-            INIReader.SetKey(iniFolder, "SLIL_V0_1", "look_speed", SLIL_v0_1_LOOK_SPEED);
-            INIReader.SetKey(iniFolder, "SLIL_V0_1", "difficulty", difficulty);
+            INIReader.SetKey(iniFolder, "SLIL_V0_0_1", "look_speed", SLIL_v0_1_LOOK_SPEED);
+            INIReader.SetKey(iniFolder, "SLIL_V0_0_1", "difficulty", difficulty);
         }
 
         //  #====    Localization    ====#
@@ -1812,11 +1816,55 @@ namespace SLIL
             INIReader.SetKey(iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
         }
 
-        //  #====      SLIL v0.1     ====#
+        //  #====      SLIL v0.0.1     ====#
+
+        private void Secret_btn_timer_Tick(object sender, EventArgs e)
+        {
+            if (SLIL_v0_1_btn_c.Size == new Size(301, 47))
+            {
+                SLIL_v0_1_btn_c.Location = new Point((Width - SLIL_v0_1_btn_c.Width) / 2, (Height - buttons_panel.Height) / 2 - 75);
+                secret_btn_timer.Stop();
+                return;
+            }
+            if (SLIL_v0_1_btn_c.Left > (Width - SLIL_v0_1_btn_c.Width) / 2)
+                SLIL_v0_1_btn_c.Left--;
+            else if (SLIL_v0_1_btn_c.Left < (Width - SLIL_v0_1_btn_c.Width) / 2)
+                SLIL_v0_1_btn_c.Left++;
+            if (SLIL_v0_1_btn_c.Top < (Height - buttons_panel.Height) / 2 - 75)
+                SLIL_v0_1_btn_c.Top += 2;
+            else if (SLIL_v0_1_btn_c.Top > (Height - buttons_panel.Height) / 2 - 75)
+                SLIL_v0_1_btn_c.Top--;
+            SLIL_v0_1_btn_c.Width--;
+            SLIL_v0_1_btn_c.Height--;
+        }
+
+        private void Secret_panel_Click(object sender, EventArgs e)
+        {
+            lose_focus.Focus();
+            if (ShowingSLIL_v0_0_1 == 10)
+            {
+                hmm.Stop();
+                omg.Play(Volume);
+                SLIL_v0_1_btn_c.Size = Size;
+                SLIL_v0_1_btn_c.Location = new Point(0, 0 - SLIL_v0_1_btn_c.Height);
+                slil_0_0_1_dev_panel.Visible = false;
+                developers_panel.Visible = false;
+                SLIL_v0_1_btn_c.Visible = true;
+                SLIL_v0_1_btn_c.BringToFront();
+                secret_btn_timer.Start();
+                ShowingSLIL_v0_0_1++;
+            }
+            else if (ShowingSLIL_v0_0_1 < 10)
+            {
+                ShowingSLIL_v0_0_1++;
+                hmm.Play(Volume);
+            }
+        }
 
         private void SLIL_v0_1_btn_c_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
+            if (secret_btn_timer.Enabled) return;
             if (sounds) MainMenuTheme.Stop();
             SLILv0_1 sLILv0_1 = new SLILv0_1()
             {
@@ -1830,6 +1878,7 @@ namespace SLIL
 
         private void UnpackGameServerZip()
         {
+            if (!File.Exists("GameServer.zip")) return;
             Directory.CreateDirectory("GameServer");
             using (ZipArchive archive = ZipFile.OpenRead("GameServer.zip"))
             {
@@ -1844,6 +1893,7 @@ namespace SLIL
                         entry.ExtractToFile(filePath, true);
                     }
                 }
+                File.Delete("GameServer.zip");
             }
         }
 

@@ -49,6 +49,9 @@
             this.status_label.TabIndex = 0;
             this.status_label.Text = "Check for updates...";
             this.status_label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.status_label.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseDown);
+            this.status_label.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseMove);
+            this.status_label.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseUp);
             // 
             // background_progress
             // 
@@ -60,6 +63,9 @@
             this.background_progress.Name = "background_progress";
             this.background_progress.Size = new System.Drawing.Size(484, 10);
             this.background_progress.TabIndex = 1;
+            this.background_progress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseDown);
+            this.background_progress.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseMove);
+            this.background_progress.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseUp);
             // 
             // progress
             // 
@@ -69,6 +75,9 @@
             this.progress.Name = "progress";
             this.progress.Size = new System.Drawing.Size(0, 8);
             this.progress.TabIndex = 0;
+            this.progress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseDown);
+            this.progress.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseMove);
+            this.progress.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseUp);
             // 
             // progress_refresh
             // 
@@ -81,7 +90,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = global::SLIL.Properties.Resources.loading_background;
-            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(484, 211);
             this.ControlBox = false;
             this.Controls.Add(this.status_label);
@@ -89,7 +98,7 @@
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(6);
             this.MaximizeBox = false;
@@ -100,6 +109,9 @@
             this.Text = "Loading...";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Loading_Load);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseUp);
             this.background_progress.ResumeLayout(false);
             this.ResumeLayout(false);
 

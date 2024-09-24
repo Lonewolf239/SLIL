@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu));
             this.lose_focus = new System.Windows.Forms.Label();
             this.start_btn_cp = new System.Windows.Forms.Button();
@@ -41,6 +42,9 @@
             this.close_developers_panel = new System.Windows.Forms.Panel();
             this.close_developers_r = new System.Windows.Forms.Button();
             this.developers_background = new System.Windows.Forms.Panel();
+            this.slil_0_0_1_dev_panel = new System.Windows.Forms.Panel();
+            this.launch_slil_0_0_1_dev = new System.Windows.Forms.Button();
+            this.slil_0_0_1_dev = new System.Windows.Forms.Label();
             this.fazzy_panel = new System.Windows.Forms.Panel();
             this.fazzy_about = new System.Windows.Forms.Label();
             this.fazzy_telegram_c = new System.Windows.Forms.Button();
@@ -265,11 +269,13 @@
             this.update_error_label = new System.Windows.Forms.Label();
             this.errors_panel = new System.Windows.Forms.Panel();
             this.SLIL_v0_1_btn_c = new System.Windows.Forms.Button();
+            this.secret_btn_timer = new System.Windows.Forms.Timer(this.components);
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
             this.close_developers_panel.SuspendLayout();
             this.developers_background.SuspendLayout();
+            this.slil_0_0_1_dev_panel.SuspendLayout();
             this.fazzy_panel.SuspendLayout();
             this.koyo_panel.SuspendLayout();
             this.qsvhu_panel.SuspendLayout();
@@ -513,6 +519,7 @@
             // 
             this.developers_background.AutoScroll = true;
             this.developers_background.BackColor = System.Drawing.Color.Black;
+            this.developers_background.Controls.Add(this.slil_0_0_1_dev_panel);
             this.developers_background.Controls.Add(this.fazzy_panel);
             this.developers_background.Controls.Add(this.koyo_panel);
             this.developers_background.Controls.Add(this.qsvhu_panel);
@@ -522,6 +529,46 @@
             this.developers_background.Name = "developers_background";
             this.developers_background.Size = new System.Drawing.Size(490, 220);
             this.developers_background.TabIndex = 45;
+            // 
+            // slil_0_0_1_dev_panel
+            // 
+            this.slil_0_0_1_dev_panel.BackColor = System.Drawing.Color.Black;
+            this.slil_0_0_1_dev_panel.Controls.Add(this.launch_slil_0_0_1_dev);
+            this.slil_0_0_1_dev_panel.Controls.Add(this.slil_0_0_1_dev);
+            this.slil_0_0_1_dev_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.slil_0_0_1_dev_panel.Location = new System.Drawing.Point(0, 695);
+            this.slil_0_0_1_dev_panel.Name = "slil_0_0_1_dev_panel";
+            this.slil_0_0_1_dev_panel.Size = new System.Drawing.Size(473, 150);
+            this.slil_0_0_1_dev_panel.TabIndex = 49;
+            // 
+            // launch_slil_0_0_1_dev
+            // 
+            this.launch_slil_0_0_1_dev.AutoSize = true;
+            this.launch_slil_0_0_1_dev.BackColor = System.Drawing.Color.Black;
+            this.launch_slil_0_0_1_dev.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.launch_slil_0_0_1_dev.ForeColor = System.Drawing.Color.White;
+            this.launch_slil_0_0_1_dev.Location = new System.Drawing.Point(6, 39);
+            this.launch_slil_0_0_1_dev.Name = "launch_slil_0_0_1_dev";
+            this.launch_slil_0_0_1_dev.Size = new System.Drawing.Size(130, 41);
+            this.launch_slil_0_0_1_dev.TabIndex = 48;
+            this.launch_slil_0_0_1_dev.TabStop = false;
+            this.launch_slil_0_0_1_dev.Text = "Launch";
+            this.launch_slil_0_0_1_dev.UseVisualStyleBackColor = false;
+            this.launch_slil_0_0_1_dev.Click += new System.EventHandler(this.Secret_panel_Click);
+            // 
+            // slil_0_0_1_dev
+            // 
+            this.slil_0_0_1_dev.BackColor = System.Drawing.Color.Transparent;
+            this.slil_0_0_1_dev.Cursor = System.Windows.Forms.Cursors.Default;
+            this.slil_0_0_1_dev.Dock = System.Windows.Forms.DockStyle.Top;
+            this.slil_0_0_1_dev.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
+            this.slil_0_0_1_dev.ForeColor = System.Drawing.Color.White;
+            this.slil_0_0_1_dev.Location = new System.Drawing.Point(0, 0);
+            this.slil_0_0_1_dev.Name = "slil_0_0_1_dev";
+            this.slil_0_0_1_dev.Size = new System.Drawing.Size(473, 36);
+            this.slil_0_0_1_dev.TabIndex = 43;
+            this.slil_0_0_1_dev.Text = "SLIL v0.0.1";
+            this.slil_0_0_1_dev.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // fazzy_panel
             // 
@@ -564,7 +611,7 @@
             this.fazzy_name.BackColor = System.Drawing.Color.Transparent;
             this.fazzy_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.fazzy_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fazzy_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fazzy_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
             this.fazzy_name.ForeColor = System.Drawing.Color.White;
             this.fazzy_name.Location = new System.Drawing.Point(0, 0);
             this.fazzy_name.Name = "fazzy_name";
@@ -614,7 +661,7 @@
             this.koyo_name.BackColor = System.Drawing.Color.Transparent;
             this.koyo_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.koyo_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.koyo_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.koyo_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
             this.koyo_name.ForeColor = System.Drawing.Color.White;
             this.koyo_name.Location = new System.Drawing.Point(0, 0);
             this.koyo_name.Name = "koyo_name";
@@ -664,7 +711,7 @@
             this.qsvhu_name.BackColor = System.Drawing.Color.Transparent;
             this.qsvhu_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.qsvhu_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.qsvhu_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.qsvhu_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
             this.qsvhu_name.ForeColor = System.Drawing.Color.White;
             this.qsvhu_name.Location = new System.Drawing.Point(0, 0);
             this.qsvhu_name.Name = "qsvhu_name";
@@ -714,7 +761,7 @@
             this.fatalan_name.BackColor = System.Drawing.Color.Transparent;
             this.fatalan_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.fatalan_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fatalan_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fatalan_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
             this.fatalan_name.ForeColor = System.Drawing.Color.White;
             this.fatalan_name.Location = new System.Drawing.Point(0, 0);
             this.fatalan_name.Name = "fatalan_name";
@@ -786,7 +833,7 @@
             this.lonewolf_name.BackColor = System.Drawing.Color.Transparent;
             this.lonewolf_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.lonewolf_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lonewolf_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lonewolf_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lonewolf_name.ForeColor = System.Drawing.Color.White;
             this.lonewolf_name.Location = new System.Drawing.Point(0, 0);
             this.lonewolf_name.Name = "lonewolf_name";
@@ -3236,7 +3283,7 @@
             // 
             this.errors_panel.BackColor = System.Drawing.Color.DarkGray;
             this.errors_panel.Controls.Add(this.errors_background);
-            this.errors_panel.Location = new System.Drawing.Point(1518, 787);
+            this.errors_panel.Location = new System.Drawing.Point(1515, 582);
             this.errors_panel.Name = "errors_panel";
             this.errors_panel.Size = new System.Drawing.Size(496, 74);
             this.errors_panel.TabIndex = 67;
@@ -3246,14 +3293,20 @@
             this.SLIL_v0_1_btn_c.AutoSize = true;
             this.SLIL_v0_1_btn_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.SLIL_v0_1_btn_c.ForeColor = System.Drawing.Color.White;
-            this.SLIL_v0_1_btn_c.Location = new System.Drawing.Point(1536, 95);
+            this.SLIL_v0_1_btn_c.Location = new System.Drawing.Point(1515, 115);
             this.SLIL_v0_1_btn_c.Name = "SLIL_v0_1_btn_c";
-            this.SLIL_v0_1_btn_c.Size = new System.Drawing.Size(308, 47);
+            this.SLIL_v0_1_btn_c.Size = new System.Drawing.Size(301, 47);
             this.SLIL_v0_1_btn_c.TabIndex = 68;
             this.SLIL_v0_1_btn_c.TabStop = false;
-            this.SLIL_v0_1_btn_c.Text = "Forward to the Past";
+            this.SLIL_v0_1_btn_c.Text = "Launch SLIL v0.0.1";
             this.SLIL_v0_1_btn_c.UseVisualStyleBackColor = false;
+            this.SLIL_v0_1_btn_c.Visible = false;
             this.SLIL_v0_1_btn_c.Click += new System.EventHandler(this.SLIL_v0_1_btn_c_Click);
+            // 
+            // secret_btn_timer
+            // 
+            this.secret_btn_timer.Interval = 16;
+            this.secret_btn_timer.Tick += new System.EventHandler(this.Secret_btn_timer_Tick);
             // 
             // MainMenu
             // 
@@ -3262,14 +3315,14 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1924, 896);
+            this.Controls.Add(this.account_panel);
+            this.Controls.Add(this.developers_panel);
             this.Controls.Add(this.SLIL_v0_1_btn_c);
             this.Controls.Add(this.errors_panel);
             this.Controls.Add(this.exit_panel);
-            this.Controls.Add(this.account_panel);
             this.Controls.Add(this.hilf_mir_panel);
             this.Controls.Add(this.account_btn_c);
             this.Controls.Add(this.game_mode_panel);
-            this.Controls.Add(this.developers_panel);
             this.Controls.Add(this.help_panel);
             this.Controls.Add(this.connect_panel);
             this.Controls.Add(this.host_panel);
@@ -3303,6 +3356,8 @@
             this.close_developers_panel.ResumeLayout(false);
             this.close_developers_panel.PerformLayout();
             this.developers_background.ResumeLayout(false);
+            this.slil_0_0_1_dev_panel.ResumeLayout(false);
+            this.slil_0_0_1_dev_panel.PerformLayout();
             this.fazzy_panel.ResumeLayout(false);
             this.fazzy_panel.PerformLayout();
             this.koyo_panel.ResumeLayout(false);
@@ -3662,5 +3717,9 @@
         private System.Windows.Forms.Label update_error_label;
         private System.Windows.Forms.Panel errors_panel;
         private System.Windows.Forms.Button SLIL_v0_1_btn_c;
+        private System.Windows.Forms.Timer secret_btn_timer;
+        private System.Windows.Forms.Panel slil_0_0_1_dev_panel;
+        private System.Windows.Forms.Button launch_slil_0_0_1_dev;
+        private System.Windows.Forms.Label slil_0_0_1_dev;
     }
 }

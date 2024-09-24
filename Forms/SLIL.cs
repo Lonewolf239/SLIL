@@ -3020,7 +3020,7 @@ namespace SLIL
                     imageToDraw = TransportImages[player.TRANSPORT.GetType()][1];
             }
             else if (player.InParkour)
-                imageToDraw = Properties.Resources.no_animation;
+                imageToDraw = Properties.Resources.player_parkour;
             else if (player.UseItem)
                 imageToDraw = ImagesDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), player.ItemFrame];
             else
