@@ -23,7 +23,6 @@ namespace SLIL
     public partial class MainMenu : Form
     {
         private readonly string current_version = Program.current_version;
-        private readonly Random rand;
         public bool UpdateVerified = false;
         public bool downloadedLocalizationList = false;
         public Localization localizations;
@@ -110,7 +109,6 @@ namespace SLIL
             screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
             low_stamine = new PlaySound(CGFReader.GetFile("low_stamine.wav"), false);
             climb = new PlaySound[] { new PlaySound(CGFReader.GetFile("climb.wav"), false), new PlaySound(CGFReader.GetFile("climb_bike.wav"), false) };
-            rand = new Random();
             AddSeparators();
         }
 
@@ -1718,9 +1716,10 @@ namespace SLIL
         private void Account_btn_c_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            nickname.Text = PlayerName;
-            account_panel.Visible = true;
-            account_panel.BringToFront();
+            Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT?account") { UseShellExecute = true });
+            //nickname.Text = PlayerName;
+            //account_panel.Visible = true;
+            //account_panel.BringToFront();
         }
 
         //  #====      Tutorial      ====#

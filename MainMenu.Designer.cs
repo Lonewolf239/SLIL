@@ -560,7 +560,7 @@
             this.slil_0_0_1_dev.BackColor = System.Drawing.Color.Transparent;
             this.slil_0_0_1_dev.Cursor = System.Windows.Forms.Cursors.Default;
             this.slil_0_0_1_dev.Dock = System.Windows.Forms.DockStyle.Top;
-            this.slil_0_0_1_dev.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
+            this.slil_0_0_1_dev.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.slil_0_0_1_dev.ForeColor = System.Drawing.Color.White;
             this.slil_0_0_1_dev.Location = new System.Drawing.Point(0, 0);
             this.slil_0_0_1_dev.Name = "slil_0_0_1_dev";
@@ -610,7 +610,7 @@
             this.fazzy_name.BackColor = System.Drawing.Color.Transparent;
             this.fazzy_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.fazzy_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fazzy_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
+            this.fazzy_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.fazzy_name.ForeColor = System.Drawing.Color.White;
             this.fazzy_name.Location = new System.Drawing.Point(0, 0);
             this.fazzy_name.Name = "fazzy_name";
@@ -660,7 +660,7 @@
             this.koyo_name.BackColor = System.Drawing.Color.Transparent;
             this.koyo_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.koyo_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.koyo_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
+            this.koyo_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.koyo_name.ForeColor = System.Drawing.Color.White;
             this.koyo_name.Location = new System.Drawing.Point(0, 0);
             this.koyo_name.Name = "koyo_name";
@@ -710,7 +710,7 @@
             this.qsvhu_name.BackColor = System.Drawing.Color.Transparent;
             this.qsvhu_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.qsvhu_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.qsvhu_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
+            this.qsvhu_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.qsvhu_name.ForeColor = System.Drawing.Color.White;
             this.qsvhu_name.Location = new System.Drawing.Point(0, 0);
             this.qsvhu_name.Name = "qsvhu_name";
@@ -760,7 +760,7 @@
             this.fatalan_name.BackColor = System.Drawing.Color.Transparent;
             this.fatalan_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.fatalan_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fatalan_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold);
+            this.fatalan_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.fatalan_name.ForeColor = System.Drawing.Color.White;
             this.fatalan_name.Location = new System.Drawing.Point(0, 0);
             this.fatalan_name.Name = "fatalan_name";
@@ -832,7 +832,7 @@
             this.lonewolf_name.BackColor = System.Drawing.Color.Transparent;
             this.lonewolf_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.lonewolf_name.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lonewolf_name.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lonewolf_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lonewolf_name.ForeColor = System.Drawing.Color.White;
             this.lonewolf_name.Location = new System.Drawing.Point(0, 0);
             this.lonewolf_name.Name = "lonewolf_name";

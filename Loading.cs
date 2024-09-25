@@ -17,11 +17,11 @@ namespace SLIL
     public partial class Loading : Form
     {
         private readonly string current_version = Program.current_version;
-        private int Stage = 0;
         private double UpdateProgress = 0, CompletedProgress = 0;
         private bool UpdateVerified = false, CurrentVersion = false;
         private bool DownloadedLocalizationList = false;
         public string PlayerName = "None", PlayerPassword = "None";
+        private LoginForm loginForm;
         public static Localization Localizations = new Localization();
         public SLILAccount SLIL_Account;
         private TextureCache textureCache;
@@ -187,102 +187,138 @@ namespace SLIL
 
         private async Task LoadingMainMenu()
         {
-            try
+            if (!CheckInternet())
             {
-                if (!CheckInternet())
+                UpdateProgress = 20;
+                await UnpackData();
+            }
+            else
+                await CheckUpdate();
+        }
+
+        private async Task CheckUpdate()
+        {
+            await Check_Update();
+            if (!CurrentVersion)
+            {
+                Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
+                Application.Exit();
+                return;
+            }
+            UpdateProgress = 10;
+            await DownloadLocalization();
+        }
+
+        private async Task DownloadLocalization()
+        {
+            status_label.Text = "Downloading localization...";
+            await DownloadLocalizationListTask();
+            await UnpackData();
+        }
+
+        private async Task UnpackData()
+        {
+            status_label.Text = "Unpacking \"data.cgf\" file...";
+            if (File.Exists("data.cgf"))
+            {
+                CGFReader = new CGF_Reader("data.cgf");
+                await ProcessFileWithProgressAsync();
+                await TextureCache();
+            }
+            else
+            {
+                string title = "Missing \"data.cgf\" file!", message = $"The file \"data.cgf\" is missing! It may have been renamed, moved, or deleted. Do you want to download the installer again?";
+                if (DownloadedLocalizationList)
                 {
-                    Stage = 2;
-                    UpdateProgress = 20;
+                    title = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-92");
+                    message = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-93");
                 }
-                if (Stage == 0)
+                if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {
-                    await Check_Update();
-                    if (!CurrentVersion)
+                    if (!File.Exists("UpdateDownloader.exe"))
                     {
-                        Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
-                        Application.Exit();
-                        return;
-                    }
-                    Stage++;
-                    UpdateProgress = 10;
-                }
-                if (Stage == 1)
-                {
-                    status_label.Text = "Downloading localization...";
-                    await DownloadLocalizationListTask();
-                    Stage++;
-                }
-                if (Stage == 2)
-                {
-                    status_label.Text = "Unpacking \"data.cgf\" file...";
-                    if (File.Exists("data.cgf"))
-                    {
-                        CGFReader = new CGF_Reader("data.cgf");
-                        await ProcessFileWithProgressAsync();
-                        Stage++;
-                    }
-                    else
-                    {
-                        string title = "Missing \"data.cgf\" file!", message = $"The file \"data.cgf\" is missing! It may have been renamed, moved, or deleted. Do you want to download the installer again?";
+                        message = "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
+                        string caption = "Error";
                         if (DownloadedLocalizationList)
                         {
-                            title = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-92");
-                            message = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-93");
+                            caption = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-94");
+                            message = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-95");
                         }
-                        if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
-                        {
-                            if (!File.Exists("UpdateDownloader.exe"))
-                            {
-                                message = "UpdateDownloader.exe has been deleted, renamed, or moved. After closing this message, it will be downloaded again.";
-                                string caption = "Error";
-                                if (DownloadedLocalizationList)
-                                {
-                                    caption = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-94");
-                                    message = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-95");
-                                }
-                                MessageBox.Show(message, caption, MessageBoxButtons.OK);
-                                await DownloadFileAsync("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
-                            }
-                            Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
-                            Application.Exit();
-                        }
-                        else
-                            Application.Exit();
+                        MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                        await DownloadFileAsync("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
                     }
+                    Process.Start(new ProcessStartInfo("UpdateDownloader.exe", "https://base-escape.ru/downloads/Setup_SLIL.exe Setup_SLIL"));
+                    Application.Exit();
+                    return;
                 }
-                if (Stage == 3)
+                else
                 {
-                    status_label.Text = "Texture caching...";
-                    textureCache = new TextureCache();
-                    await ProcessTexturesWithProgressAsync();
-                    Stage++;
-                }
-                if (Stage == 4)
-                {
-                    status_label.Text = "Login...";
-                    PlayerName = INIReader.GetString(Program.iniFolder, "ACCOUNT", "player_name", "None");
-                    if (PlayerName.Length > 14) PlayerName = "None";
-                    PlayerPassword = INIReader.GetString(Program.iniFolder, "ACCOUNT", "player_password", "None");
-                    if (PlayerPassword.Length > 24) PlayerPassword = "None";
-                    if (PlayerName == "None" || PlayerPassword == "None")
-                    {
-                        LoginForm loginForm = new LoginForm();
-                        loginForm.ShowDialog();
-                        return;
-                    }
-                    await CheckBD();
-                }
-                if (Stage == 5)
-                {
-                    status_label.Text = "Loading main menu...";
-                    mainMenu = await CreateMainMenuAsync(this);
-                    mainMenu.FormClosing += MainMenu_FormCLosing;
-                    progress_refresh.Stop();
-                    mainMenu.Show();
-                    Hide();
+                    Application.Exit();
+                    return;
                 }
             }
-            catch { }
+        }
+
+        private async Task TextureCache()
+        {
+            status_label.Text = "Texture caching...";
+            textureCache = new TextureCache();
+            await ProcessTexturesWithProgressAsync();
+            await Login();
+        }
+
+        private async Task Login()
+        {
+            status_label.Text = "Login...";
+            PlayerName = INIReader.GetString(Program.iniFolder, "ACCOUNT", "player_name", "None");
+            if (PlayerName.Length > 14) PlayerName = "None";
+            PlayerPassword = INIReader.GetString(Program.iniFolder, "ACCOUNT", "player_password", "None");
+            if (PlayerPassword.Length > 24) PlayerPassword = "None";
+            if (PlayerName == "None" || PlayerPassword == "None")
+            {
+                loginForm = new LoginForm()
+                {
+                    DownloadedLocalizationList = DownloadedLocalizationList,
+                    SupportedLanguages = SupportedLanguages
+                };
+                loginForm.login_btn_r.Click += Login_btn_Click;
+                loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
+                loginForm.ShowDialog();
+                return;
+            }
+            await CheckBD();
+        }
+
+        private void Exit_btn_cp_Click(object sender, EventArgs e)
+        {
+            if (loginForm != null)
+            {
+                loginForm.CanClose = true;
+                loginForm.Close();
+                loginForm.Dispose();
+                loginForm = null;
+            }
+            Application.Exit();
+        }
+
+        private void Buy_btn_cp_Click(object sender, EventArgs e)
+        {
+            if (loginForm != null)
+            {
+                loginForm.CanClose = true;
+                loginForm.Close();
+                loginForm.Dispose();
+                loginForm = null;
+            }
+            Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT") { UseShellExecute = true });
+            Application.Exit();
+        }
+
+        private async void Login_btn_Click(object sender, EventArgs e)
+        {
+            PlayerName = loginForm.nickname_input.Text;
+            PlayerPassword = loginForm.password_input.Text;
+            await CheckBD();
         }
 
         public async Task CheckBD()
@@ -291,24 +327,76 @@ namespace SLIL
             AccountStates state = await SLIL_Account.LoadAccount();
             if (state == AccountStates.AllOk)
             {
+                INIReader.SetKey(Program.iniFolder, "ACCOUNT", "player_name", PlayerName);
+                INIReader.SetKey(Program.iniFolder, "ACCOUNT", "player_password", PlayerPassword);
                 if (!SLIL_Account.GamePurchased)
                 {
-                    MessageBox.Show("У вас не куплена игра. Пожалуйста, купите лицензию игры в боте и попробуйте снова");
-                    Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT") { UseShellExecute = true });
-                    Application.Exit();
-                    Stage++;
+                    if (loginForm == null)
+                    {
+                        loginForm = new LoginForm()
+                        {
+                            DownloadedLocalizationList = DownloadedLocalizationList,
+                            SupportedLanguages = SupportedLanguages
+                        };
+                        loginForm.buy_btn_cp.Click += Buy_btn_cp_Click;
+                    }
+                    loginForm.buy_panel.Visible = true;
+                    loginForm.login_panel.Visible = false;
+                    if (!loginForm.Visible) loginForm.ShowDialog();
+                }
+                else
+                {
+                    if (loginForm != null)
+                    {
+                        loginForm.CanClose = true;
+                        loginForm.Close();
+                        loginForm.Dispose();
+                        loginForm = null;
+                    }
+                    GoToMainMenu();
                 }
             }
             else
             {
                 if (state == AccountStates.NotFound)
-                    MessageBox.Show($"Аккаунт {PlayerName}, {PlayerPassword} не найден!");
-                else if (state == AccountStates.Error)
-                    MessageBox.Show("Во время получения БД произошла неизвестная ошибка");
-                else if (state == AccountStates.ErrorDownloading)
-                    MessageBox.Show("Во время загрузки БД произошла ошибка");
-                Application.Exit();
+                {
+                    if (loginForm != null)
+                    {
+                        loginForm.status_label.Visible = true;
+                        loginForm.nickname_input.Text = loginForm.password_input.Text = null;
+                    }
+                }
+                else
+                {
+                    if (loginForm == null)
+                    {
+                        loginForm = new LoginForm()
+                        {
+                            DownloadedLocalizationList = DownloadedLocalizationList,
+                            SupportedLanguages = SupportedLanguages
+                        };
+                        loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
+                    }
+                    loginForm.error_panel.Visible = true;
+                    loginForm.login_panel.Visible = false;
+                    if (state == AccountStates.Error)
+                        loginForm.Error = -1;
+                    else if (state == AccountStates.ErrorDownloading)
+                        loginForm.Error = -2;
+                    if (!loginForm.Visible) loginForm.ShowDialog();
+                }
             }
+            loginForm?.SetLanguage();
+        }
+
+        private async void GoToMainMenu()
+        {
+            status_label.Text = "Loading main menu...";
+            mainMenu = await CreateMainMenuAsync(this);
+            mainMenu.FormClosing += MainMenu_FormCLosing;
+            progress_refresh.Stop();
+            mainMenu.Show();
+            Hide();
         }
 
         public static async Task<MainMenu> CreateMainMenuAsync(Loading loading)
@@ -320,7 +408,9 @@ namespace SLIL
                     UpdateVerified = loading.UpdateVerified,
                     downloadedLocalizationList = loading.DownloadedLocalizationList,
                     localizations = Localizations,
-                    supportedLanguages = loading.SupportedLanguages
+                    supportedLanguages = loading.SupportedLanguages,
+                    PlayerName = loading.PlayerName,
+                    PlayerPassword = loading.PlayerPassword
                 };
                 return mainMenu;
             });
@@ -331,11 +421,15 @@ namespace SLIL
             if (CompletedProgress < UpdateProgress)
                 CompletedProgress++;
             progress.Width = (int)(CompletedProgress / 100 * background_progress.Width);
+            if (progress.Width == background_progress.Width)
+                progress_refresh.Stop();
         }
 
         private async void Loading_Load(object sender, EventArgs e) => await LoadingMainMenu();
 
         private void MainMenu_FormCLosing(object sender, FormClosingEventArgs e) => Application.Exit();
+
+        private void Loading_FormClosing(object sender, FormClosingEventArgs e) => progress_refresh.Stop();
 
         private void Loading_MouseDown(object sender, MouseEventArgs e)
         {

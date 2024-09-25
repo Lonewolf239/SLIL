@@ -1253,6 +1253,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap hide_pas {
+            get {
+                object obj = ResourceManager.GetObject("hide_pas", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap hipolink {
             get {
                 object obj = ResourceManager.GetObject("hipolink", resourceCulture);
@@ -2836,6 +2846,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap shotgun_lv3_shoot {
             get {
                 object obj = ResourceManager.GetObject("shotgun_lv3_shoot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap show_pas {
+            get {
+                object obj = ResourceManager.GetObject("show_pas", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
