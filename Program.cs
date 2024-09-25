@@ -9,6 +9,7 @@ namespace SLIL
     {
         public static Mutex mutex;
         public static string current_version = "|1.2.2.2|";
+        public static string iniFolder = "config.ini";
 
         [STAThread]
         static void Main()

@@ -248,7 +248,6 @@
             this.account_btn_c = new System.Windows.Forms.Button();
             this.account_panel = new System.Windows.Forms.Panel();
             this.account_background = new System.Windows.Forms.Panel();
-            this.reset_nickname_btn_c = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.player_icon = new System.Windows.Forms.PictureBox();
             this.nickname = new System.Windows.Forms.TextBox();
@@ -3034,7 +3033,6 @@
             // account_background
             // 
             this.account_background.BackColor = System.Drawing.Color.Black;
-            this.account_background.Controls.Add(this.reset_nickname_btn_c);
             this.account_background.Controls.Add(this.label1);
             this.account_background.Controls.Add(this.player_icon);
             this.account_background.Controls.Add(this.nickname);
@@ -3044,18 +3042,6 @@
             this.account_background.Name = "account_background";
             this.account_background.Size = new System.Drawing.Size(490, 276);
             this.account_background.TabIndex = 45;
-            // 
-            // reset_nickname_btn_c
-            // 
-            this.reset_nickname_btn_c.BackgroundImage = global::SLIL.Properties.Resources.reset;
-            this.reset_nickname_btn_c.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.reset_nickname_btn_c.Location = new System.Drawing.Point(390, 43);
-            this.reset_nickname_btn_c.Name = "reset_nickname_btn_c";
-            this.reset_nickname_btn_c.Size = new System.Drawing.Size(37, 37);
-            this.reset_nickname_btn_c.TabIndex = 63;
-            this.reset_nickname_btn_c.TabStop = false;
-            this.reset_nickname_btn_c.UseVisualStyleBackColor = false;
-            this.reset_nickname_btn_c.Click += new System.EventHandler(this.Reset_nickname_btn_c_Click);
             // 
             // label1
             // 
@@ -3086,13 +3072,11 @@
             this.nickname.Location = new System.Drawing.Point(167, 48);
             this.nickname.MaxLength = 14;
             this.nickname.Name = "nickname";
+            this.nickname.ReadOnly = true;
             this.nickname.Size = new System.Drawing.Size(217, 29);
             this.nickname.TabIndex = 61;
             this.nickname.TabStop = false;
             this.nickname.Text = "User#42941";
-            this.nickname.TextChanged += new System.EventHandler(this.Nickname_TextChanged);
-            this.nickname.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Nickname_KeyDown);
-            this.nickname.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Nickname_KeyUp);
             // 
             // close_account_btn_c
             // 
@@ -3707,7 +3691,6 @@
         private System.Windows.Forms.TrackBar gamma_choice;
         private System.Windows.Forms.Label gamma_label;
         private System.Windows.Forms.RadioButton tutorial1_btn_cp;
-        private System.Windows.Forms.Button reset_nickname_btn_c;
         private System.Windows.Forms.Panel errors_background;
         private System.Windows.Forms.Panel localization_errors_background;
         private System.Windows.Forms.PictureBox localization_error_icon;

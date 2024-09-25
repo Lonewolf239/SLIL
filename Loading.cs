@@ -21,7 +21,9 @@ namespace SLIL
         private double UpdateProgress = 0, CompletedProgress = 0;
         private bool UpdateVerified = false, CurrentVersion = false;
         private bool DownloadedLocalizationList = false;
+        public string PlayerName = "None", PlayerPassword = "None";
         public static Localization Localizations = new Localization();
+        public SLILAccount SLIL_Account;
         private TextureCache textureCache;
         private CGF_Reader CGFReader;
         private MainMenu mainMenu;
@@ -257,6 +259,21 @@ namespace SLIL
                 }
                 if (Stage == 4)
                 {
+                    status_label.Text = "Login...";
+                    PlayerName = INIReader.GetString(Program.iniFolder, "ACCOUNT", "player_name", "None");
+                    if (PlayerName.Length > 14) PlayerName = "None";
+                    PlayerPassword = INIReader.GetString(Program.iniFolder, "ACCOUNT", "player_password", "None");
+                    if (PlayerPassword.Length > 24) PlayerPassword = "None";
+                    if (PlayerName == "None" || PlayerPassword == "None")
+                    {
+                        LoginForm loginForm = new LoginForm();
+                        loginForm.ShowDialog();
+                        return;
+                    }
+                    await CheckBD();
+                }
+                if (Stage == 5)
+                {
                     status_label.Text = "Loading main menu...";
                     mainMenu = await CreateMainMenuAsync(this);
                     mainMenu.FormClosing += MainMenu_FormCLosing;
@@ -266,6 +283,32 @@ namespace SLIL
                 }
             }
             catch { }
+        }
+
+        public async Task CheckBD()
+        {
+            SLIL_Account = new SLILAccount(PlayerName, PlayerPassword);
+            AccountStates state = await SLIL_Account.LoadAccount();
+            if (state == AccountStates.AllOk)
+            {
+                if (!SLIL_Account.GamePurchased)
+                {
+                    MessageBox.Show("У вас не куплена игра. Пожалуйста, купите лицензию игры в боте и попробуйте снова");
+                    Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT") { UseShellExecute = true });
+                    Application.Exit();
+                    Stage++;
+                }
+            }
+            else
+            {
+                if (state == AccountStates.NotFound)
+                    MessageBox.Show($"Аккаунт {PlayerName}, {PlayerPassword} не найден!");
+                else if (state == AccountStates.Error)
+                    MessageBox.Show("Во время получения БД произошла неизвестная ошибка");
+                else if (state == AccountStates.ErrorDownloading)
+                    MessageBox.Show("Во время загрузки БД произошла ошибка");
+                Application.Exit();
+            }
         }
 
         public static async Task<MainMenu> CreateMainMenuAsync(Loading loading)
