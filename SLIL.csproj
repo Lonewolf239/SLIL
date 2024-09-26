@@ -160,6 +160,7 @@
     <Compile Include="Classes\GameChat\GameChat.cs" />
     <Compile Include="Classes\GameController.cs" />
     <Compile Include="Classes\GameModel.cs" />
+    <Compile Include="Classes\Hasher.cs" />
     <Compile Include="Classes\INIReader.cs" />
     <Compile Include="Classes\Items.cs" />
     <Compile Include="Classes\Pixel.cs" />

@@ -31,7 +31,7 @@ namespace SLIL
         public static Localization Localizations;
         private Dictionary<string, string> SupportedLanguages;
         public static string Language = "English";
-        public string PlayerName = "None", PlayerPassword = "None";
+        public string PlayerName = "None", PlayerPassword = "None", License = "None";
         public static bool sounds = true, ConsoleEnabled = false;
         public TextureCache textureCache;
         public static CGF_Reader CGFReader;
@@ -502,6 +502,7 @@ namespace SLIL
             INIReader.ClearFile(Program.iniFolder);
             INIReader.SetKey(Program.iniFolder, "ACCOUNT", "player_name", PlayerName);
             INIReader.SetKey(Program.iniFolder, "ACCOUNT", "player_password", PlayerPassword);
+            INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", License);
             if (DownloadedLocalizationList)
                 INIReader.SetKey(Program.iniFolder, "CONFIG", "language", Language);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "sounds", sounds);

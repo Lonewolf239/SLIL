@@ -20,7 +20,7 @@ namespace SLIL
         private double UpdateProgress = 0, CompletedProgress = 0;
         private bool UpdateVerified = false, CurrentVersion = false;
         private bool DownloadedLocalizationList = false;
-        public string PlayerName = "None", PlayerPassword = "None";
+        public string PlayerName = "None", PlayerPassword = "None", License = "None";
         private LoginForm loginForm;
         public static Localization Localizations = new Localization();
         public SLILAccount SLIL_Account;
@@ -274,6 +274,35 @@ namespace SLIL
             if (PlayerName.Length > 14) PlayerName = "None";
             PlayerPassword = INIReader.GetString(Program.iniFolder, "ACCOUNT", "player_password", "None");
             if (PlayerPassword.Length > 24) PlayerPassword = "None";
+            if (!CheckInternet())
+            {
+                License = INIReader.GetString(Program.iniFolder, "ACCOUNT", "license", "None");
+                if (Hasher.CheckLicense(License, PlayerName, PlayerPassword))
+                {
+                    if (loginForm != null)
+                    {
+                        loginForm.CanClose = true;
+                        loginForm.Close();
+                        loginForm.Dispose();
+                        loginForm = null;
+                    }
+                    GoToMainMenu();
+                }
+                else
+                {
+                    loginForm = new LoginForm()
+                    {
+                        DownloadedLocalizationList = DownloadedLocalizationList,
+                        SupportedLanguages = SupportedLanguages
+                    };
+                    loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
+                    loginForm.error_panel.Visible = true;
+                    loginForm.login_panel.Visible = false;
+                    loginForm.Error = -3;
+                    loginForm.ShowDialog();
+                }
+                return;
+            }
             if (PlayerName == "None" || PlayerPassword == "None")
             {
                 loginForm = new LoginForm()
@@ -353,6 +382,8 @@ namespace SLIL
                         loginForm.Dispose();
                         loginForm = null;
                     }
+                    License = Hasher.SetLicense(PlayerName, PlayerPassword);
+                    INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", License);
                     GoToMainMenu();
                 }
             }
@@ -360,11 +391,19 @@ namespace SLIL
             {
                 if (state == AccountStates.NotFound)
                 {
-                    if (loginForm != null)
+                    if (loginForm == null)
                     {
-                        loginForm.status_label.Visible = true;
-                        loginForm.nickname_input.Text = loginForm.password_input.Text = null;
+                        loginForm = new LoginForm()
+                        {
+                            DownloadedLocalizationList = DownloadedLocalizationList,
+                            SupportedLanguages = SupportedLanguages
+                        };
+                        loginForm.login_btn_r.Click += Login_btn_Click;
+                        loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
                     }
+                    loginForm.status_label.Visible = true;
+                    loginForm.nickname_input.Text = loginForm.password_input.Text = null;
+                    if (!loginForm.Visible) loginForm.ShowDialog();
                 }
                 else
                 {
@@ -410,7 +449,8 @@ namespace SLIL
                     localizations = Localizations,
                     supportedLanguages = loading.SupportedLanguages,
                     PlayerName = loading.PlayerName,
-                    PlayerPassword = loading.PlayerPassword
+                    PlayerPassword = loading.PlayerPassword,
+                    License = loading.License
                 };
                 return mainMenu;
             });
