@@ -3202,9 +3202,15 @@ namespace SLIL
             }
         }
 
+        private void DrwaRunIcon(int stamine_left, int stamine_top, int icon_size)
+        {
+            Image icon = PlayerCanRun() ?
+                Properties.Resources.stamine_icon : Properties.Resources.stamine_cant_run_icon;
+            graphicsWeapon.DrawImage(icon, stamine_left, stamine_top, icon_size, icon_size);
+        }
+
         private void DisplayStamine(Player player, int icon_size, int size)
         {
-            if (player.STAMINE >= player.MAX_STAMINE) return;
             int stamine_width = 40 + (10 * interface_size);
             if (resolution == 1) stamine_width *= 2;
             int progress_width = (int)(player.STAMINE / player.MAX_STAMINE * (stamine_width - 2));
@@ -3212,9 +3218,9 @@ namespace SLIL
             int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + icon_size + 2)) / 2;
             int stamine_progressbar_left = stamine_left + icon_size + 2;
             int stamine_progressbar_top = stamine_top + ((icon_size - 3) / 2);
-            Image icon = PlayerCanRun() ?
-                Properties.Resources.stamine_icon : Properties.Resources.stamine_cant_run_icon;
-            graphicsWeapon.DrawImage(icon, stamine_left, stamine_top, icon_size, icon_size);
+            if (RunKeyPressed || player.STAMINE < player.MAX_STAMINE)
+                DrwaRunIcon(stamine_left, stamine_top, icon_size);
+            if (player.STAMINE >= player.MAX_STAMINE) return;
             graphicsWeapon.FillRectangle(new SolidBrush(Color.Gray), stamine_progressbar_left, stamine_progressbar_top, stamine_width, 2.25f * size);
             Rectangle progressBackgroundRect = new Rectangle(stamine_progressbar_left + 1, stamine_progressbar_top + 1, stamine_width - 2, size);
             using (LinearGradientBrush progressBrush = new LinearGradientBrush(progressBackgroundRect, Color.Red, Color.White, LinearGradientMode.Horizontal))
