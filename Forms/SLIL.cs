@@ -3216,11 +3216,11 @@ namespace SLIL
             int progress_width = (int)(player.STAMINE / player.MAX_STAMINE * (stamine_width - 2));
             int stamine_top = SCREEN_HEIGHT[resolution] - (icon_size * 2);
             int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + icon_size + 2)) / 2;
-            int stamine_progressbar_left = stamine_left + icon_size + 2;
-            int stamine_progressbar_top = stamine_top + ((icon_size - 3) / 2);
             if (RunKeyPressed || player.STAMINE < player.MAX_STAMINE)
                 DrwaRunIcon(stamine_left, stamine_top, icon_size);
             if (player.STAMINE >= player.MAX_STAMINE) return;
+            int stamine_progressbar_left = stamine_left + icon_size + 2;
+            int stamine_progressbar_top = stamine_top + ((icon_size - 3) / 2);
             graphicsWeapon.FillRectangle(new SolidBrush(Color.Gray), stamine_progressbar_left, stamine_progressbar_top, stamine_width, 2.25f * size);
             Rectangle progressBackgroundRect = new Rectangle(stamine_progressbar_left + 1, stamine_progressbar_top + 1, stamine_width - 2, size);
             using (LinearGradientBrush progressBrush = new LinearGradientBrush(progressBackgroundRect, Color.Red, Color.White, LinearGradientMode.Horizontal))
