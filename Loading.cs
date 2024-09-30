@@ -311,6 +311,7 @@ namespace SLIL
                     SupportedLanguages = SupportedLanguages
                 };
                 loginForm.login_btn_r.Click += Login_btn_Click;
+                loginForm.buy_btn_cp.Click += Buy_btn_cp_Click;
                 loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
                 loginForm.ShowDialog();
                 return;
@@ -360,6 +361,7 @@ namespace SLIL
                 INIReader.SetKey(Program.iniFolder, "ACCOUNT", "player_password", PlayerPassword);
                 if (!SLIL_Account.GamePurchased)
                 {
+                    INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", "None");
                     if (loginForm == null)
                     {
                         loginForm = new LoginForm()
@@ -367,8 +369,8 @@ namespace SLIL
                             DownloadedLocalizationList = DownloadedLocalizationList,
                             SupportedLanguages = SupportedLanguages
                         };
-                        loginForm.buy_btn_cp.Click += Buy_btn_cp_Click;
                     }
+                    loginForm.buy_btn_cp.Click += Buy_btn_cp_Click;
                     loginForm.buy_panel.Visible = true;
                     loginForm.login_panel.Visible = false;
                     if (!loginForm.Visible) loginForm.ShowDialog();
@@ -398,9 +400,9 @@ namespace SLIL
                             DownloadedLocalizationList = DownloadedLocalizationList,
                             SupportedLanguages = SupportedLanguages
                         };
-                        loginForm.login_btn_r.Click += Login_btn_Click;
-                        loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
                     }
+                    loginForm.login_btn_r.Click += Login_btn_Click;
+                    loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
                     loginForm.status_label.Visible = true;
                     loginForm.nickname_input.Text = loginForm.password_input.Text = null;
                     if (!loginForm.Visible) loginForm.ShowDialog();
@@ -414,8 +416,8 @@ namespace SLIL
                             DownloadedLocalizationList = DownloadedLocalizationList,
                             SupportedLanguages = SupportedLanguages
                         };
-                        loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
                     }
+                    loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
                     loginForm.error_panel.Visible = true;
                     loginForm.login_panel.Visible = false;
                     if (state == AccountStates.Error)
