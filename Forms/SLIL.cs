@@ -525,6 +525,7 @@ namespace SLIL
         private ConsolePanel console_panel;
         private const double playerWidth = 0.4;
         private bool GameStarted = false, CorrectExit = false;
+        private bool HoldLMB = false;
         private readonly Image[] ConnectionIcons =
         {
             Properties.Resources.excellent_connection,
@@ -1344,7 +1345,7 @@ namespace SLIL
                 return;
             }
             Player player = Controller.GetPlayer();
-            if (player.GetCurrentGun() is DisposableItem)
+            if (player.GetCurrentGun() is DisposableItem || !HoldLMB)
             {
                 mouse_hold_timer.Stop();
                 return;
@@ -1901,6 +1902,7 @@ namespace SLIL
                 {
                     if (e.Button == MouseButtons.Left)
                     {
+                        HoldLMB = true;
                         if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1 && reload_timer.Enabled)
                             cancelReload = true;
                         else if (!reload_timer.Enabled && !mouse_hold_timer.Enabled && player.CanShoot && player.GetCurrentGun().CanShoot)
@@ -1934,7 +1936,7 @@ namespace SLIL
         private void Display_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
-                mouse_hold_timer.Stop();
+                HoldLMB = false;
         }
 
         //  #====    Move Player    ====#

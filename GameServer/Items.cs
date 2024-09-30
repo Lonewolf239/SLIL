@@ -651,8 +651,8 @@ namespace GameServer
             Weight = 0.85;
             RechargeTime = 375;
             BulletCount = 1;
-            PauseBetweenShooting = 60;
-            FiringRate = 50;
+            PauseBetweenShooting = 150;
+            FiringRate = 125;
             UpdateCost = 40;
             GunCost = 30;
             AmmoCost = 18;
@@ -678,8 +678,8 @@ namespace GameServer
                 Weight = 0.85;
                 Accuracy = 0.65;
                 BulletCount = 1;
-                PauseBetweenShooting = 60;
-                FiringRate = 50;
+                PauseBetweenShooting = 150;
+                FiringRate = 125;
                 RechargeTime = 375;
                 CartridgesClip = 20;
                 MaxAmmo = CartridgesClip * 6;
@@ -697,8 +697,8 @@ namespace GameServer
                 Weight = 0.9;
                 RechargeTime = 350;
                 BulletCount = 1;
-                PauseBetweenShooting = 50;
-                FiringRate = 40;
+                PauseBetweenShooting = 140;
+                FiringRate = 120;
                 CartridgesClip = 30;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 8;
@@ -715,8 +715,8 @@ namespace GameServer
                 Weight = 0.88;
                 RechargeTime = 350;
                 BulletCount = 2;
-                PauseBetweenShooting = 35;
-                FiringRate = 25;
+                PauseBetweenShooting = 110;
+                FiringRate = 90;
                 CartridgesClip = 30;
                 MaxAmmo = CartridgesClip * 6;
                 FiringRange = 8;
