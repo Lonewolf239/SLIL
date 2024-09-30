@@ -3203,7 +3203,7 @@ namespace SLIL
             }
         }
 
-        private void DrwaRunIcon(int stamine_left, int stamine_top, int icon_size)
+        private void DrawRunIcon(int stamine_left, int stamine_top, int icon_size)
         {
             Image icon = PlayerCanRun() ?
                 Properties.Resources.stamine_icon : Properties.Resources.stamine_cant_run_icon;
@@ -3218,7 +3218,7 @@ namespace SLIL
             int stamine_top = SCREEN_HEIGHT[resolution] - (icon_size * 2);
             int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + icon_size + 2)) / 2;
             if (RunKeyPressed || player.STAMINE < player.MAX_STAMINE)
-                DrwaRunIcon(stamine_left, stamine_top, icon_size);
+                DrawRunIcon(stamine_left, stamine_top, icon_size);
             if (player.STAMINE >= player.MAX_STAMINE) return;
             int stamine_progressbar_left = stamine_left + icon_size + 2;
             int stamine_progressbar_top = stamine_top + ((icon_size - 3) / 2);
