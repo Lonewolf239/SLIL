@@ -386,12 +386,12 @@ namespace SLIL.Classes
         {
             AmmoType = AmmoTypes.Bullet;
             FireType = FireTypes.Single;
-            Weight = 1;
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;
             Name = new[] { "3-4", "Pistol" };
             Accuracy = 0.85;
+            Weight = 1;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 175;
@@ -649,7 +649,7 @@ namespace SLIL.Classes
             HasIt = false;
             HaveLV4 = false;
             Name = new[] { "3-6", "Submachine gun" };
-            Accuracy = 0.85;
+            Accuracy = 0.65;
             Weight = 0.85;
             RechargeTime = 375;
             BulletCount = 1;
@@ -660,7 +660,7 @@ namespace SLIL.Classes
             AmmoCost = 18;
             CartridgesClip = 20;
             AmmoInStock = CartridgesClip * 2;
-            MaxAmmo = CartridgesClip * 3;
+            MaxAmmo = CartridgesClip * 6;
             FiringRange = 8;
             MaxDamage = 2;
             MinDamage = 1.5;
@@ -690,7 +690,6 @@ namespace SLIL.Classes
                 MinDamage = 1.5;
                 RecoilY = 18;
                 RecoilX = 1.75;
-                FiringRate = 50;
                 RadiusSound = 6;
                 ReloadFrames = 2;
             }
@@ -746,7 +745,7 @@ namespace SLIL.Classes
             HasIt = false;
             HaveLV4 = false;
             Name = new[] { "3-7", "Assault rifle" };
-            Accuracy = 0.8;
+            Accuracy = 0.75;
             Weight = 0.75;
             PauseBetweenShooting = 750;
             RechargeTime = 700;
@@ -756,7 +755,7 @@ namespace SLIL.Classes
             AmmoCost = 25;
             CartridgesClip = 30;
             AmmoInStock = CartridgesClip * 2;
-            MaxAmmo = CartridgesClip * 4;
+            MaxAmmo = CartridgesClip * 5;
             FiringRange = 8;
             MaxDamage = 2.5;
             MinDamage = 2;

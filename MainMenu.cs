@@ -128,6 +128,8 @@ namespace SLIL
 
         private void Fazzy_telegram_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://t.me/Theripperofrice") { UseShellExecute = true });
 
+        private void Darsin_tg_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://t.me/DARSINrock") { UseShellExecute = true });
+
         //  #====      Updating      ====#
 
         private void Check_Update()
@@ -782,6 +784,7 @@ namespace SLIL
                 climb_label.Text = Localizations.GetLString(Language, "0-120");
                 update_error_label.Text = Localizations.GetLString(Language, "0-122");
                 localization_error_label.Text = Localizations.GetLString(Language, "0-123");
+                darsin_about.Text = Localizations.GetLString(Language, "0-124");
             }
             else
             {
@@ -870,6 +873,7 @@ namespace SLIL
                 climb_label.Text = "Climb over";
                 update_error_label.Text = "Error checking for update";
                 localization_error_label.Text = "Error loading localization";
+                darsin_about.Text = "Creating death sounds for enemies, motorcycles, and others";
             }
             if (show_tutorial.Checked)
             {

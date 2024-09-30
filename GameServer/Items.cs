@@ -255,7 +255,7 @@ namespace GameServer
             AimingFactor = 8;
             Weight = 1;
             HasIt = true;
-            Name = new[] { "3-0", "Flashlight" };
+            Name = ["3-0", "Flashlight"];
         }
 
         public override void SetDefault()
@@ -276,7 +276,7 @@ namespace GameServer
             ShowAmmo = false;
             AddToShop = false;
             HasIt = true;
-            Name = new[] { "3-1", "Knife" };
+            Name = ["3-1", "Knife"];
             FireType = FireTypes.Single;
             Accuracy = 1;
             PauseBetweenShooting = 500;
@@ -312,7 +312,7 @@ namespace GameServer
             FiringRate = 400;
             ShowScope = false;
             HasIt = false;
-            Name = new[] { "3-2", "Candy" };
+            Name = ["3-2", "Candy"];
         }
 
         public override int GetItemID() => 2;
@@ -330,7 +330,7 @@ namespace GameServer
             ShowScope = false;
             ShowHitScope = false;
             HasIt = false;
-            Name = new[] { "3-14", "Petition" };
+            Name = ["3-14", "Petition"];
         }
 
         public override int GetItemID() => 17;
@@ -347,7 +347,7 @@ namespace GameServer
             AddToShop = false;
             HasIt = false;
             ShowAmmoAsNumber = true;
-            Name = new[] { "3-3", "Rainblower" };
+            Name = ["3-3", "Rainblower"];
             Accuracy = 0.9;
             Weight = 0.8;
             BulletCount = 2;
@@ -384,12 +384,12 @@ namespace GameServer
         {
             AmmoType = AmmoTypes.Bullet;
             FireType = FireTypes.Single;
-            Weight = 1;
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;
-            Name = new[] { "3-4", "Pistol" };
+            Name = ["3-4", "Pistol"];
             Accuracy = 0.85;
+            Weight = 1;
             PauseBetweenShooting = 500;
             RechargeTime = 600;
             FiringRate = 175;
@@ -502,7 +502,7 @@ namespace GameServer
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "3-5", "Shotgun" };
+            Name = ["3-5", "Shotgun"];
             Accuracy = 0.4;
             Weight = 0.85;
             BulletCount = 5;
@@ -646,8 +646,8 @@ namespace GameServer
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "3-6", "Submachine gun" };
-            Accuracy = 0.85;
+            Name = ["3-6", "Submachine gun"];
+            Accuracy = 0.65;
             Weight = 0.85;
             RechargeTime = 375;
             BulletCount = 1;
@@ -658,7 +658,7 @@ namespace GameServer
             AmmoCost = 18;
             CartridgesClip = 20;
             AmmoInStock = CartridgesClip * 2;
-            MaxAmmo = CartridgesClip * 3;
+            MaxAmmo = CartridgesClip * 6;
             FiringRange = 8;
             MaxDamage = 2;
             MinDamage = 1.5;
@@ -688,7 +688,6 @@ namespace GameServer
                 MinDamage = 1.5;
                 RecoilY = 18;
                 RecoilX = 1.75;
-                FiringRate = 50;
                 RadiusSound = 6;
                 ReloadFrames = 2;
             }
@@ -743,8 +742,8 @@ namespace GameServer
             AddToShop = true;
             HasIt = false;
             HaveLV4 = false;
-            Name = new[] { "3-7", "Assault rifle" };
-            Accuracy = 0.8;
+            Name = ["3-7", "Assault rifle"];
+            Accuracy = 0.75;
             Weight = 0.75;
             PauseBetweenShooting = 750;
             RechargeTime = 700;
@@ -754,7 +753,7 @@ namespace GameServer
             AmmoCost = 25;
             CartridgesClip = 30;
             AmmoInStock = CartridgesClip * 2;
-            MaxAmmo = CartridgesClip * 4;
+            MaxAmmo = CartridgesClip * 5;
             FiringRange = 8;
             MaxDamage = 2.5;
             MinDamage = 2;
@@ -773,7 +772,7 @@ namespace GameServer
                 UpdateCost = 50;
                 FireType = FireTypes.SemiAutomatic;
                 Accuracy = 0.75;
-                Accuracy = 0.75;
+                Weight = 0.75;
                 PauseBetweenShooting = 750;
                 RechargeTime = 700;
                 FiringRate = 100;
@@ -792,7 +791,7 @@ namespace GameServer
             {
                 FireType = FireTypes.SemiAutomatic;
                 Accuracy = 0.85;
-                Accuracy = 0.8;
+                Weight = 0.8;
                 PauseBetweenShooting = 650;
                 RechargeTime = 450;
                 FiringRate = 100;
@@ -811,7 +810,7 @@ namespace GameServer
             {
                 FireType = FireTypes.Single;
                 Accuracy = 0.9;
-                Accuracy = 0.85;
+                Weight = 0.85;
                 PauseBetweenShooting = 500;
                 RechargeTime = 400;
                 CartridgesClip = 20;
@@ -843,7 +842,7 @@ namespace GameServer
             AddToShop = true;
             HasIt = false;
             CanAiming = true;
-            Name = new[] { "3-8", "Sniper rifle" };
+            Name = ["3-8", "Sniper rifle"];
             RechargeTime = 650;
             Accuracy = 0.96;
             Weight = 0.75;
@@ -938,7 +937,7 @@ namespace GameServer
             AddToShop = false;
             HasIt = false;
             InMultiplayer = false;
-            Name = new[] { "3-9", "Fingershot" };
+            Name = ["3-9", "Fingershot"];
             Accuracy = 1;
             Weight = 0.9;
             RechargeTime = 600;
@@ -972,7 +971,7 @@ namespace GameServer
             AddToShop = false;
             HasIt = false;
             InMultiplayer = false;
-            Name = new[] { "3-10", "TSPitW" };
+            Name = ["3-10", "TSPitW"];
             Accuracy = 0.8;
             Weight = 0.5;
             RechargeTime = 750;
@@ -1000,7 +999,7 @@ namespace GameServer
         public Gnome() : base()
         {
             InMultiplayer = false;
-            Name = new[] { "3-11", "Wizard Gnome" };
+            Name = ["3-11", "Wizard Gnome"];
             RecoilY = 35;
             RecoilX = 2;
             Weight = 0.88;
@@ -1028,7 +1027,7 @@ namespace GameServer
             AddToShop = true;
             HasIt = false;
             InMultiplayer = true;
-            Name = new[] { "3-12", "RPG7" };
+            Name = ["3-12", "RPG7"];
             Accuracy = 1;
             Weight = 0.65;
             GunCost = 150;
@@ -1066,7 +1065,7 @@ namespace GameServer
             AddToShop = true;
             HasIt = false;
             InMultiplayer = true;
-            Name = new[] { "3-13", "C4" };
+            Name = ["3-13", "C4"];
             Accuracy = 1;
             Weight = 0.9;
             GunCost = 100;
@@ -1101,18 +1100,18 @@ namespace GameServer
             HasLVMechanics = true;
             HasCuteDescription = true;
             GunCost = 30;
-            Name = new[]
-            {
+            Name =
+            [
                 "4-0", "First Aid Kit",
                 "4-1", "Beans"
-            };
-            Description = new[]
-            {
+            ];
+            Description =
+            [
                 "4-2",
                 "Restores health",
                 "4-3",
                 "A tasty snack"
-            };
+            ];
         }
 
         public override int GetItemID() => 12;
@@ -1125,12 +1124,12 @@ namespace GameServer
             EffectID = 1;
             RechargeTime = 530;
             GunCost = 60;
-            Name = new[] { "4-4", "Adrenalin" };
-            Description = new[]
-            {
+            Name = ["4-4", "Adrenalin"];
+            Description =
+            [
                 "4-5",
                 "Increases movement speed for 20 sec",
-            };
+            ];
         }
 
         public override int GetItemID() => 13;
@@ -1144,12 +1143,12 @@ namespace GameServer
             ReloadFrames = 4;
             RechargeTime = 1000;
             GunCost = 75;
-            Name = new[] { "4-6", "Helmet" };
-            Description = new[]
-            {
+            Name = ["4-6", "Helmet"];
+            Description =
+            [
                 "4-7",
                 "Reduces incoming damage by 20% for 2 minutes",
-            };
+            ];
         }
 
         public override int GetItemID() => 14;

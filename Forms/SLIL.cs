@@ -402,20 +402,20 @@ namespace SLIL
             //Dog
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("dog_die_0.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("dog_die_0.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("dog_die_0.wav"), false)
+                new PlaySound(MainMenu.CGFReader.GetFile("dog_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("dog_die_2.wav"), false)
             },
-            //Abomination
+            //Ogr
             {
-                new PlaySound(MainMenu.CGFReader.GetFile("abomination_die_0.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("abomination_die_0.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("abomination_die_0.wav"), false)
+                new PlaySound(MainMenu.CGFReader.GetFile("ogr_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("ogr_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("ogr_die_2.wav"), false)
             },
             //Bat
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("bat_die_0.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("bat_die_0.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("bat_die_0.wav"), false)
+                new PlaySound(MainMenu.CGFReader.GetFile("bat_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("bat_die_2.wav"), false)
             },
             //Box
             {
@@ -444,7 +444,7 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("c_dog_die_1.wav"), false),
                 new PlaySound(MainMenu.CGFReader.GetFile("c_dog_die_0.wav"), false)
             },
-            //Abomination
+            //Ogr
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("c_abomination_die_0.wav"), false),
                 new PlaySound(MainMenu.CGFReader.GetFile("c_abomination_die_0.wav"), false),
@@ -1487,6 +1487,7 @@ namespace SLIL
                                 else if (player.SelectedItem == 1) y = 0;
                                 else if (player.SelectedItem == 2) x = Width;
                                 else if (player.SelectedItem == 3) y = Height;
+                                player.BlockCamera = true;
                                 player.InSelectingMode = true;
                                 Cursor.Position = display.PointToScreen(new Point(x, y));
                             }
@@ -1680,9 +1681,9 @@ namespace SLIL
                     }
                     if (e.KeyCode == Bind.Select_item)
                     {
-                        player.BlockCamera = player.CanUnblockCamera = true;
-                        Cursor.Position = display.PointToScreen(new Point(center_x, center_y));
                         player.InSelectingMode = false;
+                        Cursor.Position = display.PointToScreen(new Point(display.Width / 2, display.Height / 2));
+                        player.CanUnblockCamera = true;
                     }
                     if (e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1)
                     {

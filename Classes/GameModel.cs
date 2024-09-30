@@ -109,6 +109,8 @@ namespace SLIL.Classes
         {
             Player player = new Player(3, 3, MAP_WIDTH, ref MaxEntityID);
             Entities.Add(player);
+            if (difficulty == 3 || difficulty == 2)
+                player.Guns[2].LevelUpdate();
             return MaxEntityID - 1;
         }
 

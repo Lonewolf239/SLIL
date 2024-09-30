@@ -45,6 +45,10 @@
             this.slil_0_0_1_dev_panel = new System.Windows.Forms.Panel();
             this.launch_slil_0_0_1_dev = new System.Windows.Forms.Button();
             this.slil_0_0_1_dev = new System.Windows.Forms.Label();
+            this.darsin_panel = new System.Windows.Forms.Panel();
+            this.darsin_about = new System.Windows.Forms.Label();
+            this.darsin_tg = new System.Windows.Forms.Button();
+            this.darsin_name = new System.Windows.Forms.Label();
             this.fazzy_panel = new System.Windows.Forms.Panel();
             this.fazzy_about = new System.Windows.Forms.Label();
             this.fazzy_telegram_c = new System.Windows.Forms.Button();
@@ -275,6 +279,7 @@
             this.close_developers_panel.SuspendLayout();
             this.developers_background.SuspendLayout();
             this.slil_0_0_1_dev_panel.SuspendLayout();
+            this.darsin_panel.SuspendLayout();
             this.fazzy_panel.SuspendLayout();
             this.koyo_panel.SuspendLayout();
             this.qsvhu_panel.SuspendLayout();
@@ -519,6 +524,7 @@
             this.developers_background.AutoScroll = true;
             this.developers_background.BackColor = System.Drawing.Color.Black;
             this.developers_background.Controls.Add(this.slil_0_0_1_dev_panel);
+            this.developers_background.Controls.Add(this.darsin_panel);
             this.developers_background.Controls.Add(this.fazzy_panel);
             this.developers_background.Controls.Add(this.koyo_panel);
             this.developers_background.Controls.Add(this.qsvhu_panel);
@@ -535,7 +541,7 @@
             this.slil_0_0_1_dev_panel.Controls.Add(this.launch_slil_0_0_1_dev);
             this.slil_0_0_1_dev_panel.Controls.Add(this.slil_0_0_1_dev);
             this.slil_0_0_1_dev_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.slil_0_0_1_dev_panel.Location = new System.Drawing.Point(0, 695);
+            this.slil_0_0_1_dev_panel.Location = new System.Drawing.Point(0, 845);
             this.slil_0_0_1_dev_panel.Name = "slil_0_0_1_dev_panel";
             this.slil_0_0_1_dev_panel.Size = new System.Drawing.Size(473, 150);
             this.slil_0_0_1_dev_panel.TabIndex = 49;
@@ -568,6 +574,56 @@
             this.slil_0_0_1_dev.TabIndex = 43;
             this.slil_0_0_1_dev.Text = "SLIL v0.0.1";
             this.slil_0_0_1_dev.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
+            // darsin_panel
+            // 
+            this.darsin_panel.BackColor = System.Drawing.Color.Black;
+            this.darsin_panel.Controls.Add(this.darsin_about);
+            this.darsin_panel.Controls.Add(this.darsin_tg);
+            this.darsin_panel.Controls.Add(this.darsin_name);
+            this.darsin_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darsin_panel.Location = new System.Drawing.Point(0, 695);
+            this.darsin_panel.Name = "darsin_panel";
+            this.darsin_panel.Size = new System.Drawing.Size(473, 150);
+            this.darsin_panel.TabIndex = 50;
+            // 
+            // darsin_about
+            // 
+            this.darsin_about.ForeColor = System.Drawing.Color.White;
+            this.darsin_about.Location = new System.Drawing.Point(6, 36);
+            this.darsin_about.Name = "darsin_about";
+            this.darsin_about.Size = new System.Drawing.Size(440, 61);
+            this.darsin_about.TabIndex = 50;
+            this.darsin_about.Text = "Создание звуков смерти врагов, мотоцикла и др.";
+            // 
+            // darsin_tg
+            // 
+            this.darsin_tg.AutoSize = true;
+            this.darsin_tg.BackColor = System.Drawing.Color.Black;
+            this.darsin_tg.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darsin_tg.ForeColor = System.Drawing.Color.White;
+            this.darsin_tg.Location = new System.Drawing.Point(6, 100);
+            this.darsin_tg.Name = "darsin_tg";
+            this.darsin_tg.Size = new System.Drawing.Size(130, 41);
+            this.darsin_tg.TabIndex = 48;
+            this.darsin_tg.TabStop = false;
+            this.darsin_tg.Text = "Telegram";
+            this.darsin_tg.UseVisualStyleBackColor = false;
+            this.darsin_tg.Click += new System.EventHandler(this.Darsin_tg_Click);
+            // 
+            // darsin_name
+            // 
+            this.darsin_name.BackColor = System.Drawing.Color.Transparent;
+            this.darsin_name.Cursor = System.Windows.Forms.Cursors.Default;
+            this.darsin_name.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darsin_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
+            this.darsin_name.ForeColor = System.Drawing.Color.White;
+            this.darsin_name.Location = new System.Drawing.Point(0, 0);
+            this.darsin_name.Name = "darsin_name";
+            this.darsin_name.Size = new System.Drawing.Size(473, 36);
+            this.darsin_name.TabIndex = 43;
+            this.darsin_name.Text = "Darsin";
+            this.darsin_name.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // fazzy_panel
             // 
@@ -3299,8 +3355,8 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1924, 896);
-            this.Controls.Add(this.account_panel);
             this.Controls.Add(this.developers_panel);
+            this.Controls.Add(this.account_panel);
             this.Controls.Add(this.SLIL_v0_1_btn_c);
             this.Controls.Add(this.errors_panel);
             this.Controls.Add(this.exit_panel);
@@ -3342,6 +3398,8 @@
             this.developers_background.ResumeLayout(false);
             this.slil_0_0_1_dev_panel.ResumeLayout(false);
             this.slil_0_0_1_dev_panel.PerformLayout();
+            this.darsin_panel.ResumeLayout(false);
+            this.darsin_panel.PerformLayout();
             this.fazzy_panel.ResumeLayout(false);
             this.fazzy_panel.PerformLayout();
             this.koyo_panel.ResumeLayout(false);
@@ -3704,5 +3762,9 @@
         private System.Windows.Forms.Panel slil_0_0_1_dev_panel;
         private System.Windows.Forms.Button launch_slil_0_0_1_dev;
         private System.Windows.Forms.Label slil_0_0_1_dev;
+        private System.Windows.Forms.Panel darsin_panel;
+        private System.Windows.Forms.Label darsin_about;
+        private System.Windows.Forms.Button darsin_tg;
+        private System.Windows.Forms.Label darsin_name;
     }
 }

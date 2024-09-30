@@ -86,10 +86,12 @@ namespace GameServer
                     if (MAP[(int)Y * MAP_WIDTH + (int)X] == '.')
                         OK = true;
                 }
-                Player p = new(X + 0.5, Y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                p.Name = name;
+                Player p = new(X + 0.5, Y + 0.5, MAP_WIDTH, ref MaxEntityID)
+                {
+                    Name = name
+                };
                 if (difficulty == 3 || difficulty == 2)
-                    p.Guns[1].LevelUpdate();
+                    p.Guns[2].LevelUpdate();
                 Entities.Add(p);
             }
             else

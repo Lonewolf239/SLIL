@@ -878,7 +878,7 @@ namespace SLIL.UserControls
                                 { "PlayerDeadBody", "1" },
                                 { "Zombie", "2" },
                                 { "Dog", "3" },
-                                { "Abomination", "4" },
+                                { "Ogr", "4" },
                                 { "Bat", "5" },
                                 { "Box", "6" },
                                 { "Barrel", "7" },
