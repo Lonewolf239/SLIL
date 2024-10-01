@@ -57,6 +57,7 @@ dlldata.c
 
 SLILAccount.cs
 Hasher.cs
+SLIL CGF Packer/path.txt
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
