@@ -1159,4 +1159,19 @@
   <data name="show_pas" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\show_pas.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="fake_teleport_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\fake_teleport_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="fake_teleport_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\fake_teleport_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="back_ceiling" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\back_ceiling.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="back_floor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\back_floor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="back_wall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\back_wall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

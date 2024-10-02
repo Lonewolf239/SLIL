@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
 
 namespace SLIL.Classes
 {
@@ -14,8 +13,9 @@ namespace SLIL.Classes
     {
         private StringBuilder MAP = new StringBuilder();
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L#####d##=##...=b.###.#.L.#.l#.##............#......######################",
-            bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################";
+            debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
+            bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################",
+            backroomsMap = @"##########################.......................##.......................##......#................##......#...........####.##..#####..######......#.##.....#...............#.##...#.................#.##...#.................#.##...#..#.....##.......#.##...#.........##...#..#.##..................#....##.....#....P.......#....##...#####.........##....##....#.....#...#..#.....##.........####.#..#.....######...................##.#............#........##.#..........###...F....##.......#..#............##.##....#..#............##..##...#..#............##.......#.##............##.......#...............##########################";
         private int inDebug = 0;
         private readonly Pet[] PETS;
         private readonly Transport[] TRANSPORTS;
@@ -28,6 +28,7 @@ namespace SLIL.Classes
         private int difficulty;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
+        private bool inBackrooms = false;
         private int CustomMazeHeight, CustomMazeWidth;
         private StringBuilder CUSTOM_MAP = new StringBuilder();
         private double CUSTOM_X, CUSTOM_Y;
@@ -749,6 +750,7 @@ namespace SLIL.Classes
                 TimeRemain.Stop();
                 Entities.Clear();
                 MaxEntityID = 0;
+                inBackrooms = false;
             }
             else
             {
@@ -757,6 +759,7 @@ namespace SLIL.Classes
                 TimeRemain.Stop();
                 Entities.Clear();
                 MaxEntityID = 0;
+                inBackrooms = false;
             }
             StopGameHandle(win);
         }
@@ -796,7 +799,18 @@ namespace SLIL.Classes
             if (MAP[(int)p.Y * MAP_WIDTH + (int)p.X] == 'F')
             {
                 if (!IsMultiplayer)
+                {
+                    inBackrooms = false;
                     GameOver(1);
+                }
+            }
+            if (MAP[(int)p.Y * MAP_WIDTH + (int)p.X] == 'f')
+            {
+                if (!IsMultiplayer)
+                {
+                    inBackrooms = true;
+                    GameOver(1);
+                }
             }
         }
 
@@ -814,6 +828,10 @@ namespace SLIL.Classes
                 case 'F':
                     Teleport teleport = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = teleport;
+                    break;
+                case 'f':
+                    BackroomsTeleport backroomsTeleport = new BackroomsTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = backroomsTeleport;
                     break;
                 case 'D':
                     ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
@@ -875,63 +893,21 @@ namespace SLIL.Classes
         {
             double enemy_count = 0;
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
-            if (difficulty == 0)
-                enemy_count = 0.07;
-            else if (difficulty == 1)
-                enemy_count = 0.065;
-            else if (difficulty == 2)
-                enemy_count = 0.055;
-            else if (difficulty == 3)
-                enemy_count = 0.045;
-            else if (difficulty == 4)
+            if (inBackrooms)
             {
-                MazeHeight = CustomMazeHeight;
-                MazeWidth = CustomMazeWidth;
-                enemy_count = 0.06;
-                MAX_SHOP_COUNT = 5;
+                MazeHeight = 25;
+                MazeWidth = 25;
             }
             else
             {
-                if (inDebug == 1)
-                {
-                    MazeHeight = 21;
-                    MazeWidth = 21;
-                }
-                else if (inDebug == 2)
-                {
-                    MazeHeight = 22;
-                    MazeWidth = 22;
-                }
-                else if (inDebug == 3)
-                {
-                    MazeHeight = 25;
-                    MazeWidth = 25;
-                }
-            }
-            if (difficulty < 4)
-            {
-                MazeHeight = MazeWidth = 10;
-                MAX_SHOP_COUNT = 2;
-            }
-            foreach (Entity ent in Entities)
-            {
-                if (!(ent is Player player)) continue;
                 if (difficulty == 0)
                     enemy_count = 0.07;
                 else if (difficulty == 1)
                     enemy_count = 0.065;
                 else if (difficulty == 2)
-                {
                     enemy_count = 0.055;
-                    if (player.Stage == 0)
-                        player.Guns[1].LevelUpdate();
-                }
                 else if (difficulty == 3)
-                {
                     enemy_count = 0.045;
-                    if (player.Stage == 0)
-                        player.Guns[1].LevelUpdate();
-                }
                 else if (difficulty == 4)
                 {
                     MazeHeight = CustomMazeHeight;
@@ -943,56 +919,116 @@ namespace SLIL.Classes
                 {
                     if (inDebug == 1)
                     {
-                        player.X = 10.5;
-                        player.Y = 10.5;
                         MazeHeight = 21;
                         MazeWidth = 21;
                     }
                     else if (inDebug == 2)
                     {
-                        player.X = 10.5;
-                        player.Y = 19.5;
                         MazeHeight = 22;
                         MazeWidth = 22;
                     }
                     else if (inDebug == 3)
                     {
-                        player.X = 21.5;
-                        player.Y = 22.5;
                         MazeHeight = 25;
                         MazeWidth = 25;
                     }
                 }
                 if (difficulty < 4)
                 {
-                    if (player.Stage == 0)
+                    MazeHeight = MazeWidth = 10;
+                    MAX_SHOP_COUNT = 2;
+                }
+            }
+            foreach (Entity ent in Entities)
+            {
+                if (!(ent is Player player)) continue;
+                if (inBackrooms)
+                {
+                    player.X = 11.5;
+                    player.Y = 12.5;
+                    MazeHeight = 25;
+                    MazeWidth = 25;
+                }
+                else
+                {
+                    if (difficulty == 0)
+                        enemy_count = 0.07;
+                    else if (difficulty == 1)
+                        enemy_count = 0.065;
+                    else if (difficulty == 2)
                     {
-                        MazeHeight = MazeWidth = 10;
-                        MAX_SHOP_COUNT = 2;
+                        enemy_count = 0.055;
+                        if (player.Stage == 0)
+                            player.Guns[1].LevelUpdate();
                     }
-                    else if (player.Stage == 1)
+                    else if (difficulty == 3)
                     {
-                        MazeHeight = MazeWidth = 15;
-                        MAX_SHOP_COUNT = 4;
+                        enemy_count = 0.045;
+                        if (player.Stage == 0)
+                            player.Guns[1].LevelUpdate();
                     }
-                    else if (player.Stage == 2)
+                    else if (difficulty == 4)
                     {
-                        MazeHeight = MazeWidth = 20;
-                        MAX_SHOP_COUNT = 6;
-                    }
-                    else if (player.Stage == 3)
-                    {
-                        MazeHeight = MazeWidth = 25;
-                        MAX_SHOP_COUNT = 8;
+                        MazeHeight = CustomMazeHeight;
+                        MazeWidth = CustomMazeWidth;
+                        enemy_count = 0.06;
+                        MAX_SHOP_COUNT = 5;
                     }
                     else
                     {
-                        MazeHeight = MazeWidth = 25;
-                        MAX_SHOP_COUNT = 8;
+                        if (inDebug == 1)
+                        {
+                            player.X = 10.5;
+                            player.Y = 10.5;
+                            MazeHeight = 21;
+                            MazeWidth = 21;
+                        }
+                        else if (inDebug == 2)
+                        {
+                            player.X = 10.5;
+                            player.Y = 19.5;
+                            MazeHeight = 22;
+                            MazeWidth = 22;
+                        }
+                        else if (inDebug == 3)
+                        {
+                            player.X = 21.5;
+                            player.Y = 22.5;
+                            MazeHeight = 25;
+                            MazeWidth = 25;
+                        }
+                    }
+                    if (difficulty < 4)
+                    {
+                        if (player.Stage == 0)
+                        {
+                            MazeHeight = MazeWidth = 10;
+                            MAX_SHOP_COUNT = 2;
+                        }
+                        else if (player.Stage == 1)
+                        {
+                            MazeHeight = MazeWidth = 15;
+                            MAX_SHOP_COUNT = 4;
+                        }
+                        else if (player.Stage == 2)
+                        {
+                            MazeHeight = MazeWidth = 20;
+                            MAX_SHOP_COUNT = 6;
+                        }
+                        else if (player.Stage == 3)
+                        {
+                            MazeHeight = MazeWidth = 25;
+                            MAX_SHOP_COUNT = 8;
+                        }
+                        else
+                        {
+                            MazeHeight = MazeWidth = 25;
+                            MAX_SHOP_COUNT = 8;
+                        }
                     }
                 }
             }
-            if (difficulty == 5)
+            if (difficulty == 5 || inBackrooms)
             {
                 MAP_WIDTH = MazeWidth;
                 MAP_HEIGHT = MazeHeight;
@@ -1003,9 +1039,11 @@ namespace SLIL.Classes
                 MAP_HEIGHT = MazeHeight * 3 + 1;
             }
             MAP.Clear();
-            if (difficulty == 5)
+            if (difficulty == 5 || inBackrooms)
             {
-                if (inDebug == 1)
+                if (inBackrooms)
+                    MAP.Append(backroomsMap);
+                else if (inDebug == 1)
                     MAP.AppendLine(debugMap);
                 else if (inDebug == 2)
                     MAP.AppendLine(bossMap);
@@ -1183,7 +1221,7 @@ namespace SLIL.Classes
                     player.Y = CUSTOM_Y;
                     continue;
                 }
-                if (difficulty != 5)
+                if (difficulty != 5 && !inBackrooms)
                 {
                     player.X = 1.5;
                     player.Y = 1.5;
@@ -1294,6 +1332,8 @@ namespace SLIL.Classes
             }
             return entity;
         }
+
+        internal bool InBackrooms() => inBackrooms;
 
         public StringBuilder GetMap() => MAP;
 

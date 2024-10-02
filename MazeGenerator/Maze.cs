@@ -9,6 +9,7 @@ namespace MazeGenerator
     {
         private static readonly Random rand = new Random();
         Room finishRoom = null;
+        Room fakeFinishRoom = null;
 
         private List<Room> Generate(int width, int height)
         {
@@ -18,6 +19,7 @@ namespace MazeGenerator
             roomStack.Push(initialRoom);
             rooms.Add(initialRoom);
             int finishIndex = rand.Next(width * height / 2, width * height);
+            int fakeFinishIndex = rand.Next(width * height / 2, width * height);
             while (rooms.Count < height * width)
             {
                 Room currentRoom = roomStack.Peek();
@@ -71,6 +73,8 @@ namespace MazeGenerator
                 }
                 if (rooms.Count == finishIndex)
                     finishRoom = newRoom;
+                if (rooms.Count == fakeFinishIndex)
+                    fakeFinishRoom = newRoom;
                 roomStack.Push(newRoom);
                 rooms.Add(newRoom);
             }
@@ -127,6 +131,8 @@ namespace MazeGenerator
                 }
                 if (room.X == finishRoom.X && room.Y == finishRoom.Y)
                     result[room.X * 3 + 2, room.Y * 3 + 2] = finishChar;
+                if (room.X == fakeFinishRoom.X && room.Y == fakeFinishRoom.Y)
+                    result[room.X * 3 + 2, room.Y * 3 + 2] = 'f';
             }
             for (int i = 0; i < result.GetLength(1); i++)
                 result[result.GetLength(0) - 1, i] = wallChar;

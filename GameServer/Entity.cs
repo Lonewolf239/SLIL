@@ -57,7 +57,6 @@ namespace GameServer
             Texture = this.GetTexture();
             EntityWidth = this.GetEntityWidth();
             RespondsToFlashlight = false;
-            Texture = this.GetTexture();
             HasAI = true;
             HasStaticAnimation = false;
             HasSpriteRotation = false;
@@ -530,7 +529,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 19;
+            Texture = 20;
             Index = 0;
             CanJump = true;
             AddToShop = true;
@@ -558,7 +557,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 24;
+            Texture = 25;
             base.SetAnimations(1, 0);
         }
     }
@@ -575,7 +574,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 25;
+            Texture = 26;
             LifeTime = 0;
             TotalLifeTime = 4;
             Temporarily = true;
@@ -591,7 +590,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 26;
+            Texture = 27;
             DEAD = true;
             base.AnimationsToStatic();
         }
@@ -609,7 +608,7 @@ namespace GameServer
             Cost = 150;
             Name = ["5-0", "Silly Cat"];
             Descryption = ["5-1", "Restores 2 HP every 8 seconds"];
-            Texture = 20;
+            Texture = 21;
             PetAbility = 0;
             AbilityReloadTime = 8;
             HasStopAnimation = true;
@@ -631,7 +630,7 @@ namespace GameServer
             Cost = 60;
             Name = ["5-2", "Green Gnome"];
             Descryption = ["5-3", "Increases maximum health by 25"];
-            Texture = 21;
+            Texture = 22;
             PetAbility = 1;
             IsInstantAbility = 1;
             RespondsToFlashlight = true;
@@ -652,7 +651,7 @@ namespace GameServer
             Cost = 60;
             Name = ["5-4", "Energy Drink"];
             Descryption = ["5-5", "Increases endurance and speed"];
-            Texture = 22;
+            Texture = 23;
             PetAbility = 2;
             IsInstantAbility = 1;
             RespondsToFlashlight = false;
@@ -679,7 +678,7 @@ namespace GameServer
             Cost = 666;
             Name = ["5-6", "Podseratel"];
             Descryption = ["5-7", "The world is a fairy tale..."];
-            Texture = 23;
+            Texture = 24;
             PetAbility = 3;
             IsInstantAbility = 2;
             AbilityReloadTime = 15;
@@ -698,7 +697,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 11;
+            Texture = 12;
             Animated = true;
             base.SetAnimations(1, 0);
         }
@@ -713,7 +712,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 14;
+            Texture = 15;
             DeathSound = 4;
             MoneyChance = 0.25;
             SetMoneyChance();
@@ -730,7 +729,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 15;
+            Texture = 16;
             DeathSound = 4;
             MoneyChance = 0.75;
             SetMoneyChance();
@@ -758,7 +757,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 13;
+            Texture = 14;
             LifeTime = 0;
             TotalLifeTime = 4;
             Temporarily = true;
@@ -775,7 +774,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 4;
+            Texture = 5;
             base.AnimationsToStatic();
         }
     }
@@ -789,7 +788,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 12;
+            Texture = 13;
             RespondsToFlashlight = true;
             base.AnimationsToStatic();
         }
@@ -818,7 +817,7 @@ namespace GameServer
         private void Init()
         {
             DeathSound = 0;
-            Texture = 7;
+            Texture = 8;
             detectionRange = 5;
             base.SetAnimations(1, 0);
         }
@@ -915,7 +914,7 @@ namespace GameServer
         private void Init()
         {
             DeathSound = 1;
-            Texture = 8;
+            Texture = 9;
             detectionRange = 7;
             Fast = true;
             base.SetAnimations(1, 0);
@@ -1013,7 +1012,7 @@ namespace GameServer
         private void Init()
         {
             DeathSound = 2;
-            Texture = 9;
+            Texture = 10;
             detectionRange = 8;
             base.SetAnimations(2, 0);
         }
@@ -1110,7 +1109,7 @@ namespace GameServer
         private void Init()
         {
             DeathSound = 3;
-            Texture = 10;
+            Texture = 11;
             detectionRange = 6;
             Fast = true;
             base.SetAnimations(1, 0);
@@ -1192,7 +1191,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 16;
+            Texture = 17;
             base.AnimationsToStatic();
         }
 
@@ -1206,7 +1205,7 @@ namespace GameServer
 
         private void Init()
         {
-            Texture = 17;
+            Texture = 18;
             base.AnimationsToStatic();
         }
 

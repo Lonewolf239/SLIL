@@ -852,6 +852,7 @@ namespace SLIL.UserControls
                                 {
                                     message += $"Player speed is now {x}. *Default: 1,75*";
                                     player.MAX_MOVE_SPEED = x;
+                                    player.MAX_STRAFE_SPEED = x / 2;
                                 }
                                 else
                                 {

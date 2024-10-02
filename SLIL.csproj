@@ -1414,6 +1414,11 @@
     <None Include="Images\player_parkour.png" />
     <None Include="Images\show_pas.png" />
     <None Include="Images\hide_pas.png" />
+    <None Include="Images\fake_teleport_0.png" />
+    <None Include="Images\fake_teleport_1.png" />
+    <None Include="Images\back_floor.png" />
+    <None Include="Images\back_wall.png" />
+    <None Include="Images\back_ceiling.png" />
     <Content Include="SLIL_v0_1\sounds\game_over.wav" />
     <Content Include="SLIL_v0_1\sounds\step_0.wav" />
     <Content Include="SLIL_v0_1\sounds\step_1.wav" />

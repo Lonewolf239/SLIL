@@ -473,7 +473,7 @@ namespace SLIL
         public PlaySound[] climb;
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L#####d##=##...=b.###.#.L.#.l#.##............#......######################",
+            debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
             bikeMap = @"############################......######.......#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######.......############################";
         public static float Volume = 0.4f;
         private int burst_shots = 0, reload_frames = 0;
@@ -2193,20 +2193,30 @@ namespace SLIL
                 }
                 if (y >= mid && y <= floor && hit_window)
                 {
-                    textureId = 2;
+                    textureId = 3;
+                    if (Controller.InBackrooms()) textureId = 28;
                     if (Math.Abs(y - mid) <= 6 / window_distance || is_window_bound)
+                    {
                         textureId = 0;
+                        if (Controller.InBackrooms())
+                            textureId = 2;
+                    }
                     blackout = (int)(Math.Min(Math.Max(0, Math.Floor((window_distance / player.GetDrawDistance()) * 100)), 100));
                 }
                 else if ((y < mid || !hit_window) && y > ceiling && y < floor)
                 {
-                    textureId = 2;
+                    textureId = 3;
+                    if (Controller.InBackrooms()) textureId = 28;
                     if (hit_wall == 1)
-                        textureId = 18;
+                        textureId = 19;
                     if (hit_door)
-                        textureId = 3;
+                        textureId = 4;
                     if (is_bound)
+                    {
                         textureId = 0;
+                        if (Controller.InBackrooms())
+                            textureId = 2;
+                    }
                     blackout = (int)(Math.Min(Math.Max(0, Math.Floor((distance / player.GetDrawDistance()) * 100)), 100));
                 }
                 result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId, SpriteStates.Static);
@@ -2218,7 +2228,8 @@ namespace SLIL
                     double floorY = player.Y - rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
-                    result[y].TextureId = 6;
+                    result[y].TextureId = 7;
+                    if (Controller.InBackrooms()) result[y].TextureId = 29;
                     result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((-rowDistance / player.GetDrawDistance()) * 100)), 100));
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
@@ -2232,7 +2243,8 @@ namespace SLIL
                     double floorY = player.Y + rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
-                    result[y].TextureId = 5;
+                    result[y].TextureId = 6;
+                    if (Controller.InBackrooms()) result[y].TextureId = 30;
                     result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((rowDistance / player.GetDrawDistance()) * 100)), 100));
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
@@ -2474,7 +2486,7 @@ namespace SLIL
             if (player != null) cute = player.CuteMode;
             int textureSize = 128;
             int x = 0, y = 0;
-            if (pixel.TextureId >= 2)
+            if (pixel.TextureId >= 3)
             {
                 x = (int)WrapTexture((int)(pixel.TextureX * textureSize), textureSize);
                 y = (int)WrapTexture((int)(pixel.TextureY * textureSize), textureSize);
@@ -2812,7 +2824,8 @@ namespace SLIL
             if (stage_timer.Enabled && StageOpacity > 0)
             {
                 string text = "STAGE: ";
-                if (IsTutorial) text += "Tutorial";
+                if (Controller.InBackrooms()) text += "???";
+                else if (IsTutorial) text += "Tutorial";
                 else if (inDebug == 1) text += "Debug";
                 else if (inDebug == 2) text += "Debug Boss";
                 else if (inDebug == 3) text += "Debug Bike";
@@ -3111,7 +3124,8 @@ namespace SLIL
                 case 'L': return Color.OliveDrab;
                 case 'l': return Color.DarkGoldenrod;
                 case '$': return Color.Pink;
-                case 'F': return Color.MediumVioletRed;
+                case 'F':
+                case 'f': return Color.MediumVioletRed;
                 case '*': return Color.FromArgb(255, 128, 128);
                 case 'E': return Color.Cyan;
                 default: return Color.Black;
@@ -3794,7 +3808,6 @@ namespace SLIL
                 player.Guns.Add(player.GUNS[2]);
             }
             player.SetDefault();
-            player.LevelUpdated = false;
             open_shop = false;
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
             if (MainMenu.sounds)
@@ -3842,7 +3855,7 @@ namespace SLIL
             DISPLAYED_MAP.Clear();
             string DMAP = "";
             for (int i = 0; i < Controller.GetMap().Length; i++) DMAP += '.';
-            if (difficulty < 5)
+            if (difficulty < 5 || Controller.InBackrooms())
                 DISPLAYED_MAP.Append(DMAP);
             else
             {

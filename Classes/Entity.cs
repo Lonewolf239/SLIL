@@ -534,7 +534,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 19;
+            Texture = 20;
             Index = 0;
             CanJump = true;
             AddToShop = true;
@@ -562,7 +562,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 24;
+            Texture = 25;
             base.SetAnimations(1, 0);
         }
     }
@@ -579,7 +579,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 25;
+            Texture = 26;
             LifeTime = 0;
             TotalLifeTime = 4;
             Temporarily = true;
@@ -596,7 +596,7 @@ namespace SLIL.Classes
         private void Init()
         {
             DEAD = true;
-            Texture = 26;
+            Texture = 27;
             base.AnimationsToStatic();
         }
         protected override int GetEntityID() => 13;
@@ -613,7 +613,7 @@ namespace SLIL.Classes
             Cost = 150;
             Name = new[] { "5-0", "Silly Cat" };
             Descryption = new[] { "5-1", "Restores 2 HP every 8 seconds" };
-            Texture = 20;
+            Texture = 21;
             PetAbility = 0;
             AbilityReloadTime = 8;
             HasStopAnimation = true;
@@ -635,7 +635,7 @@ namespace SLIL.Classes
             Cost = 60;
             Name = new[] { "5-2", "Green Gnome" };
             Descryption = new[] { "5-3", "Increases maximum health by 25" };
-            Texture = 21;
+            Texture = 22;
             PetAbility = 1;
             IsInstantAbility = 1;
             RespondsToFlashlight = true;
@@ -656,7 +656,7 @@ namespace SLIL.Classes
             Cost = 60;
             Name = new[] { "5-4", "Energy Drink" };
             Descryption = new[] { "5-5", "Increases endurance and speed" };
-            Texture = 22;
+            Texture = 23;
             PetAbility = 2;
             IsInstantAbility = 1;
             RespondsToFlashlight = false;
@@ -683,7 +683,7 @@ namespace SLIL.Classes
             Cost = 666;
             Name = new[] { "5-6", "Podseratel" };
             Descryption = new[] { "5-7", "The world is a fairy tale..." };
-            Texture = 23;
+            Texture = 24;
             PetAbility = 3;
             IsInstantAbility = 2;
             AbilityReloadTime = 15;
@@ -691,6 +691,21 @@ namespace SLIL.Classes
             base.SetAnimations(1, 0);
         }
         public override int Interaction() => 2;
+    }
+
+    public class BackroomsTeleport : GameObject
+    {
+        protected override int GetEntityID() => 21;
+
+        public BackroomsTeleport(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
+        public BackroomsTeleport(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 31;
+            Animated = true;
+            base.SetAnimations(1, 0);
+        }
     }
 
     public class Teleport : GameObject
@@ -702,7 +717,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 11;
+            Texture = 12;
             Animated = true;
             base.SetAnimations(1, 0);
         }
@@ -717,7 +732,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 14;
+            Texture = 15;
             DeathSound = 4;
             MoneyChance = 0.25;
             SetMoneyChance();
@@ -734,7 +749,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 15;
+            Texture = 16;
             DeathSound = 4;
             MoneyChance = 0.75;
             SetMoneyChance();
@@ -762,7 +777,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 13;
+            Texture = 14;
             LifeTime = 0;
             TotalLifeTime = 4;
             Temporarily = true;
@@ -779,7 +794,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 4;
+            Texture = 5;
             base.AnimationsToStatic();
         }
     }
@@ -793,7 +808,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 12;
+            Texture = 13;
             RespondsToFlashlight = true;
             base.AnimationsToStatic();
         }
@@ -822,7 +837,7 @@ namespace SLIL.Classes
         private void Init()
         {
             DeathSound = 0;
-            Texture = 7;
+            Texture = 8;
             detectionRange = 5;
             base.SetAnimations(1, 0);
         }
@@ -919,7 +934,7 @@ namespace SLIL.Classes
         private void Init()
         {
             DeathSound = 1;
-            Texture = 8;
+            Texture = 9;
             detectionRange = 7;
             Fast = true;
             base.SetAnimations(1, 0);
@@ -1017,7 +1032,7 @@ namespace SLIL.Classes
         private void Init()
         {
             DeathSound = 2;
-            Texture = 9;
+            Texture = 10;
             detectionRange = 8;
             base.SetAnimations(2, 0);
         }
@@ -1114,7 +1129,7 @@ namespace SLIL.Classes
         private void Init()
         {
             DeathSound = 3;
-            Texture = 10;
+            Texture = 11;
             detectionRange = 6;
             Fast = true;
             base.SetAnimations(1, 0);
@@ -1196,7 +1211,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 16;
+            Texture = 17;
             base.AnimationsToStatic();
         }
 
@@ -1210,7 +1225,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 17;
+            Texture = 18;
             base.AnimationsToStatic();
         }
 

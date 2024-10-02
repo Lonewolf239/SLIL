@@ -488,7 +488,7 @@ namespace SLIL.Classes
             DisposableItems.Add((FirstAidKit)GUNS[10]);
             DisposableItems.Add((Adrenalin)GUNS[13]);
             DisposableItems.Add((Helmet)GUNS[14]);
-            Texture = 26;
+            Texture = 27;
             SetAnimations(1, 0);
             Dead = true;
             SetDefault();
@@ -533,6 +533,7 @@ namespace SLIL.Classes
             Dead = false;
             Invulnerable = false;
             TimeoutInvulnerable = 2;
+            LevelUpdated = false;
             Aiming = false;
             UseItem = false;
             LevelUpdated = false;
@@ -824,7 +825,8 @@ namespace SLIL.Classes
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
                 MAX_STAMINE -= 450;
-                STAMINE = MAX_STAMINE;
+                if (STAMINE > MAX_STAMINE)
+                    STAMINE = MAX_STAMINE;
             }
             else if (index == 4)
             {
