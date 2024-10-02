@@ -1419,6 +1419,7 @@
     <None Include="Images\back_floor.png" />
     <None Include="Images\back_wall.png" />
     <None Include="Images\back_ceiling.png" />
+    <None Include="Images\camera.png" />
     <Content Include="SLIL_v0_1\sounds\game_over.wav" />
     <Content Include="SLIL_v0_1\sounds\step_0.wav" />
     <Content Include="SLIL_v0_1\sounds\step_1.wav" />

@@ -290,16 +290,16 @@ namespace SLIL
         {
             {typeof(Bike), new[,] {
                 {
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_idle.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_accelerating.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_stopping.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_full_speed.wav"), false)
+                    new PlaySound(MainMenu.CGFReader.GetFile("bike_idle.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("bike_accelerating.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("bike_stopping.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("bike_full_speed.wav"), false)
                 },
                 {
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_idle.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_accelerating.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_stopping.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("step_bike_c_full_speed.wav"), false)
+                    new PlaySound(MainMenu.CGFReader.GetFile("bike_c_idle.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("bike_c_accelerating.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("bike_c_stopping.wav"), false),
+                    new PlaySound(MainMenu.CGFReader.GetFile("bike_c_full_speed.wav"), false)
                 }
             } },
         };
@@ -348,7 +348,7 @@ namespace SLIL
         private readonly TextureCache textureCache;
         public static PlaySound[] hit = { new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("hit_transport.wav"), false) };
         public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
-        private PlaySound step;
+        private PlaySound step, transport_step;
         public static PlaySound[,] steps = new PlaySound[,]
         {
             {
@@ -379,6 +379,20 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_3.wav"), false),
                 new PlaySound(MainMenu.CGFReader.GetFile("step_run_c_4.wav"), false)
             },
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("step_back_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_back_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_back_2.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_back_3.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_back_4.wav"), false)
+            },
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_back_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_back_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_back_2.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_back_3.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_back_4.wav"), false)
+            },
         };
         public static PlaySound[] ost = new PlaySound[]
         {
@@ -389,7 +403,8 @@ namespace SLIL
             new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_4.wav"), true),
             new PlaySound(null, false),
             new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true),
-            new PlaySound(MainMenu.CGFReader.GetFile("cmode_ost.wav"), true)
+            new PlaySound(MainMenu.CGFReader.GetFile("cmode_ost.wav"), true),
+            new PlaySound(MainMenu.CGFReader.GetFile("backrooms_ost.wav"), true)
         };
         public static PlaySound[,] DeathSounds = new PlaySound[,]
         {
@@ -1006,8 +1021,12 @@ namespace SLIL
                 DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<int> enemiesCoords);
                 foreach (int i in enemiesCoords) DISPLAYED_MAP[i] = 'E';
                 DrawRaysOnScreen(rays);
-                if (!Controller.IsInSpectatorMode()) DrawGameInterface();
-                else DrawSpectatorInterface();
+                if (!Controller.InBackrooms())
+                {
+                    if (!Controller.IsInSpectatorMode()) DrawGameInterface();
+                    else DrawSpectatorInterface();
+                }
+                else DrawCamera();
                 UpdateDisplay();
                 fps = CalculateFPS(elapsed_time);
             }
@@ -1018,11 +1037,8 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if ((
-                player.PlayerDirection != Directions.STOP
-                || player.StrafeDirection != Directions.STOP
-                || player.MOVE_SPEED != 0
-                || player.STRAFE_SPEED != 0
+            if ((player.MOVE_SPEED != 0
+                || (player.STRAFE_SPEED != 0 && !player.InTransport)
                 )
                 && !player.InParkour
                 && !player.Aiming
@@ -1043,32 +1059,43 @@ namespace SLIL
                             || (player.PlayerDirection == Directions.FORWARD && player.MOVE_SPEED < 0)
                             || (player.PlayerDirection == Directions.BACK && player.MOVE_SPEED > 0))
                             //stopping
-                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, 2];
+                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 2];
                         else
                             //accelerating
-                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, 1];
+                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 1];
                     }
                     else
                     {
                         //full speed
-                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, 3];
+                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 3];
+                    }
+                    if (transport_step == null || transport_step != step)
+                    {
+                        transport_step?.Stop();
+                        transport_step = step;
+                        transport_step.Play(Volume);
                     }
                 }
                 else
-                    step = steps[player.CuteMode ? i + 2 : i, soundIndices[currentIndex]];
-                step.PlayWithWait(Volume);
+                {
+                    int index = i;
+                    if (Controller.InBackrooms()) index = i + 4;
+                    if (player.CuteMode) index = i + 2;
+                    step = steps[index, soundIndices[currentIndex]];
+                    step.PlayWithWait(Volume);
+                }
                 currentIndex++;
             }
-            else if (player.InTransport && player.TRANSPORT != null && player.MOVE_SPEED == 0 && player.STRAFE_SPEED == 0)
+            else if (player.InTransport && player.TRANSPORT != null && player.MOVE_SPEED == 0)
             {
-                if (currentIndex >= soundIndices.Count)
-                {
-                    soundIndices = soundIndices.OrderBy(x => rand.Next()).ToList();
-                    currentIndex = 0;
-                }
                 //IDLE
-                step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 0 : 1, 0];
-                step.PlayWithWait(Volume);
+                step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 0];
+                if (transport_step == null || transport_step != step)
+                {
+                    transport_step?.Stop();
+                    transport_step = step;
+                    transport_step.Play(Volume);
+                }
                 currentIndex++;
             }
         }
@@ -1429,7 +1456,9 @@ namespace SLIL
                         player.StrafeDirection = Directions.LEFT;
                     if (e.KeyCode == Bind.Right)
                         player.StrafeDirection = Directions.RIGHT;
-                    if (player != null && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.InTransport)
+                    if (player != null && !shot_timer.Enabled && !reload_timer.Enabled && 
+                        !shotgun_pull_timer.Enabled && !player.BlockInput && !player.InTransport &&
+                        !Controller.InBackrooms())
                     {
                         int count = player.Guns.Count;
                         if (e.KeyCode == Bind.Reloading)
@@ -1545,7 +1574,7 @@ namespace SLIL
                         }
                     }
                 }
-                if (!Controller.IsMultiplayer() && e.KeyCode == Keys.Oemtilde && !open_shop && MainMenu.ConsoleEnabled)
+                if (!Controller.IsMultiplayer() && !Controller.InBackrooms() && e.KeyCode == Keys.Oemtilde && !open_shop && MainMenu.ConsoleEnabled)
                 {
                     console_panel.Visible = !console_panel.Visible;
                     ShowMap = false;
@@ -1634,7 +1663,7 @@ namespace SLIL
                 if (player == null) return;
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.IsPetting)
                 {
-                    if (player.InTransport || player.UseItem) return;
+                    if (player.InTransport || player.UseItem || Controller.InBackrooms()) return;
                     if (e.KeyCode == Bind.Flashlight)
                     {
                         if (player.GetCurrentGun() is Flashlight) TakeFlashlight(false);
@@ -1898,7 +1927,9 @@ namespace SLIL
             if (!Controller.IsInSpectatorMode())
             {
                 Player player = Controller.GetPlayer();
-                if (GameStarted && !Paused && !player.BlockInput && !player.InSelectingMode && !player.IsPetting && !shotgun_pull_timer.Enabled && !shot_timer.Enabled && !Controller.IsInSpectatorMode())
+                if (GameStarted && !Paused && !player.BlockInput && !player.InSelectingMode && !player.IsPetting &&
+                    !shotgun_pull_timer.Enabled && !shot_timer.Enabled && !Controller.IsInSpectatorMode() &&
+                    !Controller.InBackrooms())
                 {
                     if (e.Button == MouseButtons.Left)
                     {
@@ -2681,6 +2712,14 @@ namespace SLIL
 
         //  #====   GameInterface   ====#
 
+        private void DrawCamera()
+        {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
+            graphicsWeapon.Clear(Color.Transparent);
+            DrawWeapon(player, 0);
+        }
+
         private void DrawGameInterface()
         {
             Player player = Controller.GetPlayer();
@@ -3024,6 +3063,8 @@ namespace SLIL
             Image imageToDraw;
             if (player.IsPetting)
                 imageToDraw = Properties.Resources.pet_animation;
+            else if (Controller.InBackrooms())
+                imageToDraw = Properties.Resources.camera;
             else if (player.InTransport)
             {
                 if (player.InParkour)
@@ -3592,7 +3633,7 @@ namespace SLIL
         private void ChangeWeapon(int new_gun)
         {
             Player player = Controller.GetPlayer();
-            if (player == null || player.UseItem) return;
+            if (player == null || player.UseItem || Controller.InBackrooms()) return;
             if ((new_gun != player.CurrentGun || player.LevelUpdated) && !player.InSelectingMode && player.Guns[new_gun].HasIt)
             {
                 if (MainMenu.sounds) draw.Play(Volume);
@@ -3615,6 +3656,11 @@ namespace SLIL
                     {
                         if (ost_index != 7)
                             ChangeOst(7);
+                    }
+                    else if (Controller.InBackrooms())
+                    {
+                        if (ost_index != 8)
+                            ChangeOst(8);
                     }
                     else ChangeOst(prev_ost);
                 }
@@ -3812,9 +3858,11 @@ namespace SLIL
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
             if (MainMenu.sounds)
             {
-                if (!player.CuteMode)
+                if (Controller.InBackrooms())
+                    ChangeOst(8);
+                else if (!player.CuteMode)
                 {
-                    prev_ost = rand.Next(ost.Length - 3);
+                    prev_ost = rand.Next(ost.Length - 4);
                     ChangeOst(prev_ost);
                 }
                 else ChangeOst(7);

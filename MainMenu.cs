@@ -1227,6 +1227,8 @@ namespace SLIL
         private void Start_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
+            singleplayer.Checked = true;
+            normal_btn.Checked = true;
             game_mode_panel.Visible = true;
             game_mode_panel.BringToFront();
         }
