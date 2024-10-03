@@ -90,6 +90,7 @@ namespace Play_Sound
 
         public void LoopPlay(float volume)
         {
+            if (file == null) return;
             file.Position = 0;
             playing.Volume = volume;
             playing.Play();
