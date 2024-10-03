@@ -341,7 +341,7 @@ namespace GameServer
             writer.Put(MAP_WIDTH);
             writer.Put(MAP_HEIGHT);
             writer.Put(Entities.Count);
-            List<Entity> entities = new List<Entity>(Entities);
+            List<Entity> entities = new(Entities);
             foreach (var entity in entities)
             {
                 writer.Put(entity.EntityID);
@@ -856,13 +856,20 @@ namespace GameServer
                 List<(int, string)> playerIDs = [];
                 foreach(Entity ent in Entities)
                 {
-                    if (ent is Player p) playerIDs.Add((p.ID, p.Name));
+                    if (ent is Player p)
+                    {
+                        string? name = p.Name;
+                        name ??= "NoName";
+                        playerIDs.Add((p.ID, name));
+                    }
                 }
                 Entities.Clear();
                 foreach((int, string) pInfo in playerIDs)
                 {
-                    Player p = new Player(1.5, 1.5, MAP_WIDTH, pInfo.Item1);
-                    p.Name = pInfo.Item2;
+                    Player p = new(1.5, 1.5, MAP_WIDTH, pInfo.Item1)
+                    {
+                        Name = pInfo.Item2
+                    };
                     Entities.Add(p);
                 }
                 sendMessageFromGameCallback(101);
@@ -1729,7 +1736,7 @@ namespace GameServer
         {
             Player? p = GetPlayer(playerID);
             if (p == null) return false;
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$' };
+            char[] impassibleCells = ['#', 'D', '=', 'd', 'S', '$'];
             if (HasNoClip(playerID) || p.InParkour) return false;
             return impassibleCells.Contains(GetMap()[index]);
         }
