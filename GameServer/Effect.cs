@@ -111,7 +111,7 @@ namespace GameServer
         public Bleeding() : base()
         {
             ID = 5;
-            EffectTotalTime = 6;
+            EffectTotalTime = 15;
             Name = "Bleeding";
             Description = "Gradually reduces health";
             UpdateTimeRemaining();

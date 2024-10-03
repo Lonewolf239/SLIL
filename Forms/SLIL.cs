@@ -777,7 +777,7 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            float distance = (float)Math.Sqrt((player.X-X)*(player.X-X)+(player.Y-Y)*(player.Y-Y));
+            float distance = (float)Math.Sqrt((player.X - X) * (player.X - X) + (player.Y - Y) * (player.Y - Y));
             float vol = Volume;
             if (distance > 1)
             {
@@ -788,17 +788,13 @@ namespace SLIL
                 this.BeginInvoke((MethodInvoker)delegate
                 {
                     if (MainMenu.sounds)
-                    {
                         sound.Play(vol);
-                    }
                 });
             }
             else
             {
                 if (MainMenu.sounds)
-                {
                     sound.Play(vol);
-                }
             }
         }
 
@@ -1073,7 +1069,7 @@ namespace SLIL
                     {
                         transport_step?.Stop();
                         transport_step = step;
-                        transport_step.Play(Volume);
+                        Controller.PlayGameSound(transport_step);
                     }
                 }
                 else
@@ -1094,7 +1090,7 @@ namespace SLIL
                 {
                     transport_step?.Stop();
                     transport_step = step;
-                    transport_step.Play(Volume);
+                    Controller.PlayGameSound(transport_step);
                 }
                 currentIndex++;
             }
@@ -1117,7 +1113,7 @@ namespace SLIL
                     player.STAMINE = 0;
                     player.PlayerMoveStyle = Directions.WALK;
                     chill_timer.Start();
-                    if (MainMenu.sounds) low_stamine.Play(Volume);
+                    Controller.PlayGameSound(low_stamine);
                 }
                 else player.ReducesStamine();
             }
@@ -1170,8 +1166,7 @@ namespace SLIL
                         if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4)
                             player.GunState = 3;
                         player.Aiming = false;
-                        if (MainMenu.sounds)
-                            SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                        Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
                         shot_timer.Stop();
                         reload_timer.Start();
                     }
@@ -1190,8 +1185,7 @@ namespace SLIL
                                 player.GunState = 2;
                             else
                                 player.GunState = 3;
-                            if (MainMenu.sounds)
-                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                            Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
                             shot_timer.Stop();
                             if (player.GetCurrentGun().Level != Levels.LV1)
                                 shotgun_pull_timer.Start();
@@ -1206,8 +1200,7 @@ namespace SLIL
                         if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
                         {
                             player.GunState = 2;
-                            if (MainMenu.sounds)
-                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                            Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
                             shot_timer.Stop();
                             shotgun_pull_timer.Start();
                         }
@@ -1275,8 +1268,8 @@ namespace SLIL
                     }
                     else if (player.GetCurrentGun().ReloadFrames > 1) player.GunState++;
                     reload_frames++;
-                    if (player.GetCurrentGun() is Shotgun && MainMenu.sounds)
-                        SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3].Play(Volume);
+                    if (player.GetCurrentGun() is Shotgun)
+                        Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3]);
                 }
                 else
                 {
@@ -1482,8 +1475,7 @@ namespace SLIL
                                     if (player.GetCurrentGun().Level != Levels.LV1)
                                         sound = 3;
                                 }
-                                if (MainMenu.sounds)
-                                    SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), sound].Play(Volume);
+                                Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), sound]);
                                 reload_timer.Start();
                             }
                         }
@@ -1503,8 +1495,7 @@ namespace SLIL
                                     Thread.Sleep(150);
                                     player.ItemFrame = 1;
                                 }).Start();
-                                if (MainMenu.sounds)
-                                    SoundsDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), 0].Play(Volume);
+                                Controller.PlayGameSound(SoundsDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), 0]);
                                 Controller.UseItem();
                             }
                         }
@@ -1734,8 +1725,7 @@ namespace SLIL
                                 case '=':
                                 case 'F':
                                     hit = true;
-                                    if (MainMenu.sounds)
-                                        wall.Play(Volume);
+                                    Controller.PlayGameSound(wall);
                                     break;
                                 case 'D':
                                     hit = true;
@@ -1946,8 +1936,7 @@ namespace SLIL
                     {
                         if (player.GetCurrentGun().CanAiming && player.CanShoot && player.GetCurrentGun().CanShoot)
                         {
-                            if (MainMenu.sounds)
-                                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3].Play(Volume);
+                            Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3]);
                             player.Aiming = !player.Aiming;
                             player.GunState = player.Aiming ? player.GetCurrentGun().AimingState : 0;
                         }
@@ -3335,8 +3324,7 @@ namespace SLIL
             if (player.GetCurrentGun().AmmoInStock >= 0 && player.GetCurrentGun().AmmoCount > 0)
             {
                 if (player.GetCurrentGun() is SniperRifle && !player.Aiming) return false;
-                if (MainMenu.sounds)
-                    SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0].Play(Volume);
+                Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0]);
                 player.GunState = 1;
                 player.Aiming = false;
                 player.CanShoot = false;
@@ -3362,14 +3350,13 @@ namespace SLIL
                 reload_timer.Start();
                 if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
                     return false;
-                if (MainMenu.sounds)
-                    SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1].Play(Volume);
+                Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
                 return false;
             }
             else if (!(player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level == Levels.LV1) &&
                 !(player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level == Levels.LV1) && MainMenu.sounds)
             {
-                SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 2].Play(Volume);
+                Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 2]);
                 return false;
             }
             return false;
@@ -3506,9 +3493,9 @@ namespace SLIL
                                                     if (MainMenu.sounds)
                                                     {
                                                         if (player.CuteMode)
-                                                            CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                            Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
                                                         else
-                                                            DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                            Controller.PlayGameSound(DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
                                                     }
                                                 }
                                                 if (!player.CuteMode)
@@ -3537,9 +3524,9 @@ namespace SLIL
                                                     if (MainMenu.sounds)
                                                     {
                                                         if (player.CuteMode)
-                                                            CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                            Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
                                                         else
-                                                            DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))].Play(Volume);
+                                                            Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
                                                     }
                                                 }
                                                 if (!player.CuteMode)
@@ -3622,9 +3609,9 @@ namespace SLIL
             if (MainMenu.sounds)
             {
                 if (Controller.GetPlayer().InTransport)
-                    climb[1].Play(Volume);
+                    Controller.PlayGameSound(climb[1]);
                 else
-                    climb[0].Play(Volume);
+                    Controller.PlayGameSound(climb[0]);
             }
         }
 
@@ -3636,7 +3623,7 @@ namespace SLIL
             if (player == null || player.UseItem || Controller.InBackrooms()) return;
             if ((new_gun != player.CurrentGun || player.LevelUpdated) && !player.InSelectingMode && player.Guns[new_gun].HasIt)
             {
-                if (MainMenu.sounds) draw.Play(Volume);
+                Controller.PlayGameSound(draw);
                 Controller.ChangeWeapon(new_gun);
                 player.GunState = 0;
                 player.Aiming = false;
@@ -3688,7 +3675,7 @@ namespace SLIL
             console_panel.Log($"Screenshot successfully created and saved to path:\n<{path}<", true, true, Color.Lime);
             using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
                 BUFFER?.Save(fileStream, ImageFormat.Png);
-            if (MainMenu.sounds) screenshot.Play(Volume);
+            Controller.PlayGameSound(screenshot);
         }
 
         private string GetPath()
@@ -3734,6 +3721,8 @@ namespace SLIL
         }
 
         //  #====   Game methods    ====#
+
+        private int GetCoordinate(double x, double y) => (int)(y * Controller.GetMapWidth() + x);
 
         private bool PlayerCanRun()
         {
@@ -3820,8 +3809,7 @@ namespace SLIL
             GameStarted = false;
             if (win == 1)
             {
-                if (MainMenu.sounds)
-                    tp.Play(Volume);
+                Controller.PlayGameSound(tp);
                 StartGame();
             }
             else if (win == 0)
@@ -3829,8 +3817,7 @@ namespace SLIL
                 ToDefault();
                 game_over_panel.Visible = true;
                 game_over_panel.BringToFront();
-                if (MainMenu.sounds)
-                    game_over.Play(Volume);
+                Controller.PlayGameSound(game_over);
             }
             else ToDefault();
         }

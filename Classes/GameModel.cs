@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Play_Sound;
 
 namespace SLIL.Classes
 {
@@ -1883,6 +1884,20 @@ namespace SLIL.Classes
                     return;
                 }
             }
+        }
+
+        internal void PlayGameSound(int playerID, PlaySound sound)
+        {
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            PlaySoundHandle(sound, p.X, p.Y);
+        }
+
+        internal void PlayGameSound(PlaySound sound, int coordinate)
+        {
+            double X = coordinate % MAP_HEIGHT;
+            double Y = (coordinate - X) / MAP_WIDTH;
+            PlaySoundHandle(sound, X, Y);
         }
 
         internal void InteractingWithDoors(int coordinate)

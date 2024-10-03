@@ -755,7 +755,7 @@ namespace GameServer
                 if (Effects[i].ID == 0) HealHP(rand.Next(2, 6));
                 if (Effects[i].ID == 5)
                 {
-                    int damage = rand.Next(1, 3);
+                    int damage = rand.Next(2);
                     if (HP - damage >= 1)
                         DealDamage(damage, false);
                 }

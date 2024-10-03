@@ -1939,6 +1939,13 @@ namespace GameServer
             }
         }
 
+        internal void PlayGameSound(int coordinate)
+        {
+            //TODO:
+            double X = coordinate % MAP_HEIGHT;
+            double Y = (coordinate - X) / MAP_WIDTH;
+        }
+
         internal void InteractingWithDoors(int coordinate)
         {
             double X = coordinate % MAP_HEIGHT;
