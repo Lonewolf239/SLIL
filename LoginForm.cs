@@ -27,12 +27,7 @@ namespace SLIL
                 Properties.Resources.show_pas;
         }
 
-        private void Create_account_Click(object sender, EventArgs e)
-        {
-            Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT") { UseShellExecute = true });
-            CanClose = true;
-            Application.Exit();
-        }
+        private void Create_account_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT") { UseShellExecute = true });
 
         private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
         {

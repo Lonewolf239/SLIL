@@ -2457,36 +2457,47 @@ namespace SLIL
             if (entity.HasSpriteRotation)
             {
                 Player player = Controller.GetPlayer();
-                //TODO:
+                double entityVectorX = Math.Sin(entity.A);
+                double entityVectorY = Math.Cos(entity.A);
+                double vectorFromPlayerToEntityX = Math.Sin(player.X - entity.X);
+                double vectorFromPlayerToEntityY = Math.Cos(player.Y - entity.Y);
+                double entityRotationAngle = Math.Atan2(entityVectorX - vectorFromPlayerToEntityX, entityVectorY - vectorFromPlayerToEntityY);
                 if (returnStopState || entity.HasStaticAnimation)
                 {
-                    if (player.A < 1.57)
-                        return SpriteStates.StopForward;
-                    if (player.A < 3.14)
-                        return SpriteStates.StopLeft;
-                    if (player.A < 4.71)
+                    if (entityRotationAngle < Math.PI / 4 && entityRotationAngle > -Math.PI / 4)
                         return SpriteStates.StopBack;
-                    return SpriteStates.StopRight;
+                    else if (entityRotationAngle >= Math.PI / 4 && entityRotationAngle < 3 * Math.PI / 4)
+                        return SpriteStates.StopLeft;
+                    else if (entityRotationAngle >= 3 * Math.PI / 4 && entityRotationAngle < -3 * Math.PI / 4)
+                        return SpriteStates.StopForward;
+                    else if (entityRotationAngle >= -3 * Math.PI / 4 && entityRotationAngle <= -Math.PI / 4)
+                        return SpriteStates.StopRight;
+                    return SpriteStates.StopForward;
                 }
                 else
                 {
-                    if (player.A < 1.57)
-                    {
-                        if (state == 0) return SpriteStates.StepForward_0;
-                        return SpriteStates.StepForward_1;
-                    }
-                    if (player.A < 3.14)
-                    {
-                        if (state == 0) return SpriteStates.StepLeft_0;
-                        return SpriteStates.StepLeft_1;
-                    }
-                    if (player.A < 4.71)
+                    if (entityRotationAngle < Math.PI / 4 && entityRotationAngle > -Math.PI / 4)
                     {
                         if (state == 0) return SpriteStates.StepBack_0;
                         return SpriteStates.StepBack_1;
                     }
-                    if (state == 0) return SpriteStates.StepRight_0;
-                    return SpriteStates.StepRight_1;
+                    else if (entityRotationAngle >= Math.PI / 4 && entityRotationAngle < 3 * Math.PI / 4)
+                    {
+                        if (state == 0) return SpriteStates.StepLeft_0;
+                        return SpriteStates.StepLeft_1;
+                    }
+                    else if (entityRotationAngle >= 3 * Math.PI / 4 && entityRotationAngle < -3 * Math.PI / 4)
+                    {
+                        if (state == 0) return SpriteStates.StepForward_0;
+                        return SpriteStates.StepForward_1;
+                    }
+                    else if (entityRotationAngle >= -3 * Math.PI / 4 && entityRotationAngle <= -Math.PI / 4)
+                    {
+                        if (state == 0) return SpriteStates.StepRight_0;
+                        return SpriteStates.StepRight_1;
+                    }
+                    if (state == 0) return SpriteStates.StepForward_0;
+                    return SpriteStates.StepForward_1;
                 }
             }
             else
