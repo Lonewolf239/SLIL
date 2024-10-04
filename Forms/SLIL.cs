@@ -2459,8 +2459,9 @@ namespace SLIL
                 Player player = Controller.GetPlayer();
                 double entityVectorX = Math.Sin(entity.A);
                 double entityVectorY = Math.Cos(entity.A);
-                double vectorFromPlayerToEntityX = Math.Sin(player.X - entity.X);
-                double vectorFromPlayerToEntityY = Math.Cos(player.Y - entity.Y);
+                double magnitude = Math.Sqrt(Math.Pow(player.X - entity.X, 2) + Math.Pow(player.Y - entity.Y, 2));
+                double vectorFromPlayerToEntityX = Math.Sin((player.X - entity.X) / magnitude);
+                double vectorFromPlayerToEntityY = Math.Cos((player.Y - entity.Y) / magnitude);
                 double entityRotationAngle = Math.Atan2(entityVectorY - vectorFromPlayerToEntityY, entityVectorX - vectorFromPlayerToEntityX);
                 if (returnStopState || entity.HasStaticAnimation)
                 {
@@ -2486,7 +2487,7 @@ namespace SLIL
                         if (state == 0) return SpriteStates.StepLeft_0;
                         return SpriteStates.StepLeft_1;
                     }
-                    else if (entityRotationAngle >= 3 * Math.PI / 4 && entityRotationAngle < -3 * Math.PI / 4)
+                    else if (entityRotationAngle >= 3 * Math.PI / 4 || entityRotationAngle < -3 * Math.PI / 4)
                     {
                         if (state == 0) return SpriteStates.StepForward_0;
                         return SpriteStates.StepForward_1;
