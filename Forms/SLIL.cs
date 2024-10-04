@@ -2461,14 +2461,14 @@ namespace SLIL
                 double entityVectorY = Math.Cos(entity.A);
                 double vectorFromPlayerToEntityX = Math.Sin(player.X - entity.X);
                 double vectorFromPlayerToEntityY = Math.Cos(player.Y - entity.Y);
-                double entityRotationAngle = Math.Atan2(entityVectorX - vectorFromPlayerToEntityX, entityVectorY - vectorFromPlayerToEntityY);
+                double entityRotationAngle = Math.Atan2(entityVectorY - vectorFromPlayerToEntityY, entityVectorX - vectorFromPlayerToEntityX);
                 if (returnStopState || entity.HasStaticAnimation)
                 {
                     if (entityRotationAngle < Math.PI / 4 && entityRotationAngle > -Math.PI / 4)
                         return SpriteStates.StopBack;
                     else if (entityRotationAngle >= Math.PI / 4 && entityRotationAngle < 3 * Math.PI / 4)
                         return SpriteStates.StopLeft;
-                    else if (entityRotationAngle >= 3 * Math.PI / 4 && entityRotationAngle < -3 * Math.PI / 4)
+                    else if (entityRotationAngle >= 3 * Math.PI / 4 || entityRotationAngle < -3 * Math.PI / 4)
                         return SpriteStates.StopForward;
                     else if (entityRotationAngle >= -3 * Math.PI / 4 && entityRotationAngle <= -Math.PI / 4)
                         return SpriteStates.StopRight;
