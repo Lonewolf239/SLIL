@@ -39,8 +39,8 @@
             this.status_label = new System.Windows.Forms.Label();
             this.login_panel = new System.Windows.Forms.Panel();
             this.error_panel = new System.Windows.Forms.Panel();
-            this.error_label = new System.Windows.Forms.Label();
             this.exit_btn_cp = new System.Windows.Forms.Button();
+            this.error_label = new System.Windows.Forms.Label();
             this.buy_panel = new System.Windows.Forms.Panel();
             this.buy_btn_cp = new System.Windows.Forms.Button();
             this.buy_label = new System.Windows.Forms.Label();
@@ -190,19 +190,6 @@
             this.error_panel.TabIndex = 76;
             this.error_panel.Visible = false;
             // 
-            // error_label
-            // 
-            this.error_label.AutoEllipsis = true;
-            this.error_label.Dock = System.Windows.Forms.DockStyle.Top;
-            this.error_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.error_label.ForeColor = System.Drawing.Color.White;
-            this.error_label.Location = new System.Drawing.Point(0, 0);
-            this.error_label.Name = "error_label";
-            this.error_label.Size = new System.Drawing.Size(447, 102);
-            this.error_label.TabIndex = 67;
-            this.error_label.Text = "Чтобы начать играть, пожалуйста, войдите в свою учетную запись";
-            this.error_label.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            // 
             // exit_btn_cp
             // 
             this.exit_btn_cp.AutoSize = true;
@@ -216,6 +203,19 @@
             this.exit_btn_cp.TabStop = false;
             this.exit_btn_cp.Text = "Выйти";
             this.exit_btn_cp.UseVisualStyleBackColor = false;
+            // 
+            // error_label
+            // 
+            this.error_label.AutoEllipsis = true;
+            this.error_label.Dock = System.Windows.Forms.DockStyle.Top;
+            this.error_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.error_label.ForeColor = System.Drawing.Color.White;
+            this.error_label.Location = new System.Drawing.Point(0, 0);
+            this.error_label.Name = "error_label";
+            this.error_label.Size = new System.Drawing.Size(447, 102);
+            this.error_label.TabIndex = 67;
+            this.error_label.Text = "Чтобы начать играть, пожалуйста, войдите в свою учетную запись";
+            this.error_label.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // buy_panel
             // 
