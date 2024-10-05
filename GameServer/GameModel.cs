@@ -98,7 +98,7 @@ namespace GameServer
             {
                 Player p = new(1.5, 1.5, MAP_WIDTH, ref MaxEntityID);
                 if (difficulty == 3 || difficulty == 2)
-                    p.Guns[1].LevelUpdate();
+                    p.Guns[2].LevelUpdate();
                 p.Name = name;
                 Entities.Add(p);
             }

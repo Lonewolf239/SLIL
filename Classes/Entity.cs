@@ -838,6 +838,7 @@ namespace SLIL.Classes
         {
             DeathSound = 0;
             Texture = 8;
+            HasSpriteRotation = true;
             detectionRange = 5;
             base.SetAnimations(1, 0);
         }

@@ -1420,6 +1420,12 @@
     <None Include="Images\back_wall.png" />
     <None Include="Images\back_ceiling.png" />
     <None Include="Images\camera.png" />
+    <None Include="Images\enemy_0_1_b.png" />
+    <None Include="Images\enemy_0_1_r.png" />
+    <None Include="Images\enemy_0_b.png" />
+    <None Include="Images\enemy_0_r.png" />
+    <None Include="Images\enemy_0_1_l.png" />
+    <None Include="Images\enemy_0_l.png" />
     <Content Include="SLIL_v0_1\sounds\game_over.wav" />
     <Content Include="SLIL_v0_1\sounds\step_0.wav" />
     <Content Include="SLIL_v0_1\sounds\step_1.wav" />

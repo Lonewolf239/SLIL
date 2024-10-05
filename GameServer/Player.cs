@@ -502,6 +502,9 @@ namespace GameServer
                 HP = MAX_HP;
                 Effects.Clear();
                 Guns.Clear();
+                Guns.Add(GUNS[0]);
+                Guns.Add(GUNS[1]);
+                Guns.Add(GUNS[2]);
                 for (int i = 0; i < DisposableItems.Count; i++)
                     DisposableItems[i].SetDefault();
                 Money = 15;

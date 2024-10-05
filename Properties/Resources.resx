@@ -1177,4 +1177,28 @@
   <data name="camera" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\camera.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="enemy_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_0_11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_0_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_0_1_b" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_0_1_b.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_0_1_l" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_0_1_l.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_0_1_r" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_0_1_r.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_0_b" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_0_b.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_0_l" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_0_l.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_0_r" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_0_r.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

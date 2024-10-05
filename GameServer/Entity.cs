@@ -819,6 +819,7 @@ namespace GameServer
             DeathSound = 0;
             Texture = 8;
             detectionRange = 5;
+            HasSpriteRotation = true;
             base.SetAnimations(1, 0);
         }
         public override void UpdateCoordinates(string map, double playerX, double playerY)

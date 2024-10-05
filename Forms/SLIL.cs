@@ -3846,12 +3846,6 @@ namespace SLIL
             int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
             int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
             Cursor.Position = new Point(x, y);
-            if (player.Guns.Count == 0)
-            {
-                player.Guns.Add(player.GUNS[0]);
-                player.Guns.Add(player.GUNS[1]);
-                player.Guns.Add(player.GUNS[2]);
-            }
             player.SetDefault();
             open_shop = false;
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
