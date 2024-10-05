@@ -2457,12 +2457,21 @@ namespace SLIL
             if (entity.HasSpriteRotation)
             {
                 Player player = Controller.GetPlayer();
-                double entityVectorX = Math.Sin(entity.A);
-                double entityVectorY = Math.Cos(entity.A);
-                double magnitude = Math.Sqrt(Math.Pow(player.X - entity.X, 2) + Math.Pow(player.Y - entity.Y, 2));
-                double vectorFromPlayerToEntityX = Math.Sin((player.X - entity.X) / magnitude);
-                double vectorFromPlayerToEntityY = Math.Cos((player.Y - entity.Y) / magnitude);
-                double entityRotationAngle = Math.Atan2(entityVectorY - vectorFromPlayerToEntityY, entityVectorX - vectorFromPlayerToEntityX);
+                //double entityVectorX = Math.Sin(entity.A%(2 * Math.PI));
+                //double entityVectorY = Math.Cos(entity.A%(2 * Math.PI));
+                //double magnitude = Math.Sqrt(Math.Pow(player.X - entity.X, 2) + Math.Pow(player.Y - entity.Y, 2));
+                //double vectorFromPlayerToEntityX = Math.Sin((player.X - entity.X) / magnitude);
+                //double vectorFromPlayerToEntityY = Math.Cos((player.Y - entity.Y) / magnitude);
+                //double entityRotationAngle = Math.Atan2(vectorFromPlayerToEntityY - entityVectorY, vectorFromPlayerToEntityX - entityVectorX);
+                double entityRotationAngle = Math.Atan2(player.Y - entity.Y, player.X - entity.X);
+                double normalizedEntityAngle = entity.A;
+                while (normalizedEntityAngle < -Math.PI)
+                    normalizedEntityAngle += 2 * Math.PI;
+                while (normalizedEntityAngle > Math.PI)
+                    normalizedEntityAngle -= 2 * Math.PI;
+                normalizedEntityAngle += Math.PI / 2;
+                entityRotationAngle -= normalizedEntityAngle;
+                //entityRotationAngle -= entity.A % (2 * Math.PI) + Math.PI/2;
                 if (returnStopState || entity.HasStaticAnimation)
                 {
                     if (entityRotationAngle < Math.PI / 4 && entityRotationAngle > -Math.PI / 4)
