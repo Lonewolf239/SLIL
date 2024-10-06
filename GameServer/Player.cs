@@ -298,6 +298,7 @@ namespace GameServer
             if (!updateCoordinates)
             {
                 reader.GetDouble(); reader.GetDouble();
+                reader.GetDouble();
                 HP = reader.GetDouble();
                 Dead = reader.GetBool();
                 Money = reader.GetInt();

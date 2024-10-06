@@ -73,12 +73,14 @@ namespace SLIL.Classes
         {
             writer.Put(this.X);
             writer.Put(this.Y);
+            writer.Put(this.A);
         }
 
         public virtual void Deserialize(NetDataReader reader)
         {
             this.X = reader.GetDouble();
             this.Y = reader.GetDouble();
+            this.A = reader.GetDouble();
         }
 
         protected void AnimationsToStatic() => HasStaticAnimation = true;
