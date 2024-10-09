@@ -1051,27 +1051,25 @@ namespace SLIL
                 int i = player.PlayerMoveStyle == Directions.RUN || player.Fast ? 1 : 0;
                 if (player.InTransport && player.TRANSPORT != null)
                 {
-                    if (Math.Abs(player.MOVE_SPEED) < player.MAX_MOVE_SPEED)
-                    {
-                        if (player.PlayerDirection == Directions.STOP
-                            || (player.PlayerDirection == Directions.FORWARD && player.MOVE_SPEED < 0)
-                            || (player.PlayerDirection == Directions.BACK && player.MOVE_SPEED > 0))
-                            //stopping
-                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 2];
-                        else
-                            //accelerating
-                            step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 1];
-                    }
-                    else
-                    {
-                        //full speed
+                    if (player.PlayerDirection == Directions.STOP || player.MOVE_SPEED < 0 ||
+                        (player.PlayerDirection == Directions.BACK && player.MOVE_SPEED > 0)) //stopping
+                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 2];
+                    else //full speed
                         step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 3];
-                    }
                     if (transport_step == null || transport_step != step)
                     {
                         transport_step?.Stop();
                         transport_step = step;
                         Controller.PlayGameSound(transport_step);
+                    }
+                    else
+                    {
+                        if (transport_step.GetRemeinTime() <= 0)
+                        {
+                            transport_step?.Stop();
+                            transport_step = step;
+                            Controller.PlayGameSound(transport_step);
+                        }
                     }
                 }
                 else
@@ -1093,6 +1091,15 @@ namespace SLIL
                     transport_step?.Stop();
                     transport_step = step;
                     Controller.PlayGameSound(transport_step);
+                }
+                else
+                {
+                    if (transport_step.GetRemeinTime() <= 0)
+                    {
+                        transport_step?.Stop();
+                        transport_step = step;
+                        Controller.PlayGameSound(transport_step);
+                    }
                 }
                 currentIndex++;
             }
@@ -3815,8 +3822,7 @@ namespace SLIL
 
         private void GameOver(int win)
         {
-            foreach (PlaySound ostTrack in ost)
-                ostTrack?.Stop();
+            StopAllSounds();
             raycast.Stop();
             shot_timer.Stop();
             reload_timer.Stop();
@@ -3871,6 +3877,61 @@ namespace SLIL
                 }
                 else ChangeOst(7);
             }
+        }
+
+        private void StopAllSounds()
+        {
+            foreach (PlaySound ostTrack in ost)
+                ostTrack?.Stop();
+            foreach (PlaySound hitSound in hit)
+                hitSound?.Stop();
+            foreach (PlaySound climbSound in climb)
+                climbSound?.Stop();
+            foreach (PlaySound doorSound in door)
+                doorSound?.Stop();
+            for (int i = 0; i < steps.GetLength(0); i++)
+            {
+                for (int j = 0; j < steps.GetLength(1); j++)
+                    steps[i, j]?.Stop();
+            }
+            for (int i = 0; i < DeathSounds.GetLength(0); i++)
+            {
+                for (int j = 0; j < DeathSounds.GetLength(1); j++)
+                    DeathSounds[i, j]?.Stop();
+            }
+            for (int i = 0; i < CuteDeathSounds.GetLength(0); i++)
+            {
+                for (int j = 0; j < CuteDeathSounds.GetLength(1); j++)
+                    CuteDeathSounds[i, j]?.Stop();
+            }
+            foreach (Type key in SoundsDict.Keys)
+            {
+                PlaySound[,] soundDict = SoundsDict[key];
+                for (int i = 0; i < soundDict.GetLength(0); i++)
+                {
+                    for (int j = 0; j < soundDict.GetLength(1); j++)
+                        soundDict[i, j]?.Stop();
+                }
+            }
+            foreach (Type key in TransportsSoundsDict.Keys)
+            {
+                PlaySound[,] transportSoundDict = TransportsSoundsDict[key];
+                for (int i = 0; i < transportSoundDict.GetLength(0); i++)
+                {
+                    for (int j = 0; j < transportSoundDict.GetLength(1); j++)
+                        transportSoundDict[i, j]?.Stop();
+                }
+            }
+            hungry?.Stop();
+            step?.Stop();
+            transport_step?.Stop();
+            game_over?.Stop();
+            draw?.Stop();
+            buy?.Stop();
+            wall?.Stop();
+            tp?.Stop();
+            screenshot?.Stop();
+            low_stamine?.Stop();
         }
 
         private void ToDefault()

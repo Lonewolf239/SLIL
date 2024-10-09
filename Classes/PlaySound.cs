@@ -39,6 +39,12 @@ namespace Play_Sound
             catch { }
         }
 
+        public int GetRemeinTime()
+        {
+            if (file == null) return 0;
+            return (int)(file.TotalTime.TotalSeconds - file.CurrentTime.TotalSeconds);
+        }
+
         public void PlayFromThe(float volume, long position)
         {
             if (file == null) return;
