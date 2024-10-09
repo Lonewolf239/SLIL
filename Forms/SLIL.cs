@@ -1033,6 +1033,8 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
+            if (!player.InTransport || player.TRANSPORT == null)
+                transport_step?.Stop();
             if ((player.MOVE_SPEED != 0
                 || (player.STRAFE_SPEED != 0 && !player.InTransport)
                 )
