@@ -610,6 +610,7 @@ namespace SLIL.Classes
 
         private void AddTransportOnMap(int index, int map_index)
         {
+            if (MAP[map_index] != '.') return;
             if (index == 0) MAP[map_index] = '5';
         }
 
@@ -810,6 +811,8 @@ namespace SLIL.Classes
                 if (!IsMultiplayer)
                 {
                     inBackrooms = true;
+                    if (p.InTransport)
+                        GettingOffTheTransport(playerID, false);
                     GameOver(1);
                 }
             }
@@ -1668,7 +1671,7 @@ namespace SLIL.Classes
             return false;
         }
 
-        internal void GettingOffTheTransport(int playerID)
+        internal void GettingOffTheTransport(int playerID, bool add_transport = true)
         {
             Player p = GetPlayer(playerID);
             if (p == null || p.BlockInput) return;
@@ -1682,8 +1685,11 @@ namespace SLIL.Classes
             p.StopEffect(4);
             if (transport != null)
             {
-                AddTransportOnMap(transport.Index, (int)p.Y * MAP_WIDTH + (int)p.X);
-                AddEntity(transport);
+                if (add_transport)
+                {
+                    AddTransportOnMap(transport.Index, (int)p.Y * MAP_WIDTH + (int)p.X);
+                    AddEntity(transport);
+                }
             }
         }
 
@@ -1925,7 +1931,8 @@ namespace SLIL.Classes
             Entity entity = GetEntity(ID);
             if (entity != null)
             {
-                MAP[(int)entity.Y * MAP_WIDTH + (int)entity.X] = '.';
+                if (MAP[(int)entity.Y * MAP_WIDTH + (int)entity.X] == '5')
+                    MAP[(int)entity.Y * MAP_WIDTH + (int)entity.X] = '.';
                 p.TRANSPORT = (Transport)entity;
                 p.TRANSPORT_HP = ((Transport)entity).TransportHP;
                 p.A = ((Transport)entity).A;

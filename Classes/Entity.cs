@@ -799,6 +799,8 @@ namespace SLIL.Classes
             Texture = 5;
             base.AnimationsToStatic();
         }
+
+        public override int Interaction() => 5;
     }
 
     public class ShopMan : NPC
@@ -814,6 +816,8 @@ namespace SLIL.Classes
             RespondsToFlashlight = true;
             base.AnimationsToStatic();
         }
+
+        public override int Interaction() => 5;
     }
 
     public class Zombie : Enemy

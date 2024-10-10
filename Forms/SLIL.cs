@@ -475,7 +475,7 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
             }
         };
-        public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine;
+        public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine, starter;
         public PlaySound[] climb;
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
@@ -1708,47 +1708,6 @@ namespace SLIL
                     }
                     if (e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1)
                     {
-                        double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
-                        double ray_x = Math.Sin(rayA);
-                        double ray_y = Math.Cos(rayA);
-                        double distance = 0;
-                        bool hit = false;
-                        while (raycast.Enabled && !hit && distance <= 1)
-                        {
-                            distance += 0.1d;
-                            int x = (int)(player.X + ray_x * distance);
-                            int y = (int)(player.Y + ray_y * distance);
-                            char test_wall = Controller.GetMap()[y * Controller.GetMapWidth() + x];
-                            switch (test_wall)
-                            {
-                                case '#':
-                                case '=':
-                                case 'F':
-                                    hit = true;
-                                    Controller.PlayGameSound(wall);
-                                    break;
-                                case 'D':
-                                    hit = true;
-                                    ShowShop();
-                                    break;
-                                case 'd':
-                                    hit = true;
-                                    Controller.InteractingWithDoors(y * Controller.GetMapWidth() + x);
-                                    break;
-                                case 'o':
-                                    hit = true;
-                                    if (distance < playerWidth || ((int)player.X == x && (int)player.Y == y)) break;
-                                    Controller.InteractingWithDoors(y * Controller.GetMapWidth() + x);
-                                    break;
-                                case 'S':
-                                    hit = true;
-                                    SingID = y * Controller.GetMapWidth() + x;
-                                    scrollPosition = 0;
-                                    ShowSing = player.BlockInput = player.BlockCamera = true;
-                                    break;
-                            }
-                        }
-                        if (hit) return;
                         double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
                         double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
                         Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
@@ -1811,9 +1770,9 @@ namespace SLIL
                                                 rays[stripe][y].TextureX = texX;
                                                 rays[stripe][y].TextureY = texY;
                                                 Color color = GetColorForPixel(rays[stripe][y]);
-                                                if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && player.GetCurrentGun().FiringRange >= Distance)
+                                                if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && Distance <= 2)
                                                 {
-                                                    if (Distance <= 2 && entity.HasAI)
+                                                    if (entity.HasAI)
                                                     {
                                                         switch (entity.Interaction())
                                                         {
@@ -1825,7 +1784,7 @@ namespace SLIL
                                                                     Thread.Sleep(2000);
                                                                     player.IsPetting = false;
                                                                 }).Start();
-                                                                break;
+                                                                return;
                                                             case 2: //GreenGnome
                                                                 if (player.IsPetting) break;
                                                                 player.IsPetting = true;
@@ -1834,7 +1793,7 @@ namespace SLIL
                                                                     Thread.Sleep(2000);
                                                                     player.IsPetting = false;
                                                                 }).Start();
-                                                                break;
+                                                                return;
                                                             case 3: //EnergyDrink
                                                                 if (player.IsPetting) break;
                                                                 player.IsPetting = true;
@@ -1843,18 +1802,61 @@ namespace SLIL
                                                                     Thread.Sleep(2000);
                                                                     player.IsPetting = false;
                                                                 }).Start();
-                                                                break;
+                                                                return;
                                                             case 4:
+                                                                Controller.PlayGameSound(starter);
                                                                 Controller.GetOnATransport(entity.ID);
-                                                                break;
+                                                                return;
+                                                            case 5:
+                                                                ShowShop();
+                                                                return;
                                                         }
                                                     }
-                                                    return;
                                                 }
                                             }
                                         }
                                     }
                                 }
+                            }
+                        }
+                        double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
+                        double ray_x = Math.Sin(rayA);
+                        double ray_y = Math.Cos(rayA);
+                        double distance = 0;
+                        bool hit = false;
+                        while (raycast.Enabled && !hit && distance <= 1)
+                        {
+                            distance += 0.1d;
+                            int x = (int)(player.X + ray_x * distance);
+                            int y = (int)(player.Y + ray_y * distance);
+                            char test_wall = Controller.GetMap()[y * Controller.GetMapWidth() + x];
+                            switch (test_wall)
+                            {
+                                case '#':
+                                case '=':
+                                case 'F':
+                                    hit = true;
+                                    Controller.PlayGameSound(wall);
+                                    break;
+                                case 'D':
+                                    hit = true;
+                                    ShowShop();
+                                    break;
+                                case 'd':
+                                    hit = true;
+                                    Controller.InteractingWithDoors(y * Controller.GetMapWidth() + x);
+                                    break;
+                                case 'o':
+                                    hit = true;
+                                    if (distance < playerWidth || ((int)player.X == x && (int)player.Y == y)) break;
+                                    Controller.InteractingWithDoors(y * Controller.GetMapWidth() + x);
+                                    break;
+                                case 'S':
+                                    hit = true;
+                                    SingID = y * Controller.GetMapWidth() + x;
+                                    scrollPosition = 0;
+                                    ShowSing = player.BlockInput = player.BlockCamera = true;
+                                    break;
                             }
                         }
                     }

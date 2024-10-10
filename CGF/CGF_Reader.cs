@@ -11,10 +11,7 @@ namespace CGFReader
         private readonly List<Files> FilesList = new List<Files>();
         private string Path { get; set; }
 
-        public CGF_Reader(string path)
-        {
-            Path = path;
-        }
+        public CGF_Reader(string path) => Path = path;
 
         public async Task ProcessFileAsync(IProgress<int> progress)
         {
