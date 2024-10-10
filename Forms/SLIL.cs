@@ -1979,6 +1979,17 @@ namespace SLIL
                 Controller.GetMap()[GetCoordinate(player.X, player.Y)] = '.';
                 DISPLAYED_MAP[GetCoordinate(player.X, player.Y)] = '.';
             }
+            if (HasImpassibleCells(GetCoordinate(player.X, player.Y)))
+            {
+                double x = player.X;
+                double y = player.Y;
+                GetCoordinateWithoutWall(ref x, ref y);
+                if (Math.Abs(x - player.X) > 0.001 || Math.Abs(y - player.Y) > 0.001)
+                {
+                    if (!player.BlockInput)
+                        Controller.MovePlayer(x - player.X, y - player.Y);
+                }
+            }
             DISPLAYED_MAP.Replace('P', '.');
             player.ChangeSpeed();
             double move = player.GetMoveSpeed(elapsed_time);
@@ -2025,13 +2036,30 @@ namespace SLIL
                 tempY -= playerWidth / 2 - (1 - tempY % 1);
             if (HasImpassibleCells(GetCoordinate(tempX, tempY - playerWidth / 2)))
                 tempY += playerWidth / 2 - (tempY % 1);
-            if (tempX - player.X != 0 || tempY - player.Y != 0)
+            if (Math.Abs(tempX - player.X) > 0.001 || Math.Abs(tempY - player.Y) > 0.001)
             {
                 if (!player.BlockInput)
                     Controller.MovePlayer(tempX - player.X, tempY - player.Y);
             }
             if (Controller.GetMap()[GetCoordinate(player.X, player.Y)] == '.')
                 DISPLAYED_MAP[GetCoordinate(player.X, player.Y)] = 'P';
+        }
+
+        private void GetCoordinateWithoutWall(ref double x, ref double y)
+        {
+            double[] offsets = { 0, 0.5, -0.5, 1, -1 , -1.5, 1.5, -2, 2};
+            foreach (double offsetX in offsets)
+            {
+                foreach (double offsetY in offsets)
+                {
+                    if (!HasImpassibleCells(GetCoordinate(x + offsetX, y + offsetY)))
+                    {
+                        x += offsetX;
+                        y += offsetY;
+                        return;
+                    }
+                }
+            }
         }
 
         //  #====     RayCasting    ====#
