@@ -845,7 +845,7 @@ namespace SLIL
             double moveCos = Math.Cos(player.A) * 3;
             double x = player.X + moveSin;
             double y = player.Y + moveCos;
-            if (Controller.GetMap()[(int)y * Controller.GetMapWidth() + (int)x] != '.') return false;
+            if (Controller.GetMap()[GetCoordinate(x, y)] != '.') return false;
             switch (id)
             {
                 case 0: // player
@@ -1605,7 +1605,7 @@ namespace SLIL
                     if (player.InTransport)
                     {
                         if (player.TRANSPORT is Bike)
-                            DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '5';
+                            DISPLAYED_MAP[GetCoordinate(player.X, player.Y)] = '5';
                         Controller.GettingOffTheTransport();
                     }
                     else
@@ -1672,7 +1672,7 @@ namespace SLIL
                             distance += 0.1d;
                             int x = (int)(player.X + ray_x * distance);
                             int y = (int)(player.Y + ray_y * distance);
-                            char test_wall = Controller.GetMap()[y * Controller.GetMapWidth() + x];
+                            char test_wall = Controller.GetMap()[GetCoordinate(x, y)];
                             switch (test_wall)
                             {
                                 case '=':
@@ -1681,7 +1681,7 @@ namespace SLIL
                                         distance += 0.1d;
                                         int x1 = (int)(player.X + ray_x * distance);
                                         int y1 = (int)(player.Y + ray_y * distance);
-                                        if (!HasImpassibleCells(y1 * Controller.GetMapWidth() + x1))
+                                        if (!HasImpassibleCells(GetCoordinate(x1, y1)))
                                         {
                                             DoParkour(y, x);
                                             break;
@@ -1824,12 +1824,12 @@ namespace SLIL
                         double ray_y = Math.Cos(rayA);
                         double distance = 0;
                         bool hit = false;
-                        while (raycast.Enabled && !hit && distance <= 1)
+                        while (raycast.Enabled && !hit && distance <= 2)
                         {
                             distance += 0.1d;
                             int x = (int)(player.X + ray_x * distance);
                             int y = (int)(player.Y + ray_y * distance);
-                            char test_wall = Controller.GetMap()[y * Controller.GetMapWidth() + x];
+                            char test_wall = Controller.GetMap()[GetCoordinate(x, y)];
                             switch (test_wall)
                             {
                                 case '#':
@@ -1844,16 +1844,16 @@ namespace SLIL
                                     break;
                                 case 'd':
                                     hit = true;
-                                    Controller.InteractingWithDoors(y * Controller.GetMapWidth() + x);
+                                    Controller.InteractingWithDoors(GetCoordinate(x, y));
                                     break;
                                 case 'o':
                                     hit = true;
                                     if (distance < playerWidth || ((int)player.X == x && (int)player.Y == y)) break;
-                                    Controller.InteractingWithDoors(y * Controller.GetMapWidth() + x);
+                                    Controller.InteractingWithDoors(GetCoordinate(x, y));
                                     break;
                                 case 'S':
                                     hit = true;
-                                    SingID = y * Controller.GetMapWidth() + x;
+                                    SingID = GetCoordinate(x, y);
                                     scrollPosition = 0;
                                     ShowSing = player.BlockInput = player.BlockCamera = true;
                                     break;
@@ -1974,10 +1974,10 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null || player.Aiming) return;
-            if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == 'P')
+            if (Controller.GetMap()[GetCoordinate(player.X, player.Y)] == 'P')
             {
-                Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '.';
-                DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = '.';
+                Controller.GetMap()[GetCoordinate(player.X, player.Y)] = '.';
+                DISPLAYED_MAP[GetCoordinate(player.X, player.Y)] = '.';
             }
             DISPLAYED_MAP.Replace('P', '.');
             player.ChangeSpeed();
@@ -2011,27 +2011,27 @@ namespace SLIL
                 else if (player.MOVE_SPEED > 0)
                     Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
             }
-            if (!(HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX + playerWidth / 2))
-            || HasImpassibleCells((int)newY * Controller.GetMapWidth() + (int)(newX - playerWidth / 2))))
+            if (!(HasImpassibleCells(GetCoordinate(newX + playerWidth / 2, newY))
+                || HasImpassibleCells(GetCoordinate(newX - playerWidth / 2, newY))))
                 tempX = newX;
-            if (!(HasImpassibleCells((int)(newY + playerWidth / 2) * Controller.GetMapWidth() + (int)newX)
-                || HasImpassibleCells((int)(newY - playerWidth / 2) * Controller.GetMapWidth() + (int)newX)))
+            if (!(HasImpassibleCells(GetCoordinate(newX, newY + playerWidth / 2))
+                || HasImpassibleCells(GetCoordinate(newX, newY - playerWidth / 2))))
                 tempY = newY;
-            if (HasImpassibleCells((int)tempY * Controller.GetMapWidth() + (int)(tempX + playerWidth / 2)))
+            if (HasImpassibleCells(GetCoordinate(tempX + playerWidth / 2, tempY)))
                 tempX -= playerWidth / 2 - (1 - tempX % 1);
-            if (HasImpassibleCells((int)tempY * Controller.GetMapWidth() + (int)(tempX - playerWidth / 2)))
+            if (HasImpassibleCells(GetCoordinate(tempX - playerWidth / 2, tempY)))
                 tempX += playerWidth / 2 - (tempX % 1);
-            if (HasImpassibleCells((int)(tempY + playerWidth / 2) * Controller.GetMapWidth() + (int)tempX))
+            if (HasImpassibleCells(GetCoordinate(tempX, tempY + playerWidth / 2)))
                 tempY -= playerWidth / 2 - (1 - tempY % 1);
-            if (HasImpassibleCells((int)(tempY - playerWidth / 2) * Controller.GetMapWidth() + (int)tempX))
+            if (HasImpassibleCells(GetCoordinate(tempX, tempY - playerWidth / 2)))
                 tempY += playerWidth / 2 - (tempY % 1);
             if (tempX - player.X != 0 || tempY - player.Y != 0)
             {
                 if (!player.BlockInput)
                     Controller.MovePlayer(tempX - player.X, tempY - player.Y);
             }
-            if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)player.X] == '.')
-                DISPLAYED_MAP[(int)player.Y * Controller.GetMapWidth() + (int)player.X] = 'P';
+            if (Controller.GetMap()[GetCoordinate(player.X, player.Y)] == '.')
+                DISPLAYED_MAP[GetCoordinate(player.X, player.Y)] = 'P';
         }
 
         //  #====     RayCasting    ====#
@@ -2049,7 +2049,7 @@ namespace SLIL
             {
                 for (int x = Math.Max(0, (int)player.X - radius); x < Math.Min(Controller.GetMapWidth(), (int)player.X + radius + 1); x++)
                 {
-                    int index = y * Controller.GetMapWidth() + x;
+                    int index = GetCoordinate(x, y);
                     if (DISPLAYED_MAP[index] == '*' || DISPLAYED_MAP[index] == 'E')
                         DISPLAYED_MAP[index] = '.';
                 }
@@ -3127,7 +3127,7 @@ namespace SLIL
                     Color pixelColor;
                     if (mapX >= 0 && mapX < Controller.GetMapWidth() && mapY >= 0 && mapY < Controller.GetMapHeight())
                     {
-                        char mapChar = DISPLAYED_MAP[mapY * Controller.GetMapWidth() + mapX];
+                        char mapChar = DISPLAYED_MAP[GetCoordinate(mapX, mapY)];
                         pixelColor = GetColorForMapChar(mapChar);
                     }
                     else
@@ -3196,7 +3196,7 @@ namespace SLIL
                 for (int x = 0; x < Controller.GetMapWidth(); x++)
                 {
                     int i = (y * data.Stride) + (x * bytesPerPixel);
-                    char mapChar = DISPLAYED_MAP[y * Controller.GetMapWidth() + x];
+                    char mapChar = DISPLAYED_MAP[GetCoordinate(x, y)];
                     color = GetColorForMapChar(mapChar);
                     pixels[i] = color.B;
                     pixels[i + 1] = color.G;
@@ -3403,7 +3403,7 @@ namespace SLIL
                 {
                     int test_x = (int)(player.X + rayAngleX * shotDistance);
                     int test_y = (int)(player.Y + rayAngleY * shotDistance);
-                    if (impassibleCells.Contains(Controller.GetMap()[test_y * Controller.GetMapWidth() + test_x]))
+                    if (impassibleCells.Contains(Controller.GetMap()[GetCoordinate(test_x, test_y)]))
                         break;
                     foreach (Entity ent in Entities)
                     {
@@ -3599,7 +3599,7 @@ namespace SLIL
                         if (test_x < 0 || test_x >= (player.GetDrawDistance()) + player.X || test_y < 0 || test_y >= (player.GetDrawDistance()) + player.Y) hit = true;
                         else
                         {
-                            char test_wall = Controller.GetMap()[test_y * Controller.GetMapWidth() + test_x];
+                            char test_wall = Controller.GetMap()[GetCoordinate(test_x, test_y)];
                             double celling = (SCREEN_HEIGHT[resolution] - player.Look) / 2.25d - (SCREEN_HEIGHT[resolution] * FOV) / distance;
                             double floor = SCREEN_HEIGHT[resolution] - (celling + player.Look);
                             double mid = (celling + floor) / 2;
@@ -3745,7 +3745,7 @@ namespace SLIL
 
         //  #====   Game methods    ====#
 
-        private int GetCoordinate(double x, double y) => (int)(y * Controller.GetMapWidth() + x);
+        private int GetCoordinate(double x, double y) => (int)y * Controller.GetMapWidth() + (int)x;
 
         private bool PlayerCanRun()
         {
@@ -3786,13 +3786,13 @@ namespace SLIL
             InitMap();
             try
             {
-                if (Controller.GetMap()[(int)(player.Y + 2) * Controller.GetMapWidth() + (int)player.X] == '.')
+                if (Controller.GetMap()[GetCoordinate(player.X, player.Y + 2)] == '.')
                     player.A = 0;
-                else if (Controller.GetMap()[(int)(player.Y - 2) * Controller.GetMapWidth() + (int)player.X] == '.')
+                else if (Controller.GetMap()[GetCoordinate(player.X, player.Y - 2)] == '.')
                     player.A = 3;
-                else if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)(player.X + 2)] == '.')
+                else if (Controller.GetMap()[GetCoordinate(player.X + 2, player.Y)] == '.')
                     player.A = 1;
-                else if (Controller.GetMap()[(int)player.Y * Controller.GetMapWidth() + (int)(player.X - 2)] == '.')
+                else if (Controller.GetMap()[GetCoordinate(player.X - 2, player.Y)] == '.')
                     player.A = 4;
             }
             catch

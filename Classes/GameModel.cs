@@ -870,23 +870,23 @@ namespace SLIL.Classes
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case 'e':
-                    SpawnEnemis(x +0.5, y + 0.5, MAP_WIDTH, false);
+                    SpawnEnemis(x, y, MAP_WIDTH, false);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case '1':
-                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 0);
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 0);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case '2':
-                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 1);
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 1);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case '3':
-                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 2);
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 2);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
                 case '4':
-                    SpawnEnemis(x + 0.5, y + 0.5, MAP_WIDTH, false, 3);
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 3);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
             }
@@ -1249,36 +1249,51 @@ namespace SLIL.Classes
 
         private void SpawnEnemis(double x, double y, int size, bool ai = true, int type = -1)
         {
+            x += 0.5;
+            y += 0.5;
             if (type == -1)
             {
                 double dice = rand.NextDouble();
-                if (dice <= 0.4) // 40%
+                if (dice <= 0.35) // 35%
                 {
                     Zombie enemy = new Zombie(x, y, size, ref MaxEntityID);
                     enemy.SetDamage(EnemyDamageOffset);
                     enemy.HasAI = ai;
                     Entities.Add(enemy);
                 }
-                else if (dice > 0.4 && dice <= 0.65) // 25%
+                else if (dice > 0.35 && dice <= 0.6) // 25%
                 {
                     Dog enemy = new Dog(x, y, size, ref MaxEntityID);
                     enemy.SetDamage(EnemyDamageOffset);
                     enemy.HasAI = ai;
                     Entities.Add(enemy);
                 }
-                else if (dice > 0.65 && dice <= 0.85) // 20%
+                else if (dice > 0.6 && dice <= 0.8) // 20%
                 {
                     Bat enemy = new Bat(x, y, size, ref MaxEntityID);
                     enemy.SetDamage(EnemyDamageOffset);
                     enemy.HasAI = ai;
                     Entities.Add(enemy);
                 }
-                else // 15%
+                else if (dice > 0.8 && dice <= 0.95) // 15%
                 {
                     Ogr enemy = new Ogr(x, y, size, ref MaxEntityID);
                     enemy.SetDamage(EnemyDamageOffset);
                     enemy.HasAI = ai;
                     Entities.Add(enemy);
+                }
+                else
+                {
+                    if (rand.NextDouble() <= 0.5)
+                    {
+                        Vine vine = new Vine(x + 0.5, y + 0.5, size, ref MaxEntityID);
+                        Entities.Add(vine);
+                    }
+                    else
+                    {
+                        Lamp lamp = new Lamp(x + 0.5, y + 0.5, size, ref MaxEntityID);
+                        Entities.Add(lamp);
+                    }
                 }
             }
             else if (type == 0)
