@@ -1481,6 +1481,8 @@ namespace SLIL
                         }
                         if (e.KeyCode == Bind.Item)
                         {
+                            //TEMP
+                            if (Controller.IsMultiplayer()) return;
                             if (player.DISPOSABLE_ITEM == null)
                                 Controller.ChangeItem(player.SelectedItem);
                             if (player.DisposableItems.Count > 0 && player.DISPOSABLE_ITEM.HasIt)
@@ -1501,6 +1503,8 @@ namespace SLIL
                         }
                         if (e.KeyCode == Bind.Select_item)
                         {
+                            //TEMP
+                            if (Controller.IsMultiplayer()) return;
                             if (!player.InSelectingMode || player.UseItem)
                             {
                                 int x = Width / 2, y = Height / 2;
@@ -1702,6 +1706,8 @@ namespace SLIL
                     }
                     if (e.KeyCode == Bind.Select_item)
                     {
+                        //TEMP
+                        if (Controller.IsMultiplayer()) return;
                         player.InSelectingMode = false;
                         Cursor.Position = display.PointToScreen(new Point(display.Width / 2, display.Height / 2));
                         player.CanUnblockCamera = true;
@@ -1967,6 +1973,7 @@ namespace SLIL
         {
             char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$' };
             if (Controller.HasNoClip() || Controller.GetPlayer().InParkour) return false;
+            if (index < 0 || index > Controller.GetMap().Length) return true;
             return impassibleCells.Contains(Controller.GetMap()[index]);
         }
 
@@ -2047,7 +2054,12 @@ namespace SLIL
 
         private void GetCoordinateWithoutWall(ref double x, ref double y)
         {
-            double[] offsets = { 0, 0.5, -0.5, 1, -1 , -1.5, 1.5, -2, 2};
+            List<double> offsets = new List<double>();
+            for (double i = 0; i < 4; i += 0.5)
+            {
+                offsets.Add(i);
+                offsets.Add(-i);
+            }
             foreach (double offsetX in offsets)
             {
                 foreach (double offsetY in offsets)
@@ -2822,20 +2834,20 @@ namespace SLIL
             else if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                if (player.DISPOSABLE_ITEM != null)
+                if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
                     graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                if (player.DISPOSABLE_ITEM != null)
+                if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
                     graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
+            if (!player.InTransport && !Controller.IsMultiplayer())
+                graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             if (Controller.IsMultiplayer()) DrawPing(fpsSize, icon_size);
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
-            if (!player.InTransport)
-                graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             if (!player.IsPetting && !player.InParkour && !player.InTransport && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
@@ -2976,23 +2988,23 @@ namespace SLIL
             else if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                if (player.DISPOSABLE_ITEM != null)
+                if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
                     graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                if (player.DISPOSABLE_ITEM != null)
+                if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
                     graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
+            if (!player.InTransport && !Controller.IsMultiplayer())
+                graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             DrawPing(fpsSize, icon_size);
             string playerName = player.Name.Length == 0 ? "NoName" : player.Name;
             SizeF textSize = graphicsWeapon.MeasureString(playerName, consolasFont[0, 0]);
             graphicsWeapon.DrawString(playerName, consolasFont[0, 0], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 2);
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
-            if (!player.InTransport)
-                graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             if (!player.IsPetting && !player.InParkour && !player.InTransport && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
@@ -3811,6 +3823,7 @@ namespace SLIL
             UpdateBitmap();
             Activate();
             ResetDefault(player);
+            ShopToDefault();
             InitMap();
             try
             {
@@ -3864,12 +3877,12 @@ namespace SLIL
             }
             else if (win == 0)
             {
-                ToDefault();
+                ShopToDefault();
                 game_over_panel.Visible = true;
                 game_over_panel.BringToFront();
                 Controller.PlayGameSound(game_over);
             }
-            else ToDefault();
+            else ShopToDefault();
         }
 
         private void ResetDefault(Player player)
@@ -3952,12 +3965,16 @@ namespace SLIL
             low_stamine?.Stop();
         }
 
-        private void ToDefault()
+        private void ShopToDefault()
         {
             shop_tab_control.Controls.Clear();
-            shop_tab_control.Controls.Add(weapon_shop_page);
+            Player player = Controller.GetPlayer();
+            if (player == null || !player.CuteMode)
+                shop_tab_control.Controls.Add(weapon_shop_page);
             shop_tab_control.Controls.Add(pet_shop_page);
-            shop_tab_control.Controls.Add(consumables_shop_page);
+            //TEMP
+            if (!Controller.IsMultiplayer())
+                shop_tab_control.Controls.Add(consumables_shop_page);
             shop_tab_control.Controls.Add(transport_shop_page);
         }
 
@@ -4134,7 +4151,9 @@ namespace SLIL
             {
                 shop_tab_control.Controls.Clear();
                 shop_tab_control.Controls.Add(pet_shop_page);
-                shop_tab_control.Controls.Add(consumables_shop_page);
+                //TEMP
+                if (!Controller.IsMultiplayer())
+                    shop_tab_control.Controls.Add(consumables_shop_page);
                 shop_tab_control.Controls.Add(transport_shop_page);
             }
             else if (!shop_tab_control.Controls.ContainsKey("weapon_shop_page"))
@@ -4142,7 +4161,9 @@ namespace SLIL
                 shop_tab_control.Controls.Clear();
                 shop_tab_control.Controls.Add(weapon_shop_page);
                 shop_tab_control.Controls.Add(pet_shop_page);
-                shop_tab_control.Controls.Add(consumables_shop_page);
+                //TEMP
+                if (!Controller.IsMultiplayer())
+                    shop_tab_control.Controls.Add(consumables_shop_page);
                 shop_tab_control.Controls.Add(transport_shop_page);
             }
         }

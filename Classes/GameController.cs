@@ -649,10 +649,10 @@ namespace SLIL.Classes
                 Game.GetOnATransport(ID, playerID);
             else
             {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(1777);
-                writer.Put(ID);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+                //NetDataWriter writer = new NetDataWriter();
+                //writer.Put(1777);
+                //writer.Put(ID);
+                //peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
         }
     }

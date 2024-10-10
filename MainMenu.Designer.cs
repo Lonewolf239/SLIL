@@ -224,6 +224,7 @@
             this.select_mode_btn_r = new System.Windows.Forms.Button();
             this.multiplayer_panel = new System.Windows.Forms.Panel();
             this.multiplayer_background = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
             this.connect_game_btn_cp = new System.Windows.Forms.Button();
             this.host_btn_cp = new System.Windows.Forms.Button();
             this.multiplayer_close_l = new System.Windows.Forms.Button();
@@ -2653,7 +2654,7 @@
             this.multiplayer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.multiplayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.multiplayer.ForeColor = System.Drawing.Color.White;
-            this.multiplayer.Image = global::SLIL.Properties.Resources.Soon;
+            this.multiplayer.Image = global::SLIL.Properties.Resources.test;
             this.multiplayer.Location = new System.Drawing.Point(270, 45);
             this.multiplayer.Name = "multiplayer";
             this.multiplayer.Size = new System.Drawing.Size(125, 125);
@@ -2734,6 +2735,7 @@
             // multiplayer_background
             // 
             this.multiplayer_background.BackColor = System.Drawing.Color.Black;
+            this.multiplayer_background.Controls.Add(this.label2);
             this.multiplayer_background.Controls.Add(this.connect_game_btn_cp);
             this.multiplayer_background.Controls.Add(this.host_btn_cp);
             this.multiplayer_background.Controls.Add(this.multiplayer_close_l);
@@ -2741,6 +2743,18 @@
             this.multiplayer_background.Name = "multiplayer_background";
             this.multiplayer_background.Size = new System.Drawing.Size(490, 276);
             this.multiplayer_background.TabIndex = 45;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(146, 216);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(337, 51);
+            this.label2.TabIndex = 63;
+            this.label2.Text = "TEST VERSION";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // connect_game_btn_cp
             // 
@@ -3766,5 +3780,6 @@
         private System.Windows.Forms.Label darsin_about;
         private System.Windows.Forms.Button darsin_tg;
         private System.Windows.Forms.Label darsin_name;
+        private System.Windows.Forms.Label label2;
     }
 }

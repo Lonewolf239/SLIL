@@ -38,7 +38,7 @@ namespace GameServer
         {
             int width = 80;
             int height = 25;
-            Console.Title = $"GameServer for SLIL v{version}";
+            Console.Title = $"GameServer for SLIL v{version.Trim('|')}";
             Console.SetWindowSize(width, height);
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
