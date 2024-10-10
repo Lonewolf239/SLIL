@@ -137,7 +137,7 @@ namespace SLIL
             } },
             { typeof(RPG), new[] { Properties.Resources.rpg_icon } },
         };
-        public static readonly Dictionary<Type, Image[,]> ImagesDict = new Dictionary<Type, Image[,]>
+        public static readonly Dictionary<Type, Image[,]> GunsImagesDict = new Dictionary<Type, Image[,]>
         {
             { typeof(Flashlight), new[,] { { Properties.Resources.flashlight, Properties.Resources.flashlight_run } } },
             { typeof(Knife), new[,] { { Properties.Resources.knife, Properties.Resources.knife_hit, Properties.Resources.knife_run } } },
@@ -213,7 +213,7 @@ namespace SLIL
                    { Properties.Resources.rpg, Properties.Resources.rpg_shooted, Properties.Resources.rpg_reload_0, Properties.Resources.rpg_reload_1, Properties.Resources.rpg_reload_2, Properties.Resources.rpg_empty }
             } },
         };
-        public static readonly Dictionary<Type, PlaySound[,]> SoundsDict = new Dictionary<Type, PlaySound[,]>
+        public static readonly Dictionary<Type, PlaySound[,]> GunsSoundsDict = new Dictionary<Type, PlaySound[,]>
         {
             { typeof(Flashlight), new[,] { { new PlaySound(null, false), } } },
             { typeof(Knife), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } } },
@@ -286,21 +286,12 @@ namespace SLIL
                    { new PlaySound(MainMenu.CGFReader.GetFile("rpg.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("rpg_reloading.wav"), false), new PlaySound(null, false) }
             } },
         };
-        public static readonly Dictionary<Type, PlaySound[,]> TransportsSoundsDict = new Dictionary<Type, PlaySound[,]>
+        public static readonly Dictionary<Type, PlaySound[]> TransportsSoundsDict = new Dictionary<Type, PlaySound[]>
         {
-            {typeof(Bike), new[,] {
-                {
+            {typeof(Bike), new[] {
                     new PlaySound(MainMenu.CGFReader.GetFile("bike_idle.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("bike_accelerating.wav"), false),
                     new PlaySound(MainMenu.CGFReader.GetFile("bike_stopping.wav"), false),
                     new PlaySound(MainMenu.CGFReader.GetFile("bike_full_speed.wav"), false)
-                },
-                {
-                    new PlaySound(MainMenu.CGFReader.GetFile("bike_c_idle.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("bike_c_accelerating.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("bike_c_stopping.wav"), false),
-                    new PlaySound(MainMenu.CGFReader.GetFile("bike_c_full_speed.wav"), false)
-                }
             } },
         };
         public static readonly Dictionary<Type, Image[]> TransportImages = new Dictionary<Type, Image[]>
@@ -1053,9 +1044,9 @@ namespace SLIL
                 {
                     if (player.PlayerDirection == Directions.STOP || player.MOVE_SPEED < 0 ||
                         (player.PlayerDirection == Directions.BACK && player.MOVE_SPEED > 0)) //stopping
-                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 2];
+                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][1];
                     else //full speed
-                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 3];
+                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][2];
                     if (transport_step == null || transport_step != step)
                     {
                         transport_step?.Stop();
@@ -1085,7 +1076,7 @@ namespace SLIL
             else if (player.InTransport && player.TRANSPORT != null && player.MOVE_SPEED == 0)
             {
                 //IDLE
-                step = TransportsSoundsDict[player.TRANSPORT.GetType()][player.CuteMode ? 1 : 0, 0];
+                step = TransportsSoundsDict[player.TRANSPORT.GetType()][0];
                 if (transport_step == null || transport_step != step)
                 {
                     transport_step?.Stop();
@@ -1175,7 +1166,7 @@ namespace SLIL
                         if (player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level != Levels.LV4)
                             player.GunState = 3;
                         player.Aiming = false;
-                        Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
+                        Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
                         shot_timer.Stop();
                         reload_timer.Start();
                     }
@@ -1194,7 +1185,7 @@ namespace SLIL
                                 player.GunState = 2;
                             else
                                 player.GunState = 3;
-                            Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
+                            Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
                             shot_timer.Stop();
                             if (player.GetCurrentGun().Level != Levels.LV1)
                                 shotgun_pull_timer.Start();
@@ -1209,7 +1200,7 @@ namespace SLIL
                         if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
                         {
                             player.GunState = 2;
-                            Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
+                            Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
                             shot_timer.Stop();
                             shotgun_pull_timer.Start();
                         }
@@ -1278,7 +1269,7 @@ namespace SLIL
                     else if (player.GetCurrentGun().ReloadFrames > 1) player.GunState++;
                     reload_frames++;
                     if (player.GetCurrentGun() is Shotgun)
-                        Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3]);
+                        Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3]);
                 }
                 else
                 {
@@ -1484,7 +1475,7 @@ namespace SLIL
                                     if (player.GetCurrentGun().Level != Levels.LV1)
                                         sound = 3;
                                 }
-                                Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), sound]);
+                                Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), sound]);
                                 reload_timer.Start();
                             }
                         }
@@ -1504,7 +1495,7 @@ namespace SLIL
                                     Thread.Sleep(150);
                                     player.ItemFrame = 1;
                                 }).Start();
-                                Controller.PlayGameSound(SoundsDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), 0]);
+                                Controller.PlayGameSound(GunsSoundsDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), 0]);
                                 Controller.UseItem();
                             }
                         }
@@ -1945,7 +1936,7 @@ namespace SLIL
                     {
                         if (player.GetCurrentGun().CanAiming && player.CanShoot && player.GetCurrentGun().CanShoot)
                         {
-                            Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3]);
+                            Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3]);
                             player.Aiming = !player.Aiming;
                             player.GunState = player.Aiming ? player.GetCurrentGun().AimingState : 0;
                         }
@@ -3098,9 +3089,9 @@ namespace SLIL
             else if (player.InParkour)
                 imageToDraw = Properties.Resources.player_parkour;
             else if (player.UseItem)
-                imageToDraw = ImagesDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), player.ItemFrame];
+                imageToDraw = GunsImagesDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), player.ItemFrame];
             else
-                imageToDraw = ImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index];
+                imageToDraw = GunsImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index];
             int safeXOffset = Math.Max(0, Math.Min((int)xOffset, imageToDraw.Width - WEAPON.Width));
             int safeYOffset = Math.Max(0, Math.Min((int)yOffset, imageToDraw.Height - WEAPON.Height));
             Rectangle sourceRect = new Rectangle(safeXOffset, safeYOffset, WEAPON.Width, WEAPON.Height);
@@ -3354,7 +3345,7 @@ namespace SLIL
             if (player.GetCurrentGun().AmmoInStock >= 0 && player.GetCurrentGun().AmmoCount > 0)
             {
                 if (player.GetCurrentGun() is SniperRifle && !player.Aiming) return false;
-                Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0]);
+                Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 0]);
                 player.GunState = 1;
                 player.Aiming = false;
                 player.CanShoot = false;
@@ -3380,13 +3371,13 @@ namespace SLIL
                 reload_timer.Start();
                 if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
                     return false;
-                Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
+                Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 1]);
                 return false;
             }
             else if (!(player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level == Levels.LV1) &&
                 !(player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level == Levels.LV1) && MainMenu.sounds)
             {
-                Controller.PlayGameSound(SoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 2]);
+                Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 2]);
                 return false;
             }
             return false;
@@ -3904,9 +3895,9 @@ namespace SLIL
                 for (int j = 0; j < CuteDeathSounds.GetLength(1); j++)
                     CuteDeathSounds[i, j]?.Stop();
             }
-            foreach (Type key in SoundsDict.Keys)
+            foreach (Type key in GunsSoundsDict.Keys)
             {
-                PlaySound[,] soundDict = SoundsDict[key];
+                PlaySound[,] soundDict = GunsSoundsDict[key];
                 for (int i = 0; i < soundDict.GetLength(0); i++)
                 {
                     for (int j = 0; j < soundDict.GetLength(1); j++)
@@ -3915,12 +3906,9 @@ namespace SLIL
             }
             foreach (Type key in TransportsSoundsDict.Keys)
             {
-                PlaySound[,] transportSoundDict = TransportsSoundsDict[key];
-                for (int i = 0; i < transportSoundDict.GetLength(0); i++)
-                {
-                    for (int j = 0; j < transportSoundDict.GetLength(1); j++)
-                        transportSoundDict[i, j]?.Stop();
-                }
+                PlaySound[] transportSoundDict = TransportsSoundsDict[key];
+                foreach (PlaySound transportSound in transportSoundDict)
+                    transportSound?.Stop();
             }
             hungry?.Stop();
             step?.Stop();
