@@ -701,6 +701,11 @@ namespace SLIL
                     Localizations.GetLString(Language, "0-64")
                 };
                 smoothing_list.Items.AddRange(smooth_list);
+                password_input_label.Text = Localizations.GetLString(Language, "0-125");
+                need_password.Text = Localizations.GetLString(Language, "0-126");
+                connect_btn_r.Text = Localizations.GetLString(Language, "0-127");
+                ip_input_label.Text = Localizations.GetLString(Language, "0-128");
+                close_connect_btn_l.Text = Localizations.GetLString(Language, "0-6");
                 localization_update_btn.Text = Localizations.GetLString(Language, "0-90");
                 display_size_label.Text = Localizations.GetLString(Language, "0-0");
                 smoothing_label.Text = Localizations.GetLString(Language, "0-1");
@@ -790,6 +795,10 @@ namespace SLIL
             else
             {
                 smoothing_list.Items.AddRange(new string[] { "No Antialiasing", "Default", "High Quality", "High Speed" });
+                password_input_label.Text = "Password:";
+                need_password.Text = "Need password:";
+                connect_btn_r.Text = "Join";
+                ip_input_label.Text = "Game IP:";
                 localization_update_btn.Text = "Update language list";
                 display_size_label.Text = "Screen resolution";
                 smoothing_label.Text = "Smoothing";
@@ -803,6 +812,7 @@ namespace SLIL
                 start_multiplayer_game_r.Text = "Play";
                 start_btn_cp.Text = "Start game";
                 select_mode_btn_r.Text = "Select";
+                close_connect_btn_l.Text = "Back";
                 close_game_mode_panel_l.Text = "Close";
                 easy_btn.Text = "Easy";
                 normal_btn.Text = "Normal";
@@ -1857,6 +1867,8 @@ namespace SLIL
 
         //  #====     Multiplayer    ====#
 
+        private void Need_password_CheckedChanged(object sender, EventArgs e) => password_connect_input.Enabled = need_password.Checked;
+
         private void UnpackGameServerZip()
         {
             if (!File.Exists("GameServer.zip")) return;
@@ -1916,18 +1928,6 @@ namespace SLIL
             connect_panel.BringToFront();
         }
 
-        private void Ip_connect_input_KeyDown(object sender, KeyEventArgs e)
-        {
-            Keys key = e.KeyCode;
-            if (key == Keys.Escape || key == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                e.Handled = true;
-                if (key == Keys.Enter)
-                    ConnectToGame();
-            }
-        }
-
         private void Connect_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
@@ -1941,7 +1941,7 @@ namespace SLIL
             if (sounds) MainMenuTheme.Stop();
             try
             {
-                string ip, port;
+                string ip, port, password = "none";
                 if (ip_connect_input.Text.Contains(':'))
                 {
                     ip = ip_connect_input.Text.Split(':')[0];
@@ -1952,7 +1952,9 @@ namespace SLIL
                     ip = ip_connect_input.Text;
                     port = "9999";
                 }
-                SLIL form = new SLIL(textureCache, ip, int.Parse(port), PlayerName)
+                if (need_password.Checked)
+                    password = password_connect_input.Text;
+                SLIL form = new SLIL(textureCache, ip, int.Parse(port), password, PlayerName)
                 {
                     game_over = game_over,
                     draw = draw,

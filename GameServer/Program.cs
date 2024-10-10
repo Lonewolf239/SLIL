@@ -2,17 +2,23 @@
 using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Xml.Linq;
 
 namespace GameServer
 {
-    public class GameServerConsole
+    internal class GameServerConsole
     {
-        public const string version = "|1.2.2.2|";
+        internal const string version = "|1.2.2.2|";
         private const int GWL_STYLE = -16;
         private const int WS_SIZEBOX = 0x00040000;
         private const int WS_MAXIMIZEBOX = 0x00010000;
         private const int SM_CXSCREEN = 0;
         private const int SM_CYSCREEN = 1;
+        const int STD_INPUT_HANDLE = -10;
+        const uint ENABLE_QUICK_EDIT_MODE = 0x0040;
+        const uint ENABLE_EXTENDED_FLAGS = 0x0080;
+        const uint ENABLE_INSERT_MODE = 0x0020;
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
         {
@@ -33,16 +39,23 @@ namespace GameServer
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetStdHandle(int nStdHandle);
+        [DllImport("kernel32.dll")]
+        static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+        [DllImport("kernel32.dll")]
+        static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
-        public static void SetupConsoleSettings()
+        private static void SetupConsoleSettings()
         {
             int width = 80;
-            int height = 25;
+            int height = 32;
             Console.Title = $"GameServer for SLIL v{version.Trim('|')}";
             Console.SetWindowSize(width, height);
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 Console.SetBufferSize(width, height);
+                Console.CursorSize = 100;
                 int screenWidth = GetSystemMetrics(SM_CXSCREEN);
                 int screenHeight = GetSystemMetrics(SM_CYSCREEN);
                 IntPtr consoleWindow = GetConsoleWindow();
@@ -56,7 +69,163 @@ namespace GameServer
                 style &= ~WS_SIZEBOX;
                 style &= ~WS_MAXIMIZEBOX;
                 _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
+                IntPtr consoleHandle = GetStdHandle(STD_INPUT_HANDLE);
+                GetConsoleMode(consoleHandle, out uint consoleMode);
+                SetConsoleMode(consoleHandle, consoleMode & ~(ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS | ENABLE_INSERT_MODE));
             }
+        }
+
+        internal static void Main()
+        {
+            SetupConsoleSettings();
+            GameServerProgram program = new();
+            Mutex mutex = new(true, "SLIL_GameServer_Unique_Mutex");
+            if (mutex.WaitOne(TimeSpan.Zero, true))
+            {
+                program.MainMenu();
+                mutex.ReleaseMutex();
+            }
+        }
+    }
+
+    internal class Clipboard
+    {
+        const uint GMEM_MOVEABLE = 0x0002;
+        const uint CF_UNICODETEXT = 13;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool OpenClipboard(IntPtr hWndNewOwner);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool CloseClipboard();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool EmptyClipboard();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GlobalAlloc(uint uFlags, UIntPtr dwBytes);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GlobalLock(IntPtr hMem);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GlobalUnlock(IntPtr hMem);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GlobalFree(IntPtr hMem);
+
+        internal static void SetText(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return;
+            if (!OpenClipboard(IntPtr.Zero))
+                throw new InvalidOperationException("Unable to open clipboard.");
+            try
+            {
+                EmptyClipboard();
+                byte[] bytes = Encoding.Unicode.GetBytes(text);
+                int dataSize = bytes.Length + 2;
+                IntPtr hGlobal = GlobalAlloc(GMEM_MOVEABLE, (UIntPtr)dataSize);
+                if (hGlobal == IntPtr.Zero)
+                    throw new OutOfMemoryException("Unable to allocate memory for clipboard data.");
+                try
+                {
+                    IntPtr locked = GlobalLock(hGlobal);
+                    if (locked == IntPtr.Zero)
+                        throw new InvalidOperationException("Unable to lock memory for clipboard data.");
+                    try
+                    {
+                        Marshal.Copy(bytes, 0, locked, bytes.Length);
+                        Marshal.WriteInt16(locked, bytes.Length, 0);
+                    }
+                    finally { GlobalUnlock(locked); }
+                    if (SetClipboardData(CF_UNICODETEXT, hGlobal) == IntPtr.Zero)
+                        throw new InvalidOperationException("Unable to set clipboard data.");
+                    hGlobal = IntPtr.Zero;
+                }
+                finally
+                {
+                    if (hGlobal != IntPtr.Zero)
+                        GlobalFree(hGlobal);
+                }
+            }
+            finally { CloseClipboard(); }
+        }
+    }
+
+    internal class GameServerProgram
+    {
+        //private readonly NetPacketProcessor processor = new();
+        private readonly EventBasedNetListener Listener;
+        private NetManager Server;
+        private readonly Dispatcher Dispatcher;
+        private readonly SendOutcomingMessageDelegate? SendOutcomingMessageHandle;
+        private string ServerPassword = "None";
+        private bool Exit = false, ServerStarted = false, StopedThread = true;
+        private int Selected = 0, SelectedDifficult = 1;
+        private const int MaxCommandIndex = 9;
+        private readonly List<string> BannedPlayersList;
+        private GameModes GameMode = GameModes.Classic;
+        private readonly string[] Difficulties = ["Easy", "Normal", "Hard", "Very hard"];
+        private readonly ConsoleColor[] DifficultyColors = { ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.DarkRed };
+        private readonly ConsoleColor[] GameModeColors = { ConsoleColor.White, ConsoleColor.Red, ConsoleColor.DarkGray, ConsoleColor.DarkGray };
+        private string StatusMessage = "The status text will be displayed here";
+        private const int MAX_CONNECTIONS = 4;
+        //server.UnsyncedEvents = true;
+        //server.UpdateTime = 1;
+
+        internal GameServerProgram()
+        {
+            BannedPlayersList = [];
+            Listener = new();
+            Server = new(Listener);
+            Dispatcher = new();
+            SendOutcomingMessageHandle = SendOutcomingMessageInvoker;
+            Dispatcher.sendMessageDelegate = SendOutcomingMessageHandle;
+            Listener.ConnectionRequestEvent += request =>
+            {
+                string data = request.Data.GetString();
+                if (Server.ConnectedPeersCount < MAX_CONNECTIONS && data.StartsWith("SomeKey:"))
+                {
+                    string[] request_data = data.Replace("SomeKey:", "").Split('|');
+                    string name = request_data[0];
+                    if (BannedPlayersList.Contains(name))
+                    {
+                        request.Reject();
+                        return;
+                    }
+                    else
+                    {
+                        string password = request_data[1];
+                        if (ServerPassword != "None" && password != ServerPassword)
+                            request.Reject();
+                        else
+                            Dispatcher.AppendPlayerPeerDictionary(request.Accept().Id, name);
+                    }
+                }
+                else request.Reject();
+            };
+            Listener.PeerConnectedEvent += peer =>
+            {
+                StatusMessage = $"<{DateTime.Now:hh:mm}> We got connection: {peer}";
+                Dispatcher.SendOutcomingMessage(100, ref peer);
+            };
+            Listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
+            {
+                Packet pack = new();
+                pack.Deserialize(dataReader);
+                int playerIDFromPeer = Dispatcher.PeerPlayerIDs[fromPeer.Id];
+                Dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref Server, playerIDFromPeer);
+            };
+            Listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
+            {
+                Dispatcher.RemovePlayer(Dispatcher.PeerPlayerIDs[peer.Id]);
+                Dispatcher.PeerPlayerIDs.Remove(peer.Id);
+                StatusMessage = $"<{DateTime.Now:hh:mm}> Closed connection: {peer}";
+                Dispatcher.PeerPlayerNames.Remove(peer.Id);
+            };
         }
 
         private async static Task DownloadFileAsync(string url, string outputPath)
@@ -73,16 +242,15 @@ namespace GameServer
             catch { }
         }
 
-        public async static Task<bool> CheckUpdate()
+        private async static Task<bool> CheckUpdate()
         {
-            Console.Write("Checking for game server updates...");
-            Thread.Sleep(500);
+            return true;
             try
             {
                 using HttpClient httpClient = new();
                 string content = await httpClient.GetStringAsync("https://base-escape.ru/version_SLIL_GameServer.txt");
                 string line = content.Split(["\r\n", "\r", "\n"], StringSplitOptions.None)[0];
-                if (!line.Contains(version))
+                if (!line.Contains(GameServerConsole.version))
                 {
                     if (!File.Exists("UpdateDownloader.exe"))
                         await DownloadFileAsync("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
@@ -102,95 +270,203 @@ namespace GameServer
                 return false;
             }
         }
-    }
-
-    public class GameServerProgramm
-    {
-        //private static readonly NetPacketProcessor processor = new();
-        private static readonly EventBasedNetListener listener = new();
-        private static NetManager server = new(listener);
-        private static readonly Dispatcher dispatcher = new();
-        private static SendOutcomingMessageDelegate? sendOutcomingMessageHandle;
-        private static bool exit = false, server_started = false, stoped_thread = true;
-        private const int MAX_CONNECTIONS = 4;
-        //server.UnsyncedEvents = true;
-        //server.UpdateTime = 1;
-
-        public static void Main()
+        
+        internal void MainMenu()
         {
-            GameServerConsole.SetupConsoleSettings();
-            Mutex mutex = new(true, "SLIL_GameServer_Unique_Mutex");
-            if (mutex.WaitOne(TimeSpan.Zero, true) && GameServerConsole.CheckUpdate().Result)
+            Console.CursorVisible = false;
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            DrawBorder('╔', '╗', '═', 52);
+            WriteColoredCenteredText("Welcome to GameServer for SLIL", ConsoleColor.Yellow, 52);
+            WriteColoredCenteredText($"Version {GameServerConsole.version.Trim('|')}", ConsoleColor.Yellow, 52);
+            DrawBorder('╠', '╣', '═', 52);
+            WriteColoredCenteredText("Checking for updates...", ConsoleColor.Green, 52);
+            DrawBorder('╚', '╝', '═', 52);
+            Console.ResetColor();
+            Thread.Sleep(1000);
+            if (!CheckUpdate().Result) return;
+            while (!Exit)
             {
-                sendOutcomingMessageHandle = SendOutcomingMessageInvoker;
-                dispatcher.sendMessageDelegate = sendOutcomingMessageHandle;
-                listener.ConnectionRequestEvent += request =>
+                DisplayMainMenu();
+                switch (Console.ReadKey(true).Key)
                 {
-                    string data = request.Data.GetString();
-                    if (server.ConnectedPeersCount < MAX_CONNECTIONS && data.StartsWith("SomeKey:"))
+                    case ConsoleKey.UpArrow:
+                    case ConsoleKey.W:
+                        Selected--;
+                        if (Selected < 0)
+                            Selected = MaxCommandIndex;
+                        break;
+                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.S:
+                        Selected++;
+                        if (Selected > MaxCommandIndex)
+                            Selected = 0;
+                        break;
+                    case ConsoleKey.I:
+                        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) break;
+                        if (ServerStarted)
+                        {
+                            try
+                            {
+                                Clipboard.SetText($"{GetLocalIPAddress()}:{Server.LocalPort}");
+                                StatusMessage = "IP successfully copied to clipboard";
+                            }
+                            catch { StatusMessage = "An error occurred while copying IP"; }
+                        }
+                        break;
+                    case ConsoleKey.P:
+                        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) break;
+                        if (ServerStarted)
+                        {
+                            if (ServerPassword != "None")
+                            {
+                                try
+                                {
+                                    Clipboard.SetText(ServerPassword);
+                                    StatusMessage = "Password successfully copied to clipboard";
+                                }
+                                catch { StatusMessage = "An error occurred while copying the password"; }
+                            }
+                            else StatusMessage = "Password not set...";
+                        }
+                        break;
+                    case ConsoleKey.Enter:
+                        ProcessingCommands(Selected);
+                        break;
+                    case ConsoleKey.Escape:
+                        ProcessingCommands(8);
+                        break;
+                }
+            }
+        }
+
+        private void DisplayMainMenu()
+        {
+            Console.CursorVisible = false;
+            const int windowWidth = 52;
+            string[] menuItems =
+            [
+                "Guide to connecting to the game",
+                "Start the server",
+                "Stop the server",
+                "Players list",
+                "Banned players list",
+                "Set difficulty",
+                "Select game mode",
+                "Start the game",
+                "Stop the game",
+                "Exit the program"
+            ];
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            DrawBorder('╔', '╗', '═', windowWidth);
+            WriteColoredCenteredText("Server Info", ConsoleColor.White, windowWidth);
+            if (ServerStarted)
+            {
+                WriteColoredCenteredText("┌────────────────────────────┐", ConsoleColor.Cyan, windowWidth);
+                WriteServerInfoLine("Status", "Online", ConsoleColor.Green, windowWidth);
+                WriteServerInfoLine("IP", $"{GetLocalIPAddress()}:{Server.LocalPort}", ConsoleColor.White, windowWidth);
+                WriteServerInfoLine("Password", ServerPassword == "None" ? "Not set" : ServerPassword,
+                                    ServerPassword == "None" ? ConsoleColor.DarkGray : ConsoleColor.White, windowWidth);
+                WriteServerInfoLine("Game mode", GameMode.ToString(), GameModeColors[(int)GameMode], windowWidth);
+                WriteServerInfoLine("Difficult", Difficulties[SelectedDifficult], DifficultyColors[SelectedDifficult], windowWidth);
+                WriteColoredCenteredText("└────────────────────────────┘", ConsoleColor.Cyan, windowWidth);
+            }
+            else
+            {
+                WriteColoredCenteredText("┌────────────────────────────┐", ConsoleColor.Cyan, windowWidth);
+                WriteServerInfoLine("Status", "Offline", ConsoleColor.Red, windowWidth);
+                WriteColoredCenteredText("└────────────────────────────┘", ConsoleColor.Cyan, windowWidth);
+            }
+            DrawBorder('║', '║', ' ', windowWidth);
+            WriteColoredCenteredText(StatusMessage, ConsoleColor.Magenta, windowWidth);
+            DrawBorder('╠', '╣', '═', windowWidth);
+            for (int i = 0; i < menuItems.Length; i++)
+                WriteMenuItem(menuItems[i], i == Selected, windowWidth);
+            DrawBorder('╠', '╣', '═', windowWidth);
+            Console.WriteLine('║' + CenterText("↑↓: Move    ESC: Exit    Enter: Confirm", windowWidth - 2) + '║');
+                if (ServerStarted && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                Console.WriteLine('║' + CenterText("I: Copy IP    P: Copy Password", windowWidth - 2) + '║');
+            DrawBorder('╠', '╣', '═', 52);
+            WriteColoredCenteredText("Developed by: Fatalan & Lonewolf239", ConsoleColor.Yellow, 52);
+            WriteColoredCenteredText("GUI designed by: Lonewolf239", ConsoleColor.Yellow, 52);
+            DrawBorder('╚', '╝', '═', windowWidth);
+        }
+
+        private static void DrawBorder(char left, char right, char fill, int width) => Console.WriteLine($"{left}{new string(fill, width - 2)}{right}");
+
+        private static void WriteServerInfoLine(string label, string value, ConsoleColor valueColor, int windowWidth)
+        {
+            Console.Write('║' + " ".PadRight((windowWidth - 4 - label.Length - value.Length) / 2));
+            Console.Write($"{label}: ");
+            Console.ForegroundColor = valueColor;
+            Console.Write(value);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(" ".PadLeft((windowWidth - 4 - label.Length - value.Length + 1) / 2) + '║');
+        }
+
+        private static void WriteColoredCenteredText(string text, ConsoleColor color, int width)
+        {
+            Console.Write('║');
+            Console.ForegroundColor = color;
+            Console.Write(CenterText(text, width - 2));
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine('║');
+        }
+
+        private static void WriteMenuItem(string text, bool isSelected, int width)
+        {
+            Console.Write('║');
+            Console.ResetColor();
+            string leftPadding = "   ", rightPadding = "   ";
+            if (isSelected)
+            {
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.White;
+                leftPadding = ">> ";
+                rightPadding = " <<";
+            }
+            else
+                Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(leftPadding + text.PadRight(width - 8) + rightPadding);
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine('║');
+        }
+
+        private static string GetInput(int maxLength, bool onlyDigit)
+        {
+            string input = "";
+            while (true)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                    break;
+                else if (key.Key == ConsoleKey.Backspace && input.Length > 0)
+                {
+                    input = input[..^1];
+                    Console.Write("\b \b");
+                }
+                else if (input.Length < maxLength)
+                {
+                    if (onlyDigit && !char.IsDigit(key.KeyChar)) continue;
+                    if (char.IsLetterOrDigit(key.KeyChar) || key.KeyChar == '_')
                     {
-                        string name = data.Replace("SomeKey:", "");
-                        dispatcher.AppendPlayerPeerDictionary(request.Accept().Id, name);
+                        input += key.KeyChar;
+                        Console.Write(key.KeyChar);
                     }
-                    else request.Reject();
-                };
-                listener.PeerConnectedEvent += peer =>
-                {
-                    DisplayWelcomeText($"We got connection: {peer}");
-                    dispatcher.SendOutcomingMessage(100, ref peer);
-                };
-                listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
-                {
-                    Packet pack = new();
-                    pack.Deserialize(dataReader);
-                    int playerIDFromPeer = dispatcher.PeerPlayerIDs[fromPeer.Id];
-                    dispatcher.DispatchIncomingMessage(pack.PacketID, pack.Data, ref server, playerIDFromPeer);
-                };
-                listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
-                {
-                    dispatcher.RemovePlayer(dispatcher.PeerPlayerIDs[peer.Id]);
-                    dispatcher.PeerPlayerIDs.Remove(peer.Id);
-                    DisplayWelcomeText($"Closed connection: {peer}");
-                    dispatcher.PeerPlayerName.Remove(peer.Id);
-                };
-                DisplayWelcomeText();
-                while (!exit)
-                {
-                    string? command = Console.ReadLine()?.Replace(" ", null).ToLower();
-                    switch (command)
-                    {
-                        case "0":
-                        case "help":
-                            string[] helpText =
-                            [
-                                "╔═════╦══════════════════╦═════════════════════════════════════════════╗",
-                            "║ ID  ║ Command          ║ Description                                 ║",
-                            "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
-                            "║ 0   ║ help             ║ Display this help menu                      ║",
-                            "║ 1   ║ how_play         ║ Explanation of how to play together         ║",
-                            "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
-                            "║ 2   ║ start            ║ Start the server                            ║",
-                            "║ 3   ║ stop             ║ Stop the server                             ║",
-                            "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
-                            "║ 4   ║ ip               ║ Display server IP address                   ║",
-                            "║ 5   ║ lobby            ║ Browse lobby                                ║",
-                            "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
-                            "║ 6   ║ set_difficulty   ║ Set the difficulty on the server            ║",
-                            "║ 7   ║ set_game_mode    ║ Set the game mode on the server             ║",
-                            "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
-                            "║ 8   ║ start_game       ║ Start a new game on the server              ║",
-                            "║ 9   ║ stop_game        ║ Stop the game on the server                 ║",
-                            "╠═════╬══════════════════╬═════════════════════════════════════════════╣",
-                            "║ 10  ║ exit             ║ Exit the program                            ║",
-                            "╚═════╩══════════════════╩═════════════════════════════════════════════╝"
-                            ];
-                            DisplayTextMessage(helpText, true);
-                            break;
-                        case "1":
-                        case "how_play":
-                            string[] howPlayText =
-                            [
-                                "╔════════════════════════════════════════════════════════════════╗",
+                }
+            }
+            return input;
+        }
+
+        private void ProcessingCommands(int command)
+        {
+            switch (command)
+            {
+                case 0:
+                    string[] howPlayText =
+                    [
+                        "╔════════════════════════════════════════════════════════════════╗",
                             "║                                                                ║",
                             "║   ATTENTION THIS IS NOT THE FINAL VERSION OF THE MULTIPLAYER   ║",
                             "║         IF YOU FIND ANY BUGS, PLEASE REPORT THEM TO US         ║",
@@ -212,139 +488,176 @@ namespace GameServer
                             "║                                                                ║",
                             "║                                                                ║",
                             "╚════════════════════════════════════════════════════════════════╝"
-                            ];
-                            DisplayTextMessage(howPlayText);
-                            break;
-                        case "2":
-                        case "start":
-                            Console.Write("\nEnter port (1000-9999, 0 to set default): ");
-                            int port;
-                            try { port = Convert.ToInt32(Console.ReadLine()); }
-                            catch { port = 9999; }
-                            if (port < 1000 || port > 9999) port = 9999;
-                            try
-                            {
-                                server.Start(port);
-                                server_started = true;
-                                stoped_thread = false;
-                                PacketsThread();
-                                DisplayWelcomeText($"Server started successfully on port: {port}");
-                            }
-                            catch (Exception e)
-                            {
-                                server_started = false;
-                                stoped_thread = true;
-                                DisplayWelcomeText($"Error when starting server: {e.Message}");
-                            }
-                            break;
-                        case "3":
-                        case "stop":
-                            server.Stop();
-                            server_started = false;
-                            stoped_thread = true;
-                            DisplayWelcomeText("Server stopped successfully");
-                            break;
-                        case "4":
-                        case "ip":
-                            if (!server_started)
-                                DisplayWelcomeText("Please start the server first");
-                            else
-                                DisplayWelcomeText($"Server IP address: {GetLocalIPAddress()}:{server.LocalPort}");
-                            break;
-                        case "5":
-                        case "lobby":
-                            if (!server_started)
-                                DisplayWelcomeText("Please start the server first");
-                            else
-                            {
-                                string[] players = dispatcher.GetPlayers().Select(p => p.Value.ToString()).ToArray();
-                                int playerId = SelectOption("Lobby:", players, "Lobby is empty...", "Exit", "Kick Player");
-                                if (playerId != -1)
-                                {
-                                    if (YesNoMessage())
-                                    {
-                                        dispatcher.KickPlayer(playerId, ref server);
-                                        DisplayWelcomeText($"Player with ID {playerId} has been kicked from the server");
-                                    }
-                                    else DisplayWelcomeText();
-                                }
-                                else DisplayWelcomeText();
-                            }
-                            break;
-                        case "6":
-                        case "set_difficulty":
-                            if (!server_started)
-                                DisplayWelcomeText("Please start the server first");
-                            else
-                            {
-                                try
-                                {
-                                    string[] difficulties = ["Easy", "Normal", "Hard", "Very hard"];
-                                    int selectedIndex = SelectOption("Select difficulty:", difficulties);
-                                    if (selectedIndex == -1)
-                                    {
-                                        DisplayWelcomeText("The difficulty change has been cancelled.");
-                                        continue;
-                                    }
-                                    dispatcher.ChangeDifficulty(selectedIndex);
-                                    DisplayWelcomeText($"Difficulty set to {difficulties[selectedIndex]}");
-                                }
-                                catch (Exception e) { DisplayWelcomeText($"Error setting difficulty: {e.Message}"); }
-                            }
-                            break;
-                        case "7":
-                        case "set_game_mode":
-                            if (!server_started)
-                                DisplayWelcomeText("Please start the server first");
-                            else
-                            {
-                                try
-                                {
-                                    string[] gameModes = Enum.GetNames(typeof(GameMode));
-                                    int selectedIndex = SelectOption("Select game mode:", gameModes);
-                                    if (selectedIndex == -1)
-                                    {
-                                        DisplayWelcomeText("The game mode change has been cancelled.");
-                                        continue;
-                                    }
-                                    GameMode selectedMode = (GameMode)selectedIndex;
-                                    dispatcher.ChangeGameMode(selectedMode);
-                                    DisplayWelcomeText($"Game mode set to {selectedMode}");
-                                }
-                                catch (Exception e) { DisplayWelcomeText($"Error setting game mode: {e.Message}"); }
-                            }
-                            break;
-                        case "8":
-                        case "start_game":
-                            if (!server_started)
-                                DisplayWelcomeText("Please start the server first");
-                            else
-                            {
-                                dispatcher.StartGame();
-                                DisplayWelcomeText("New game started on the server");
-                            }
-                            break;
-                        case "9":
-                        case "stop_game":
-                            if (!server_started)
-                                DisplayWelcomeText("Please start the server first");
-                            else
-                            {
-                                dispatcher.StopGame();
-                                DisplayWelcomeText("Game stopped on the server");
-                            }
-                            break;
-                        case "10":
-                        case "exit":
-                            server.Stop();
-                            exit = true;
-                            break;
-                        default:
-                            DisplayWelcomeText("Unknown command. Type \"help\" for a list of available commands");
-                            break;
+                    ];
+                    DisplayTextMessage(howPlayText);
+                    break;
+                case 1:
+                    const int windowWidth = 54;
+                    Console.Clear();
+                    Console.CursorVisible = true;
+                    DrawBorder('╔', '╗', '═', windowWidth);
+                    WriteColoredCenteredText("Server Configuration", ConsoleColor.Yellow, windowWidth);
+                    DrawBorder('╠', '╣', '═', windowWidth);
+                    Console.Write('║');
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write(" Enter port (1000-9999, empty to set default): ".PadRight(windowWidth - 2));
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine('║');
+                    Console.Write('║');
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write(" Enter password (empty for no password): ".PadRight(windowWidth - 2));
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine('║');
+                    DrawBorder('╚', '╝', '═', windowWidth);
+                    Console.SetCursorPosition(48, 3);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    string input = GetInput(4, true);
+                    if (input.Length == 0) input = "0";
+                    int port = Convert.ToInt32(input);
+                    if (port < 1000) port = 9999;
+                    Console.SetCursorPosition(42, 4);
+                    ServerPassword = GetInput(10, false);
+                    if (ServerPassword.Length == 0) ServerPassword = "None";
+                    try
+                    {
+                        Server.Start(port);
+                        ServerStarted = true;
+                        StopedThread = false;
+                        PacketsThread();
+                        StatusMessage = $"Server started successfully on port: {port}";
                     }
-                }
-                mutex.ReleaseMutex();
+                    catch (Exception e)
+                    {
+                        ServerStarted = false;
+                        StopedThread = true;
+                        StatusMessage = $"Error when starting server: {e.Message}";
+                    }
+                    break;
+                case 2:
+                    Server.Stop();
+                    ServerStarted = false;
+                    StopedThread = true;
+                    StatusMessage = "Server stopped successfully";
+                    break;
+                case 3:
+                    if (!ServerStarted)
+                        StatusMessage = "Please start the server first";
+                    else
+                    {
+                        Dictionary<int, string> players = Dispatcher.GetPlayers();
+                        int[] playersID = players.Select(p => p.Key).ToArray();
+                        (int, bool) selected_player = SelectPlayers(players);
+                        int playerId = selected_player.Item1;
+                        bool ban = selected_player.Item2;
+                        if (playerId != -1)
+                        {
+                            if (YesNoMessage())
+                            {
+                                if (!players.ContainsKey(playerId))
+                                {
+                                    StatusMessage = "Error: Player not found...";
+                                    return;
+                                }
+                                if (ban)
+                                {
+                                    BannedPlayersList.Add(players.Values.ElementAt(playerId));
+                                    string name = players.Values.ElementAt(playerId);
+                                    playerId = players.Keys.ElementAt(playerId);
+                                    Dispatcher.KickPlayer(playerId, ref Server);
+                                    StatusMessage = $"Player {name} has been baned";
+                                }
+                                else
+                                {
+                                    string name = players.Values.ElementAt(playerId);
+                                    playerId = players.Keys.ElementAt(playerId);
+                                    Dispatcher.KickPlayer(playerId, ref Server);
+                                    StatusMessage = $"Player {name} has been kicked from the server";
+                                }
+                            }
+                            else DisplayMainMenu();
+                        }
+                        else DisplayMainMenu();
+                    }
+                    break;
+                case 4:
+                    if (!ServerStarted)
+                        StatusMessage = "Please start the server first";
+                    else
+                    {
+                        int selectedPlayer = SelectOption("Banned players list", [.. BannedPlayersList], "No banned players...", "Exit", "Unban");
+                        if (selectedPlayer == -1)
+                            return;
+                        string bannedPlayerName = BannedPlayersList[selectedPlayer];
+                        BannedPlayersList.RemoveAt(selectedPlayer);
+                        StatusMessage = $"Player {bannedPlayerName} was unbanned";
+                    }
+                    break;
+                case 5:
+                    if (!ServerStarted)
+                        StatusMessage = "Please start the server first";
+                    else
+                    {
+                        try
+                        {
+                            int selectedIndex = SelectOption("Select difficulty:", Difficulties);
+                            if (selectedIndex == -1)
+                            {
+                                StatusMessage = "The difficulty change has been cancelled.";
+                                return;
+                            }
+                            SelectedDifficult = selectedIndex;
+                            Dispatcher.ChangeDifficulty(selectedIndex);
+                            StatusMessage = $"Difficulty set to {Difficulties[selectedIndex]}";
+                        }
+                        catch (Exception e) { StatusMessage = $"Error setting difficulty: {e.Message}"; }
+                    }
+                    break;
+                case 6:
+                    if (!ServerStarted)
+                        StatusMessage = "Please start the server first";
+                    else
+                    {
+                        try
+                        {
+                            string[] gameModes = Enum.GetNames(typeof(GameModes));
+                            int selectedIndex = SelectOption("Select game mode:", gameModes);
+                            if (selectedIndex == -1)
+                            {
+                                StatusMessage = "The game mode change has been cancelled.";
+                                return;
+                            }
+                            GameMode = (GameModes)selectedIndex;
+                            Dispatcher.ChangeGameMode(GameMode);
+                            StatusMessage = $"Game mode set to {GameMode}";
+                        }
+                        catch (Exception e) { StatusMessage = $"Error setting game mode: {e.Message}"; }
+                    }
+                    break;
+                case 7:
+                    if (!ServerStarted)
+                        StatusMessage = "Please start the server first";
+                    else
+                    {
+                        Dispatcher.StartGame();
+                        StatusMessage = "New game started on the server";
+                    }
+                    break;
+                case 8:
+                    if (!ServerStarted)
+                        StatusMessage = "Please start the server first";
+                    else
+                    {
+                        Dispatcher.StopGame();
+                        StatusMessage = "Game stopped on the server";
+                    }
+                    break;
+                case 9:
+                    if (YesNoMessage())
+                    {
+                        Server.Stop();
+                        Exit = true;
+                    }
+                    break;
             }
         }
 
@@ -359,116 +672,108 @@ namespace GameServer
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
-        private static void SendOutcomingMessageInvoker(int packetID, byte[]? data = null)
+        private void SendOutcomingMessageInvoker(int packetID, byte[]? data = null)
         {
-            dispatcher.SendOutcomingMessage(packetID, ref server, data);
+            Dispatcher.SendOutcomingMessage(packetID, ref Server, data);
         }
 
-        private static void PacketsThread()
+        private void PacketsThread()
         {
             new Thread(() =>
             {
-                while (!stoped_thread && !exit)
+                while (!StopedThread && !Exit)
                 {
-                    server.PollEvents();
-                    dispatcher.SendOutcomingMessage(0, ref server);
+                    Server.PollEvents();
+                    Dispatcher.SendOutcomingMessage(0, ref Server);
                     Thread.Sleep(10);
                 }
             }).Start();
         }
 
-        private static void DisplayWelcomeText(string message = "none")
-        {
-            const int windowWidth = 70;
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine('╔' + new string('═', windowWidth - 2) + '╗');
-            Console.Write('║');
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write(CenterText("Welcome to GameServer for SLIL", windowWidth - 2));
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine('║');
-            Console.Write('║');
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write(CenterText($"Version {GameServerConsole.version.Trim('|')}", windowWidth - 2));
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine('║');
-            Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
-            Console.Write('║');
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(CenterText("Developed by: Fatalan", windowWidth - 2));
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine('║');
-            Console.Write('║');
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(CenterText("GUI designed by: Lonewolf239", windowWidth - 2));
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine('║');
-            Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
-            if (message != "none")
-            {
-                Console.Write('║');
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.Write(CenterText(message, windowWidth - 2));
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine('║');
-                Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
-            }
-            Console.Write('║');
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(CenterText("Type \"help\" for a list of available commands", windowWidth - 2));
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine('║');
-            Console.WriteLine('╚' + new string('═', windowWidth - 2) + '╝');
-            Console.ResetColor();
-            Console.Write("\nEnter the command or command ID: ");
-        }
-
         private static bool YesNoMessage()
         {
-            const int windowWidth = 40;
+            const int windowWidth = 31;
             int selectedIndex = 0;
             string[] options = ["Yes", "No"];
-            ConsoleKeyInfo keyInfo;
+            ConsoleKey key;
             do
             {
                 Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine('╔' + new string('═', windowWidth - 2) + '╗');
                 Console.WriteLine('║' + CenterText("Are you sure?", windowWidth - 2) + '║');
                 Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
                 for (int i = 0; i < options.Length; i++)
-                {
-                    Console.Write("║ ");
-                    if (i == selectedIndex)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Console.Write("> " + options[i].PadRight(windowWidth - 6));
-                        Console.ResetColor();
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                    }
-                    else
-                        Console.Write("  " + options[i].PadRight(windowWidth - 6));
-                    Console.WriteLine(" ║");
-                }
+                    WriteMenuItem(options[i], i == selectedIndex, windowWidth);
                 Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
                 Console.WriteLine('║' + CenterText($"↑↓: Move  Enter: Select", windowWidth - 2) + '║');
                 Console.WriteLine('╚' + new string('═', windowWidth - 2) + '╝');
-                keyInfo = Console.ReadKey(true);
-                if (keyInfo.Key == ConsoleKey.UpArrow)
+                key = Console.ReadKey(true).Key;
+                if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
                     selectedIndex = (selectedIndex - 1 + options.Length) % options.Length;
-                else if (keyInfo.Key == ConsoleKey.DownArrow)
+                else if (key == ConsoleKey.DownArrow || key == ConsoleKey.S)
                     selectedIndex = (selectedIndex + 1) % options.Length;
-            } while (keyInfo.Key != ConsoleKey.Enter);
+                if (key == ConsoleKey.Escape) return false;
+            } while (key != ConsoleKey.Enter);
             Console.Clear();
             return selectedIndex == 0;
         }
 
+        private static (int, bool) SelectPlayers(Dictionary<int, string> players)
+        {
+            const int windowWidth = 52;
+            int selectedIndex = 0;
+            ConsoleKey key;
+            do
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine('╔' + new string('═', windowWidth - 2) + '╗');
+                Console.WriteLine('║' + CenterText("Lobby:", windowWidth - 2) + '║');
+                Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
+                if (players.Count > 0)
+                {
+                    for (int i = 0; i < players.Count; i++)
+                    {
+                        int id = players.Keys.ElementAt(i);
+                        WriteMenuItem($"ID: {id}, Name: {players[id]}", i == selectedIndex, windowWidth);
+                    }
+                }
+                else
+                {
+                    Console.Write('║');
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write(CenterText("Lobby is empty...", windowWidth - 2));
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write("║\n");
+                }
+                Console.WriteLine('╠' + new string('═', windowWidth - 2) + '╣');
+                if (players.Count > 0)
+                    Console.WriteLine('║' + CenterText($"↑↓: Move    ESC: Exit    K: Kick    B: Ban", windowWidth - 2) + '║');
+                else
+                    Console.WriteLine('║' + CenterText($"↑↓: Move    ESC: Exit", windowWidth - 2) + '║');
+                Console.WriteLine('╚' + new string('═', windowWidth - 2) + '╝');
+                Console.ResetColor();
+                key = Console.ReadKey(true).Key;
+                if (players.Count > 0)
+                {
+                    if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
+                        selectedIndex = (selectedIndex - 1 + players.Count) % players.Count;
+                    else if (key == ConsoleKey.DownArrow || key == ConsoleKey.S)
+                        selectedIndex = (selectedIndex + 1) % players.Count;
+                }
+                if (key == ConsoleKey.Escape) return (-1, false);
+            } while (key != ConsoleKey.K && key != ConsoleKey.B);
+            Console.Clear();
+            if (players.Count > 0) return (selectedIndex, key == ConsoleKey.B);
+            return (-1, false);
+        }
+
         private static int SelectOption(string prompt, string[] options, string empty_string = "List is empty...", string button1 = "Cancel", string button2 = "Select")
         {
-            const int windowWidth = 50;
+            const int windowWidth = 52;
             int selectedIndex = 0;
-            ConsoleKeyInfo keyInfo;
+            ConsoleKey key;
             do
             {
                 Console.Clear();
@@ -479,20 +784,7 @@ namespace GameServer
                 if (options.Length > 0)
                 {
                     for (int i = 0; i < options.Length; i++)
-                    {
-                        Console.Write("║ ");
-                        if (i == selectedIndex)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.BackgroundColor = ConsoleColor.White;
-                            Console.Write("> " + options[i].PadRight(windowWidth - 6));
-                            Console.ResetColor();
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                        }
-                        else
-                            Console.Write("  " + options[i].PadRight(windowWidth - 6));
-                        Console.WriteLine(" ║");
-                    }
+                        WriteMenuItem(options[i], i == selectedIndex, windowWidth);
                 }
                 else
                 {
@@ -509,16 +801,16 @@ namespace GameServer
                     Console.WriteLine('║' + CenterText($"↑↓: Move  ESC: {button1}", windowWidth - 2) + '║');
                 Console.WriteLine('╚' + new string('═', windowWidth - 2) + '╝');
                 Console.ResetColor();
-                keyInfo = Console.ReadKey(true);
+                key = Console.ReadKey(true).Key;
                 if (options.Length > 0)
                 {
-                    if (keyInfo.Key == ConsoleKey.UpArrow)
+                    if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
                         selectedIndex = (selectedIndex - 1 + options.Length) % options.Length;
-                    else if (keyInfo.Key == ConsoleKey.DownArrow)
+                    else if (key == ConsoleKey.DownArrow || key == ConsoleKey.S)
                         selectedIndex = (selectedIndex + 1) % options.Length;
                 }
-                if (keyInfo.Key == ConsoleKey.Escape) return -1;
-            } while (keyInfo.Key != ConsoleKey.Enter);
+                if (key == ConsoleKey.Escape) return -1;
+            } while (key != ConsoleKey.Enter);
             Console.Clear();
             if (options.Length > 0) return selectedIndex;
             return -1;
@@ -526,7 +818,7 @@ namespace GameServer
 
         private static string CenterText(string text, int width) => text.PadLeft((width - text.Length) / 2 + text.Length).PadRight(width);
 
-        private static void DisplayTextMessage(string[] message, bool do_split = false)
+        private void DisplayTextMessage(string[] message, bool do_split = false)
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -570,7 +862,7 @@ namespace GameServer
             Console.ResetColor();
             Console.Write("\nPress any key to return to the main menu...");
             Console.ReadKey();
-            DisplayWelcomeText();
+            DisplayMainMenu();
         }
     }
 }

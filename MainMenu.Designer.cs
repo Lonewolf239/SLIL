@@ -241,7 +241,10 @@
             this.close_host_btn_l = new System.Windows.Forms.Button();
             this.connect_panel = new System.Windows.Forms.Panel();
             this.connect_background = new System.Windows.Forms.Panel();
-            this.connect_btn_cp = new System.Windows.Forms.Button();
+            this.need_password = new System.Windows.Forms.CheckBox();
+            this.password_connect_input = new System.Windows.Forms.TextBox();
+            this.password_input_label = new System.Windows.Forms.Label();
+            this.connect_btn_r = new System.Windows.Forms.Button();
             this.ip_connect_input = new System.Windows.Forms.TextBox();
             this.ip_input_label = new System.Windows.Forms.Label();
             this.close_connect_btn_l = new System.Windows.Forms.Button();
@@ -2949,7 +2952,10 @@
             // connect_background
             // 
             this.connect_background.BackColor = System.Drawing.Color.Black;
-            this.connect_background.Controls.Add(this.connect_btn_cp);
+            this.connect_background.Controls.Add(this.need_password);
+            this.connect_background.Controls.Add(this.password_connect_input);
+            this.connect_background.Controls.Add(this.password_input_label);
+            this.connect_background.Controls.Add(this.connect_btn_r);
             this.connect_background.Controls.Add(this.ip_connect_input);
             this.connect_background.Controls.Add(this.ip_input_label);
             this.connect_background.Controls.Add(this.close_connect_btn_l);
@@ -2958,20 +2964,53 @@
             this.connect_background.Size = new System.Drawing.Size(490, 276);
             this.connect_background.TabIndex = 45;
             // 
-            // connect_btn_cp
+            // need_password
             // 
-            this.connect_btn_cp.AutoSize = true;
-            this.connect_btn_cp.BackColor = System.Drawing.Color.Black;
-            this.connect_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.connect_btn_cp.ForeColor = System.Drawing.Color.White;
-            this.connect_btn_cp.Location = new System.Drawing.Point(125, 114);
-            this.connect_btn_cp.Name = "connect_btn_cp";
-            this.connect_btn_cp.Size = new System.Drawing.Size(240, 41);
-            this.connect_btn_cp.TabIndex = 62;
-            this.connect_btn_cp.TabStop = false;
-            this.connect_btn_cp.Text = "Присоединиться";
-            this.connect_btn_cp.UseVisualStyleBackColor = false;
-            this.connect_btn_cp.Click += new System.EventHandler(this.Connect_btn_Click);
+            this.need_password.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.need_password.ForeColor = System.Drawing.Color.White;
+            this.need_password.Location = new System.Drawing.Point(6, 157);
+            this.need_password.Name = "need_password";
+            this.need_password.Size = new System.Drawing.Size(199, 34);
+            this.need_password.TabIndex = 65;
+            this.need_password.Text = "Нужен пароль";
+            this.need_password.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.need_password.UseVisualStyleBackColor = true;
+            this.need_password.CheckedChanged += new System.EventHandler(this.Need_password_CheckedChanged);
+            // 
+            // password_connect_input
+            // 
+            this.password_connect_input.Enabled = false;
+            this.password_connect_input.Location = new System.Drawing.Point(211, 111);
+            this.password_connect_input.MaxLength = 10;
+            this.password_connect_input.Name = "password_connect_input";
+            this.password_connect_input.Size = new System.Drawing.Size(217, 29);
+            this.password_connect_input.TabIndex = 64;
+            this.password_connect_input.TabStop = false;
+            // 
+            // password_input_label
+            // 
+            this.password_input_label.ForeColor = System.Drawing.Color.White;
+            this.password_input_label.Location = new System.Drawing.Point(6, 109);
+            this.password_input_label.Name = "password_input_label";
+            this.password_input_label.Size = new System.Drawing.Size(199, 34);
+            this.password_input_label.TabIndex = 63;
+            this.password_input_label.Text = "Пароль:";
+            this.password_input_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // connect_btn_r
+            // 
+            this.connect_btn_r.AutoSize = true;
+            this.connect_btn_r.BackColor = System.Drawing.Color.Black;
+            this.connect_btn_r.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.connect_btn_r.ForeColor = System.Drawing.Color.White;
+            this.connect_btn_r.Location = new System.Drawing.Point(240, 226);
+            this.connect_btn_r.Name = "connect_btn_r";
+            this.connect_btn_r.Size = new System.Drawing.Size(240, 41);
+            this.connect_btn_r.TabIndex = 62;
+            this.connect_btn_r.TabStop = false;
+            this.connect_btn_r.Text = "Присоединиться";
+            this.connect_btn_r.UseVisualStyleBackColor = false;
+            this.connect_btn_r.Click += new System.EventHandler(this.Connect_btn_Click);
             // 
             // ip_connect_input
             // 
@@ -2982,7 +3021,6 @@
             this.ip_connect_input.TabIndex = 61;
             this.ip_connect_input.TabStop = false;
             this.ip_connect_input.Text = "000.000.000.000:0000";
-            this.ip_connect_input.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Ip_connect_input_KeyDown);
             // 
             // ip_input_label
             // 
@@ -3696,7 +3734,7 @@
         private System.Windows.Forms.Button start_multiplayer_game_r;
         private System.Windows.Forms.Panel connect_panel;
         private System.Windows.Forms.Panel connect_background;
-        private System.Windows.Forms.Button connect_btn_cp;
+        private System.Windows.Forms.Button connect_btn_r;
         private System.Windows.Forms.TextBox ip_connect_input;
         private System.Windows.Forms.Label ip_input_label;
         private System.Windows.Forms.Button close_connect_btn_l;
@@ -3781,5 +3819,8 @@
         private System.Windows.Forms.Button darsin_tg;
         private System.Windows.Forms.Label darsin_name;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox need_password;
+        private System.Windows.Forms.TextBox password_connect_input;
+        private System.Windows.Forms.Label password_input_label;
     }
 }

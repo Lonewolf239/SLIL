@@ -38,7 +38,7 @@ namespace SLIL.Classes
             Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
         }
 
-        public GameController(string adress, int port, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound, CloseFormDelegate closeForm, string playerName)
+        public GameController(string adress, int port, string password, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound, CloseFormDelegate closeForm, string playerName)
         {
             playerID = -1;
             this.playerName = playerName;
@@ -54,7 +54,7 @@ namespace SLIL.Classes
             client = new NetManager(listener);
             processor = new NetPacketProcessor();
             client.Start();
-            client.Connect(adress, port, $"SomeKey:{this.playerName}");
+            client.Connect(adress, port, $"SomeKey:{this.playerName}|{password}");
             Application.ApplicationExit += (sender, e) => client.Stop();
             listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
             {

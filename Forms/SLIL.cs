@@ -584,7 +584,7 @@ namespace SLIL
             Controller.StartGame();
             if (IsTutorial) Controller.GetPlayer().ChangeMoney(485);
         }
-        public SLIL(TextureCache textures, string adress, int port, string PlayerName)
+        public SLIL(TextureCache textures, string adress, int port, string password, string PlayerName)
         {
             InitializeComponent();
             SetLocalization();
@@ -594,7 +594,7 @@ namespace SLIL
             InitPlayerHandle = InitPlayerInvoker;
             PlaySoundHandle = PlaySoundInvoker;
             CloseFormHandle = CloseFormInvoker;
-            Controller = new GameController(adress, port, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
+            Controller = new GameController(adress, port, password, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             SetParameters();
@@ -3971,11 +3971,13 @@ namespace SLIL
             Player player = Controller.GetPlayer();
             if (player == null || !player.CuteMode)
                 shop_tab_control.Controls.Add(weapon_shop_page);
-            shop_tab_control.Controls.Add(pet_shop_page);
             //TEMP
             if (!Controller.IsMultiplayer())
+            {
+                shop_tab_control.Controls.Add(pet_shop_page);
                 shop_tab_control.Controls.Add(consumables_shop_page);
-            shop_tab_control.Controls.Add(transport_shop_page);
+                shop_tab_control.Controls.Add(transport_shop_page);
+            }
         }
 
         private void Pause()
@@ -4151,20 +4153,20 @@ namespace SLIL
             {
                 shop_tab_control.Controls.Clear();
                 shop_tab_control.Controls.Add(pet_shop_page);
-                //TEMP
-                if (!Controller.IsMultiplayer())
-                    shop_tab_control.Controls.Add(consumables_shop_page);
+                shop_tab_control.Controls.Add(consumables_shop_page);
                 shop_tab_control.Controls.Add(transport_shop_page);
             }
             else if (!shop_tab_control.Controls.ContainsKey("weapon_shop_page"))
             {
                 shop_tab_control.Controls.Clear();
                 shop_tab_control.Controls.Add(weapon_shop_page);
-                shop_tab_control.Controls.Add(pet_shop_page);
                 //TEMP
                 if (!Controller.IsMultiplayer())
+                {
+                    shop_tab_control.Controls.Add(pet_shop_page);
                     shop_tab_control.Controls.Add(consumables_shop_page);
-                shop_tab_control.Controls.Add(transport_shop_page);
+                    shop_tab_control.Controls.Add(transport_shop_page);
+                }
             }
         }
 

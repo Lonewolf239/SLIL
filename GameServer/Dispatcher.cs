@@ -1,17 +1,16 @@
 ﻿using LiteNetLib.Utils;
 using LiteNetLib;
-using System;
 
 namespace GameServer
 {
-    public delegate void SendOutcomingMessageDelegate(int packetID, byte[] data = null);
-    public delegate void SendMessageFromGameCallback(int packetID, byte[] data = null);
+    public delegate void SendOutcomingMessageDelegate(int packetID, byte[]? data = null);
+    public delegate void SendMessageFromGameCallback(int packetID, byte[]? data = null);
 
     internal class Dispatcher
     {
         private readonly GameModel Game;
         public Dictionary<int, int> PeerPlayerIDs = [];
-        public Dictionary<int, string> PeerPlayerName = [];
+        public Dictionary<int, string> PeerPlayerNames = [];
         public SendOutcomingMessageDelegate? sendMessageDelegate;
         public SendMessageFromGameCallback sendMessageFromGameCallback;
 
@@ -22,7 +21,7 @@ namespace GameServer
             //Game.StartGame();
         }
 
-        public void SendMessageFromGameHandle(int packetID, byte[] data = null) => sendMessageDelegate?.Invoke(packetID, data);
+        public void SendMessageFromGameHandle(int packetID, byte[]? data = null) => sendMessageDelegate?.Invoke(packetID, data);
 
         public void DispatchIncomingMessage(int packetID, byte[] data, ref NetManager server, int playerIDfromPeer)
         {
@@ -112,9 +111,7 @@ namespace GameServer
             NetDataWriter writer = new();
             NetDataReader? reader = null;
             if (data != null)
-            {
                 reader = new NetDataReader(data);
-            }
             int playerID = -1;
             writer.Put(packetID);
             switch (packetID)
@@ -222,7 +219,7 @@ namespace GameServer
             switch (packetID)
             {
                 case 100:
-                    int newPlayerId = AddPlayer(PeerPlayerName[peer.Id]);
+                    int newPlayerId = AddPlayer(PeerPlayerNames[peer.Id]);
                     PeerPlayerIDs.Add(peer.Id, newPlayerId);
                     writer.Put(newPlayerId);
                     SerializeGame(writer);
@@ -252,7 +249,17 @@ namespace GameServer
 
         internal void StopGame() => Game.StopGame(3);
 
-        internal Dictionary<int, int> GetPlayers() => PeerPlayerIDs;
+        internal Dictionary<int, string> GetPlayers()
+        {
+            Dictionary<int, string> players = [];
+            for(int i = 0; i < PeerPlayerIDs.Count; i++)
+            {
+                int id = PeerPlayerIDs.Values.ElementAt(i);
+                string name = PeerPlayerNames.Values.ElementAt(i);
+                players.Add(id, name);
+            }
+            return players;
+        }
 
         internal void KickPlayer(int playerID, ref NetManager server)
         {
@@ -270,11 +277,8 @@ namespace GameServer
             Game.RemovePlayer(playerID);
         }
 
-        internal void ChangeGameMode(GameMode gameMode) => Game.ChangeGameMode(gameMode);
+        internal void ChangeGameMode(GameModes gameMode) => Game.ChangeGameMode(gameMode);
 
-        internal void AppendPlayerPeerDictionary(int id, string name)
-        {
-            this.PeerPlayerName.Add(id, name);
-        }
+        internal void AppendPlayerPeerDictionary(int id, string name) => PeerPlayerNames.Add(id, name);
     }
 }

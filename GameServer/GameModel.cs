@@ -1,15 +1,14 @@
 ﻿using MazeGenerator;
 using LiteNetLib.Utils;
 using System.Text;
-using System;
 
 namespace GameServer
 {
-    enum GameMode
+    enum GameModes
     {
         Classic,
         Deathmatch,
-        BikersInMyHome,
+        DebugBikes,
         Debug
     }
 
@@ -28,7 +27,7 @@ namespace GameServer
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
         private readonly Random rand;
-        private GameMode _gameMode;
+        private GameModes _gameMode;
         private int difficulty;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
@@ -213,7 +212,7 @@ namespace GameServer
                                         player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
                                         if (player.HP <= 0)
                                         {
-                                            if (_gameMode == GameMode.Deathmatch)
+                                            if (_gameMode == GameModes.Deathmatch)
                                                 Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
                                             sendMessageFromGameCallback(666);
                                             //GameOver(0);
@@ -964,7 +963,7 @@ namespace GameServer
         {
             double enemy_count = 0;
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
-            if (_gameMode == GameMode.Deathmatch)
+            if (_gameMode == GameModes.Deathmatch)
             {
                 MAP_HEIGHT = 15;
                 MAP_WIDTH = 15;
@@ -990,7 +989,7 @@ namespace GameServer
                 }
                 return;
             }
-            if (_gameMode == GameMode.BikersInMyHome)
+            if (_gameMode == GameModes.DebugBikes)
             {
                 MAP_HEIGHT = 25;
                 MAP_WIDTH = 25;
@@ -1012,7 +1011,7 @@ namespace GameServer
                 }
                 return;
             }
-            if (_gameMode == GameMode.Debug)
+            if (_gameMode == GameModes.Debug)
             {
                 MAP_HEIGHT = 21;
                 MAP_WIDTH = 21;
@@ -1572,7 +1571,7 @@ namespace GameServer
                 if (!player.Dead) areAllThePlayersDead = false;
                 else
                 {
-                    if(_gameMode == GameMode.Deathmatch)
+                    if(_gameMode == GameModes.Deathmatch)
                     {
                         player.SetDefault();
                         double X = 1.5, Y = 1.5;
@@ -1624,7 +1623,7 @@ namespace GameServer
                     }
                 }
             }
-            if (_gameMode == GameMode.Classic)
+            if (_gameMode == GameModes.Classic)
             {
                 if (areAllThePlayersDead)
                 {
@@ -1998,7 +1997,7 @@ namespace GameServer
             if (GameStarted) StopGame(2);
         }
 
-        internal void ChangeGameMode(GameMode gameMode)
+        internal void ChangeGameMode(GameModes gameMode)
         {
             _gameMode = gameMode;
             if (GameStarted) StopGame(2);
