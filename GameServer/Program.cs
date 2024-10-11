@@ -1,6 +1,5 @@
 ﻿using LiteNetLib;
 using System.Diagnostics;
-using System.Drawing;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -9,7 +8,7 @@ namespace GameServer
 {
     internal class GameServerConsole
     {
-        internal const string version = "|1.2.2.2|";
+        internal const string version = "|1.3|";
         private const int GWL_STYLE = -16;
         private const int WS_SIZEBOX = 0x00040000;
         private const int WS_MAXIMIZEBOX = 0x00010000;
@@ -49,8 +48,8 @@ namespace GameServer
         private static void SetupConsoleSettings()
         {
             int width = 80;
-            int height = 32;
-            Console.Title = $"GameServer for SLIL v{version.Trim('|')}";
+            int height = 34;
+            Console.Title = "GameServer for SLIL";
             Console.SetWindowSize(width, height);
             Console.OutputEncoding = Encoding.UTF8;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -316,7 +315,7 @@ namespace GameServer
             DrawBorder('╔', '╗', '═', 52);
             WriteColoredCenteredText("Welcome to GameServer for SLIL", ConsoleColor.Yellow, 52);
             WriteColoredCenteredText($"Version {GameServerConsole.version.Trim('|')}", ConsoleColor.Yellow, 52);
-            DrawBorder('╠', '╣', '═', 52);
+            DrawBorder('╟', '╢', '─', 52);
             WriteColoredCenteredText("Checking for updates...", ConsoleColor.Green, 52);
             DrawBorder('╚', '╝', '═', 52);
             Console.ResetColor();
@@ -399,7 +398,7 @@ namespace GameServer
             const int windowWidth = 52;
             string[] menuItems =
             [
-                "1. Guide to connecting to the game",
+                "1. How to play together",
                 "2. Start the server",
                 "3. Stop the server",
                 "4. Players list",
@@ -413,7 +412,7 @@ namespace GameServer
             ];
             Console.Clear();
             DrawBorder('╔', '╗', '═', windowWidth);
-            WriteColoredCenteredText("Server Info", ConsoleColor.White, windowWidth);
+            WriteColoredCenteredText("Server Info", ConsoleColor.Yellow, windowWidth);
             if (ServerStarted)
             {
                 WriteColoredCenteredText("┌────────────────────────────┐", ConsoleColor.Cyan, windowWidth);
@@ -434,17 +433,18 @@ namespace GameServer
             }
             DrawBorder('║', '║', ' ', windowWidth);
             WriteColoredCenteredText(StatusMessage, ConsoleColor.Magenta, windowWidth);
-            DrawBorder('╠', '╣', '═', windowWidth);
+            DrawBorder('╟', '╢', '─', windowWidth);
             for (int i = 0; i < menuItems.Length; i++)
                 WriteMenuItem(menuItems[i], i == Selected, windowWidth);
-            DrawBorder('╠', '╣', '═', windowWidth);
+            DrawBorder('╟', '╢', '─', windowWidth);
             WriteColoredCenteredText("↑↓: Move    ESC: Exit    Enter: Confirm", ConsoleColor.Green, windowWidth);
                 if (ServerStarted && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 WriteColoredCenteredText("I: Copy IP    P: Copy Password", ConsoleColor.Green, windowWidth);
-            DrawBorder('╠', '╣', '═', 52);
-            WriteColoredCenteredText("Developed by: Fatalan & Lonewolf239", ConsoleColor.Yellow, 52);
-            WriteColoredCenteredText("GUI designed by: Lonewolf239", ConsoleColor.Yellow, 52);
+            DrawBorder('╟', '╢', '─', windowWidth);
+            WriteColoredCenteredText("Developed by: Fatalan & Lonewolf239", ConsoleColor.Yellow, windowWidth);
+            WriteColoredCenteredText("GUI designed by: Lonewolf239", ConsoleColor.Yellow, windowWidth);
             DrawBorder('╚', '╝', '═', windowWidth);
+            WriteColoredCenteredText($"v{GameServerConsole.version.Trim('|')}", ConsoleColor.DarkGray, windowWidth, false);
         }
 
         private static void DrawBorder(char left, char right, char fill, int width)
@@ -469,15 +469,21 @@ namespace GameServer
             Console.ResetColor();
         }
 
-        private static void WriteColoredCenteredText(string text, ConsoleColor color, int width)
+        private static void WriteColoredCenteredText(string text, ConsoleColor color, int width, bool drawBorder = true)
         {
             Console.ResetColor();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write('║');
+            if (drawBorder)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write('║');
+            }
             Console.ForegroundColor = color;
-            Console.Write(CenterText(text, width - 2));
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine('║');
+            Console.Write(CenterText(text, drawBorder ? width - 2 : width));
+            if (drawBorder)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine('║');
+            }
             Console.ResetColor();
         }
 
@@ -538,27 +544,27 @@ namespace GameServer
                     string[] howPlayText =
                     [
                         "╔════════════════════════════════════════════════════════════════╗",
-                            "║                                                                ║",
-                            "║   ATTENTION THIS IS NOT THE FINAL VERSION OF THE MULTIPLAYER   ║",
-                            "║         IF YOU FIND ANY BUGS, PLEASE REPORT THEM TO US         ║",
-                            "║                                                                ║",
-                            "╠════════════════════════════════════════════════════════════════╣",
-                            "║  How to play together:                                         ║",
-                            "║                                                                ║",
-                            "║   I do it later :)                                             ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "║                                                                ║",
-                            "╚════════════════════════════════════════════════════════════════╝"
+                        "║                                                                ║",
+                        "║   ATTENTION THIS IS NOT THE FINAL VERSION OF THE MULTIPLAYER   ║",
+                        "║         IF YOU FIND ANY BUGS, PLEASE REPORT THEM TO US         ║",
+                        "║                                                                ║",
+                        "╟────────────────────────────────────────────────────────────────╢",
+                        "║  How to play together:                                         ║",
+                        "║                                                                ║",
+                        "║  1. The host must start the server.                            ║",
+                        "║  2. All players must be on the same local network as the host. ║",
+                        "║  3. After creating the server, the host should copy the IP     ║",
+                        "║     and port from the menu and send it to friends.             ║",
+                        "║  4. Friends should enter the IP:port in the game and click     ║",
+                        "║     'Connect'. Enter the password if required.                 ║",
+                        "║  5. The host should also connect using the same IP:port.       ║",
+                        "║  6. Once everyone is connected, the host can start the game    ║",
+                        "║     on the server.                                             ║",
+                        "║  7. Now you're ready to play together!                         ║",
+                        "║                                                                ║",
+                        "║  Enjoy your multiplayer experience!                            ║",
+                        "║                                                                ║",
+                        "║  (I'm not sure if this will work through Hamachi)              ║"
                     ];
                     DisplayTextMessage(howPlayText);
                     break;
@@ -568,7 +574,7 @@ namespace GameServer
                     Console.CursorVisible = true;
                     DrawBorder('╔', '╗', '═', windowWidth);
                     WriteColoredCenteredText("Server Configuration", ConsoleColor.Yellow, windowWidth);
-                    DrawBorder('╠', '╣', '═', windowWidth);
+                    DrawBorder('╟', '╢', '─', windowWidth);
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.Write('║');
                     Console.ForegroundColor = ConsoleColor.Gray;
@@ -580,7 +586,7 @@ namespace GameServer
                     Console.Write(" Enter password (empty for no password): ".PadRight(windowWidth - 2));
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine('║');
-                    DrawBorder('╠', '╣', '═', windowWidth);
+                    DrawBorder('╟', '╢', '─', windowWidth);
                     for (int i = 0; i < ServerSettingsItem.Length; i++)
                         DrawSettingsParametr(i, ServerSettingsItem[i], false, windowWidth, ServerSettingsValue[i], SettingsMaxValue[i]);
                     DrawBorder('╚', '╝', '═', windowWidth);
@@ -595,7 +601,11 @@ namespace GameServer
                     Console.SetCursorPosition(42, 4);
                     ServerPassword = GetInput(10, false);
                     Console.CursorVisible = false;
-                    if (ServerPassword.Length == 0) ServerPassword = "None";
+                    if (ServerPassword.Length == 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        ServerPassword = "None";
+                    }
                     Console.SetCursorPosition(42, 4);
                     Console.Write(ServerPassword);
                     int selectedServerIndex = 0;
@@ -603,10 +613,10 @@ namespace GameServer
                     while (true)
                     {
                         Console.SetCursorPosition(0, 5);
-                        DrawBorder('╠', '╣', '═', windowWidth);
+                        DrawBorder('╟', '╢', '─', windowWidth);
                         for (int i = 0; i < ServerSettingsItem.Length; i++)
                             DrawSettingsParametr(i, ServerSettingsItem[i], i == selectedServerIndex, windowWidth, ServerSettingsValue[i], SettingsMaxValue[i]);
-                        DrawBorder('╠', '╣', '═', windowWidth);
+                        DrawBorder('╟', '╢', '─', windowWidth);
                         WriteColoredCenteredText("↑↓: Move    ←→: Change value", ConsoleColor.Green, windowWidth);
                         WriteColoredCenteredText("ESC: Cancel    Enter: Confirm", ConsoleColor.Green, windowWidth);
                         DrawBorder('╚', '╝', '═', windowWidth);
@@ -653,7 +663,7 @@ namespace GameServer
                                 Dispatcher.ChangeGameMode(GameMode);
                                 SelectedDifficult = ServerSettingsValue[1];
                                 Dispatcher.ChangeDifficulty(ServerSettingsValue[1]);
-                                StatusMessage = $"Server started successfully on port: {port}";
+                                StatusMessage = $"Server started successfully";
                             }
                             catch (Exception e)
                             {
@@ -805,11 +815,12 @@ namespace GameServer
                 Console.Clear();
                 DrawBorder('╔', '╗', '═', windowWidth);
                 WriteColoredCenteredText("Settings", ConsoleColor.Yellow, windowWidth);
-                DrawBorder('╠', '╣', '═', windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
                 for (int i = 0; i < SettingsItems.Length; i++)
                     DrawSettingsParametr(i, SettingsItems[i], selectedIndex == i, windowWidth, SettingsValue[i], SettingsMaxValue[i]);
-                DrawBorder('╠', '╣', '═', windowWidth);
-                WriteColoredCenteredText($"↑↓: Move    ←→: Change value    ESC: Exit", ConsoleColor.Green, windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
+                WriteColoredCenteredText("↑↓: Move    ←→: Change value", ConsoleColor.Green, windowWidth);
+                WriteColoredCenteredText("R: Reset    ESC: Exit", ConsoleColor.Green, windowWidth);
                 DrawBorder('╚', '╝', '═', windowWidth);
                 Console.ResetColor();
                 key = Console.ReadKey(true).Key;
@@ -837,6 +848,12 @@ namespace GameServer
                         SettingsValue[selectedIndex]++;
                     ChangeSettingsValue(selectedIndex, SettingsValue[selectedIndex]);
                 }
+                if (key == ConsoleKey.R)
+                {
+                    SettingsValue[0] = 0;
+                    SettingsValue[1] = 1;
+                    SettingsValue[2] = 3;
+                }
                 if (key == ConsoleKey.Escape)
                 {
                     System.IO.File.WriteAllText("data.txt", $"{SettingsValue[0]};{SettingsValue[1]};{SettingsValue[2]}");
@@ -863,10 +880,10 @@ namespace GameServer
             else
                 Console.ForegroundColor = ConsoleColor.Gray;
             int barWidth = maxValue + 1;
-            string bar = new('─', barWidth);
+            string bar = new('═', barWidth);
             int pointerPosition = Math.Min(value, maxValue);
-            bar = bar.Remove(pointerPosition, 1).Insert(pointerPosition, "■");
-            string text = $"{label + ": " + GetParametrName(index, value),-30} [{bar}]";
+            bar = bar.Remove(pointerPosition, 1).Insert(pointerPosition, "█");
+            string text = $"{label + ": " + GetParametrName(index, value),-30} ▕{bar}▏";
             Console.Write(leftPadding + text.PadRight(width - 8) + rightPadding);
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -931,10 +948,10 @@ namespace GameServer
                 Console.Clear();
                 DrawBorder('╔', '╗', '═', windowWidth);
                 WriteColoredCenteredText("Are you sure?", ConsoleColor.Yellow, windowWidth);
-                DrawBorder('╠', '╣', '═', windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
                 for (int i = 0; i < options.Length; i++)
                     WriteMenuItem(options[i], i == selectedIndex, windowWidth);
-                DrawBorder('╠', '╣', '═', windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
                 WriteColoredCenteredText("↑↓: Move    Enter: Select", ConsoleColor.Green, windowWidth);
                 DrawBorder('╚', '╝', '═', windowWidth);
                 key = Console.ReadKey(true).Key;
@@ -965,7 +982,7 @@ namespace GameServer
                 Console.Clear();
                 DrawBorder('╔', '╗', '═', windowWidth);
                 WriteColoredCenteredText("Lobby:", ConsoleColor.Yellow, windowWidth);
-                DrawBorder('╠', '╣', '═', windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
                 if (players.Count > 0)
                 {
                     for (int i = 0; i < players.Count; i++)
@@ -976,7 +993,7 @@ namespace GameServer
                 }
                 else
                     WriteColoredCenteredText("Lobby is empty...", ConsoleColor.Red, windowWidth);
-                DrawBorder('╠', '╣', '═', windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
                 if (players.Count > 0)
                     WriteColoredCenteredText("↑↓: Move    ESC: Exit    K: Kick    B: Ban", ConsoleColor.Green, windowWidth);
                 else
@@ -1014,7 +1031,7 @@ namespace GameServer
                 Console.Clear();
                 DrawBorder('╔', '╗', '═', windowWidth);
                 WriteColoredCenteredText(prompt, ConsoleColor.Yellow, windowWidth);
-                DrawBorder('╠', '╣', '═', windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
                 if (options.Length > 0)
                 {
                     for (int i = 0; i < options.Length; i++)
@@ -1022,7 +1039,7 @@ namespace GameServer
                 }
                 else
                     WriteColoredCenteredText(empty_string, ConsoleColor.Red, windowWidth);
-                DrawBorder('╠', '╣', '═', windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
                 if (options.Length > 0)
                     WriteColoredCenteredText($"↑↓: Move    ESC: {button1}    Enter: {button2}", ConsoleColor.Green, windowWidth);
                 else
@@ -1053,7 +1070,7 @@ namespace GameServer
 
         private static string CenterText(string text, int width) => text.PadLeft((width - text.Length) / 2 + text.Length).PadRight(width);
 
-        private void DisplayTextMessage(string[] message, bool do_split = false)
+        private void DisplayTextMessage(string[] message)
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -1063,30 +1080,10 @@ namespace GameServer
                 {
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.Write('║');
-                    if (do_split)
-                    {
-                        int firstDividerIndex = line.IndexOf('║', 1);
-                        int secondDividerIndex = line.IndexOf('║', firstDividerIndex + 1);
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(line[1..firstDividerIndex]);
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write('║');
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write(line.Substring(firstDividerIndex + 1, secondDividerIndex - firstDividerIndex - 1));
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write('║');
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write(line.Substring(secondDividerIndex + 1, line.Length - secondDividerIndex - 2));
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine('║');
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write(line[1..^1]);
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine('║');
-                    }
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(line[1..^1]);
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine('║');
                 }
                 else
                 {
@@ -1095,7 +1092,9 @@ namespace GameServer
                 }
             }
             Console.ResetColor();
-            Console.Write("\nPress any key to return to the main menu...");
+            DrawBorder('╟', '╢', '─', message[0].Length);
+            WriteColoredCenteredText("Press any key to return to the main menu...", ConsoleColor.DarkGray, message[0].Length);
+            DrawBorder('╚', '╝', '═', message[0].Length);
             Console.ReadKey();
             DisplayMainMenu();
         }
