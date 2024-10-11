@@ -215,11 +215,11 @@ namespace GameServer
             Dispatcher = new();
             CategorizedMenu = new Dictionary<string, List<string>>
             {
-                ["Information"] = [],
                 ["Server Management"] = [],
                 ["Player Management"] = [],
-                ["Game Settings"] = [],
                 ["Game Control"] = [],
+                ["Game Settings"] = [],
+                ["Information"] = [],
                 ["System"] = []
             };
             CategorizedMenu["Information"].Add(MenuItems[0]);
@@ -478,6 +478,9 @@ namespace GameServer
                             ProcessingCommands(1);
                         }
                         break;
+                    default:
+                        only_buttons = true;
+                        break;
                 }
             }
         }
@@ -488,20 +491,20 @@ namespace GameServer
             const int windowWidth = 52;
             if (only_buttons)
             {
-                if (ServerStarted) Console.SetCursorPosition(0, 13);
+                if (ServerStarted) Console.SetCursorPosition(0, 14);
                 else Console.SetCursorPosition(0, 8);
                 if (CurrentCategory == -1)
                 {
                     MaxCommandIndex = CategorizedMenu.Count - 1;
                     for (int i = 0; i < CategorizedMenu.Count; i++)
-                        WriteMenuItem($"{i + 1}. " + CategorizedMenu.Keys.ElementAt(i), i == SelectedCategory, windowWidth);
+                        DrawButton($"{i + 1}. " + CategorizedMenu.Keys.ElementAt(i), i == SelectedCategory, windowWidth);
                 }
                 else
                 {
                     string key = CategorizedMenu.Keys.ElementAt(CurrentCategory);
                     MaxCommandIndex = CategorizedMenu[key].Count - 1;
                     for (int i = 0; i < CategorizedMenu[key].Count; i++)
-                        WriteMenuItem($"{i + 1}. " + CategorizedMenu[key][i], i == Selected, windowWidth);
+                        DrawButton($"{i + 1}. " + CategorizedMenu[key][i], i == Selected, windowWidth);
                 }
                 return;
             }
@@ -512,6 +515,8 @@ namespace GameServer
             {
                 WriteColoredCenteredText("┌────────────────────────────┐", ConsoleColor.Cyan, windowWidth);
                 WriteServerInfoLine("Status", "Online", ConsoleColor.Green, windowWidth);
+                WriteServerInfoLine("Game", Dispatcher.GameStarted() ? "Started" : "Stoped",
+                    Dispatcher.GameStarted() ? ConsoleColor.Green : ConsoleColor.Red, windowWidth);
                 WriteServerInfoLine("IP", $"{GetLocalIPAddress()}:{Server.LocalPort}", ConsoleColor.White, windowWidth);
                 WriteServerInfoLine("Password", ServerPassword == "None" ? "Not set" : ServerPassword,
                                     ServerPassword == "None" ? ConsoleColor.DarkGray : ConsoleColor.White, windowWidth);
@@ -533,14 +538,14 @@ namespace GameServer
             {
                 MaxCommandIndex = CategorizedMenu.Count - 1;
                 for (int i = 0; i < CategorizedMenu.Count; i++)
-                    WriteMenuItem($"{i + 1}. " + CategorizedMenu.Keys.ElementAt(i), i == SelectedCategory, windowWidth);
+                    DrawButton($"{i + 1}. " + CategorizedMenu.Keys.ElementAt(i), i == SelectedCategory, windowWidth);
             }
             else
             {
                 string key = CategorizedMenu.Keys.ElementAt(CurrentCategory);
                 MaxCommandIndex = CategorizedMenu[key].Count - 1;
                 for (int i = 0; i < CategorizedMenu[key].Count; i++)
-                    WriteMenuItem($"{i + 1}. " + CategorizedMenu[key][i], i == Selected, windowWidth);
+                    DrawButton($"{i + 1}. " + CategorizedMenu[key][i], i == Selected, windowWidth);
             }
             DrawBorder('╟', '╢', '─', windowWidth);
             WriteColoredCenteredText("↑↓: Move    ESC: Exit    Enter: Confirm", ConsoleColor.Green, windowWidth);
@@ -593,7 +598,7 @@ namespace GameServer
             Console.ResetColor();
         }
 
-        private static void WriteMenuItem(string text, bool isSelected, int width)
+        private static void DrawButton(string text, bool isSelected, int width)
         {
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -604,8 +609,8 @@ namespace GameServer
             {
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                leftPadding = " → ";
-                rightPadding = " ← ";
+                leftPadding = " ▶ ";
+                rightPadding = " ◀ ";
             }
             else
                 Console.ForegroundColor = ConsoleColor.Gray;
@@ -994,8 +999,8 @@ namespace GameServer
             {
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                leftPadding = " → ";
-                rightPadding = " ← ";
+                leftPadding = " ▶ ";
+                rightPadding = " ◀ ";
             }
             else
                 Console.ForegroundColor = color;
@@ -1075,7 +1080,7 @@ namespace GameServer
             {
                 Console.SetCursorPosition(0, 3);
                 for (int i = 0; i < options.Length; i++)
-                    WriteMenuItem(options[i], i == selectedIndex, windowWidth);
+                    DrawButton(options[i], i == selectedIndex, windowWidth);
                 key = Console.ReadKey(true).Key;
                 if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
                 {
@@ -1123,7 +1128,7 @@ namespace GameServer
                     for (int i = 0; i < players.Count; i++)
                     {
                         int id = players.Keys.ElementAt(i);
-                        WriteMenuItem($"ID: {id}, Name: {players[id]}", i == selectedIndex, windowWidth);
+                        DrawButton($"ID: {id}, Name: {players[id]}", i == selectedIndex, windowWidth);
                     }
                 }
                 key = Console.ReadKey(true).Key;
@@ -1175,7 +1180,7 @@ namespace GameServer
                 if (options.Length > 0)
                 {
                     for (int i = 0; i < options.Length; i++)
-                        WriteMenuItem(options[i], i == selectedIndex, windowWidth);
+                        DrawButton(options[i], i == selectedIndex, windowWidth);
                 }
                 key = Console.ReadKey(true).Key;
                 if (options.Length == 0 && key == ConsoleKey.Enter) key = ConsoleKey.None;

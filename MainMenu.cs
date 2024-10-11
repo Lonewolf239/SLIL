@@ -307,7 +307,6 @@ namespace SLIL
         {
             Activate();
             version_label.Text = $"v{current_version.Trim('|')}";
-            INIReader.CreateIniFileIfNotExist(Program.iniFolder);
             SetLocalization();
             Language = GetLanguageName();
             GetGameParametrs();

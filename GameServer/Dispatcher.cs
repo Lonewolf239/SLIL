@@ -245,6 +245,8 @@ namespace GameServer
 
         public void StartGame() => Game.StartGame();
 
+        public bool GameStarted() => Game.IsGameStarted();
+
         public void ChangeDifficulty(int difficulty) => Game.ChangeDifficulty(difficulty);
 
         internal void StopGame() => Game.StopGame(3);

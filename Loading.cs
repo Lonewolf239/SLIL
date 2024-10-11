@@ -467,7 +467,11 @@ namespace SLIL
                 progress_refresh.Stop();
         }
 
-        private async void Loading_Load(object sender, EventArgs e) => await LoadingMainMenu();
+        private async void Loading_Load(object sender, EventArgs e)
+        {
+            INIReader.CreateIniFileIfNotExist(Program.iniFolder);
+            await LoadingMainMenu();
+        }
 
         private void MainMenu_FormCLosing(object sender, FormClosingEventArgs e) => Application.Exit();
 
