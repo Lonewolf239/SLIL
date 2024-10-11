@@ -140,7 +140,17 @@ namespace GameServer
                                         if (distanceSquared > 3) continue;
                                         double damage = rand.Next(25, 50);
                                         if (ent is Player playerTarget)
+                                        {
                                             playerTarget.DealDamage(damage, true);
+                                            playerTarget.DealDamage(damage, true);
+                                            if (playerTarget.HP <= 0)
+                                            {
+                                                if (_gameMode == GameModes.Deathmatch)
+                                                    Entities.Add(new PlayerDeadBody(playerTarget.X, playerTarget.Y, MAP_WIDTH, ref MaxEntityID));
+                                                sendMessageFromGameCallback(666);
+                                                return;
+                                            }
+                                        }
                                         if (ent is NPC npc)
                                             npc.DealDamage(damage);
                                         if (ent is Enemy enemy)
@@ -269,6 +279,7 @@ namespace GameServer
                             {
                                 Entities.Remove(entity);
                                 Entities.Add(new Explosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                                PlayGameSound((int)entity.Y * MAP_WIDTH + (int)entity.X);
                                 return;
                             }
                         }

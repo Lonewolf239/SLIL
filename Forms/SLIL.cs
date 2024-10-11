@@ -475,7 +475,15 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
             }
         };
-        public PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine, starter;
+        public static PlaySound game_over = new PlaySound(MainMenu.CGFReader.GetFile("game_over.wav"), false),
+            draw = new PlaySound(MainMenu.CGFReader.GetFile("draw.wav"), false),
+            buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false),
+            wall = new PlaySound(MainMenu.CGFReader.GetFile("wall_interaction.wav"), false),
+            tp = new PlaySound(MainMenu.CGFReader.GetFile("tp.wav"), false),
+            screenshot = new PlaySound(MainMenu.CGFReader.GetFile("screenshot.wav"), false),
+            low_stamine = new PlaySound(MainMenu.CGFReader.GetFile("low_stamine.wav"), false),
+            starter = new PlaySound(MainMenu.CGFReader.GetFile("starter.wav"), false),
+            explosion = new PlaySound(MainMenu.CGFReader.GetFile("explosion.wav"), false);
         public PlaySound[] climb;
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
@@ -769,11 +777,9 @@ namespace SLIL
             Player player = Controller.GetPlayer();
             if (player == null) return;
             float distance = (float)Math.Sqrt((player.X - X) * (player.X - X) + (player.Y - Y) * (player.Y - Y));
+            if (distance > 14) return;
             float vol = Volume;
-            if (distance > 1)
-            {
-                vol /= distance;
-            }
+            if (distance > 1) vol /= distance;
             if (this.InvokeRequired && this.IsHandleCreated)
             {
                 this.BeginInvoke((MethodInvoker)delegate
@@ -1067,7 +1073,7 @@ namespace SLIL
                 {
                     int index = i;
                     if (Controller.InBackrooms()) index = i + 4;
-                    if (player.CuteMode) index = i + 2;
+                    else if (player.CuteMode) index = i + 2;
                     step = steps[index, soundIndices[currentIndex]];
                     step.PlayWithWait(Volume);
                 }
@@ -2574,7 +2580,7 @@ namespace SLIL
                 x = (int)WrapTexture((int)(pixel.TextureX * textureSize), textureSize);
                 y = (int)WrapTexture((int)(pixel.TextureY * textureSize), textureSize);
             }
-            Color color = textureCache.GetTextureColor(pixel.TextureId, pixel.SpriteState, x, y, pixel.Blackout, cute);
+            Color color = textureCache.GetTextureColor(pixel.TextureId, pixel.SpriteState, x, y, pixel.Blackout, !Controller.InBackrooms() && cute);
             return color;
         }
 
@@ -2820,9 +2826,9 @@ namespace SLIL
             }
             if (player.EffectCheck(2))
                 graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
-            if (player.EffectCheck(6))
+            if (player.EffectCheck(6) || Controller.InBackrooms())
             {
-                if (player.CuteMode)
+                if (player.CuteMode && !Controller.InBackrooms())
                     graphicsWeapon.DrawImage(Properties.Resources.blindness_display_cute_effect, 0, 0, WEAPON.Width, WEAPON.Height);
                 else
                     graphicsWeapon.DrawImage(Properties.Resources.blindness_display_effect, 0, 0, WEAPON.Width, WEAPON.Height);
@@ -3963,6 +3969,8 @@ namespace SLIL
             tp?.Stop();
             screenshot?.Stop();
             low_stamine?.Stop();
+            starter?.Stop();
+            explosion?.Stop();
         }
 
         private void ShopToDefault()

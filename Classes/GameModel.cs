@@ -151,7 +151,15 @@ namespace SLIL.Classes
                                         if (distanceSquared > 3) continue;
                                         double damage = rand.Next(25, 50);
                                         if (ent is Player playerTarget)
+                                        {
                                             playerTarget.DealDamage(damage, true);
+                                            if (playerTarget.HP <= 0)
+                                            {
+                                                Entities.Add(new PlayerDeadBody(playerTarget.X, playerTarget.Y, MAP_WIDTH, ref MaxEntityID));
+                                                GameOver(0);
+                                                return;
+                                            }
+                                        }
                                         if (ent is NPC npc)
                                             npc.DealDamage(damage);
                                         if (ent is Enemy enemy)
@@ -244,6 +252,7 @@ namespace SLIL.Classes
                         {
                             Entities.Remove(entity);
                             Entities.Add(new Explosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                            PlayGameSound(SLIL.explosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
                         }
                         if (!Entities.Contains(entity)) continue;
                         foreach (Entity ent in Entities)
@@ -254,6 +263,7 @@ namespace SLIL.Classes
                             {
                                 Entities.Remove(entity);
                                 Entities.Add(new Explosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                                PlayGameSound(SLIL.explosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
                                 return;
                             }
                         }
@@ -742,7 +752,8 @@ namespace SLIL.Classes
                     }
                     player.ChangeMoney(50 + (5 * player.EnemiesKilled));
                     StartGame(true);
-                    UpdatePet(player);
+                    if (!inBackrooms)
+                        UpdatePet(player);
                 }
             }
             else if (win == 0)

@@ -40,7 +40,7 @@ namespace SLIL
         private bool ChangeControlButton = false, CanClose = false;
         private readonly PlaySound hmm, omg;
         private readonly PlaySound MainMenuTheme;
-        private readonly PlaySound game_over, draw, buy, wall, tp, screenshot, low_stamine, starter;
+        private readonly PlaySound game_over;
         private readonly PlaySound[] climb;
         public static Player player;
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
@@ -101,15 +101,8 @@ namespace SLIL
             MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
             hmm = new PlaySound(CGFReader.GetFile("hmm.wav"), false);
             omg = new PlaySound(CGFReader.GetFile("OMG.wav"), false);
-            game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
-            draw = new PlaySound(CGFReader.GetFile("draw.wav"), false);
-            buy = new PlaySound(CGFReader.GetFile("buy.wav"), false);
-            wall = new PlaySound(CGFReader.GetFile("wall_interaction.wav"), false);
-            tp = new PlaySound(CGFReader.GetFile("tp.wav"), false);
-            screenshot = new PlaySound(CGFReader.GetFile("screenshot.wav"), false);
-            low_stamine = new PlaySound(CGFReader.GetFile("low_stamine.wav"), false);
-            starter = new PlaySound(CGFReader.GetFile("starter.wav"), false);
             climb = new PlaySound[] { new PlaySound(CGFReader.GetFile("climb.wav"), false), new PlaySound(CGFReader.GetFile("climb_bike.wav"), false) };
+            game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
             AddSeparators();
         }
 
@@ -1621,15 +1614,7 @@ namespace SLIL
                 if (sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache)
                 {
-                    game_over = game_over,
-                    draw = draw,
-                    buy = buy,
-                    wall = wall,
-                    tp = tp,
-                    screenshot = screenshot,
-                    low_stamine = low_stamine,
                     climb = climb,
-                    starter = starter,
                     PlayerName = PlayerName
                 };
                 form.ShowDialog();
@@ -1658,15 +1643,7 @@ namespace SLIL
                 if (sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3, (Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
                 {
-                    game_over = game_over,
-                    draw = draw,
-                    buy = buy,
-                    wall = wall,
-                    tp = tp,
-                    screenshot = screenshot,
-                    low_stamine = low_stamine,
                     climb = climb,
-                    starter = starter,
                     PlayerName = PlayerName
                 };
                 form.ShowDialog();
@@ -1783,15 +1760,7 @@ namespace SLIL
             difficulty = 4;
             SLIL form = new SLIL(textureCache, true, tutorialMap, 8, 8, 3.5, 3.5)
             {
-                game_over = game_over,
-                draw = draw,
-                buy = buy,
-                wall = wall,
-                tp = tp,
-                screenshot = screenshot,
-                low_stamine = low_stamine,
                 climb = climb,
-                starter = starter,
                 PlayerName = PlayerName
             };
             form.ShowDialog();
@@ -1962,15 +1931,7 @@ namespace SLIL
                     password = password_connect_input.Text;
                 SLIL form = new SLIL(textureCache, ip, int.Parse(port), password, PlayerName)
                 {
-                    game_over = game_over,
-                    draw = draw,
-                    buy = buy,
-                    wall = wall,
-                    tp = tp,
-                    screenshot = screenshot,
-                    low_stamine = low_stamine,
                     climb = climb,
-                    starter = starter
                 };
                 form.ShowDialog();
             }
