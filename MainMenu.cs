@@ -1867,7 +1867,13 @@ namespace SLIL
 
         //  #====     Multiplayer    ====#
 
-        private void Need_password_CheckedChanged(object sender, EventArgs e) => password_connect_input.Enabled = need_password.Checked;
+        private void Need_password_CheckedChanged(object sender, EventArgs e)
+        {
+            password_connect_input.Enabled = need_password.Checked;
+            password_connect_input.BackColor = !password_connect_input.Enabled ?
+                Color.Gray : SystemColors.Window;
+            password_connect_input.Text = null;
+        }
 
         private void UnpackGameServerZip()
         {

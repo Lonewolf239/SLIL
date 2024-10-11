@@ -2979,6 +2979,7 @@
             // 
             // password_connect_input
             // 
+            this.password_connect_input.BackColor = System.Drawing.Color.Gray;
             this.password_connect_input.Enabled = false;
             this.password_connect_input.Location = new System.Drawing.Point(211, 111);
             this.password_connect_input.MaxLength = 10;
