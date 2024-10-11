@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
+using System.Management;
 
 namespace SLIL
 {
@@ -29,11 +30,34 @@ namespace SLIL
                     MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
+                if (!HasEnoughMemory())
+                {
+                    Console.WriteLine("Внимание: У вас меньше 4 ГБ оперативной памяти. Производительность приложения может быть снижена.");
+                }
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Loading());
                 mutex.ReleaseMutex();
             }
+        }
+
+        static bool HasEnoughMemory()
+        {
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT TotalPhysicalMemory FROM Win32_ComputerSystem");
+                foreach (ManagementObject obj in searcher.Get())
+                {
+                    ulong totalMemory = Convert.ToUInt64(obj["TotalPhysicalMemory"]);
+                    ulong memoryInGB = totalMemory / 1024 / 1024 / 1024;
+                    return memoryInGB >= 4;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при проверке памяти: {ex.Message}");
+            }
+            return false;
         }
 
         static bool Check_Language()

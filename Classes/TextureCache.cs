@@ -138,6 +138,7 @@ namespace SLIL.Classes
             },
             { 20, new Dictionary<SpriteStates, Image>()
                 {
+                    { SpriteStates.Static, Properties.Resources.bike_forward },
                     { SpriteStates.StopForward, Properties.Resources.bike_forward },
                     { SpriteStates.StopBack, Properties.Resources.bike_back },
                     { SpriteStates.StopLeft, Properties.Resources.bike_left },
@@ -323,6 +324,7 @@ namespace SLIL.Classes
             },
             { 20, new Dictionary<SpriteStates, Image>()
                 {
+                    { SpriteStates.Static, Properties.Resources.bike_forward },
                     { SpriteStates.StopForward, Properties.Resources.bike_forward },
                     { SpriteStates.StopBack, Properties.Resources.bike_back },
                     { SpriteStates.StopLeft, Properties.Resources.bike_left },

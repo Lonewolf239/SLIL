@@ -535,7 +535,7 @@ namespace GameServer
             Index = 0;
             CanJump = true;
             AddToShop = true;
-            HasSpriteRotation = true;
+            //HasSpriteRotation = true;
             Cost = 150;
             TransportHP = 150;
             Speed = 2.35;

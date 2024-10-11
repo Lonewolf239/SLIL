@@ -601,7 +601,7 @@ namespace GameServer
                     Console.SetCursorPosition(42, 4);
                     ServerPassword = GetInput(10, false);
                     Console.CursorVisible = false;
-                    if (ServerPassword.Length == 0)
+                    if (ServerPassword.Length < 4)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
                         ServerPassword = "None";
