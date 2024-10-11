@@ -1724,19 +1724,20 @@ namespace SLIL
                         double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
                         Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
                         List<Entity> Entities = Controller.GetEntities();
-                        int[] spriteOrder = new int[Entities.Count];
-                        double[] spriteDistance = new double[Entities.Count];
-                        int[] textures = new int[Entities.Count];
-                        for (int i = 0; i < Entities.Count; i++)
+                        int entityCount = Entities.Count;
+                        var spriteInfo = new (int Order, double Distance)[entityCount];
+                        for (int i = 0; i < entityCount; i++)
                         {
-                            spriteOrder[i] = i;
-                            spriteDistance[i] = (player.X - Entities[i].X) * (player.X - Entities[i].X) + (player.Y - Entities[i].Y) * (player.Y - Entities[i].Y);
-                            textures[i] = Entities[i].Texture;
+                            double dx = player.X - Entities[i].X;
+                            double dy = player.Y - Entities[i].Y;
+                            spriteInfo[i] = (i, dx * dx + dy * dy);
                         }
-                        SortSpritesNotReversed(ref spriteOrder, ref spriteDistance, ref textures, Entities.Count);
+                        Array.Sort(spriteInfo, (b, a) => b.Distance.CompareTo(a.Distance));
                         for (int i = 0; i < Entities.Count; i++)
                         {
-                            Entity entity = Entities[spriteOrder[i]];
+                            Entity entity = Entities[spriteInfo[i].Order];
+                            if (!entity.HasAI) continue;
+                            if (entity is Creature creature && creature.DEAD) continue;
                             if (!(entity is Enemy))
                             {
                                 double spriteX = entity.X - player.X;
@@ -1784,45 +1785,42 @@ namespace SLIL
                                                 Color color = GetColorForPixel(rays[stripe][y]);
                                                 if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && Distance <= 2)
                                                 {
-                                                    if (entity.HasAI)
+                                                    switch (entity.Interaction())
                                                     {
-                                                        switch (entity.Interaction())
-                                                        {
-                                                            case 1: //SillyCat
-                                                                if (player.IsPetting) break;
-                                                                player.IsPetting = true;
-                                                                new Thread(() =>
-                                                                {
-                                                                    Thread.Sleep(2000);
-                                                                    player.IsPetting = false;
-                                                                }).Start();
-                                                                return;
-                                                            case 2: //GreenGnome
-                                                                if (player.IsPetting) break;
-                                                                player.IsPetting = true;
-                                                                new Thread(() =>
-                                                                {
-                                                                    Thread.Sleep(2000);
-                                                                    player.IsPetting = false;
-                                                                }).Start();
-                                                                return;
-                                                            case 3: //EnergyDrink
-                                                                if (player.IsPetting) break;
-                                                                player.IsPetting = true;
-                                                                new Thread(() =>
-                                                                {
-                                                                    Thread.Sleep(2000);
-                                                                    player.IsPetting = false;
-                                                                }).Start();
-                                                                return;
-                                                            case 4:
-                                                                Controller.PlayGameSound(starter);
-                                                                Controller.GetOnATransport(entity.ID);
-                                                                return;
-                                                            case 5:
-                                                                ShowShop();
-                                                                return;
-                                                        }
+                                                        case 1: //SillyCat
+                                                            if (player.IsPetting) break;
+                                                            player.IsPetting = true;
+                                                            new Thread(() =>
+                                                            {
+                                                                Thread.Sleep(2000);
+                                                                player.IsPetting = false;
+                                                            }).Start();
+                                                            return;
+                                                        case 2: //GreenGnome
+                                                            if (player.IsPetting) break;
+                                                            player.IsPetting = true;
+                                                            new Thread(() =>
+                                                            {
+                                                                Thread.Sleep(2000);
+                                                                player.IsPetting = false;
+                                                            }).Start();
+                                                            return;
+                                                        case 3: //EnergyDrink
+                                                            if (player.IsPetting) break;
+                                                            player.IsPetting = true;
+                                                            new Thread(() =>
+                                                            {
+                                                                Thread.Sleep(2000);
+                                                                player.IsPetting = false;
+                                                            }).Start();
+                                                            return;
+                                                        case 4:
+                                                            Controller.PlayGameSound(starter);
+                                                            Controller.GetOnATransport(entity.ID);
+                                                            return;
+                                                        case 5:
+                                                            ShowShop();
+                                                            return;
                                                     }
                                                 }
                                             }
@@ -3480,30 +3478,25 @@ namespace SLIL
                 double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
                 double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
                 Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
-                int[] spriteOrder = new int[Entities.Count];
-                double[] spriteDistance = new double[Entities.Count];
-                int[] textures = new int[Entities.Count];
-                for (int i = 0; i < Entities.Count; i++)
+                int entityCount = Entities.Count;
+                var spriteInfo = new (int Order, double Distance)[entityCount];
+                for (int i = 0; i < entityCount; i++)
                 {
-                    spriteOrder[i] = i;
-                    spriteDistance[i] = (player.X - Entities[i].X) * (player.X - Entities[i].X) + (player.Y - Entities[i].Y) * (player.Y - Entities[i].Y);
-                    textures[i] = Entities[i].Texture;
+                    double dx = player.X - Entities[i].X;
+                    double dy = player.Y - Entities[i].Y;
+                    spriteInfo[i] = (i, dx * dx + dy * dy);
                 }
-                SortSpritesNotReversed(ref spriteOrder, ref spriteDistance, ref textures, Entities.Count);
+                Array.Sort(spriteInfo, (b, a) => b.Distance.CompareTo(a.Distance));
                 for (int i = 0; i < Entities.Count; i++)
                 {
-                    if (Entities[spriteOrder[i]] is Player)
-                    {
-                        if (Controller.GetPlayer().ID == (Entities[spriteOrder[i]] as Player).ID) continue;
-                    }
-                    Entity entity = Entities[spriteOrder[i]];
+                    if (Entities[spriteInfo[i].Order] is Player p && Controller.GetPlayer().ID == p.ID) continue;
+                    Entity entity = Entities[spriteInfo[i].Order];
                     if (!entity.HasAI) continue;
                     Creature creature = null;
                     if (entity is Creature)
                     {
-                        creature = Entities[spriteOrder[i]] as Creature;
-                        if (!creature.CanHit)
-                            creature = null;
+                        creature = Entities[spriteInfo[i].Order] as Creature;
+                        if (!creature.CanHit) creature = null;
                     }
                     double spriteX = entity.X - player.X;
                     double spriteY = entity.Y - player.Y;
@@ -3661,13 +3654,6 @@ namespace SLIL
                     }
                 }
             }
-        }
-
-        private void SortSpritesNotReversed(ref int[] order, ref double[] dist, ref int[] text, int amount)
-        {
-            Tuple<double, int, int>[] spritess = new Tuple<double, int, int>[amount];
-            for (int i = 0; i < amount; i++) spritess[i] = Tuple.Create(dist[i], order[i], text[i]);
-            spritess = spritess.OrderBy(item => item.Item1).ToArray();
         }
 
         //  #====      Parkour      ====#

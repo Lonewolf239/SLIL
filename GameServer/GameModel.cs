@@ -90,14 +90,20 @@ namespace GameServer
                     Name = name
                 };
                 if (difficulty == 3 || difficulty == 2)
+                {
                     p.Guns[2].LevelUpdate();
+                    ((DisposableItem)p.GUNS[10]).AddItem();
+                }
                 Entities.Add(p);
             }
             else
             {
                 Player p = new(1.5, 1.5, MAP_WIDTH, ref MaxEntityID);
                 if (difficulty == 3 || difficulty == 2)
+                {
                     p.Guns[2].LevelUpdate();
+                    ((DisposableItem)p.GUNS[10]).AddItem();
+                }
                 p.Name = name;
                 Entities.Add(p);
             }
