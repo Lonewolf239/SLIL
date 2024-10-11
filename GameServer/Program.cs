@@ -167,13 +167,29 @@ namespace GameServer
         private readonly int[] SettingsValue, SettingsMaxValue;
         private int[] ServerSettingsValue;
         private readonly string[] SettingsItems, ServerSettingsItem;
-        private int Selected = 0, SelectedDifficult = 1;
-        private const int MaxCommandIndex = 10;
+        private int SelectedCategory = 0, Selected = 0, SelectedDifficult = 1;
+        private int MaxCommandIndex = 6;
         private readonly List<string> BannedPlayersList;
         private GameModes GameMode = GameModes.Classic;
         private readonly string[] Difficulties = ["Easy", "Normal", "Hard", "Very hard"];
         private readonly ConsoleColor[] DifficultyColors = { ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.DarkRed };
         private readonly ConsoleColor[] GameModeColors = { ConsoleColor.White, ConsoleColor.Red, ConsoleColor.DarkGray, ConsoleColor.DarkGray };
+        private readonly string[] MenuItems =
+        [
+            "How to play together",
+            "Start the server",
+            "Stop the server",
+            "Players list",
+            "Banned players list",
+            "Set difficulty",
+            "Select game mode",
+            "Start the game",
+            "Stop the game",
+            "Settings",
+            "Exit the program"
+        ];
+        private readonly Dictionary<string, List<string>> CategorizedMenu;
+        private int CurrentCategory = -1;
         private string StatusMessage = "The status text will be displayed here";
         private int MAX_CONNECTIONS = 4;
         //server.UnsyncedEvents = true;
@@ -197,6 +213,26 @@ namespace GameServer
             Listener = new();
             Server = new(Listener);
             Dispatcher = new();
+            CategorizedMenu = new Dictionary<string, List<string>>
+            {
+                ["Information"] = [],
+                ["Server Management"] = [],
+                ["Player Management"] = [],
+                ["Game Settings"] = [],
+                ["Game Control"] = [],
+                ["System"] = []
+            };
+            CategorizedMenu["Information"].Add(MenuItems[0]);
+            CategorizedMenu["Server Management"].Add(MenuItems[1]);
+            CategorizedMenu["Server Management"].Add(MenuItems[2]);
+            CategorizedMenu["Player Management"].Add(MenuItems[3]);
+            CategorizedMenu["Player Management"].Add(MenuItems[4]);
+            CategorizedMenu["Game Settings"].Add(MenuItems[5]);
+            CategorizedMenu["Game Settings"].Add(MenuItems[6]);
+            CategorizedMenu["Game Control"].Add(MenuItems[7]);
+            CategorizedMenu["Game Control"].Add(MenuItems[8]);
+            CategorizedMenu["System"].Add(MenuItems[9]);
+            CategorizedMenu["System"].Add(MenuItems[10]);
             SendOutcomingMessageHandle = SendOutcomingMessageInvoker;
             Dispatcher.sendMessageDelegate = SendOutcomingMessageHandle;
             Listener.ConnectionRequestEvent += request =>
@@ -282,6 +318,7 @@ namespace GameServer
 
         private async static Task<bool> CheckUpdate()
         {
+            return true;
             try
             {
                 using HttpClient httpClient = new();
@@ -307,7 +344,7 @@ namespace GameServer
                 return false;
             }
         }
-        
+
         internal void MainMenu()
         {
             Console.CursorVisible = false;
@@ -322,23 +359,45 @@ namespace GameServer
             Thread.Sleep(1000);
             while (Console.KeyAvailable) Console.ReadKey(true);
             if (!CheckUpdate().Result) return;
+            bool only_buttons = false;
             while (!Exit)
             {
-                DisplayMainMenu();
+                DisplayMainMenu(only_buttons);
+                only_buttons = false;
                 ConsoleKey key = Console.ReadKey(true).Key;
                 switch (key)
                 {
                     case ConsoleKey.UpArrow:
                     case ConsoleKey.W:
-                        Selected--;
-                        if (Selected < 0)
-                            Selected = MaxCommandIndex;
+                        if (CurrentCategory == -1)
+                        {
+                            SelectedCategory--;
+                            if (SelectedCategory < 0)
+                                SelectedCategory = MaxCommandIndex;
+                        }
+                        else
+                        {
+                            Selected--;
+                            if (Selected < 0)
+                                Selected = MaxCommandIndex;
+                        }
+                        only_buttons = true;
                         break;
                     case ConsoleKey.DownArrow:
                     case ConsoleKey.S:
-                        Selected++;
-                        if (Selected > MaxCommandIndex)
-                            Selected = 0;
+                        if (CurrentCategory == -1)
+                        {
+                            SelectedCategory++;
+                            if (SelectedCategory > MaxCommandIndex)
+                                SelectedCategory = 0;
+                        }
+                        else
+                        {
+                            Selected++;
+                            if (Selected > MaxCommandIndex)
+                                Selected = 0;
+                        }
+                        only_buttons = true;
                         break;
                     case ConsoleKey.I:
                         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) break;
@@ -377,39 +436,75 @@ namespace GameServer
                     case ConsoleKey.D7:
                     case ConsoleKey.D8:
                     case ConsoleKey.D9:
-                        Selected = int.Parse(key.ToString().Trim('D')) - 1;
+                        if (CurrentCategory == -1)
+                        {
+                            SelectedCategory = int.Parse(key.ToString().Trim('D')) - 1;
+                            if (SelectedCategory > MaxCommandIndex)
+                                SelectedCategory = MaxCommandIndex;
+                        }
+                        else
+                        {
+                            Selected = int.Parse(key.ToString().Trim('D')) - 1;
+                            if (Selected > MaxCommandIndex)
+                                Selected = MaxCommandIndex;
+                        }
                         break;
                     case ConsoleKey.D0:
-                        Selected = 9;
+                        if (CurrentCategory == -1)
+                        {
+                            SelectedCategory = 9;
+                            if (SelectedCategory > MaxCommandIndex)
+                                SelectedCategory = MaxCommandIndex;
+                        }
+                        else
+                        {
+                            Selected = 9;
+                            if (Selected > MaxCommandIndex)
+                                Selected = MaxCommandIndex;
+                        }
                         break;
                     case ConsoleKey.Enter:
-                        ProcessingCommands(Selected);
+                        if (CurrentCategory == -1)
+                            ProcessingCommands(SelectedCategory);
+                        else
+                            ProcessingCommands(Selected);
                         break;
                     case ConsoleKey.Escape:
-                        ProcessingCommands(10);
+                        if (CurrentCategory != -1)
+                            ProcessingCommands(999);
+                        else
+                        {
+                            CurrentCategory = 5;
+                            ProcessingCommands(1);
+                        }
                         break;
                 }
             }
         }
 
-        private void DisplayMainMenu()
+        private void DisplayMainMenu(bool only_buttons)
         {
             Console.CursorVisible = false;
             const int windowWidth = 52;
-            string[] menuItems =
-            [
-                "1. How to play together",
-                "2. Start the server",
-                "3. Stop the server",
-                "4. Players list",
-                "5. Banned players list",
-                "6. Set difficulty",
-                "7. Select game mode",
-                "8. Start the game",
-                "9. Stop the game",
-                "0. Settings",
-                "ESC. Exit the program"
-            ];
+            if (only_buttons)
+            {
+                if (ServerStarted) Console.SetCursorPosition(0, 13);
+                else Console.SetCursorPosition(0, 8);
+                if (CurrentCategory == -1)
+                {
+                    MaxCommandIndex = CategorizedMenu.Count - 1;
+                    for (int i = 0; i < CategorizedMenu.Count; i++)
+                        WriteMenuItem($"{i + 1}. " + CategorizedMenu.Keys.ElementAt(i), i == SelectedCategory, windowWidth);
+                }
+                else
+                {
+                    string key = CategorizedMenu.Keys.ElementAt(CurrentCategory);
+                    MaxCommandIndex = CategorizedMenu[key].Count - 1;
+                    for (int i = 0; i < CategorizedMenu[key].Count; i++)
+                        WriteMenuItem($"{i + 1}. " + CategorizedMenu[key][i], i == Selected, windowWidth);
+                }
+                return;
+            }
             Console.Clear();
             DrawBorder('╔', '╗', '═', windowWidth);
             WriteColoredCenteredText("Server Info", ConsoleColor.Yellow, windowWidth);
@@ -434,8 +529,19 @@ namespace GameServer
             DrawBorder('║', '║', ' ', windowWidth);
             WriteColoredCenteredText(StatusMessage, ConsoleColor.Magenta, windowWidth);
             DrawBorder('╟', '╢', '─', windowWidth);
-            for (int i = 0; i < menuItems.Length; i++)
-                WriteMenuItem(menuItems[i], i == Selected, windowWidth);
+            if (CurrentCategory == -1)
+            {
+                MaxCommandIndex = CategorizedMenu.Count - 1;
+                for (int i = 0; i < CategorizedMenu.Count; i++)
+                    WriteMenuItem($"{i + 1}. " + CategorizedMenu.Keys.ElementAt(i), i == SelectedCategory, windowWidth);
+            }
+            else
+            {
+                string key = CategorizedMenu.Keys.ElementAt(CurrentCategory);
+                MaxCommandIndex = CategorizedMenu[key].Count - 1;
+                for (int i = 0; i < CategorizedMenu[key].Count; i++)
+                    WriteMenuItem($"{i + 1}. " + CategorizedMenu[key][i], i == Selected, windowWidth);
+            }
             DrawBorder('╟', '╢', '─', windowWidth);
             WriteColoredCenteredText("↑↓: Move    ESC: Exit    Enter: Confirm", ConsoleColor.Green, windowWidth);
                 if (ServerStarted && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -538,9 +644,23 @@ namespace GameServer
 
         private void ProcessingCommands(int command)
         {
-            switch (command)
+            if (CurrentCategory == -1)
             {
-                case 0:
+                CurrentCategory = command;
+                Selected = 0;
+                return;
+            }
+            if (command == 999)
+            {
+                CurrentCategory = -1;
+                Selected = 0;
+                return;
+            }
+            string keyCategorizedMenu = CategorizedMenu.Keys.ElementAt(CurrentCategory);
+            string commandInCategory = CategorizedMenu[keyCategorizedMenu][command];
+            switch (commandInCategory)
+            {
+                case "How to play together":
                     string[] howPlayText =
                     [
                         "╔════════════════════════════════════════════════════════════════╗",
@@ -568,7 +688,7 @@ namespace GameServer
                     ];
                     DisplayTextMessage(howPlayText);
                     break;
-                case 1:
+                case "Start the server":
                     const int windowWidth = 54;
                     Console.Clear();
                     Console.CursorVisible = true;
@@ -588,7 +708,7 @@ namespace GameServer
                     Console.WriteLine('║');
                     DrawBorder('╟', '╢', '─', windowWidth);
                     for (int i = 0; i < ServerSettingsItem.Length; i++)
-                        DrawSettingsParametr(i, ServerSettingsItem[i], false, windowWidth, ServerSettingsValue[i], SettingsMaxValue[i]);
+                        DrawSettingsParametr(i, ServerSettingsItem[i], false, windowWidth, ServerSettingsValue[i], SettingsMaxValue[i], ConsoleColor.DarkGray);
                     DrawBorder('╚', '╝', '═', windowWidth);
                     Console.SetCursorPosition(48, 3);
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -674,13 +794,13 @@ namespace GameServer
                             return;
                         }
                     }
-                case 2:
+                case "Stop the server":
                     Server.Stop();
                     ServerStarted = false;
                     StopedThread = true;
                     StatusMessage = "Server stopped successfully";
                     break;
-                case 3:
+                case "Players list":
                     if (!ServerStarted)
                         StatusMessage = "Please start the server first";
                     else
@@ -714,12 +834,10 @@ namespace GameServer
                                 }
                                 catch { StatusMessage = "An unknown error occurred..."; }
                             }
-                            else DisplayMainMenu();
                         }
-                        else DisplayMainMenu();
                     }
                     break;
-                case 4:
+                case "Banned players list":
                     if (!ServerStarted)
                         StatusMessage = "Please start the server first";
                     else
@@ -732,7 +850,7 @@ namespace GameServer
                         StatusMessage = $"Player {bannedPlayerName} was unbanned";
                     }
                     break;
-                case 5:
+                case "Set difficulty":
                     if (!ServerStarted)
                         StatusMessage = "Please start the server first";
                     else
@@ -752,7 +870,7 @@ namespace GameServer
                         catch (Exception e) { StatusMessage = $"Error setting difficulty: {e.Message}"; }
                     }
                     break;
-                case 6:
+                case "Select game mode":
                     if (!ServerStarted)
                         StatusMessage = "Please start the server first";
                     else
@@ -773,7 +891,7 @@ namespace GameServer
                         catch (Exception e) { StatusMessage = $"Error setting game mode: {e.Message}"; }
                     }
                     break;
-                case 7:
+                case "Start the game":
                     if (!ServerStarted)
                         StatusMessage = "Please start the server first";
                     else
@@ -782,7 +900,7 @@ namespace GameServer
                         StatusMessage = "New game started on the server";
                     }
                     break;
-                case 8:
+                case "Stop the game":
                     if (!ServerStarted)
                         StatusMessage = "Please start the server first";
                     else
@@ -791,17 +909,18 @@ namespace GameServer
                         StatusMessage = "Game stopped on the server";
                     }
                     break;
-                case 9:
+                case "Settings":
                     if (!ServerStarted) Settings();
                     else StatusMessage = "Please stop the server first";
                     break;
-                case 10:
+                case "Exit the program":
                     if (YesNoMessage())
                     {
                         Server.Stop();
                         Exit = true;
                     }
                     break;
+
             }
         }
 
@@ -810,19 +929,20 @@ namespace GameServer
             const int windowWidth = 52;
             int selectedIndex = 0;
             ConsoleKey key;
+            Console.Clear();
+            DrawBorder('╔', '╗', '═', windowWidth);
+            WriteColoredCenteredText("Settings", ConsoleColor.Yellow, windowWidth);
+            DrawBorder('╟', '╢', '─', windowWidth);
+            for (int i = 0; i < SettingsItems.Length; i++) Console.WriteLine("");
+            DrawBorder('╟', '╢', '─', windowWidth);
+            WriteColoredCenteredText("↑↓: Move    ←→: Change value", ConsoleColor.Green, windowWidth);
+            WriteColoredCenteredText("R: Reset    ESC: Exit", ConsoleColor.Green, windowWidth);
+            DrawBorder('╚', '╝', '═', windowWidth);
             while (true)
             {
-                Console.Clear();
-                DrawBorder('╔', '╗', '═', windowWidth);
-                WriteColoredCenteredText("Settings", ConsoleColor.Yellow, windowWidth);
-                DrawBorder('╟', '╢', '─', windowWidth);
+                Console.SetCursorPosition(0, 3);
                 for (int i = 0; i < SettingsItems.Length; i++)
                     DrawSettingsParametr(i, SettingsItems[i], selectedIndex == i, windowWidth, SettingsValue[i], SettingsMaxValue[i]);
-                DrawBorder('╟', '╢', '─', windowWidth);
-                WriteColoredCenteredText("↑↓: Move    ←→: Change value", ConsoleColor.Green, windowWidth);
-                WriteColoredCenteredText("R: Reset    ESC: Exit", ConsoleColor.Green, windowWidth);
-                DrawBorder('╚', '╝', '═', windowWidth);
-                Console.ResetColor();
                 key = Console.ReadKey(true).Key;
                 if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
                 {
@@ -863,7 +983,7 @@ namespace GameServer
             }
         }
 
-        private void DrawSettingsParametr(int index, string label, bool isSelected, int width, int value, int maxValue)
+        private void DrawSettingsParametr(int index, string label, bool isSelected, int width, int value, int maxValue, ConsoleColor color = ConsoleColor.Gray)
         {
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -878,7 +998,7 @@ namespace GameServer
                 rightPadding = " ← ";
             }
             else
-                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.ForegroundColor = color;
             int barWidth = maxValue + 1;
             string bar = new('═', barWidth);
             int pointerPosition = Math.Min(value, maxValue);
@@ -942,18 +1062,20 @@ namespace GameServer
             const int windowWidth = 31;
             int selectedIndex = 0;
             string[] options = ["Yes", "No"];
+            Console.Clear();
             ConsoleKey key;
+            DrawBorder('╔', '╗', '═', windowWidth);
+            WriteColoredCenteredText("Are you sure?", ConsoleColor.Yellow, windowWidth);
+            DrawBorder('╟', '╢', '─', windowWidth);
+            for (int i = 0; i < options.Length; i++) Console.WriteLine("");
+            DrawBorder('╟', '╢', '─', windowWidth);
+            WriteColoredCenteredText("↑↓: Move    Enter: Select", ConsoleColor.Green, windowWidth);
+            DrawBorder('╚', '╝', '═', windowWidth);
             do
             {
-                Console.Clear();
-                DrawBorder('╔', '╗', '═', windowWidth);
-                WriteColoredCenteredText("Are you sure?", ConsoleColor.Yellow, windowWidth);
-                DrawBorder('╟', '╢', '─', windowWidth);
+                Console.SetCursorPosition(0, 3);
                 for (int i = 0; i < options.Length; i++)
                     WriteMenuItem(options[i], i == selectedIndex, windowWidth);
-                DrawBorder('╟', '╢', '─', windowWidth);
-                WriteColoredCenteredText("↑↓: Move    Enter: Select", ConsoleColor.Green, windowWidth);
-                DrawBorder('╚', '╝', '═', windowWidth);
                 key = Console.ReadKey(true).Key;
                 if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
                 {
@@ -977,12 +1099,25 @@ namespace GameServer
             const int windowWidth = 52;
             int selectedIndex = 0;
             ConsoleKey key;
+            Console.Clear();
+            DrawBorder('╔', '╗', '═', windowWidth);
+            WriteColoredCenteredText("Lobby:", ConsoleColor.Yellow, windowWidth);
+            DrawBorder('╟', '╢', '─', windowWidth);
+            if (players.Count > 0)
+            {
+                for (int i = 0; i < players.Count; i++) Console.WriteLine("");
+            }
+            else
+                WriteColoredCenteredText("Lobby is empty...", ConsoleColor.Red, windowWidth);
+            DrawBorder('╟', '╢', '─', windowWidth);
+            if (players.Count > 0)
+                WriteColoredCenteredText("↑↓: Move    ESC: Exit    K: Kick    B: Ban", ConsoleColor.Green, windowWidth);
+            else
+                WriteColoredCenteredText("↑↓: Move    ESC: Exit", ConsoleColor.Green, windowWidth);
+            DrawBorder('╚', '╝', '═', windowWidth);
             do
             {
-                Console.Clear();
-                DrawBorder('╔', '╗', '═', windowWidth);
-                WriteColoredCenteredText("Lobby:", ConsoleColor.Yellow, windowWidth);
-                DrawBorder('╟', '╢', '─', windowWidth);
+                Console.SetCursorPosition(0, 3);
                 if (players.Count > 0)
                 {
                     for (int i = 0; i < players.Count; i++)
@@ -991,14 +1126,6 @@ namespace GameServer
                         WriteMenuItem($"ID: {id}, Name: {players[id]}", i == selectedIndex, windowWidth);
                     }
                 }
-                else
-                    WriteColoredCenteredText("Lobby is empty...", ConsoleColor.Red, windowWidth);
-                DrawBorder('╟', '╢', '─', windowWidth);
-                if (players.Count > 0)
-                    WriteColoredCenteredText("↑↓: Move    ESC: Exit    K: Kick    B: Ban", ConsoleColor.Green, windowWidth);
-                else
-                    WriteColoredCenteredText("↑↓: Move    ESC: Exit", ConsoleColor.Green, windowWidth);
-                DrawBorder('╚', '╝', '═', windowWidth);
                 key = Console.ReadKey(true).Key;
                 if (players.Count > 0)
                 {
@@ -1026,25 +1153,30 @@ namespace GameServer
             const int windowWidth = 52;
             int selectedIndex = 0;
             ConsoleKey key;
+            Console.Clear();
+            DrawBorder('╔', '╗', '═', windowWidth);
+            WriteColoredCenteredText(prompt, ConsoleColor.Yellow, windowWidth);
+            DrawBorder('╟', '╢', '─', windowWidth);
+            if (options.Length > 0)
+            {
+                for (int i = 0; i < options.Length; i++) Console.WriteLine("");
+            }
+            else
+                WriteColoredCenteredText(empty_string, ConsoleColor.Red, windowWidth);
+            DrawBorder('╟', '╢', '─', windowWidth);
+            if (options.Length > 0)
+                WriteColoredCenteredText($"↑↓: Move    ESC: {button1}    Enter: {button2}", ConsoleColor.Green, windowWidth);
+            else
+                WriteColoredCenteredText($"↑↓: Move  ESC: {button1}", ConsoleColor.Green, windowWidth);
+            DrawBorder('╚', '╝', '═', windowWidth);
             do
             {
-                Console.Clear();
-                DrawBorder('╔', '╗', '═', windowWidth);
-                WriteColoredCenteredText(prompt, ConsoleColor.Yellow, windowWidth);
-                DrawBorder('╟', '╢', '─', windowWidth);
+                Console.SetCursorPosition(0, 3);
                 if (options.Length > 0)
                 {
                     for (int i = 0; i < options.Length; i++)
                         WriteMenuItem(options[i], i == selectedIndex, windowWidth);
                 }
-                else
-                    WriteColoredCenteredText(empty_string, ConsoleColor.Red, windowWidth);
-                DrawBorder('╟', '╢', '─', windowWidth);
-                if (options.Length > 0)
-                    WriteColoredCenteredText($"↑↓: Move    ESC: {button1}    Enter: {button2}", ConsoleColor.Green, windowWidth);
-                else
-                    WriteColoredCenteredText($"↑↓: Move  ESC: {button1}", ConsoleColor.Green, windowWidth);
-                DrawBorder('╚', '╝', '═', windowWidth);
                 key = Console.ReadKey(true).Key;
                 if (options.Length == 0 && key == ConsoleKey.Enter) key = ConsoleKey.None;
                 if (options.Length > 0)
@@ -1070,7 +1202,7 @@ namespace GameServer
 
         private static string CenterText(string text, int width) => text.PadLeft((width - text.Length) / 2 + text.Length).PadRight(width);
 
-        private void DisplayTextMessage(string[] message)
+        private static void DisplayTextMessage(string[] message)
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -1096,7 +1228,6 @@ namespace GameServer
             WriteColoredCenteredText("Press any key to return to the main menu...", ConsoleColor.DarkGray, message[0].Length);
             DrawBorder('╚', '╝', '═', message[0].Length);
             Console.ReadKey();
-            DisplayMainMenu();
         }
     }
 }

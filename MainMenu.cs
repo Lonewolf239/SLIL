@@ -1099,25 +1099,25 @@ namespace SLIL
                     if (DownloadedLocalizationList)
                         difficulty_label.Text = Localizations.GetLString(Language, "0-65") + Localizations.GetLString(Language, "0-113");
                     else
-                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies Respawn Every 60 Seconds\nEnemies deal 25% more damage";
+                        difficulty_label.Text = "Starting weapon: Pistol Lvl 1\nEnemies respawn every 60 seconds\nEnemies deal 25% more damage";
                     break;
                 case 1:
                     if (DownloadedLocalizationList)
                         difficulty_label.Text = Localizations.GetLString(Language, "0-66") + Localizations.GetLString(Language, "0-114");
                     else
-                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 1\nEnemies deal 25% more damage";
+                        difficulty_label.Text = "Starting weapon: Pistol Lvl 1\nEnemies deal 25% more damage";
                     break;
                 case 2:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-67");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-67") + Localizations.GetLString(Language, "0-1");
                     else
-                        difficulty_label.Text = "Starting Weapon: Pistol Lvl 2";
+                        difficulty_label.Text = "Starting weapon: Pistol Lvl 2\nU get 2 medkits";
                     break;
                 case 3:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-68") + Localizations.GetLString(Language, "0-115");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-68") + Localizations.GetLString(Language, "0-115") + Localizations.GetLString(Language, "0-2");
                     else
-                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money\nEnemies deal 25% less damage";
+                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money\nEnemies deal 25% less damage\nU get 2 medkits";
                     break;
                 default:
                     if (DownloadedLocalizationList)
