@@ -3493,11 +3493,7 @@ namespace SLIL
                     Entity entity = Entities[spriteInfo[i].Order];
                     if (!entity.HasAI) continue;
                     Creature creature = null;
-                    if (entity is Creature)
-                    {
-                        creature = Entities[spriteInfo[i].Order] as Creature;
-                        if (!creature.CanHit) creature = null;
-                    }
+                    if (entity is Creature c) creature = c;
                     double spriteX = entity.X - player.X;
                     double spriteY = entity.Y - player.Y;
                     double transformX = invDet * (dirY * spriteX - dirX * spriteY);

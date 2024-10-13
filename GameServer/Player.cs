@@ -14,6 +14,7 @@ namespace GameServer
         public bool Invulnerable { get; set; }
         public int TimeoutInvulnerable { get; set; }
         public double STAMINE { get; set; }
+        public bool PVP { get; set; }
         public bool CanShoot { get; set; }
         public bool Aiming { get; set; }
         public bool UseItem { get; set; }

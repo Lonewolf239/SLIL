@@ -164,8 +164,8 @@ namespace GameServer
         private readonly SendOutcomingMessageDelegate? SendOutcomingMessageHandle;
         private string ServerPassword = "None";
         private bool Exit = false, ServerStarted = false, StopedThread = true;
-        private readonly int[] SettingsValue, SettingsMaxValue;
-        private int[] ServerSettingsValue;
+        private readonly int[] DefaultSettingsValue = [0, 1, 3, 1], SettingsValue = [0, 1, 3, 1], SettingsMaxValue = [3, 3, 7, 1];
+        private int[] ServerSettingsValue = [0, 1, 3, 1];
         private readonly string[] SettingsItems, ServerSettingsItem;
         private int SelectedCategory = 0, Selected = 0, SelectedDifficult = 1;
         private int MaxCommandIndex = 6;
@@ -202,13 +202,15 @@ namespace GameServer
             [
                 "Default game mode",
                 "Default difficulty",
-                "Max Players"
+                "Max Players",
+                "PVP"
             ];
             ServerSettingsItem =
             [
                 "Game mode",
                 "Difficulty",
-                "Max Players"
+                "Max Players",
+                "PVP"
             ];
             Listener = new();
             Server = new(Listener);
@@ -282,24 +284,27 @@ namespace GameServer
                 if (System.IO.File.Exists("data.txt"))
                 {
                     string[] data = System.IO.File.ReadAllText("data.txt").Split(';');
-                    SettingsValue = [Convert.ToInt32(data[0]), Convert.ToInt32(data[1]), Convert.ToInt32(data[2])];
+                    SettingsValue = [Convert.ToInt32(data[0]), Convert.ToInt32(data[1]), Convert.ToInt32(data[2]), Convert.ToInt32(data[3])];
                 }
-                else SettingsValue = [0, 1, 3];
+                else SettingsToDefault();
             }
-            catch { SettingsValue = [0, 1, 3]; }
-            SettingsMaxValue = [3, 3, 7];
-            if (SettingsValue[0] < 0 || SettingsValue[0] > SettingsMaxValue[0])
-                SettingsValue[0] = 0;
-            if (SettingsValue[1] < 0 || SettingsValue[1] > SettingsMaxValue[1])
-                SettingsValue[1] = 1;
-            if (SettingsValue[2] < 0 || SettingsValue[2] > SettingsMaxValue[2])
-                SettingsValue[2] = 0;
-            ServerSettingsValue = (int[])SettingsValue.Clone();
+            catch { SettingsToDefault(); }
+            for (int i = 0; i < SettingsValue.Length; i++)
+            {
+                if (SettingsValue[i] < 0 || SettingsValue[i] > SettingsMaxValue[i])
+                    SettingsValue[i] = DefaultSettingsValue[i];
+            }
             GameMode = (GameModes)SettingsValue[0];
             Dispatcher.ChangeGameMode(GameMode);
             SelectedDifficult = SettingsValue[1];
             Dispatcher.ChangeDifficulty(SettingsValue[1]);
             MAX_CONNECTIONS = SettingsValue[2] + 1;
+        }
+
+        private void SettingsToDefault()
+        {
+            for (int i = 0; i < DefaultSettingsValue.Length; i++)
+                SettingsValue[i] = DefaultSettingsValue[i];
         }
 
         private async static Task DownloadFileAsync(string url, string outputPath)
@@ -517,6 +522,8 @@ namespace GameServer
                 WriteServerInfoLine("Status", "Online", ConsoleColor.Green, windowWidth);
                 WriteServerInfoLine("Game", Dispatcher.GameStarted() ? "Started" : "Stoped",
                     Dispatcher.GameStarted() ? ConsoleColor.Green : ConsoleColor.Red, windowWidth);
+                WriteServerInfoLine("PVP", Dispatcher.GetPVP() ? "On" : "Off",
+                    Dispatcher.GetPVP() ? ConsoleColor.DarkRed : ConsoleColor.Green, windowWidth);
                 WriteServerInfoLine("IP", $"{GetLocalIPAddress()}:{Server.LocalPort}", ConsoleColor.White, windowWidth);
                 WriteServerInfoLine("Password", ServerPassword == "None" ? "Not set" : ServerPassword,
                                     ServerPassword == "None" ? ConsoleColor.DarkGray : ConsoleColor.White, windowWidth);
@@ -549,7 +556,7 @@ namespace GameServer
             }
             DrawBorder('╟', '╢', '─', windowWidth);
             WriteColoredCenteredText("↑↓: Move    ESC: Exit    Enter: Confirm", ConsoleColor.Green, windowWidth);
-                if (ServerStarted && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (ServerStarted && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 WriteColoredCenteredText("I: Copy IP    P: Copy Password", ConsoleColor.Green, windowWidth);
             DrawBorder('╟', '╢', '─', windowWidth);
             WriteColoredCenteredText("Developed by: Fatalan & Lonewolf239", ConsoleColor.Yellow, windowWidth);
@@ -604,17 +611,16 @@ namespace GameServer
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write('║');
             Console.ResetColor();
-            string leftPadding = "   ", rightPadding = "   ";
+            string leftPadding = "   ";
             if (isSelected)
             {
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                leftPadding = " ▶ ";
-                rightPadding = " ◀ ";
+                leftPadding = " ➤ ";
             }
             else
                 Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write(leftPadding + text.PadRight(width - 8) + rightPadding);
+            Console.Write(leftPadding + text.PadRight(width - 5));
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine('║');
@@ -695,6 +701,7 @@ namespace GameServer
                     break;
                 case "Start the server":
                     const int windowWidth = 54;
+                    ServerSettingsValue = (int[])SettingsValue.Clone();
                     Console.Clear();
                     Console.CursorVisible = true;
                     DrawBorder('╔', '╗', '═', windowWidth);
@@ -740,7 +747,12 @@ namespace GameServer
                         Console.SetCursorPosition(0, 5);
                         DrawBorder('╟', '╢', '─', windowWidth);
                         for (int i = 0; i < ServerSettingsItem.Length; i++)
-                            DrawSettingsParametr(i, ServerSettingsItem[i], i == selectedServerIndex, windowWidth, ServerSettingsValue[i], SettingsMaxValue[i]);
+                        {
+                            if ((GameModes)ServerSettingsValue[0] == GameModes.Deathmatch && i == 3)
+                                DrawSettingsParametr(i, ServerSettingsItem[i], i == selectedServerIndex, windowWidth, ServerSettingsValue[i], SettingsMaxValue[i], ConsoleColor.DarkGray);
+                            else
+                                DrawSettingsParametr(i, ServerSettingsItem[i], i == selectedServerIndex, windowWidth, ServerSettingsValue[i], SettingsMaxValue[i]);
+                        }
                         DrawBorder('╟', '╢', '─', windowWidth);
                         WriteColoredCenteredText("↑↓: Move    ←→: Change value", ConsoleColor.Green, windowWidth);
                         WriteColoredCenteredText("ESC: Cancel    Enter: Confirm", ConsoleColor.Green, windowWidth);
@@ -770,6 +782,7 @@ namespace GameServer
                                 ServerSettingsValue[selectedServerIndex]++;
                             ChangeSettingsValue(selectedServerIndex, ServerSettingsValue[selectedServerIndex]);
                         }
+                        if ((GameModes)ServerSettingsValue[0] == GameModes.Deathmatch) ServerSettingsValue[3] = 1;
                         if (key == ConsoleKey.Escape)
                         {
                             StatusMessage = "Server startup cancelled...";
@@ -788,6 +801,7 @@ namespace GameServer
                                 Dispatcher.ChangeGameMode(GameMode);
                                 SelectedDifficult = ServerSettingsValue[1];
                                 Dispatcher.ChangeDifficulty(ServerSettingsValue[1]);
+                                Dispatcher.SetPVP(ServerSettingsValue[3] == 1);
                                 StatusMessage = $"Server started successfully";
                             }
                             catch (Exception e)
@@ -947,7 +961,12 @@ namespace GameServer
             {
                 Console.SetCursorPosition(0, 3);
                 for (int i = 0; i < SettingsItems.Length; i++)
-                    DrawSettingsParametr(i, SettingsItems[i], selectedIndex == i, windowWidth, SettingsValue[i], SettingsMaxValue[i]);
+                {
+                    if ((GameModes)SettingsValue[0] == GameModes.Deathmatch && i == 3)
+                        DrawSettingsParametr(i, SettingsItems[i], i == selectedIndex, windowWidth, SettingsValue[i], SettingsMaxValue[i], ConsoleColor.DarkGray);
+                    else
+                        DrawSettingsParametr(i, SettingsItems[i], i == selectedIndex, windowWidth, SettingsValue[i], SettingsMaxValue[i]);
+                }
                 key = Console.ReadKey(true).Key;
                 if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
                 {
@@ -973,12 +992,8 @@ namespace GameServer
                         SettingsValue[selectedIndex]++;
                     ChangeSettingsValue(selectedIndex, SettingsValue[selectedIndex]);
                 }
-                if (key == ConsoleKey.R)
-                {
-                    SettingsValue[0] = 0;
-                    SettingsValue[1] = 1;
-                    SettingsValue[2] = 3;
-                }
+                if ((GameModes)SettingsValue[0] == GameModes.Deathmatch) SettingsValue[3] = 1;
+                if (key == ConsoleKey.R) SettingsToDefault();
                 if (key == ConsoleKey.Escape)
                 {
                     System.IO.File.WriteAllText("data.txt", $"{SettingsValue[0]};{SettingsValue[1]};{SettingsValue[2]}");
@@ -994,13 +1009,12 @@ namespace GameServer
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write('║');
             Console.ResetColor();
-            string leftPadding = "   ", rightPadding = "   ";
+            string leftPadding = "   ";
             if (isSelected)
             {
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                leftPadding = " ▶ ";
-                rightPadding = " ◀ ";
+                leftPadding = " ➤ ";
             }
             else
                 Console.ForegroundColor = color;
@@ -1008,8 +1022,8 @@ namespace GameServer
             string bar = new('═', barWidth);
             int pointerPosition = Math.Min(value, maxValue);
             bar = bar.Remove(pointerPosition, 1).Insert(pointerPosition, "█");
-            string text = $"{label + ": " + GetParametrName(index, value),-30} ▕{bar}▏";
-            Console.Write(leftPadding + text.PadRight(width - 8) + rightPadding);
+            string text = $"{label + ": " + GetParametrName(index, value),-30} [{bar}]";
+            Console.Write(leftPadding + text.PadRight(width - 5));
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine('║');
@@ -1029,6 +1043,7 @@ namespace GameServer
                 0 => ((GameModes)value).ToString(),
                 1 => Difficulties[value],
                 2 => (value + 1).ToString(),
+                3 => value == 1 ? "On" : "Off",
                 _ => "null",
             };
         }

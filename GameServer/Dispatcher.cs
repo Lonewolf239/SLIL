@@ -247,6 +247,10 @@ namespace GameServer
 
         public bool GameStarted() => Game.IsGameStarted();
 
+        public bool GetPVP() => Game.GetPVP();
+
+        public void SetPVP(bool enabled) => Game.SetPVP(enabled);
+
         public void ChangeDifficulty(int difficulty) => Game.ChangeDifficulty(difficulty);
 
         internal void StopGame() => Game.StopGame(3);

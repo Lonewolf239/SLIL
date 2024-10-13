@@ -28,6 +28,7 @@ namespace GameServer
         private bool GameStarted = false;
         private readonly Random rand;
         private GameModes _gameMode;
+        private bool PVP = true;
         private int difficulty;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
@@ -87,7 +88,8 @@ namespace GameServer
                 }
                 Player p = new(X + 0.5, Y + 0.5, MAP_WIDTH, ref MaxEntityID)
                 {
-                    Name = name
+                    Name = name,
+                    PVP = PVP
                 };
                 if (difficulty == 3 || difficulty == 2)
                 {
@@ -98,13 +100,16 @@ namespace GameServer
             }
             else
             {
-                Player p = new(1.5, 1.5, MAP_WIDTH, ref MaxEntityID);
+                Player p = new(1.5, 1.5, MAP_WIDTH, ref MaxEntityID)
+                {
+                    Name = name,
+                    PVP = PVP
+                };
                 if (difficulty == 3 || difficulty == 2)
                 {
                     p.Guns[2].LevelUpdate();
                     ((DisposableItem)p.GUNS[10]).AddItem();
                 }
-                p.Name = name;
                 Entities.Add(p);
             }
             return MaxEntityID - 1;
@@ -147,7 +152,6 @@ namespace GameServer
                                         double damage = rand.Next(25, 50);
                                         if (ent is Player playerTarget)
                                         {
-                                            playerTarget.DealDamage(damage, true);
                                             playerTarget.DealDamage(damage, true);
                                             if (playerTarget.HP <= 0)
                                             {
@@ -1513,7 +1517,7 @@ namespace GameServer
             }
             if (target is Player p)
             {
-                if (!p.HasAI || p.Dead) return false;
+                if (!p.HasAI || p.Dead || !p.PVP) return false;
                 if (attacker is Player attackerPlayer && p.DealDamage(damage, true))
                 {
                     double multiplier = 1;
@@ -1999,6 +2003,10 @@ namespace GameServer
                 sendMessageFromGameCallback(2, writer.Data);
             }
         }
+
+        internal bool GetPVP() => PVP;
+
+        internal void SetPVP(bool enabled) => PVP = enabled;
 
         internal void ChangeDifficulty(int difficulty)
         {

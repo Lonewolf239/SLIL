@@ -16,7 +16,7 @@ namespace SLIL
         static void Main()
         {
             mutex = new Mutex(true, "SLIL_Unique_Mutex");
-            if (mutex.WaitOne(TimeSpan.Zero, true))
+           // if (mutex.WaitOne(TimeSpan.Zero, true))
             {
                 if (!CheckWindows())
                 {
