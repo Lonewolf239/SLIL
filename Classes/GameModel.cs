@@ -114,7 +114,7 @@ namespace SLIL.Classes
             if (difficulty == 3 || difficulty == 2)
             {
                 player.Guns[2].LevelUpdate();
-                ((DisposableItem)player.GUNS[10]).AddItem();
+                ((DisposableItem)player.GUNS[10]).AddItem(2);
             }
             return MaxEntityID - 1;
         }
@@ -1906,8 +1906,9 @@ namespace SLIL.Classes
         internal void BuyConsumable(int playerID, int itemID)
         {
             Player p = GetPlayer(playerID);
-            DisposableItem item = p.GUNS[itemID] as DisposableItem;
-            if (p.Money >= item.GunCost && !item.HasIt)
+            if (p == null) return;
+            DisposableItem item = (DisposableItem)p.GUNS[itemID];
+            if (p.Money >= item.GunCost && item.CanBuy())
             {
                 p.ChangeMoney(-item.GunCost);
                 item.AddItem();

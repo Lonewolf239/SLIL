@@ -94,7 +94,7 @@ namespace GameServer
                 if (difficulty == 3 || difficulty == 2)
                 {
                     p.Guns[2].LevelUpdate();
-                    ((DisposableItem)p.GUNS[10]).AddItem();
+                    ((DisposableItem)p.GUNS[10]).AddItem(2);
                 }
                 Entities.Add(p);
             }
@@ -108,7 +108,7 @@ namespace GameServer
                 if (difficulty == 3 || difficulty == 2)
                 {
                     p.Guns[2].LevelUpdate();
-                    ((DisposableItem)p.GUNS[10]).AddItem();
+                    ((DisposableItem)p.GUNS[10]).AddItem(2);
                 }
                 Entities.Add(p);
             }
@@ -1962,19 +1962,13 @@ namespace GameServer
 
         internal void BuyConsumable(int playerID, int itemID)
         {
-            foreach (Entity ent in Entities)
+            Player? p = GetPlayer(playerID);
+            if (p == null) return;
+            DisposableItem item = (DisposableItem)p.GUNS[itemID];
+            if (p.Money >= item.GunCost && item.CanBuy())
             {
-                if (ent.ID == playerID)
-                {
-                    Player p = (Player)ent;
-                    DisposableItem? item = (DisposableItem)p.GUNS[itemID];
-                    if (p.Money >= item.GunCost && !item.HasIt)
-                    {
-                        p.ChangeMoney(-item.GunCost);
-                        item.AddItem();
-                    }
-                    return;
-                }
+                p.ChangeMoney(-item.GunCost);
+                item.AddItem();
             }
         }
 

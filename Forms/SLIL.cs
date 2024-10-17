@@ -2799,9 +2799,12 @@ namespace SLIL
                 graphicsWeapon.SmoothingMode = save1;
                 return;
             }
-            int item_count = 0;
+            int item_count = 0, item_max_count = 0;
             if (player.DISPOSABLE_ITEM != null)
+            {
                 item_count = player.DISPOSABLE_ITEM.Count;
+                item_max_count = player.DISPOSABLE_ITEM.MaxCount;
+            }
             int icon_size = 12 + (2 * interface_size);
             if (resolution == 1) icon_size *= 2;
             int size = resolution == 0 ? 1 : 2;
@@ -2848,7 +2851,7 @@ namespace SLIL
                     graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (!player.InTransport && !Controller.IsMultiplayer())
-                graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
+                graphicsWeapon.DrawString($"{item_max_count}\\{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             if (Controller.IsMultiplayer()) DrawPing(fpsSize, icon_size);
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
@@ -2960,9 +2963,12 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            int item_count = 0;
+            int item_count = 0, item_max_count = 0;
             if (player.DISPOSABLE_ITEM != null)
+            {
                 item_count = player.DISPOSABLE_ITEM.Count;
+                item_max_count = player.DISPOSABLE_ITEM.MaxCount;
+            }
             int icon_size = 12 + (2 * interface_size);
             if (resolution == 1) icon_size *= 2;
             int size = resolution == 0 ? 1 : 2;
@@ -3002,7 +3008,7 @@ namespace SLIL
                     graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (!player.InTransport && !Controller.IsMultiplayer())
-                graphicsWeapon.DrawString(item_count.ToString(), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
+                graphicsWeapon.DrawString($"{item_max_count}\\{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             DrawPing(fpsSize, icon_size);
             string playerName = player.Name.Length == 0 ? "NoName" : player.Name;

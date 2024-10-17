@@ -216,6 +216,7 @@ namespace GameServer
     public abstract class DisposableItem : Item
     {
         public int Count { get; set; }
+        public int MaxCount { get; set; }
         public int EffectID { get; set; }
         public bool HasLVMechanics { get; set; }
 
@@ -233,11 +234,15 @@ namespace GameServer
             ReloadFrames = 3;
         }
 
-        public void AddItem()
+        public void AddItem(int count = 1)
         {
-            Count = 2;
+            Count += count;
+            if (Count >= MaxCount)
+                Count = MaxCount;
             HasIt = true;
         }
+
+        public bool CanBuy() => Count < MaxCount;
 
         public override void SetDefault()
         {
@@ -1099,7 +1104,8 @@ namespace GameServer
             EffectID = 0;
             HasLVMechanics = true;
             HasCuteDescription = true;
-            GunCost = 30;
+            GunCost = 15;
+            MaxCount = 4;
             Name =
             [
                 "4-0", "First Aid Kit",
@@ -1123,7 +1129,8 @@ namespace GameServer
         {
             EffectID = 1;
             RechargeTime = 530;
-            GunCost = 60;
+            GunCost = 30;
+            MaxCount = 2;
             Name = ["4-4", "Adrenalin"];
             Description =
             [
@@ -1142,7 +1149,8 @@ namespace GameServer
             EffectID = 2;
             ReloadFrames = 4;
             RechargeTime = 1000;
-            GunCost = 75;
+            GunCost = 40;
+            MaxCount = 1;
             Name = ["4-6", "Helmet"];
             Description =
             [

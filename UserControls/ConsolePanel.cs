@@ -48,7 +48,7 @@ namespace SLIL.UserControls
             InitializeComponent();
         }
 
-        private void GetItem(int index) => player.DisposableItems[index].AddItem();
+        private void GetItem(int index) => player.DisposableItems[index].AddItem(99);
 
         private void Console_KeyDown(object sender, KeyEventArgs e)
         {

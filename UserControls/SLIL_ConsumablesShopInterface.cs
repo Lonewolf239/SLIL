@@ -13,15 +13,15 @@ namespace SLIL.UserControls
         public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
-        private readonly string[,] buy_text = { { "2-0", "2-12" }, { "Buy", "Has already" } };
+        private readonly string[,] buy_text = { { "2-0", "2-15" }, { "Buy", "Maximum" } };
 
         public SLIL_ConsumablesShopInterface() => InitializeComponent();
 
         private string GetBuyText()
         {
             if (index == 0)
-                return MainMenu.Localizations.GetLString(MainMenu.Language, buy_text[0, item.HasIt ? 1 : 0]);
-            return buy_text[1, item.HasIt ? 1 : 0];
+                return MainMenu.Localizations.GetLString(MainMenu.Language, buy_text[0, !item.CanBuy() ? 1 : 0]);
+            return buy_text[1, !item.CanBuy() ? 1 : 0];
         }
 
         private string GetItemName()
@@ -46,7 +46,7 @@ namespace SLIL.UserControls
             icon.Image = SLIL.IconDict[item.GetType()][player.CuteMode ? 1 : 0];
             descryption.Text = GetItemDescription();
             name.Text = GetItemName();
-            if (!item.HasIt)
+            if (item.CanBuy())
                 buy_button.Text = $"{GetBuyText()} {item.GunCost}$";
             else
                 buy_button.Text = $"{GetBuyText()}";
@@ -55,12 +55,13 @@ namespace SLIL.UserControls
         private void Buy_button_Click(object sender, EventArgs e)
         {
             icon.Focus();
-            if (player.Money >= item.GunCost && !item.HasIt)
+            if (player.Money >= item.GunCost && item.CanBuy())
             {
                 if (MainMenu.sounds)
                     buy.Play(SLIL.Volume);
                 (Parent.FindForm() as SLIL).BuyConsumable(item);
-                buy_button.Text = $"{GetBuyText()}";
+                if (item.Count == item.MaxCount)
+                    buy_button.Text = $"{GetBuyText()}";
             }
             else if (MainMenu.sounds)
                 cant_pressed?.Play(SLIL.Volume);
