@@ -386,6 +386,7 @@ namespace GameServer
 
         internal void MainMenu()
         {
+            Console.Clear();
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Cyan;
             DrawBorder('╔', '╗', '═', 52);
@@ -409,6 +410,7 @@ namespace GameServer
                 {
                     case ConsoleKey.UpArrow:
                     case ConsoleKey.W:
+                    case ConsoleKey.K:
                         if (CurrentCategory == -1)
                         {
                             SelectedCategory--;
@@ -437,6 +439,7 @@ namespace GameServer
                         break;
                     case ConsoleKey.DownArrow:
                     case ConsoleKey.S:
+                    case ConsoleKey.J:
                         if (CurrentCategory == -1)
                         {
                             SelectedCategory++;
@@ -881,24 +884,28 @@ namespace GameServer
                         {
                             case ConsoleKey.UpArrow:
                             case ConsoleKey.W:
+                            case ConsoleKey.K:
                                 selectedServerIndex--;
                                 if (selectedServerIndex < 0)
                                     selectedServerIndex = ServerSettingsItem.Length - 1;
                                 break;
                             case ConsoleKey.DownArrow:
                             case ConsoleKey.S:
+                            case ConsoleKey.J:
                                 selectedServerIndex++;
                                 if (selectedServerIndex >= ServerSettingsItem.Length)
                                     selectedServerIndex = 0;
                                 break;
                             case ConsoleKey.LeftArrow:
                             case ConsoleKey.A:
+                            case ConsoleKey.H:
                                 if (ServerSettingsValue[selectedServerIndex] > 0)
                                     ServerSettingsValue[selectedServerIndex]--;
                                 ChangeSettingsValue(selectedServerIndex, ServerSettingsValue[selectedServerIndex]);
                                 break;
                             case ConsoleKey.RightArrow:
                             case ConsoleKey.D:
+                            case ConsoleKey.L:
                                 if (ServerSettingsValue[selectedServerIndex] < SettingsMaxValue[selectedServerIndex])
                                     ServerSettingsValue[selectedServerIndex]++;
                                 ChangeSettingsValue(selectedServerIndex, ServerSettingsValue[selectedServerIndex]);
@@ -1084,6 +1091,7 @@ namespace GameServer
                     {
                         Server.Stop();
                         Exit = true;
+                        Console.Clear();
                     }
                     break;
             }
@@ -1119,24 +1127,28 @@ namespace GameServer
                 {
                     case ConsoleKey.UpArrow:
                     case ConsoleKey.W:
+                    case ConsoleKey.K:
                         selectedIndex--;
                         if (selectedIndex < 0)
                             selectedIndex = SettingsItems.Length - 1;
                         break;
                     case ConsoleKey.DownArrow:
                     case ConsoleKey.S:
+                    case ConsoleKey.J:
                         selectedIndex++;
                         if (selectedIndex >= SettingsItems.Length)
                             selectedIndex = 0;
                         break;
                     case ConsoleKey.LeftArrow:
                     case ConsoleKey.A:
+                    case ConsoleKey.H:
                         if (SettingsValue[selectedIndex] > 0)
                             SettingsValue[selectedIndex]--;
                         ChangeSettingsValue(selectedIndex, SettingsValue[selectedIndex]);
                         break;
                     case ConsoleKey.RightArrow:
                     case ConsoleKey.D:
+                    case ConsoleKey.L:
                         if (SettingsValue[selectedIndex] < SettingsMaxValue[selectedIndex])
                             SettingsValue[selectedIndex]++;
                         ChangeSettingsValue(selectedIndex, SettingsValue[selectedIndex]);
@@ -1257,27 +1269,34 @@ namespace GameServer
             DrawBorder('╟', '╢', '─', windowWidth);
             WriteColoredCenteredText("↑↓: Move    [Enter]: Select", ConsoleColor.Green, windowWidth);
             DrawBorder('╚', '╝', '═', windowWidth);
-            do
+            while (true)
             {
                 Console.SetCursorPosition(0, 3);
                 for (int i = 0; i < options.Length; i++)
                     DrawButton(options[i], i == selectedIndex, windowWidth, true);
                 key = Console.ReadKey(true).Key;
-                if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
+                switch (key)
                 {
-                    selectedIndex--;
-                    if (selectedIndex < 0)
-                        selectedIndex = options.Length - 1;
+                    case ConsoleKey.UpArrow:
+                    case ConsoleKey.W:
+                    case ConsoleKey.K:
+                        selectedIndex--;
+                        if (selectedIndex < 0)
+                            selectedIndex = options.Length - 1; 
+                        break;
+                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.S:
+                    case ConsoleKey.J:
+                        selectedIndex++;
+                        if (selectedIndex >= options.Length)
+                            selectedIndex = 0;
+                        break;
+                    case ConsoleKey.Escape:
+                        return false;
+                    case ConsoleKey.Enter:
+                        return selectedIndex == 0;
                 }
-                else if (key == ConsoleKey.DownArrow || key == ConsoleKey.S)
-                {
-                    selectedIndex++;
-                    if (selectedIndex >= options.Length)
-                        selectedIndex = 0;
-                }
-                if (key == ConsoleKey.Escape) return false;
-            } while (key != ConsoleKey.Enter);
-            return selectedIndex == 0;
+            }
         }
 
         private static (int, bool) SelectPlayers(Dictionary<int, string> players)
@@ -1355,7 +1374,7 @@ namespace GameServer
             else
                 WriteColoredCenteredText($"↑↓: Move  [ESC]: {button1}", ConsoleColor.Green, windowWidth);
             DrawBorder('╚', '╝', '═', windowWidth);
-            do
+            while (true)
             {
                 Console.SetCursorPosition(0, 3);
                 if (options.Length > 0)
@@ -1364,26 +1383,31 @@ namespace GameServer
                         DrawButton(options[i], i == selectedIndex, windowWidth, true);
                 }
                 key = Console.ReadKey(true).Key;
-                if (options.Length == 0 && key == ConsoleKey.Enter) key = ConsoleKey.None;
-                if (options.Length > 0)
+                switch (key)
                 {
-                    if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
-                    {
+                    case ConsoleKey.UpArrow:
+                    case ConsoleKey.W:
+                    case ConsoleKey.K:
+                        if (options.Length <= 0) break;
                         selectedIndex--;
                         if (selectedIndex < 0)
                             selectedIndex = options.Length - 1;
-                    }
-                    else if (key == ConsoleKey.DownArrow || key == ConsoleKey.S)
-                    {
+                        break;  
+                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.S:
+                    case ConsoleKey.J:
+                        if (options.Length <= 0) break;
                         selectedIndex++;
                         if (selectedIndex >= options.Length)
                             selectedIndex = 0;
-                    }
+                        break;
+                    case ConsoleKey.Enter:
+                        if (options.Length == 0) break;
+                        return selectedIndex;
+                    case ConsoleKey.Escape:
+                        return -1;
                 }
-                if (key == ConsoleKey.Escape) return -1;
-            } while (key != ConsoleKey.Enter);
-            if (options.Length > 0) return selectedIndex;
-            return -1;
+            }
         }
 
         private static string CenterText(string text, int width) => text.PadLeft((width - text.Length) / 2 + text.Length).PadRight(width);
