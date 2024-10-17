@@ -1894,12 +1894,26 @@ namespace SLIL
             if (ShowSing) UpdateScrollPosition(-delta);
             if (GameStarted && !Paused && !player.BlockInput && player.CanShoot && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
             {
-                int new_gun = player.CurrentGun;
-                if (delta > 0) new_gun--;
-                else new_gun++;
-                //TODO:
-                //TakeFlashlight(false);
-                //ChangeWeapon(new_gun);
+                List<int> availableWeapons = new List<int>();
+                if (player.WeaponSlot_0 != -1) availableWeapons.Add(player.WeaponSlot_0);
+                if (player.WeaponSlot_1 != -1) availableWeapons.Add(player.WeaponSlot_1);
+                availableWeapons.Add(2);
+                availableWeapons.Add(1);
+                int currentIndex = availableWeapons.IndexOf(player.CurrentGun);
+                if (currentIndex == -1) currentIndex = 2;
+                int newIndex;
+                if (delta > 0)
+                    newIndex = (currentIndex + 1) % availableWeapons.Count;
+                else
+                    newIndex = (currentIndex - 1 + availableWeapons.Count) % availableWeapons.Count;
+                int new_gun = availableWeapons[newIndex];
+                TakeFlashlight(false);
+                if (new_gun == 1 || new_gun == 2)
+                    ChangeWeapon(new_gun);
+                else if (new_gun == player.WeaponSlot_0)
+                    ChangeWeapon(player.WeaponSlot_0);
+                else if (new_gun == player.WeaponSlot_1)
+                    ChangeWeapon(player.WeaponSlot_1);
             }
         }
 
@@ -3506,7 +3520,7 @@ namespace SLIL
                                         {
                                             if (creature != null)
                                             {
-                                                if (creature.DEAD) continue;
+                                                if (creature.DEAD || !creature.CanHit) continue;
                                                 double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
                                                 if (Controller.DealDamage(creature, damage))
                                                 {

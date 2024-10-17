@@ -1405,7 +1405,7 @@ namespace SLIL.Classes
             }
             if (target is Creature c)
             {
-                if (!c.HasAI || c.DEAD) return false;
+                if (!c.HasAI || c.DEAD || !c.CanHit) return false;
                 if (c.DealDamage(damage))
                 {
                     if (attacker is Player attackerPlayer)

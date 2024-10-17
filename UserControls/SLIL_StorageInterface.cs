@@ -15,7 +15,7 @@ namespace SLIL.UserControls
         public int width;
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
-        private readonly string[,] slot_text = { { "2-8", "2-9" }, { "Slot ", "Instead of " }  };
+        private readonly string[,] slot_text = { { "2-17", "2-18", "2-19" }, { "Slot ", "Instead ", "Equipped" }  };
 
         public SLIL_StorageInterface()
         {
@@ -34,17 +34,29 @@ namespace SLIL.UserControls
         {
             if (i == 1 && player.WeaponSlot_0 != -1)
             {
+                if (player.WeaponSlot_0 == player.Guns.IndexOf(weapon))
+                {
+                    if (index == 0)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 2]);
+                    return slot_text[1, 2];
+                }
                 if (index == 0)
                     return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 1]) +
-                        MainMenu.Localizations.GetLString(MainMenu.Language, player.GUNS[player.WeaponSlot_0].Name[0]);
-                return slot_text[1, 1] + player.GUNS[player.WeaponSlot_0].Name[1];
+                        MainMenu.Localizations.GetLString(MainMenu.Language, player.Guns[player.WeaponSlot_0].Name[0]);
+                return slot_text[1, 1] + player.Guns[player.WeaponSlot_0].Name[1];
             }
             if (i == 2 && player.WeaponSlot_1 != -1)
             {
+                if (player.WeaponSlot_1 == player.Guns.IndexOf(weapon))
+                {
+                    if (index == 0)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 2]);
+                    return slot_text[1, 2];
+                }
                 if (index == 0)
                     return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 1]) +
-                        MainMenu.Localizations.GetLString(MainMenu.Language, player.GUNS[player.WeaponSlot_1].Name[0]);
-                return slot_text[1, 1] + player.GUNS[player.WeaponSlot_1].Name[1];
+                        MainMenu.Localizations.GetLString(MainMenu.Language, player.Guns[player.WeaponSlot_1].Name[0]);
+                return slot_text[1, 1] + player.Guns[player.WeaponSlot_1].Name[1];
             }
             if (index == 0)
                 return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 0]) + i.ToString();
@@ -145,12 +157,16 @@ namespace SLIL.UserControls
         {
             player.WeaponSlot_0 = player.Guns.IndexOf(weapon);
             player.CurrentGun = player.PreviousGun = player.WeaponSlot_0;
+            if (player.WeaponSlot_0 == player.WeaponSlot_1)
+                player.WeaponSlot_1 = -1;
         }
 
         private void Slot_1_btn_Click(object sender, EventArgs e)
         {
             player.WeaponSlot_1 = player.Guns.IndexOf(weapon);
             player.CurrentGun = player.PreviousGun = player.WeaponSlot_1;
+            if (player.WeaponSlot_0 == player.WeaponSlot_1)
+                player.WeaponSlot_0 = -1;
         }
     }
 }
