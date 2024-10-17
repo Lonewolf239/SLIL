@@ -82,6 +82,8 @@ namespace GameServer
             writer.Put(Dead);
             writer.Put(Money);
             writer.Put(CurrentGun);
+            writer.Put(WeaponSlot_0);
+            writer.Put(WeaponSlot_1);
             writer.Put(A);
             writer.Put(Look);
             writer.Put(InParkour);
@@ -119,6 +121,8 @@ namespace GameServer
             Dead = reader.GetBool();
             Money = reader.GetInt();
             CurrentGun = reader.GetInt();
+            WeaponSlot_0 = reader.GetInt();
+            WeaponSlot_1 = reader.GetInt();
             A = reader.GetDouble();
             Look = reader.GetDouble();
             InParkour = reader.GetBool();
@@ -306,6 +310,8 @@ namespace GameServer
                 Dead = reader.GetBool();
                 Money = reader.GetInt();
                 CurrentGun = reader.GetInt();
+                WeaponSlot_0 = reader.GetInt();
+                WeaponSlot_1 = reader.GetInt();
                 reader.GetDouble(); reader.GetDouble();
                 InParkour = reader.GetBool();
                 InTransport = reader.GetBool();

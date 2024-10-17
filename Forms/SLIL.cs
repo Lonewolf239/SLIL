@@ -4305,6 +4305,8 @@ namespace SLIL
             return cost;
         }
 
+        internal void SetWeaponSlot(int slot, int index) => Controller.SetWeaponSlot(slot, index);
+
         internal void BuyAmmo(Gun weapon) => Controller.BuyAmmo(weapon);
 
         internal void BuyWeapon(Gun weapon) => Controller.BuyWeapon(weapon);

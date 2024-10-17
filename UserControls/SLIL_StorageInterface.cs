@@ -157,20 +157,8 @@ namespace SLIL.UserControls
             Width = width;
         }
 
-        private void Slot_0_btn_Click(object sender, EventArgs e)
-        {
-            player.WeaponSlot_0 = player.Guns.IndexOf(weapon);
-            player.CurrentGun = player.PreviousGun = player.WeaponSlot_0;
-            if (player.WeaponSlot_0 == player.WeaponSlot_1)
-                player.WeaponSlot_1 = -1;
-        }
+        private void Slot_0_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(0, player.Guns.IndexOf(weapon));
 
-        private void Slot_1_btn_Click(object sender, EventArgs e)
-        {
-            player.WeaponSlot_1 = player.Guns.IndexOf(weapon);
-            player.CurrentGun = player.PreviousGun = player.WeaponSlot_1;
-            if (player.WeaponSlot_0 == player.WeaponSlot_1)
-                player.WeaponSlot_0 = -1;
-        }
+        private void Slot_1_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(1, player.Guns.IndexOf(weapon));
     }
 }

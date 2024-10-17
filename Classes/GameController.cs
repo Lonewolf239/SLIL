@@ -518,6 +518,20 @@ namespace SLIL.Classes
 
         internal void StopParkour() => Game.StopParkour(playerID);
 
+        internal void SetWeaponSlot(int slot,int index)
+        {
+            if (peer == null)
+                Game.SetWeaponSlot(playerID, slot, index);
+            else
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(41);
+                writer.Put(slot);
+                writer.Put(index);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
         internal void BuyAmmo(Gun weapon)
         {
             int weaponID = -1;

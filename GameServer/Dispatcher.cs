@@ -74,6 +74,9 @@ namespace GameServer
                 case 40:
                     Game.InteractingWithDoors(dreader.GetInt());
                     break;
+                case 41:
+                    Game.SetWeaponSlot(playerIDfromPeer, dreader.GetInt(), dreader.GetInt());
+                    break;
                 case 77:
                     Game.AddHittingTheWall(dreader.GetDouble(), dreader.GetDouble(), dreader.GetDouble());
                     break;

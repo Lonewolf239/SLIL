@@ -1846,6 +1846,24 @@ namespace SLIL.Classes
             if (p != null) p.CurrentGun = new_gun;
         }
 
+        internal void SetWeaponSlot(int playerID, int slot, int index)
+        {
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            if (slot == 0)
+            {
+                p.WeaponSlot_0 = index;
+                p.CurrentGun = p.PreviousGun = p.WeaponSlot_0;
+                if (p.WeaponSlot_0 == p.WeaponSlot_1) p.WeaponSlot_1 = -1;
+            }
+            else
+            {
+                p.WeaponSlot_1 = index;
+                p.CurrentGun = p.PreviousGun = p.WeaponSlot_1;
+                if (p.WeaponSlot_0 == p.WeaponSlot_1) p.WeaponSlot_0 = -1;
+            }
+        }
+
         internal void BuyAmmo(int playerID, int weaponID)
         {
             foreach (Entity ent in Entities)
