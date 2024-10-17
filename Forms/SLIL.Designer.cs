@@ -34,11 +34,6 @@ namespace SLIL
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SLIL));
             this.shop_panel = new System.Windows.Forms.Panel();
             this.ShopInterface_panel = new System.Windows.Forms.Panel();
-            this.shop_tab_control = new System.Windows.Forms.TabControl();
-            this.weapon_shop_page = new System.Windows.Forms.TabPage();
-            this.pet_shop_page = new System.Windows.Forms.TabPage();
-            this.consumables_shop_page = new System.Windows.Forms.TabPage();
-            this.transport_shop_page = new System.Windows.Forms.TabPage();
             this.shop_title_panel = new System.Windows.Forms.Panel();
             this.shop_title = new System.Windows.Forms.Label();
             this.shop_money = new System.Windows.Forms.Label();
@@ -62,12 +57,64 @@ namespace SLIL
             this.shotgun_pull_timer = new System.Windows.Forms.Timer(this.components);
             this.mouse_hold_timer = new System.Windows.Forms.Timer(this.components);
             this.camera_shaking_timer = new System.Windows.Forms.Timer(this.components);
+            this.inventory_panel = new System.Windows.Forms.Panel();
+            this.inventory_content_panel = new System.Windows.Forms.Panel();
+            this.pet_panel = new System.Windows.Forms.Panel();
+            this.pet_icon = new System.Windows.Forms.PictureBox();
+            this.pet_label = new System.Windows.Forms.Label();
+            this.pet_title = new System.Windows.Forms.Label();
+            this.helmet_count = new System.Windows.Forms.Label();
+            this.helmet_icon = new System.Windows.Forms.PictureBox();
+            this.adrenalin_count = new System.Windows.Forms.Label();
+            this.adrenalin_icon = new System.Windows.Forms.PictureBox();
+            this.medkit_count = new System.Windows.Forms.Label();
+            this.medkit_icon = new System.Windows.Forms.PictureBox();
+            this.items_title = new System.Windows.Forms.Label();
+            this.weapon_title = new System.Windows.Forms.Label();
+            this.weapon_1_panel = new System.Windows.Forms.Panel();
+            this.weapon_1_icon = new System.Windows.Forms.PictureBox();
+            this.weapon_1_ammo_icon = new System.Windows.Forms.PictureBox();
+            this.weapon_1_label = new System.Windows.Forms.Label();
+            this.weapon_1_ammo_count = new System.Windows.Forms.Label();
+            this.weapon_0_panel = new System.Windows.Forms.Panel();
+            this.weapon_0_icon = new System.Windows.Forms.PictureBox();
+            this.weapon_0_ammo_icon = new System.Windows.Forms.PictureBox();
+            this.weapon_0_label = new System.Windows.Forms.Label();
+            this.weapon_0_ammo_count = new System.Windows.Forms.Label();
+            this.pistol_panel = new System.Windows.Forms.Panel();
+            this.pistol_icon = new System.Windows.Forms.PictureBox();
+            this.pistol_ammo_icon = new System.Windows.Forms.PictureBox();
+            this.pistol_label = new System.Windows.Forms.Label();
+            this.pistol_ammo_count = new System.Windows.Forms.Label();
+            this.inventory_label = new System.Windows.Forms.Label();
+            this.transport_shop_page = new System.Windows.Forms.TabPage();
+            this.consumables_shop_page = new System.Windows.Forms.TabPage();
+            this.pet_shop_page = new System.Windows.Forms.TabPage();
+            this.weapon_shop_page = new System.Windows.Forms.TabPage();
+            this.shop_tab_control = new System.Windows.Forms.TabControl();
+            this.storage_shop_page = new System.Windows.Forms.TabPage();
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
-            this.shop_tab_control.SuspendLayout();
             this.shop_title_panel.SuspendLayout();
             this.pause_panel.SuspendLayout();
             this.game_over_panel.SuspendLayout();
+            this.inventory_panel.SuspendLayout();
+            this.inventory_content_panel.SuspendLayout();
+            this.pet_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pet_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.helmet_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.adrenalin_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.medkit_icon)).BeginInit();
+            this.weapon_1_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_1_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_1_ammo_icon)).BeginInit();
+            this.weapon_0_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_0_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_0_ammo_icon)).BeginInit();
+            this.pistol_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).BeginInit();
+            this.shop_tab_control.SuspendLayout();
             this.SuspendLayout();
             // 
             // shop_panel
@@ -77,7 +124,7 @@ namespace SLIL
             this.shop_panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.shop_panel.Location = new System.Drawing.Point(0, 0);
             this.shop_panel.Name = "shop_panel";
-            this.shop_panel.Size = new System.Drawing.Size(454, 302);
+            this.shop_panel.Size = new System.Drawing.Size(1105, 633);
             this.shop_panel.TabIndex = 4;
             this.shop_panel.Visible = false;
             this.shop_panel.VisibleChanged += new System.EventHandler(this.Shop_panel_VisibleChanged);
@@ -86,93 +133,30 @@ namespace SLIL
             // 
             this.ShopInterface_panel.Controls.Add(this.shop_tab_control);
             this.ShopInterface_panel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ShopInterface_panel.Location = new System.Drawing.Point(0, 24);
+            this.ShopInterface_panel.Location = new System.Drawing.Point(0, 35);
             this.ShopInterface_panel.Name = "ShopInterface_panel";
-            this.ShopInterface_panel.Size = new System.Drawing.Size(454, 278);
+            this.ShopInterface_panel.Size = new System.Drawing.Size(1105, 598);
             this.ShopInterface_panel.TabIndex = 1;
-            // 
-            // shop_tab_control
-            // 
-            this.shop_tab_control.Controls.Add(this.weapon_shop_page);
-            this.shop_tab_control.Controls.Add(this.pet_shop_page);
-            this.shop_tab_control.Controls.Add(this.consumables_shop_page);
-            this.shop_tab_control.Controls.Add(this.transport_shop_page);
-            this.shop_tab_control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.shop_tab_control.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.shop_tab_control.Location = new System.Drawing.Point(0, 0);
-            this.shop_tab_control.Multiline = true;
-            this.shop_tab_control.Name = "shop_tab_control";
-            this.shop_tab_control.SelectedIndex = 0;
-            this.shop_tab_control.Size = new System.Drawing.Size(454, 278);
-            this.shop_tab_control.TabIndex = 0;
-            this.shop_tab_control.TabStop = false;
-            // 
-            // weapon_shop_page
-            // 
-            this.weapon_shop_page.AutoScroll = true;
-            this.weapon_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.weapon_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.weapon_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.weapon_shop_page.Name = "weapon_shop_page";
-            this.weapon_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.weapon_shop_page.Size = new System.Drawing.Size(446, 249);
-            this.weapon_shop_page.TabIndex = 0;
-            this.weapon_shop_page.Text = "Оружие";
-            // 
-            // pet_shop_page
-            // 
-            this.pet_shop_page.AutoScroll = true;
-            this.pet_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.pet_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.pet_shop_page.Name = "pet_shop_page";
-            this.pet_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.pet_shop_page.Size = new System.Drawing.Size(446, 249);
-            this.pet_shop_page.TabIndex = 1;
-            this.pet_shop_page.Text = "Питомцы";
-            // 
-            // consumables_shop_page
-            // 
-            this.consumables_shop_page.AutoScroll = true;
-            this.consumables_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.consumables_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.consumables_shop_page.Name = "consumables_shop_page";
-            this.consumables_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.consumables_shop_page.Size = new System.Drawing.Size(446, 249);
-            this.consumables_shop_page.TabIndex = 2;
-            this.consumables_shop_page.Text = "Прочее";
-            // 
-            // transport_shop_page
-            // 
-            this.transport_shop_page.AutoScroll = true;
-            this.transport_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.transport_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.transport_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.transport_shop_page.Name = "transport_shop_page";
-            this.transport_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.transport_shop_page.Size = new System.Drawing.Size(446, 249);
-            this.transport_shop_page.TabIndex = 3;
-            this.transport_shop_page.Text = "Транспорт";
             // 
             // shop_title_panel
             // 
-            this.shop_title_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.shop_title_panel.Controls.Add(this.shop_title);
             this.shop_title_panel.Controls.Add(this.shop_money);
             this.shop_title_panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.shop_title_panel.Location = new System.Drawing.Point(0, 0);
             this.shop_title_panel.Name = "shop_title_panel";
-            this.shop_title_panel.Size = new System.Drawing.Size(454, 24);
+            this.shop_title_panel.Size = new System.Drawing.Size(1105, 35);
             this.shop_title_panel.TabIndex = 2;
             // 
             // shop_title
             // 
             this.shop_title.AutoSize = true;
             this.shop_title.Dock = System.Windows.Forms.DockStyle.Left;
-            this.shop_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.shop_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.shop_title.ForeColor = System.Drawing.Color.White;
             this.shop_title.Location = new System.Drawing.Point(0, 0);
             this.shop_title.Name = "shop_title";
-            this.shop_title.Size = new System.Drawing.Size(102, 24);
+            this.shop_title.Size = new System.Drawing.Size(153, 33);
             this.shop_title.TabIndex = 1;
             this.shop_title.Text = "МАГАЗИН";
             this.shop_title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -181,11 +165,11 @@ namespace SLIL
             // 
             this.shop_money.AutoSize = true;
             this.shop_money.Dock = System.Windows.Forms.DockStyle.Right;
-            this.shop_money.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.shop_money.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F);
             this.shop_money.ForeColor = System.Drawing.Color.White;
-            this.shop_money.Location = new System.Drawing.Point(412, 0);
+            this.shop_money.Location = new System.Drawing.Point(1042, 0);
             this.shop_money.Name = "shop_money";
-            this.shop_money.Size = new System.Drawing.Size(40, 24);
+            this.shop_money.Size = new System.Drawing.Size(63, 33);
             this.shop_money.TabIndex = 0;
             this.shop_money.Text = "$: 0";
             this.shop_money.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -198,7 +182,7 @@ namespace SLIL
             this.pause_panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pause_panel.Location = new System.Drawing.Point(0, 0);
             this.pause_panel.Name = "pause_panel";
-            this.pause_panel.Size = new System.Drawing.Size(454, 302);
+            this.pause_panel.Size = new System.Drawing.Size(1105, 633);
             this.pause_panel.TabIndex = 5;
             this.pause_panel.Visible = false;
             // 
@@ -210,7 +194,7 @@ namespace SLIL
             this.pause_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.pause_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.pause_btn.ForeColor = System.Drawing.Color.White;
-            this.pause_btn.Location = new System.Drawing.Point(126, 140);
+            this.pause_btn.Location = new System.Drawing.Point(126, 305);
             this.pause_btn.Name = "pause_btn";
             this.pause_btn.Size = new System.Drawing.Size(198, 41);
             this.pause_btn.TabIndex = 38;
@@ -227,7 +211,7 @@ namespace SLIL
             this.exit_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exit_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.exit_btn.ForeColor = System.Drawing.Color.White;
-            this.exit_btn.Location = new System.Drawing.Point(169, 187);
+            this.exit_btn.Location = new System.Drawing.Point(169, 352);
             this.exit_btn.Name = "exit_btn";
             this.exit_btn.Size = new System.Drawing.Size(112, 41);
             this.exit_btn.TabIndex = 37;
@@ -243,7 +227,7 @@ namespace SLIL
             this.pause_text.ForeColor = System.Drawing.Color.White;
             this.pause_text.Location = new System.Drawing.Point(0, 0);
             this.pause_text.Name = "pause_text";
-            this.pause_text.Size = new System.Drawing.Size(454, 80);
+            this.pause_text.Size = new System.Drawing.Size(1105, 80);
             this.pause_text.TabIndex = 0;
             this.pause_text.Text = "ПАУЗА";
             this.pause_text.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -252,11 +236,11 @@ namespace SLIL
             // 
             this.game_over_text.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
             this.game_over_text.Dock = System.Windows.Forms.DockStyle.Top;
-            this.game_over_text.Font = new System.Drawing.Font("Consolas", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.game_over_text.Font = new System.Drawing.Font("Consolas", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.game_over_text.ForeColor = System.Drawing.Color.White;
             this.game_over_text.Location = new System.Drawing.Point(0, 0);
             this.game_over_text.Name = "game_over_text";
-            this.game_over_text.Size = new System.Drawing.Size(454, 137);
+            this.game_over_text.Size = new System.Drawing.Size(1105, 169);
             this.game_over_text.TabIndex = 2;
             this.game_over_text.Text = "GAME OVER";
             this.game_over_text.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -315,7 +299,7 @@ namespace SLIL
             this.game_over_panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.game_over_panel.Location = new System.Drawing.Point(0, 0);
             this.game_over_panel.Name = "game_over_panel";
-            this.game_over_panel.Size = new System.Drawing.Size(454, 302);
+            this.game_over_panel.Size = new System.Drawing.Size(1105, 633);
             this.game_over_panel.TabIndex = 6;
             this.game_over_panel.Visible = false;
             // 
@@ -327,7 +311,7 @@ namespace SLIL
             this.exit_restart_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exit_restart_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.exit_restart_btn.ForeColor = System.Drawing.Color.White;
-            this.exit_restart_btn.Location = new System.Drawing.Point(169, 187);
+            this.exit_restart_btn.Location = new System.Drawing.Point(169, 352);
             this.exit_restart_btn.Name = "exit_restart_btn";
             this.exit_restart_btn.Size = new System.Drawing.Size(112, 41);
             this.exit_restart_btn.TabIndex = 40;
@@ -344,7 +328,7 @@ namespace SLIL
             this.restart_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.restart_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.restart_btn.ForeColor = System.Drawing.Color.White;
-            this.restart_btn.Location = new System.Drawing.Point(126, 140);
+            this.restart_btn.Location = new System.Drawing.Point(126, 305);
             this.restart_btn.Name = "restart_btn";
             this.restart_btn.Size = new System.Drawing.Size(198, 41);
             this.restart_btn.TabIndex = 39;
@@ -368,12 +352,431 @@ namespace SLIL
             this.camera_shaking_timer.Interval = 75;
             this.camera_shaking_timer.Tick += new System.EventHandler(this.Camera_shaking_timer_Tick);
             // 
+            // inventory_panel
+            // 
+            this.inventory_panel.Controls.Add(this.inventory_content_panel);
+            this.inventory_panel.Controls.Add(this.inventory_label);
+            this.inventory_panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.inventory_panel.Location = new System.Drawing.Point(0, 0);
+            this.inventory_panel.Name = "inventory_panel";
+            this.inventory_panel.Size = new System.Drawing.Size(1105, 633);
+            this.inventory_panel.TabIndex = 0;
+            this.inventory_panel.Visible = false;
+            // 
+            // inventory_content_panel
+            // 
+            this.inventory_content_panel.Controls.Add(this.pet_panel);
+            this.inventory_content_panel.Controls.Add(this.pet_title);
+            this.inventory_content_panel.Controls.Add(this.helmet_count);
+            this.inventory_content_panel.Controls.Add(this.helmet_icon);
+            this.inventory_content_panel.Controls.Add(this.adrenalin_count);
+            this.inventory_content_panel.Controls.Add(this.adrenalin_icon);
+            this.inventory_content_panel.Controls.Add(this.medkit_count);
+            this.inventory_content_panel.Controls.Add(this.medkit_icon);
+            this.inventory_content_panel.Controls.Add(this.items_title);
+            this.inventory_content_panel.Controls.Add(this.weapon_title);
+            this.inventory_content_panel.Controls.Add(this.weapon_1_panel);
+            this.inventory_content_panel.Controls.Add(this.weapon_0_panel);
+            this.inventory_content_panel.Controls.Add(this.pistol_panel);
+            this.inventory_content_panel.Location = new System.Drawing.Point(12, 63);
+            this.inventory_content_panel.Name = "inventory_content_panel";
+            this.inventory_content_panel.Size = new System.Drawing.Size(987, 513);
+            this.inventory_content_panel.TabIndex = 27;
+            // 
+            // pet_panel
+            // 
+            this.pet_panel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pet_panel.Controls.Add(this.pet_icon);
+            this.pet_panel.Controls.Add(this.pet_label);
+            this.pet_panel.Location = new System.Drawing.Point(662, 292);
+            this.pet_panel.Name = "pet_panel";
+            this.pet_panel.Size = new System.Drawing.Size(325, 216);
+            this.pet_panel.TabIndex = 13;
+            // 
+            // pet_icon
+            // 
+            this.pet_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pet_icon.Location = new System.Drawing.Point(3, 3);
+            this.pet_icon.Name = "pet_icon";
+            this.pet_icon.Size = new System.Drawing.Size(317, 178);
+            this.pet_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pet_icon.TabIndex = 4;
+            this.pet_icon.TabStop = false;
+            // 
+            // pet_label
+            // 
+            this.pet_label.AutoEllipsis = true;
+            this.pet_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.pet_label.ForeColor = System.Drawing.Color.White;
+            this.pet_label.Location = new System.Drawing.Point(3, 188);
+            this.pet_label.Name = "pet_label";
+            this.pet_label.Size = new System.Drawing.Size(315, 24);
+            this.pet_label.TabIndex = 1;
+            this.pet_label.Text = "PET";
+            this.pet_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // pet_title
+            // 
+            this.pet_title.AutoEllipsis = true;
+            this.pet_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.pet_title.ForeColor = System.Drawing.Color.White;
+            this.pet_title.Location = new System.Drawing.Point(660, 259);
+            this.pet_title.Name = "pet_title";
+            this.pet_title.Size = new System.Drawing.Size(327, 30);
+            this.pet_title.TabIndex = 12;
+            this.pet_title.Text = "Питомец";
+            this.pet_title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // helmet_count
+            // 
+            this.helmet_count.AutoEllipsis = true;
+            this.helmet_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.helmet_count.ForeColor = System.Drawing.Color.White;
+            this.helmet_count.Location = new System.Drawing.Point(200, 301);
+            this.helmet_count.Name = "helmet_count";
+            this.helmet_count.Size = new System.Drawing.Size(82, 32);
+            this.helmet_count.TabIndex = 11;
+            this.helmet_count.Text = "0/0";
+            this.helmet_count.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // helmet_icon
+            // 
+            this.helmet_icon.Image = global::SLIL.Properties.Resources.helmet_count_icon;
+            this.helmet_icon.Location = new System.Drawing.Point(144, 292);
+            this.helmet_icon.Name = "helmet_icon";
+            this.helmet_icon.Size = new System.Drawing.Size(50, 50);
+            this.helmet_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.helmet_icon.TabIndex = 10;
+            this.helmet_icon.TabStop = false;
+            // 
+            // adrenalin_count
+            // 
+            this.adrenalin_count.AutoEllipsis = true;
+            this.adrenalin_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.adrenalin_count.ForeColor = System.Drawing.Color.White;
+            this.adrenalin_count.Location = new System.Drawing.Point(56, 357);
+            this.adrenalin_count.Name = "adrenalin_count";
+            this.adrenalin_count.Size = new System.Drawing.Size(82, 32);
+            this.adrenalin_count.TabIndex = 9;
+            this.adrenalin_count.Text = "0/0";
+            this.adrenalin_count.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // adrenalin_icon
+            // 
+            this.adrenalin_icon.Image = global::SLIL.Properties.Resources.adrenalin_count_icon;
+            this.adrenalin_icon.Location = new System.Drawing.Point(0, 348);
+            this.adrenalin_icon.Name = "adrenalin_icon";
+            this.adrenalin_icon.Size = new System.Drawing.Size(50, 50);
+            this.adrenalin_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.adrenalin_icon.TabIndex = 8;
+            this.adrenalin_icon.TabStop = false;
+            // 
+            // medkit_count
+            // 
+            this.medkit_count.AutoEllipsis = true;
+            this.medkit_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.medkit_count.ForeColor = System.Drawing.Color.White;
+            this.medkit_count.Location = new System.Drawing.Point(56, 301);
+            this.medkit_count.Name = "medkit_count";
+            this.medkit_count.Size = new System.Drawing.Size(82, 32);
+            this.medkit_count.TabIndex = 7;
+            this.medkit_count.Text = "0/0";
+            this.medkit_count.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // medkit_icon
+            // 
+            this.medkit_icon.Image = global::SLIL.Properties.Resources.first_aid;
+            this.medkit_icon.Location = new System.Drawing.Point(0, 292);
+            this.medkit_icon.Name = "medkit_icon";
+            this.medkit_icon.Size = new System.Drawing.Size(50, 50);
+            this.medkit_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.medkit_icon.TabIndex = 6;
+            this.medkit_icon.TabStop = false;
+            // 
+            // items_title
+            // 
+            this.items_title.AutoEllipsis = true;
+            this.items_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.items_title.ForeColor = System.Drawing.Color.White;
+            this.items_title.Location = new System.Drawing.Point(0, 259);
+            this.items_title.Name = "items_title";
+            this.items_title.Size = new System.Drawing.Size(325, 30);
+            this.items_title.TabIndex = 5;
+            this.items_title.Text = "Предметы";
+            this.items_title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // weapon_title
+            // 
+            this.weapon_title.AutoEllipsis = true;
+            this.weapon_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.weapon_title.ForeColor = System.Drawing.Color.White;
+            this.weapon_title.Location = new System.Drawing.Point(0, 0);
+            this.weapon_title.Name = "weapon_title";
+            this.weapon_title.Size = new System.Drawing.Size(342, 30);
+            this.weapon_title.TabIndex = 4;
+            this.weapon_title.Text = "Оружие";
+            this.weapon_title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // weapon_1_panel
+            // 
+            this.weapon_1_panel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.weapon_1_panel.Controls.Add(this.weapon_1_icon);
+            this.weapon_1_panel.Controls.Add(this.weapon_1_ammo_icon);
+            this.weapon_1_panel.Controls.Add(this.weapon_1_label);
+            this.weapon_1_panel.Controls.Add(this.weapon_1_ammo_count);
+            this.weapon_1_panel.Location = new System.Drawing.Point(662, 33);
+            this.weapon_1_panel.Name = "weapon_1_panel";
+            this.weapon_1_panel.Size = new System.Drawing.Size(325, 216);
+            this.weapon_1_panel.TabIndex = 3;
+            // 
+            // weapon_1_icon
+            // 
+            this.weapon_1_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.weapon_1_icon.Location = new System.Drawing.Point(3, 3);
+            this.weapon_1_icon.Name = "weapon_1_icon";
+            this.weapon_1_icon.Size = new System.Drawing.Size(317, 178);
+            this.weapon_1_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.weapon_1_icon.TabIndex = 4;
+            this.weapon_1_icon.TabStop = false;
+            // 
+            // weapon_1_ammo_icon
+            // 
+            this.weapon_1_ammo_icon.Location = new System.Drawing.Point(294, 183);
+            this.weapon_1_ammo_icon.Name = "weapon_1_ammo_icon";
+            this.weapon_1_ammo_icon.Size = new System.Drawing.Size(24, 24);
+            this.weapon_1_ammo_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.weapon_1_ammo_icon.TabIndex = 3;
+            this.weapon_1_ammo_icon.TabStop = false;
+            // 
+            // weapon_1_label
+            // 
+            this.weapon_1_label.AutoEllipsis = true;
+            this.weapon_1_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.weapon_1_label.ForeColor = System.Drawing.Color.White;
+            this.weapon_1_label.Location = new System.Drawing.Point(3, 183);
+            this.weapon_1_label.Name = "weapon_1_label";
+            this.weapon_1_label.Size = new System.Drawing.Size(199, 24);
+            this.weapon_1_label.TabIndex = 1;
+            this.weapon_1_label.Text = "WEAPON_1";
+            this.weapon_1_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // weapon_1_ammo_count
+            // 
+            this.weapon_1_ammo_count.AutoEllipsis = true;
+            this.weapon_1_ammo_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.weapon_1_ammo_count.ForeColor = System.Drawing.Color.White;
+            this.weapon_1_ammo_count.Location = new System.Drawing.Point(208, 183);
+            this.weapon_1_ammo_count.Name = "weapon_1_ammo_count";
+            this.weapon_1_ammo_count.Size = new System.Drawing.Size(82, 24);
+            this.weapon_1_ammo_count.TabIndex = 2;
+            this.weapon_1_ammo_count.Text = "0/0";
+            this.weapon_1_ammo_count.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // weapon_0_panel
+            // 
+            this.weapon_0_panel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.weapon_0_panel.Controls.Add(this.weapon_0_icon);
+            this.weapon_0_panel.Controls.Add(this.weapon_0_ammo_icon);
+            this.weapon_0_panel.Controls.Add(this.weapon_0_label);
+            this.weapon_0_panel.Controls.Add(this.weapon_0_ammo_count);
+            this.weapon_0_panel.Location = new System.Drawing.Point(331, 33);
+            this.weapon_0_panel.Name = "weapon_0_panel";
+            this.weapon_0_panel.Size = new System.Drawing.Size(325, 216);
+            this.weapon_0_panel.TabIndex = 2;
+            // 
+            // weapon_0_icon
+            // 
+            this.weapon_0_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.weapon_0_icon.Location = new System.Drawing.Point(3, 3);
+            this.weapon_0_icon.Name = "weapon_0_icon";
+            this.weapon_0_icon.Size = new System.Drawing.Size(317, 178);
+            this.weapon_0_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.weapon_0_icon.TabIndex = 4;
+            this.weapon_0_icon.TabStop = false;
+            // 
+            // weapon_0_ammo_icon
+            // 
+            this.weapon_0_ammo_icon.Location = new System.Drawing.Point(294, 183);
+            this.weapon_0_ammo_icon.Name = "weapon_0_ammo_icon";
+            this.weapon_0_ammo_icon.Size = new System.Drawing.Size(24, 24);
+            this.weapon_0_ammo_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.weapon_0_ammo_icon.TabIndex = 3;
+            this.weapon_0_ammo_icon.TabStop = false;
+            // 
+            // weapon_0_label
+            // 
+            this.weapon_0_label.AutoEllipsis = true;
+            this.weapon_0_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.weapon_0_label.ForeColor = System.Drawing.Color.White;
+            this.weapon_0_label.Location = new System.Drawing.Point(3, 183);
+            this.weapon_0_label.Name = "weapon_0_label";
+            this.weapon_0_label.Size = new System.Drawing.Size(199, 24);
+            this.weapon_0_label.TabIndex = 1;
+            this.weapon_0_label.Text = "WEAPON_0";
+            this.weapon_0_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // weapon_0_ammo_count
+            // 
+            this.weapon_0_ammo_count.AutoEllipsis = true;
+            this.weapon_0_ammo_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.weapon_0_ammo_count.ForeColor = System.Drawing.Color.White;
+            this.weapon_0_ammo_count.Location = new System.Drawing.Point(208, 183);
+            this.weapon_0_ammo_count.Name = "weapon_0_ammo_count";
+            this.weapon_0_ammo_count.Size = new System.Drawing.Size(82, 24);
+            this.weapon_0_ammo_count.TabIndex = 2;
+            this.weapon_0_ammo_count.Text = "0/0";
+            this.weapon_0_ammo_count.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // pistol_panel
+            // 
+            this.pistol_panel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pistol_panel.Controls.Add(this.pistol_icon);
+            this.pistol_panel.Controls.Add(this.pistol_ammo_icon);
+            this.pistol_panel.Controls.Add(this.pistol_label);
+            this.pistol_panel.Controls.Add(this.pistol_ammo_count);
+            this.pistol_panel.Location = new System.Drawing.Point(0, 33);
+            this.pistol_panel.Name = "pistol_panel";
+            this.pistol_panel.Size = new System.Drawing.Size(325, 216);
+            this.pistol_panel.TabIndex = 1;
+            // 
+            // pistol_icon
+            // 
+            this.pistol_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pistol_icon.Location = new System.Drawing.Point(3, 3);
+            this.pistol_icon.Name = "pistol_icon";
+            this.pistol_icon.Size = new System.Drawing.Size(317, 178);
+            this.pistol_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pistol_icon.TabIndex = 4;
+            this.pistol_icon.TabStop = false;
+            // 
+            // pistol_ammo_icon
+            // 
+            this.pistol_ammo_icon.Image = global::SLIL.Properties.Resources.bullet;
+            this.pistol_ammo_icon.Location = new System.Drawing.Point(294, 183);
+            this.pistol_ammo_icon.Name = "pistol_ammo_icon";
+            this.pistol_ammo_icon.Size = new System.Drawing.Size(24, 24);
+            this.pistol_ammo_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pistol_ammo_icon.TabIndex = 3;
+            this.pistol_ammo_icon.TabStop = false;
+            // 
+            // pistol_label
+            // 
+            this.pistol_label.AutoEllipsis = true;
+            this.pistol_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.pistol_label.ForeColor = System.Drawing.Color.White;
+            this.pistol_label.Location = new System.Drawing.Point(3, 183);
+            this.pistol_label.Name = "pistol_label";
+            this.pistol_label.Size = new System.Drawing.Size(199, 24);
+            this.pistol_label.TabIndex = 1;
+            this.pistol_label.Text = "Пистолет";
+            this.pistol_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // pistol_ammo_count
+            // 
+            this.pistol_ammo_count.AutoEllipsis = true;
+            this.pistol_ammo_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.pistol_ammo_count.ForeColor = System.Drawing.Color.White;
+            this.pistol_ammo_count.Location = new System.Drawing.Point(208, 183);
+            this.pistol_ammo_count.Name = "pistol_ammo_count";
+            this.pistol_ammo_count.Size = new System.Drawing.Size(82, 24);
+            this.pistol_ammo_count.TabIndex = 2;
+            this.pistol_ammo_count.Text = "0/0";
+            this.pistol_ammo_count.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // inventory_label
+            // 
+            this.inventory_label.Dock = System.Windows.Forms.DockStyle.Top;
+            this.inventory_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.inventory_label.ForeColor = System.Drawing.Color.White;
+            this.inventory_label.Location = new System.Drawing.Point(0, 0);
+            this.inventory_label.Name = "inventory_label";
+            this.inventory_label.Size = new System.Drawing.Size(1105, 33);
+            this.inventory_label.TabIndex = 0;
+            this.inventory_label.Text = "Инвентарь";
+            this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // transport_shop_page
+            // 
+            this.transport_shop_page.AutoScroll = true;
+            this.transport_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.transport_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.transport_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.transport_shop_page.Name = "transport_shop_page";
+            this.transport_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.transport_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.transport_shop_page.TabIndex = 3;
+            this.transport_shop_page.Text = "Транспорт";
+            // 
+            // consumables_shop_page
+            // 
+            this.consumables_shop_page.AutoScroll = true;
+            this.consumables_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.consumables_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.consumables_shop_page.Name = "consumables_shop_page";
+            this.consumables_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.consumables_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.consumables_shop_page.TabIndex = 2;
+            this.consumables_shop_page.Text = "Прочее";
+            // 
+            // pet_shop_page
+            // 
+            this.pet_shop_page.AutoScroll = true;
+            this.pet_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.pet_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.pet_shop_page.Name = "pet_shop_page";
+            this.pet_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.pet_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.pet_shop_page.TabIndex = 1;
+            this.pet_shop_page.Text = "Питомцы";
+            // 
+            // weapon_shop_page
+            // 
+            this.weapon_shop_page.AutoScroll = true;
+            this.weapon_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.weapon_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.weapon_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.weapon_shop_page.Name = "weapon_shop_page";
+            this.weapon_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.weapon_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.weapon_shop_page.TabIndex = 0;
+            this.weapon_shop_page.Text = "Оружие";
+            // 
+            // shop_tab_control
+            // 
+            this.shop_tab_control.Controls.Add(this.weapon_shop_page);
+            this.shop_tab_control.Controls.Add(this.pet_shop_page);
+            this.shop_tab_control.Controls.Add(this.consumables_shop_page);
+            this.shop_tab_control.Controls.Add(this.transport_shop_page);
+            this.shop_tab_control.Controls.Add(this.storage_shop_page);
+            this.shop_tab_control.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.shop_tab_control.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.shop_tab_control.Location = new System.Drawing.Point(0, 0);
+            this.shop_tab_control.Multiline = true;
+            this.shop_tab_control.Name = "shop_tab_control";
+            this.shop_tab_control.SelectedIndex = 0;
+            this.shop_tab_control.Size = new System.Drawing.Size(1105, 598);
+            this.shop_tab_control.TabIndex = 0;
+            this.shop_tab_control.TabStop = false;
+            // 
+            // storage_shop_page
+            // 
+            this.storage_shop_page.AutoScroll = true;
+            this.storage_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.storage_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.storage_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.storage_shop_page.Name = "storage_shop_page";
+            this.storage_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.storage_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.storage_shop_page.TabIndex = 4;
+            this.storage_shop_page.Text = "Хранилище";
+            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.ClientSize = new System.Drawing.Size(454, 302);
+            this.ClientSize = new System.Drawing.Size(1105, 633);
             this.Controls.Add(this.shop_panel);
+            this.Controls.Add(this.inventory_panel);
             this.Controls.Add(this.game_over_panel);
             this.Controls.Add(this.pause_panel);
             this.DoubleBuffered = true;
@@ -395,13 +798,29 @@ namespace SLIL
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SLIL_KeyUp);
             this.shop_panel.ResumeLayout(false);
             this.ShopInterface_panel.ResumeLayout(false);
-            this.shop_tab_control.ResumeLayout(false);
             this.shop_title_panel.ResumeLayout(false);
             this.shop_title_panel.PerformLayout();
             this.pause_panel.ResumeLayout(false);
             this.pause_panel.PerformLayout();
             this.game_over_panel.ResumeLayout(false);
             this.game_over_panel.PerformLayout();
+            this.inventory_panel.ResumeLayout(false);
+            this.inventory_content_panel.ResumeLayout(false);
+            this.pet_panel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pet_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.helmet_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.adrenalin_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.medkit_icon)).EndInit();
+            this.weapon_1_panel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_1_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_1_ammo_icon)).EndInit();
+            this.weapon_0_panel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_0_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weapon_0_ammo_icon)).EndInit();
+            this.pistol_panel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).EndInit();
+            this.shop_tab_control.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -426,16 +845,47 @@ namespace SLIL
         private Label pause_text;
         private Button exit_btn;
         private Button pause_btn;
-        private TabControl shop_tab_control;
-        private TabPage weapon_shop_page;
-        private TabPage pet_shop_page;
-        private TabPage consumables_shop_page;
         private Panel game_over_panel;
         private Button restart_btn;
         private Button exit_restart_btn;
         private Timer shotgun_pull_timer;
         private Timer mouse_hold_timer;
-        private TabPage transport_shop_page;
         private Timer camera_shaking_timer;
+        private Panel inventory_panel;
+        private Label inventory_label;
+        private Panel pistol_panel;
+        private Label pistol_label;
+        private Label pistol_ammo_count;
+        private PictureBox pistol_icon;
+        private PictureBox pistol_ammo_icon;
+        private Label weapon_title;
+        private Panel weapon_1_panel;
+        private PictureBox weapon_1_icon;
+        private PictureBox weapon_1_ammo_icon;
+        private Label weapon_1_label;
+        private Label weapon_1_ammo_count;
+        private Panel weapon_0_panel;
+        private PictureBox weapon_0_icon;
+        private PictureBox weapon_0_ammo_icon;
+        private Label weapon_0_label;
+        private Label weapon_0_ammo_count;
+        private PictureBox medkit_icon;
+        private Label items_title;
+        private Label medkit_count;
+        private Label adrenalin_count;
+        private PictureBox adrenalin_icon;
+        private Label helmet_count;
+        private PictureBox helmet_icon;
+        private Label pet_title;
+        private Panel pet_panel;
+        private PictureBox pet_icon;
+        private Label pet_label;
+        private Panel inventory_content_panel;
+        private TabControl shop_tab_control;
+        private TabPage weapon_shop_page;
+        private TabPage pet_shop_page;
+        private TabPage consumables_shop_page;
+        private TabPage transport_shop_page;
+        private TabPage storage_shop_page;
     }
 }

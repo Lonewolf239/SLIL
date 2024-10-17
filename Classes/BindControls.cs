@@ -20,6 +20,7 @@ namespace SLIL.Classes
         public Keys Select_item { get; set; }
         public Keys Run { get; set; }
         public Keys Climb { get; set; }
+        public Keys Inventory { get; set; }
 
         public BindControls(Dictionary<string, Keys> BindControls)
         {
@@ -38,6 +39,7 @@ namespace SLIL.Classes
             Select_item = BindControls["select_item"];
             Run = BindControls["run"];
             Climb = BindControls["climb"];
+            Inventory = BindControls["inventory"];
         }
 
         public Keys GetKey(string name_properties)
@@ -59,6 +61,7 @@ namespace SLIL.Classes
                 case "select_item": return Select_item;
                 case "run": return Run;
                 case "climb": return Climb;
+                case "inventory": return Inventory;
                 default: return Keys.None;
             }
         }
@@ -81,7 +84,8 @@ namespace SLIL.Classes
                 case "item":
                 case "select_item":
                 case "run":
-                case "climb": return true;
+                case "climb":
+                case "inventory": return true;
                 default: return false;
             }
         }

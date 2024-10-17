@@ -60,6 +60,7 @@ namespace SLIL
             { "select_item", Keys.Q },
             { "run", Keys.ShiftKey },
             { "climb", Keys.Space },
+            { "inventory", Keys.I },
         };
         public static Dictionary<string, Keys> BindControls = new Dictionary<string, Keys>()
         {
@@ -78,6 +79,7 @@ namespace SLIL
             { "select_item", Keys.Q },
             { "run", Keys.ShiftKey },
             { "climb", Keys.Space },
+            { "inventory", Keys.I },
         };
         public static int resolution = 0, display_size = 0, smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
         public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true, IsTutorial = false;
@@ -272,6 +274,8 @@ namespace SLIL
             mouse_settings.Controls.Add(new Separator());
             mouse_settings.Controls.Add(sensitivity_panel);
             keyboard_settings.Controls.Clear();
+            keyboard_settings.Controls.Add(inventory_panel);
+            keyboard_settings.Controls.Add(new Separator());
             keyboard_settings.Controls.Add(climb_panel);
             keyboard_settings.Controls.Add(new Separator());
             keyboard_settings.Controls.Add(run_panel);
@@ -472,6 +476,7 @@ namespace SLIL
             BindControls["select_item"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "select_item", Keys.Q);
             BindControls["run"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "run", Keys.ShiftKey);
             BindControls["climb"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "climb", Keys.Space);
+            BindControls["inventory"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "inventory", Keys.I);
             SLIL_v0_1_LOOK_SPEED = INIReader.GetDouble(Program.iniFolder, "SLIL_V0_0_1", "look_speed", 1.75);
             SLIL_v0_1_difficulty = INIReader.GetInt(Program.iniFolder, "SLIL_V0_0_1", "difficulty", 1);
             if (interface_size < 0 || interface_size > 3)
@@ -532,6 +537,7 @@ namespace SLIL
             INIReader.SetKey(Program.iniFolder, "HOTKEYS", "select_item", BindControls["select_item"]);
             INIReader.SetKey(Program.iniFolder, "HOTKEYS", "run", BindControls["run"]);
             INIReader.SetKey(Program.iniFolder, "HOTKEYS", "climb", BindControls["climb"]);
+            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "inventory", BindControls["inventory"]);
             INIReader.SetKey(Program.iniFolder, "SLIL_V0_0_1", "look_speed", SLIL_v0_1_LOOK_SPEED);
             INIReader.SetKey(Program.iniFolder, "SLIL_V0_0_1", "difficulty", difficulty);
         }

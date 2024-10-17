@@ -529,7 +529,7 @@ namespace SLIL
         private bool IsTutorial = false;
         public static int scope_color = 0, scope_type = 0;
         public static bool ShowMap = false;
-        private bool ShowSing = false;
+        private bool ShowSing = false, ShowInventory = false;
         private int SingID, scrollPosition = 0;
         private const int ScrollBarWidth = 4, ScrollPadding = 5;
         private bool open_shop = false, pressed_r = false, cancelReload = false;
@@ -618,6 +618,7 @@ namespace SLIL
                 pet_shop_page.Text = "Pets";
                 consumables_shop_page.Text = "Other";
                 transport_shop_page.Text = "Transport";
+                storage_shop_page.Text = "Storage";
                 pause_text.Text = "PAUSE";
                 pause_btn.Text = "CONTINUE";
                 exit_btn.Text = "EXIT";
@@ -629,6 +630,7 @@ namespace SLIL
                 pet_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-3");
                 consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-4");
                 transport_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-14");
+                storage_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-16");
                 pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-5");
                 pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-6");
                 exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-7");
@@ -1292,7 +1294,7 @@ namespace SLIL
         {
             if (display == null) return;
             if (!raycast.Enabled && display.SCREEN != null) display.SCREEN = null;
-            bool shouldShowCursor = !GameStarted || open_shop || console_panel.Visible || (active && !GameStarted) || Paused;
+            bool shouldShowCursor = !GameStarted || open_shop || ShowInventory || console_panel.Visible || (active && !GameStarted) || Paused;
             if (shouldShowCursor != isCursorVisible)
             {
                 if (shouldShowCursor)
@@ -1439,6 +1441,8 @@ namespace SLIL
                 else if (!GameStarted) Close();
                 else if (ShowSing)
                     ShowSing = player.BlockInput = player.BlockCamera = false;
+                else if (ShowInventory)
+                    CloseInventory();
                 else Pause();
                 return;
             }
@@ -1523,55 +1527,25 @@ namespace SLIL
                                 Cursor.Position = display.PointToScreen(new Point(x, y));
                             }
                         }
-                        if (e.KeyCode == Keys.D1 && count > 1)
+                        if (e.KeyCode == Keys.D1)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(1);
                         }
-                        if (e.KeyCode == Keys.D2 && count > 2)
+                        if (e.KeyCode == Keys.D2)
                         {
                             TakeFlashlight(false);
                             ChangeWeapon(2);
                         }
-                        if (e.KeyCode == Keys.D3 && count > 3)
+                        if (e.KeyCode == Keys.D3 && player.WeaponSlot_0 != -1)
                         {
                             TakeFlashlight(false);
-                            ChangeWeapon(3);
+                            ChangeWeapon(player.WeaponSlot_0);
                         }
-                        if (e.KeyCode == Keys.D4 && count > 4)
+                        if (e.KeyCode == Keys.D4 && player.WeaponSlot_1 != -1)
                         {
                             TakeFlashlight(false);
-                            ChangeWeapon(4);
-                        }
-                        if (e.KeyCode == Keys.D5 && count > 5)
-                        {
-                            TakeFlashlight(false);
-                            ChangeWeapon(5);
-                        }
-                        if (e.KeyCode == Keys.D6 && count > 6)
-                        {
-                            TakeFlashlight(false);
-                            ChangeWeapon(6);
-                        }
-                        if (e.KeyCode == Keys.D7 && count > 7)
-                        {
-                            TakeFlashlight(false);
-                            ChangeWeapon(7);
-                        }
-                        if (e.KeyCode == Keys.D8 && count > 8)
-                        {
-                            TakeFlashlight(false);
-                            ChangeWeapon(8);
-                        }
-                        if (e.KeyCode == Keys.D9 && count > 9)
-                        {
-                            TakeFlashlight(false);
-                            ChangeWeapon(9);
-                        }
-                        if (e.KeyCode == Keys.D0 && count > 10)
-                        {
-                            TakeFlashlight(false);
-                            ChangeWeapon(10);
+                            ChangeWeapon(player.WeaponSlot_1);
                         }
                     }
                 }
@@ -1650,6 +1624,11 @@ namespace SLIL
                 ShowSing = player.BlockInput = player.BlockCamera = false;
                 return;
             }
+            if (e.KeyCode == Bind.Inventory && ShowInventory)
+            {
+                CloseInventory();
+                return;
+            }
             if (GameStarted && !Paused && !console_panel.Visible && !open_shop)
             {
                 if (e.KeyCode == Bind.Screenshot) DoScreenshot();
@@ -1718,6 +1697,7 @@ namespace SLIL
                         Cursor.Position = display.PointToScreen(new Point(display.Width / 2, display.Height / 2));
                         player.CanUnblockCamera = true;
                     }
+                    if (e.KeyCode == Bind.Inventory) OpenInventory();
                     if (e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1)
                     {
                         double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
@@ -1917,10 +1897,9 @@ namespace SLIL
                 int new_gun = player.CurrentGun;
                 if (delta > 0) new_gun--;
                 else new_gun++;
-                if (new_gun < 1) new_gun = player.Guns.Count - 1;
-                else if (new_gun > player.Guns.Count - 1) new_gun = 1;
-                TakeFlashlight(false);
-                ChangeWeapon(new_gun);
+                //TODO:
+                //TakeFlashlight(false);
+                //ChangeWeapon(new_gun);
             }
         }
 
@@ -2851,7 +2830,7 @@ namespace SLIL
                     graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (!player.InTransport && !Controller.IsMultiplayer())
-                graphicsWeapon.DrawString($"{item_max_count}\\{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
+                graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             if (Controller.IsMultiplayer()) DrawPing(fpsSize, icon_size);
             graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
@@ -2861,30 +2840,7 @@ namespace SLIL
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
                 else
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
-                switch (player.GetCurrentGun().AmmoType)
-                {
-                    case AmmoTypes.Magic:
-                        graphicsWeapon.DrawImage(Properties.Resources.magic, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Bubbles:
-                        graphicsWeapon.DrawImage(Properties.Resources.bubbles, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Bullet:
-                        graphicsWeapon.DrawImage(Properties.Resources.bullet, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Shell:
-                        graphicsWeapon.DrawImage(Properties.Resources.shell, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Rifle:
-                        graphicsWeapon.DrawImage(Properties.Resources.rifle_bullet, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Rocket:
-                        graphicsWeapon.DrawImage(Properties.Resources.rocket, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.C4:
-                        graphicsWeapon.DrawImage(Properties.Resources.c4, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                }
+                graphicsWeapon.DrawImage(GetAmmoIcon(player.GetCurrentGun().AmmoType), ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
             }
             SmoothingMode save = graphicsWeapon.SmoothingMode;
             graphicsWeapon.SmoothingMode = SmoothingMode.None;
@@ -3008,7 +2964,7 @@ namespace SLIL
                     graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (!player.InTransport && !Controller.IsMultiplayer())
-                graphicsWeapon.DrawString($"{item_max_count}\\{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
+                graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
             SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             DrawPing(fpsSize, icon_size);
             string playerName = player.Name.Length == 0 ? "NoName" : player.Name;
@@ -3021,30 +2977,7 @@ namespace SLIL
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
                 else
                     graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
-                switch (player.GetCurrentGun().AmmoType)
-                {
-                    case AmmoTypes.Magic:
-                        graphicsWeapon.DrawImage(Properties.Resources.magic, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Bubbles:
-                        graphicsWeapon.DrawImage(Properties.Resources.bubbles, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Bullet:
-                        graphicsWeapon.DrawImage(Properties.Resources.bullet, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Shell:
-                        graphicsWeapon.DrawImage(Properties.Resources.shell, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Rifle:
-                        graphicsWeapon.DrawImage(Properties.Resources.rifle_bullet, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.Rocket:
-                        graphicsWeapon.DrawImage(Properties.Resources.rocket, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                    case AmmoTypes.C4:
-                        graphicsWeapon.DrawImage(Properties.Resources.c4, ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
-                        break;
-                }
+                graphicsWeapon.DrawImage(GetAmmoIcon(player.GetCurrentGun().AmmoType), ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
             }
             SmoothingMode save = graphicsWeapon.SmoothingMode;
             graphicsWeapon.SmoothingMode = SmoothingMode.None;
@@ -3118,6 +3051,29 @@ namespace SLIL
                     player.Look
                 );
             graphicsWeapon.DrawString(debugInfo, consolasFont[0, 0], whiteBrush, 0, 16);
+        }
+
+        private Image GetAmmoIcon(AmmoTypes ammoType)
+        {
+            switch (ammoType)
+            {
+                case AmmoTypes.Magic:
+                    return Properties.Resources.magic;
+                case AmmoTypes.Bubbles:
+                    return Properties.Resources.bubbles;
+                case AmmoTypes.Bullet:
+                    return Properties.Resources.bullet;
+                case AmmoTypes.Shell:
+                    return Properties.Resources.shell;
+                case AmmoTypes.Rifle:
+                    return Properties.Resources.rifle_bullet;
+                case AmmoTypes.Rocket:
+                    return Properties.Resources.rocket;
+                case AmmoTypes.C4:
+                    return Properties.Resources.c4;
+                default:
+                    return Properties.Resources.missing;
+            }
         }
 
         private void DrawWeapon(Player player, int index)
@@ -3974,6 +3930,8 @@ namespace SLIL
                 shop_tab_control.Controls.Add(consumables_shop_page);
                 shop_tab_control.Controls.Add(transport_shop_page);
             }
+            if (player == null || !player.CuteMode)
+                shop_tab_control.Controls.Add(storage_shop_page);
         }
 
         private void Pause()
@@ -4014,6 +3972,106 @@ namespace SLIL
             }
         }
 
+        //  #====     Inventory     ====#
+
+        private void OpenInventory()
+        {
+            ShowInventory = true;
+            mouse_timer.Stop();
+            Player player = Controller.GetPlayer();
+            player.BlockInput = player.BlockCamera = true;
+            player.PlayerDirection = Directions.STOP;
+            player.StrafeDirection = Directions.STOP;
+            player.PlayerMoveStyle = Directions.WALK;
+            UpdateInventory();
+            inventory_panel.BringToFront();
+            inventory_panel.Visible = true;
+        }
+
+        private void CloseInventory()
+        {
+            ShowInventory = false;
+            mouse_timer.Start();
+            int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
+            int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
+            Cursor.Position = new Point(x, y);
+            inventory_panel.Visible = false;
+            Player player = Controller.GetPlayer();
+            player.BlockInput = player.BlockCamera = false;
+        }
+
+        private void UpdateInventory()
+        {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
+            medkit_count.Text = $"{player.DisposableItems[0].MaxCount}/{player.DisposableItems[0].Count}";
+            adrenalin_count.Text = $"{player.DisposableItems[1].MaxCount}/{player.DisposableItems[1].Count}";
+            helmet_count.Text = $"{player.DisposableItems[2].MaxCount}/{player.DisposableItems[2].Count}";
+            if (MainMenu.DownloadedLocalizationList)
+            {
+                pistol_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, player.GUNS[2].Name[0]);
+                if (player.WeaponSlot_0 != -1)
+                    weapon_0_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, player.Guns[player.WeaponSlot_0].Name[0]);
+                else
+                    weapon_0_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "9-0");
+                if (player.WeaponSlot_1 != -1)
+                    weapon_1_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, player.Guns[player.WeaponSlot_1].Name[0]);
+                else
+                    weapon_1_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "9-0");
+                if (player.PET != null)
+                    pet_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, player.PET.Name[0]);
+                else
+                    pet_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "9-0");
+            }
+            else
+            {
+                pistol_label.Text = "Pistol";
+                if (player.WeaponSlot_0 != -1)
+                    weapon_0_label.Text = player.Guns[player.WeaponSlot_0].Name[1];
+                else
+                    weapon_0_label.Text = "Absent";
+                if (player.WeaponSlot_1 != -1)
+                    weapon_1_label.Text = player.Guns[player.WeaponSlot_1].Name[1];
+                else
+                    weapon_1_label.Text = "Absent";
+                if (player.PET != null)
+                    pet_label.Text = player.PET.Name[1];
+                else
+                    pet_label.Text = "Absent";
+            }
+            if (player.PET != null)
+                pet_icon.Image = ShopImageDict[player.PET.GetType()];
+            else
+                pet_icon.Image = Properties.Resources.missing;
+            pistol_icon.Image = IconDict[player.GUNS[2].GetType()][player.GUNS[2].GetLevel()];
+            pistol_ammo_count.Text = $"{player.GUNS[2].AmmoInStock}/{player.GUNS[2].AmmoCount}";
+            if (player.WeaponSlot_0 != -1)
+            {
+                weapon_0_icon.Image = IconDict[player.Guns[player.WeaponSlot_0].GetType()][player.Guns[player.WeaponSlot_0].GetLevel()];
+                weapon_0_ammo_icon.Image = GetAmmoIcon(player.Guns[player.WeaponSlot_0].AmmoType);
+                weapon_0_ammo_count.Text = $"{player.Guns[player.WeaponSlot_0].AmmoInStock}/{player.Guns[player.WeaponSlot_0].AmmoCount}";
+            }
+            else
+            {
+                weapon_0_icon.Image = Properties.Resources.missing;
+                weapon_0_ammo_icon.Image = GetAmmoIcon(AmmoTypes.None);
+                weapon_0_ammo_count.Text = "0/0";
+            }
+            if (player.WeaponSlot_1 != -1)
+            {
+                weapon_1_icon.Image = IconDict[player.Guns[player.WeaponSlot_1].GetType()][player.Guns[player.WeaponSlot_1].GetLevel()];
+                weapon_1_ammo_icon.Image = GetAmmoIcon(player.Guns[player.WeaponSlot_1].AmmoType);
+                weapon_1_ammo_count.Text = $"{player.Guns[player.WeaponSlot_1].AmmoInStock}/{player.Guns[player.WeaponSlot_1].AmmoCount}";
+            }
+            else
+            {
+                weapon_1_icon.Image = Properties.Resources.missing;
+                weapon_1_ammo_icon.Image = GetAmmoIcon(AmmoTypes.None);
+                weapon_1_ammo_count.Text = "0/0";
+            }
+            inventory_content_panel.Location = new Point((Width - inventory_content_panel.Width) / 2, (Height - inventory_content_panel.Height) / 2);
+        }
+
         //  #====       Shop        ====#
 
         private void Shop_panel_VisibleChanged(object sender, EventArgs e)
@@ -4023,8 +4081,37 @@ namespace SLIL
             shop_panel.BringToFront();
         }
 
+        public void UpdateStorage()
+        {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
+            storage_shop_page.Controls.Clear();
+            if (!player.CuteMode)
+            {
+                for (int i = player.Guns.Count - 1; i >= 0; i--)
+                {
+                    if (Controller.IsMultiplayer() && !player.Guns[i].InMultiplayer)
+                        continue;
+                    if (!player.Guns[i].AddToStorage)
+                        continue;
+                    SLIL_StorageInterface ShopInterface = new SLIL_StorageInterface()
+                    {
+                        ParentSLILForm = this,
+                        index = MainMenu.DownloadedLocalizationList ? 0 : 1,
+                        weapon = player.Guns[i],
+                        player = player,
+                        BackColor = shop_panel.BackColor,
+                        Dock = DockStyle.Top
+                    };
+                    storage_shop_page.Controls.Add(ShopInterface);
+                }
+            }
+        }
+
         public void ShowShop()
         {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
             open_shop = true;
             ShopInterface_panel.VerticalScroll.Value = 0;
             mouse_timer.Stop();
@@ -4032,7 +4119,6 @@ namespace SLIL
             pet_shop_page.Controls.Clear();
             consumables_shop_page.Controls.Clear();
             transport_shop_page.Controls.Clear();
-            Player player = Controller.GetPlayer();
             player.BlockInput = player.BlockCamera = true;
             player.PlayerDirection = Directions.STOP;
             player.StrafeDirection = Directions.STOP;
@@ -4043,20 +4129,20 @@ namespace SLIL
                 {
                     if (Controller.IsMultiplayer() && !player.GUNS[i].InMultiplayer)
                         continue;
-                    if (player.GUNS[i].AddToShop)
+                    if (!player.GUNS[i].AddToShop)
+                        continue;
+                    SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
                     {
-                        SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
-                        {
-                            ParentSLILForm = this,
-                            index = MainMenu.DownloadedLocalizationList ? 0 : 1,
-                            weapon = player.GUNS[i],
-                            player = player,
-                            BackColor = shop_panel.BackColor,
-                            Dock = DockStyle.Top
-                        };
-                        weapon_shop_page.Controls.Add(ShopInterface);
-                    }
+                        ParentSLILForm = this,
+                        index = MainMenu.DownloadedLocalizationList ? 0 : 1,
+                        weapon = player.GUNS[i],
+                        player = player,
+                        BackColor = shop_panel.BackColor,
+                        Dock = DockStyle.Top
+                    };
+                    weapon_shop_page.Controls.Add(ShopInterface);
                 }
+                UpdateStorage();
             }
             for (int i = Controller.GetPets().Length - 1; i >= 0; i--)
             {
@@ -4156,6 +4242,7 @@ namespace SLIL
             {
                 shop_tab_control.Controls.Clear();
                 shop_tab_control.Controls.Add(weapon_shop_page);
+                shop_tab_control.Controls.Add(storage_shop_page);
                 //TEMP
                 if (!Controller.IsMultiplayer())
                 {

@@ -64,6 +64,8 @@ namespace GameServer
         public List<Gun> Guns = [];
         public List<DisposableItem> DisposableItems = [];
         public DisposableItem? DISPOSABLE_ITEM = null;
+        public int WeaponSlot_0 { get; set; }
+        public int WeaponSlot_1 { get; set; }
         public int ItemFrame { get; set; }
         public Pet? PET = null;
         public Transport? TRANSPORT = null;
@@ -512,6 +514,7 @@ namespace GameServer
                 Money = 15;
                 CurseCureChance = 0.08;
                 Stage = 0;
+                WeaponSlot_0 = WeaponSlot_1 = -1;
                 MAX_MOVE_SPEED = 1.8;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
                 MAX_RUN_SPEED = 2.25;

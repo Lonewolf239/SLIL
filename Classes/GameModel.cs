@@ -1813,7 +1813,7 @@ namespace SLIL.Classes
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
             new Thread(() => {
-                Thread.Sleep(p.InTransport ? 250 : 500);
+                Thread.Sleep(p.InTransport ? 250 : 375);
                 StopParkour(playerID);
                 p.ParkourState++;
             }).Start();

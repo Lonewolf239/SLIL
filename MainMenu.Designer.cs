@@ -277,6 +277,9 @@
             this.errors_panel = new System.Windows.Forms.Panel();
             this.SLIL_v0_1_btn_c = new System.Windows.Forms.Button();
             this.secret_btn_timer = new System.Windows.Forms.Timer(this.components);
+            this.inventory_panel = new System.Windows.Forms.Panel();
+            this.inventory_label = new System.Windows.Forms.Label();
+            this.inventory_btn_c = new System.Windows.Forms.Button();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -376,6 +379,7 @@
             this.update_errors_background.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.update_error_icon)).BeginInit();
             this.errors_panel.SuspendLayout();
+            this.inventory_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -1577,10 +1581,10 @@
             // 
             this.controls_settings.BackColor = System.Drawing.Color.Black;
             this.controls_settings.Controls.Add(this.controls_tabcontrol);
-            this.controls_settings.Location = new System.Drawing.Point(4, 22);
+            this.controls_settings.Location = new System.Drawing.Point(4, 33);
             this.controls_settings.Name = "controls_settings";
             this.controls_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.controls_settings.Size = new System.Drawing.Size(482, 194);
+            this.controls_settings.Size = new System.Drawing.Size(482, 183);
             this.controls_settings.TabIndex = 3;
             this.controls_settings.Text = "Управление";
             // 
@@ -1592,7 +1596,7 @@
             this.controls_tabcontrol.Location = new System.Drawing.Point(3, 3);
             this.controls_tabcontrol.Name = "controls_tabcontrol";
             this.controls_tabcontrol.SelectedIndex = 0;
-            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 188);
+            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 177);
             this.controls_tabcontrol.TabIndex = 0;
             // 
             // mouse_settings
@@ -1606,7 +1610,7 @@
             this.mouse_settings.Location = new System.Drawing.Point(4, 33);
             this.mouse_settings.Name = "mouse_settings";
             this.mouse_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.mouse_settings.Size = new System.Drawing.Size(468, 151);
+            this.mouse_settings.Size = new System.Drawing.Size(468, 140);
             this.mouse_settings.TabIndex = 0;
             this.mouse_settings.Text = "Мышь";
             // 
@@ -1718,6 +1722,7 @@
             // 
             this.keyboard_settings.AutoScroll = true;
             this.keyboard_settings.BackColor = System.Drawing.Color.Black;
+            this.keyboard_settings.Controls.Add(this.inventory_panel);
             this.keyboard_settings.Controls.Add(this.climb_panel);
             this.keyboard_settings.Controls.Add(this.run_panel);
             this.keyboard_settings.Controls.Add(this.select_item_panel);
@@ -1734,10 +1739,10 @@
             this.keyboard_settings.Controls.Add(this.fire_panel);
             this.keyboard_settings.Controls.Add(this.screenshot_panel);
             this.keyboard_settings.ForeColor = System.Drawing.Color.White;
-            this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
+            this.keyboard_settings.Location = new System.Drawing.Point(4, 33);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 140);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
@@ -3401,6 +3406,38 @@
             this.secret_btn_timer.Interval = 16;
             this.secret_btn_timer.Tick += new System.EventHandler(this.Secret_btn_timer_Tick);
             // 
+            // inventory_panel
+            // 
+            this.inventory_panel.BackColor = System.Drawing.Color.Black;
+            this.inventory_panel.Controls.Add(this.inventory_label);
+            this.inventory_panel.Controls.Add(this.inventory_btn_c);
+            this.inventory_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.inventory_panel.Location = new System.Drawing.Point(3, 513);
+            this.inventory_panel.Name = "inventory_panel";
+            this.inventory_panel.Size = new System.Drawing.Size(445, 34);
+            this.inventory_panel.TabIndex = 16;
+            // 
+            // inventory_label
+            // 
+            this.inventory_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.inventory_label.Location = new System.Drawing.Point(0, 0);
+            this.inventory_label.Name = "inventory_label";
+            this.inventory_label.Size = new System.Drawing.Size(306, 34);
+            this.inventory_label.TabIndex = 0;
+            this.inventory_label.Text = "Инвентарь";
+            this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // inventory_btn_c
+            // 
+            this.inventory_btn_c.Dock = System.Windows.Forms.DockStyle.Right;
+            this.inventory_btn_c.Location = new System.Drawing.Point(362, 0);
+            this.inventory_btn_c.Name = "inventory_btn_c";
+            this.inventory_btn_c.Size = new System.Drawing.Size(83, 34);
+            this.inventory_btn_c.TabIndex = 2;
+            this.inventory_btn_c.TabStop = false;
+            this.inventory_btn_c.Text = "I";
+            this.inventory_btn_c.UseVisualStyleBackColor = false;
+            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3570,6 +3607,7 @@
             this.update_errors_background.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.update_error_icon)).EndInit();
             this.errors_panel.ResumeLayout(false);
+            this.inventory_panel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3823,5 +3861,8 @@
         private System.Windows.Forms.CheckBox need_password;
         private System.Windows.Forms.TextBox password_connect_input;
         private System.Windows.Forms.Label password_input_label;
+        private System.Windows.Forms.Panel inventory_panel;
+        private System.Windows.Forms.Label inventory_label;
+        private System.Windows.Forms.Button inventory_btn_c;
     }
 }

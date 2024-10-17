@@ -2,7 +2,7 @@
 
 namespace GameServer
 {
-    public enum AmmoTypes { Magic, Bubbles, Bullet, Shell, Rifle, Rocket, C4 }
+    public enum AmmoTypes { Magic, Bubbles, Bullet, Shell, Rifle, Rocket, C4, None }
     public enum FireTypes { Single, SemiAutomatic }
     public enum Levels { LV1 = 0, LV2 = 1, LV3 = 2, LV4 = 3 }
 
@@ -16,6 +16,7 @@ namespace GameServer
         public bool ShowAmmoAsNumber { get; set; }
         public bool HasIt { get; set; }
         public bool AddToShop { get; set; }
+        public bool AddToStorage { get; set; }
         public bool HaveLV4 { get; set; }
         public bool IsMagic { get; set; }
         public bool CanShoot { get; set; }
@@ -58,6 +59,7 @@ namespace GameServer
             Accuracy = 1;
             BulletCount = 1;
             PauseBetweenShooting = 500;
+            AddToStorage = true;
             Upgradeable = true;
             CanRun = true;
             Weight = 1;
@@ -196,6 +198,7 @@ namespace GameServer
             HasCuteDescription = false;
             ShowScope = false;
             ShowAmmo = false;
+            AddToStorage = false;
             AddToShop = false;
             CanShoot = false;
             Accuracy = 0;
@@ -279,6 +282,7 @@ namespace GameServer
             Weight = 1;
             Upgradeable = false;
             ShowAmmo = false;
+            AddToStorage = false;
             AddToShop = false;
             HasIt = true;
             Name = ["3-1", "Knife"];
@@ -349,6 +353,7 @@ namespace GameServer
             FireType = FireTypes.SemiAutomatic;
             Upgradeable = false;
             ShowScope = false;
+            AddToStorage = false;
             AddToShop = false;
             HasIt = false;
             ShowAmmoAsNumber = true;
@@ -389,6 +394,7 @@ namespace GameServer
         {
             AmmoType = AmmoTypes.Bullet;
             FireType = FireTypes.Single;
+            AddToStorage = false;
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;

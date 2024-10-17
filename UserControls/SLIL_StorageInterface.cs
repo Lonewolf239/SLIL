@@ -6,19 +6,18 @@ using SLIL.Classes;
 
 namespace SLIL.UserControls
 {
-    public partial class SLIL_ShopInterface : UserControl
+    public partial class SLIL_StorageInterface : UserControl
     {
         public Timer UpdateTimer;
         public SLIL ParentSLILForm;
         public Gun weapon;
         public int index = 0;
         public int width;
-        public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
-        private readonly string[,] buy_text = { { "2-8", "2-9" }, { "Buy weapons", "Buy ammo" } };
+        private readonly string[,] slot_text = { { "2-8", "2-9" }, { "Slot ", "Instead of " }  };
 
-        public SLIL_ShopInterface()
+        public SLIL_StorageInterface()
         {
             InitializeComponent();
             UpdateTimer = new Timer
@@ -29,13 +28,27 @@ namespace SLIL.UserControls
             UpdateTimer.Enabled = true;
         }
 
-        ~SLIL_ShopInterface() => UpdateTimer.Stop();
+        ~SLIL_StorageInterface() => UpdateTimer.Stop();
 
-        private string GetBuyText()
+        private string GetButtonText(int i)
         {
+            if (i == 1 && player.WeaponSlot_0 != -1)
+            {
+                if (index == 0)
+                    return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 1]) +
+                        MainMenu.Localizations.GetLString(MainMenu.Language, player.GUNS[player.WeaponSlot_0].Name[0]);
+                return slot_text[1, 1] + player.GUNS[player.WeaponSlot_0].Name[1];
+            }
+            if (i == 2 && player.WeaponSlot_1 != -1)
+            {
+                if (index == 0)
+                    return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 1]) +
+                        MainMenu.Localizations.GetLString(MainMenu.Language, player.GUNS[player.WeaponSlot_1].Name[0]);
+                return slot_text[1, 1] + player.GUNS[player.WeaponSlot_1].Name[1];
+            }
             if (index == 0)
-                return MainMenu.Localizations.GetLString(MainMenu.Language, buy_text[0, weapon.HasIt ? 1 : 0]);
-            return buy_text[1, weapon.HasIt ? 1 : 0];
+                return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 0]) + i.ToString();
+            return slot_text[1, 0] + i.ToString();
         }
 
         private string GetWeaponName()
@@ -62,45 +75,6 @@ namespace SLIL.UserControls
                 }
             }
             UpdateInfo();
-        }
-
-        private void Buy_button_Click(object sender, EventArgs e)
-        {
-            weapon_icon.Focus();
-            if (weapon.HasIt)
-            {
-                if (player.Money >= weapon.AmmoCost && weapon.AmmoInStock + weapon.AmmoCount <= weapon.MaxAmmo)
-                {
-                    if (MainMenu.sounds)
-                        buy.Play(SLIL.Volume);
-                    ParentSLILForm.BuyAmmo(weapon);
-                    ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
-                }
-                else if (MainMenu.sounds)
-                    cant_pressed?.Play(SLIL.Volume);
-            }
-            else
-            {
-                if (player.Money  >= weapon.GunCost)
-                {
-                    if (MainMenu.sounds)
-                        buy.Play(SLIL.Volume);
-                    ParentSLILForm.BuyWeapon(weapon);
-                    buy_button.Text = GetBuyText() + $" ${weapon.AmmoCost}";
-                    ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
-                    update_button.Visible = weapon.CanUpdate();
-                    if (weapon.CanUpdate())
-                    {
-                        update_button.Left = buy_button.Right + 6;
-                        ammo_panel.Left = update_button.Right + 12;
-                    }
-                    else ammo_panel.Left = buy_button.Right + 12;
-                }
-                else if (MainMenu.sounds)
-                    cant_pressed?.Play(SLIL.Volume);
-            }
-            UpdateInfo();
-            ParentSLILForm.UpdateStorage();
         }
 
         private Image GetAmmoIcon()
@@ -146,52 +120,37 @@ namespace SLIL.UserControls
             return result;
         }
 
-        private void Update_button_Click(object sender, EventArgs e)
-        {
-            weapon_icon.Focus();
-            if (player.Money  >= weapon.UpdateCost)
-            {
-                if (MainMenu.sounds)
-                    buy.Play(SLIL.Volume);
-                ParentSLILForm.UpdateWeapon(weapon);
-                weapon_name.Text = GetWeaponName() + $" {weapon.Level}";
-                weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
-                update_button.Text = $"${weapon.UpdateCost}";
-                ammo_count.Text = $"{weapon.AmmoInStock}/{weapon.AmmoCount}";
-                parametrs_image.Image = DrawWeaponParametrs();
-                update_button.Visible = weapon.CanUpdate();
-            }
-            else if (MainMenu.sounds)
-                cant_pressed?.Play(SLIL.Volume);
-            UpdateInfo();
-            ParentSLILForm.UpdateStorage();
-        }
-
         private void UpdateInfo()
         {
-            int cost = weapon.HasIt ? weapon.AmmoCost : weapon.GunCost;
-            string ammo = weapon.HasIt ? $"{weapon.AmmoInStock}/{weapon.AmmoCount}" : "0/0";
+            string ammo = $"{weapon.AmmoInStock}/{weapon.AmmoCount}";
             weapon_name.Text = weapon.Upgradeable ? GetWeaponName() + $" {weapon.Level}" : GetWeaponName();
             if (weapon_icon.Image != SLIL.IconDict[weapon.GetType()][weapon.GetLevel()])
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
             ammo_count.Text = ammo;
             ammo_icon.Image = GetAmmoIcon();
-            buy_button.Text = GetBuyText() + $" ${cost}";
-            update_button.Text = $"${weapon.UpdateCost}";
-            if (weapon.CanUpdate() && weapon.HasIt)
-            {
-                update_button.Left = buy_button.Right + 6;
-                ammo_panel.Left = update_button.Right + 12;
-            }
-            else ammo_panel.Left = buy_button.Right + 12;
+            slot_0_btn.Text = GetButtonText(1);
+            slot_1_btn.Text = GetButtonText(2);
+            slot_1_btn.Left = slot_0_btn.Right + 6;
+            ammo_panel.Left = slot_1_btn.Right + 12;
             parametrs_image.Image = DrawWeaponParametrs();
-            update_button.Visible = weapon.CanUpdate() && weapon.HasIt;
         }
 
         private void SLIL_ShopInterface_VisibleChanged(object sender, EventArgs e)
         {
             UpdateInfo();
             Width = width;
+        }
+
+        private void Slot_0_btn_Click(object sender, EventArgs e)
+        {
+            player.WeaponSlot_0 = player.Guns.IndexOf(weapon);
+            player.CurrentGun = player.PreviousGun = player.WeaponSlot_0;
+        }
+
+        private void Slot_1_btn_Click(object sender, EventArgs e)
+        {
+            player.WeaponSlot_1 = player.Guns.IndexOf(weapon);
+            player.CurrentGun = player.PreviousGun = player.WeaponSlot_1;
         }
     }
 }

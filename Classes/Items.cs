@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SLIL.Classes
 {
-    public enum AmmoTypes { Magic, Bubbles, Bullet, Shell, Rifle, Rocket, C4 }
+    public enum AmmoTypes { Magic, Bubbles, Bullet, Shell, Rifle, Rocket, C4, None }
     public enum FireTypes { Single, SemiAutomatic }
     public enum Levels { LV1 = 0, LV2 = 1, LV3 = 2, LV4 = 3 }
 
@@ -18,6 +18,7 @@ namespace SLIL.Classes
         public bool ShowAmmoAsNumber { get; set; }
         public bool HasIt { get; set; }
         public bool AddToShop { get; set; }
+        public bool AddToStorage { get; set; }
         public bool HaveLV4 { get; set; }
         public bool IsMagic { get; set; }
         public bool CanShoot { get; set; }
@@ -60,6 +61,7 @@ namespace SLIL.Classes
             Accuracy = 1;
             BulletCount = 1;
             PauseBetweenShooting = 500;
+            AddToStorage = true;
             Upgradeable = true;
             CanRun = true;
             Weight = 1;
@@ -198,6 +200,7 @@ namespace SLIL.Classes
             HasCuteDescription = false;
             ShowScope = false;
             ShowAmmo = false;
+            AddToStorage = false;
             AddToShop = false;
             CanShoot = false;
             Accuracy = 0;
@@ -281,6 +284,7 @@ namespace SLIL.Classes
             Weight = 1;
             Upgradeable = false;
             ShowAmmo = false;
+            AddToStorage = false;
             AddToShop = false;
             HasIt = true;
             Name = new[] { "3-1", "Knife" };
@@ -351,6 +355,7 @@ namespace SLIL.Classes
             FireType = FireTypes.SemiAutomatic;
             Upgradeable = false;
             ShowScope = false;
+            AddToStorage = false;
             AddToShop = false;
             HasIt = false;
             ShowAmmoAsNumber = true;
@@ -391,6 +396,7 @@ namespace SLIL.Classes
         {
             AmmoType = AmmoTypes.Bullet;
             FireType = FireTypes.Single;
+            AddToStorage = false;
             AddToShop = true;
             HasIt = true;
             HaveLV4 = true;

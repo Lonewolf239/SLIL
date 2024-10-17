@@ -290,6 +290,12 @@
     <Compile Include="UserControls\SLIL_PetShopInterface.Designer.cs">
       <DependentUpon>SLIL_PetShopInterface.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\SLIL_StorageInterface.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\SLIL_StorageInterface.Designer.cs">
+      <DependentUpon>SLIL_StorageInterface.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\SLIL_ShopInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -354,6 +360,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\SLIL_PetShopInterface.resx">
       <DependentUpon>SLIL_PetShopInterface.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\SLIL_StorageInterface.resx">
+      <DependentUpon>SLIL_StorageInterface.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\SLIL_ShopInterface.resx">
       <DependentUpon>SLIL_ShopInterface.cs</DependentUpon>

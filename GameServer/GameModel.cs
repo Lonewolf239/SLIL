@@ -1866,7 +1866,7 @@ namespace GameServer
             p.Serialize(writer);
             sendMessageFromGameCallback(1334, writer.Data);
             new Thread(() => {
-                Thread.Sleep(p.InTransport ? 250 : 500);
+                Thread.Sleep(p.InTransport ? 250 : 375);
                 StopParkour(playerID);
                 p.ParkourState++;
                 writer = new NetDataWriter();
