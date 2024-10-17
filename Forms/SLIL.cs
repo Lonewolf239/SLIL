@@ -1895,8 +1895,8 @@ namespace SLIL
             if (GameStarted && !Paused && !player.BlockInput && player.CanShoot && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
             {
                 List<int> availableWeapons = new List<int>();
-                if (player.WeaponSlot_0 != -1) availableWeapons.Add(player.WeaponSlot_0);
-                if (player.WeaponSlot_1 != -1) availableWeapons.Add(player.WeaponSlot_1);
+                if (player.WeaponSlot_0 != -1 && !player.CuteMode) availableWeapons.Add(player.WeaponSlot_0);
+                if (player.WeaponSlot_1 != -1 && !player.CuteMode) availableWeapons.Add(player.WeaponSlot_1);
                 availableWeapons.Add(2);
                 availableWeapons.Add(1);
                 int currentIndex = availableWeapons.IndexOf(player.CurrentGun);

@@ -32,35 +32,39 @@ namespace SLIL.UserControls
 
         private string GetButtonText(int i)
         {
-            if (i == 1 && player.WeaponSlot_0 != -1)
+            try
             {
-                if (player.WeaponSlot_0 == player.Guns.IndexOf(weapon))
+                if (i == 1 && player.WeaponSlot_0 != -1)
                 {
+                    if (player.WeaponSlot_0 == player.Guns.IndexOf(weapon))
+                    {
+                        if (index == 0)
+                            return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 2]);
+                        return slot_text[1, 2];
+                    }
                     if (index == 0)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 2]);
-                    return slot_text[1, 2];
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 1]) +
+                            MainMenu.Localizations.GetLString(MainMenu.Language, player.Guns[player.WeaponSlot_0].Name[0]);
+                    return slot_text[1, 1] + player.Guns[player.WeaponSlot_0].Name[1];
+                }
+                if (i == 2 && player.WeaponSlot_1 != -1)
+                {
+                    if (player.WeaponSlot_1 == player.Guns.IndexOf(weapon))
+                    {
+                        if (index == 0)
+                            return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 2]);
+                        return slot_text[1, 2];
+                    }
+                    if (index == 0)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 1]) +
+                            MainMenu.Localizations.GetLString(MainMenu.Language, player.Guns[player.WeaponSlot_1].Name[0]);
+                    return slot_text[1, 1] + player.Guns[player.WeaponSlot_1].Name[1];
                 }
                 if (index == 0)
-                    return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 1]) +
-                        MainMenu.Localizations.GetLString(MainMenu.Language, player.Guns[player.WeaponSlot_0].Name[0]);
-                return slot_text[1, 1] + player.Guns[player.WeaponSlot_0].Name[1];
+                    return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 0]) + i.ToString();
+                return slot_text[1, 0] + i.ToString();
             }
-            if (i == 2 && player.WeaponSlot_1 != -1)
-            {
-                if (player.WeaponSlot_1 == player.Guns.IndexOf(weapon))
-                {
-                    if (index == 0)
-                        return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 2]);
-                    return slot_text[1, 2];
-                }
-                if (index == 0)
-                    return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 1]) +
-                        MainMenu.Localizations.GetLString(MainMenu.Language, player.Guns[player.WeaponSlot_1].Name[0]);
-                return slot_text[1, 1] + player.Guns[player.WeaponSlot_1].Name[1];
-            }
-            if (index == 0)
-                return MainMenu.Localizations.GetLString(MainMenu.Language, slot_text[0, 0]) + i.ToString();
-            return slot_text[1, 0] + i.ToString();
+            catch { return "None"; }
         }
 
         private string GetWeaponName()
