@@ -139,6 +139,9 @@
             this.sensitivity = new System.Windows.Forms.TrackBar();
             this.sensitivity_label = new System.Windows.Forms.Label();
             this.keyboard_settings = new System.Windows.Forms.TabPage();
+            this.inventory_panel = new System.Windows.Forms.Panel();
+            this.inventory_label = new System.Windows.Forms.Label();
+            this.inventory_btn_c = new System.Windows.Forms.Button();
             this.climb_panel = new System.Windows.Forms.Panel();
             this.climb_label = new System.Windows.Forms.Label();
             this.climb_btn_c = new System.Windows.Forms.Button();
@@ -277,9 +280,6 @@
             this.errors_panel = new System.Windows.Forms.Panel();
             this.SLIL_v0_1_btn_c = new System.Windows.Forms.Button();
             this.secret_btn_timer = new System.Windows.Forms.Timer(this.components);
-            this.inventory_panel = new System.Windows.Forms.Panel();
-            this.inventory_label = new System.Windows.Forms.Label();
-            this.inventory_btn_c = new System.Windows.Forms.Button();
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -330,6 +330,7 @@
             this.sensitivity_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sensitivity)).BeginInit();
             this.keyboard_settings.SuspendLayout();
+            this.inventory_panel.SuspendLayout();
             this.climb_panel.SuspendLayout();
             this.run_panel.SuspendLayout();
             this.select_item_panel.SuspendLayout();
@@ -379,7 +380,6 @@
             this.update_errors_background.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.update_error_icon)).BeginInit();
             this.errors_panel.SuspendLayout();
-            this.inventory_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // lose_focus
@@ -1745,6 +1745,39 @@
             this.keyboard_settings.Size = new System.Drawing.Size(468, 140);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
+            // 
+            // inventory_panel
+            // 
+            this.inventory_panel.BackColor = System.Drawing.Color.Black;
+            this.inventory_panel.Controls.Add(this.inventory_label);
+            this.inventory_panel.Controls.Add(this.inventory_btn_c);
+            this.inventory_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.inventory_panel.Location = new System.Drawing.Point(3, 513);
+            this.inventory_panel.Name = "inventory_panel";
+            this.inventory_panel.Size = new System.Drawing.Size(445, 34);
+            this.inventory_panel.TabIndex = 16;
+            // 
+            // inventory_label
+            // 
+            this.inventory_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.inventory_label.Location = new System.Drawing.Point(0, 0);
+            this.inventory_label.Name = "inventory_label";
+            this.inventory_label.Size = new System.Drawing.Size(306, 34);
+            this.inventory_label.TabIndex = 0;
+            this.inventory_label.Text = "Инвентарь";
+            this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // inventory_btn_c
+            // 
+            this.inventory_btn_c.Dock = System.Windows.Forms.DockStyle.Right;
+            this.inventory_btn_c.Location = new System.Drawing.Point(362, 0);
+            this.inventory_btn_c.Name = "inventory_btn_c";
+            this.inventory_btn_c.Size = new System.Drawing.Size(83, 34);
+            this.inventory_btn_c.TabIndex = 2;
+            this.inventory_btn_c.TabStop = false;
+            this.inventory_btn_c.Text = "I";
+            this.inventory_btn_c.UseVisualStyleBackColor = false;
+            this.inventory_btn_c.Click += new System.EventHandler(this.ChangeControl_Click);
             // 
             // climb_panel
             // 
@@ -3406,38 +3439,6 @@
             this.secret_btn_timer.Interval = 16;
             this.secret_btn_timer.Tick += new System.EventHandler(this.Secret_btn_timer_Tick);
             // 
-            // inventory_panel
-            // 
-            this.inventory_panel.BackColor = System.Drawing.Color.Black;
-            this.inventory_panel.Controls.Add(this.inventory_label);
-            this.inventory_panel.Controls.Add(this.inventory_btn_c);
-            this.inventory_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.inventory_panel.Location = new System.Drawing.Point(3, 513);
-            this.inventory_panel.Name = "inventory_panel";
-            this.inventory_panel.Size = new System.Drawing.Size(445, 34);
-            this.inventory_panel.TabIndex = 16;
-            // 
-            // inventory_label
-            // 
-            this.inventory_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.inventory_label.Location = new System.Drawing.Point(0, 0);
-            this.inventory_label.Name = "inventory_label";
-            this.inventory_label.Size = new System.Drawing.Size(306, 34);
-            this.inventory_label.TabIndex = 0;
-            this.inventory_label.Text = "Инвентарь";
-            this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // inventory_btn_c
-            // 
-            this.inventory_btn_c.Dock = System.Windows.Forms.DockStyle.Right;
-            this.inventory_btn_c.Location = new System.Drawing.Point(362, 0);
-            this.inventory_btn_c.Name = "inventory_btn_c";
-            this.inventory_btn_c.Size = new System.Drawing.Size(83, 34);
-            this.inventory_btn_c.TabIndex = 2;
-            this.inventory_btn_c.TabStop = false;
-            this.inventory_btn_c.Text = "I";
-            this.inventory_btn_c.UseVisualStyleBackColor = false;
-            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3547,6 +3548,7 @@
             this.sensitivity_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sensitivity)).EndInit();
             this.keyboard_settings.ResumeLayout(false);
+            this.inventory_panel.ResumeLayout(false);
             this.climb_panel.ResumeLayout(false);
             this.run_panel.ResumeLayout(false);
             this.select_item_panel.ResumeLayout(false);
@@ -3607,7 +3609,6 @@
             this.update_errors_background.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.update_error_icon)).EndInit();
             this.errors_panel.ResumeLayout(false);
-            this.inventory_panel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

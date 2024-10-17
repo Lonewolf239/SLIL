@@ -619,6 +619,10 @@ namespace SLIL
                 consumables_shop_page.Text = "Other";
                 transport_shop_page.Text = "Transport";
                 storage_shop_page.Text = "Storage";
+                inventory_label.Text = "Inventory";
+                weapon_title.Text = "Weapons";
+                items_title.Text = "Items";
+                pet_title.Text = "Pet";
                 pause_text.Text = "PAUSE";
                 pause_btn.Text = "CONTINUE";
                 exit_btn.Text = "EXIT";
@@ -631,6 +635,10 @@ namespace SLIL
                 consumables_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-4");
                 transport_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-14");
                 storage_shop_page.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-16");
+                inventory_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-20");
+                weapon_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-21");
+                items_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-22");
+                pet_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-23");
                 pause_text.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-5");
                 pause_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-6");
                 exit_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-7");

@@ -699,6 +699,7 @@ namespace SLIL
                     Localizations.GetLString(Language, "0-64")
                 };
                 smoothing_list.Items.AddRange(smooth_list);
+                inventory_label.Text = Localizations.GetLString(Language, "0-130");
                 password_input_label.Text = Localizations.GetLString(Language, "0-125");
                 need_password.Text = Localizations.GetLString(Language, "0-126");
                 connect_btn_r.Text = Localizations.GetLString(Language, "0-127");
@@ -793,6 +794,7 @@ namespace SLIL
             else
             {
                 smoothing_list.Items.AddRange(new string[] { "No Antialiasing", "Default", "High Quality", "High Speed" });
+                inventory_label.Text = "Inventory";
                 password_input_label.Text = "Password:";
                 need_password.Text = "Need password:";
                 connect_btn_r.Text = "Join";
