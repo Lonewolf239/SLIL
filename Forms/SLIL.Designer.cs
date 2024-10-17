@@ -34,6 +34,12 @@ namespace SLIL
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SLIL));
             this.shop_panel = new System.Windows.Forms.Panel();
             this.ShopInterface_panel = new System.Windows.Forms.Panel();
+            this.shop_tab_control = new System.Windows.Forms.TabControl();
+            this.weapon_shop_page = new System.Windows.Forms.TabPage();
+            this.pet_shop_page = new System.Windows.Forms.TabPage();
+            this.consumables_shop_page = new System.Windows.Forms.TabPage();
+            this.transport_shop_page = new System.Windows.Forms.TabPage();
+            this.storage_shop_page = new System.Windows.Forms.TabPage();
             this.shop_title_panel = new System.Windows.Forms.Panel();
             this.shop_title = new System.Windows.Forms.Label();
             this.shop_money = new System.Windows.Forms.Label();
@@ -87,14 +93,10 @@ namespace SLIL
             this.pistol_label = new System.Windows.Forms.Label();
             this.pistol_ammo_count = new System.Windows.Forms.Label();
             this.inventory_label = new System.Windows.Forms.Label();
-            this.transport_shop_page = new System.Windows.Forms.TabPage();
-            this.consumables_shop_page = new System.Windows.Forms.TabPage();
-            this.pet_shop_page = new System.Windows.Forms.TabPage();
-            this.weapon_shop_page = new System.Windows.Forms.TabPage();
-            this.shop_tab_control = new System.Windows.Forms.TabControl();
-            this.storage_shop_page = new System.Windows.Forms.TabPage();
+            this.hide_weapon_picture = new System.Windows.Forms.PictureBox();
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
+            this.shop_tab_control.SuspendLayout();
             this.shop_title_panel.SuspendLayout();
             this.pause_panel.SuspendLayout();
             this.game_over_panel.SuspendLayout();
@@ -114,7 +116,7 @@ namespace SLIL
             this.pistol_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).BeginInit();
-            this.shop_tab_control.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).BeginInit();
             this.SuspendLayout();
             // 
             // shop_panel
@@ -137,6 +139,81 @@ namespace SLIL
             this.ShopInterface_panel.Name = "ShopInterface_panel";
             this.ShopInterface_panel.Size = new System.Drawing.Size(1105, 598);
             this.ShopInterface_panel.TabIndex = 1;
+            // 
+            // shop_tab_control
+            // 
+            this.shop_tab_control.Controls.Add(this.weapon_shop_page);
+            this.shop_tab_control.Controls.Add(this.pet_shop_page);
+            this.shop_tab_control.Controls.Add(this.consumables_shop_page);
+            this.shop_tab_control.Controls.Add(this.transport_shop_page);
+            this.shop_tab_control.Controls.Add(this.storage_shop_page);
+            this.shop_tab_control.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.shop_tab_control.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.shop_tab_control.Location = new System.Drawing.Point(0, 0);
+            this.shop_tab_control.Multiline = true;
+            this.shop_tab_control.Name = "shop_tab_control";
+            this.shop_tab_control.SelectedIndex = 0;
+            this.shop_tab_control.Size = new System.Drawing.Size(1105, 598);
+            this.shop_tab_control.TabIndex = 0;
+            this.shop_tab_control.TabStop = false;
+            // 
+            // weapon_shop_page
+            // 
+            this.weapon_shop_page.AutoScroll = true;
+            this.weapon_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.weapon_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.weapon_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.weapon_shop_page.Name = "weapon_shop_page";
+            this.weapon_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.weapon_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.weapon_shop_page.TabIndex = 0;
+            this.weapon_shop_page.Text = "Оружие";
+            // 
+            // pet_shop_page
+            // 
+            this.pet_shop_page.AutoScroll = true;
+            this.pet_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.pet_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.pet_shop_page.Name = "pet_shop_page";
+            this.pet_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.pet_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.pet_shop_page.TabIndex = 1;
+            this.pet_shop_page.Text = "Питомцы";
+            // 
+            // consumables_shop_page
+            // 
+            this.consumables_shop_page.AutoScroll = true;
+            this.consumables_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.consumables_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.consumables_shop_page.Name = "consumables_shop_page";
+            this.consumables_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.consumables_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.consumables_shop_page.TabIndex = 2;
+            this.consumables_shop_page.Text = "Прочее";
+            // 
+            // transport_shop_page
+            // 
+            this.transport_shop_page.AutoScroll = true;
+            this.transport_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.transport_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.transport_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.transport_shop_page.Name = "transport_shop_page";
+            this.transport_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.transport_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.transport_shop_page.TabIndex = 3;
+            this.transport_shop_page.Text = "Транспорт";
+            // 
+            // storage_shop_page
+            // 
+            this.storage_shop_page.AutoScroll = true;
+            this.storage_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.storage_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.storage_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.storage_shop_page.Name = "storage_shop_page";
+            this.storage_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.storage_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.storage_shop_page.TabIndex = 4;
+            this.storage_shop_page.Text = "Хранилище";
             // 
             // shop_title_panel
             // 
@@ -365,6 +442,7 @@ namespace SLIL
             // 
             // inventory_content_panel
             // 
+            this.inventory_content_panel.Controls.Add(this.hide_weapon_picture);
             this.inventory_content_panel.Controls.Add(this.pet_panel);
             this.inventory_content_panel.Controls.Add(this.pet_title);
             this.inventory_content_panel.Controls.Add(this.helmet_count);
@@ -695,88 +773,22 @@ namespace SLIL
             this.inventory_label.Text = "Инвентарь";
             this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // transport_shop_page
+            // hide_weapon_picture
             // 
-            this.transport_shop_page.AutoScroll = true;
-            this.transport_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.transport_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.transport_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.transport_shop_page.Name = "transport_shop_page";
-            this.transport_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.transport_shop_page.Size = new System.Drawing.Size(1097, 569);
-            this.transport_shop_page.TabIndex = 3;
-            this.transport_shop_page.Text = "Транспорт";
-            // 
-            // consumables_shop_page
-            // 
-            this.consumables_shop_page.AutoScroll = true;
-            this.consumables_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.consumables_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.consumables_shop_page.Name = "consumables_shop_page";
-            this.consumables_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.consumables_shop_page.Size = new System.Drawing.Size(1097, 569);
-            this.consumables_shop_page.TabIndex = 2;
-            this.consumables_shop_page.Text = "Прочее";
-            // 
-            // pet_shop_page
-            // 
-            this.pet_shop_page.AutoScroll = true;
-            this.pet_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.pet_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.pet_shop_page.Name = "pet_shop_page";
-            this.pet_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.pet_shop_page.Size = new System.Drawing.Size(1097, 569);
-            this.pet_shop_page.TabIndex = 1;
-            this.pet_shop_page.Text = "Питомцы";
-            // 
-            // weapon_shop_page
-            // 
-            this.weapon_shop_page.AutoScroll = true;
-            this.weapon_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.weapon_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.weapon_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.weapon_shop_page.Name = "weapon_shop_page";
-            this.weapon_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.weapon_shop_page.Size = new System.Drawing.Size(1097, 569);
-            this.weapon_shop_page.TabIndex = 0;
-            this.weapon_shop_page.Text = "Оружие";
-            // 
-            // shop_tab_control
-            // 
-            this.shop_tab_control.Controls.Add(this.weapon_shop_page);
-            this.shop_tab_control.Controls.Add(this.pet_shop_page);
-            this.shop_tab_control.Controls.Add(this.consumables_shop_page);
-            this.shop_tab_control.Controls.Add(this.transport_shop_page);
-            this.shop_tab_control.Controls.Add(this.storage_shop_page);
-            this.shop_tab_control.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.shop_tab_control.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.shop_tab_control.Location = new System.Drawing.Point(0, 0);
-            this.shop_tab_control.Multiline = true;
-            this.shop_tab_control.Name = "shop_tab_control";
-            this.shop_tab_control.SelectedIndex = 0;
-            this.shop_tab_control.Size = new System.Drawing.Size(1105, 598);
-            this.shop_tab_control.TabIndex = 0;
-            this.shop_tab_control.TabStop = false;
-            // 
-            // storage_shop_page
-            // 
-            this.storage_shop_page.AutoScroll = true;
-            this.storage_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.storage_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.storage_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.storage_shop_page.Name = "storage_shop_page";
-            this.storage_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.storage_shop_page.Size = new System.Drawing.Size(1097, 569);
-            this.storage_shop_page.TabIndex = 4;
-            this.storage_shop_page.Text = "Хранилище";
+            this.hide_weapon_picture.Location = new System.Drawing.Point(0, 0);
+            this.hide_weapon_picture.Name = "hide_weapon_picture";
+            this.hide_weapon_picture.Size = new System.Drawing.Size(987, 256);
+            this.hide_weapon_picture.TabIndex = 14;
+            this.hide_weapon_picture.TabStop = false;
+            this.hide_weapon_picture.Visible = false;
             // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
             this.ClientSize = new System.Drawing.Size(1105, 633);
-            this.Controls.Add(this.shop_panel);
             this.Controls.Add(this.inventory_panel);
+            this.Controls.Add(this.shop_panel);
             this.Controls.Add(this.game_over_panel);
             this.Controls.Add(this.pause_panel);
             this.DoubleBuffered = true;
@@ -798,6 +810,7 @@ namespace SLIL
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SLIL_KeyUp);
             this.shop_panel.ResumeLayout(false);
             this.ShopInterface_panel.ResumeLayout(false);
+            this.shop_tab_control.ResumeLayout(false);
             this.shop_title_panel.ResumeLayout(false);
             this.shop_title_panel.PerformLayout();
             this.pause_panel.ResumeLayout(false);
@@ -820,7 +833,7 @@ namespace SLIL
             this.pistol_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).EndInit();
-            this.shop_tab_control.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -887,5 +900,6 @@ namespace SLIL
         private TabPage consumables_shop_page;
         private TabPage transport_shop_page;
         private TabPage storage_shop_page;
+        private PictureBox hide_weapon_picture;
     }
 }

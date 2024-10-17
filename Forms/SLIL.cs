@@ -4004,9 +4004,35 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
+            inventory_content_panel.Location = new Point((Width - inventory_content_panel.Width) / 2, (Height - inventory_content_panel.Height) / 2);
             medkit_count.Text = $"{player.DisposableItems[0].MaxCount}/{player.DisposableItems[0].Count}";
             adrenalin_count.Text = $"{player.DisposableItems[1].MaxCount}/{player.DisposableItems[1].Count}";
             helmet_count.Text = $"{player.DisposableItems[2].MaxCount}/{player.DisposableItems[2].Count}";
+            if (player.PET != null)
+                pet_icon.Image = ShopImageDict[player.PET.GetType()];
+            else
+                pet_icon.Image = Properties.Resources.missing;
+            if (MainMenu.DownloadedLocalizationList)
+            {
+                if (player.PET != null)
+                    pet_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, player.PET.Name[0]);
+                else
+                    pet_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "9-0");
+            }
+            else
+            {
+                if (player.PET != null)
+                    pet_label.Text = player.PET.Name[1];
+                else
+                    pet_label.Text = "Absent";
+            }
+            if (player.CuteMode)
+            {
+                hide_weapon_picture.Visible = true;
+                return;
+            }
+            else
+                hide_weapon_picture.Visible = false;
             if (MainMenu.DownloadedLocalizationList)
             {
                 pistol_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, player.GUNS[2].Name[0]);
@@ -4018,10 +4044,6 @@ namespace SLIL
                     weapon_1_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, player.Guns[player.WeaponSlot_1].Name[0]);
                 else
                     weapon_1_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "9-0");
-                if (player.PET != null)
-                    pet_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, player.PET.Name[0]);
-                else
-                    pet_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "9-0");
             }
             else
             {
@@ -4034,15 +4056,7 @@ namespace SLIL
                     weapon_1_label.Text = player.Guns[player.WeaponSlot_1].Name[1];
                 else
                     weapon_1_label.Text = "Absent";
-                if (player.PET != null)
-                    pet_label.Text = player.PET.Name[1];
-                else
-                    pet_label.Text = "Absent";
             }
-            if (player.PET != null)
-                pet_icon.Image = ShopImageDict[player.PET.GetType()];
-            else
-                pet_icon.Image = Properties.Resources.missing;
             pistol_icon.Image = IconDict[player.GUNS[2].GetType()][player.GUNS[2].GetLevel()];
             pistol_ammo_count.Text = $"{player.GUNS[2].AmmoInStock}/{player.GUNS[2].AmmoCount}";
             if (player.WeaponSlot_0 != -1)
@@ -4069,7 +4083,6 @@ namespace SLIL
                 weapon_1_ammo_icon.Image = GetAmmoIcon(AmmoTypes.None);
                 weapon_1_ammo_count.Text = "0/0";
             }
-            inventory_content_panel.Location = new Point((Width - inventory_content_panel.Width) / 2, (Height - inventory_content_panel.Height) / 2);
         }
 
         //  #====       Shop        ====#

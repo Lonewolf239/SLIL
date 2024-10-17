@@ -336,6 +336,7 @@ namespace GameServer
             FiringRange = 2.5;
             MaxDamage = 12.5;
             MinDamage = 7.5;
+            AddToStorage = true;
             ShowScope = false;
             ShowHitScope = false;
             HasIt = false;
