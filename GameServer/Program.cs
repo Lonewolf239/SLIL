@@ -8,7 +8,7 @@ namespace GameServer
 {
     internal class GameServerConsole
     {
-        internal const string version = "|1.3|";
+        internal const string version = "|1.3|", server_version = "|1.3|";
         private const int GWL_STYLE = -16;
         private const int WS_SIZEBOX = 0x00040000;
         private const int WS_MAXIMIZEBOX = 0x00010000;
@@ -27,38 +27,38 @@ namespace GameServer
             public int Bottom;
         }
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
-        private static extern IntPtr GetConsoleWindow();
+        private static extern nint GetConsoleWindow();
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+        private static extern bool GetWindowRect(nint hWnd, out RECT lpRect);
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        private static extern bool MoveWindow(nint hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
         [DllImport("user32.dll")]
         private static extern int GetSystemMetrics(int nIndex);
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        private static extern int SetWindowLong(nint hWnd, int nIndex, int dwNewLong);
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        private static extern int GetWindowLong(nint hWnd, int nIndex);
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetStdHandle(int nStdHandle);
+        static extern nint GetStdHandle(int nStdHandle);
         [DllImport("kernel32.dll")]
-        static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+        static extern bool GetConsoleMode(nint hConsoleHandle, out uint lpMode);
         [DllImport("kernel32.dll")]
-        static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+        static extern bool SetConsoleMode(nint hConsoleHandle, uint dwMode);
 
         private static void SetupConsoleSettings()
         {
             int width = 80;
             int height = 34;
-            Console.Title = "GameServer for SLIL";
+            Console.Title = $"SLIL Server v{server_version.Trim('|')} [v{version.Trim('|')}]";
             Console.SetWindowSize(width, height);
             Console.OutputEncoding = Encoding.UTF8;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Console.SetBufferSize(width, height);
+                try { Console.SetBufferSize(width, height); } catch { }
                 Console.CursorSize = 100;
                 int screenWidth = GetSystemMetrics(SM_CXSCREEN);
                 int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-                IntPtr consoleWindow = GetConsoleWindow();
+                nint consoleWindow = GetConsoleWindow();
                 GetWindowRect(consoleWindow, out RECT rect);
                 int consoleWidthPixels = rect.Right - rect.Left;
                 int consoleHeightPixels = rect.Bottom - rect.Top;
@@ -69,7 +69,7 @@ namespace GameServer
                 style &= ~WS_SIZEBOX;
                 style &= ~WS_MAXIMIZEBOX;
                 _ = SetWindowLong(consoleWindow, GWL_STYLE, style);
-                IntPtr consoleHandle = GetStdHandle(STD_INPUT_HANDLE);
+                nint consoleHandle = GetStdHandle(STD_INPUT_HANDLE);
                 GetConsoleMode(consoleHandle, out uint consoleMode);
                 SetConsoleMode(consoleHandle, consoleMode & ~(ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS | ENABLE_INSERT_MODE));
             }
@@ -88,13 +88,50 @@ namespace GameServer
         }
     }
 
+    internal class MenuItem
+    {
+        internal bool Enabled { get; set; }
+        internal string Name { get; set; }
+        internal readonly List<CategoryItem> Items;
+
+        internal MenuItem(string name)
+        {
+            Enabled = true;
+            Name = name;
+            Items = [];
+        }
+
+        internal void SetItem(string[] items)
+        {
+            foreach (string name in items)
+                Items.Add(new CategoryItem(name));
+        }
+        internal void Enable() => Enabled = true;
+        internal void Disable() => Enabled = false;
+    }
+
+    internal class CategoryItem
+    {
+        internal bool Enabled { get; set; }
+        internal string Name { get; set; }
+
+        internal CategoryItem(string name)
+        {
+            Enabled = true;
+            Name = name;
+        }
+
+        internal void Enable() => Enabled = true;
+        internal void Disable() => Enabled = false;
+    }
+
     internal class Clipboard
     {
         const uint GMEM_MOVEABLE = 0x0002;
         const uint CF_UNICODETEXT = 13;
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool OpenClipboard(IntPtr hWndNewOwner);
+        private static extern bool OpenClipboard(nint hWndNewOwner);
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool CloseClipboard();
@@ -103,37 +140,37 @@ namespace GameServer
         private static extern bool EmptyClipboard();
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+        private static extern nint SetClipboardData(uint uFormat, nint hMem);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr GlobalAlloc(uint uFlags, UIntPtr dwBytes);
+        private static extern nint GlobalAlloc(uint uFlags, nuint dwBytes);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr GlobalLock(IntPtr hMem);
+        private static extern nint GlobalLock(nint hMem);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool GlobalUnlock(IntPtr hMem);
+        private static extern bool GlobalUnlock(nint hMem);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr GlobalFree(IntPtr hMem);
+        private static extern nint GlobalFree(nint hMem);
 
         internal static void SetText(string text)
         {
             if (string.IsNullOrEmpty(text)) return;
-            if (!OpenClipboard(IntPtr.Zero))
+            if (!OpenClipboard(nint.Zero))
                 throw new InvalidOperationException("Unable to open clipboard.");
             try
             {
                 EmptyClipboard();
                 byte[] bytes = Encoding.Unicode.GetBytes(text);
                 int dataSize = bytes.Length + 2;
-                IntPtr hGlobal = GlobalAlloc(GMEM_MOVEABLE, (UIntPtr)dataSize);
-                if (hGlobal == IntPtr.Zero)
+                nint hGlobal = GlobalAlloc(GMEM_MOVEABLE, (nuint)dataSize);
+                if (hGlobal == nint.Zero)
                     throw new OutOfMemoryException("Unable to allocate memory for clipboard data.");
                 try
                 {
-                    IntPtr locked = GlobalLock(hGlobal);
-                    if (locked == IntPtr.Zero)
+                    nint locked = GlobalLock(hGlobal);
+                    if (locked == nint.Zero)
                         throw new InvalidOperationException("Unable to lock memory for clipboard data.");
                     try
                     {
@@ -141,13 +178,13 @@ namespace GameServer
                         Marshal.WriteInt16(locked, bytes.Length, 0);
                     }
                     finally { GlobalUnlock(locked); }
-                    if (SetClipboardData(CF_UNICODETEXT, hGlobal) == IntPtr.Zero)
+                    if (SetClipboardData(CF_UNICODETEXT, hGlobal) == nint.Zero)
                         throw new InvalidOperationException("Unable to set clipboard data.");
-                    hGlobal = IntPtr.Zero;
+                    hGlobal = nint.Zero;
                 }
                 finally
                 {
-                    if (hGlobal != IntPtr.Zero)
+                    if (hGlobal != nint.Zero)
                         GlobalFree(hGlobal);
                 }
             }
@@ -157,6 +194,7 @@ namespace GameServer
 
     internal class GameServerProgram
     {
+        private enum MenuDisplayTypes { All, OnlyButtons, OnlyStatus, Ignore }
         //private readonly NetPacketProcessor processor = new();
         private readonly EventBasedNetListener Listener;
         private NetManager Server;
@@ -174,6 +212,7 @@ namespace GameServer
         private readonly string[] Difficulties = ["Easy", "Normal", "Hard", "Very hard"];
         private readonly ConsoleColor[] DifficultyColors = { ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.DarkRed };
         private readonly ConsoleColor[] GameModeColors = { ConsoleColor.White, ConsoleColor.Red, ConsoleColor.DarkGray, ConsoleColor.DarkGray };
+        private bool InMenu = true;
         private readonly string[] MenuItems =
         [
             "How to play together",
@@ -188,7 +227,7 @@ namespace GameServer
             "Settings",
             "Exit the program"
         ];
-        private readonly Dictionary<string, List<string>> CategorizedMenu;
+        private readonly List<MenuItem> MainMenuItems;
         private int CurrentCategory = -1;
         private string StatusMessage = "The status text will be displayed here";
         private int MAX_CONNECTIONS = 4;
@@ -215,26 +254,22 @@ namespace GameServer
             Listener = new();
             Server = new(Listener);
             Dispatcher = new();
-            CategorizedMenu = new Dictionary<string, List<string>>
-            {
-                ["Server Management"] = [],
-                ["Player Management"] = [],
-                ["Game Control"] = [],
-                ["Game Settings"] = [],
-                ["Information"] = [],
-                ["System"] = []
-            };
-            CategorizedMenu["Information"].Add(MenuItems[0]);
-            CategorizedMenu["Server Management"].Add(MenuItems[1]);
-            CategorizedMenu["Server Management"].Add(MenuItems[2]);
-            CategorizedMenu["Player Management"].Add(MenuItems[3]);
-            CategorizedMenu["Player Management"].Add(MenuItems[4]);
-            CategorizedMenu["Game Settings"].Add(MenuItems[5]);
-            CategorizedMenu["Game Settings"].Add(MenuItems[6]);
-            CategorizedMenu["Game Control"].Add(MenuItems[7]);
-            CategorizedMenu["Game Control"].Add(MenuItems[8]);
-            CategorizedMenu["System"].Add(MenuItems[9]);
-            CategorizedMenu["System"].Add(MenuItems[10]);
+            MainMenuItems = [];
+            MainMenuItems.Add(new MenuItem("Server Management"));
+            MainMenuItems.Add(new MenuItem("Player Management"));
+            MainMenuItems.Add(new MenuItem("Game Control"));
+            MainMenuItems.Add(new MenuItem("Game Settings"));
+            MainMenuItems.Add(new MenuItem("Information"));
+            MainMenuItems.Add(new MenuItem("System"));
+            MainMenuItems[0].SetItem([MenuItems[1], MenuItems[2]]);
+            MainMenuItems[1].SetItem([MenuItems[3], MenuItems[4]]);
+            MainMenuItems[2].SetItem([MenuItems[7], MenuItems[8]]);
+            MainMenuItems[3].SetItem([MenuItems[5], MenuItems[6]]);
+            MainMenuItems[4].SetItem([MenuItems[0]]);
+            MainMenuItems[5].SetItem([MenuItems[9], MenuItems[10]]);
+            MainMenuItems[1].Disable();
+            MainMenuItems[2].Disable();
+            MainMenuItems[3].Disable();
             SendOutcomingMessageHandle = SendOutcomingMessageInvoker;
             Dispatcher.sendMessageDelegate = SendOutcomingMessageHandle;
             Listener.ConnectionRequestEvent += request =>
@@ -262,7 +297,7 @@ namespace GameServer
             };
             Listener.PeerConnectedEvent += peer =>
             {
-                StatusMessage = $"<{DateTime.Now:hh:mm}> We got connection: {peer}";
+                ChangeStatusText($"<{DateTime.Now:hh:mm}> We got connection: {peer}");
                 Dispatcher.SendOutcomingMessage(100, ref peer);
             };
             Listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
@@ -276,14 +311,14 @@ namespace GameServer
             {
                 Dispatcher.RemovePlayer(Dispatcher.PeerPlayerIDs[peer.Id]);
                 Dispatcher.PeerPlayerIDs.Remove(peer.Id);
-                StatusMessage = $"<{DateTime.Now:hh:mm}> Closed connection: {peer}";
+                ChangeStatusText($"<{DateTime.Now:hh:mm}> Closed connection: {peer}");
                 Dispatcher.PeerPlayerNames.Remove(peer.Id);
             };
             try
             {
-                if (System.IO.File.Exists("data.txt"))
+                if (File.Exists("data.txt"))
                 {
-                    string[] data = System.IO.File.ReadAllText("data.txt").Split(';');
+                    string[] data = File.ReadAllText("data.txt").Split(';');
                     SettingsValue = [Convert.ToInt32(data[0]), Convert.ToInt32(data[1]), Convert.ToInt32(data[2]), Convert.ToInt32(data[3])];
                 }
                 else SettingsToDefault();
@@ -323,13 +358,12 @@ namespace GameServer
 
         private async static Task<bool> CheckUpdate()
         {
-            return true;
             try
             {
                 using HttpClient httpClient = new();
                 string content = await httpClient.GetStringAsync("https://base-escape.ru/version_SLIL_GameServer.txt");
                 string line = content.Split(["\r\n", "\r", "\n"], StringSplitOptions.None)[0];
-                if (!line.Contains(GameServerConsole.version))
+                if (!line.Contains(GameServerConsole.server_version))
                 {
                     if (!File.Exists("UpdateDownloader.exe"))
                         await DownloadFileAsync("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
@@ -355,8 +389,8 @@ namespace GameServer
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.Cyan;
             DrawBorder('╔', '╗', '═', 52);
-            WriteColoredCenteredText("Welcome to GameServer for SLIL", ConsoleColor.Yellow, 52);
-            WriteColoredCenteredText($"Version {GameServerConsole.version.Trim('|')}", ConsoleColor.Yellow, 52);
+            WriteColoredCenteredText($"Welcome to GameServer for SLIL v{GameServerConsole.version.Trim('|')}", ConsoleColor.Yellow, 52);
+            WriteColoredCenteredText($"Version {GameServerConsole.server_version.Trim('|')}", ConsoleColor.Yellow, 52);
             DrawBorder('╟', '╢', '─', 52);
             WriteColoredCenteredText("Checking for updates...", ConsoleColor.Green, 52);
             DrawBorder('╚', '╝', '═', 52);
@@ -364,11 +398,12 @@ namespace GameServer
             Thread.Sleep(1000);
             while (Console.KeyAvailable) Console.ReadKey(true);
             if (!CheckUpdate().Result) return;
-            bool only_buttons = false;
+            MenuDisplayTypes type = MenuDisplayTypes.All;
             while (!Exit)
             {
-                DisplayMainMenu(only_buttons);
-                only_buttons = false;
+                InMenu = true;
+                DisplayMainMenu(type);
+                type = MenuDisplayTypes.All;
                 ConsoleKey key = Console.ReadKey(true).Key;
                 switch (key)
                 {
@@ -379,14 +414,26 @@ namespace GameServer
                             SelectedCategory--;
                             if (SelectedCategory < 0)
                                 SelectedCategory = MaxCommandIndex;
+                            while (!MainMenuItems[SelectedCategory].Enabled)
+                            {
+                                SelectedCategory--;
+                                if (SelectedCategory < 0)
+                                    SelectedCategory = MaxCommandIndex;
+                            }
                         }
                         else
                         {
                             Selected--;
                             if (Selected < 0)
                                 Selected = MaxCommandIndex;
+                            while (!MainMenuItems[SelectedCategory].Items[Selected].Enabled)
+                            {
+                                Selected--;
+                                if (Selected < 0)
+                                    Selected = MaxCommandIndex;
+                            }
                         }
-                        only_buttons = true;
+                        type = MenuDisplayTypes.OnlyButtons;
                         break;
                     case ConsoleKey.DownArrow:
                     case ConsoleKey.S:
@@ -395,14 +442,26 @@ namespace GameServer
                             SelectedCategory++;
                             if (SelectedCategory > MaxCommandIndex)
                                 SelectedCategory = 0;
+                            while (!MainMenuItems[SelectedCategory].Enabled)
+                            {
+                                SelectedCategory++;
+                                if (SelectedCategory > MaxCommandIndex)
+                                    SelectedCategory = 0;
+                            }
                         }
                         else
                         {
                             Selected++;
                             if (Selected > MaxCommandIndex)
                                 Selected = 0;
+                            while (!MainMenuItems[SelectedCategory].Items[Selected].Enabled)
+                            {
+                                Selected++;
+                                if (Selected > MaxCommandIndex)
+                                    Selected = 0;
+                            }
                         }
-                        only_buttons = true;
+                        type = MenuDisplayTypes.OnlyButtons;
                         break;
                     case ConsoleKey.I:
                         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) break;
@@ -411,10 +470,11 @@ namespace GameServer
                             try
                             {
                                 Clipboard.SetText($"{GetLocalIPAddress()}:{Server.LocalPort}");
-                                StatusMessage = "IP successfully copied to clipboard";
+                                ChangeStatusText("IP successfully copied to clipboard");
                             }
-                            catch { StatusMessage = "An error occurred while copying IP"; }
+                            catch { ChangeStatusText("An error occurred while copying IP"); }
                         }
+                        type = MenuDisplayTypes.OnlyStatus;
                         break;
                     case ConsoleKey.P:
                         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) break;
@@ -425,12 +485,13 @@ namespace GameServer
                                 try
                                 {
                                     Clipboard.SetText(ServerPassword);
-                                    StatusMessage = "Password successfully copied to clipboard";
+                                    ChangeStatusText("Password successfully copied to clipboard");
                                 }
-                                catch { StatusMessage = "An error occurred while copying the password"; }
+                                catch { ChangeStatusText("An error occurred while copying the password"); }
                             }
-                            else StatusMessage = "Password not set...";
+                            else ChangeStatusText("Password not set...");
                         }
+                        type = MenuDisplayTypes.OnlyStatus;
                         break;
                     case ConsoleKey.D1:
                     case ConsoleKey.D2:
@@ -443,30 +504,56 @@ namespace GameServer
                     case ConsoleKey.D9:
                         if (CurrentCategory == -1)
                         {
-                            SelectedCategory = int.Parse(key.ToString().Trim('D')) - 1;
-                            if (SelectedCategory > MaxCommandIndex)
-                                SelectedCategory = MaxCommandIndex;
+                            int newSelectedCategory = int.Parse(key.ToString().Trim('D')) - 1;
+                            if (newSelectedCategory > MaxCommandIndex)
+                                newSelectedCategory = MaxCommandIndex;
+                            if (!MainMenuItems[newSelectedCategory].Enabled)
+                            {
+                                type = MenuDisplayTypes.Ignore;
+                                break;
+                            }
+                            SelectedCategory = newSelectedCategory;
                         }
                         else
                         {
-                            Selected = int.Parse(key.ToString().Trim('D')) - 1;
-                            if (Selected > MaxCommandIndex)
-                                Selected = MaxCommandIndex;
+                            int newSelected = int.Parse(key.ToString().Trim('D')) - 1;
+                            if (newSelected > MaxCommandIndex)
+                                newSelected = MaxCommandIndex;
+                            if (!MainMenuItems[SelectedCategory].Items[newSelected].Enabled)
+                            {
+                                type = MenuDisplayTypes.Ignore;
+                                break;
+                            }
+                            Selected = newSelected;
                         }
+                        type = MenuDisplayTypes.OnlyButtons;
                         break;
                     case ConsoleKey.D0:
                         if (CurrentCategory == -1)
                         {
-                            SelectedCategory = 9;
-                            if (SelectedCategory > MaxCommandIndex)
-                                SelectedCategory = MaxCommandIndex;
+                            int newSelectedCategory = 9;
+                            if (newSelectedCategory > MaxCommandIndex)
+                                newSelectedCategory = MaxCommandIndex;
+                            if (!MainMenuItems[newSelectedCategory].Enabled)
+                            {
+                                type = MenuDisplayTypes.Ignore;
+                                break;
+                            }
+                            SelectedCategory = newSelectedCategory;
                         }
                         else
                         {
-                            Selected = 9;
-                            if (Selected > MaxCommandIndex)
-                                Selected = MaxCommandIndex;
+                            int newSelected = 9;
+                            if (newSelected > MaxCommandIndex)
+                                newSelected = MaxCommandIndex;
+                            if (!MainMenuItems[SelectedCategory].Items[newSelected].Enabled)
+                            {
+                                type = MenuDisplayTypes.Ignore;
+                                break;
+                            }
+                            Selected = newSelected;
                         }
+                        type = MenuDisplayTypes.OnlyButtons;
                         break;
                     case ConsoleKey.Enter:
                         if (CurrentCategory == -1)
@@ -474,6 +561,7 @@ namespace GameServer
                         else
                             ProcessingCommands(Selected);
                         break;
+                    case ConsoleKey.Backspace:
                     case ConsoleKey.Escape:
                         if (CurrentCategory != -1)
                             ProcessingCommands(999);
@@ -484,85 +572,87 @@ namespace GameServer
                         }
                         break;
                     default:
-                        only_buttons = true;
+                        type = MenuDisplayTypes.Ignore;
                         break;
                 }
             }
         }
 
-        private void DisplayMainMenu(bool only_buttons)
+        private void DisplayMainMenu(MenuDisplayTypes type)
         {
             Console.CursorVisible = false;
             const int windowWidth = 52;
-            if (only_buttons)
+            if (type == MenuDisplayTypes.Ignore) return;
+            else if (type == MenuDisplayTypes.OnlyButtons)
             {
-                if (ServerStarted) Console.SetCursorPosition(0, 14);
+                if (ServerStarted) Console.SetCursorPosition(0, 17);
                 else Console.SetCursorPosition(0, 8);
                 if (CurrentCategory == -1)
                 {
-                    MaxCommandIndex = CategorizedMenu.Count - 1;
-                    for (int i = 0; i < CategorizedMenu.Count; i++)
-                        DrawButton($"{i + 1}. " + CategorizedMenu.Keys.ElementAt(i), i == SelectedCategory, windowWidth);
+                    MaxCommandIndex = MainMenuItems.Count - 1;
+                    for (int i = 0; i < MainMenuItems.Count; i++)
+                        DrawButton($"{i + 1}. " + MainMenuItems[i].Name, i == SelectedCategory, windowWidth, MainMenuItems[i].Enabled);
                 }
                 else
                 {
-                    string key = CategorizedMenu.Keys.ElementAt(CurrentCategory);
-                    MaxCommandIndex = CategorizedMenu[key].Count - 1;
-                    for (int i = 0; i < CategorizedMenu[key].Count; i++)
-                        DrawButton($"{i + 1}. " + CategorizedMenu[key][i], i == Selected, windowWidth);
+                    MaxCommandIndex = MainMenuItems[CurrentCategory].Items.Count - 1;
+                    for (int i = 0; i < MainMenuItems[CurrentCategory].Items.Count; i++)
+                        DrawButton($"{i + 1}. " + MainMenuItems[CurrentCategory].Items[i].Name, i == Selected, windowWidth, MainMenuItems[CurrentCategory].Items[i].Enabled);
                 }
-                return;
             }
-            Console.Clear();
-            DrawBorder('╔', '╗', '═', windowWidth);
-            WriteColoredCenteredText("Server Info", ConsoleColor.Yellow, windowWidth);
-            if (ServerStarted)
+            else if (type == MenuDisplayTypes.OnlyStatus)
             {
-                WriteColoredCenteredText("┌────────────────────────────┐", ConsoleColor.Cyan, windowWidth);
-                WriteServerInfoLine("Status", "Online", ConsoleColor.Green, windowWidth);
-                WriteServerInfoLine("Game", Dispatcher.GameStarted() ? "Started" : "Stoped",
-                    Dispatcher.GameStarted() ? ConsoleColor.Green : ConsoleColor.Red, windowWidth);
-                WriteServerInfoLine("PVP", Dispatcher.GetPVP() ? "On" : "Off",
-                    Dispatcher.GetPVP() ? ConsoleColor.DarkRed : ConsoleColor.Green, windowWidth);
-                WriteServerInfoLine("IP", $"{GetLocalIPAddress()}:{Server.LocalPort}", ConsoleColor.White, windowWidth);
-                WriteServerInfoLine("Password", ServerPassword == "None" ? "Not set" : ServerPassword,
-                                    ServerPassword == "None" ? ConsoleColor.DarkGray : ConsoleColor.White, windowWidth);
-                WriteServerInfoLine("Game mode", GameMode.ToString(), GameModeColors[(int)GameMode], windowWidth);
-                WriteServerInfoLine("Difficult", Difficulties[SelectedDifficult], DifficultyColors[SelectedDifficult], windowWidth);
-                WriteServerInfoLine("Max Players", MAX_CONNECTIONS.ToString(), ConsoleColor.White, windowWidth);
-                WriteColoredCenteredText("└────────────────────────────┘", ConsoleColor.Cyan, windowWidth);
+                if (ServerStarted) Console.SetCursorPosition(0, 15);
+                else Console.SetCursorPosition(0, 6);
+                WriteColoredCenteredText(StatusMessage, ConsoleColor.DarkYellow, windowWidth);
             }
             else
             {
-                WriteColoredCenteredText("┌────────────────────────────┐", ConsoleColor.Cyan, windowWidth);
-                WriteServerInfoLine("Status", "Offline", ConsoleColor.Red, windowWidth);
-                WriteColoredCenteredText("└────────────────────────────┘", ConsoleColor.Cyan, windowWidth);
+                Console.Clear();
+                DrawBorder('╔', '╗', '═', windowWidth);
+                DrawBorder('║', '║', ' ', windowWidth);
+                WriteColoredCenteredText("┌──────── Server Info ────────┐", ConsoleColor.DarkCyan, windowWidth);
+                if (ServerStarted)
+                {
+                    WriteServerInfoLine("Status", "Online", ConsoleColor.Green, windowWidth);
+                    WriteServerInfoLine("IP", $"{GetLocalIPAddress()}:{Server.LocalPort}", ConsoleColor.Yellow, windowWidth);
+                    WriteServerInfoLine("Password", ServerPassword == "None" ? "Not set" : ServerPassword, ServerPassword == "None" ? ConsoleColor.DarkGray : ConsoleColor.Yellow, windowWidth);
+                    WriteServerInfoLine("Players", Dispatcher.GetPlayers().Count.ToString(), ConsoleColor.Yellow, windowWidth);
+                    WriteServerInfoLine("Max Players", MAX_CONNECTIONS.ToString(), ConsoleColor.Yellow, windowWidth);
+                    WriteColoredCenteredText("├─────────────────────────────┤", ConsoleColor.DarkCyan, windowWidth);
+                    WriteServerInfoLine("Game", Dispatcher.GameStarted() ? "Started" : "Stopped", Dispatcher.GameStarted() ? ConsoleColor.Green : ConsoleColor.Red, windowWidth);
+                    WriteServerInfoLine("Game Mode", GameMode.ToString(), GameModeColors[(int)GameMode], windowWidth);
+                    WriteServerInfoLine("Difficulty", Difficulties[SelectedDifficult], DifficultyColors[SelectedDifficult], windowWidth);
+                    WriteServerInfoLine("PVP", Dispatcher.GetPVP() ? "On" : "Off", Dispatcher.GetPVP() ? ConsoleColor.Red : ConsoleColor.Green, windowWidth);
+                }
+                else
+                    WriteServerInfoLine("Status", "Offline", ConsoleColor.Red, windowWidth);
+                WriteColoredCenteredText("└─────────────────────────────┘", ConsoleColor.DarkCyan, windowWidth);
+                DrawBorder('║', '║', ' ', windowWidth);
+                WriteColoredCenteredText(StatusMessage, ConsoleColor.DarkYellow, windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
+                if (CurrentCategory == -1)
+                {
+                    MaxCommandIndex = MainMenuItems.Count - 1;
+                    for (int i = 0; i < MainMenuItems.Count; i++)
+                        DrawButton($"{i + 1}. " + MainMenuItems[i].Name, i == SelectedCategory, windowWidth, MainMenuItems[i].Enabled);
+                }
+                else
+                {
+                    MaxCommandIndex = MainMenuItems[CurrentCategory].Items.Count - 1;
+                    for (int i = 0; i < MainMenuItems[CurrentCategory].Items.Count; i++)
+                        DrawButton($"{i + 1}. " + MainMenuItems[CurrentCategory].Items[i].Name, i == Selected, windowWidth, MainMenuItems[CurrentCategory].Items[i].Enabled);
+                }
+                DrawBorder('╟', '╢', '─', windowWidth);
+                WriteColoredCenteredText("↑↓: Move    [ESC]: Exit    [Enter]: Confirm", ConsoleColor.Green, windowWidth);
+                if (ServerStarted && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    WriteColoredCenteredText("[I]: Copy IP    [P]: Copy Password", ConsoleColor.Green, windowWidth);
+                DrawBorder('╟', '╢', '─', windowWidth);
+                WriteColoredCenteredText("Developed by: Fatalan & Lonewolf239", ConsoleColor.Yellow, windowWidth);
+                WriteColoredCenteredText("GUI designed by: Lonewolf239", ConsoleColor.Yellow, windowWidth);
+                DrawBorder('╚', '╝', '═', windowWidth);
+                WriteColoredCenteredText($"Server v{GameServerConsole.server_version.Trim('|')} [v{GameServerConsole.version.Trim('|')}]", ConsoleColor.DarkGray, windowWidth, false);
             }
-            DrawBorder('║', '║', ' ', windowWidth);
-            WriteColoredCenteredText(StatusMessage, ConsoleColor.Magenta, windowWidth);
-            DrawBorder('╟', '╢', '─', windowWidth);
-            if (CurrentCategory == -1)
-            {
-                MaxCommandIndex = CategorizedMenu.Count - 1;
-                for (int i = 0; i < CategorizedMenu.Count; i++)
-                    DrawButton($"{i + 1}. " + CategorizedMenu.Keys.ElementAt(i), i == SelectedCategory, windowWidth);
-            }
-            else
-            {
-                string key = CategorizedMenu.Keys.ElementAt(CurrentCategory);
-                MaxCommandIndex = CategorizedMenu[key].Count - 1;
-                for (int i = 0; i < CategorizedMenu[key].Count; i++)
-                    DrawButton($"{i + 1}. " + CategorizedMenu[key][i], i == Selected, windowWidth);
-            }
-            DrawBorder('╟', '╢', '─', windowWidth);
-            WriteColoredCenteredText("↑↓: Move    ESC: Exit    Enter: Confirm", ConsoleColor.Green, windowWidth);
-            if (ServerStarted && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                WriteColoredCenteredText("I: Copy IP    P: Copy Password", ConsoleColor.Green, windowWidth);
-            DrawBorder('╟', '╢', '─', windowWidth);
-            WriteColoredCenteredText("Developed by: Fatalan & Lonewolf239", ConsoleColor.Yellow, windowWidth);
-            WriteColoredCenteredText("GUI designed by: Lonewolf239", ConsoleColor.Yellow, windowWidth);
-            DrawBorder('╚', '╝', '═', windowWidth);
-            WriteColoredCenteredText($"v{GameServerConsole.version.Trim('|')}", ConsoleColor.DarkGray, windowWidth, false);
         }
 
         private static void DrawBorder(char left, char right, char fill, int width)
@@ -605,7 +695,7 @@ namespace GameServer
             Console.ResetColor();
         }
 
-        private static void DrawButton(string text, bool isSelected, int width)
+        private static void DrawButton(string text, bool isSelected, int width, bool enabled)
         {
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -619,7 +709,12 @@ namespace GameServer
                 leftPadding = " ➤ ";
             }
             else
-                Console.ForegroundColor = ConsoleColor.Gray;
+            {
+                if (enabled)
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                else
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+            }
             Console.Write(leftPadding + text.PadRight(width - 5));
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -653,12 +748,34 @@ namespace GameServer
             return input;
         }
 
+        private void ChangeStatusText(string text)
+        {
+            StatusMessage = text;
+            if (InMenu)
+                DisplayMainMenu(MenuDisplayTypes.OnlyStatus);
+        }
+
         private void ProcessingCommands(int command)
         {
             if (CurrentCategory == -1)
             {
                 CurrentCategory = command;
                 Selected = 0;
+                int ntry = 0;
+                while (!MainMenuItems[SelectedCategory].Items[Selected].Enabled)
+                {
+                    Selected++;
+                    if (Selected >= MainMenuItems[SelectedCategory].Items.Count)
+                    {
+                        Selected = 0;
+                        ntry++;
+                        if (ntry >= 2)
+                        {
+                            CurrentCategory = -1;
+                            return;
+                        }
+                    }
+                }
                 return;
             }
             if (command == 999)
@@ -667,11 +784,11 @@ namespace GameServer
                 Selected = 0;
                 return;
             }
-            string keyCategorizedMenu = CategorizedMenu.Keys.ElementAt(CurrentCategory);
-            string commandInCategory = CategorizedMenu[keyCategorizedMenu][command];
+            string commandInCategory = MainMenuItems[CurrentCategory].Items[command].Name;
             switch (commandInCategory)
             {
                 case "How to play together":
+                    InMenu = false;
                     string[] howPlayText =
                     [
                         "╔════════════════════════════════════════════════════════════════╗",
@@ -700,6 +817,7 @@ namespace GameServer
                     DisplayTextMessage(howPlayText);
                     break;
                 case "Start the server":
+                    InMenu = false;
                     const int windowWidth = 54;
                     ServerSettingsValue = (int[])SettingsValue.Clone();
                     Console.Clear();
@@ -755,75 +873,97 @@ namespace GameServer
                         }
                         DrawBorder('╟', '╢', '─', windowWidth);
                         WriteColoredCenteredText("↑↓: Move    ←→: Change value", ConsoleColor.Green, windowWidth);
-                        WriteColoredCenteredText("ESC: Cancel    Enter: Confirm", ConsoleColor.Green, windowWidth);
+                        WriteColoredCenteredText("[ESC]: Cancel    [Enter]: Confirm", ConsoleColor.Green, windowWidth);
                         DrawBorder('╚', '╝', '═', windowWidth);
-                        key = Console.ReadKey(true).Key;
-                        if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
-                        {
-                            selectedServerIndex--;
-                            if (selectedServerIndex < 0)
-                                selectedServerIndex = ServerSettingsItem.Length - 1;
-                        }
-                        else if (key == ConsoleKey.DownArrow || key == ConsoleKey.S)
-                        {
-                            selectedServerIndex++;
-                            if (selectedServerIndex >= ServerSettingsItem.Length)
-                                selectedServerIndex = 0;
-                        }
-                        if (key == ConsoleKey.LeftArrow || key == ConsoleKey.A)
-                        {
-                            if (ServerSettingsValue[selectedServerIndex] > 0)
-                                ServerSettingsValue[selectedServerIndex]--;
-                            ChangeSettingsValue(selectedServerIndex, ServerSettingsValue[selectedServerIndex]);
-                        }
-                        else if (key == ConsoleKey.RightArrow || key == ConsoleKey.D)
-                        {
-                            if (ServerSettingsValue[selectedServerIndex] < SettingsMaxValue[selectedServerIndex])
-                                ServerSettingsValue[selectedServerIndex]++;
-                            ChangeSettingsValue(selectedServerIndex, ServerSettingsValue[selectedServerIndex]);
-                        }
                         if ((GameModes)ServerSettingsValue[0] == GameModes.Deathmatch) ServerSettingsValue[3] = 1;
-                        if (key == ConsoleKey.Escape)
+                        key = Console.ReadKey(true).Key;
+                        switch (key)
                         {
-                            StatusMessage = "Server startup cancelled...";
-                            return;
-                        }
-                        if (key == ConsoleKey.Enter)
-                        {
-                            try
-                            {
-                                MAX_CONNECTIONS = ServerSettingsValue[2] + 1;
-                                Server.Start(port);
-                                ServerStarted = true;
-                                StopedThread = false;
-                                PacketsThread();
-                                GameMode = (GameModes)ServerSettingsValue[0];
-                                Dispatcher.ChangeGameMode(GameMode);
-                                SelectedDifficult = ServerSettingsValue[1];
-                                Dispatcher.ChangeDifficulty(ServerSettingsValue[1]);
-                                Dispatcher.SetPVP(ServerSettingsValue[3] == 1);
-                                StatusMessage = $"Server started successfully";
-                            }
-                            catch (Exception e)
-                            {
-                                ServerStarted = false;
-                                StopedThread = true;
-                                StatusMessage = $"Error when starting server: {e.Message}";
-                            }
-                            return;
+                            case ConsoleKey.UpArrow:
+                            case ConsoleKey.W:
+                                selectedServerIndex--;
+                                if (selectedServerIndex < 0)
+                                    selectedServerIndex = ServerSettingsItem.Length - 1;
+                                break;
+                            case ConsoleKey.DownArrow:
+                            case ConsoleKey.S:
+                                selectedServerIndex++;
+                                if (selectedServerIndex >= ServerSettingsItem.Length)
+                                    selectedServerIndex = 0;
+                                break;
+                            case ConsoleKey.LeftArrow:
+                            case ConsoleKey.A:
+                                if (ServerSettingsValue[selectedServerIndex] > 0)
+                                    ServerSettingsValue[selectedServerIndex]--;
+                                ChangeSettingsValue(selectedServerIndex, ServerSettingsValue[selectedServerIndex]);
+                                break;
+                            case ConsoleKey.RightArrow:
+                            case ConsoleKey.D:
+                                if (ServerSettingsValue[selectedServerIndex] < SettingsMaxValue[selectedServerIndex])
+                                    ServerSettingsValue[selectedServerIndex]++;
+                                ChangeSettingsValue(selectedServerIndex, ServerSettingsValue[selectedServerIndex]);
+                                break;
+                            case ConsoleKey.D1:
+                            case ConsoleKey.D2:
+                            case ConsoleKey.D3:
+                            case ConsoleKey.D4:
+                            case ConsoleKey.D5:
+                            case ConsoleKey.D6:
+                            case ConsoleKey.D7:
+                            case ConsoleKey.D8:
+                            case ConsoleKey.D9:
+                                int value = int.Parse(key.ToString().Trim('D')) - 1;
+                                if (value > SettingsMaxValue[selectedServerIndex]) value = SettingsMaxValue[selectedServerIndex];
+                                ServerSettingsValue[selectedServerIndex] = value;
+                                ChangeSettingsValue(selectedServerIndex, ServerSettingsValue[selectedServerIndex]);
+                                break;
+                            case ConsoleKey.Escape:
+                                ChangeStatusText("Server startup cancelled...");
+                                return;
+                            case ConsoleKey.Enter:
+                                try
+                                {
+                                    MAX_CONNECTIONS = ServerSettingsValue[2] + 1;
+                                    MainMenuItems[1].Enable();
+                                    MainMenuItems[2].Enable();
+                                    MainMenuItems[3].Enable();
+                                    MainMenuItems[5].Items[0].Disable();
+                                    Server.Start(port);
+                                    ServerStarted = true;
+                                    StopedThread = false;
+                                    PacketsThread();
+                                    GameMode = (GameModes)ServerSettingsValue[0];
+                                    Dispatcher.ChangeGameMode(GameMode);
+                                    SelectedDifficult = ServerSettingsValue[1];
+                                    Dispatcher.ChangeDifficulty(ServerSettingsValue[1]);
+                                    Dispatcher.SetPVP(ServerSettingsValue[3] == 1);
+                                    ChangeStatusText($"Server started successfully");
+                                }
+                                catch (Exception e)
+                                {
+                                    ServerStarted = false;
+                                    StopedThread = true;
+                                    ChangeStatusText($"Error when starting server: {e.Message}");
+                                }
+                                return;
                         }
                     }
                 case "Stop the server":
+                    MainMenuItems[1].Disable();
+                    MainMenuItems[2].Disable();
+                    MainMenuItems[3].Disable();
+                    MainMenuItems[5].Items[0].Enable();
                     Server.Stop();
                     ServerStarted = false;
                     StopedThread = true;
-                    StatusMessage = "Server stopped successfully";
+                    ChangeStatusText("Server stopped successfully");
                     break;
                 case "Players list":
                     if (!ServerStarted)
-                        StatusMessage = "Please start the server first";
+                        ChangeStatusText("Please start the server first");
                     else
                     {
+                        InMenu = false;
                         Dictionary<int, string> players = Dispatcher.GetPlayers();
                         int[] playersID = players.Select(p => p.Key).ToArray();
                         (int, bool) selected_player = SelectPlayers(players);
@@ -841,96 +981,103 @@ namespace GameServer
                                         string name = players.Values.ElementAt(playerId);
                                         playerId = players.Keys.ElementAt(playerId);
                                         Dispatcher.KickPlayer(playerId, ref Server);
-                                        StatusMessage = $"Player {name} has been baned";
+                                        ChangeStatusText($"Player {name} has been baned");
                                     }
                                     else
                                     {
                                         string name = players.Values.ElementAt(playerId);
                                         playerId = players.Keys.ElementAt(playerId);
                                         Dispatcher.KickPlayer(playerId, ref Server);
-                                        StatusMessage = $"Player {name} has been kicked from the server";
+                                        ChangeStatusText($"Player {name} has been kicked from the server");
                                     }
                                 }
-                                catch { StatusMessage = "An unknown error occurred..."; }
+                                catch { ChangeStatusText("An unknown error occurred..."); }
                             }
                         }
                     }
                     break;
                 case "Banned players list":
                     if (!ServerStarted)
-                        StatusMessage = "Please start the server first";
+                        ChangeStatusText("Please start the server first");
                     else
                     {
+                        InMenu = false;
                         int selectedPlayer = SelectOption("Banned players list", [.. BannedPlayersList], "No banned players...", "Exit", "Unban");
                         if (selectedPlayer == -1)
                             return;
                         string bannedPlayerName = BannedPlayersList[selectedPlayer];
                         BannedPlayersList.RemoveAt(selectedPlayer);
-                        StatusMessage = $"Player {bannedPlayerName} was unbanned";
+                        ChangeStatusText($"Player {bannedPlayerName} was unbanned");
                     }
                     break;
                 case "Set difficulty":
                     if (!ServerStarted)
-                        StatusMessage = "Please start the server first";
+                        ChangeStatusText("Please start the server first");
                     else
                     {
                         try
                         {
+                            InMenu = false;
                             int selectedIndex = SelectOption("Select difficulty:", Difficulties);
                             if (selectedIndex == -1)
                             {
-                                StatusMessage = "The difficulty change has been cancelled.";
+                                ChangeStatusText("The difficulty change has been cancelled.");
                                 return;
                             }
                             SelectedDifficult = selectedIndex;
                             Dispatcher.ChangeDifficulty(selectedIndex);
-                            StatusMessage = $"Difficulty set to {Difficulties[selectedIndex]}";
+                            ChangeStatusText($"Difficulty set to {Difficulties[selectedIndex]}");
                         }
-                        catch (Exception e) { StatusMessage = $"Error setting difficulty: {e.Message}"; }
+                        catch (Exception e) { ChangeStatusText($"Error setting difficulty: {e.Message}"); }
                     }
                     break;
                 case "Select game mode":
                     if (!ServerStarted)
-                        StatusMessage = "Please start the server first";
+                        ChangeStatusText("Please start the server first");
                     else
                     {
                         try
                         {
+                            InMenu = false;
                             string[] gameModes = Enum.GetNames(typeof(GameModes));
                             int selectedIndex = SelectOption("Select game mode:", gameModes);
                             if (selectedIndex == -1)
                             {
-                                StatusMessage = "The game mode change has been cancelled.";
+                                ChangeStatusText("The game mode change has been cancelled.");
                                 return;
                             }
                             GameMode = (GameModes)selectedIndex;
                             Dispatcher.ChangeGameMode(GameMode);
-                            StatusMessage = $"Game mode set to {GameMode}";
+                            ChangeStatusText($"Game mode set to {GameMode}");
                         }
-                        catch (Exception e) { StatusMessage = $"Error setting game mode: {e.Message}"; }
+                        catch (Exception e) { ChangeStatusText($"Error setting game mode: {e.Message}"); }
                     }
                     break;
                 case "Start the game":
                     if (!ServerStarted)
-                        StatusMessage = "Please start the server first";
+                        ChangeStatusText("Please start the server first");
                     else
                     {
                         Dispatcher.StartGame();
-                        StatusMessage = "New game started on the server";
+                        ChangeStatusText("New game started on the server");
                     }
                     break;
                 case "Stop the game":
                     if (!ServerStarted)
-                        StatusMessage = "Please start the server first";
+                        ChangeStatusText("Please start the server first");
                     else
                     {
                         Dispatcher.StopGame();
-                        StatusMessage = "Game stopped on the server";
+                        ChangeStatusText("Game stopped on the server");
                     }
                     break;
                 case "Settings":
-                    if (!ServerStarted) Settings();
-                    else StatusMessage = "Please stop the server first";
+                    if (!ServerStarted)
+                    {
+                        InMenu = false;
+                        Settings();
+                    }
+                    else ChangeStatusText("Please stop the server first");
                     break;
                 case "Exit the program":
                     if (YesNoMessage())
@@ -939,7 +1086,6 @@ namespace GameServer
                         Exit = true;
                     }
                     break;
-
             }
         }
 
@@ -955,7 +1101,7 @@ namespace GameServer
             for (int i = 0; i < SettingsItems.Length; i++) Console.WriteLine("");
             DrawBorder('╟', '╢', '─', windowWidth);
             WriteColoredCenteredText("↑↓: Move    ←→: Change value", ConsoleColor.Green, windowWidth);
-            WriteColoredCenteredText("R: Reset    ESC: Exit", ConsoleColor.Green, windowWidth);
+            WriteColoredCenteredText("[R]: Reset    [ESC]: Exit", ConsoleColor.Green, windowWidth);
             DrawBorder('╚', '╝', '═', windowWidth);
             while (true)
             {
@@ -967,38 +1113,55 @@ namespace GameServer
                     else
                         DrawSettingsParametr(i, SettingsItems[i], i == selectedIndex, windowWidth, SettingsValue[i], SettingsMaxValue[i]);
                 }
-                key = Console.ReadKey(true).Key;
-                if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
-                {
-                    selectedIndex--;
-                    if (selectedIndex < 0)
-                        selectedIndex = SettingsItems.Length - 1;
-                }
-                else if (key == ConsoleKey.DownArrow || key == ConsoleKey.S)
-                {
-                    selectedIndex++;
-                    if (selectedIndex >= SettingsItems.Length)
-                        selectedIndex = 0;
-                }
-                if (key == ConsoleKey.LeftArrow || key == ConsoleKey.A)
-                {
-                    if (SettingsValue[selectedIndex] > 0)
-                        SettingsValue[selectedIndex]--;
-                    ChangeSettingsValue(selectedIndex, SettingsValue[selectedIndex]);
-                }
-                else if (key == ConsoleKey.RightArrow || key == ConsoleKey.D)
-                {
-                    if (SettingsValue[selectedIndex] < SettingsMaxValue[selectedIndex])
-                        SettingsValue[selectedIndex]++;
-                    ChangeSettingsValue(selectedIndex, SettingsValue[selectedIndex]);
-                }
                 if ((GameModes)SettingsValue[0] == GameModes.Deathmatch) SettingsValue[3] = 1;
-                if (key == ConsoleKey.R) SettingsToDefault();
-                if (key == ConsoleKey.Escape)
+                key = Console.ReadKey(true).Key;
+                switch (key)
                 {
-                    System.IO.File.WriteAllText("data.txt", $"{SettingsValue[0]};{SettingsValue[1]};{SettingsValue[2]}");
-                    ServerSettingsValue = (int[])SettingsValue.Clone();
-                    break;
+                    case ConsoleKey.UpArrow:
+                    case ConsoleKey.W:
+                        selectedIndex--;
+                        if (selectedIndex < 0)
+                            selectedIndex = SettingsItems.Length - 1;
+                        break;
+                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.S:
+                        selectedIndex++;
+                        if (selectedIndex >= SettingsItems.Length)
+                            selectedIndex = 0;
+                        break;
+                    case ConsoleKey.LeftArrow:
+                    case ConsoleKey.A:
+                        if (SettingsValue[selectedIndex] > 0)
+                            SettingsValue[selectedIndex]--;
+                        ChangeSettingsValue(selectedIndex, SettingsValue[selectedIndex]);
+                        break;
+                    case ConsoleKey.RightArrow:
+                    case ConsoleKey.D:
+                        if (SettingsValue[selectedIndex] < SettingsMaxValue[selectedIndex])
+                            SettingsValue[selectedIndex]++;
+                        ChangeSettingsValue(selectedIndex, SettingsValue[selectedIndex]);
+                        break;
+                    case ConsoleKey.R:
+                        SettingsToDefault();
+                        break;
+                    case ConsoleKey.D1:
+                    case ConsoleKey.D2:
+                    case ConsoleKey.D3:
+                    case ConsoleKey.D4:
+                    case ConsoleKey.D5:
+                    case ConsoleKey.D6:
+                    case ConsoleKey.D7:
+                    case ConsoleKey.D8:
+                    case ConsoleKey.D9:
+                        int value = int.Parse(key.ToString().Trim('D')) - 1;
+                        if (value > SettingsMaxValue[selectedIndex]) value = SettingsMaxValue[selectedIndex];
+                        SettingsValue[selectedIndex] = value;
+                        ChangeSettingsValue(selectedIndex, SettingsValue[selectedIndex]);
+                        break;
+                    case ConsoleKey.Escape:
+                        File.WriteAllText("data.txt", $"{SettingsValue[0]};{SettingsValue[1]};{SettingsValue[2]}");
+                        ServerSettingsValue = (int[])SettingsValue.Clone();
+                        return;
                 }
             }
         }
@@ -1034,6 +1197,8 @@ namespace GameServer
         {
             if (index == 2)
                 MAX_CONNECTIONS = value + 1;
+            if ((GameModes)SettingsValue[0] == GameModes.Deathmatch) SettingsValue[3] = 1;
+            if ((GameModes)ServerSettingsValue[0] == GameModes.Deathmatch) ServerSettingsValue[3] = 1;
         }
 
         private string GetParametrName(int index, int value)
@@ -1077,8 +1242,9 @@ namespace GameServer
             }).Start();
         }
 
-        private static bool YesNoMessage()
+        private bool YesNoMessage()
         {
+            InMenu = false;
             const int windowWidth = 31;
             int selectedIndex = 0;
             string[] options = ["Yes", "No"];
@@ -1089,13 +1255,13 @@ namespace GameServer
             DrawBorder('╟', '╢', '─', windowWidth);
             for (int i = 0; i < options.Length; i++) Console.WriteLine("");
             DrawBorder('╟', '╢', '─', windowWidth);
-            WriteColoredCenteredText("↑↓: Move    Enter: Select", ConsoleColor.Green, windowWidth);
+            WriteColoredCenteredText("↑↓: Move    [Enter]: Select", ConsoleColor.Green, windowWidth);
             DrawBorder('╚', '╝', '═', windowWidth);
             do
             {
                 Console.SetCursorPosition(0, 3);
                 for (int i = 0; i < options.Length; i++)
-                    DrawButton(options[i], i == selectedIndex, windowWidth);
+                    DrawButton(options[i], i == selectedIndex, windowWidth, true);
                 key = Console.ReadKey(true).Key;
                 if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
                 {
@@ -1131,9 +1297,9 @@ namespace GameServer
                 WriteColoredCenteredText("Lobby is empty...", ConsoleColor.Red, windowWidth);
             DrawBorder('╟', '╢', '─', windowWidth);
             if (players.Count > 0)
-                WriteColoredCenteredText("↑↓: Move    ESC: Exit    K: Kick    B: Ban", ConsoleColor.Green, windowWidth);
+                WriteColoredCenteredText("↑↓: Move    [ESC]: Exit    [K]: Kick    [B]: Ban", ConsoleColor.Green, windowWidth);
             else
-                WriteColoredCenteredText("↑↓: Move    ESC: Exit", ConsoleColor.Green, windowWidth);
+                WriteColoredCenteredText("↑↓: Move    [ESC]: Exit", ConsoleColor.Green, windowWidth);
             DrawBorder('╚', '╝', '═', windowWidth);
             do
             {
@@ -1143,7 +1309,7 @@ namespace GameServer
                     for (int i = 0; i < players.Count; i++)
                     {
                         int id = players.Keys.ElementAt(i);
-                        DrawButton($"ID: {id}, Name: {players[id]}", i == selectedIndex, windowWidth);
+                        DrawButton($"ID: {id}, Name: {players[id]}", i == selectedIndex, windowWidth, true);
                     }
                 }
                 key = Console.ReadKey(true).Key;
@@ -1185,9 +1351,9 @@ namespace GameServer
                 WriteColoredCenteredText(empty_string, ConsoleColor.Red, windowWidth);
             DrawBorder('╟', '╢', '─', windowWidth);
             if (options.Length > 0)
-                WriteColoredCenteredText($"↑↓: Move    ESC: {button1}    Enter: {button2}", ConsoleColor.Green, windowWidth);
+                WriteColoredCenteredText($"↑↓: Move    [ESC]: {button1}    [Enter]: {button2}", ConsoleColor.Green, windowWidth);
             else
-                WriteColoredCenteredText($"↑↓: Move  ESC: {button1}", ConsoleColor.Green, windowWidth);
+                WriteColoredCenteredText($"↑↓: Move  [ESC]: {button1}", ConsoleColor.Green, windowWidth);
             DrawBorder('╚', '╝', '═', windowWidth);
             do
             {
@@ -1195,7 +1361,7 @@ namespace GameServer
                 if (options.Length > 0)
                 {
                     for (int i = 0; i < options.Length; i++)
-                        DrawButton(options[i], i == selectedIndex, windowWidth);
+                        DrawButton(options[i], i == selectedIndex, windowWidth, true);
                 }
                 key = Console.ReadKey(true).Key;
                 if (options.Length == 0 && key == ConsoleKey.Enter) key = ConsoleKey.None;
