@@ -16,7 +16,7 @@ namespace SLIL
         static void Main()
         {
             mutex = new Mutex(true, "SLIL_Unique_Mutex");
-           // if (mutex.WaitOne(TimeSpan.Zero, true))
+            if (mutex.WaitOne(TimeSpan.Zero, true))
             {
                 if (!CheckWindows())
                 {
@@ -32,7 +32,10 @@ namespace SLIL
                 }
                 if (!HasEnoughMemory())
                 {
-                    Console.WriteLine("Внимание: У вас меньше 4 ГБ оперативной памяти. Производительность приложения может быть снижена.");
+                    if (Check_Language())
+                        Console.WriteLine("Внимание: У вас меньше 4 ГБ оперативной памяти. Производительность приложения может быть снижена.");
+                    else
+                        Console.WriteLine("Warning: You have less than 4GB of RAM. The performance of the application may be reduced.");
                 }
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

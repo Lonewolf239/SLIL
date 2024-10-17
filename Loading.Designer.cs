@@ -34,7 +34,9 @@
             this.background_progress = new System.Windows.Forms.Panel();
             this.progress = new System.Windows.Forms.Panel();
             this.progress_refresh = new System.Windows.Forms.Timer(this.components);
+            this.close_btn = new System.Windows.Forms.PictureBox();
             this.background_progress.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.close_btn)).BeginInit();
             this.SuspendLayout();
             // 
             // status_label
@@ -85,6 +87,21 @@
             this.progress_refresh.Interval = 10;
             this.progress_refresh.Tick += new System.EventHandler(this.Progress_refresh_Tick);
             // 
+            // close_btn
+            // 
+            this.close_btn.BackColor = System.Drawing.Color.Transparent;
+            this.close_btn.Image = global::SLIL.Properties.Resources.close;
+            this.close_btn.Location = new System.Drawing.Point(448, 6);
+            this.close_btn.Margin = new System.Windows.Forms.Padding(1);
+            this.close_btn.Name = "close_btn";
+            this.close_btn.Size = new System.Drawing.Size(30, 30);
+            this.close_btn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.close_btn.TabIndex = 2;
+            this.close_btn.TabStop = false;
+            this.close_btn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Close_btn_MouseClick);
+            this.close_btn.MouseEnter += new System.EventHandler(this.Close_btn_MouseEnter);
+            this.close_btn.MouseLeave += new System.EventHandler(this.Close_btn_MouseLeave);
+            // 
             // Loading
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -93,6 +110,7 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(484, 211);
             this.ControlBox = false;
+            this.Controls.Add(this.close_btn);
             this.Controls.Add(this.status_label);
             this.Controls.Add(this.background_progress);
             this.Cursor = System.Windows.Forms.Cursors.Default;
@@ -114,6 +132,7 @@
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseUp);
             this.background_progress.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.close_btn)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -124,5 +143,6 @@
         private System.Windows.Forms.Panel background_progress;
         private System.Windows.Forms.Panel progress;
         private System.Windows.Forms.Timer progress_refresh;
+        private System.Windows.Forms.PictureBox close_btn;
     }
 }

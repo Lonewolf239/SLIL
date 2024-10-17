@@ -1108,15 +1108,15 @@ namespace SLIL
                     break;
                 case 2:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-67") + Localizations.GetLString(Language, "0-1");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-67") + Localizations.GetLString(Language, "0-129");
                     else
-                        difficulty_label.Text = "Starting weapon: Pistol Lvl 2\nU get 2 medkits";
+                        difficulty_label.Text = "Starting weapon: Pistol Lvl 2\nYou will have 2 first aid kits";
                     break;
                 case 3:
                     if (DownloadedLocalizationList)
-                        difficulty_label.Text = Localizations.GetLString(Language, "0-68") + Localizations.GetLString(Language, "0-115") + Localizations.GetLString(Language, "0-2");
+                        difficulty_label.Text = Localizations.GetLString(Language, "0-68") + Localizations.GetLString(Language, "0-115") + Localizations.GetLString(Language, "0-129");
                     else
-                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money\nEnemies deal 25% less damage\nU get 2 medkits";
+                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money\nEnemies deal 25% less damage\nYou will have 2 first aid kits";
                     break;
                 default:
                     if (DownloadedLocalizationList)

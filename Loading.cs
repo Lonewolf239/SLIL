@@ -473,6 +473,16 @@ namespace SLIL
             await LoadingMainMenu();
         }
 
+        private void Close_btn_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                Application.Exit();
+        }
+
+        private void Close_btn_MouseEnter(object sender, EventArgs e) => close_btn.Image = Properties.Resources.close_entered;
+
+        private void Close_btn_MouseLeave(object sender, EventArgs e) => close_btn.Image = Properties.Resources.close;
+
         private void MainMenu_FormCLosing(object sender, FormClosingEventArgs e) => Application.Exit();
 
         private void Loading_FormClosing(object sender, FormClosingEventArgs e) => progress_refresh.Stop();
