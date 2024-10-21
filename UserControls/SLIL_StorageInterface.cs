@@ -138,7 +138,7 @@ namespace SLIL.UserControls
 
         private void UpdateInfo()
         {
-            string ammo = $"{weapon.AmmoInStock}/{weapon.AmmoCount}";
+            string ammo = weapon.InfinityAmmo ? "∞" : $"{weapon.AmmoInStock}/{weapon.AmmoCount}";
             weapon_name.Text = weapon.Upgradeable ? GetWeaponName() + $" {weapon.Level}" : GetWeaponName();
             if (weapon_icon.Image != SLIL.IconDict[weapon.GetType()][weapon.GetLevel()])
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];

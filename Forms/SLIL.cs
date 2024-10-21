@@ -15,6 +15,7 @@ using System.Threading;
 using SLIL.Classes;
 using SLIL.UserControls;
 using Play_Sound;
+using SLIL.UserControls.Inventory;
 
 namespace SLIL
 {
@@ -84,7 +85,7 @@ namespace SLIL
             { typeof(Flashlight), new[] { Properties.Resources.missing } },
             { typeof(Knife), new[] { Properties.Resources.missing } },
             { typeof(Candy), new[] { Properties.Resources.missing } },
-            { typeof(Petition), new[] { Properties.Resources.missing } },
+            { typeof(Petition), new[] { Properties.Resources.petition_icon } },
             { typeof(Rainblower), new[] { Properties.Resources.missing } },
             { typeof(Pistol), new[]
             {
@@ -117,9 +118,9 @@ namespace SLIL
                     /*LV2:*/ Properties.Resources.sniper_lv2_icon,
                     /*LV3:*/ Properties.Resources.sniper_lv3_icon,
             } },
-            { typeof(Fingershot), new[] { Properties.Resources.missing } },
-            { typeof(TSPitW), new[] { Properties.Resources.missing } },
-            { typeof(Gnome), new[] { Properties.Resources.missing } },
+            { typeof(Fingershot), new[] { Properties.Resources.fingershot_icon } },
+            { typeof(TSPitW), new[] { Properties.Resources.tspitw_icon } },
+            { typeof(Gnome), new[] { Properties.Resources.gnome_icon } },
             { typeof(FirstAidKit), new[]
             {
                 Properties.Resources.medkit_icon,
@@ -484,7 +485,7 @@ namespace SLIL
             low_stamine = new PlaySound(MainMenu.CGFReader.GetFile("low_stamine.wav"), false),
             starter = new PlaySound(MainMenu.CGFReader.GetFile("starter.wav"), false),
             explosion = new PlaySound(MainMenu.CGFReader.GetFile("explosion.wav"), false);
-        public PlaySound[] climb;
+        public static PlaySound[] climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
         public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
@@ -540,6 +541,8 @@ namespace SLIL
         private const double playerWidth = 0.4;
         private bool GameStarted = false, CorrectExit = false;
         private bool HoldLMB = false;
+        private WeaponToolTip InventoryWeaponToolTip;
+        private InfoToolTip InventoryInfoToolTip;
         private readonly Image[] ConnectionIcons =
         {
             Properties.Resources.excellent_connection,
@@ -3641,13 +3644,6 @@ namespace SLIL
         private void DoParkour(int y, int x)
         {
             if (!Controller.DoParkour(y, x)) return;
-            if (MainMenu.sounds)
-            {
-                if (Controller.GetPlayer().InTransport)
-                    Controller.PlayGameSound(climb[1]);
-                else
-                    Controller.PlayGameSound(climb[0]);
-            }
         }
 
         //  #====    ChangeWeapon   ====#
@@ -4085,7 +4081,10 @@ namespace SLIL
             {
                 weapon_0_icon.Image = IconDict[player.Guns[player.WeaponSlot_0].GetType()][player.Guns[player.WeaponSlot_0].GetLevel()];
                 weapon_0_ammo_icon.Image = GetAmmoIcon(player.Guns[player.WeaponSlot_0].AmmoType);
-                weapon_0_ammo_count.Text = $"{player.Guns[player.WeaponSlot_0].AmmoInStock}/{player.Guns[player.WeaponSlot_0].AmmoCount}";
+                if (player.Guns[player.WeaponSlot_0].InfinityAmmo)
+                    weapon_0_ammo_count.Text = "∞";
+                else
+                    weapon_0_ammo_count.Text = $"{player.Guns[player.WeaponSlot_0].AmmoInStock}/{player.Guns[player.WeaponSlot_0].AmmoCount}";
             }
             else
             {
@@ -4097,7 +4096,10 @@ namespace SLIL
             {
                 weapon_1_icon.Image = IconDict[player.Guns[player.WeaponSlot_1].GetType()][player.Guns[player.WeaponSlot_1].GetLevel()];
                 weapon_1_ammo_icon.Image = GetAmmoIcon(player.Guns[player.WeaponSlot_1].AmmoType);
-                weapon_1_ammo_count.Text = $"{player.Guns[player.WeaponSlot_1].AmmoInStock}/{player.Guns[player.WeaponSlot_1].AmmoCount}";
+                if (player.Guns[player.WeaponSlot_1].InfinityAmmo)
+                    weapon_1_ammo_count.Text = "∞";
+                else
+                    weapon_1_ammo_count.Text = $"{player.Guns[player.WeaponSlot_1].AmmoInStock}/{player.Guns[player.WeaponSlot_1].AmmoCount}";
             }
             else
             {
@@ -4105,6 +4107,88 @@ namespace SLIL
                 weapon_1_ammo_icon.Image = GetAmmoIcon(AmmoTypes.None);
                 weapon_1_ammo_count.Text = "0/0";
             }
+        }
+
+        private void Weapon_icon_MouseEnter(object sender, EventArgs e)
+        {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
+            if (inventory_content_panel.Controls.Contains(InventoryWeaponToolTip))
+                inventory_content_panel.Controls.Remove(InventoryWeaponToolTip);
+            InventoryWeaponToolTip?.Dispose();
+            Gun weapon;
+            if (((Control)sender).Name == "pistol_icon")
+                weapon = player.GUNS[2];
+            else if (((Control)sender).Name == "weapon_0_icon" && player.WeaponSlot_0 != -1)
+                weapon = player.GUNS[player.WeaponSlot_0];
+            else if (((Control)sender).Name == "weapon_1_icon" && player.WeaponSlot_1 != -1)
+                weapon = player.GUNS[player.WeaponSlot_1];
+            else return;
+            InventoryWeaponToolTip = new WeaponToolTip
+            {
+                Weapon = weapon,
+                Left = 0               
+            };
+            InventoryWeaponToolTip.Top = inventory_content_panel.Height - InventoryWeaponToolTip.Height;
+            inventory_content_panel.Controls.Add(InventoryWeaponToolTip);
+            InventoryWeaponToolTip.BringToFront();
+        }
+
+        private void Weapon_icon_MouseLeave(object sender, EventArgs e)
+        {
+            if (inventory_content_panel.Controls.Contains(InventoryWeaponToolTip))
+                inventory_content_panel.Controls.Remove(InventoryWeaponToolTip);
+            InventoryWeaponToolTip?.Dispose();
+        }
+
+        private void Info_icon_MouseEnter(object sender, EventArgs e)
+        {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
+            if (inventory_content_panel.Controls.Contains(InventoryInfoToolTip))
+                inventory_content_panel.Controls.Remove(InventoryInfoToolTip);
+            InventoryInfoToolTip?.Dispose();
+            string description;
+            if (((Control)sender).Name == "medkit_icon")
+            {
+                if (MainMenu.DownloadedLocalizationList)
+                    description = MainMenu.Localizations.GetLString(MainMenu.Language, ((FirstAidKit)player.GUNS[10]).Description[player.CuteMode ? 2 : 0]);
+                else
+                    description = ((FirstAidKit)player.GUNS[10]).Description[player.CuteMode ? 3 : 1];
+            }
+            else if (((Control)sender).Name == "helmet_icon")
+            {
+                if (MainMenu.DownloadedLocalizationList)
+                    description = MainMenu.Localizations.GetLString(MainMenu.Language, ((Helmet)player.GUNS[14]).Description[0]);
+                else
+                    description = ((Helmet)player.GUNS[14]).Description[1];
+            }
+            else if (((Control)sender).Name == "adrenalin_icon")
+            {
+                if (MainMenu.DownloadedLocalizationList)
+                    description = MainMenu.Localizations.GetLString(MainMenu.Language, ((Adrenalin)player.GUNS[13]).Description[0]);
+                else
+                    description = ((Adrenalin)player.GUNS[13]).Description[1];
+            }
+            else if (((Control)sender).Name == "pet_icon" && player.PET != null)
+            {
+                if (MainMenu.DownloadedLocalizationList)
+                    description = MainMenu.Localizations.GetLString(MainMenu.Language, player.PET.Description[0]);
+                else
+                    description = player.PET.Description[1];
+            }
+            else return;
+            InventoryInfoToolTip = new InfoToolTip(description) { Left = 0 };
+            InventoryInfoToolTip.Top = inventory_content_panel.Height - InventoryInfoToolTip.Height;
+            inventory_content_panel.Controls.Add(InventoryInfoToolTip);
+            InventoryInfoToolTip.BringToFront();
+        }
+
+        private void Info_icon_MouseLeave(object sender, EventArgs e)
+        {
+            if (inventory_content_panel.Controls.Contains(InventoryInfoToolTip))
+                inventory_content_panel.Controls.Remove(InventoryInfoToolTip);
+            InventoryInfoToolTip?.Dispose();
         }
 
         //  #====       Shop        ====#

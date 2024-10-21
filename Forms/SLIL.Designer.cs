@@ -68,6 +68,7 @@ namespace SLIL
             this.pet_panel = new System.Windows.Forms.Panel();
             this.pet_icon = new System.Windows.Forms.PictureBox();
             this.pet_label = new System.Windows.Forms.Label();
+            this.hide_weapon_picture = new System.Windows.Forms.PictureBox();
             this.pet_title = new System.Windows.Forms.Label();
             this.helmet_count = new System.Windows.Forms.Label();
             this.helmet_icon = new System.Windows.Forms.PictureBox();
@@ -93,7 +94,6 @@ namespace SLIL
             this.pistol_label = new System.Windows.Forms.Label();
             this.pistol_ammo_count = new System.Windows.Forms.Label();
             this.inventory_label = new System.Windows.Forms.Label();
-            this.hide_weapon_picture = new System.Windows.Forms.PictureBox();
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -104,6 +104,7 @@ namespace SLIL
             this.inventory_content_panel.SuspendLayout();
             this.pet_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pet_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.helmet_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.adrenalin_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.medkit_icon)).BeginInit();
@@ -116,7 +117,6 @@ namespace SLIL
             this.pistol_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).BeginInit();
             this.SuspendLayout();
             // 
             // shop_panel
@@ -480,6 +480,8 @@ namespace SLIL
             this.pet_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pet_icon.TabIndex = 4;
             this.pet_icon.TabStop = false;
+            this.pet_icon.MouseEnter += new System.EventHandler(this.Info_icon_MouseEnter);
+            this.pet_icon.MouseLeave += new System.EventHandler(this.Info_icon_MouseLeave);
             // 
             // pet_label
             // 
@@ -492,6 +494,15 @@ namespace SLIL
             this.pet_label.TabIndex = 1;
             this.pet_label.Text = "PET";
             this.pet_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // hide_weapon_picture
+            // 
+            this.hide_weapon_picture.Location = new System.Drawing.Point(0, 0);
+            this.hide_weapon_picture.Name = "hide_weapon_picture";
+            this.hide_weapon_picture.Size = new System.Drawing.Size(987, 256);
+            this.hide_weapon_picture.TabIndex = 14;
+            this.hide_weapon_picture.TabStop = false;
+            this.hide_weapon_picture.Visible = false;
             // 
             // pet_title
             // 
@@ -526,6 +537,8 @@ namespace SLIL
             this.helmet_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.helmet_icon.TabIndex = 10;
             this.helmet_icon.TabStop = false;
+            this.helmet_icon.MouseEnter += new System.EventHandler(this.Info_icon_MouseEnter);
+            this.helmet_icon.MouseLeave += new System.EventHandler(this.Info_icon_MouseLeave);
             // 
             // adrenalin_count
             // 
@@ -548,6 +561,8 @@ namespace SLIL
             this.adrenalin_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.adrenalin_icon.TabIndex = 8;
             this.adrenalin_icon.TabStop = false;
+            this.adrenalin_icon.MouseEnter += new System.EventHandler(this.Info_icon_MouseEnter);
+            this.adrenalin_icon.MouseLeave += new System.EventHandler(this.Info_icon_MouseLeave);
             // 
             // medkit_count
             // 
@@ -570,6 +585,8 @@ namespace SLIL
             this.medkit_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.medkit_icon.TabIndex = 6;
             this.medkit_icon.TabStop = false;
+            this.medkit_icon.MouseEnter += new System.EventHandler(this.Info_icon_MouseEnter);
+            this.medkit_icon.MouseLeave += new System.EventHandler(this.Info_icon_MouseLeave);
             // 
             // items_title
             // 
@@ -616,6 +633,8 @@ namespace SLIL
             this.weapon_1_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.weapon_1_icon.TabIndex = 4;
             this.weapon_1_icon.TabStop = false;
+            this.weapon_1_icon.MouseEnter += new System.EventHandler(this.Weapon_icon_MouseEnter);
+            this.weapon_1_icon.MouseLeave += new System.EventHandler(this.Weapon_icon_MouseLeave);
             // 
             // weapon_1_ammo_icon
             // 
@@ -671,6 +690,8 @@ namespace SLIL
             this.weapon_0_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.weapon_0_icon.TabIndex = 4;
             this.weapon_0_icon.TabStop = false;
+            this.weapon_0_icon.MouseEnter += new System.EventHandler(this.Weapon_icon_MouseEnter);
+            this.weapon_0_icon.MouseLeave += new System.EventHandler(this.Weapon_icon_MouseLeave);
             // 
             // weapon_0_ammo_icon
             // 
@@ -726,6 +747,8 @@ namespace SLIL
             this.pistol_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pistol_icon.TabIndex = 4;
             this.pistol_icon.TabStop = false;
+            this.pistol_icon.MouseEnter += new System.EventHandler(this.Weapon_icon_MouseEnter);
+            this.pistol_icon.MouseLeave += new System.EventHandler(this.Weapon_icon_MouseLeave);
             // 
             // pistol_ammo_icon
             // 
@@ -773,15 +796,6 @@ namespace SLIL
             this.inventory_label.Text = "Инвентарь";
             this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // hide_weapon_picture
-            // 
-            this.hide_weapon_picture.Location = new System.Drawing.Point(0, 0);
-            this.hide_weapon_picture.Name = "hide_weapon_picture";
-            this.hide_weapon_picture.Size = new System.Drawing.Size(987, 256);
-            this.hide_weapon_picture.TabIndex = 14;
-            this.hide_weapon_picture.TabStop = false;
-            this.hide_weapon_picture.Visible = false;
-            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -821,6 +835,7 @@ namespace SLIL
             this.inventory_content_panel.ResumeLayout(false);
             this.pet_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pet_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.helmet_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.adrenalin_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.medkit_icon)).EndInit();
@@ -833,7 +848,6 @@ namespace SLIL
             this.pistol_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).EndInit();
             this.ResumeLayout(false);
 
         }

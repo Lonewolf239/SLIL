@@ -1804,6 +1804,10 @@ namespace SLIL.Classes
             Player p = GetPlayer(playerID);
             if (p == null) return false;
             if (p.EffectCheck(3)) return false;
+            if (p.InTransport)
+                PlayGameSound(playerID, SLIL.climb[1]);
+            else
+                PlayGameSound(playerID, SLIL.climb[0]);
             p.InParkour = true;
             p.ParkourState = 0;
             p.X = x + 0.5;

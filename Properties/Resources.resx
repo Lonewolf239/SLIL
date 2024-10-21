@@ -781,9 +781,6 @@
   <data name="shotgun_lv2_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\shotgun_lv2_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="how_tp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\how_tp.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="sniper_lv1_shoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\sniper_lv1_shoot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -822,9 +819,6 @@
   </data>
   <data name="medkit_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\medkit_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="no_animation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\no_animation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pistol_lv2_shoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\pistol_lv2_shoot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1203,5 +1197,17 @@
   </data>
   <data name="sniper_lv2_reload_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\sniper_lv2_reload_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gnome_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\gnome_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="petition_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\petition_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="fingershot_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\fingershot_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tspitw_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\tspitw_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

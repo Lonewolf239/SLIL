@@ -278,7 +278,7 @@ namespace GameServer
         public bool Stoped { get; set; }
         public bool HasStopAnimation { get; set; }
         public string[] Name { get; set; }
-        public string[] Descryption { get; set; }
+        public string[] Description { get; set; }
         public int Cost { get; set; }
         public int Index { get; set; }
         public bool PetAbilityReloading { get; set; }
@@ -609,7 +609,7 @@ namespace GameServer
             Index = 0;
             Cost = 150;
             Name = ["5-0", "Silly Cat"];
-            Descryption = ["5-1", "Restores 2 HP every 8 seconds"];
+            Description = ["5-1", "Restores 2 HP every 8 seconds"];
             Texture = 21;
             PetAbility = 0;
             AbilityReloadTime = 8;
@@ -631,7 +631,7 @@ namespace GameServer
             Index = 1;
             Cost = 60;
             Name = ["5-2", "Green Gnome"];
-            Descryption = ["5-3", "Increases maximum health by 25"];
+            Description = ["5-3", "Increases maximum health by 25"];
             Texture = 22;
             PetAbility = 1;
             IsInstantAbility = 1;
@@ -652,7 +652,7 @@ namespace GameServer
             Index = 2;
             Cost = 60;
             Name = ["5-4", "Energy Drink"];
-            Descryption = ["5-5", "Increases endurance and speed"];
+            Description = ["5-5", "Increases endurance and speed"];
             Texture = 23;
             PetAbility = 2;
             IsInstantAbility = 1;
@@ -679,7 +679,7 @@ namespace GameServer
             Index = 3;
             Cost = 666;
             Name = ["5-6", "Podseratel"];
-            Descryption = ["5-7", "The world is a fairy tale..."];
+            Description = ["5-7", "The world is a fairy tale..."];
             Texture = 24;
             PetAbility = 3;
             IsInstantAbility = 2;

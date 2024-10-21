@@ -34,8 +34,8 @@ namespace SLIL.UserControls
         private string GetPetDescryption()
         {
             if (index == 0)
-                return MainMenu.Localizations.GetLString(MainMenu.Language, pet.Descryption[0]);
-            return pet.Descryption[1];
+                return MainMenu.Localizations.GetLString(MainMenu.Language, pet.Description[0]);
+            return pet.Description[1];
         }
 
         private void SLIL_PetShopInterface_VisibleChanged(object sender, EventArgs e)

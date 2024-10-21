@@ -41,7 +41,6 @@ namespace SLIL
         private readonly PlaySound hmm, omg;
         private readonly PlaySound MainMenuTheme;
         private readonly PlaySound game_over;
-        private readonly PlaySound[] climb;
         public static Player player;
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
@@ -103,7 +102,6 @@ namespace SLIL
             MainMenuTheme = new PlaySound(CGFReader.GetFile("main_menu_theme.wav"), true);
             hmm = new PlaySound(CGFReader.GetFile("hmm.wav"), false);
             omg = new PlaySound(CGFReader.GetFile("OMG.wav"), false);
-            climb = new PlaySound[] { new PlaySound(CGFReader.GetFile("climb.wav"), false), new PlaySound(CGFReader.GetFile("climb_bike.wav"), false) };
             game_over = new PlaySound(CGFReader.GetFile("game_over.wav"), false);
             AddSeparators();
         }
@@ -1621,7 +1619,6 @@ namespace SLIL
                 if (sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache)
                 {
-                    climb = climb,
                     PlayerName = PlayerName
                 };
                 form.ShowDialog();
@@ -1650,7 +1647,6 @@ namespace SLIL
                 if (sounds) MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3, (Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
                 {
-                    climb = climb,
                     PlayerName = PlayerName
                 };
                 form.ShowDialog();
@@ -1767,7 +1763,6 @@ namespace SLIL
             difficulty = 4;
             SLIL form = new SLIL(textureCache, true, tutorialMap, 8, 8, 3.5, 3.5)
             {
-                climb = climb,
                 PlayerName = PlayerName
             };
             form.ShowDialog();
@@ -1936,10 +1931,7 @@ namespace SLIL
                 }
                 if (need_password.Checked)
                     password = password_connect_input.Text;
-                SLIL form = new SLIL(textureCache, ip, int.Parse(port), password, PlayerName)
-                {
-                    climb = climb,
-                };
+                SLIL form = new SLIL(textureCache, ip, int.Parse(port), password, PlayerName);
                 form.ShowDialog();
             }
             catch { }

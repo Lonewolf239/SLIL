@@ -183,7 +183,7 @@
     <Compile Include="LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Resources1.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -272,6 +272,18 @@
     <Compile Include="UserControls\EditorElementSelector.Designer.cs">
       <DependentUpon>EditorElementSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Inventory\InfoToolTip.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Inventory\InfoToolTip.Designer.cs">
+      <DependentUpon>InfoToolTip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Inventory\WeaponToolTip.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Inventory\WeaponToolTip.Designer.cs">
+      <DependentUpon>WeaponToolTip.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PlayerPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -323,7 +335,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SLIL.resx">
       <DependentUpon>SLIL.cs</DependentUpon>
@@ -351,6 +363,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\EditorElementSelector.resx">
       <DependentUpon>EditorElementSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Inventory\InfoToolTip.resx">
+      <DependentUpon>InfoToolTip.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Inventory\WeaponToolTip.resx">
+      <DependentUpon>WeaponToolTip.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\PlayerPanel.resx">
       <DependentUpon>PlayerPanel.cs</DependentUpon>
@@ -1442,6 +1460,10 @@
     <None Include="Images\test.png" />
     <None Include="Images\cancel_load.png" />
     <None Include="Images\close_entered.png" />
+    <None Include="Images\petition_icon.png" />
+    <None Include="Images\gnome_icon.png" />
+    <None Include="Images\fingershot_icon.png" />
+    <None Include="Images\tspitw_icon.png" />
     <Content Include="SLIL_v0_1\sounds\game_over.wav" />
     <Content Include="SLIL_v0_1\sounds\step_0.wav" />
     <Content Include="SLIL_v0_1\sounds\step_1.wav" />

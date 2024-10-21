@@ -283,7 +283,7 @@ namespace SLIL.Classes
         public bool Stoped { get; set; }
         public bool HasStopAnimation { get; set; }
         public string[] Name { get; set; }
-        public string[] Descryption { get; set; }
+        public string[] Description { get; set; }
         public int Cost { get; set; }
         public int Index { get; set; }
         public bool PetAbilityReloading { get; set; }
@@ -614,7 +614,7 @@ namespace SLIL.Classes
             Index = 0;
             Cost = 150;
             Name = new[] { "5-0", "Silly Cat" };
-            Descryption = new[] { "5-1", "Restores 2 HP every 8 seconds" };
+            Description = new[] { "5-1", "Restores 2 HP every 8 seconds" };
             Texture = 21;
             PetAbility = 0;
             AbilityReloadTime = 8;
@@ -636,7 +636,7 @@ namespace SLIL.Classes
             Index = 1;
             Cost = 60;
             Name = new[] { "5-2", "Green Gnome" };
-            Descryption = new[] { "5-3", "Increases maximum health by 25" };
+            Description = new[] { "5-3", "Increases maximum health by 25" };
             Texture = 22;
             PetAbility = 1;
             IsInstantAbility = 1;
@@ -657,7 +657,7 @@ namespace SLIL.Classes
             Index = 2;
             Cost = 60;
             Name = new[] { "5-4", "Energy Drink" };
-            Descryption = new[] { "5-5", "Increases endurance and speed" };
+            Description = new[] { "5-5", "Increases endurance and speed" };
             Texture = 23;
             PetAbility = 2;
             IsInstantAbility = 1;
@@ -684,7 +684,7 @@ namespace SLIL.Classes
             Index = 3;
             Cost = 666;
             Name = new[] { "5-6", "Podseratel" };
-            Descryption = new[] { "5-7", "The world is a fairy tale..." };
+            Description = new[] { "5-7", "The world is a fairy tale..." };
             Texture = 24;
             PetAbility = 3;
             IsInstantAbility = 2;
