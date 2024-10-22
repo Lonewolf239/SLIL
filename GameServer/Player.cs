@@ -29,7 +29,6 @@ namespace GameServer
         public bool IsPetting { get; set; }
         public bool InParkour { get; set; }
         public int ParkourState { get; set; }
-        public int Stage { get; set; }
         public bool CuteMode { get; set; }
         public int EnemiesKilled { get; set; }
         public int TotalEnemiesKilled { get; set; }
@@ -523,7 +522,6 @@ namespace GameServer
                     DisposableItems[i].SetDefault();
                 Money = 15;
                 CurseCureChance = 0.08;
-                Stage = 0;
                 TotalEnemiesKilled = 0;
                 WeaponSlot_0 = WeaponSlot_1 = -1;
                 MAX_MOVE_SPEED = 1.8;
@@ -774,9 +772,8 @@ namespace GameServer
                 if (Effects[i].ID == 0) HealHP(rand.Next(2, 6));
                 if (Effects[i].ID == 5)
                 {
-                    int damage = rand.Next(2);
-                    if (HP - damage >= 1)
-                        DealDamage(damage, false);
+                    int damage = rand.Next(3);
+                    if (HP - damage >= 1) DealDamage(damage, false);
                 }
                 if (Effects[i].ReducingTimeRemaining())
                 {

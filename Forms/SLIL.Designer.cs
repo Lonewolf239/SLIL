@@ -58,8 +58,17 @@ namespace SLIL
             this.chill_timer = new System.Windows.Forms.Timer(this.components);
             this.stage_timer = new System.Windows.Forms.Timer(this.components);
             this.game_over_panel = new System.Windows.Forms.Panel();
-            this.exit_restart_btn = new System.Windows.Forms.Button();
+            this.game_over_interface = new System.Windows.Forms.Panel();
+            this.cause_of_death_icon = new System.Windows.Forms.PictureBox();
+            this.cause_of_death_label = new System.Windows.Forms.Label();
+            this.total_time_label = new System.Windows.Forms.Label();
+            this.last_stage_label = new System.Windows.Forms.Label();
+            this.total_killed_label = new System.Windows.Forms.Label();
+            this.total_time_icon = new System.Windows.Forms.PictureBox();
+            this.last_stage_icon = new System.Windows.Forms.PictureBox();
+            this.total_killed_icon = new System.Windows.Forms.PictureBox();
             this.restart_btn = new System.Windows.Forms.Button();
+            this.exit_restart_btn = new System.Windows.Forms.Button();
             this.shotgun_pull_timer = new System.Windows.Forms.Timer(this.components);
             this.mouse_hold_timer = new System.Windows.Forms.Timer(this.components);
             this.camera_shaking_timer = new System.Windows.Forms.Timer(this.components);
@@ -94,13 +103,17 @@ namespace SLIL
             this.pistol_label = new System.Windows.Forms.Label();
             this.pistol_ammo_count = new System.Windows.Forms.Label();
             this.inventory_label = new System.Windows.Forms.Label();
-            this.game_over_interface = new System.Windows.Forms.Panel();
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
             this.shop_title_panel.SuspendLayout();
             this.pause_panel.SuspendLayout();
             this.game_over_panel.SuspendLayout();
+            this.game_over_interface.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cause_of_death_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.total_time_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.last_stage_icon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.total_killed_icon)).BeginInit();
             this.inventory_panel.SuspendLayout();
             this.inventory_content_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).BeginInit();
@@ -118,7 +131,6 @@ namespace SLIL
             this.pistol_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).BeginInit();
-            this.game_over_interface.SuspendLayout();
             this.SuspendLayout();
             // 
             // shop_panel
@@ -380,21 +392,110 @@ namespace SLIL
             this.game_over_panel.TabIndex = 6;
             this.game_over_panel.Visible = false;
             // 
-            // exit_restart_btn
+            // game_over_interface
             // 
-            this.exit_restart_btn.AutoSize = true;
-            this.exit_restart_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.exit_restart_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.exit_restart_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.exit_restart_btn.ForeColor = System.Drawing.Color.White;
-            this.exit_restart_btn.Location = new System.Drawing.Point(264, 319);
-            this.exit_restart_btn.Name = "exit_restart_btn";
-            this.exit_restart_btn.Size = new System.Drawing.Size(112, 41);
-            this.exit_restart_btn.TabIndex = 40;
-            this.exit_restart_btn.TabStop = false;
-            this.exit_restart_btn.Text = "ВЫЙТИ";
-            this.exit_restart_btn.UseVisualStyleBackColor = true;
-            this.exit_restart_btn.Click += new System.EventHandler(this.Exit_btn_Click);
+            this.game_over_interface.Controls.Add(this.cause_of_death_icon);
+            this.game_over_interface.Controls.Add(this.cause_of_death_label);
+            this.game_over_interface.Controls.Add(this.total_time_label);
+            this.game_over_interface.Controls.Add(this.last_stage_label);
+            this.game_over_interface.Controls.Add(this.total_killed_label);
+            this.game_over_interface.Controls.Add(this.total_time_icon);
+            this.game_over_interface.Controls.Add(this.last_stage_icon);
+            this.game_over_interface.Controls.Add(this.total_killed_icon);
+            this.game_over_interface.Controls.Add(this.game_over_text);
+            this.game_over_interface.Controls.Add(this.restart_btn);
+            this.game_over_interface.Controls.Add(this.exit_restart_btn);
+            this.game_over_interface.Location = new System.Drawing.Point(226, 175);
+            this.game_over_interface.Name = "game_over_interface";
+            this.game_over_interface.Size = new System.Drawing.Size(630, 363);
+            this.game_over_interface.TabIndex = 41;
+            // 
+            // cause_of_death_icon
+            // 
+            this.cause_of_death_icon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.cause_of_death_icon.Location = new System.Drawing.Point(443, 114);
+            this.cause_of_death_icon.Name = "cause_of_death_icon";
+            this.cause_of_death_icon.Size = new System.Drawing.Size(128, 128);
+            this.cause_of_death_icon.TabIndex = 48;
+            this.cause_of_death_icon.TabStop = false;
+            // 
+            // cause_of_death_label
+            // 
+            this.cause_of_death_label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.cause_of_death_label.Font = new System.Drawing.Font("Consolas", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cause_of_death_label.ForeColor = System.Drawing.Color.White;
+            this.cause_of_death_label.Location = new System.Drawing.Point(374, 61);
+            this.cause_of_death_label.Name = "cause_of_death_label";
+            this.cause_of_death_label.Size = new System.Drawing.Size(256, 50);
+            this.cause_of_death_label.TabIndex = 47;
+            this.cause_of_death_label.Text = "Причина смерти:";
+            this.cause_of_death_label.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
+            // total_time_label
+            // 
+            this.total_time_label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.total_time_label.Font = new System.Drawing.Font("Consolas", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.total_time_label.ForeColor = System.Drawing.Color.White;
+            this.total_time_label.Location = new System.Drawing.Point(78, 192);
+            this.total_time_label.Name = "total_time_label";
+            this.total_time_label.Size = new System.Drawing.Size(195, 50);
+            this.total_time_label.TabIndex = 46;
+            this.total_time_label.Text = "00:00:00";
+            this.total_time_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // last_stage_label
+            // 
+            this.last_stage_label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.last_stage_label.Font = new System.Drawing.Font("Consolas", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.last_stage_label.ForeColor = System.Drawing.Color.White;
+            this.last_stage_label.Location = new System.Drawing.Point(78, 136);
+            this.last_stage_label.Name = "last_stage_label";
+            this.last_stage_label.Size = new System.Drawing.Size(195, 50);
+            this.last_stage_label.TabIndex = 45;
+            this.last_stage_label.Text = "999";
+            this.last_stage_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // total_killed_label
+            // 
+            this.total_killed_label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.total_killed_label.Font = new System.Drawing.Font("Consolas", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.total_killed_label.ForeColor = System.Drawing.Color.White;
+            this.total_killed_label.Location = new System.Drawing.Point(78, 80);
+            this.total_killed_label.Name = "total_killed_label";
+            this.total_killed_label.Size = new System.Drawing.Size(195, 50);
+            this.total_killed_label.TabIndex = 44;
+            this.total_killed_label.Text = "999";
+            this.total_killed_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // total_time_icon
+            // 
+            this.total_time_icon.Image = global::SLIL.Properties.Resources.time;
+            this.total_time_icon.Location = new System.Drawing.Point(22, 192);
+            this.total_time_icon.Name = "total_time_icon";
+            this.total_time_icon.Size = new System.Drawing.Size(50, 50);
+            this.total_time_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.total_time_icon.TabIndex = 43;
+            this.total_time_icon.TabStop = false;
+            // 
+            // last_stage_icon
+            // 
+            this.last_stage_icon.Image = global::SLIL.Properties.Resources.stage;
+            this.last_stage_icon.Location = new System.Drawing.Point(22, 136);
+            this.last_stage_icon.Name = "last_stage_icon";
+            this.last_stage_icon.Size = new System.Drawing.Size(50, 50);
+            this.last_stage_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.last_stage_icon.TabIndex = 42;
+            this.last_stage_icon.TabStop = false;
+            // 
+            // total_killed_icon
+            // 
+            this.total_killed_icon.Image = global::SLIL.Properties.Resources.kills;
+            this.total_killed_icon.Location = new System.Drawing.Point(22, 80);
+            this.total_killed_icon.Name = "total_killed_icon";
+            this.total_killed_icon.Size = new System.Drawing.Size(50, 50);
+            this.total_killed_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.total_killed_icon.TabIndex = 41;
+            this.total_killed_icon.TabStop = false;
             // 
             // restart_btn
             // 
@@ -411,6 +512,22 @@ namespace SLIL
             this.restart_btn.Text = "ПОВТОРИТЬ";
             this.restart_btn.UseVisualStyleBackColor = true;
             this.restart_btn.Click += new System.EventHandler(this.Restart_btn_Click);
+            // 
+            // exit_restart_btn
+            // 
+            this.exit_restart_btn.AutoSize = true;
+            this.exit_restart_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.exit_restart_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.exit_restart_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.exit_restart_btn.ForeColor = System.Drawing.Color.White;
+            this.exit_restart_btn.Location = new System.Drawing.Point(264, 319);
+            this.exit_restart_btn.Name = "exit_restart_btn";
+            this.exit_restart_btn.Size = new System.Drawing.Size(112, 41);
+            this.exit_restart_btn.TabIndex = 40;
+            this.exit_restart_btn.TabStop = false;
+            this.exit_restart_btn.Text = "ВЫЙТИ";
+            this.exit_restart_btn.UseVisualStyleBackColor = true;
+            this.exit_restart_btn.Click += new System.EventHandler(this.Exit_btn_Click);
             // 
             // shotgun_pull_timer
             // 
@@ -794,16 +911,6 @@ namespace SLIL
             this.inventory_label.Text = "Инвентарь";
             this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // game_over_interface
-            // 
-            this.game_over_interface.Controls.Add(this.game_over_text);
-            this.game_over_interface.Controls.Add(this.restart_btn);
-            this.game_over_interface.Controls.Add(this.exit_restart_btn);
-            this.game_over_interface.Location = new System.Drawing.Point(226, 175);
-            this.game_over_interface.Name = "game_over_interface";
-            this.game_over_interface.Size = new System.Drawing.Size(630, 363);
-            this.game_over_interface.TabIndex = 41;
-            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -838,6 +945,12 @@ namespace SLIL
             this.pause_panel.ResumeLayout(false);
             this.pause_panel.PerformLayout();
             this.game_over_panel.ResumeLayout(false);
+            this.game_over_interface.ResumeLayout(false);
+            this.game_over_interface.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cause_of_death_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.total_time_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.last_stage_icon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.total_killed_icon)).EndInit();
             this.inventory_panel.ResumeLayout(false);
             this.inventory_content_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).EndInit();
@@ -855,8 +968,6 @@ namespace SLIL
             this.pistol_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).EndInit();
-            this.game_over_interface.ResumeLayout(false);
-            this.game_over_interface.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -925,5 +1036,13 @@ namespace SLIL
         private TabPage storage_shop_page;
         private PictureBox hide_weapon_picture;
         private Panel game_over_interface;
+        private Label total_killed_label;
+        private PictureBox total_time_icon;
+        private PictureBox last_stage_icon;
+        private PictureBox total_killed_icon;
+        private PictureBox cause_of_death_icon;
+        private Label cause_of_death_label;
+        private Label total_time_label;
+        private Label last_stage_label;
     }
 }

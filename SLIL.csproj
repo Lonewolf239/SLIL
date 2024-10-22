@@ -1464,6 +1464,9 @@
     <None Include="Images\gnome_icon.png" />
     <None Include="Images\fingershot_icon.png" />
     <None Include="Images\tspitw_icon.png" />
+    <None Include="Images\time.png" />
+    <None Include="Images\stage.png" />
+    <None Include="Images\kills.png" />
     <Content Include="SLIL_v0_1\sounds\game_over.wav" />
     <Content Include="SLIL_v0_1\sounds\step_0.wav" />
     <Content Include="SLIL_v0_1\sounds\step_1.wav" />

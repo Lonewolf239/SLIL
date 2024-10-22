@@ -414,6 +414,50 @@ namespace SLIL.Classes
         //TODO:
         public bool IsDeathmatch() => true;
 
+        internal int GetStage()
+        {
+            if (peer == null)
+                return Game.GetStage();
+            else
+            {
+                //TODO:
+                return -1;
+            }
+        }
+
+        internal int GetTotalKilled()
+        {
+            if (peer == null)
+                return Game.GetTotalKilled();
+            else
+            {
+                //TODO:
+                return -1;
+            }
+        }
+
+        internal int GetDeathCause()
+        {
+            if (peer == null)
+                return Game.GetDeathCause();
+            else
+            {
+                //TODO:
+                return -1;
+            }
+        }
+
+        internal string GetTotalTime()
+        {
+            if (peer == null)
+                return Game.GetTotalTime();
+            else
+            {
+                //TODO
+                return "00:00:00";
+            }
+        }
+
         internal void DrawItem()
         {
             if (peer == null)

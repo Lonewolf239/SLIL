@@ -1335,6 +1335,10 @@ namespace SLIL
                 game_over_interface.Top = (Height - game_over_interface.Height) / 2;
                 restart_btn.Left = (game_over_interface.Width - restart_btn.Width) / 2;
                 exit_restart_btn.Left = (game_over_interface.Width - exit_restart_btn.Width) / 2;
+                total_killed_label.Text = Controller.GetTotalKilled().ToString();
+                last_stage_label.Text = (Controller.GetStage() + 1).ToString();
+                cause_of_death_icon.Image = GetDeathCause(Controller.GetDeathCause());
+                total_time_label.Text = Controller.GetTotalTime();
             }
             Player player = Controller.GetPlayer();
             if (player == null) return;
@@ -2911,7 +2915,7 @@ namespace SLIL
                 else if (inDebug == 2) text += "Debug Boss";
                 else if (inDebug == 3) text += "Debug Bike";
                 else if (difficulty == 4) text += "Custom";
-                else text += (player.Stage + 1).ToString();
+                else text += (Controller.GetStage() + 1).ToString();
                 SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
                 SolidBrush brush = (SolidBrush)whiteBrush.Clone();
                 brush.Color = Color.FromArgb((int)(brush.Color.R * StageOpacity), (int)(brush.Color.G * StageOpacity), (int)(brush.Color.B * StageOpacity));
@@ -3993,6 +3997,19 @@ namespace SLIL
         }
 
         //  #====     Inventory     ====#
+
+        private Image GetDeathCause(int deathCause)
+        {
+            switch (deathCause)
+            {
+                case 0: return Properties.Resources.enemy_0;
+                case 1: return Properties.Resources.enemy_1;
+                case 2: return Properties.Resources.enemy_2;
+                case 3: return Properties.Resources.enemy_3;
+                case 4: return Properties.Resources.rpg_explosion_0;
+                default: return Properties.Resources.missing;
+            }
+        }
 
         private void OpenInventory()
         {

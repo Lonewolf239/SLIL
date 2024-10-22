@@ -22,6 +22,7 @@ namespace SLIL.Classes
         private readonly Transport[] TRANSPORTS;
         private readonly DisposableItem[] ITEMS;
         public List<Entity> Entities = new List<Entity>();
+        private int TotalTime = 0, DeathCause = -1, Stage = 0, TotalKilled = 0;
         private double EnemyDamageOffset = 1;
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
@@ -97,6 +98,7 @@ namespace SLIL.Classes
             if (Entities.Count == 0) SetPlayerID(AddPlayer());
             if (MAP.Length == 0) InitMap();
             GameStarted = true;
+            DeathCause = -1;
             if (startTimers && !IsMultiplayer)
             {
                 RespawnTimer.Start();
@@ -109,6 +111,7 @@ namespace SLIL.Classes
 
         public int AddPlayer()
         {
+            TotalTime = Stage = TotalKilled = 0;
             Player player = new Player(3, 3, MAP_WIDTH, ref MaxEntityID);
             Entities.Add(player);
             if (difficulty == 3 || difficulty == 2)
@@ -159,6 +162,8 @@ namespace SLIL.Classes
                                             if (playerTarget.HP <= 0)
                                             {
                                                 Entities.Add(new PlayerDeadBody(playerTarget.X, playerTarget.Y, MAP_WIDTH, ref MaxEntityID));
+                                                TotalKilled = playerTarget.TotalEnemiesKilled;
+                                                DeathCause = SetDeathCause(entity);
                                                 GameOver(0);
                                                 return;
                                             }
@@ -214,6 +219,8 @@ namespace SLIL.Classes
                                         if (player.HP <= 0)
                                         {
                                             Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                            TotalKilled = player.TotalEnemiesKilled;
+                                            DeathCause = SetDeathCause(entity);
                                             GameOver(0);
                                             return;
                                         }
@@ -273,6 +280,21 @@ namespace SLIL.Classes
                     }
                 }
             }
+        }
+
+        private int SetDeathCause(Entity entity)
+        {
+            if (entity is Zombie)
+                return 0;
+            else if (entity is Dog)
+                return 1;
+            else if (entity is Ogr)
+                return 2;
+            else if (entity is Bat)
+                return 3;
+            else if (entity is Explosion)
+                return 4;
+            else return -1;
         }
 
         private void RespawnTimer_Tick(object sender, EventArgs e)
@@ -743,8 +765,7 @@ namespace SLIL.Classes
                         Entities.Remove(ent);
                         continue;
                     }
-                    if (difficulty != 4 && difficulty != 6)
-                        player.Stage++;
+                    if (difficulty != 4 && difficulty != 6) Stage++;
                     if (!player.CuteMode)
                     {
                         for (int i = 0; i < player.Guns.Count; i++)
@@ -755,8 +776,7 @@ namespace SLIL.Classes
                     }
                     player.ChangeMoney(50 + (5 * player.EnemiesKilled));
                     StartGame(true);
-                    if (!inBackrooms)
-                        UpdatePet(player);
+                    if (!inBackrooms) UpdatePet(player);
                 }
             }
             else if (win == 0)
@@ -976,14 +996,20 @@ namespace SLIL.Classes
                     else if (difficulty == 2)
                     {
                         enemy_count = 0.055;
-                        if (player.Stage == 0)
-                            player.Guns[1].LevelUpdate();
+                        if (Stage == 0 && player.Guns[2].Level == Levels.LV1)
+                        {
+                            player.Guns[2].LevelUpdate();
+                            ((DisposableItem)player.GUNS[10]).AddItem(2);
+                        }
                     }
                     else if (difficulty == 3)
                     {
                         enemy_count = 0.045;
-                        if (player.Stage == 0)
-                            player.Guns[1].LevelUpdate();
+                        if (Stage == 0 && player.Guns[2].Level == Levels.LV1)
+                        {
+                            player.Guns[2].LevelUpdate();
+                            ((DisposableItem)player.GUNS[10]).AddItem(2);
+                        }
                     }
                     else if (difficulty == 4)
                     {
@@ -1018,22 +1044,22 @@ namespace SLIL.Classes
                     }
                     if (difficulty < 4)
                     {
-                        if (player.Stage == 0)
+                        if (Stage == 0)
                         {
                             MazeHeight = MazeWidth = 10;
                             MAX_SHOP_COUNT = 2;
                         }
-                        else if (player.Stage == 1)
+                        else if (Stage == 1)
                         {
                             MazeHeight = MazeWidth = 15;
                             MAX_SHOP_COUNT = 4;
                         }
-                        else if (player.Stage == 2)
+                        else if (Stage == 2)
                         {
                             MazeHeight = MazeWidth = 20;
                             MAX_SHOP_COUNT = 6;
                         }
-                        else if (player.Stage == 3)
+                        else if (Stage == 3)
                         {
                             MazeHeight = MazeWidth = 25;
                             MAX_SHOP_COUNT = 8;
@@ -1447,6 +1473,7 @@ namespace SLIL.Classes
 
         private void TimeRemain_Tick(object sender, EventArgs e)
         {
+            TotalTime++;
             for (int i = 0; i < Entities.Count; i++)
             {
                 if (!(Entities[i] is Player player)) continue;
@@ -1731,6 +1758,18 @@ namespace SLIL.Classes
             char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$' };
             if (HasNoClip(playerID) || p.InParkour) return false;
             return impassibleCells.Contains(GetMap()[index]);
+        }
+
+        internal int GetDeathCause() => DeathCause;
+
+        internal int GetStage() => Stage;
+
+        internal int GetTotalKilled() => TotalKilled;
+
+        internal string GetTotalTime()
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(TotalTime);
+            return timeSpan.ToString(@"hh\:mm\:ss");
         }
 
         internal void DrawItem(int playerID)

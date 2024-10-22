@@ -23,6 +23,8 @@ namespace GameServer
         private readonly Pet[] PETS;
         private readonly DisposableItem[] ITEMS;
         public List<Entity> Entities = [];
+        private int Stage = 0;
+        private int TotalTime = 0;
         private double EnemyDamageOffset = 1;
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
@@ -157,6 +159,10 @@ namespace GameServer
                                             {
                                                 if (_gameMode == GameModes.Deathmatch)
                                                     Entities.Add(new PlayerDeadBody(playerTarget.X, playerTarget.Y, MAP_WIDTH, ref MaxEntityID));
+                                                //TODO:
+                                                //Stage = playerTarget.Stage;
+                                                //TotalKilled = playerTarget.TotalEnemiesKilled;
+                                                //DeathCause = GetDeathCause(entity);
                                                 sendMessageFromGameCallback(666);
                                                 return;
                                             }
@@ -234,6 +240,10 @@ namespace GameServer
                                         {
                                             if (_gameMode == GameModes.Deathmatch)
                                                 Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                            //TODO:
+                                            //Stage = player.Stage;
+                                            //TotalKilled = player.TotalEnemiesKilled;
+                                            //DeathCause = GetDeathCause(entity);
                                             sendMessageFromGameCallback(666);
                                             //GameOver(0);
                                             return;
@@ -296,6 +306,21 @@ namespace GameServer
                     }
                 }
             }
+        }
+
+        private int GetDeathCause(Entity entity)
+        {
+            if (entity is Zombie)
+                return 0;
+            else if (entity is Dog)
+                return 1;
+            else if (entity is Ogr)
+                return 2;
+            else if (entity is Bat)
+                return 3;
+            else if (entity is Explosion)
+                return 4;
+            else return -1;
         }
 
         public void RemovePlayer(int playerID)
@@ -845,8 +870,7 @@ namespace GameServer
                 foreach (Entity ent in Entities)
                 {
                     if (ent is not Player player) continue;
-                    if (difficulty != 4 && difficulty != 6)
-                        player.Stage++;
+                    if (difficulty != 4 && difficulty != 6) Stage++;
                     if (!player.CuteMode)
                     {
                         for (int i = 0; i < player.Guns.Count; i++)
@@ -887,12 +911,10 @@ namespace GameServer
                 Entities.Clear();
                 foreach((int, string) pInfo in playerIDs)
                 {
-                    Player p = new(1.5, 1.5, MAP_WIDTH, pInfo.Item1)
-                    {
-                        Name = pInfo.Item2
-                    };
+                    Player p = new(1.5, 1.5, MAP_WIDTH, pInfo.Item1) { Name = pInfo.Item2 };
                     Entities.Add(p);
                 }
+                TotalTime = Stage = 0;
                 sendMessageFromGameCallback(101);
             }
             else if (win == 2)
@@ -905,8 +927,7 @@ namespace GameServer
                     players.Add(player);
                 }
                 Entities.Clear();
-                foreach(Player p in players)
-                    Entities.Add(p);
+                foreach (Player p in players) Entities.Add(p);
                 StartGame();
                 sendMessageFromGameCallback(102);
             }
@@ -918,12 +939,11 @@ namespace GameServer
                 List<Player> players = [];
                 foreach(Entity ent in Entities)
                 {
-                    if (ent is Player p)
-                        players.Add(p);
+                    if (ent is Player p) players.Add(p);
                 }
                 Entities.Clear();
-                foreach (Player p in players)
-                    Entities.Add(p);
+                foreach (Player p in players) Entities.Add(p);
+                TotalTime = Stage = 0;
                 sendMessageFromGameCallback(101);
             }
             else
@@ -933,6 +953,7 @@ namespace GameServer
                 TimeRemain?.Stop();
                 Entities.Clear();
                 MaxEntityID = 0;
+                TotalTime = Stage = 0;
             }
             //StopGameHandle(win);
         }
@@ -1102,14 +1123,20 @@ namespace GameServer
                 else if (difficulty == 2)
                 {
                     enemy_count = 0.055;
-                    if (player.Stage == 0 && player.Guns[1].Level==Levels.LV1)
-                        player.Guns[1].LevelUpdate();
+                    if (Stage == 0 && player.Guns[2].Level==Levels.LV1)
+                    {
+                        player.Guns[2].LevelUpdate();
+                        ((DisposableItem)player.GUNS[10]).AddItem(2);
+                    }
                 }
                 else if (difficulty == 3)
                 {
                     enemy_count = 0.045;
-                    if (player.Stage == 0 && player.Guns[1].Level==Levels.LV1)
-                        player.Guns[1].LevelUpdate();
+                    if (Stage == 0 && player.Guns[2].Level==Levels.LV1)
+                    {
+                        player.Guns[2].LevelUpdate();
+                        ((DisposableItem)player.GUNS[10]).AddItem(2);
+                    }
                 }
                 else if (difficulty == 4)
                 {
@@ -1144,22 +1171,22 @@ namespace GameServer
                 }
                 if (difficulty < 4)
                 {
-                    if (player.Stage == 0)
+                    if (Stage == 0)
                     {
                         MazeHeight = MazeWidth = 10;
                         MAX_SHOP_COUNT = 2;
                     }
-                    else if (player.Stage == 1)
+                    else if (Stage == 1)
                     {
                         MazeHeight = MazeWidth = 15;
                         MAX_SHOP_COUNT = 4;
                     }
-                    else if (player.Stage == 2)
+                    else if (Stage == 2)
                     {
                         MazeHeight = MazeWidth = 20;
                         MAX_SHOP_COUNT = 6;
                     }
-                    else if (player.Stage == 3)
+                    else if (Stage == 3)
                     {
                         MazeHeight = MazeWidth = 25;
                         MAX_SHOP_COUNT = 8;
@@ -1588,6 +1615,7 @@ namespace GameServer
         private void TimeRemain_Tick(object? sender, EventArgs e)
         {
             bool areAllThePlayersDead = true;
+            TotalTime++;
             for (int i = 0; i < Entities.Count; i++)
             {
                 if (Entities[i] is not Player player) continue;
@@ -1649,9 +1677,7 @@ namespace GameServer
             if (_gameMode == GameModes.Classic)
             {
                 if (areAllThePlayersDead)
-                {
                     GameOver(0);
-                }
             }
         }
 
@@ -1780,6 +1806,12 @@ namespace GameServer
             char[] impassibleCells = ['#', 'D', '=', 'd', 'S', '$'];
             if (HasNoClip(playerID) || p.InParkour) return false;
             return impassibleCells.Contains(GetMap()[index]);
+        }
+
+        internal string GetTotalTime()
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(TotalTime);
+            return timeSpan.ToString(@"hh:mm:ss");
         }
 
         internal void DrawItem(int playerID)
