@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Play_Sound;
@@ -157,8 +158,20 @@ namespace SLIL.UserControls
             Width = width;
         }
 
-        private void Slot_0_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(0, player.Guns.IndexOf(weapon));
+        private int GetGunIndex()
+        {
+            List<Gun> gunCopy = new List<Gun>();
+            gunCopy = player.Guns;
+            for(int i = 0; i<gunCopy.Count; i++)
+            {
+                if (gunCopy[i].GetType() == weapon.GetType())
+                    return i;
+            }
+            return -1;
+        }
 
-        private void Slot_1_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(1, player.Guns.IndexOf(weapon));
+        private void Slot_0_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(0, GetGunIndex());
+
+        private void Slot_1_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(1, GetGunIndex());
     }
 }
