@@ -65,10 +65,10 @@ namespace SLIL
             this.camera_shaking_timer = new System.Windows.Forms.Timer(this.components);
             this.inventory_panel = new System.Windows.Forms.Panel();
             this.inventory_content_panel = new System.Windows.Forms.Panel();
+            this.hide_weapon_picture = new System.Windows.Forms.PictureBox();
             this.pet_panel = new System.Windows.Forms.Panel();
             this.pet_icon = new System.Windows.Forms.PictureBox();
             this.pet_label = new System.Windows.Forms.Label();
-            this.hide_weapon_picture = new System.Windows.Forms.PictureBox();
             this.pet_title = new System.Windows.Forms.Label();
             this.helmet_count = new System.Windows.Forms.Label();
             this.helmet_icon = new System.Windows.Forms.PictureBox();
@@ -94,6 +94,7 @@ namespace SLIL
             this.pistol_label = new System.Windows.Forms.Label();
             this.pistol_ammo_count = new System.Windows.Forms.Label();
             this.inventory_label = new System.Windows.Forms.Label();
+            this.game_over_interface = new System.Windows.Forms.Panel();
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -102,9 +103,9 @@ namespace SLIL
             this.game_over_panel.SuspendLayout();
             this.inventory_panel.SuspendLayout();
             this.inventory_content_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).BeginInit();
             this.pet_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pet_icon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.helmet_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.adrenalin_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.medkit_icon)).BeginInit();
@@ -117,6 +118,7 @@ namespace SLIL
             this.pistol_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).BeginInit();
+            this.game_over_interface.SuspendLayout();
             this.SuspendLayout();
             // 
             // shop_panel
@@ -313,11 +315,11 @@ namespace SLIL
             // 
             this.game_over_text.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
             this.game_over_text.Dock = System.Windows.Forms.DockStyle.Top;
-            this.game_over_text.Font = new System.Drawing.Font("Consolas", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.game_over_text.Font = new System.Drawing.Font("Consolas", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.game_over_text.ForeColor = System.Drawing.Color.White;
             this.game_over_text.Location = new System.Drawing.Point(0, 0);
             this.game_over_text.Name = "game_over_text";
-            this.game_over_text.Size = new System.Drawing.Size(1105, 169);
+            this.game_over_text.Size = new System.Drawing.Size(630, 61);
             this.game_over_text.TabIndex = 2;
             this.game_over_text.Text = "GAME OVER";
             this.game_over_text.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -370,9 +372,7 @@ namespace SLIL
             // 
             // game_over_panel
             // 
-            this.game_over_panel.Controls.Add(this.exit_restart_btn);
-            this.game_over_panel.Controls.Add(this.restart_btn);
-            this.game_over_panel.Controls.Add(this.game_over_text);
+            this.game_over_panel.Controls.Add(this.game_over_interface);
             this.game_over_panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.game_over_panel.Location = new System.Drawing.Point(0, 0);
             this.game_over_panel.Name = "game_over_panel";
@@ -382,13 +382,12 @@ namespace SLIL
             // 
             // exit_restart_btn
             // 
-            this.exit_restart_btn.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.exit_restart_btn.AutoSize = true;
             this.exit_restart_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.exit_restart_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exit_restart_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.exit_restart_btn.ForeColor = System.Drawing.Color.White;
-            this.exit_restart_btn.Location = new System.Drawing.Point(169, 352);
+            this.exit_restart_btn.Location = new System.Drawing.Point(264, 319);
             this.exit_restart_btn.Name = "exit_restart_btn";
             this.exit_restart_btn.Size = new System.Drawing.Size(112, 41);
             this.exit_restart_btn.TabIndex = 40;
@@ -399,13 +398,12 @@ namespace SLIL
             // 
             // restart_btn
             // 
-            this.restart_btn.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.restart_btn.AutoSize = true;
             this.restart_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.restart_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.restart_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.restart_btn.ForeColor = System.Drawing.Color.White;
-            this.restart_btn.Location = new System.Drawing.Point(126, 305);
+            this.restart_btn.Location = new System.Drawing.Point(228, 272);
             this.restart_btn.Name = "restart_btn";
             this.restart_btn.Size = new System.Drawing.Size(198, 41);
             this.restart_btn.TabIndex = 39;
@@ -461,6 +459,15 @@ namespace SLIL
             this.inventory_content_panel.Size = new System.Drawing.Size(987, 513);
             this.inventory_content_panel.TabIndex = 27;
             // 
+            // hide_weapon_picture
+            // 
+            this.hide_weapon_picture.Location = new System.Drawing.Point(0, 0);
+            this.hide_weapon_picture.Name = "hide_weapon_picture";
+            this.hide_weapon_picture.Size = new System.Drawing.Size(987, 256);
+            this.hide_weapon_picture.TabIndex = 14;
+            this.hide_weapon_picture.TabStop = false;
+            this.hide_weapon_picture.Visible = false;
+            // 
             // pet_panel
             // 
             this.pet_panel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -494,15 +501,6 @@ namespace SLIL
             this.pet_label.TabIndex = 1;
             this.pet_label.Text = "PET";
             this.pet_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // hide_weapon_picture
-            // 
-            this.hide_weapon_picture.Location = new System.Drawing.Point(0, 0);
-            this.hide_weapon_picture.Name = "hide_weapon_picture";
-            this.hide_weapon_picture.Size = new System.Drawing.Size(987, 256);
-            this.hide_weapon_picture.TabIndex = 14;
-            this.hide_weapon_picture.TabStop = false;
-            this.hide_weapon_picture.Visible = false;
             // 
             // pet_title
             // 
@@ -796,14 +794,24 @@ namespace SLIL
             this.inventory_label.Text = "Инвентарь";
             this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // game_over_interface
+            // 
+            this.game_over_interface.Controls.Add(this.game_over_text);
+            this.game_over_interface.Controls.Add(this.restart_btn);
+            this.game_over_interface.Controls.Add(this.exit_restart_btn);
+            this.game_over_interface.Location = new System.Drawing.Point(226, 175);
+            this.game_over_interface.Name = "game_over_interface";
+            this.game_over_interface.Size = new System.Drawing.Size(630, 363);
+            this.game_over_interface.TabIndex = 41;
+            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
             this.ClientSize = new System.Drawing.Size(1105, 633);
+            this.Controls.Add(this.game_over_panel);
             this.Controls.Add(this.inventory_panel);
             this.Controls.Add(this.shop_panel);
-            this.Controls.Add(this.game_over_panel);
             this.Controls.Add(this.pause_panel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -830,12 +838,11 @@ namespace SLIL
             this.pause_panel.ResumeLayout(false);
             this.pause_panel.PerformLayout();
             this.game_over_panel.ResumeLayout(false);
-            this.game_over_panel.PerformLayout();
             this.inventory_panel.ResumeLayout(false);
             this.inventory_content_panel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).EndInit();
             this.pet_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pet_icon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.helmet_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.adrenalin_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.medkit_icon)).EndInit();
@@ -848,6 +855,8 @@ namespace SLIL
             this.pistol_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).EndInit();
+            this.game_over_interface.ResumeLayout(false);
+            this.game_over_interface.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -915,5 +924,6 @@ namespace SLIL
         private TabPage transport_shop_page;
         private TabPage storage_shop_page;
         private PictureBox hide_weapon_picture;
+        private Panel game_over_interface;
     }
 }

@@ -1399,6 +1399,7 @@ namespace SLIL.Classes
                         multiplier = 1.5;
                     attackerPlayer.ChangeMoney(rand.Next((int)(20 * multiplier), (int)(30 * multiplier)));
                     attackerPlayer.EnemiesKilled++;
+                    attackerPlayer.TotalEnemiesKilled++;
                     return true;
                 }
                 return false;
@@ -1415,6 +1416,7 @@ namespace SLIL.Classes
                             multiplier = 1.5;
                         attackerPlayer.ChangeMoney(rand.Next((int)(c.MIN_MONEY * multiplier), (int)(c.MAX_MONEY * multiplier)));
                         attackerPlayer.EnemiesKilled++;
+                        attackerPlayer.TotalEnemiesKilled++;
                         if (target is Boxes box && !attackerPlayer.CuteMode)
                         {
                             if (box.BoxWithMoney)

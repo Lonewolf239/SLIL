@@ -1525,6 +1525,7 @@ namespace GameServer
                         multiplier = 1.5;
                     attackerPlayer.ChangeMoney(rand.Next((int)(20 * multiplier), (int)(30 * multiplier)));
                     attackerPlayer.EnemiesKilled++;
+                    attackerPlayer.TotalEnemiesKilled++;
                     Entities.Add(new PlayerDeadBody(p.X, p.Y, MAP_WIDTH, ref MaxEntityID));
                     NetDataWriter writer = new();
                     writer.Put(p.ID);
@@ -1545,6 +1546,7 @@ namespace GameServer
                             multiplier = 1.5;
                         attackerPlayer.ChangeMoney(rand.Next((int)(c.MIN_MONEY * multiplier), (int)(c.MAX_MONEY * multiplier)));
                         attackerPlayer.EnemiesKilled++;
+                        attackerPlayer.TotalEnemiesKilled++;
                         if (target is Boxes boxes && !attackerPlayer.CuteMode)
                         {
                             if (boxes.BoxWithMoney)

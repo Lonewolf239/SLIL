@@ -1331,8 +1331,10 @@ namespace SLIL
             }
             if (game_over_panel.Visible)
             {
-                restart_btn.Left = (Width - restart_btn.Width) / 2;
-                exit_restart_btn.Left = (Width - exit_restart_btn.Width) / 2;
+                game_over_interface.Left = (Width - game_over_interface.Width) / 2;
+                game_over_interface.Top = (Height - game_over_interface.Height) / 2;
+                restart_btn.Left = (game_over_interface.Width - restart_btn.Width) / 2;
+                exit_restart_btn.Left = (game_over_interface.Width - exit_restart_btn.Width) / 2;
             }
             Player player = Controller.GetPlayer();
             if (player == null) return;

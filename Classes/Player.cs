@@ -31,6 +31,7 @@ namespace SLIL.Classes
         public int ParkourState { get; set; }
         public int Stage { get; set; }
         public bool CuteMode { get; set; }
+        public int TotalEnemiesKilled { get; set; }
         public int EnemiesKilled { get; set; }
         public double MAX_MOVE_SPEED { get; set; }
         public double MAX_STRAFE_SPEED { get; set; }
@@ -84,6 +85,7 @@ namespace SLIL.Classes
             writer.Put(CurrentGun);
             writer.Put(WeaponSlot_0);
             writer.Put(WeaponSlot_1);
+            writer.Put(TotalEnemiesKilled);
             writer.Put(A);
             writer.Put(Look);
             writer.Put(InParkour);
@@ -123,6 +125,7 @@ namespace SLIL.Classes
             CurrentGun = reader.GetInt();
             WeaponSlot_0 = reader.GetInt();
             WeaponSlot_1 = reader.GetInt();
+            TotalEnemiesKilled = reader.GetInt();
             A = reader.GetDouble();
             Look = reader.GetDouble();
             InParkour = reader.GetBool();
@@ -312,6 +315,7 @@ namespace SLIL.Classes
                 CurrentGun = reader.GetInt();
                 WeaponSlot_0 = reader.GetInt();
                 WeaponSlot_1 = reader.GetInt();
+                TotalEnemiesKilled = reader.GetInt();
                 reader.GetDouble(); reader.GetDouble();
                 InParkour = reader.GetBool();
                 InTransport = reader.GetBool();
@@ -520,6 +524,7 @@ namespace SLIL.Classes
                 Money = 15;
                 CurseCureChance = 0.08;
                 Stage = 0;
+                TotalEnemiesKilled = 0;
                 WeaponSlot_0 = WeaponSlot_1 = -1;
                 MAX_MOVE_SPEED = 1.8;
                 MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
