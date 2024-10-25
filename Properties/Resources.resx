@@ -1219,4 +1219,16 @@
   <data name="kills" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\kills.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="enemy_0_DC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_0_DC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_1_DC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_1_DC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_2_DC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_2_DC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="enemy_3_DC" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\enemy_3_DC.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

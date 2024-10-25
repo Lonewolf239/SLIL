@@ -416,6 +416,7 @@ namespace SLIL
             this.cause_of_death_icon.Location = new System.Drawing.Point(443, 114);
             this.cause_of_death_icon.Name = "cause_of_death_icon";
             this.cause_of_death_icon.Size = new System.Drawing.Size(128, 128);
+            this.cause_of_death_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.cause_of_death_icon.TabIndex = 48;
             this.cause_of_death_icon.TabStop = false;
             // 

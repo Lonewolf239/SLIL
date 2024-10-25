@@ -4002,10 +4002,10 @@ namespace SLIL
         {
             switch (deathCause)
             {
-                case 0: return Properties.Resources.enemy_0;
-                case 1: return Properties.Resources.enemy_1;
-                case 2: return Properties.Resources.enemy_2;
-                case 3: return Properties.Resources.enemy_3;
+                case 0: return Properties.Resources.enemy_0_DC;
+                case 1: return Properties.Resources.enemy_1_DC;
+                case 2: return Properties.Resources.enemy_2_DC;
+                case 3: return Properties.Resources.enemy_3_DC;
                 case 4: return Properties.Resources.rpg_explosion_0;
                 default: return Properties.Resources.missing;
             }

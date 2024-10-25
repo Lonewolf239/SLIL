@@ -8,7 +8,7 @@ namespace GameServer
 {
     internal class GameServerConsole
     {
-        internal const string version = "|1.3|", server_version = "|1.3|";
+        internal const string version = "|1.3.1|", server_version = "|1.3.1|";
         private const int GWL_STYLE = -16;
         private const int WS_SIZEBOX = 0x00040000;
         private const int WS_MAXIMIZEBOX = 0x00010000;

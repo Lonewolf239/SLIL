@@ -1467,6 +1467,10 @@
     <None Include="Images\time.png" />
     <None Include="Images\stage.png" />
     <None Include="Images\kills.png" />
+    <None Include="Images\enemy_0_DC.png" />
+    <None Include="Images\enemy_3_DC.png" />
+    <None Include="Images\enemy_2_DC.png" />
+    <None Include="Images\enemy_1_DC.png" />
     <Content Include="SLIL_v0_1\sounds\game_over.wav" />
     <Content Include="SLIL_v0_1\sounds\step_0.wav" />
     <Content Include="SLIL_v0_1\sounds\step_1.wav" />
