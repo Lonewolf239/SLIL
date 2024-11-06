@@ -579,6 +579,8 @@ namespace SLIL
             // 
             // hide_weapon_picture
             // 
+            this.hide_weapon_picture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.hide_weapon_picture.Image = global::SLIL.Properties.Resources.hide_weapon;
             this.hide_weapon_picture.Location = new System.Drawing.Point(0, 0);
             this.hide_weapon_picture.Name = "hide_weapon_picture";
             this.hide_weapon_picture.Size = new System.Drawing.Size(987, 256);
@@ -917,8 +919,8 @@ namespace SLIL
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
             this.ClientSize = new System.Drawing.Size(1105, 633);
-            this.Controls.Add(this.game_over_panel);
             this.Controls.Add(this.inventory_panel);
+            this.Controls.Add(this.game_over_panel);
             this.Controls.Add(this.shop_panel);
             this.Controls.Add(this.pause_panel);
             this.DoubleBuffered = true;

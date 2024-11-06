@@ -456,7 +456,7 @@ namespace SLIL
             scope_type = INIReader.GetInt(Program.iniFolder, "SLIL", "scope_type", 0);
             resolution = INIReader.GetBool(Program.iniFolder, "SLIL", "hight_resolution", false) ? 1 : 0;
             display_size = INIReader.GetInt(Program.iniFolder, "SLIL", "display_size", 0);
-            interface_size = INIReader.GetInt(Program.iniFolder, "SLIL", "interface_size", 0);
+            interface_size = INIReader.GetInt(Program.iniFolder, "SLIL", "interface_size", 2);
             smoothing = INIReader.GetInt(Program.iniFolder, "SLIL", "smoothing", 1);
             hight_fps = INIReader.GetBool(Program.iniFolder, "SLIL", "hight_fps", true);
             BindControls["screenshot"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "screenshot", Keys.F12);

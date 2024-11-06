@@ -1,10 +1,10 @@
-﻿using IniReader;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using IniReader;
 
 namespace SLIL
 {
@@ -17,6 +17,8 @@ namespace SLIL
         public Dictionary<string, string> SupportedLanguages;
         public int Error { get; set; }
         private string Language;
+        private bool isDragging = false;
+        private Point lastCursor, lastForm;
 
         private void Hide_show_pas_Click(object sender, EventArgs e)
         {
@@ -54,6 +56,7 @@ namespace SLIL
         {
             if (DownloadedLocalizationList)
             {
+                title_form_label.Text = Loading.Localizations.GetLString(Language, "8-12");
                 title_label.Text = Loading.Localizations.GetLString(Language, "8-0");
                 login_btn_r.Text = Loading.Localizations.GetLString(Language, "8-1");
                 create_account_l.Text = Loading.Localizations.GetLString(Language, "8-2");
@@ -67,6 +70,7 @@ namespace SLIL
             }
             else
             {
+                title_form_label.Text = "Login...";
                 title_label.Text = "To start playing, please log in to your account";
                 login_btn_r.Text = "Login";
                 create_account_l.Text = "Create account";
@@ -86,6 +90,63 @@ namespace SLIL
             Language = INIReader.GetString(Program.iniFolder, "CONFIG", "language", "English");
             if (!SupportedLanguages.Values.Contains(Language)) Language = "English";
             SetLanguage();
+        }
+
+        private void Hide_btn_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) WindowState = FormWindowState.Minimized;
+        }
+
+        private void Hide_btn_MouseEnter(object sender, EventArgs e) => hide_btn.Image = Properties.Resources.minimized_entered;
+
+        private void Hide_btn_MouseLeave(object sender, EventArgs e) => hide_btn.Image = Properties.Resources.minimized;
+
+        private void Exit_btn_MouseEnter(object sender, EventArgs e) => exit_btn.Image = Properties.Resources.close_entered;
+
+        private void Exit_btn_MouseLeave(object sender, EventArgs e) => exit_btn.Image = Properties.Resources.close;
+
+        private void Exit_btn_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                string title = "Cancel Login";
+                string message = "Are you sure you want to cancel the login process and exit the application?";
+                if (DownloadedLocalizationList)
+                {
+                    title = Loading.Localizations.GetLString(Language, "8-10");
+                    message = Loading.Localizations.GetLString(Language, "8-11");
+                }
+                if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    CanClose = true;
+                    Application.Exit();
+                }
+            }
+        }
+
+        private void LoginForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                isDragging = true;
+                lastCursor = Cursor.Position;
+                lastForm = Location;
+            }
+        }
+
+        private void LoginForm_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                isDragging = false;
+        }
+
+        private void LoginForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                Point delta = Point.Subtract(Cursor.Position, new Size(lastCursor));
+                Location = Point.Add(lastForm, new Size(delta));
+            }
         }
     }
 }

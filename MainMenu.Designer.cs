@@ -1581,10 +1581,10 @@
             // 
             this.controls_settings.BackColor = System.Drawing.Color.Black;
             this.controls_settings.Controls.Add(this.controls_tabcontrol);
-            this.controls_settings.Location = new System.Drawing.Point(4, 33);
+            this.controls_settings.Location = new System.Drawing.Point(4, 22);
             this.controls_settings.Name = "controls_settings";
             this.controls_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.controls_settings.Size = new System.Drawing.Size(482, 183);
+            this.controls_settings.Size = new System.Drawing.Size(482, 194);
             this.controls_settings.TabIndex = 3;
             this.controls_settings.Text = "Управление";
             // 
@@ -1596,7 +1596,7 @@
             this.controls_tabcontrol.Location = new System.Drawing.Point(3, 3);
             this.controls_tabcontrol.Name = "controls_tabcontrol";
             this.controls_tabcontrol.SelectedIndex = 0;
-            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 177);
+            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 188);
             this.controls_tabcontrol.TabIndex = 0;
             // 
             // mouse_settings
@@ -1610,7 +1610,7 @@
             this.mouse_settings.Location = new System.Drawing.Point(4, 33);
             this.mouse_settings.Name = "mouse_settings";
             this.mouse_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.mouse_settings.Size = new System.Drawing.Size(468, 140);
+            this.mouse_settings.Size = new System.Drawing.Size(468, 151);
             this.mouse_settings.TabIndex = 0;
             this.mouse_settings.Text = "Мышь";
             // 
@@ -1739,10 +1739,10 @@
             this.keyboard_settings.Controls.Add(this.fire_panel);
             this.keyboard_settings.Controls.Add(this.screenshot_panel);
             this.keyboard_settings.ForeColor = System.Drawing.Color.White;
-            this.keyboard_settings.Location = new System.Drawing.Point(4, 33);
+            this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 140);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 151);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
@@ -3445,7 +3445,7 @@
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1924, 896);
+            this.ClientSize = new System.Drawing.Size(1284, 896);
             this.Controls.Add(this.developers_panel);
             this.Controls.Add(this.account_panel);
             this.Controls.Add(this.SLIL_v0_1_btn_c);

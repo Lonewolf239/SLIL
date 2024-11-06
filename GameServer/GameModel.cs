@@ -234,6 +234,13 @@ namespace GameServer
                                                 else
                                                     player.ResetEffectTime(6);
                                             }
+                                            if (entity is Zombie)
+                                            {
+                                                if(!player.EffectCheck(3))
+                                                    player.GiveEffect(3, true);
+                                                else
+                                                    player.ResetEffectTime(3);
+                                            }
                                         }
                                         player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
                                         if (player.HP <= 0)
@@ -1930,8 +1937,6 @@ namespace GameServer
             }
             p.X = new_x;
             p.Y = new_y;
-            if (p.InTransport) p.GiveEffect(3, false, 5);
-            else p.GiveEffect(3, true);
             p.BlockInput = false;
             p.BlockCamera = false;
         }

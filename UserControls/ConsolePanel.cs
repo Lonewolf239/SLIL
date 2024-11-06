@@ -169,10 +169,10 @@ namespace SLIL.UserControls
                                  "~│~ -IMGNOME-     ~│~ Give \"Wizard Gnome\"                         ~│~\n" +
                                  "~│~ -ILLKLURDOG-  ~│~ Give \"Petition\"                             ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                                 "~│~ -CAT-         ~│~ Give a pet: \"Silly cat\"                    ~│~\n" +
-                                 "~│~ -GNOME-       ~│~ Give a pet: \"Wizard Gnome\"                 ~│~\n" +
-                                 "~│~ -ENERGY-      ~│~ Give a pet: \"Energy Drink\"                 ~│~\n" +
-                                 "~│~ -ILOVEFURRY-  ~│~ Give a pet: \"Podseratel\"                   ~│~\n" +
+                                 "~│~ -CAT-         ~│~ Give a pet: \"Silly cat\"                     ~│~\n" +
+                                 "~│~ -GNOME-       ~│~ Give a pet: \"Wizard Gnome\"                  ~│~\n" +
+                                 "~│~ -ENERGY-      ~│~ Give a pet: \"Energy Drink\"                  ~│~\n" +
+                                 "~│~ -ILOVEFURRY-  ~│~ Give a pet: \"Podseratel\"                    ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -BEFWK-       ~│~ Give out all weapons                        ~│~\n" +
                                  "~│~ -FYTLG-       ~│~ Maximum amount of ammunition                ~│~\n" +

@@ -4048,7 +4048,7 @@ namespace SLIL
             if (player.PET != null)
                 pet_icon.Image = ShopImageDict[player.PET.GetType()];
             else
-                pet_icon.Image = Properties.Resources.missing;
+                pet_icon.Image = Properties.Resources.empty;
             if (MainMenu.DownloadedLocalizationList)
             {
                 if (player.PET != null)
@@ -4104,12 +4104,12 @@ namespace SLIL
                     weapon_0_ammo_count.Text = "∞";
                 else
                     weapon_0_ammo_count.Text = $"{player.Guns[player.WeaponSlot_0].AmmoInStock}/{player.Guns[player.WeaponSlot_0].AmmoCount}";
+                weapon_0_ammo_icon.Visible = weapon_0_ammo_count.Visible = true;
             }
             else
             {
-                weapon_0_icon.Image = Properties.Resources.missing;
-                weapon_0_ammo_icon.Image = GetAmmoIcon(AmmoTypes.None);
-                weapon_0_ammo_count.Text = "0/0";
+                weapon_0_icon.Image = Properties.Resources.empty;
+                weapon_0_ammo_icon.Visible = weapon_0_ammo_count.Visible = false;
             }
             if (player.WeaponSlot_1 != -1)
             {
@@ -4119,22 +4119,22 @@ namespace SLIL
                     weapon_1_ammo_count.Text = "∞";
                 else
                     weapon_1_ammo_count.Text = $"{player.Guns[player.WeaponSlot_1].AmmoInStock}/{player.Guns[player.WeaponSlot_1].AmmoCount}";
+                weapon_1_ammo_icon.Visible = weapon_1_ammo_count.Visible = true;
             }
             else
             {
-                weapon_1_icon.Image = Properties.Resources.missing;
-                weapon_1_ammo_icon.Image = GetAmmoIcon(AmmoTypes.None);
-                weapon_1_ammo_count.Text = "0/0";
+                weapon_1_icon.Image = Properties.Resources.empty;
+                weapon_1_ammo_icon.Visible = weapon_1_ammo_count.Visible = false;
             }
         }
 
         private void Weapon_icon_MouseEnter(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
-            if (player == null) return;
             if (inventory_content_panel.Controls.Contains(InventoryWeaponToolTip))
                 inventory_content_panel.Controls.Remove(InventoryWeaponToolTip);
             InventoryWeaponToolTip?.Dispose();
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
             Gun weapon;
             if (((Control)sender).Name == "pistol_icon")
                 weapon = player.GUNS[2];

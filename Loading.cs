@@ -29,8 +29,7 @@ namespace SLIL
         private MainMenu mainMenu;
         private readonly Dictionary<string, string> SupportedLanguages = new Dictionary<string, string>();
         private bool isDragging = false;
-        private Point lastCursor;
-        private Point lastForm;
+        private Point lastCursor, lastForm;
 
         public Loading() => InitializeComponent();
 
@@ -299,7 +298,9 @@ namespace SLIL
                     loginForm.error_panel.Visible = true;
                     loginForm.login_panel.Visible = false;
                     loginForm.Error = -3;
+                    Hide();
                     loginForm.ShowDialog();
+                    Show();
                 }
                 return;
             }
@@ -313,7 +314,9 @@ namespace SLIL
                 loginForm.login_btn_r.Click += Login_btn_Click;
                 loginForm.buy_btn_cp.Click += Buy_btn_cp_Click;
                 loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
+                Hide();
                 loginForm.ShowDialog();
+                Show();
                 return;
             }
             await CheckBD();
@@ -373,7 +376,12 @@ namespace SLIL
                     loginForm.buy_btn_cp.Click += Buy_btn_cp_Click;
                     loginForm.buy_panel.Visible = true;
                     loginForm.login_panel.Visible = false;
-                    if (!loginForm.Visible) loginForm.ShowDialog();
+                    if (!loginForm.Visible)
+                    {
+                        Hide();
+                        loginForm.ShowDialog();
+                        Show();
+                    }
                 }
                 else
                 {
@@ -405,7 +413,12 @@ namespace SLIL
                     loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
                     loginForm.status_label.Visible = true;
                     loginForm.nickname_input.Text = loginForm.password_input.Text = null;
-                    if (!loginForm.Visible) loginForm.ShowDialog();
+                    if (!loginForm.Visible)
+                    {
+                        Hide();
+                        loginForm.ShowDialog();
+                        Show();
+                    }
                 }
                 else
                 {
@@ -424,7 +437,12 @@ namespace SLIL
                         loginForm.Error = -1;
                     else if (state == AccountStates.ErrorDownloading)
                         loginForm.Error = -2;
-                    if (!loginForm.Visible) loginForm.ShowDialog();
+                    if (!loginForm.Visible)
+                    {
+                        Hide();
+                        loginForm.ShowDialog();
+                        Show();
+                    }
                 }
             }
             loginForm?.SetLanguage();

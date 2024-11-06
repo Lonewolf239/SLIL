@@ -409,7 +409,7 @@ namespace SLIL.Classes
             //dark
             Color.Black,
             //back bound
-            Color.FromArgb(145, 134, 68)
+            Color.FromArgb(139, 126, 89)
         };
         private readonly Color[] CUTE_COLORS =
         {
@@ -418,7 +418,7 @@ namespace SLIL.Classes
             //dark
             Color.White,
             //back bound
-            Color.FromArgb(145, 134, 68)
+            Color.FromArgb(139, 126, 89)
         };
         private Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureColorCache;
         private Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureCuteColorCache;

@@ -1471,6 +1471,10 @@
     <None Include="Images\enemy_3_DC.png" />
     <None Include="Images\enemy_2_DC.png" />
     <None Include="Images\enemy_1_DC.png" />
+    <None Include="Images\hide_weapon.png" />
+    <None Include="Images\empty.png" />
+    <None Include="Images\minimized.png" />
+    <None Include="Images\minimized_entered.png" />
     <Content Include="SLIL_v0_1\sounds\game_over.wav" />
     <Content Include="SLIL_v0_1\sounds\step_0.wav" />
     <Content Include="SLIL_v0_1\sounds\step_1.wav" />
