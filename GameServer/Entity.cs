@@ -28,7 +28,7 @@ namespace GameServer
         protected abstract double GetEntityWidth();
         public virtual int Interaction() => 0;
 
-        public Entity(double x, double y, int map_width, ref int maxEntityID)
+        public Entity(double x, double y, int mapWidth, ref int maxEntityID)
         {
             ID = maxEntityID;
             maxEntityID++;
@@ -47,7 +47,7 @@ namespace GameServer
             IntX = (int)x;
             IntY = (int)y;
         }
-        public Entity(double x, double y, int map_width, int maxEntityID)
+        public Entity(double x, double y, int mapWidth, int maxEntityID)
         {
             ID = maxEntityID;
             EntityID = this.GetEntityID();
@@ -116,7 +116,7 @@ namespace GameServer
     public abstract class Creature : Entity
     {
         protected double HP { get; set; }
-        protected char[] ImpassibleCells;
+        protected char[]? ImpassibleCells;
         protected int MovesInARow;
         protected int NumberOfMovesLeft;
         public bool CanHit { get; set; }
@@ -126,7 +126,7 @@ namespace GameServer
         public int MIN_MONEY;
         public int MAX_DAMAGE;
         public int MIN_DAMAGE;
-        protected int MAP_WIDTH { get; set; }
+        protected int MapWidth { get; set; }
         protected int MAX_HP;
         public int DeathSound { get; set; }
         protected const int RESPAWN_TIME = 60;
@@ -140,8 +140,8 @@ namespace GameServer
         protected abstract int GetMovesInARow();
         public abstract double GetMove();
 
-        public Creature(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init(map_width);
-        public Creature(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init(map_width);
+        public Creature(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init(mapWidth);
+        public Creature(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init(mapWidth);
 
         public override void Serialize(NetDataWriter writer)
         {
@@ -157,7 +157,7 @@ namespace GameServer
             this.DEAD = reader.GetBool();
         }
 
-        private void Init(int map_width)
+        private void Init(int mapWidth)
         {
             MAX_HP = this.GetMAX_HP();
             MAX_MONEY = this.GetMAX_MONEY();
@@ -169,7 +169,7 @@ namespace GameServer
             NumberOfMovesLeft = MovesInARow;
             HP = MAX_HP;
             A = rand.NextDouble();
-            MAP_WIDTH = map_width;
+            MapWidth = mapWidth;
             DeathSound = -1;
         }
 
@@ -202,6 +202,7 @@ namespace GameServer
             double tempY = Y;
             newX += Math.Sin(A) * move;
             newY += Math.Cos(A) * move;
+            if (ImpassibleCells == null) throw new Exception("ImpassibleCells empty");
             if (NumberOfMovesLeft > 0)
                 NumberOfMovesLeft--;
             else
@@ -211,31 +212,31 @@ namespace GameServer
             }
             IntX = (int)X;
             IntY = (int)Y;
-            if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
             {
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
                 A = rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
             {
                 tempX += EntityWidth / 2 - (tempX % 1);
                 A = rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
             {
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
                 A = rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
             {
                 tempY += EntityWidth / 2 - (tempY % 1);
                 A = rand.NextDouble() * (Math.PI * 2);
@@ -248,8 +249,8 @@ namespace GameServer
 
     public abstract class Friend : Creature
     {
-        public Friend(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => CanHit = false;
-        public Friend(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => CanHit = false;
+        public Friend(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => CanHit = false;
+        public Friend(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => CanHit = false;
     }
 
     public abstract class NPC : Friend
@@ -266,8 +267,8 @@ namespace GameServer
         protected override int GetMIN_DAMAGE() => 0;
 
 
-        public NPC(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => RespondsToFlashlight = false;
-        public NPC(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => RespondsToFlashlight = false;
+        public NPC(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => RespondsToFlashlight = false;
+        public NPC(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => RespondsToFlashlight = false;
 
         public override void UpdateCoordinates(string map, double playerX, double playerY) { }
     }
@@ -277,8 +278,8 @@ namespace GameServer
         protected double detectionRange;
         public bool Stoped { get; set; }
         public bool HasStopAnimation { get; set; }
-        public string[] Name { get; set; }
-        public string[] Description { get; set; }
+        public string[]? Name { get; set; }
+        public string[]? Description { get; set; }
         public int Cost { get; set; }
         public int Index { get; set; }
         public bool PetAbilityReloading { get; set; }
@@ -287,10 +288,7 @@ namespace GameServer
         public int AbilityTimer { get; set; }
         protected int PetAbility { get; set; }
         protected override double GetEntityWidth() => 0.1;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', '=', 'S'];
         protected override int GetMovesInARow() => 0;
         protected override int GetMAX_HP() => 0;
         protected override int GetTexture() => Texture;
@@ -300,8 +298,8 @@ namespace GameServer
         protected override int GetMAX_DAMAGE() => 0;
         protected override int GetMIN_DAMAGE() => 0;
 
-        public Pet(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Pet(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Pet(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Pet(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -311,11 +309,11 @@ namespace GameServer
             detectionRange = 8.0;
         }
 
-        public void SetNewParametrs(double x, double y, int map_width)
+        public void SetNewParametrs(double x, double y, int mapWidth)
         {
             X = x;
             Y = y;
-            MAP_WIDTH = map_width;
+            MapWidth = mapWidth;
         }
 
         public int GetPetAbility() => PetAbility;
@@ -326,6 +324,7 @@ namespace GameServer
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (ImpassibleCells == null) throw new Exception("ImpassibleCells empty");
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -339,7 +338,7 @@ namespace GameServer
                     int test_y = (int)(Y + rayAngleY * distance);
                     if (test_x == (int)playerX && test_y == (int)playerY)
                         break;
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -358,19 +357,19 @@ namespace GameServer
             newY += Math.Cos(A) * move;
             IntX = (int)X;
             IntY = (int)Y;
-            if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY += EntityWidth / 2 - (tempY % 1);
             if (isPlayerVisible)
             {
@@ -398,8 +397,8 @@ namespace GameServer
         protected override double GetEntityWidth() => 0.4;
         protected override int GetTexture() => Texture;
 
-        public GameObject(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public GameObject(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public GameObject(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public GameObject(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -413,8 +412,8 @@ namespace GameServer
 
     public abstract class Decoration : GameObject
     {
-        public Decoration(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) { }
-        public Decoration(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) { }
+        public Decoration(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) { }
+        public Decoration(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) { }
     }
 
     public abstract class Enemy : Creature
@@ -424,8 +423,8 @@ namespace GameServer
         protected double detectionRange;
         public bool Fast { get; set; }
 
-        public Enemy(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Enemy(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Enemy(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Enemy(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -443,10 +442,10 @@ namespace GameServer
 
     public abstract class Rockets : NPC
     {
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S' };
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', 'S'];
 
-        public Rockets(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => CanHit = false;
-        public Rockets(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => CanHit = false;
+        public Rockets(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => CanHit = false;
+        public Rockets(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => CanHit = false;
 
         public void SetA(double value) => A = value;
         public override void UpdateCoordinates(string map, double playerX, double playerY)
@@ -458,19 +457,20 @@ namespace GameServer
             double tempY = Y;
             newX += Math.Sin(A) * move;
             newY += Math.Cos(A) * move;
-            if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+            if (ImpassibleCells == null) throw new Exception("ImpassibleCells empty");
+            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY += EntityWidth / 2 - (tempY % 1);
             X = tempX;
             Y = tempY;
@@ -482,8 +482,8 @@ namespace GameServer
         public bool BoxWithMoney { get; set; }
         public double MoneyChance { get; set; }
 
-        public Boxes(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Boxes(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Boxes(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Boxes(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -491,9 +491,9 @@ namespace GameServer
             HP = 2.5;
         }
 
-        public void SetMoneyChance()
+        public void SetMoneyChance(Random r)
         {
-            if (rand.NextDouble() <= MoneyChance)
+            if (r.NextDouble() <= MoneyChance)
                 BoxWithMoney = true;
         }
 
@@ -518,16 +518,57 @@ namespace GameServer
         public double Speed { get; set; } //max: 7.5
         public int Controllability { get; set; } //90-175
 
-        public Transport(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Transport(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Transport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Transport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init() => A = rand.NextDouble();
     }
 
+    public class Covering : GameObject
+    {
+        public float HP { get; set; }
+        public bool Broken { get; set; }
+        protected override int GetEntityID() => 21;
+
+        public Covering(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Covering(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 32;
+            HP = 100;
+            Animated = false;
+            Broken = false;
+            base.AnimationsToStatic();
+        }
+
+        public void FullRepair()
+        {
+            HP = 100;
+            Broken = false;
+        }
+        public void Repair(float value)
+        {
+            HP += value;
+            Broken = false;
+            if (HP > 100) HP = 100;
+        }
+        public bool DealDamage(float value)
+        {
+            HP -= value;
+            if (HP <= 0)
+            {
+                HP = 0;
+                Broken = true;
+            }
+            return Broken;
+        }
+    }
+
     public class Bike : Transport
     {
-        public Bike(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Bike(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Bike(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Bike(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -549,13 +590,13 @@ namespace GameServer
 
     public class RpgRocket : Rockets
     {
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'S' };
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', '=', 'S'];
         protected override int GetEntityID() => 16;
         protected override double GetEntityWidth() => 0.4;
         public override double GetMove() => 0.6;
 
-        public RpgRocket(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public RpgRocket(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public RpgRocket(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public RpgRocket(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -566,13 +607,14 @@ namespace GameServer
 
     public class Explosion : GameObject
     {
+        public int ShooterID;
+
         protected override int GetEntityID() => 17;
         protected override double GetEntityWidth() => 0.4;
 
-        public Explosion(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Explosion(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Explosion(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Explosion(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
-        public int ShooterID;
 
         private void Init()
         {
@@ -587,8 +629,8 @@ namespace GameServer
 
     public class PlayerDeadBody : NPC
     {
-        public PlayerDeadBody(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public PlayerDeadBody(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public PlayerDeadBody(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public PlayerDeadBody(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -601,8 +643,8 @@ namespace GameServer
 
     public class SillyCat : Pet
     {
-        public SillyCat(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public SillyCat(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public SillyCat(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public SillyCat(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -623,8 +665,8 @@ namespace GameServer
 
     public class GreenGnome : Pet
     {
-        public GreenGnome(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public GreenGnome(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public GreenGnome(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public GreenGnome(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -644,8 +686,8 @@ namespace GameServer
 
     public class EnergyDrink : Pet
     {
-        public EnergyDrink(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public EnergyDrink(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public EnergyDrink(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public EnergyDrink(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -666,13 +708,10 @@ namespace GameServer
     public class Pyro : Pet
     {
         protected override int GetEntityID() => 8;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', 'S'];
 
-        public Pyro(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Pyro(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Pyro(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Pyro(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -694,8 +733,8 @@ namespace GameServer
     {
         protected override int GetEntityID() => 9;
 
-        public Teleport(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Teleport(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Teleport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Teleport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -709,15 +748,15 @@ namespace GameServer
     {
         protected override int GetEntityID() => 14;
 
-        public Box(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Box(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Box(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Box(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
             Texture = 15;
             DeathSound = 4;
             MoneyChance = 0.25;
-            SetMoneyChance();
+            SetMoneyChance(new Random());
             base.AnimationsToStatic();
         }
     }
@@ -726,15 +765,15 @@ namespace GameServer
     {
         protected override int GetEntityID() => 15;
 
-        public Barrel(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Barrel(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Barrel(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Barrel(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
             Texture = 16;
             DeathSound = 4;
             MoneyChance = 0.75;
-            SetMoneyChance();
+            SetMoneyChance(new Random());
             base.AnimationsToStatic();
         }
     }
@@ -742,8 +781,8 @@ namespace GameServer
     public class HittingTheWall : GameObject
     {
         protected override int GetEntityID() => 10;
-        public HittingTheWall(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public HittingTheWall(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public HittingTheWall(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public HittingTheWall(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         public override void Deserialize(NetDataReader reader)
         {
@@ -771,8 +810,8 @@ namespace GameServer
     public class ShopDoor : GameObject
     {
         protected override int GetEntityID() => 11;
-        public ShopDoor(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public ShopDoor(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public ShopDoor(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public ShopDoor(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -787,8 +826,8 @@ namespace GameServer
     {
         protected override int GetEntityID() => 12;
 
-        public ShopMan(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public ShopMan(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public ShopMan(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public ShopMan(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -804,10 +843,7 @@ namespace GameServer
     {
         protected override int GetEntityID() => 1;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', '=', 'W', 'S'];
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 10;
         protected override int GetTexture() => Texture;
@@ -817,8 +853,8 @@ namespace GameServer
         protected override int GetMAX_DAMAGE() => 35;
         protected override int GetMIN_DAMAGE() => 15;
 
-        public Zombie(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Zombie(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Zombie(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Zombie(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -833,6 +869,7 @@ namespace GameServer
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (ImpassibleCells == null) throw new Exception("ImpassibleCells empty");
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -844,7 +881,7 @@ namespace GameServer
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -878,19 +915,19 @@ namespace GameServer
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -902,10 +939,7 @@ namespace GameServer
     {
         protected override int GetEntityID() => 2;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', '=', 'W', 'S'];
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 5;
         protected override int GetTexture() => Texture;
@@ -915,8 +949,8 @@ namespace GameServer
         protected override int GetMAX_DAMAGE() => 15;
         protected override int GetMIN_DAMAGE() => 10;
 
-        public Dog(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Dog(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Dog(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Dog(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -931,6 +965,7 @@ namespace GameServer
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (ImpassibleCells == null) throw new Exception("ImpassibleCells empty");
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -942,7 +977,7 @@ namespace GameServer
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -976,19 +1011,19 @@ namespace GameServer
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1000,10 +1035,7 @@ namespace GameServer
     {
         protected override int GetEntityID() => 3;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', '=', 'W', 'S'];
         protected override int GetMovesInARow() => 40;
         protected override int GetMAX_HP() => 20;
         protected override int GetTexture() => Texture;
@@ -1013,8 +1045,8 @@ namespace GameServer
         protected override int GetMAX_DAMAGE() => 35;
         protected override int GetMIN_DAMAGE() => 25;
 
-        public Ogr(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Ogr(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Ogr(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Ogr(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1028,6 +1060,7 @@ namespace GameServer
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (ImpassibleCells == null) throw new Exception("ImpassibleCells empty");
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1039,7 +1072,7 @@ namespace GameServer
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1073,19 +1106,19 @@ namespace GameServer
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1097,10 +1130,7 @@ namespace GameServer
     {
         protected override int GetEntityID() => 4;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => ['#', 'D', 'd', 'W', 'S'];
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 2;
         protected override int GetTexture() => Texture;
@@ -1110,8 +1140,8 @@ namespace GameServer
         protected override int GetMAX_DAMAGE() => 8;
         protected override int GetMIN_DAMAGE() => 3;
 
-        public Bat(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Bat(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Bat(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Bat(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1121,11 +1151,13 @@ namespace GameServer
             Fast = true;
             base.SetAnimations(1, 0);
         }
+
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (ImpassibleCells == null) throw new Exception("ImpassibleCells empty");
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1137,7 +1169,7 @@ namespace GameServer
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1171,19 +1203,19 @@ namespace GameServer
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1193,8 +1225,8 @@ namespace GameServer
 
     public class Vine : Decoration
     {
-        public Vine(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Vine(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Vine(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Vine(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1207,8 +1239,8 @@ namespace GameServer
 
     public class Lamp : Decoration
     {
-        public Lamp(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Lamp(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Lamp(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Lamp(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {

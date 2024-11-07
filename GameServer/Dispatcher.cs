@@ -104,6 +104,9 @@ namespace GameServer
                 case 1577:
                     Game.ChangeItem(playerIDfromPeer, dreader.GetInt());
                     break;
+                case 9955:
+                    Game.RepairCovering(dreader.GetInt());
+                    break;
                 default:
                     break;
             }

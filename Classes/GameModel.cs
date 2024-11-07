@@ -476,14 +476,19 @@ namespace SLIL.Classes
                         tempEntities.Add(bike);
                         break;
                     case 19:
-                        Vine ob1 = new Vine(0, 0, MAP_WIDTH, ID);
-                        ob1.Deserialize(reader);
-                        tempEntities.Add(ob1);
+                        Vine vine = new Vine(0, 0, MAP_WIDTH, ID);
+                        vine.Deserialize(reader);
+                        tempEntities.Add(vine);
                         break;
                     case 20:
-                        Lamp ob2 = new Lamp(0, 0, MAP_WIDTH, ID);
-                        ob2.Deserialize(reader);
-                        tempEntities.Add(ob2);
+                        Lamp lamp = new Lamp(0, 0, MAP_WIDTH, ID);
+                        lamp.Deserialize(reader);
+                        tempEntities.Add(lamp);
+                        break;
+                    case 21:
+                        Covering covering = new Covering(0, 0, MAP_WIDTH, ID);
+                        covering.Deserialize(reader);
+                        tempEntities.Add(covering);
                         break;
                     default:
                         break;
@@ -627,6 +632,11 @@ namespace SLIL.Classes
                         Lamp lamp = new Lamp(0, 0, MAP_WIDTH, ID);
                         lamp.Deserialize(reader);
                         tempEntities.Add(lamp);
+                        break;
+                    case 21:
+                        Covering covering = new Covering(0, 0, MAP_WIDTH, ID);
+                        covering.Deserialize(reader);
+                        tempEntities.Add(covering);
                         break;
                     default:
                         break;

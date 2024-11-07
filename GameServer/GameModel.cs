@@ -4,10 +4,11 @@ using System.Text;
 
 namespace GameServer
 {
-    enum GameModes
+    public enum GameModes
     {
         Classic,
         Deathmatch,
+        Survival,
         DebugBikes,
         Debug
     }
@@ -18,7 +19,8 @@ namespace GameServer
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#..##............#...L..######################",
             bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################",
-            deathmatchMap = @"################$D..#..=.....##D#..L..#.....##....#....#...##B..b#....#.#=###==##...b=...##......##=#...##......=......##...#=##......##...=b...##==###=#.#....#b..B##...#....#....##.....#..L..#D##.....=..#..D$################";
+            deathmatchMap = @"################$D..#..=.....##D#..L..#.....##....#....#...##B..b#....#.#=###==##...b=...##......##=#...##......=......##...#=##......##...=b...##==###=#.#....#b..B##...#....#....##.....#..L..#D##.....=..#..D$################",
+            zombieModeMap = @"#####################....#@#...........##....#.#...........##..###T####.###....#####......#.#@#....##@.T......#.#.#....#####...######T##...##..#...T.@#....######..#...#T##....T.@###..##d##.......#########...#......##...##@.T...####d############....#...#......#####....d...####...##@.T....#...T.@#...#######T##...####...##....#.T....####...##....#@#....T.@#...##....###....####...#####################";
         private int inDebug = 0;
         private readonly Pet[] PETS;
         private readonly DisposableItem[] ITEMS;
@@ -29,9 +31,9 @@ namespace GameServer
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
         private readonly Random rand;
-        private GameModes _gameMode;
+        private GameModes GameMode;
         private bool PVP = true;
-        private int difficulty;
+        private int Difficulty;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
         private int CustomMazeHeight, CustomMazeWidth;
@@ -52,7 +54,7 @@ namespace GameServer
             MAP_WIDTH = 16;
             MAP_HEIGHT = 16;
             rand = new();
-            difficulty = 3;
+            Difficulty = 3;
             this.sendMessageFromGameCallback = sendMessage;
             RespawnTimer = new System.Timers.Timer(1000);
             RespawnTimer.Elapsed += RespawnTimer_Tick;
@@ -81,6 +83,11 @@ namespace GameServer
             {
                 double X = 3, Y = 3;
                 bool OK = false;
+                if(GameMode == GameModes.Survival)
+                {
+                    X = Y = 5.5;
+                    OK = true;
+                }
                 while (!OK)
                 {
                     X = rand.Next(1, MAP_WIDTH - 1);
@@ -93,7 +100,7 @@ namespace GameServer
                     Name = name,
                     PVP = PVP
                 };
-                if (difficulty == 3 || difficulty == 2)
+                if (Difficulty == 3 || Difficulty == 2)
                 {
                     p.Guns[2].LevelUpdate();
                     ((DisposableItem)p.GUNS[10]).AddItem(2);
@@ -107,7 +114,7 @@ namespace GameServer
                     Name = name,
                     PVP = PVP
                 };
-                if (difficulty == 3 || difficulty == 2)
+                if (Difficulty == 3 || Difficulty == 2)
                 {
                     p.Guns[2].LevelUpdate();
                     ((DisposableItem)p.GUNS[10]).AddItem(2);
@@ -157,7 +164,7 @@ namespace GameServer
                                             playerTarget.DealDamage(damage, true);
                                             if (playerTarget.HP <= 0)
                                             {
-                                                if (_gameMode == GameModes.Deathmatch)
+                                                if (GameMode == GameModes.Deathmatch)
                                                     Entities.Add(new PlayerDeadBody(playerTarget.X, playerTarget.Y, MAP_WIDTH, ref MaxEntityID));
                                                 //TODO:
                                                 //Stage = playerTarget.Stage;
@@ -245,7 +252,7 @@ namespace GameServer
                                         player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
                                         if (player.HP <= 0)
                                         {
-                                            if (_gameMode == GameModes.Deathmatch)
+                                            if (GameMode == GameModes.Deathmatch)
                                                 Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
                                             //TODO:
                                             //Stage = player.Stage;
@@ -315,7 +322,7 @@ namespace GameServer
             }
         }
 
-        private int GetDeathCause(Entity entity)
+        private static int GetDeathCause(Entity entity)
         {
             if (entity is Zombie)
                 return 0;
@@ -362,7 +369,7 @@ namespace GameServer
                     double distance = Math.Sqrt(Math.Pow(enemy.X - player.X, 2) + Math.Pow(enemy.Y - player.Y, 2));
                     if (distance <= 30)
                     {
-                        if (difficulty <= 1)
+                        if (Difficulty <= 1)
                         {
                             if (enemy.DEAD && enemy.RESPAWN > 0)
                                 enemy.RESPAWN--;
@@ -515,14 +522,19 @@ namespace GameServer
                         tempEntities.Add(bike);
                         break;
                     case 19:
-                        Vine ob1 = new(0, 0, MAP_WIDTH, ID);
-                        ob1.Deserialize(reader);
-                        tempEntities.Add(ob1);
+                        Vine vine = new(0, 0, MAP_WIDTH, ID);
+                        vine.Deserialize(reader);
+                        tempEntities.Add(vine);
                         break;
                     case 20:
-                        Lamp ob2 = new(0, 0, MAP_WIDTH, ID);
-                        ob2.Deserialize(reader);
-                        tempEntities.Add(ob2);
+                        Lamp lamp = new(0, 0, MAP_WIDTH, ID);
+                        lamp.Deserialize(reader);
+                        tempEntities.Add(lamp);
+                        break;
+                    case 21:
+                        Covering covering = new(0,0, MAP_WIDTH, ID);
+                        covering.Deserialize(reader);
+                        tempEntities.Add(covering);
                         break;
                     default:
                         break;
@@ -666,6 +678,11 @@ namespace GameServer
                         Lamp lamp = new(0, 0, MAP_WIDTH, ID);
                         lamp.Deserialize(reader);
                         tempEntities.Add(lamp);
+                        break;
+                    case 21:
+                        Covering covering = new(0, 0, MAP_WIDTH, ID);
+                        covering.Deserialize(reader);
+                        tempEntities.Add(covering);
                         break;
                     default:
                         break;
@@ -819,6 +836,10 @@ namespace GameServer
                     SpawnEnemis(x, y, MAP_WIDTH, false, 3);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
+                case 'T':
+                    Covering covering = new(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = covering;
+                    break;
             }
             return entity;
         }
@@ -877,7 +898,7 @@ namespace GameServer
                 foreach (Entity ent in Entities)
                 {
                     if (ent is not Player player) continue;
-                    if (difficulty != 4 && difficulty != 6) Stage++;
+                    if (Difficulty != 4 && Difficulty != 6) Stage++;
                     if (!player.CuteMode)
                     {
                         for (int i = 0; i < player.Guns.Count; i++)
@@ -1005,14 +1026,14 @@ namespace GameServer
         public void GoDebug(int debug)
         {
             inDebug = debug;
-            difficulty = 5;
+            Difficulty = 5;
         }
 
         public void InitMap()
         {
             double enemy_count = 0;
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
-            if (_gameMode == GameModes.Deathmatch)
+            if (GameMode == GameModes.Deathmatch)
             {
                 MAP_HEIGHT = 15;
                 MAP_WIDTH = 15;
@@ -1038,7 +1059,28 @@ namespace GameServer
                 }
                 return;
             }
-            if (_gameMode == GameModes.DebugBikes)
+            if (GameMode == GameModes.Survival)
+            {
+                MAP_HEIGHT = 20;
+                MAP_WIDTH = 20;
+                MAP.Clear();
+                MAP.AppendLine(zombieModeMap);
+                foreach (Entity ent in Entities)
+                {
+                    if (ent is not Player player) continue;
+                    player.X = player.Y = 5.5;
+                }
+                for (int x = 0; x < MAP_WIDTH; x++)
+                {
+                    for (int y = 0; y < MAP_HEIGHT; y++)
+                    {
+                        Entity? entity = GetEntityForInitMap(MAP[y * MAP_WIDTH + x], x, y);
+                        if (entity != null) Entities.Add(entity);
+                    }
+                }
+                return;
+            }
+            if (GameMode == GameModes.DebugBikes)
             {
                 MAP_HEIGHT = 25;
                 MAP_WIDTH = 25;
@@ -1060,7 +1102,7 @@ namespace GameServer
                 }
                 return;
             }
-            if (_gameMode == GameModes.Debug)
+            if (GameMode == GameModes.Debug)
             {
                 MAP_HEIGHT = 21;
                 MAP_WIDTH = 21;
@@ -1082,15 +1124,15 @@ namespace GameServer
                 }
                 return;
             }
-            if (difficulty == 0)
+            if (Difficulty == 0)
                 enemy_count = 0.07;
-            else if (difficulty == 1)
+            else if (Difficulty == 1)
                 enemy_count = 0.065;
-            else if (difficulty == 2)
+            else if (Difficulty == 2)
                 enemy_count = 0.055;
-            else if (difficulty == 3)
+            else if (Difficulty == 3)
                 enemy_count = 0.045;
-            else if (difficulty == 4)
+            else if (Difficulty == 4)
             {
                 MazeHeight = CustomMazeHeight;
                 MazeWidth = CustomMazeWidth;
@@ -1115,7 +1157,7 @@ namespace GameServer
                     MazeWidth = 25;
                 }
             }
-            if (difficulty < 4)
+            if (Difficulty < 4)
             {
                 MazeHeight = MazeWidth = 10;
                 MAX_SHOP_COUNT = 2;
@@ -1123,11 +1165,11 @@ namespace GameServer
             foreach (Entity ent in Entities)
             {
                 if (ent is not Player player) continue;
-                if (difficulty == 0)
+                if (Difficulty == 0)
                     enemy_count = 0.07;
-                else if (difficulty == 1)
+                else if (Difficulty == 1)
                     enemy_count = 0.065;
-                else if (difficulty == 2)
+                else if (Difficulty == 2)
                 {
                     enemy_count = 0.055;
                     if (Stage == 0 && player.Guns[2].Level==Levels.LV1)
@@ -1136,7 +1178,7 @@ namespace GameServer
                         ((DisposableItem)player.GUNS[10]).AddItem(2);
                     }
                 }
-                else if (difficulty == 3)
+                else if (Difficulty == 3)
                 {
                     enemy_count = 0.045;
                     if (Stage == 0 && player.Guns[2].Level==Levels.LV1)
@@ -1145,7 +1187,7 @@ namespace GameServer
                         ((DisposableItem)player.GUNS[10]).AddItem(2);
                     }
                 }
-                else if (difficulty == 4)
+                else if (Difficulty == 4)
                 {
                     MazeHeight = CustomMazeHeight;
                     MazeWidth = CustomMazeWidth;
@@ -1176,7 +1218,7 @@ namespace GameServer
                         MazeWidth = 25;
                     }
                 }
-                if (difficulty < 4)
+                if (Difficulty < 4)
                 {
                     if (Stage == 0)
                     {
@@ -1205,7 +1247,7 @@ namespace GameServer
                     }
                 }
             }
-            if (difficulty == 5)
+            if (Difficulty == 5)
             {
                 MAP_WIDTH = MazeWidth;
                 MAP_HEIGHT = MazeHeight;
@@ -1216,7 +1258,7 @@ namespace GameServer
                 MAP_HEIGHT = MazeHeight * 3 + 1;
             }
             MAP.Clear();
-            if (difficulty == 5)
+            if (Difficulty == 5)
             {
                 if (inDebug == 1)
                     MAP.AppendLine(debugMap);
@@ -1397,7 +1439,7 @@ namespace GameServer
                     player.Y = CUSTOM_Y;
                     continue;
                 }
-                if (difficulty != 5)
+                if (Difficulty != 5)
                 {
                     player.X = 1.5;
                     player.Y = 1.5;
@@ -1555,7 +1597,7 @@ namespace GameServer
                 if (attacker is Player attackerPlayer && p.DealDamage(damage, true))
                 {
                     double multiplier = 1;
-                    if (difficulty == 3)
+                    if (Difficulty == 3)
                         multiplier = 1.5;
                     attackerPlayer.ChangeMoney(rand.Next((int)(20 * multiplier), (int)(30 * multiplier)));
                     attackerPlayer.EnemiesKilled++;
@@ -1576,7 +1618,7 @@ namespace GameServer
                     if (attacker is Player attackerPlayer)
                     {
                         double multiplier = 1;
-                        if (difficulty == 3)
+                        if (Difficulty == 3)
                             multiplier = 1.5;
                         attackerPlayer.ChangeMoney(rand.Next((int)(c.MIN_MONEY * multiplier), (int)(c.MAX_MONEY * multiplier)));
                         attackerPlayer.EnemiesKilled++;
@@ -1629,7 +1671,7 @@ namespace GameServer
                 if (!player.Dead) areAllThePlayersDead = false;
                 else
                 {
-                    if(_gameMode == GameModes.Deathmatch)
+                    if(GameMode == GameModes.Deathmatch)
                     {
                         player.SetDefault();
                         double X = 1.5, Y = 1.5;
@@ -1681,7 +1723,7 @@ namespace GameServer
                     }
                 }
             }
-            if (_gameMode == GameModes.Classic)
+            if (GameMode == GameModes.Classic)
             {
                 if (areAllThePlayersDead)
                     GameOver(0);
@@ -2041,6 +2083,14 @@ namespace GameServer
             double Y = (coordinate - X) / MAP_WIDTH;
         }
 
+        internal void RepairCovering(int id)
+        {
+            Entity? entity = GetEntity(id);
+            if (entity == null) return;
+            Covering covering = (Covering)entity;
+            covering.Repair(25);
+        }
+
         internal void InteractingWithDoors(int coordinate)
         {
             double X = coordinate % MAP_HEIGHT;
@@ -2066,7 +2116,7 @@ namespace GameServer
 
         internal void ChangeDifficulty(int difficulty)
         {
-            this.difficulty = difficulty;
+            this.Difficulty = difficulty;
             EnemyDamageOffset = difficulty switch
             {
                 0 => 1.75,
@@ -2080,7 +2130,7 @@ namespace GameServer
 
         internal void ChangeGameMode(GameModes gameMode)
         {
-            _gameMode = gameMode;
+            GameMode = gameMode;
             if (GameStarted) StopGame(2);
         }
 

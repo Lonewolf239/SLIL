@@ -1168,4 +1168,23 @@ namespace GameServer
 
         public override int GetItemID() => 14;
     }
+
+    public class MedicalKit : DisposableItem
+    {
+        public MedicalKit() : base()
+        {
+            EffectID = 4;
+            RechargeTime = 900;
+            GunCost = 60;
+            MaxCount = 1;
+            Name = ["4-8", "Medical kit"];
+            Description =
+            [
+                "4-9",
+                "Restores 80% of lost health",
+            ];
+        }
+
+        public override int GetItemID() => 18;
+    }
 }

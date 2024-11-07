@@ -215,6 +215,14 @@ namespace SLIL.Classes
                     { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_1 }
                 }
             },
+            { 32, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.fake_teleport_0 },
+                    { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_0 },
+                    { SpriteStates.DeadBody, Properties.Resources.fake_teleport_0 }
+                }
+            },
         };
         private Dictionary<int, Dictionary<SpriteStates, Image>> cute_textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
         {
@@ -399,6 +407,14 @@ namespace SLIL.Classes
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_1 }
+                }
+            },
+            { 32, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.fake_teleport_0 },
+                    { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_0 },
+                    { SpriteStates.DeadBody, Properties.Resources.fake_teleport_0 }
                 }
             },
         };

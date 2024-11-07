@@ -30,7 +30,7 @@ namespace SLIL.Classes
         protected abstract double GetEntityWidth();
         public virtual int Interaction() => 0;
 
-        public Entity(double x, double y, int map_width, ref int maxEntityID)
+        public Entity(double x, double y, int mapWidth, ref int maxEntityID)
         {
             ID = maxEntityID;
             maxEntityID++;
@@ -49,7 +49,7 @@ namespace SLIL.Classes
             IntX = (int)x;
             IntY = (int)y;
         }
-        public Entity(double x, double y, int map_width, int maxEntityID)
+        public Entity(double x, double y, int mapWidth, int maxEntityID)
         {
             ID = maxEntityID;
             EntityID = this.GetEntityID();
@@ -143,8 +143,8 @@ namespace SLIL.Classes
         protected abstract int GetMovesInARow();
         public abstract double GetMove();
 
-        public Creature(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init(map_width);
-        public Creature(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init(map_width);
+        public Creature(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init(mapWidth);
+        public Creature(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init(mapWidth);
 
         public override void Serialize(NetDataWriter writer)
         {
@@ -160,7 +160,7 @@ namespace SLIL.Classes
             this.DEAD = reader.GetBool();
         }
 
-        private void Init(int map_width)
+        private void Init(int mapWidth)
         {
             MAX_HP = this.GetMAX_HP();
             MAX_MONEY = this.GetMAX_MONEY();
@@ -172,7 +172,7 @@ namespace SLIL.Classes
             NumberOfMovesLeft = MovesInARow;
             HP = MAX_HP;
             A = rand.NextDouble();
-            MAP_WIDTH = map_width;
+            MAP_WIDTH = mapWidth;
             DeathSound = -1;
         }
 
@@ -250,8 +250,8 @@ namespace SLIL.Classes
 
     public abstract class Friend : Creature
     {
-        public Friend(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => CanHit = false;
-        public Friend(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => CanHit = false;
+        public Friend(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => CanHit = false;
+        public Friend(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => CanHit = false;
     }
 
     public abstract class NPC : Friend
@@ -271,8 +271,8 @@ namespace SLIL.Classes
         protected override int GetMIN_DAMAGE() => 0;
 
 
-        public NPC(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => RespondsToFlashlight = false;
-        public NPC(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => RespondsToFlashlight = false;
+        public NPC(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => RespondsToFlashlight = false;
+        public NPC(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => RespondsToFlashlight = false;
 
         public override void UpdateCoordinates(string map, double playerX, double playerY) { }
     }
@@ -305,8 +305,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 0;
         protected override int GetMIN_DAMAGE() => 0;
 
-        public Pet(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Pet(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Pet(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Pet(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -316,11 +316,11 @@ namespace SLIL.Classes
             detectionRange = 8.0;
         }
 
-        public void SetNewParametrs(double x, double y, int map_width)
+        public void SetNewParametrs(double x, double y, int mapWidth)
         {
             X = x;
             Y = y;
-            MAP_WIDTH = map_width;
+            MAP_WIDTH = mapWidth;
         }
 
         public int GetPetAbility() => PetAbility;
@@ -403,8 +403,8 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override int GetTexture() => Texture;
 
-        public GameObject(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public GameObject(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public GameObject(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public GameObject(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -418,8 +418,8 @@ namespace SLIL.Classes
 
     public abstract class Decoration : GameObject
     {
-        public Decoration(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) { }
-        public Decoration(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) { }
+        public Decoration(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) { }
+        public Decoration(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) { }
     }
 
     public abstract class Enemy : Creature
@@ -429,8 +429,8 @@ namespace SLIL.Classes
         protected double detectionRange;
         public bool Fast { get; set; }
 
-        public Enemy(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Enemy(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Enemy(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Enemy(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -450,8 +450,8 @@ namespace SLIL.Classes
     {
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S' };
 
-        public Rockets(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => CanHit = false;
-        public Rockets(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => CanHit = false;
+        public Rockets(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => CanHit = false;
+        public Rockets(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => CanHit = false;
 
         public void SetA(double value) => A = value;
         public override void UpdateCoordinates(string map, double playerX, double playerY)
@@ -487,8 +487,8 @@ namespace SLIL.Classes
         public bool BoxWithMoney { get; set; }
         public double MoneyChance { get; set; }
 
-        public Boxes(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Boxes(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Boxes(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Boxes(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -496,9 +496,9 @@ namespace SLIL.Classes
             HP = 2.5;
         }
 
-        public void SetMoneyChance()
+        public void SetMoneyChance(Random r)
         {
-            if (rand.NextDouble() <= MoneyChance)
+            if (r.NextDouble() <= MoneyChance)
                 BoxWithMoney = true;
         }
 
@@ -523,16 +523,57 @@ namespace SLIL.Classes
         public double Speed { get; set; } //max: 7.5
         public int Controllability { get; set; } //90-175
 
-        public Transport(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Transport(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Transport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Transport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init() => A = rand.NextDouble();
     }
 
+    public class Covering : GameObject
+    {
+        public float HP { get; set; }
+        public bool Broken { get; set; }
+        protected override int GetEntityID() => 21;
+
+        public Covering(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Covering(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 32;
+            HP = 100;
+            Animated = false;
+            Broken = false;
+            base.AnimationsToStatic();
+        }
+
+        public void FullRepair()
+        {
+            HP = 100;
+            Broken = false;
+        }
+        public void Repair(float value)
+        {
+            HP += value;
+            Broken = false;
+            if (HP > 100) HP = 100;
+        }
+        public bool DealDamage(float value)
+        {
+            HP -= value;
+            if (HP <= 0)
+            {
+                HP = 0;
+                Broken = true;
+            }
+            return Broken;
+        }
+    }
+
     public class Bike : Transport
     {
-        public Bike(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Bike(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Bike(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Bike(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -559,8 +600,8 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         public override double GetMove() => 0.6;
 
-        public RpgRocket(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public RpgRocket(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public RpgRocket(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public RpgRocket(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -574,8 +615,8 @@ namespace SLIL.Classes
         protected override int GetEntityID() => 17;
         protected override double GetEntityWidth() => 0.4;
 
-        public Explosion(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Explosion(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Explosion(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Explosion(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         public int ShooterID;
 
@@ -592,8 +633,8 @@ namespace SLIL.Classes
 
     public class PlayerDeadBody : NPC
     {
-        public PlayerDeadBody(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public PlayerDeadBody(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public PlayerDeadBody(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public PlayerDeadBody(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -606,8 +647,8 @@ namespace SLIL.Classes
 
     public class SillyCat : Pet
     {
-        public SillyCat(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public SillyCat(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public SillyCat(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public SillyCat(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -628,8 +669,8 @@ namespace SLIL.Classes
 
     public class GreenGnome : Pet
     {
-        public GreenGnome(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public GreenGnome(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public GreenGnome(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public GreenGnome(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -649,8 +690,8 @@ namespace SLIL.Classes
 
     public class EnergyDrink : Pet
     {
-        public EnergyDrink(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public EnergyDrink(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public EnergyDrink(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public EnergyDrink(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -676,8 +717,8 @@ namespace SLIL.Classes
             return new char[] { '#', 'D', 'd', 'S' };
         }
 
-        public Pyro(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Pyro(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Pyro(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Pyro(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -699,8 +740,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 21;
 
-        public BackroomsTeleport(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public BackroomsTeleport(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public BackroomsTeleport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public BackroomsTeleport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -714,8 +755,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 9;
 
-        public Teleport(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Teleport(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Teleport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Teleport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -729,15 +770,15 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 14;
 
-        public Box(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Box(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Box(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Box(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
             Texture = 15;
             DeathSound = 4;
             MoneyChance = 0.25;
-            SetMoneyChance();
+            SetMoneyChance(new Random());
             base.AnimationsToStatic();
         }
     }
@@ -746,15 +787,15 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 15;
 
-        public Barrel(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Barrel(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Barrel(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Barrel(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
             Texture = 16;
             DeathSound = 4;
             MoneyChance = 0.75;
-            SetMoneyChance();
+            SetMoneyChance(new Random());
             base.AnimationsToStatic();
         }
     }
@@ -762,8 +803,8 @@ namespace SLIL.Classes
     public class HittingTheWall : GameObject
     {
         protected override int GetEntityID() => 10;
-        public HittingTheWall(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public HittingTheWall(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public HittingTheWall(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public HittingTheWall(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         public override void Deserialize(NetDataReader reader)
         {
@@ -791,8 +832,8 @@ namespace SLIL.Classes
     public class ShopDoor : GameObject
     {
         protected override int GetEntityID() => 11;
-        public ShopDoor(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public ShopDoor(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public ShopDoor(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public ShopDoor(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -807,8 +848,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 12;
 
-        public ShopMan(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public ShopMan(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public ShopMan(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public ShopMan(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -837,8 +878,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 35;
         protected override int GetMIN_DAMAGE() => 15;
 
-        public Zombie(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Zombie(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Zombie(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Zombie(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -935,8 +976,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 15;
         protected override int GetMIN_DAMAGE() => 10;
 
-        public Dog(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Dog(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Dog(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Dog(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1033,8 +1074,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 35;
         protected override int GetMIN_DAMAGE() => 25;
 
-        public Ogr(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Ogr(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Ogr(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Ogr(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1130,8 +1171,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 8;
         protected override int GetMIN_DAMAGE() => 3;
 
-        public Bat(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Bat(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Bat(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Bat(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1213,8 +1254,8 @@ namespace SLIL.Classes
 
     public class Vine : Decoration
     {
-        public Vine(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Vine(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Vine(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Vine(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1227,8 +1268,8 @@ namespace SLIL.Classes
 
     public class Lamp : Decoration
     {
-        public Lamp(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => Init();
-        public Lamp(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => Init();
+        public Lamp(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Lamp(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {

@@ -77,11 +77,11 @@ namespace GameServer
 
         internal static void Main()
         {
-            SetupConsoleSettings();
-            GameServerProgram program = new();
             Mutex mutex = new(true, "SLIL_GameServer_Unique_Mutex");
             if (mutex.WaitOne(TimeSpan.Zero, true))
             {
+                SetupConsoleSettings();
+                GameServerProgram program = new();
                 program.MainMenu();
                 mutex.ReleaseMutex();
             }
@@ -194,6 +194,7 @@ namespace GameServer
 
     internal class GameServerProgram
     {
+        private const bool Test = true;
         private enum MenuDisplayTypes { All, OnlyButtons, OnlyStatus, Ignore }
         //private readonly NetPacketProcessor processor = new();
         private readonly EventBasedNetListener Listener;
@@ -202,7 +203,7 @@ namespace GameServer
         private readonly SendOutcomingMessageDelegate? SendOutcomingMessageHandle;
         private string ServerPassword = "None";
         private bool Exit = false, ServerStarted = false, StopedThread = true;
-        private readonly int[] DefaultSettingsValue = [0, 1, 3, 1], SettingsValue = [0, 1, 3, 1], SettingsMaxValue = [3, 3, 7, 1];
+        private readonly int[] DefaultSettingsValue = [0, 1, 3, 1], SettingsValue = [0, 1, 3, 1], SettingsMaxValue = [4, 3, 7, 1];
         private int[] ServerSettingsValue = [0, 1, 3, 1];
         private readonly string[] SettingsItems, ServerSettingsItem;
         private int SelectedCategory = 0, Selected = 0, SelectedDifficult = 1;
@@ -211,7 +212,7 @@ namespace GameServer
         private GameModes GameMode = GameModes.Classic;
         private readonly string[] Difficulties = ["Easy", "Normal", "Hard", "Very hard"];
         private readonly ConsoleColor[] DifficultyColors = { ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.DarkRed };
-        private readonly ConsoleColor[] GameModeColors = { ConsoleColor.White, ConsoleColor.Red, ConsoleColor.DarkGray, ConsoleColor.DarkGray };
+        private readonly ConsoleColor[] GameModeColors = { ConsoleColor.White, ConsoleColor.Red, ConsoleColor.DarkGreen, ConsoleColor.DarkGray, ConsoleColor.DarkGray };
         private bool InMenu = true;
         private readonly string[] MenuItems =
         [
@@ -358,6 +359,7 @@ namespace GameServer
 
         private async static Task<bool> CheckUpdate()
         {
+            if (Test) return true;
             try
             {
                 using HttpClient httpClient = new();
@@ -709,7 +711,7 @@ namespace GameServer
             {
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                leftPadding = " ➤ ";
+                leftPadding = ">> ";
             }
             else
             {
@@ -869,7 +871,7 @@ namespace GameServer
                         DrawBorder('╟', '╢', '─', windowWidth);
                         for (int i = 0; i < ServerSettingsItem.Length; i++)
                         {
-                            if ((GameModes)ServerSettingsValue[0] == GameModes.Deathmatch && i == 3)
+                            if (((GameModes)ServerSettingsValue[0] == GameModes.Deathmatch || (GameModes)ServerSettingsValue[0] == GameModes.Survival) && i == 3)
                                 DrawSettingsParametr(i, ServerSettingsItem[i], i == selectedServerIndex, windowWidth, ServerSettingsValue[i], SettingsMaxValue[i], ConsoleColor.DarkGray);
                             else
                                 DrawSettingsParametr(i, ServerSettingsItem[i], i == selectedServerIndex, windowWidth, ServerSettingsValue[i], SettingsMaxValue[i]);
@@ -879,6 +881,7 @@ namespace GameServer
                         WriteColoredCenteredText("[ESC]: Cancel    [Enter]: Confirm", ConsoleColor.Green, windowWidth);
                         DrawBorder('╚', '╝', '═', windowWidth);
                         if ((GameModes)ServerSettingsValue[0] == GameModes.Deathmatch) ServerSettingsValue[3] = 1;
+                        if ((GameModes)ServerSettingsValue[0] == GameModes.Survival) ServerSettingsValue[3] = 0;
                         key = Console.ReadKey(true).Key;
                         switch (key)
                         {
@@ -1116,12 +1119,13 @@ namespace GameServer
                 Console.SetCursorPosition(0, 3);
                 for (int i = 0; i < SettingsItems.Length; i++)
                 {
-                    if ((GameModes)SettingsValue[0] == GameModes.Deathmatch && i == 3)
+                    if (((GameModes)SettingsValue[0] == GameModes.Deathmatch || (GameModes)SettingsValue[0] == GameModes.Survival) && i == 3)
                         DrawSettingsParametr(i, SettingsItems[i], i == selectedIndex, windowWidth, SettingsValue[i], SettingsMaxValue[i], ConsoleColor.DarkGray);
                     else
                         DrawSettingsParametr(i, SettingsItems[i], i == selectedIndex, windowWidth, SettingsValue[i], SettingsMaxValue[i]);
                 }
                 if ((GameModes)SettingsValue[0] == GameModes.Deathmatch) SettingsValue[3] = 1;
+                if ((GameModes)SettingsValue[0] == GameModes.Survival) SettingsValue[3] = 0;
                 key = Console.ReadKey(true).Key;
                 switch (key)
                 {
@@ -1189,7 +1193,7 @@ namespace GameServer
             {
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                leftPadding = " ➤ ";
+                leftPadding = ">> ";
             }
             else
                 Console.ForegroundColor = color;
@@ -1211,6 +1215,8 @@ namespace GameServer
                 MAX_CONNECTIONS = value + 1;
             if ((GameModes)SettingsValue[0] == GameModes.Deathmatch) SettingsValue[3] = 1;
             if ((GameModes)ServerSettingsValue[0] == GameModes.Deathmatch) ServerSettingsValue[3] = 1;
+            if ((GameModes)SettingsValue[0] == GameModes.Survival) SettingsValue[3] = 0;
+            if ((GameModes)ServerSettingsValue[0] == GameModes.Survival) ServerSettingsValue[3] = 0;
         }
 
         private string GetParametrName(int index, int value)

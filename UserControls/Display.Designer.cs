@@ -9,10 +9,10 @@
         {
             if (disposing)
             {
-                renderTarget?.Dispose();
-                factory?.Dispose();
-                buffer?.Dispose();
-                SCREEN?.Dispose();
+                RenderTarget?.Dispose();
+                RenderFactory?.Dispose();
+                Buffer?.Dispose();
+                Screen?.Dispose();
             }
             base.Dispose(disposing);
         }

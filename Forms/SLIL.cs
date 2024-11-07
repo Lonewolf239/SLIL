@@ -59,7 +59,7 @@ namespace SLIL
         private float StageOpacity = 1;
         public static bool hight_fps = true;
         private const double FOV = Math.PI / 3;
-        private double elapsed_time = 0;
+        private double ElapsedTime = 0;
         private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
         private Bitmap SCREEN, WEAPON, BUFFER;
         private ImageAttributes imageAttributes, imageCuteAttributes;
@@ -137,6 +137,11 @@ namespace SLIL
                 Properties.Resources.helmet_icon
             } },
             { typeof(RPG), new[] { Properties.Resources.rpg_icon } },
+            { typeof(MedicalKit), new[]
+            {
+                Properties.Resources.medical_kit_icon,
+                Properties.Resources.medical_kit_icon
+            } },
         };
         public static readonly Dictionary<Type, Image[,]> GunsImagesDict = new Dictionary<Type, Image[,]>
         {
@@ -213,6 +218,10 @@ namespace SLIL
             {
                    { Properties.Resources.rpg, Properties.Resources.rpg_shooted, Properties.Resources.rpg_reload_0, Properties.Resources.rpg_reload_1, Properties.Resources.rpg_reload_2, Properties.Resources.rpg_empty }
             } },
+            { typeof(MedicalKit), new[,]
+            {
+                   { Properties.Resources.full_medical_kit, Properties.Resources.full_medical_kit_0, Properties.Resources.full_medical_kit_1, Properties.Resources.full_medical_kit_2 }
+            } },
         };
         public static readonly Dictionary<Type, PlaySound[,]> GunsSoundsDict = new Dictionary<Type, PlaySound[,]>
         {
@@ -286,6 +295,10 @@ namespace SLIL
             {
                    { new PlaySound(MainMenu.CGFReader.GetFile("rpg.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("rpg_reloading.wav"), false), new PlaySound(null, false) }
             } },
+            { typeof(MedicalKit), new[,]
+            {
+                   { new PlaySound(MainMenu.CGFReader.GetFile("medical_kit_using.wav"), false) }
+            } },
         };
         public static readonly Dictionary<Type, PlaySound[]> TransportsSoundsDict = new Dictionary<Type, PlaySound[]>
         {
@@ -321,12 +334,14 @@ namespace SLIL
             { typeof(FirstAidKit), Properties.Resources.first_aid },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
             { typeof(Helmet), Properties.Resources.helmet_count_icon },
+            { typeof(MedicalKit), Properties.Resources.missing },
         };
         public static readonly Dictionary<Type, Image> CuteItemIconDict = new Dictionary<Type, Image>
         {
             { typeof(FirstAidKit), Properties.Resources.food_count },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
             { typeof(Helmet), Properties.Resources.helmet_count_icon },
+            { typeof(MedicalKit), Properties.Resources.missing },
         };
         public static readonly Dictionary<Type, Image> ShopImageDict = new Dictionary<Type, Image>
         {
@@ -535,7 +550,7 @@ namespace SLIL
         private const int ScrollBarWidth = 4, ScrollPadding = 5;
         private bool open_shop = false, pressed_r = false, cancelReload = false;
         private float xOffset = 0, yOffset = 0, xOffsetDirection = 0.25f, yOffsetDirection = 0.25f;
-        private Display display;
+        private Display SLILDisplay;
         private Bitmap map;
         private ConsolePanel console_panel;
         private const double playerWidth = 0.4;
@@ -720,7 +735,7 @@ namespace SLIL
             imageCuteAttributes.SetColorMatrix(colorCuteMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             graphicsWeapon = Graphics.FromImage(WEAPON);
             graphicsWeapon.SmoothingMode = smoothingModes[smoothing];
-            display.ResizeImage(DISPLAY_SIZE[display_size, 0], DISPLAY_SIZE[display_size, 1]);
+            SLILDisplay.ResizeImage(DISPLAY_SIZE[display_size, 0], DISPLAY_SIZE[display_size, 1]);
             raycast.Interval = hight_fps ? 15 : 30;
         }
 
@@ -979,8 +994,8 @@ namespace SLIL
             stage_timer.Stop();
             shotgun_pull_timer.Stop();
             mouse_hold_timer.Stop();
-            if (!isCursorVisible)
-                Cursor.Show();
+            fps_timer.Stop();
+            if (!isCursorVisible) Cursor.Show();
             foreach (Control control in ShopInterface_panel.Controls)
             {
                 if (control is SLIL_ShopInterface)
@@ -1017,7 +1032,7 @@ namespace SLIL
             try
             {
                 DateTime time = DateTime.Now;
-                elapsed_time = (time - total_time).TotalSeconds;
+                ElapsedTime = (time - total_time).TotalSeconds;
                 total_time = time;
                 PlayerMove();
                 ClearDisplayedMap();
@@ -1034,7 +1049,6 @@ namespace SLIL
                 }
                 else DrawCamera();
                 UpdateDisplay();
-                fps = CalculateFPS(elapsed_time);
             }
             catch { }
         }
@@ -1146,16 +1160,16 @@ namespace SLIL
 
         private void Mouse_timer_Tick(object sender, EventArgs e)
         {
-            if (display == null) return;
+            if (SLILDisplay == null) return;
             Rectangle displayRectangle = new Rectangle
             {
-                Location = display.PointToScreen(Point.Empty),
-                Width = display.Width,
-                Height = display.Height
+                Location = SLILDisplay.PointToScreen(Point.Empty),
+                Width = SLILDisplay.Width,
+                Height = SLILDisplay.Height
             };
             Point cursorPosition = Cursor.Position;
             if (!displayRectangle.Contains(cursorPosition) && active)
-                Cursor.Position = display.PointToScreen(new Point(display.Width / 2, display.Height / 2));
+                Cursor.Position = SLILDisplay.PointToScreen(new Point(SLILDisplay.Width / 2, SLILDisplay.Height / 2));
         }
 
         private void Shot_timer_Tick(object sender, EventArgs e)
@@ -1303,8 +1317,8 @@ namespace SLIL
 
         private void Status_refresh_Tick(object sender, EventArgs e)
         {
-            if (display == null) return;
-            if (!raycast.Enabled && display.SCREEN != null) display.SCREEN = null;
+            if (SLILDisplay == null) return;
+            if (!raycast.Enabled && SLILDisplay.Screen != null) SLILDisplay.Screen = null;
             bool shouldShowCursor = !GameStarted || open_shop || ShowInventory || console_panel.Visible || (active && !GameStarted) || Paused;
             if (shouldShowCursor != isCursorVisible)
             {
@@ -1417,8 +1431,8 @@ namespace SLIL
             }
             else
             {
-                double move = Math.Max(0.005, Math.Abs(player.GetMoveSpeed(elapsed_time) * player.GetMoveSpeed(elapsed_time)));
-                double strafe = Math.Max(0.0025, Math.Abs(player.GetStrafeSpeed(elapsed_time) * player.GetStrafeSpeed(elapsed_time)));
+                double move = Math.Max(0.005, Math.Abs(player.GetMoveSpeed(ElapsedTime) * player.GetMoveSpeed(ElapsedTime)));
+                double strafe = Math.Max(0.0025, Math.Abs(player.GetStrafeSpeed(ElapsedTime) * player.GetStrafeSpeed(ElapsedTime)));
                 float offSet = (float)Math.Sqrt(move + strafe) * (25 * (player.PlayerMoveStyle == Directions.RUN ? 2 : 1));
                 if (xOffset > 3)
                     xOffsetDirection = -0.2f * offSet;
@@ -1432,6 +1446,8 @@ namespace SLIL
                 yOffset += yOffsetDirection;
             }
         }
+
+        private void Fps_timer_Tick(object sender, EventArgs e) => fps = CalculateFPS();
 
         //  #====       Input       ====#
 
@@ -1450,9 +1466,9 @@ namespace SLIL
                     console_panel.Visible = false;
                     mouse_timer.Start();
                     console_panel.ClearCommand();
-                    display.Focus();
-                    int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
-                    int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
+                    SLILDisplay.Focus();
+                    int x = SLILDisplay.PointToScreen(Point.Empty).X + (SLILDisplay.Width / 2);
+                    int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
                     Cursor.Position = new Point(x, y);
                 }
                 else if (!GameStarted) Close();
@@ -1516,7 +1532,7 @@ namespace SLIL
                             {
                                 if (player.UseItem) return;
                                 if (player.EffectCheck(player.GetEffectID())) return;
-                                if (player.SelectedItem == 0 && player.HP == player.MAX_HP) return;
+                                if ((player.SelectedItem == 0 || player.SelectedItem == 3) && player.HP == player.MAX_HP) return;
                                 TakeFlashlight(false);
                                 Controller.DrawItem();
                                 new Thread(() =>
@@ -1541,7 +1557,7 @@ namespace SLIL
                                 else if (player.SelectedItem == 3) y = Height;
                                 player.BlockCamera = true;
                                 player.InSelectingMode = true;
-                                Cursor.Position = display.PointToScreen(new Point(x, y));
+                                Cursor.Position = SLILDisplay.PointToScreen(new Point(x, y));
                             }
                         }
                         if (e.KeyCode == Keys.D1)
@@ -1582,9 +1598,9 @@ namespace SLIL
                     {
                         mouse_timer.Start();
                         console_panel.ClearCommand();
-                        display.Focus();
-                        int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
-                        int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
+                        SLILDisplay.Focus();
+                        int x = SLILDisplay.PointToScreen(Point.Empty).X + (SLILDisplay.Width / 2);
+                        int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
                         Cursor.Position = new Point(x, y);
                     }
                     scope[scope_type] = GetScope(scope[scope_type]);
@@ -1711,7 +1727,7 @@ namespace SLIL
                         //TEMP
                         if (Controller.IsMultiplayer()) return;
                         player.InSelectingMode = false;
-                        Cursor.Position = display.PointToScreen(new Point(display.Width / 2, display.Height / 2));
+                        Cursor.Position = SLILDisplay.PointToScreen(new Point(SLILDisplay.Width / 2, SLILDisplay.Height / 2));
                         player.CanUnblockCamera = true;
                     }
                     if (e.KeyCode == Bind.Inventory) OpenInventory();
@@ -1877,7 +1893,7 @@ namespace SLIL
             {
                 Player player = Controller.GetPlayer();
                 if (player == null || player.BlockMouse) return;
-                double x = display.Width / 2, y = display.Height / 2;
+                double x = SLILDisplay.Width / 2, y = SLILDisplay.Height / 2;
                 double X = e.X - x, Y = e.Y - y;
                 cursor_x = (int)X; cursor_y = (int)Y;
                 if (!player.InSelectingMode)
@@ -1888,18 +1904,21 @@ namespace SLIL
                     double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
                     Controller.ChangePlayerA(A * invX);
                     Controller.ChangePlayerLook(Look * invY);
-                    Cursor.Position = display.PointToScreen(new Point((int)x, (int)y));
+                    Cursor.Position = SLILDisplay.PointToScreen(new Point((int)x, (int)y));
                 }
                 else
                 {
-                    if (cursor_x < 0 && player.DisposableItems.Count >= 1)
-                        Controller.ChangeItem(0);
-                    else if (cursor_y < 0 && player.DisposableItems.Count >= 2)
-                        Controller.ChangeItem(1);
-                    else if (cursor_x > 0 && player.DisposableItems.Count >= 3)
-                        Controller.ChangeItem(2);
-                    else if (cursor_y > 0 && player.DisposableItems.Count >= 4)
-                        Controller.ChangeItem(3);
+                    if (player.DisposableItems.Count >= 1)
+                    {
+                        if (X < 0 && Math.Abs(X) > Math.Abs(Y))
+                            Controller.ChangeItem(0);
+                        else if (Y < 0 && Math.Abs(Y) > Math.Abs(X) && player.DisposableItems.Count >= 2)
+                            Controller.ChangeItem(1);
+                        else if (X > 0 && Math.Abs(X) > Math.Abs(Y) && player.DisposableItems.Count >= 3)
+                            Controller.ChangeItem(2);
+                        else if (Y > 0 && Math.Abs(Y) > Math.Abs(X) && player.DisposableItems.Count >= 4)
+                            Controller.ChangeItem(3);
+                    }
                 }
             }
         }
@@ -1985,7 +2004,7 @@ namespace SLIL
 
         private bool HasImpassibleCells(int index)
         {
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$' };
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't' };
             if (Controller.HasNoClip() || Controller.GetPlayer().InParkour) return false;
             if (index < 0 || index > Controller.GetMap().Length) return true;
             return impassibleCells.Contains(Controller.GetMap()[index]);
@@ -2013,8 +2032,8 @@ namespace SLIL
             }
             DISPLAYED_MAP.Replace('P', '.');
             player.ChangeSpeed();
-            double move = player.GetMoveSpeed(elapsed_time);
-            double strafe = player.GetStrafeSpeed(elapsed_time);
+            double move = player.GetMoveSpeed(ElapsedTime);
+            double strafe = player.GetStrafeSpeed(ElapsedTime);
             double moveSin = Math.Sin(player.A) * move;
             double moveCos = Math.Cos(player.A) * move;
             double strafeSin = Math.Sin(player.A) * strafe;
@@ -2228,6 +2247,10 @@ namespace SLIL
                         hit_door = true;
                         DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'D';
                         break;
+                    case '@':
+                        hit_wall = 2;
+                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'T';
+                        break;
                     default:
                         if (test_wall == '.') test_wall = '*';
                         DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = test_wall;
@@ -2285,6 +2308,8 @@ namespace SLIL
                     if (Controller.InBackrooms()) textureId = 28;
                     if (hit_wall == 1)
                         textureId = 19;
+                    if (hit_wall == 2)
+                        textureId = 1;
                     if (hit_door)
                         textureId = 4;
                     if (is_bound)
@@ -2339,7 +2364,7 @@ namespace SLIL
                                 result[y].TextureId = 0;
                         }
                     }
-                    else if (hit_door || hit_wall != -1)
+                    else if (hit_door || (hit_wall != -1 && hit_wall != 2))
                     {
                         if (!get_texture)
                         {
@@ -2568,7 +2593,17 @@ namespace SLIL
             }
             else
             {
-                if (entity.HasStaticAnimation) return SpriteStates.Static;
+                if (entity.HasStaticAnimation)
+                {
+                    if (entity is Covering covering)
+                    {
+                        if (covering.HP > 75) return SpriteStates.Static;
+                        else if (covering.HP > 45) return SpriteStates.StepForward_0;
+                        else if (covering.HP > 0) return SpriteStates.StepForward_1;
+                        else return SpriteStates.DeadBody;
+                    }
+                    return SpriteStates.Static;
+                }
                 if (returnStopState) return SpriteStates.StopForward;
                 if (state == 0) return SpriteStates.StepForward_0;
                 return SpriteStates.StepForward_1;
@@ -2631,15 +2666,15 @@ namespace SLIL
                 g.DrawImage(SCREEN, new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), 0, 0, SCREEN.Width, SCREEN.Height, GraphicsUnit.Pixel, cute ? imageCuteAttributes : imageAttributes);
                 g.DrawImage(WEAPON, new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), 0, 0, WEAPON.Width, WEAPON.Height, GraphicsUnit.Pixel, cute ? imageCuteAttributes : imageAttributes);
             }
-            SharpDX.Direct2D1.Bitmap dxBitmap = ConvertBitmap.ToDX(BUFFER, display.renderTarget);
-            display.SCREEN = dxBitmap;
-            display.DrawImage();
+            SharpDX.Direct2D1.Bitmap dxBitmap = ConvertBitmap.ToDX(BUFFER, SLILDisplay.RenderTarget);
+            SLILDisplay.Screen = dxBitmap;
+            SLILDisplay.DrawImage();
             dxBitmap?.Dispose();
         }
 
-        private int CalculateFPS(double elapsedTime)
+        private int CalculateFPS()
         {
-            int fps = (int)(1.0 / elapsedTime);
+            int fps = (int)(1.0 / ElapsedTime);
             return fps < 0 ? 0 : fps;
         }
 
@@ -2784,6 +2819,7 @@ namespace SLIL
             if (player == null) return;
             graphicsWeapon.Clear(Color.Transparent);
             DrawWeapon(player, 0);
+            ShowDebugs(player);
         }
 
         private void DrawGameInterface()
@@ -3065,9 +3101,9 @@ namespace SLIL
                     player.MAX_RUN_SPEED,
                     player.RUN_SPEED,
                     player.MOVE_SPEED,
-                    player.GetMoveSpeed(elapsed_time),
+                    player.GetMoveSpeed(ElapsedTime),
                     player.STRAFE_SPEED,
-                    player.GetStrafeSpeed(elapsed_time),
+                    player.GetStrafeSpeed(ElapsedTime),
                     player.MAX_STAMINE,
                     player.STAMINE,
                     player.GetWeight()
@@ -3214,6 +3250,8 @@ namespace SLIL
                 case 'L': return Color.OliveDrab;
                 case 'l': return Color.DarkGoldenrod;
                 case '$': return Color.Pink;
+                case 'T':
+                case 't': return Color.Turquoise;
                 case 'F':
                 case 'f': return Color.MediumVioletRed;
                 case '*': return Color.FromArgb(255, 128, 128);
@@ -3787,12 +3825,12 @@ namespace SLIL
                 console_panel.Log("SLIL console *v1.4*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
                 console_panel.Log("\n\nEnter the command: ", false, false, Color.Lime);
                 Controls.Add(console_panel);
-                display = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
-                display.MouseDown += new MouseEventHandler(Display_MouseDown);
-                display.MouseUp += new MouseEventHandler(Display_MouseUp);
-                display.MouseMove += new MouseEventHandler(Display_MouseMove);
-                display.MouseWheel += new MouseEventHandler(Display_Scroll);
-                Controls.Add(display);
+                SLILDisplay = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
+                SLILDisplay.MouseDown += new MouseEventHandler(Display_MouseDown);
+                SLILDisplay.MouseUp += new MouseEventHandler(Display_MouseUp);
+                SLILDisplay.MouseMove += new MouseEventHandler(Display_MouseMove);
+                SLILDisplay.MouseWheel += new MouseEventHandler(Display_Scroll);
+                Controls.Add(SLILDisplay);
             }
             UpdateBitmap();
             Activate();
@@ -3820,12 +3858,13 @@ namespace SLIL
             stamina_timer.Start();
             mouse_timer.Start();
             camera_shaking_timer.Start();
+            fps_timer.Start();
             if (MainMenu.sounds) step_sound_timer.Start();
             player.CanUnblockCamera = player.BlockCamera = true;
             GameStarted = true;
             game_over_panel.Visible = false;
-            display.BringToFront();
-            display.Focus();
+            SLILDisplay.BringToFront();
+            SLILDisplay.Focus();
         }
 
         private void GameOver(int win)
@@ -3838,11 +3877,12 @@ namespace SLIL
             stamina_timer.Stop();
             mouse_timer.Stop();
             camera_shaking_timer.Stop();
+            fps_timer.Stop();
             ShowMap = false;
             shop_panel.Visible = false;
             console_panel.Visible = false;
-            display.SCREEN = null;
-            display.Refresh();
+            SLILDisplay.Screen = null;
+            SLILDisplay.Refresh();
             GameStarted = false;
             if (win == 1)
             {
@@ -3862,14 +3902,14 @@ namespace SLIL
         private void ResetDefault(Player player)
         {
             map = null;
-            display.SCREEN = null;
+            SLILDisplay.Screen = null;
             scope[scope_type] = GetScope(scope[scope_type]);
             h_scope[scope_type] = GetScope(h_scope[scope_type]);
             scope_shotgun[scope_type] = GetScope(scope_shotgun[scope_type]);
             h_scope_shotgun[scope_type] = GetScope(h_scope_shotgun[scope_type]);
-            display.Refresh();
-            int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
-            int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
+            SLILDisplay.Refresh();
+            int x = SLILDisplay.PointToScreen(Point.Empty).X + (SLILDisplay.Width / 2);
+            int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
             Cursor.Position = new Point(x, y);
             player.SetDefault();
             open_shop = false;
@@ -4029,8 +4069,8 @@ namespace SLIL
         {
             ShowInventory = false;
             mouse_timer.Start();
-            int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
-            int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
+            int x = SLILDisplay.PointToScreen(Point.Empty).X + (SLILDisplay.Width / 2);
+            int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
             Cursor.Position = new Point(x, y);
             inventory_panel.Visible = false;
             Player player = Controller.GetPlayer();
@@ -4330,8 +4370,8 @@ namespace SLIL
         {
             open_shop = false;
             mouse_timer.Start();
-            int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
-            int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
+            int x = SLILDisplay.PointToScreen(Point.Empty).X + (SLILDisplay.Width / 2);
+            int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
             Cursor.Position = new Point(x, y);
             shop_panel.Visible = false;
             Player player = Controller.GetPlayer();

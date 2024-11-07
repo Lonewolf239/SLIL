@@ -103,6 +103,7 @@ namespace SLIL
             this.pistol_label = new System.Windows.Forms.Label();
             this.pistol_ammo_count = new System.Windows.Forms.Label();
             this.inventory_label = new System.Windows.Forms.Label();
+            this.fps_timer = new System.Windows.Forms.Timer(this.components);
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -914,6 +915,11 @@ namespace SLIL
             this.inventory_label.Text = "Инвентарь";
             this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // fps_timer
+            // 
+            this.fps_timer.Interval = 500;
+            this.fps_timer.Tick += new System.EventHandler(this.Fps_timer_Tick);
+            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1047,5 +1053,6 @@ namespace SLIL
         private Label cause_of_death_label;
         private Label total_time_label;
         private Label last_stage_label;
+        private Timer fps_timer;
     }
 }

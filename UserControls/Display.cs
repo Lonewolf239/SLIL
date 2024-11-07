@@ -9,49 +9,45 @@ namespace SLIL.UserControls
 {
     public partial class Display : UserControl
     {
-        public WindowRenderTarget renderTarget;
-        private readonly SharpDX.Direct2D1.Factory factory;
-        private RawColor4 ClearColor = new RawColor4(12, 12, 50, 0);
-        private int SCREEN_HEIGHT = 456, SCREEN_WIDTH = 256;
-        public Bitmap SCREEN;
-        private Bitmap buffer;
+        public WindowRenderTarget RenderTarget;
+        private readonly SharpDX.Direct2D1.Factory RenderFactory;
+        private static RawColor4 ClearColor = new RawColor4(12, 12, 50, 0);
+        private static RawRectangleF DestinationRect;
+        private int ScreenHeight = 456, ScreenWidth = 256;
+        public Bitmap Screen;
+        private Bitmap Buffer;
 
         public Display()
         {
             InitializeComponent();
-            factory = new SharpDX.Direct2D1.Factory();
-            InitializeRenderTarget();
-        }
-
-        private void InitializeRenderTarget()
-        {
-            renderTarget?.Dispose();
+            RenderFactory = new SharpDX.Direct2D1.Factory();
+            DestinationRect = new RawRectangleF(0, 0, ScreenWidth, ScreenHeight);
+            RenderTarget?.Dispose();
             RenderTargetProperties renderProps = new RenderTargetProperties(RenderTargetType.Default,
                 new PixelFormat(Format.R8G8B8A8_UNorm, SharpDX.Direct2D1.AlphaMode.Premultiplied), 0, 0,
                 RenderTargetUsage.None, FeatureLevel.Level_10);
             HwndRenderTargetProperties hwndRenderProps = new HwndRenderTargetProperties()
             {
                 Hwnd = Handle,
-                PixelSize = new Size2(SCREEN_WIDTH, SCREEN_HEIGHT),
+                PixelSize = new Size2(ScreenWidth, ScreenHeight),
                 PresentOptions = PresentOptions.None
             };
-            renderTarget = new WindowRenderTarget(factory, renderProps, hwndRenderProps);
+            RenderTarget = new WindowRenderTarget(RenderFactory, renderProps, hwndRenderProps);
         }
 
         public void DrawImage()
         {
             try
             {
-                renderTarget.BeginDraw();
-                renderTarget.Clear(ClearColor);
-                if (SCREEN != null)
+                RenderTarget.BeginDraw();
+                RenderTarget.Clear(ClearColor);
+                if (Screen != null)
                 {
-                    if (buffer == null || !ReferenceEquals(SCREEN, buffer))
-                        buffer = SCREEN;
-                    RawRectangleF destinationRect = new RawRectangleF(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-                    renderTarget.DrawBitmap(buffer, destinationRect, 1.0f, BitmapInterpolationMode.Linear);
+                    if (Buffer == null || !ReferenceEquals(Screen, Buffer))
+                        Buffer = Screen;
+                    RenderTarget.DrawBitmap(Buffer, DestinationRect, 1.0f, BitmapInterpolationMode.Linear);
                 }
-                renderTarget.EndDraw();
+                RenderTarget.EndDraw();
             }
             catch (Exception ex)
             {
@@ -62,9 +58,10 @@ namespace SLIL.UserControls
 
         public void ResizeImage(int width, int height)
         {
-            SCREEN_WIDTH = width;
-            SCREEN_HEIGHT = height;
-            renderTarget?.Resize(new Size2(width, height));
+            ScreenWidth = width;
+            ScreenHeight = height;
+            RenderTarget?.Resize(new Size2(width, height));
+            DestinationRect = new RawRectangleF(0, 0, ScreenWidth, ScreenHeight);
         }
     }
 }

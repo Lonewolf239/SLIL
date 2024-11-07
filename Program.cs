@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
 using System.Management;
+using System.Linq;
+
 
 namespace SLIL
 {
@@ -30,6 +32,18 @@ namespace SLIL
                     MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
+                if (!IsDirectX10Available())
+                {
+                    string message = "DirectX 10 не доступен. Пожалуйста, обновите свою систему для продолжения работы программы.";
+                    string title = "Ошибка совместимости";
+                    if (!Check_Language())
+                    {
+                        message = "DirectX 10 is not available. Please update your system to continue using the program.";
+                        title = "Compatibility error";
+                    }
+                    MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
                 if (!HasEnoughMemory())
                 {
                     if (Check_Language())
@@ -49,7 +63,7 @@ namespace SLIL
             try
             {
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT TotalPhysicalMemory FROM Win32_ComputerSystem");
-                foreach (ManagementObject obj in searcher.Get())
+                foreach (ManagementObject obj in searcher.Get().Cast<ManagementObject>())
                 {
                     ulong totalMemory = Convert.ToUInt64(obj["TotalPhysicalMemory"]);
                     ulong memoryInGB = totalMemory / 1024 / 1024 / 1024;
@@ -82,6 +96,21 @@ namespace SLIL
                     return false;
             }
             catch
+            {
+                return false;
+            }
+        }
+
+        static bool IsDirectX10Available()
+        {
+            try
+            {
+                var device = new SharpDX.Direct3D10.Device(SharpDX.Direct3D10.DriverType.Hardware,
+                                                           SharpDX.Direct3D10.DeviceCreationFlags.None);
+                device.Dispose();
+                return true;
+            }
+            catch (SharpDX.SharpDXException)
             {
                 return false;
             }

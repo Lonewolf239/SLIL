@@ -59,7 +59,7 @@ namespace SLIL.Classes
             new SniperRifle(), new Fingershot(), new TSPitW(),
             new Gnome(), new FirstAidKit(), new Candy(),
             new Rainblower(), new Adrenalin(), new Helmet(),
-            new RPG(), new Petition()
+            new RPG(), new Petition(), new MedicalKit()
         };
         public List<Gun> Guns = new List<Gun>();
         public List<DisposableItem> DisposableItems = new List<DisposableItem>();
@@ -222,6 +222,21 @@ namespace SLIL.Classes
                         rpg.Deserialize(reader);
                         tempGuns.Add(rpg);
                         break;
+                    case 16:
+                        C4 c4 = new C4();
+                        c4.Deserialize(reader);
+                        tempGuns.Add(c4);
+                        break;
+                    case 17:
+                        Petition petition = new Petition();
+                        petition.Deserialize(reader);
+                        tempGuns.Add(petition);
+                        break;
+                    case 18:
+                        MedicalKit medicalKit = new MedicalKit();
+                        medicalKit.Deserialize(reader);
+                        tempGuns.Add(medicalKit);
+                        break;
                     default:
                         break;
                 }
@@ -247,6 +262,11 @@ namespace SLIL.Classes
                         Helmet helmet = new Helmet();
                         helmet.Deserialize(reader);
                         tempDisposableItems.Add(helmet);
+                        break;
+                    case 18:
+                        MedicalKit medicalKit = new MedicalKit();
+                        medicalKit.Deserialize(reader);
+                        tempDisposableItems.Add(medicalKit);
                         break;
                     default:
                         break;
@@ -411,6 +431,21 @@ namespace SLIL.Classes
                             rpg.Deserialize(reader);
                             tempGuns.Add(rpg);
                             break;
+                        case 16:
+                            C4 c4 = new C4();
+                            c4.Deserialize(reader);
+                            tempGuns.Add(c4);
+                            break;
+                        case 17:
+                            Petition petition = new Petition();
+                            petition.Deserialize(reader);
+                            tempGuns.Add(petition);
+                            break;
+                        case 18:
+                            MedicalKit medicalKit = new MedicalKit();
+                            medicalKit.Deserialize(reader);
+                            tempGuns.Add(medicalKit);
+                            break;
                         default:
                             break;
                     }
@@ -436,6 +471,10 @@ namespace SLIL.Classes
                             Helmet helmet = new Helmet();
                             helmet.Deserialize(reader);
                             tempDisposableItems.Add(helmet);
+                            break;
+                        case 18: MedicalKit medicalKit = new MedicalKit();
+                            medicalKit.Deserialize(reader);
+                            tempDisposableItems.Add(medicalKit);
                             break;
                         default:
                             break;
@@ -500,6 +539,7 @@ namespace SLIL.Classes
             DisposableItems.Add((FirstAidKit)GUNS[10]);
             DisposableItems.Add((Adrenalin)GUNS[13]);
             DisposableItems.Add((Helmet)GUNS[14]);
+            DisposableItems.Add((MedicalKit)GUNS[17]);
             Texture = 27;
             SetAnimations(1, 0);
             Dead = true;
@@ -916,6 +956,11 @@ namespace SLIL.Classes
             {
                 if (EffectCheck(2)) return;
                 Effects.Add(new Protection());
+            }
+            else if (SelectedItem == 3)
+            {
+                if (EffectCheck(5)) StopEffect(5);
+                HealHP((int)((MAX_HP - HP) * 0.8));
             }
         }
 

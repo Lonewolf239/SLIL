@@ -411,9 +411,6 @@ namespace SLIL.Classes
             return peer.Ping;
         }
 
-        //TODO:
-        public bool IsDeathmatch() => true;
-
         internal int GetStage()
         {
             if (peer == null)
@@ -683,6 +680,17 @@ namespace SLIL.Classes
             else
             {
                 //TODO:
+            }
+        }
+
+        internal void RepairCovering(int id)
+        {
+            if (peer != null)
+            {
+                NetDataWriter writer = new NetDataWriter();
+                writer.Put(9955);
+                writer.Put(id);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
         }
 
