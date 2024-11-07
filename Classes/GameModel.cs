@@ -124,12 +124,13 @@ namespace SLIL.Classes
 
         private void EnemyTimer_Tick(object sender, EventArgs e)
         {
-            List<Player> playersList = new List<Player>();
+            List<Entity> targetsList = new List<Entity>();
             foreach (Entity ent in Entities)
             {
-                if (ent is Player) playersList.Add(ent as Player);
+                if (ent is Player) targetsList.Add(ent);
+                if (ent is Covering) targetsList.Add(ent);
             }
-            if (playersList.Count == 0) return;
+            if (targetsList.Count == 0) return;
             for (int i = 0; i < Entities.Count; i++)
             {
                 if (GameStarted)
@@ -137,9 +138,9 @@ namespace SLIL.Classes
                     if (Entities[i] is Player) continue;
                     if (!Entities[i].HasAI) continue;
                     var entity = Entities[i] as dynamic;
-                    var playerListOrdered = playersList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
-                    Player player = playerListOrdered.First();
-                    double distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
+                    var targetListOrdered = targetsList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
+                    Entity target = targetListOrdered.First();
+                    double distance = Math.Sqrt(Math.Pow(entity.X - target.X, 2) + Math.Pow(entity.Y - target.Y, 2));
                     if (entity is GameObject && entity.Temporarily)
                     {
                         entity.LifeTime++;
@@ -183,61 +184,77 @@ namespace SLIL.Classes
                     {
                         if (distance <= 22)
                         {
-                            if (!entity.DEAD && !player.Dead)
+                            if (target is Player playerTarget)
                             {
-                                entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
-                                if (entity.Fast)
-                                    entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
-                                if (Math.Abs(entity.X - player.X) <= 0.5 && Math.Abs(entity.Y - player.Y) <= 0.5)
+                                if (!entity.DEAD && !playerTarget.Dead)
                                 {
-                                    if (!player.Invulnerable)
+                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    if (entity.Fast)
+                                        entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
+
                                     {
-                                        if (player.InTransport)
-                                            PlaySoundHandle(SLIL.hit[1], player.X, player.Y);
-                                        else if (player.CuteMode)
-                                            PlaySoundHandle(SLIL.hungry, player.X, player.Y);
-                                        else
-                                            PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
-                                        if (!player.Invulnerable)
+                                        if (!playerTarget.Invulnerable)
                                         {
-                                            if (entity is Dog)
+                                            if (playerTarget.InTransport)
+                                                PlaySoundHandle(SLIL.hit[1], target.X, target.Y);
+                                            else if (playerTarget.CuteMode)
+                                                PlaySoundHandle(SLIL.hungry, target.X, target.Y);
+                                            else
+                                                PlaySoundHandle(SLIL.hit[0], target.X, target.Y);
+                                            if (!playerTarget.Invulnerable)
                                             {
-                                                if (!player.EffectCheck(5))
-                                                    player.GiveEffect(5, true);
-                                                else
-                                                    player.ResetEffectTime(5);
+                                                if (entity is Dog)
+                                                {
+                                                    if (!playerTarget.EffectCheck(5))
+                                                        playerTarget.GiveEffect(5, true);
+                                                    else
+                                                        playerTarget.ResetEffectTime(5);
+                                                }
+                                                if (entity is Bat)
+                                                {
+                                                    if (!playerTarget.EffectCheck(6))
+                                                        playerTarget.GiveEffect(6, true);
+                                                    else
+                                                        playerTarget.ResetEffectTime(6);
+                                                }
+                                                if (entity is Zombie)
+                                                {
+                                                    if (!playerTarget.EffectCheck(3))
+                                                        playerTarget.GiveEffect(3, true);
+                                                    else
+                                                        playerTarget.ResetEffectTime(3);
+                                                }
                                             }
-                                            if (entity is Bat)
+                                            playerTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
+                                            if (playerTarget.HP <= 0)
                                             {
-                                                if (!player.EffectCheck(6))
-                                                    player.GiveEffect(6, true);
-                                                else
-                                                    player.ResetEffectTime(6);
+                                                Entities.Add(new PlayerDeadBody(target.X, target.Y, MAP_WIDTH, ref MaxEntityID));
+                                                TotalKilled = playerTarget.TotalEnemiesKilled;
+                                                DeathCause = SetDeathCause(entity);
+                                                GameOver(0);
+                                                return;
                                             }
-                                            if (entity is Zombie)
-                                            {
-                                                if (!player.EffectCheck(3))
-                                                    player.GiveEffect(3, true);
-                                                else
-                                                    player.ResetEffectTime(3);
-                                            }
-                                        }
-                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
-                                        if (player.HP <= 0)
-                                        {
-                                            Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
-                                            TotalKilled = player.TotalEnemiesKilled;
-                                            DeathCause = SetDeathCause(entity);
-                                            GameOver(0);
-                                            return;
                                         }
                                     }
+                                }
+                            }
+                            else if (target is Covering coveringTarget)
+                            {
+                                if (!entity.DEAD && !coveringTarget.Broken)
+                                {
+                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    if (entity.Fast)
+                                        entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
+                                        coveringTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
                                 }
                             }
                         }
                     }
                     else if (entity is Pet)
                     {
+
                         Player owner = null;
                         foreach (Entity ent in Entities)
                         {
@@ -246,7 +263,7 @@ namespace SLIL.Classes
                                 if ((ent as Player).PET == entity)
                                 {
                                     owner = player1;
-                                    distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
+                                    distance = Math.Sqrt(Math.Pow(entity.X - target.X, 2) + Math.Pow(entity.Y - target.Y, 2));
                                 }
                             }
                         }
@@ -258,7 +275,7 @@ namespace SLIL.Classes
                     else if (entity is Rockets rocket)
                     {
                         if (!entity.DEAD)
-                            entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
+                            entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
                         char[] ImpassibleCells = { '#', 'D', 'd', '=' };
                         double newX = entity.X + entity.GetMove() * Math.Sin(entity.A);
                         double newY = entity.Y + entity.GetMove() * Math.Cos(entity.A);

@@ -250,7 +250,6 @@ namespace GameServer
                                                         playerTarget.ResetEffectTime(3);
                                                 }
                                             }
-
                                             playerTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
                                             if (playerTarget.HP <= 0)
                                             {
@@ -276,9 +275,7 @@ namespace GameServer
                                     if (entity.Fast)
                                         entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
                                     if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
-                                    {
                                         coveringTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
-                                    }
                                 }
                             }
                         }
