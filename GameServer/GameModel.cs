@@ -126,13 +126,15 @@ namespace GameServer
 
         private void EnemyTimer_Tick(object? sender, EventArgs e)
         {
-            List<Player> playersList = [];
+            List<Entity> targetsList = [];
             foreach (Entity ent in Entities)
             {
-                if (ent is Player pl)
-                    playersList.Add(pl);
+                if (ent is Player pl && !pl.Dead)
+                    targetsList.Add(pl);
+                if (ent is Covering co && !co.Broken)
+                    targetsList.Add(co);
             }
-            if (playersList.Count == 0) return;
+            if (targetsList.Count == 0) return;
             for (int i = 0; i < Entities.Count; i++)
             {
                 if (GameStarted)
@@ -140,9 +142,9 @@ namespace GameServer
                     if (Entities[i] is Player) continue;
                     if (!Entities[i].HasAI) continue;
                     var entity = Entities[i] as dynamic;
-                    var playerListOrdered = playersList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
-                    Player player = playerListOrdered.First();
-                    double distance = Math.Sqrt(Math.Pow(entity.X - player.X, 2) + Math.Pow(entity.Y - player.Y, 2));
+                    var targetrListOrdered = targetsList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
+                    Entity target = targetrListOrdered.First();
+                    double distance = Math.Sqrt(Math.Pow(entity.X - target.X, 2) + Math.Pow(entity.Y - target.Y, 2));
                     if (entity is GameObject && entity.Temporarily)
                     {
                         entity.LifeTime++;
@@ -189,79 +191,93 @@ namespace GameServer
                     {
                         if (distance <= 22)
                         {
-                            if (!entity.DEAD && !player.Dead)
+                            if (target is Player playerTarget)
                             {
-                                entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
-                                if (entity.Fast)
-                                    entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
-                                if (Math.Abs(entity.X - player.X) <= 0.5 && Math.Abs(entity.Y - player.Y) <= 0.5)
+                                if (!entity.DEAD && !playerTarget.Dead)
                                 {
-                                    if (!player.Invulnerable)
+                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    if (entity.Fast)
+                                        entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
                                     {
-                                        if (player.InTransport)
+                                        if (!playerTarget.Invulnerable)
                                         {
-                                            //PlaySoundHandle(SLIL.hit[1]);
-                                            NetDataWriter writer = new();
-                                            writer.Put(player.ID);
-                                            writer.Put(1);
-                                            byte[] data = writer.Data;
-                                            sendMessageFromGameCallback(1000, data);
-                                        }
-                                        else if (player.CuteMode)
-                                        {
-                                            //PlaySoundHandle(SLIL.hungry);
-                                            NetDataWriter writer = new();
-                                            writer.Put(player.ID);
-                                            writer.Put(2);
-                                            byte[] data = writer.Data;
-                                            sendMessageFromGameCallback(1000, data);
-                                        }
-                                        else
-                                        {
-                                            //PlaySoundHandle(SLIL.hit[0]);
-                                            NetDataWriter writer = new();
-                                            writer.Put(player.ID);
-                                            writer.Put(0);
-                                            byte[] data = writer.Data;
-                                            sendMessageFromGameCallback(1000, data);
-                                        }
-                                        if (!player.Invulnerable)
-                                        {
-                                            if (entity is Dog)
+                                            if (playerTarget.InTransport)
                                             {
-                                                if (!player.EffectCheck(5))
-                                                    player.GiveEffect(5, true);
-                                                else
-                                                    player.ResetEffectTime(5);
+                                                NetDataWriter writer = new();
+                                                writer.Put(target.ID);
+                                                writer.Put(1);
+                                                byte[] data = writer.Data;
+                                                sendMessageFromGameCallback(1000, data);
                                             }
-                                            if (entity is Bat)
+                                            else if (playerTarget.CuteMode)
                                             {
-                                                if (!player.EffectCheck(6))
-                                                    player.GiveEffect(6, true);
-                                                else
-                                                    player.ResetEffectTime(6);
+                                                NetDataWriter writer = new();
+                                                writer.Put(target.ID);
+                                                writer.Put(2);
+                                                byte[] data = writer.Data;
+                                                sendMessageFromGameCallback(1000, data);
                                             }
-                                            if (entity is Zombie)
+                                            else
                                             {
-                                                if(!player.EffectCheck(3))
-                                                    player.GiveEffect(3, true);
-                                                else
-                                                    player.ResetEffectTime(3);
+                                                NetDataWriter writer = new();
+                                                writer.Put(target.ID);
+                                                writer.Put(0);
+                                                byte[] data = writer.Data;
+                                                sendMessageFromGameCallback(1000, data);
+                                            }
+                                            if (!playerTarget.Invulnerable)
+                                            {
+                                                if (entity is Dog)
+                                                {
+                                                    if (!playerTarget.EffectCheck(5))
+                                                        playerTarget.GiveEffect(5, true);
+                                                    else
+                                                        playerTarget.ResetEffectTime(5);
+                                                }
+                                                if (entity is Bat)
+                                                {
+                                                    if (!playerTarget.EffectCheck(6))
+                                                        playerTarget.GiveEffect(6, true);
+                                                    else
+                                                        playerTarget.ResetEffectTime(6);
+                                                }
+                                                if (entity is Zombie)
+                                                {
+                                                    if (!playerTarget.EffectCheck(3))
+                                                        playerTarget.GiveEffect(3, true);
+                                                    else
+                                                        playerTarget.ResetEffectTime(3);
+                                                }
+                                            }
+
+                                            playerTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
+                                            if (playerTarget.HP <= 0)
+                                            {
+                                                if (GameMode == GameModes.Deathmatch)
+                                                    Entities.Add(new PlayerDeadBody(target.X, target.Y, MAP_WIDTH, ref MaxEntityID));
+                                                //TODO:
+                                                //Stage = target.Stage;
+                                                //TotalKilled = target.TotalEnemiesKilled;
+                                                //DeathCause = GetDeathCause(entity);
+                                                sendMessageFromGameCallback(666);
+                                                //GameOver(0);
+                                                return;
                                             }
                                         }
-                                        player.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
-                                        if (player.HP <= 0)
-                                        {
-                                            if (GameMode == GameModes.Deathmatch)
-                                                Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
-                                            //TODO:
-                                            //Stage = player.Stage;
-                                            //TotalKilled = player.TotalEnemiesKilled;
-                                            //DeathCause = GetDeathCause(entity);
-                                            sendMessageFromGameCallback(666);
-                                            //GameOver(0);
-                                            return;
-                                        }
+                                    }
+                                }
+                            }
+                            else if (target is Covering coveringTarget)
+                            {
+                                if (!entity.DEAD && !coveringTarget.Broken)
+                                {
+                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    if (entity.Fast)
+                                        entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
+                                    {
+                                        coveringTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
                                     }
                                 }
                             }
@@ -277,11 +293,11 @@ namespace GameServer
                                 if (((Player)ent).PET == pet)
                                 {
                                     owner = player1;
-                                    distance = Math.Sqrt(Math.Pow(pet.X - player.X, 2) + Math.Pow(pet.Y - player.Y, 2));
+                                    distance = Math.Sqrt(Math.Pow(pet.X - target.X, 2) + Math.Pow(pet.Y - target.Y, 2));
                                 }
                             }
                         }
-                        if(owner != null)
+                        if (owner != null)
                         {
                             if (distance > 1 && !(owner.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight))
                                 pet.UpdateCoordinates(MAP.ToString(), owner.X, owner.Y);
@@ -292,7 +308,7 @@ namespace GameServer
                     else if (entity is Rockets rocket)
                     {
                         if (!entity.DEAD)
-                            entity.UpdateCoordinates(MAP.ToString(), player.X, player.Y);
+                            entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
                         char[] ImpassibleCells = ['#', 'D', 'd', '='];
                         double newX = entity.X + entity.GetMove() * Math.Sin(entity.A);
                         double newY = entity.Y + entity.GetMove() * Math.Cos(entity.A);
@@ -301,6 +317,7 @@ namespace GameServer
                         || ImpassibleCells.Contains(MAP[(int)(newY + entity.EntityWidth / 2) * MAP_WIDTH + (int)newX])
                         || ImpassibleCells.Contains(MAP[(int)(newY - entity.EntityWidth / 2) * MAP_WIDTH + (int)newX]))
                         {
+
                             Entities.Remove(entity);
                             Entities.Add(new Explosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
                         }
