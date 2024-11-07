@@ -1,30 +1,32 @@
 ﻿using System;
 using System.IO;
-using NAudio.Wave;
+using CSCore;
+using CSCore.Codecs.WAV;
+using CSCore.SoundOut;
 
 namespace Play_Sound
 {
     public class PlaySound : IDisposable
     {
-        public bool IsPlaying { get; set; }
+        public bool IsPlaying { get; private set; }
         private readonly WaveFileReader file;
-        private readonly WaveOutEvent playing;
         private readonly LoopStream loopStream;
+        private readonly ISoundOut playing;
 
         public PlaySound(byte[] fileBytes, bool loop)
         {
             try
             {
                 file = new WaveFileReader(new MemoryStream(fileBytes));
-                loopStream = new LoopStream(file);
-                playing = new WaveOutEvent();
-                if (!loop) playing.Init(file);
-                else playing.Init(loopStream);
+                playing = new WasapiOut();
+                if (loop)
+                {
+                    loopStream = new LoopStream(file);
+                    playing.Initialize(loopStream);
+                }
+                else playing.Initialize(file);
             }
-            catch
-            {
-                Dispose();
-            }
+            catch { Dispose(); }
         }
 
         public void Play(float volume)
@@ -33,16 +35,17 @@ namespace Play_Sound
             try
             {
                 file.Position = 0;
-                playing.Volume = volume;
+                SetVolume(volume);
                 playing.Play();
             }
             catch { }
         }
 
-        public int GetRemeinTime()
+        public int GetRemainTime()
         {
             if (file == null) return 0;
-            return (int)(file.TotalTime.TotalSeconds - file.CurrentTime.TotalSeconds);
+            return (int)(file.Length / (double)file.WaveFormat.BytesPerSecond -
+                        file.Position / (double)file.WaveFormat.BytesPerSecond);
         }
 
         public void PlayFromThe(float volume, long position)
@@ -51,7 +54,7 @@ namespace Play_Sound
             try
             {
                 file.Position = position;
-                playing.Volume = volume;
+                SetVolume(volume);
                 playing.Play();
             }
             catch { }
@@ -59,25 +62,19 @@ namespace Play_Sound
 
         public void PlayWithWait(float volume)
         {
-            if (file == null) return;
-            if (IsPlaying) return;
+            if (file == null || IsPlaying) return;
             try
             {
                 file.Position = 0;
-                playing.Volume = volume;
-                playing.PlaybackStopped += Playing_PlaybackStopped;
+                SetVolume(volume);
+                playing.Stopped += Playing_PlaybackStopped;
                 playing.Play();
                 IsPlaying = true;
-                return;
             }
-            catch
-            {
-                IsPlaying = false;
-                return;
-            }
+            catch { IsPlaying = false; }
         }
 
-        private void Playing_PlaybackStopped(object sender, StoppedEventArgs e) => IsPlaying = false;
+        private void Playing_PlaybackStopped(object sender, PlaybackStoppedEventArgs e) => IsPlaying = false;
 
         public void PlayWithDispose(float volume)
         {
@@ -85,26 +82,24 @@ namespace Play_Sound
             try
             {
                 file.Position = 0;
-                playing.Volume = volume;
-                playing.PlaybackStopped += new EventHandler<StoppedEventArgs>(Stoped);
+                SetVolume(volume);
+                playing.Stopped += Stoped;
                 playing.Play();
             }
             catch { }
         }
 
-        private void Stoped(object sender, EventArgs e) => Dispose();
+        private void Stoped(object sender, PlaybackStoppedEventArgs e) => Dispose();
 
-        public void LoopPlay(float volume)
+        public void LoopPlay(float volume) => Play(volume);
+
+        public void SetVolume(float value)
         {
-            if (file == null) return;
-            file.Position = 0;
-            playing.Volume = volume;
-            playing.Play();
+            if (playing != null)
+                playing.Volume = value;
         }
 
-        public void SetVolume(float value) => playing.Volume = value;
-
-        public long Check() => playing.GetPosition();
+        public long Check() => file?.Position ?? 0;
 
         public void Stop()
         {
@@ -120,43 +115,31 @@ namespace Play_Sound
         }
     }
 
-    public class LoopStream : WaveStream
+    public class LoopStream : IWaveSource
     {
-        private readonly WaveStream sourceStream;
-
-        public LoopStream(WaveStream sourceStream)
+        private readonly IWaveSource SourceStream;
+        public bool CanSeek => SourceStream.CanSeek;
+        public WaveFormat WaveFormat => SourceStream.WaveFormat;
+        public long Position
         {
-            this.sourceStream = sourceStream;
-            this.EnableLooping = true;
+            get => SourceStream.Position;
+            set => SourceStream.Position = value;
         }
+        public long Length => SourceStream.Length;
 
-        public bool EnableLooping { get; set; }
+        public LoopStream(IWaveSource sourceStream) => SourceStream = sourceStream;
 
-        public override WaveFormat WaveFormat => sourceStream.WaveFormat;
-
-        public override long Length => sourceStream.Length;
-
-        public override long Position
+        public int Read(byte[] buffer, int offset, int count)
         {
-            get => sourceStream.Position;
-            set => sourceStream.Position = value;
-        }
-
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            int totalBytesRead = 0;
-            while (totalBytesRead < count)
+            int read = SourceStream.Read(buffer, offset, count);
+            if (read < count)
             {
-                int bytesRead = sourceStream.Read(buffer, offset + totalBytesRead, count - totalBytesRead);
-                if (bytesRead == 0)
-                {
-                    if (sourceStream.Position == 0 || !EnableLooping)
-                        break;
-                    sourceStream.Position = 0;
-                }
-                totalBytesRead += bytesRead;
+                SourceStream.Position = 0;
+                read += SourceStream.Read(buffer, offset + read, count - read);
             }
-            return totalBytesRead;
+            return read;
         }
+
+        public void Dispose() => SourceStream.Dispose();
     }
 }

@@ -1088,7 +1088,7 @@ namespace SLIL
                     }
                     else
                     {
-                        if (transport_step.GetRemeinTime() <= 0)
+                        if (transport_step.GetRemainTime() <= 0)
                         {
                             transport_step?.Stop();
                             transport_step = step;
@@ -1118,7 +1118,7 @@ namespace SLIL
                 }
                 else
                 {
-                    if (transport_step.GetRemeinTime() <= 0)
+                    if (transport_step.GetRemainTime() <= 0)
                     {
                         transport_step?.Stop();
                         transport_step = step;

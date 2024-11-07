@@ -355,6 +355,7 @@ namespace SLIL
                 exit_panel.BringToFront();
                 return;
             }
+            MainMenuTheme?.Dispose();
             SaveSettings();
         }
 
