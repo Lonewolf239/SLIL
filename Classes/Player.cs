@@ -313,6 +313,11 @@ namespace SLIL.Classes
                         blindness.Deserialize(reader);
                         tempEffects.Add(blindness);
                         break;
+                    case 7:
+                        Stunned stunned = new Stunned();
+                        stunned.Deserialize(reader);
+                        tempEffects.Add(stunned);
+                        break;
                     default:
                         break;
                 }
@@ -472,7 +477,8 @@ namespace SLIL.Classes
                             helmet.Deserialize(reader);
                             tempDisposableItems.Add(helmet);
                             break;
-                        case 18: MedicalKit medicalKit = new MedicalKit();
+                        case 18:
+                            MedicalKit medicalKit = new MedicalKit();
                             medicalKit.Deserialize(reader);
                             tempDisposableItems.Add(medicalKit);
                             break;
@@ -520,6 +526,11 @@ namespace SLIL.Classes
                             Blindness blindness = new Blindness();
                             blindness.Deserialize(reader);
                             tempEffects.Add(blindness);
+                            break;
+                        case 7:
+                            Stunned stunned = new Stunned();
+                            stunned.Deserialize(reader);
+                            tempEffects.Add(stunned);
                             break;
                         default:
                             break;
@@ -828,6 +839,11 @@ namespace SLIL.Classes
                         MAX_STAMINE += 450;
                         STAMINE = MAX_STAMINE;
                     }
+                    else if (Effects[i].ID == 7)
+                    {
+                        MAX_MOVE_SPEED += 0.8;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                    }
                     Effects.RemoveAt(i);
                 }
             }
@@ -922,13 +938,25 @@ namespace SLIL.Classes
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
             }
+            else if (index == 7)
+            {
+                if (EffectCheck(7)) return;
+                Stunned effect = new Stunned();
+                if (!standart_time)
+                    effect.SetTotalTime(time);
+                effect.Infinity = infinity;
+                effect.UpdateTimeRemaining();
+                Effects.Add(effect);
+                MAX_MOVE_SPEED -= 0.8;
+                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+            }
         }
 
         public int GetEffectID() => DisposableItems[SelectedItem].EffectID;
 
         public bool EffectCheck(int id)
         {
-            if (Effects.Count >= 4) return true;
+            if (Effects.Count >= 12) return true;
             for (int i = 0; i < Effects.Count; i++)
                 if (Effects[i].ID == id) return true;
             return false;
@@ -1008,6 +1036,11 @@ namespace SLIL.Classes
                             TRANSPORT = null;
                         }
                     }
+                    else if (Effects[i].ID == 7)
+                    {
+                        MAX_MOVE_SPEED += 0.8;
+                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                    }
                     Effects.RemoveAt(i);
                     break;
                 }
@@ -1044,6 +1077,11 @@ namespace SLIL.Classes
                         TRANSPORT = null;
                     }
                 }
+                else if (Effects[i].ID == 7)
+                {
+                    MAX_MOVE_SPEED += 0.8;
+                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                }
             }
             Effects.Clear();
         }
@@ -1051,17 +1089,14 @@ namespace SLIL.Classes
         public void HealHP(int value)
         {
             HP += value;
-            if (HP > MAX_HP)
-                HP = MAX_HP;
+            if (HP > MAX_HP) HP = MAX_HP;
         }
 
         public void ChangeMoney(int value)
         {
             Money += value;
-            if (Money > 9999)
-                Money = 9999;
-            else if (Money < 0)
-                Money = 0;
+            if (Money > 9999) Money = 9999;
+            else if (Money < 0) Money = 0;
         }
 
         protected override int GetEntityID() => 0;
@@ -1072,6 +1107,7 @@ namespace SLIL.Classes
 
         public bool DealDamage(double damage, bool give_invulnerable)
         {
+            if (Invulnerable) return Dead;
             if (EffectCheck(2) || EffectCheck(4)) damage *= 0.8;
             if (InTransport) TRANSPORT_HP -= damage;
             else HP -= damage;

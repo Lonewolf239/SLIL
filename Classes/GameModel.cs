@@ -30,7 +30,7 @@ namespace SLIL.Classes
         private int difficulty;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
-        private bool inBackrooms = false;
+        private bool inBackrooms = false, isTutorial = false;
         private int CustomMazeHeight, CustomMazeWidth;
         private StringBuilder CUSTOM_MAP = new StringBuilder();
         private double CUSTOM_X, CUSTOM_Y;
@@ -107,6 +107,8 @@ namespace SLIL.Classes
             }
         }
 
+        public void ToTutorial() => isTutorial = true;
+
         public bool IsGameStarted() => GameStarted;
 
         public int AddPlayer()
@@ -119,6 +121,8 @@ namespace SLIL.Classes
                 player.Guns[2].LevelUpdate();
                 ((DisposableItem)player.GUNS[10]).AddItem(2);
             }
+            if (isTutorial) player.Money = 500;
+            if (inDebug != 0) player.Money = 1234;
             return MaxEntityID - 1;
         }
 
@@ -202,30 +206,7 @@ namespace SLIL.Classes
                                                 PlaySoundHandle(SLIL.hungry, target.X, target.Y);
                                             else
                                                 PlaySoundHandle(SLIL.hit[0], target.X, target.Y);
-                                            if (!playerTarget.Invulnerable)
-                                            {
-                                                if (entity is Dog)
-                                                {
-                                                    if (!playerTarget.EffectCheck(5))
-                                                        playerTarget.GiveEffect(5, true);
-                                                    else
-                                                        playerTarget.ResetEffectTime(5);
-                                                }
-                                                if (entity is Bat)
-                                                {
-                                                    if (!playerTarget.EffectCheck(6))
-                                                        playerTarget.GiveEffect(6, true);
-                                                    else
-                                                        playerTarget.ResetEffectTime(6);
-                                                }
-                                                if (entity is Zombie)
-                                                {
-                                                    if (!playerTarget.EffectCheck(3))
-                                                        playerTarget.GiveEffect(3, true);
-                                                    else
-                                                        playerTarget.ResetEffectTime(3);
-                                                }
-                                            }
+                                            GiveDebaf(playerTarget, entity);
                                             playerTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
                                             if (playerTarget.HP <= 0)
                                             {
@@ -306,18 +287,29 @@ namespace SLIL.Classes
             }
         }
 
-        private int SetDeathCause(Entity entity)
+        private static void GiveDebaf(Player player, Entity entity)
         {
-            if (entity is Zombie)
-                return 0;
-            else if (entity is Dog)
-                return 1;
-            else if (entity is Ogr)
-                return 2;
-            else if (entity is Bat)
-                return 3;
-            else if (entity is Explosion)
-                return 4;
+            int effect_id = -1;
+            if (entity is Zombie) effect_id = 3;
+            else if (entity is Ogr) effect_id = 7;
+            else if (entity is Dog) effect_id = 5;
+            else if (entity is Bat) effect_id = 6;
+            if (effect_id != -1)
+            {
+                if (!player.EffectCheck(effect_id))
+                    player.GiveEffect(effect_id, true);
+                else
+                    player.ResetEffectTime(effect_id);
+            }
+        }
+
+        private static int SetDeathCause(Entity entity)
+        {
+            if (entity is Zombie) return 0;
+            else if (entity is Dog) return 1;
+            else if (entity is Ogr) return 2;
+            else if (entity is Bat) return 3;
+            else if (entity is Explosion) return 4;
             else return -1;
         }
 

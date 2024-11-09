@@ -326,10 +326,11 @@ namespace SLIL.Classes
             StartGameHandle();
         }
 
+        public void ToTutorial() => Game.ToTutorial();
+
         public void RestartGame()
         {
-            if (!Game.IsGameStarted())
-                Game.StartGame(true);
+            if (!Game.IsGameStarted()) Game.StartGame(true);
         }
 
         public void SpawnRockets(double x, double y, int id, double a)

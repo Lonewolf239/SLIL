@@ -74,6 +74,8 @@ namespace SLIL
             this.camera_shaking_timer = new System.Windows.Forms.Timer(this.components);
             this.inventory_panel = new System.Windows.Forms.Panel();
             this.inventory_content_panel = new System.Windows.Forms.Panel();
+            this.medical_kit_count = new System.Windows.Forms.Label();
+            this.medical_kit_icon = new System.Windows.Forms.PictureBox();
             this.hide_weapon_picture = new System.Windows.Forms.PictureBox();
             this.pet_panel = new System.Windows.Forms.Panel();
             this.pet_icon = new System.Windows.Forms.PictureBox();
@@ -117,6 +119,7 @@ namespace SLIL
             ((System.ComponentModel.ISupportInitialize)(this.total_killed_icon)).BeginInit();
             this.inventory_panel.SuspendLayout();
             this.inventory_content_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.medical_kit_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).BeginInit();
             this.pet_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pet_icon)).BeginInit();
@@ -559,6 +562,8 @@ namespace SLIL
             // 
             // inventory_content_panel
             // 
+            this.inventory_content_panel.Controls.Add(this.medical_kit_count);
+            this.inventory_content_panel.Controls.Add(this.medical_kit_icon);
             this.inventory_content_panel.Controls.Add(this.hide_weapon_picture);
             this.inventory_content_panel.Controls.Add(this.pet_panel);
             this.inventory_content_panel.Controls.Add(this.pet_title);
@@ -577,6 +582,30 @@ namespace SLIL
             this.inventory_content_panel.Name = "inventory_content_panel";
             this.inventory_content_panel.Size = new System.Drawing.Size(987, 513);
             this.inventory_content_panel.TabIndex = 27;
+            // 
+            // medical_kit_count
+            // 
+            this.medical_kit_count.AutoEllipsis = true;
+            this.medical_kit_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.medical_kit_count.ForeColor = System.Drawing.Color.White;
+            this.medical_kit_count.Location = new System.Drawing.Point(200, 357);
+            this.medical_kit_count.Name = "medical_kit_count";
+            this.medical_kit_count.Size = new System.Drawing.Size(82, 32);
+            this.medical_kit_count.TabIndex = 16;
+            this.medical_kit_count.Text = "0/0";
+            this.medical_kit_count.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // medical_kit_icon
+            // 
+            this.medical_kit_icon.Image = global::SLIL.Properties.Resources.missing;
+            this.medical_kit_icon.Location = new System.Drawing.Point(144, 348);
+            this.medical_kit_icon.Name = "medical_kit_icon";
+            this.medical_kit_icon.Size = new System.Drawing.Size(50, 50);
+            this.medical_kit_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.medical_kit_icon.TabIndex = 15;
+            this.medical_kit_icon.TabStop = false;
+            this.medical_kit_icon.MouseEnter += new System.EventHandler(this.Info_icon_MouseEnter);
+            this.medical_kit_icon.MouseLeave += new System.EventHandler(this.Info_icon_MouseLeave);
             // 
             // hide_weapon_picture
             // 
@@ -962,6 +991,7 @@ namespace SLIL
             ((System.ComponentModel.ISupportInitialize)(this.total_killed_icon)).EndInit();
             this.inventory_panel.ResumeLayout(false);
             this.inventory_content_panel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.medical_kit_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).EndInit();
             this.pet_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pet_icon)).EndInit();
@@ -1054,5 +1084,7 @@ namespace SLIL
         private Label total_time_label;
         private Label last_stage_label;
         private Timer fps_timer;
+        private Label medical_kit_count;
+        private PictureBox medical_kit_icon;
     }
 }

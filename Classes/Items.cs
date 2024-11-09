@@ -242,8 +242,7 @@ namespace SLIL.Classes
         public void AddItem(int count = 1)
         {
             Count += count;
-            if (Count >= MaxCount)
-                Count = MaxCount;
+            if (Count >= MaxCount) Count = MaxCount;
             HasIt = true;
         }
 
@@ -1176,7 +1175,7 @@ namespace SLIL.Classes
         public MedicalKit() : base()
         {
             EffectID = 4;
-            RechargeTime = 900;
+            RechargeTime = 666;
             GunCost = 60;
             MaxCount = 1;
             Name = new[] { "4-8", "Medical kit" };

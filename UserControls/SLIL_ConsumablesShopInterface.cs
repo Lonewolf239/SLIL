@@ -58,13 +58,13 @@ namespace SLIL.UserControls
             if (player.Money >= item.GunCost && item.CanBuy())
             {
                 if (MainMenu.sounds)
-                    buy.Play(SLIL.Volume);
+                    buy.Play(SLIL.EffectsVolume);
                 (Parent.FindForm() as SLIL).BuyConsumable(item);
                 if (item.Count == item.MaxCount)
                     buy_button.Text = $"{GetBuyText()}";
             }
             else if (MainMenu.sounds)
-                cant_pressed?.Play(SLIL.Volume);
+                cant_pressed?.Play(SLIL.EffectsVolume);
         }
     }
 }

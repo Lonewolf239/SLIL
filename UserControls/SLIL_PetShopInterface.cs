@@ -57,14 +57,14 @@ namespace SLIL.UserControls
             if (player.PET != pet && player.Money >= pet.Cost)
             {
                 if (MainMenu.sounds)
-                    buy.Play(SLIL.Volume);
+                    buy.Play(SLIL.EffectsVolume);
                 (Parent.FindForm() as SLIL).AddPet(pet.Index);
                 buy_button.Text = $"{GetBuyText()}";
             }
             else
             {
                 if (MainMenu.sounds)
-                    cant_pressed?.Play(SLIL.Volume);
+                    cant_pressed?.Play(SLIL.EffectsVolume);
             }
         }
 

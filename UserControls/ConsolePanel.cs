@@ -22,7 +22,7 @@ namespace SLIL.UserControls
             new Regeneration(), new Adrenaline(),
             new Protection(), new Fatigue(),
             new Rider(), new Bleeding(),
-            new Blindness()
+            new Blindness(), new Stunned()
         };
         private readonly List<string> previous_cheat = new List<string>();
         public List<Entity> Entities;
@@ -99,10 +99,13 @@ namespace SLIL.UserControls
                              "~│~ -FPS-         ~│~ Show/hide FPS                               ~│~\n" +
                              "~│~ -MINIMAP-     ~│~ Show/hide Minimap                           ~│~\n" +
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
+                             "~│~ -MVOL_-*X*      ~│~ Change music volume of sounds to X          ~│~\n" +
+                             "~│~ -EVOL_-*X*      ~│~ Change effects volume of sounds to X        ~│~\n" +
+                             "~│~ -VOL_-*X*       ~│~ Change volume of sounds to X                ~│~\n" +
+                             "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -CLS-         ~│~ Clearing the console                        ~│~\n" +
                              "~│~ -SLC-         ~│~ Clear console history                       ~│~\n" +
                              "~│~ -COLOR_-*X*     ~│~ Change console font color                   ~│~\n" +
-                             "~│~ -VOL_-*X*       ~│~ Change volume of sounds to X                ~│~\n" +
                              "~│~ -SCOPE_-*X*     ~│~ Replace current sight                       ~│~\n" +
                              "~│~ -SCOPECOL_-*X*  ~│~ Change sight color                          ~│~\n" +
                              "~│~ -LOOK_-*X*      ~│~ Change mouse sensitivity                    ~│~\n" +
@@ -194,6 +197,7 @@ namespace SLIL.UserControls
                                  "~│~ -EGTRE-       ~│~ Give first aid kit                          ~│~\n" +
                                  "~│~ -DHURF-       ~│~ Give adrenaline                             ~│~\n" +
                                  "~│~ -KVISE-       ~│~ Give helmet                                 ~│~\n" +
+                                 "~│~ -YWJHC-       ~│~ Give medical kit                            ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -GKIFK-       ~│~ Give 999 HP                                 ~│~\n" +
                                  "~│~ -KILL-        ~│~ Kill a player                               ~│~\n" +
@@ -430,7 +434,7 @@ namespace SLIL.UserControls
                     {
                         show_date = false;
                         console.Text = null;
-                        message = "SLIL console *v1.4*\nType \"-help-\" for a list of commands...";
+                        message = "SLIL console *v1.5*\nType \"-help-\" for a list of commands...";
                         console.Refresh();
                     }
                     else if (cheat == "SLC")
@@ -462,6 +466,51 @@ namespace SLIL.UserControls
                         else
                             message += "Minimap disabled.";
                     }
+                    else if (cheat.StartsWith("MVOL_"))
+                    {
+                        try
+                        {
+                            float x = Convert.ToSingle(cheat.Split('_')[1].Replace('.', ','));
+                            if (x >= 0 && x <= 1)
+                            {
+                                message += $"Current music volume is now {x}. *Default: 0,4*";
+                                SLIL.MusicVolume = x;
+                                SLIL.SetVolume();
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Incorrect value! X must be in the range from 0 to 1.";
+                            }
+                        }
+                        catch
+                        {
+                            color = Color.Red;
+                            message = "Incorrect data entered! X is not a number.";
+                        }
+                    }
+                    else if (cheat.StartsWith("EVOL_"))
+                    {
+                        try
+                        {
+                            float x = Convert.ToSingle(cheat.Split('_')[1].Replace('.', ','));
+                            if (x >= 0 && x <= 1)
+                            {
+                                message += $"Current effects volume is now {x}. *Default: 0,4*";
+                                SLIL.EffectsVolume = x;
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Incorrect value! X must be in the range from 0 to 1.";
+                            }
+                        }
+                        catch
+                        {
+                            color = Color.Red;
+                            message = "Incorrect data entered! X is not a number.";
+                        }
+                    }
                     else if (cheat.StartsWith("VOL_"))
                     {
                         try
@@ -471,7 +520,6 @@ namespace SLIL.UserControls
                             {
                                 message += $"Current volume is now {x}. *Default: 0,4*";
                                 SLIL.Volume = x;
-                                SLIL.SetVolume();
                             }
                             else
                             {
@@ -570,7 +618,7 @@ namespace SLIL.UserControls
                                 color = foreColors[color_index];
                                 show_date = false;
                                 console.Text = null;
-                                message = "SLIL console *v1.4*\nType \"-help-\" for a list of commands...";
+                                message = "SLIL console *v1.5*\nType \"-help-\" for a list of commands...";
                                 console.Refresh();
                             }
                         }
@@ -1033,10 +1081,10 @@ namespace SLIL.UserControls
                         }
                         else if (cheat == "FYTLG")
                         {
-                            for (int i = 0; i < player.Guns.Count; i++)
+                            for (int i = 0; i < player.GUNS.Length; i++)
                             {
-                                if (player.GUNS[i].AddToShop)
-                                    player.Guns[i].AmmoInStock = player.Guns[i].MaxAmmo;
+                                if (!(player.GUNS[i] is Item) && player.GUNS[i].HasIt)
+                                    player.GUNS[i].AmmoInStock = player.GUNS[i].MaxAmmo;
                             }
                             message += "Maximum ammunition provided.";
                         }
@@ -1128,6 +1176,11 @@ namespace SLIL.UserControls
                         {
                             GetItem(2);
                             message += "Helmet issued.";
+                        }
+                        else if (cheat == "YWJHC")
+                        {
+                            GetItem(3);
+                            message += "Medical kit issued.";
                         }
                         else if (cheat == "LPFJY")
                         {
@@ -1256,7 +1309,7 @@ namespace SLIL.UserControls
             if (console.Text.Length == console.MaxLength)
             {
                 console.Clear();
-                ConsoleAppendText("SLIL console *v1.4*\nType \"-help-\" for a list of commands...", foreColors[color_index]);
+                ConsoleAppendText("SLIL console *v1.5*\nType \"-help-\" for a list of commands...", foreColors[color_index]);
                 ConsoleAppendText("*The console was cleared due to a buffer overflow*", foreColors[color_index]);
                 ConsoleAppendText("\n\nEnter the command: ", foreColors[color_index]);
                 console.Refresh();

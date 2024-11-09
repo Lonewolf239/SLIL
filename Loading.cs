@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Net.Http;
 using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CGFReader;
@@ -448,14 +449,25 @@ namespace SLIL
             loginForm?.SetLanguage();
         }
 
+        private async Task SLILInitialization()
+        {
+            status_label.Text = "SLIL initialization...";
+            await Task.Run(() =>
+            {
+                SLIL form = new SLIL();
+                form.Dispose();
+            });
+            progress_refresh.Stop();
+            mainMenu.Show();
+            Hide();
+        }
+
         private async void GoToMainMenu()
         {
             status_label.Text = "Loading main menu...";
             mainMenu = await CreateMainMenuAsync(this);
             mainMenu.FormClosing += MainMenu_FormCLosing;
-            progress_refresh.Stop();
-            mainMenu.Show();
-            Hide();
+            await SLILInitialization();
         }
 
         public static async Task<MainMenu> CreateMainMenuAsync(Loading loading)

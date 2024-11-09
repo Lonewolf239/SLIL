@@ -86,7 +86,7 @@ namespace SLIL
         public static double SLIL_v0_1_LOOK_SPEED = 1.75;
         public static int SLIL_v0_1_difficulty = 1;
         public static double LOOK_SPEED = 6.5;
-        public static float Volume = 0.4f;
+        public static float Volume = 0.4f, EffectsVolume = 0.4f, MusicVolume = 0.4f;
         public static int Gamma = 100;
         private int ShowingSLIL_v0_0_1 = 0;
 
@@ -238,13 +238,17 @@ namespace SLIL
             all_settings.Controls.Add(new Separator());
             all_settings.Controls.Add(language_panel);
             all_settings.Controls.Add(new Separator());
-            all_settings.Controls.Add(volume_panel);
-            all_settings.Controls.Add(new Separator());
-            all_settings.Controls.Add(sound_panel);
-            all_settings.Controls.Add(new Separator());
             all_settings.Controls.Add(console_panel);
             all_settings.Controls.Add(new Separator());
             all_settings.Controls.Add(show_tutorial_panel);
+            sounds_settings.Controls.Clear();
+            sounds_settings.Controls.Add(effects_volume_panel);
+            sounds_settings.Controls.Add(new Separator());
+            sounds_settings.Controls.Add(volume_panel);
+            sounds_settings.Controls.Add(new Separator());
+            sounds_settings.Controls.Add(music_volume_panel);
+            sounds_settings.Controls.Add(new Separator());
+            sounds_settings.Controls.Add(sound_panel);
             video_settings.Controls.Clear();
             video_settings.Controls.Add(interface_size_panel);
             video_settings.Controls.Add(new Separator());
@@ -337,7 +341,7 @@ namespace SLIL
             exit_size_panel.Left = (exit_panel.Width - exit_size_panel.Width) / 2;
             account_btn_c.Location = new Point(Width - account_btn_c.Width - 15, 15);
             SLIL_v0_1_btn_c.Location = new Point((Width - SLIL_v0_1_btn_c.Width) / 2, (Height - buttons_panel.Height) / 2 - 75);
-            if (sounds) MainMenuTheme.Play(Volume);
+            if (sounds) MainMenuTheme.Play(MusicVolume);
         }
 
         private void MainMenu_Shown(object sender, EventArgs e)
@@ -446,6 +450,8 @@ namespace SLIL
             if (!SupportedLanguages.Values.Contains(Language)) Language = "English";
             ConsoleEnabled = INIReader.GetBool(Program.iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             sounds = INIReader.GetBool(Program.iniFolder, "CONFIG", "sounds", true);
+            MusicVolume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "music_volume", 0.4f);
+            EffectsVolume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "effects_volume", 0.4f);
             Volume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "volume", 0.4f);
             Gamma = INIReader.GetInt(Program.iniFolder, "CONFIG", "gamma", 100);
             LOOK_SPEED = INIReader.GetDouble(Program.iniFolder, "SLIL", "look_speed", 6.5);
@@ -486,6 +492,10 @@ namespace SLIL
                 smoothing = 1;
             if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10)
                 LOOK_SPEED = 6.5;
+            if (MusicVolume < 0 || MusicVolume > 1)
+                MusicVolume = 0.4f;
+            if (EffectsVolume < 0 || EffectsVolume > 1)
+                EffectsVolume = 0.4f;
             if (Volume < 0 || Volume > 1)
                 Volume = 0.4f;
             if (Gamma < 40 || Gamma > 120)
@@ -507,6 +517,8 @@ namespace SLIL
             INIReader.SetKey(Program.iniFolder, "CONFIG", "sounds", sounds);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
+            INIReader.SetKey(Program.iniFolder, "CONFIG", "music_volume", MusicVolume);
+            INIReader.SetKey(Program.iniFolder, "CONFIG", "effects_volume", MusicVolume);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "volume", Volume);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "gamma", Gamma);
             INIReader.SetKey(Program.iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
@@ -654,11 +666,20 @@ namespace SLIL
             scope_color_choice.Value = scope_color;
             gamma_choice.Value = Gamma;
             sensitivity.Value = (int)(LOOK_SPEED * 100);
-            volume.Value = (int)(Volume * 100);
-            if (hight_fps)
-                fps_label.Text = "FPS: 60";
+            if (sounds)
+            {
+                music_volume.Value = (int)(MusicVolume * 100);
+                effects_volume.Value = (int)(EffectsVolume * 100);
+                volume.Value = (int)(Volume * 100);
+                music_volume.Enabled = effects_volume.Enabled = volume.Enabled = true;
+            }
             else
-                fps_label.Text = "FPS: 30";
+            {
+                music_volume.Value = effects_volume.Value = volume.Value = 0;
+                music_volume.Enabled = effects_volume.Enabled = volume.Enabled = false;
+            }
+            if (hight_fps) fps_label.Text = "FPS: 60";
+            else fps_label.Text = "FPS: 30";
             if (DownloadedLocalizationList)
             {
                 scope_label.Text = Localizations.GetLString(Language, "0-36") + GetScopeType();
@@ -726,6 +747,9 @@ namespace SLIL
                 close_difficulty_panel_l.Text = Localizations.GetLString(Language, "0-6");
                 start_game_btn_r.Text = Localizations.GetLString(Language, "0-7");
                 setting_btn_cp.Text = Localizations.GetLString(Language, "0-16");
+                sounds_settings.Text = Localizations.GetLString(Language, "0-133");
+                music_volume_label.Text = Localizations.GetLString(Language, "0-131");
+                effects_volume_label.Text = Localizations.GetLString(Language, "0-132");
                 volume_label.Text = Localizations.GetLString(Language, "0-17");
                 about_developers_btn_cp.Text = Localizations.GetLString(Language, "0-18");
                 open_help_btn_cp.Text = Localizations.GetLString(Language, "0-19");
@@ -820,6 +844,9 @@ namespace SLIL
                 custom_btn.Text = "Editor";
                 close_difficulty_panel_l.Text = "Return";
                 start_game_btn_r.Text = "Play";
+                sounds_settings.Text = "Sounds";
+                music_volume_label.Text = "Music volume";
+                effects_volume_label.Text = "Effects volume";
                 volume_label.Text = "Volume";
                 setting_btn_cp.Text = "Settings";
                 about_developers_btn_cp.Text = "About developers";
@@ -1287,6 +1314,8 @@ namespace SLIL
             scope_type = 0;
             scope_color = 0;
             LOOK_SPEED = 6.5;
+            MusicVolume = 0.4f;
+            EffectsVolume = 0.4f;
             Volume = 0.4f;
             Gamma = 100;
             BindControls.Clear();
@@ -1347,7 +1376,7 @@ namespace SLIL
                     sounds_on_off.Text = Localizations.GetLString(Language, "0-70");
                 else
                     sounds_on_off.Text = "On";
-                MainMenuTheme.Play(Volume);
+                MainMenuTheme.Play(MusicVolume);
             }
             else
             {
@@ -1357,13 +1386,18 @@ namespace SLIL
                     sounds_on_off.Text = "Off";
                 MainMenuTheme.Stop();
             }
+            SetVisualSettings();
         }
 
-        private void Volume_Scroll(object sender, EventArgs e)
+        private void Music_volume_Scroll(object sender, EventArgs e)
         {
-            Volume = (float)volume.Value / 100;
-            MainMenuTheme.SetVolume(Volume);
+            MusicVolume = (float)music_volume.Value / 100;
+            MainMenuTheme.SetVolume(MusicVolume);
         }
+
+        private void Volume_Scroll(object sender, EventArgs e) => Volume = (float)volume.Value / 100;
+
+        private void Effects_volume_Scroll(object sender, EventArgs e) => EffectsVolume = (float)effects_volume.Value / 100;
 
         private void Language_list_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1623,7 +1657,7 @@ namespace SLIL
                     PlayerName = PlayerName
                 };
                 form.ShowDialog();
-                if (sounds) MainMenuTheme.Play(Volume);
+                if (sounds) MainMenuTheme.Play(MusicVolume);
                 difficulty_panel.Visible = false;
             }
             else
@@ -1637,7 +1671,7 @@ namespace SLIL
                 };
                 Editor.FormClosing += EditorForm_FormClosing;
                 Editor.ShowDialog();
-                if (sounds) MainMenuTheme.Play(Volume);
+                if (sounds) MainMenuTheme.Play(MusicVolume);
             }
         }
 
@@ -1651,7 +1685,7 @@ namespace SLIL
                     PlayerName = PlayerName
                 };
                 form.ShowDialog();
-                if (sounds) MainMenuTheme.Play(Volume);
+                if (sounds) MainMenuTheme.Play(MusicVolume);
                 Editor = null;
                 difficulty_panel.Visible = false;
             }
@@ -1769,7 +1803,7 @@ namespace SLIL
             form.ShowDialog();
             game_mode_panel.Visible = false;
             hilf_mir_panel.Visible = false;
-            if (sounds) MainMenuTheme.Play(Volume);
+            if (sounds) MainMenuTheme.Play(MusicVolume);
         }
 
         private void Show_hilf_mir_CheckedChanged(object sender, EventArgs e)
@@ -1834,7 +1868,7 @@ namespace SLIL
                 game_over = game_over
             };
             sLILv0_1.ShowDialog();
-            if (sounds) MainMenuTheme.Play(Volume);
+            if (sounds) MainMenuTheme.Play(MusicVolume);
         }
 
         //  #====     Multiplayer    ====#
@@ -1936,7 +1970,7 @@ namespace SLIL
                 form.ShowDialog();
             }
             catch { }
-            if (sounds) MainMenuTheme.Play(Volume);
+            if (sounds) MainMenuTheme.Play(MusicVolume);
             difficulty_panel.Visible = false;
         }
 

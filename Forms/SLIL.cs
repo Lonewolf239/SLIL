@@ -59,7 +59,6 @@ namespace SLIL
         private float StageOpacity = 1;
         public static bool hight_fps = true;
         private const double FOV = Math.PI / 3;
-        private double ElapsedTime = 0;
         private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
         private Bitmap SCREEN, WEAPON, BUFFER;
         private ImageAttributes imageAttributes, imageCuteAttributes;
@@ -75,7 +74,8 @@ namespace SLIL
         private Graphics graphicsWeapon;
         private int fps;
         private double planeX, planeY, dirX, dirY, invDet;
-        private DateTime total_time = DateTime.Now;
+        private double ElapsedTime = 0, PreviousTime, DeltaTime;
+        private DateTime TotalTime = DateTime.Now;
         private List<int> soundIndices = new List<int> { 0, 1, 2, 3, 4 };
         private int currentIndex = 0;
         private bool active = true;
@@ -328,6 +328,7 @@ namespace SLIL
             { typeof(Rider), Properties.Resources.driver },
             { typeof(Bleeding), Properties.Resources.bleeding },
             { typeof(Blindness), Properties.Resources.blindness },
+            { typeof(Stunned), Properties.Resources.missing },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
@@ -458,25 +459,25 @@ namespace SLIL
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("c_zombie_die_0.wav"), false),
                 new PlaySound(MainMenu.CGFReader.GetFile("c_zombie_die_1.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("c_zombie_die_0.wav"), false)
+                new PlaySound(MainMenu.CGFReader.GetFile("c_zombie_die_2.wav"), false)
             },
             //Dog
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("c_dog_die_0.wav"), false),
                 new PlaySound(MainMenu.CGFReader.GetFile("c_dog_die_1.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("c_dog_die_0.wav"), false)
+                new PlaySound(MainMenu.CGFReader.GetFile("c_dog_die_2.wav"), false)
             },
             //Ogr
             {
-                new PlaySound(MainMenu.CGFReader.GetFile("c_abomination_die_0.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("c_abomination_die_0.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("c_abomination_die_0.wav"), false)
+                new PlaySound(MainMenu.CGFReader.GetFile("c_ogr_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_ogr_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_ogr_die_2.wav"), false)
             },
             //Bat
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("c_bat_die_0.wav"), false),
                 new PlaySound(MainMenu.CGFReader.GetFile("c_bat_die_1.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("c_bat_die_0.wav"), false)
+                new PlaySound(MainMenu.CGFReader.GetFile("c_bat_die_2.wav"), false)
             },
             //Box
             {
@@ -505,7 +506,7 @@ namespace SLIL
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
             bikeMap = @"############################......######.......#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######.......############################";
-        public static float Volume = 0.4f;
+        public static float Volume = 0.4f, EffectsVolume = 0.4f, MusicVolume = 0.4f;
         private int burst_shots = 0, reload_frames = 0;
         public static int ost_index = 0;
         public static int prev_ost;
@@ -607,8 +608,8 @@ namespace SLIL
             CUSTOM_X = customX;
             CUSTOM_Y = customY;
             Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
+            if (IsTutorial) Controller.ToTutorial();
             Controller.StartGame();
-            if (IsTutorial) Controller.GetPlayer().ChangeMoney(485);
         }
         public SLIL(TextureCache textures, string adress, int port, string password, string PlayerName)
         {
@@ -626,6 +627,7 @@ namespace SLIL
             SetParameters();
             textureCache = textures;
         }
+        public SLIL() { }
 
         private void SetLocalization()
         {
@@ -698,6 +700,8 @@ namespace SLIL
             inv_x = MainMenu.inv_x;
             inv_y = MainMenu.inv_y;
             Volume = MainMenu.Volume;
+            EffectsVolume = MainMenu.EffectsVolume;
+            MusicVolume = MainMenu.MusicVolume;
         }
 
         private void UpdateBitmap()
@@ -807,19 +811,17 @@ namespace SLIL
             float distance = (float)Math.Sqrt((player.X - X) * (player.X - X) + (player.Y - Y) * (player.Y - Y));
             if (distance > 14) return;
             float vol = Volume;
-            if (distance > 1) vol /= distance;
+            if (distance > 1) vol /= (float)Math.Pow(distance, 0.87);
             if (this.InvokeRequired && this.IsHandleCreated)
             {
                 this.BeginInvoke((MethodInvoker)delegate
                 {
-                    if (MainMenu.sounds)
-                        sound.Play(vol);
+                    if (MainMenu.sounds) sound.Play(vol);
                 });
             }
             else
             {
-                if (MainMenu.sounds)
-                    sound.Play(vol);
+                if (MainMenu.sounds) sound.Play(vol);
             }
         }
 
@@ -842,7 +844,7 @@ namespace SLIL
 
         //  #====  Console methods  ====#
 
-        public static void SetVolume() => ost[ost_index].SetVolume(Volume);
+        public static void SetVolume() => ost[ost_index].SetVolume(MusicVolume);
 
         public bool OnOffNoClip() => Controller.OnOffNoClip();
 
@@ -861,7 +863,7 @@ namespace SLIL
             if (!MainMenu.sounds) return;
             ost[ost_index]?.Stop();
             ost_index = index;
-            ost[ost_index].LoopPlay(Volume);
+            ost[ost_index].LoopPlay(MusicVolume);
         }
 
         public void KillFromConsole()
@@ -1032,8 +1034,10 @@ namespace SLIL
             try
             {
                 DateTime time = DateTime.Now;
-                ElapsedTime = (time - total_time).TotalSeconds;
-                total_time = time;
+                ElapsedTime = (time - TotalTime).TotalSeconds;
+                TotalTime = time;
+                DeltaTime = time.TimeOfDay.TotalSeconds - PreviousTime;
+                PreviousTime = time.TimeOfDay.TotalSeconds;
                 PlayerMove();
                 ClearDisplayedMap();
                 double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
@@ -2057,10 +2061,12 @@ namespace SLIL
             }
             else
             {
+                double turnAmount = 0;
                 if (player.MOVE_SPEED < 0)
-                    Controller.ChangePlayerA(-player.STRAFE_SPEED / (player.TRANSPORT.Controllability + 25));
+                    turnAmount = (-player.STRAFE_SPEED * 0.5) / (player.TRANSPORT.Controllability + 25);
                 else if (player.MOVE_SPEED > 0)
-                    Controller.ChangePlayerA(player.STRAFE_SPEED / player.TRANSPORT.Controllability);
+                    turnAmount = (player.STRAFE_SPEED) / player.TRANSPORT.Controllability;
+                Controller.ChangePlayerA(turnAmount * DeltaTime * 60);
             }
             if (!(HasImpassibleCells(GetCoordinate(newX + playerWidth / 2, newY))
                 || HasImpassibleCells(GetCoordinate(newX - playerWidth / 2, newY))))
@@ -3822,7 +3828,7 @@ namespace SLIL
                     player = player,
                     Entities = Controller.GetEntities()
                 };
-                console_panel.Log("SLIL console *v1.4*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
+                console_panel.Log("SLIL console *v1.5*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
                 console_panel.Log("\n\nEnter the command: ", false, false, Color.Lime);
                 Controls.Add(console_panel);
                 SLILDisplay = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
@@ -3848,10 +3854,7 @@ namespace SLIL
                 else if (Controller.GetMap()[GetCoordinate(player.X - 2, player.Y)] == '.')
                     player.A = 4;
             }
-            catch
-            {
-                player.A = 0;
-            }
+            catch { player.A = 0; }
             StageOpacity = 1;
             stage_timer.Start();
             raycast.Start();
@@ -3903,6 +3906,7 @@ namespace SLIL
         {
             map = null;
             SLILDisplay.Screen = null;
+            PreviousTime = DateTime.Now.TimeOfDay.TotalSeconds;
             scope[scope_type] = GetScope(scope[scope_type]);
             h_scope[scope_type] = GetScope(h_scope[scope_type]);
             scope_shotgun[scope_type] = GetScope(scope_shotgun[scope_type]);
@@ -4085,6 +4089,7 @@ namespace SLIL
             medkit_count.Text = $"{player.DisposableItems[0].MaxCount}/{player.DisposableItems[0].Count}";
             adrenalin_count.Text = $"{player.DisposableItems[1].MaxCount}/{player.DisposableItems[1].Count}";
             helmet_count.Text = $"{player.DisposableItems[2].MaxCount}/{player.DisposableItems[2].Count}";
+            medical_kit_count.Text = $"{player.DisposableItems[3].MaxCount}/{player.DisposableItems[3].Count}";
             if (player.PET != null)
                 pet_icon.Image = ShopImageDict[player.PET.GetType()];
             else
@@ -4108,8 +4113,7 @@ namespace SLIL
                 hide_weapon_picture.Visible = true;
                 return;
             }
-            else
-                hide_weapon_picture.Visible = false;
+            else hide_weapon_picture.Visible = false;
             if (MainMenu.DownloadedLocalizationList)
             {
                 pistol_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, player.GUNS[2].Name[0]);
@@ -4179,9 +4183,9 @@ namespace SLIL
             if (((Control)sender).Name == "pistol_icon")
                 weapon = player.GUNS[2];
             else if (((Control)sender).Name == "weapon_0_icon" && player.WeaponSlot_0 != -1)
-                weapon = player.GUNS[player.WeaponSlot_0];
+                weapon = player.Guns[player.WeaponSlot_0];
             else if (((Control)sender).Name == "weapon_1_icon" && player.WeaponSlot_1 != -1)
-                weapon = player.GUNS[player.WeaponSlot_1];
+                weapon = player.Guns[player.WeaponSlot_1];
             else return;
             InventoryWeaponToolTip = new WeaponToolTip
             {
@@ -4228,6 +4232,13 @@ namespace SLIL
                     description = MainMenu.Localizations.GetLString(MainMenu.Language, ((Adrenalin)player.GUNS[13]).Description[0]);
                 else
                     description = ((Adrenalin)player.GUNS[13]).Description[1];
+            }
+            else if (((Control)sender).Name == "medical_kit_icon")
+            {
+                if (MainMenu.DownloadedLocalizationList)
+                    description = MainMenu.Localizations.GetLString(MainMenu.Language, ((MedicalKit)player.GUNS[17]).Description[0]);
+                else
+                    description = ((MedicalKit)player.GUNS[17]).Description[1];
             }
             else if (((Control)sender).Name == "pet_icon" && player.PET != null)
             {

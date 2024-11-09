@@ -105,6 +105,8 @@ namespace GameServer
                     p.Guns[2].LevelUpdate();
                     ((DisposableItem)p.GUNS[10]).AddItem(2);
                 }
+                if (GameMode == GameModes.Debug || GameMode == GameModes.DebugBikes)
+                    p.Money = 1234;
                 Entities.Add(p);
             }
             else
@@ -119,6 +121,8 @@ namespace GameServer
                     p.Guns[2].LevelUpdate();
                     ((DisposableItem)p.GUNS[10]).AddItem(2);
                 }
+                if (GameMode == GameModes.Debug || GameMode == GameModes.DebugBikes)
+                    p.Money = 1234;
                 Entities.Add(p);
             }
             return MaxEntityID - 1;
@@ -226,30 +230,7 @@ namespace GameServer
                                                 byte[] data = writer.Data;
                                                 sendMessageFromGameCallback(1000, data);
                                             }
-                                            if (!playerTarget.Invulnerable)
-                                            {
-                                                if (entity is Dog)
-                                                {
-                                                    if (!playerTarget.EffectCheck(5))
-                                                        playerTarget.GiveEffect(5, true);
-                                                    else
-                                                        playerTarget.ResetEffectTime(5);
-                                                }
-                                                if (entity is Bat)
-                                                {
-                                                    if (!playerTarget.EffectCheck(6))
-                                                        playerTarget.GiveEffect(6, true);
-                                                    else
-                                                        playerTarget.ResetEffectTime(6);
-                                                }
-                                                if (entity is Zombie)
-                                                {
-                                                    if (!playerTarget.EffectCheck(3))
-                                                        playerTarget.GiveEffect(3, true);
-                                                    else
-                                                        playerTarget.ResetEffectTime(3);
-                                                }
-                                            }
+                                            GiveDebaf(playerTarget, entity);
                                             playerTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
                                             if (playerTarget.HP <= 0)
                                             {
@@ -336,18 +317,29 @@ namespace GameServer
             }
         }
 
-        private static int GetDeathCause(Entity entity)
+        private static void GiveDebaf(Player player, Entity entity)
         {
-            if (entity is Zombie)
-                return 0;
-            else if (entity is Dog)
-                return 1;
-            else if (entity is Ogr)
-                return 2;
-            else if (entity is Bat)
-                return 3;
-            else if (entity is Explosion)
-                return 4;
+            int effect_id = -1;
+            if (entity is Zombie) effect_id = 3;
+            else if (entity is Ogr) effect_id = 7;
+            else if (entity is Dog) effect_id = 5;
+            else if (entity is Bat) effect_id = 6;
+            if (effect_id != -1)
+            {
+                if (!player.EffectCheck(effect_id))
+                    player.GiveEffect(effect_id, true);
+                else
+                    player.ResetEffectTime(effect_id);
+            }
+        }
+
+        private static int SetDeathCause(Entity entity)
+        {
+            if (entity is Zombie) return 0;
+            else if (entity is Dog) return 1;
+            else if (entity is Ogr) return 2;
+            else if (entity is Bat) return 3;
+            else if (entity is Explosion) return 4;
             else return -1;
         }
 

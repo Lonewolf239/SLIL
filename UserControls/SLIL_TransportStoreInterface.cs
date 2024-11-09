@@ -76,13 +76,13 @@ namespace SLIL.UserControls
             if (player.Money >= transport.Cost)
             {
                 if (MainMenu.sounds)
-                    buy.Play(SLIL.Volume);
+                    buy.Play(SLIL.EffectsVolume);
                 (Parent.FindForm() as SLIL).AddTransport(transport.Index);
             }
             else
             {
                 if (MainMenu.sounds)
-                    cant_pressed?.Play(SLIL.Volume);
+                    cant_pressed?.Play(SLIL.EffectsVolume);
             }
 
         }

@@ -72,19 +72,19 @@ namespace SLIL.UserControls
                 if (player.Money >= weapon.AmmoCost && weapon.AmmoInStock + weapon.AmmoCount <= weapon.MaxAmmo)
                 {
                     if (MainMenu.sounds)
-                        buy.Play(SLIL.Volume);
+                        buy.Play(SLIL.EffectsVolume);
                     ParentSLILForm.BuyAmmo(weapon);
                     ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                 }
                 else if (MainMenu.sounds)
-                    cant_pressed?.Play(SLIL.Volume);
+                    cant_pressed?.Play(SLIL.EffectsVolume);
             }
             else
             {
                 if (player.Money  >= weapon.GunCost)
                 {
                     if (MainMenu.sounds)
-                        buy.Play(SLIL.Volume);
+                        buy.Play(SLIL.EffectsVolume);
                     ParentSLILForm.BuyWeapon(weapon);
                     buy_button.Text = GetBuyText() + $" ${weapon.AmmoCost}";
                     ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
@@ -97,7 +97,7 @@ namespace SLIL.UserControls
                     else ammo_panel.Left = buy_button.Right + 12;
                 }
                 else if (MainMenu.sounds)
-                    cant_pressed?.Play(SLIL.Volume);
+                    cant_pressed?.Play(SLIL.EffectsVolume);
             }
             UpdateInfo();
             ParentSLILForm.UpdateStorage();
@@ -152,7 +152,7 @@ namespace SLIL.UserControls
             if (player.Money  >= weapon.UpdateCost)
             {
                 if (MainMenu.sounds)
-                    buy.Play(SLIL.Volume);
+                    buy.Play(SLIL.EffectsVolume);
                 ParentSLILForm.UpdateWeapon(weapon);
                 weapon_name.Text = GetWeaponName() + $" {weapon.Level}";
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];
@@ -162,7 +162,7 @@ namespace SLIL.UserControls
                 update_button.Visible = weapon.CanUpdate();
             }
             else if (MainMenu.sounds)
-                cant_pressed?.Play(SLIL.Volume);
+                cant_pressed?.Play(SLIL.EffectsVolume);
             UpdateInfo();
             ParentSLILForm.UpdateStorage();
         }

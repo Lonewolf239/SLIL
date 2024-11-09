@@ -1174,7 +1174,7 @@ namespace GameServer
         public MedicalKit() : base()
         {
             EffectID = 4;
-            RechargeTime = 900;
+            RechargeTime = 666;
             GunCost = 60;
             MaxCount = 1;
             Name = ["4-8", "Medical kit"];

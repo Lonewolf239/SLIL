@@ -83,18 +83,25 @@
             this.language_panel = new System.Windows.Forms.Panel();
             this.language_list = new System.Windows.Forms.ComboBox();
             this.language_label = new System.Windows.Forms.Label();
-            this.volume_panel = new System.Windows.Forms.Panel();
-            this.volume = new System.Windows.Forms.TrackBar();
-            this.volume_label = new System.Windows.Forms.Label();
-            this.sound_panel = new System.Windows.Forms.Panel();
-            this.sounds_on_off = new System.Windows.Forms.CheckBox();
-            this.sounds_label = new System.Windows.Forms.Label();
             this.console_panel = new System.Windows.Forms.Panel();
             this.console_btn = new System.Windows.Forms.CheckBox();
             this.console_label = new System.Windows.Forms.Label();
             this.show_tutorial_panel = new System.Windows.Forms.Panel();
             this.show_tutorial = new System.Windows.Forms.CheckBox();
             this.show_tutorial_label = new System.Windows.Forms.Label();
+            this.sounds_settings = new System.Windows.Forms.TabPage();
+            this.volume_panel = new System.Windows.Forms.Panel();
+            this.volume = new System.Windows.Forms.TrackBar();
+            this.volume_label = new System.Windows.Forms.Label();
+            this.effects_volume_panel = new System.Windows.Forms.Panel();
+            this.effects_volume = new System.Windows.Forms.TrackBar();
+            this.effects_volume_label = new System.Windows.Forms.Label();
+            this.music_volume_panel = new System.Windows.Forms.Panel();
+            this.music_volume = new System.Windows.Forms.TrackBar();
+            this.music_volume_label = new System.Windows.Forms.Label();
+            this.sound_panel = new System.Windows.Forms.Panel();
+            this.sounds_on_off = new System.Windows.Forms.CheckBox();
+            this.sounds_label = new System.Windows.Forms.Label();
             this.video_settings = new System.Windows.Forms.TabPage();
             this.interface_size_panel = new System.Windows.Forms.Panel();
             this.interface_size_choice = new System.Windows.Forms.TrackBar();
@@ -227,11 +234,10 @@
             this.select_mode_btn_r = new System.Windows.Forms.Button();
             this.multiplayer_panel = new System.Windows.Forms.Panel();
             this.multiplayer_background = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
+            this.test_vesion_label = new System.Windows.Forms.Label();
             this.connect_game_btn_cp = new System.Windows.Forms.Button();
             this.host_btn_cp = new System.Windows.Forms.Button();
             this.multiplayer_close_l = new System.Windows.Forms.Button();
-            this.coming_soon_label = new System.Windows.Forms.Label();
             this.host_panel = new System.Windows.Forms.Panel();
             this.host_background = new System.Windows.Forms.Panel();
             this.players_panel = new System.Windows.Forms.Panel();
@@ -259,7 +265,7 @@
             this.account_btn_c = new System.Windows.Forms.Button();
             this.account_panel = new System.Windows.Forms.Panel();
             this.account_background = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.coming_soon_label = new System.Windows.Forms.Label();
             this.player_icon = new System.Windows.Forms.PictureBox();
             this.nickname = new System.Windows.Forms.TextBox();
             this.close_account_btn_c = new System.Windows.Forms.Button();
@@ -301,11 +307,16 @@
             this.localization_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.localization_error_pic)).BeginInit();
             this.language_panel.SuspendLayout();
-            this.volume_panel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.volume)).BeginInit();
-            this.sound_panel.SuspendLayout();
             this.console_panel.SuspendLayout();
             this.show_tutorial_panel.SuspendLayout();
+            this.sounds_settings.SuspendLayout();
+            this.volume_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.volume)).BeginInit();
+            this.effects_volume_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.effects_volume)).BeginInit();
+            this.music_volume_panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.music_volume)).BeginInit();
+            this.sound_panel.SuspendLayout();
             this.video_settings.SuspendLayout();
             this.interface_size_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.interface_size_choice)).BeginInit();
@@ -929,6 +940,7 @@
             // settings
             // 
             this.settings.Controls.Add(this.all_settings);
+            this.settings.Controls.Add(this.sounds_settings);
             this.settings.Controls.Add(this.video_settings);
             this.settings.Controls.Add(this.controls_settings);
             this.settings.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -946,8 +958,6 @@
             this.all_settings.Controls.Add(this.check_update_panel);
             this.all_settings.Controls.Add(this.localization_panel);
             this.all_settings.Controls.Add(this.language_panel);
-            this.all_settings.Controls.Add(this.volume_panel);
-            this.all_settings.Controls.Add(this.sound_panel);
             this.all_settings.Controls.Add(this.console_panel);
             this.all_settings.Controls.Add(this.show_tutorial_panel);
             this.all_settings.ForeColor = System.Drawing.Color.White;
@@ -964,16 +974,16 @@
             this.check_update_panel.Controls.Add(this.update_error_pic);
             this.check_update_panel.Controls.Add(this.check_update_btn);
             this.check_update_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.check_update_panel.Location = new System.Drawing.Point(3, 207);
+            this.check_update_panel.Location = new System.Drawing.Point(3, 139);
             this.check_update_panel.Name = "check_update_panel";
-            this.check_update_panel.Size = new System.Drawing.Size(459, 34);
+            this.check_update_panel.Size = new System.Drawing.Size(476, 34);
             this.check_update_panel.TabIndex = 3;
             // 
             // update_error_pic
             // 
             this.update_error_pic.Dock = System.Windows.Forms.DockStyle.Right;
             this.update_error_pic.Image = global::SLIL.Properties.Resources.warning1;
-            this.update_error_pic.Location = new System.Drawing.Point(113, 0);
+            this.update_error_pic.Location = new System.Drawing.Point(130, 0);
             this.update_error_pic.Name = "update_error_pic";
             this.update_error_pic.Size = new System.Drawing.Size(34, 34);
             this.update_error_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -984,7 +994,7 @@
             // 
             this.check_update_btn.AutoSize = true;
             this.check_update_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.check_update_btn.Location = new System.Drawing.Point(147, 0);
+            this.check_update_btn.Location = new System.Drawing.Point(164, 0);
             this.check_update_btn.Name = "check_update_btn";
             this.check_update_btn.Size = new System.Drawing.Size(312, 34);
             this.check_update_btn.TabIndex = 0;
@@ -999,16 +1009,16 @@
             this.localization_panel.Controls.Add(this.localization_error_pic);
             this.localization_panel.Controls.Add(this.localization_update_btn);
             this.localization_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.localization_panel.Location = new System.Drawing.Point(3, 173);
+            this.localization_panel.Location = new System.Drawing.Point(3, 105);
             this.localization_panel.Name = "localization_panel";
-            this.localization_panel.Size = new System.Drawing.Size(459, 34);
+            this.localization_panel.Size = new System.Drawing.Size(476, 34);
             this.localization_panel.TabIndex = 6;
             // 
             // localization_error_pic
             // 
             this.localization_error_pic.Dock = System.Windows.Forms.DockStyle.Right;
             this.localization_error_pic.Image = global::SLIL.Properties.Resources.warning1;
-            this.localization_error_pic.Location = new System.Drawing.Point(178, 0);
+            this.localization_error_pic.Location = new System.Drawing.Point(195, 0);
             this.localization_error_pic.Name = "localization_error_pic";
             this.localization_error_pic.Size = new System.Drawing.Size(34, 34);
             this.localization_error_pic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -1020,7 +1030,7 @@
             // 
             this.localization_update_btn.AutoSize = true;
             this.localization_update_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.localization_update_btn.Location = new System.Drawing.Point(212, 0);
+            this.localization_update_btn.Location = new System.Drawing.Point(229, 0);
             this.localization_update_btn.Name = "localization_update_btn";
             this.localization_update_btn.Size = new System.Drawing.Size(247, 34);
             this.localization_update_btn.TabIndex = 0;
@@ -1035,9 +1045,9 @@
             this.language_panel.Controls.Add(this.language_list);
             this.language_panel.Controls.Add(this.language_label);
             this.language_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.language_panel.Location = new System.Drawing.Point(3, 139);
+            this.language_panel.Location = new System.Drawing.Point(3, 71);
             this.language_panel.Name = "language_panel";
-            this.language_panel.Size = new System.Drawing.Size(459, 34);
+            this.language_panel.Size = new System.Drawing.Size(476, 34);
             this.language_panel.TabIndex = 1;
             // 
             // language_list
@@ -1048,7 +1058,7 @@
             this.language_list.FormattingEnabled = true;
             this.language_list.Items.AddRange(new object[] {
             "English"});
-            this.language_list.Location = new System.Drawing.Point(297, 0);
+            this.language_list.Location = new System.Drawing.Point(314, 0);
             this.language_list.Name = "language_list";
             this.language_list.Size = new System.Drawing.Size(162, 32);
             this.language_list.TabIndex = 2;
@@ -1065,75 +1075,6 @@
             this.language_label.Text = "Язык";
             this.language_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // volume_panel
-            // 
-            this.volume_panel.Controls.Add(this.volume);
-            this.volume_panel.Controls.Add(this.volume_label);
-            this.volume_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.volume_panel.Location = new System.Drawing.Point(3, 105);
-            this.volume_panel.Name = "volume_panel";
-            this.volume_panel.Size = new System.Drawing.Size(459, 34);
-            this.volume_panel.TabIndex = 4;
-            // 
-            // volume
-            // 
-            this.volume.Dock = System.Windows.Forms.DockStyle.Right;
-            this.volume.Location = new System.Drawing.Point(355, 0);
-            this.volume.Maximum = 100;
-            this.volume.Name = "volume";
-            this.volume.Size = new System.Drawing.Size(104, 34);
-            this.volume.TabIndex = 6;
-            this.volume.TabStop = false;
-            this.volume.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-            this.volume.Value = 40;
-            this.volume.Scroll += new System.EventHandler(this.Volume_Scroll);
-            // 
-            // volume_label
-            // 
-            this.volume_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.volume_label.Location = new System.Drawing.Point(0, 0);
-            this.volume_label.Name = "volume_label";
-            this.volume_label.Size = new System.Drawing.Size(226, 34);
-            this.volume_label.TabIndex = 0;
-            this.volume_label.Text = "Громкость";
-            this.volume_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // sound_panel
-            // 
-            this.sound_panel.Controls.Add(this.sounds_on_off);
-            this.sound_panel.Controls.Add(this.sounds_label);
-            this.sound_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sound_panel.Location = new System.Drawing.Point(3, 71);
-            this.sound_panel.Name = "sound_panel";
-            this.sound_panel.Size = new System.Drawing.Size(459, 34);
-            this.sound_panel.TabIndex = 0;
-            // 
-            // sounds_on_off
-            // 
-            this.sounds_on_off.Appearance = System.Windows.Forms.Appearance.Button;
-            this.sounds_on_off.Checked = true;
-            this.sounds_on_off.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.sounds_on_off.Dock = System.Windows.Forms.DockStyle.Right;
-            this.sounds_on_off.Location = new System.Drawing.Point(389, 0);
-            this.sounds_on_off.Name = "sounds_on_off";
-            this.sounds_on_off.Size = new System.Drawing.Size(70, 34);
-            this.sounds_on_off.TabIndex = 1;
-            this.sounds_on_off.TabStop = false;
-            this.sounds_on_off.Text = "Вкл.";
-            this.sounds_on_off.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.sounds_on_off.UseVisualStyleBackColor = false;
-            this.sounds_on_off.CheckedChanged += new System.EventHandler(this.Sounds_on_off_CheckedChanged);
-            // 
-            // sounds_label
-            // 
-            this.sounds_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.sounds_label.Location = new System.Drawing.Point(0, 0);
-            this.sounds_label.Name = "sounds_label";
-            this.sounds_label.Size = new System.Drawing.Size(226, 34);
-            this.sounds_label.TabIndex = 0;
-            this.sounds_label.Text = "Игровые звуки";
-            this.sounds_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // console_panel
             // 
             this.console_panel.Controls.Add(this.console_btn);
@@ -1141,14 +1082,14 @@
             this.console_panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.console_panel.Location = new System.Drawing.Point(3, 37);
             this.console_panel.Name = "console_panel";
-            this.console_panel.Size = new System.Drawing.Size(459, 34);
+            this.console_panel.Size = new System.Drawing.Size(476, 34);
             this.console_panel.TabIndex = 5;
             // 
             // console_btn
             // 
             this.console_btn.Appearance = System.Windows.Forms.Appearance.Button;
             this.console_btn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.console_btn.Location = new System.Drawing.Point(389, 0);
+            this.console_btn.Location = new System.Drawing.Point(406, 0);
             this.console_btn.Name = "console_btn";
             this.console_btn.Size = new System.Drawing.Size(70, 34);
             this.console_btn.TabIndex = 1;
@@ -1163,7 +1104,7 @@
             this.console_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.console_label.Location = new System.Drawing.Point(0, 0);
             this.console_label.Name = "console_label";
-            this.console_label.Size = new System.Drawing.Size(273, 34);
+            this.console_label.Size = new System.Drawing.Size(340, 34);
             this.console_label.TabIndex = 0;
             this.console_label.Text = "Консоль разработчика";
             this.console_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1175,7 +1116,7 @@
             this.show_tutorial_panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.show_tutorial_panel.Location = new System.Drawing.Point(3, 3);
             this.show_tutorial_panel.Name = "show_tutorial_panel";
-            this.show_tutorial_panel.Size = new System.Drawing.Size(459, 34);
+            this.show_tutorial_panel.Size = new System.Drawing.Size(476, 34);
             this.show_tutorial_panel.TabIndex = 7;
             // 
             // show_tutorial
@@ -1184,7 +1125,7 @@
             this.show_tutorial.Checked = true;
             this.show_tutorial.CheckState = System.Windows.Forms.CheckState.Checked;
             this.show_tutorial.Dock = System.Windows.Forms.DockStyle.Right;
-            this.show_tutorial.Location = new System.Drawing.Point(389, 0);
+            this.show_tutorial.Location = new System.Drawing.Point(406, 0);
             this.show_tutorial.Name = "show_tutorial";
             this.show_tutorial.Size = new System.Drawing.Size(70, 34);
             this.show_tutorial.TabIndex = 1;
@@ -1199,10 +1140,161 @@
             this.show_tutorial_label.Dock = System.Windows.Forms.DockStyle.Left;
             this.show_tutorial_label.Location = new System.Drawing.Point(0, 0);
             this.show_tutorial_label.Name = "show_tutorial_label";
-            this.show_tutorial_label.Size = new System.Drawing.Size(273, 34);
+            this.show_tutorial_label.Size = new System.Drawing.Size(340, 34);
             this.show_tutorial_label.TabIndex = 0;
             this.show_tutorial_label.Text = "Показывать обучение";
             this.show_tutorial_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // sounds_settings
+            // 
+            this.sounds_settings.AutoScroll = true;
+            this.sounds_settings.BackColor = System.Drawing.Color.Black;
+            this.sounds_settings.Controls.Add(this.volume_panel);
+            this.sounds_settings.Controls.Add(this.effects_volume_panel);
+            this.sounds_settings.Controls.Add(this.music_volume_panel);
+            this.sounds_settings.Controls.Add(this.sound_panel);
+            this.sounds_settings.ForeColor = System.Drawing.Color.White;
+            this.sounds_settings.Location = new System.Drawing.Point(4, 33);
+            this.sounds_settings.Name = "sounds_settings";
+            this.sounds_settings.Padding = new System.Windows.Forms.Padding(3);
+            this.sounds_settings.Size = new System.Drawing.Size(482, 183);
+            this.sounds_settings.TabIndex = 4;
+            this.sounds_settings.Text = "Звуки";
+            // 
+            // volume_panel
+            // 
+            this.volume_panel.Controls.Add(this.volume);
+            this.volume_panel.Controls.Add(this.volume_label);
+            this.volume_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.volume_panel.Location = new System.Drawing.Point(3, 105);
+            this.volume_panel.Name = "volume_panel";
+            this.volume_panel.Size = new System.Drawing.Size(476, 34);
+            this.volume_panel.TabIndex = 11;
+            // 
+            // volume
+            // 
+            this.volume.Dock = System.Windows.Forms.DockStyle.Right;
+            this.volume.Location = new System.Drawing.Point(372, 0);
+            this.volume.Maximum = 100;
+            this.volume.Name = "volume";
+            this.volume.Size = new System.Drawing.Size(104, 34);
+            this.volume.TabIndex = 7;
+            this.volume.TabStop = false;
+            this.volume.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.volume.Value = 40;
+            this.volume.Scroll += new System.EventHandler(this.Volume_Scroll);
+            // 
+            // volume_label
+            // 
+            this.volume_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.volume_label.Location = new System.Drawing.Point(0, 0);
+            this.volume_label.Name = "volume_label";
+            this.volume_label.Size = new System.Drawing.Size(273, 34);
+            this.volume_label.TabIndex = 0;
+            this.volume_label.Text = "Громкость звуков";
+            this.volume_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // effects_volume_panel
+            // 
+            this.effects_volume_panel.Controls.Add(this.effects_volume);
+            this.effects_volume_panel.Controls.Add(this.effects_volume_label);
+            this.effects_volume_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.effects_volume_panel.Location = new System.Drawing.Point(3, 71);
+            this.effects_volume_panel.Name = "effects_volume_panel";
+            this.effects_volume_panel.Size = new System.Drawing.Size(476, 34);
+            this.effects_volume_panel.TabIndex = 13;
+            // 
+            // effects_volume
+            // 
+            this.effects_volume.Dock = System.Windows.Forms.DockStyle.Right;
+            this.effects_volume.Location = new System.Drawing.Point(372, 0);
+            this.effects_volume.Maximum = 100;
+            this.effects_volume.Name = "effects_volume";
+            this.effects_volume.Size = new System.Drawing.Size(104, 34);
+            this.effects_volume.TabIndex = 6;
+            this.effects_volume.TabStop = false;
+            this.effects_volume.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.effects_volume.Value = 40;
+            this.effects_volume.Scroll += new System.EventHandler(this.Effects_volume_Scroll);
+            // 
+            // effects_volume_label
+            // 
+            this.effects_volume_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.effects_volume_label.Location = new System.Drawing.Point(0, 0);
+            this.effects_volume_label.Name = "effects_volume_label";
+            this.effects_volume_label.Size = new System.Drawing.Size(340, 34);
+            this.effects_volume_label.TabIndex = 0;
+            this.effects_volume_label.Text = "Громкость эффектов";
+            this.effects_volume_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // music_volume_panel
+            // 
+            this.music_volume_panel.Controls.Add(this.music_volume);
+            this.music_volume_panel.Controls.Add(this.music_volume_label);
+            this.music_volume_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.music_volume_panel.Location = new System.Drawing.Point(3, 37);
+            this.music_volume_panel.Name = "music_volume_panel";
+            this.music_volume_panel.Size = new System.Drawing.Size(476, 34);
+            this.music_volume_panel.TabIndex = 12;
+            // 
+            // music_volume
+            // 
+            this.music_volume.Dock = System.Windows.Forms.DockStyle.Right;
+            this.music_volume.Location = new System.Drawing.Point(372, 0);
+            this.music_volume.Maximum = 100;
+            this.music_volume.Name = "music_volume";
+            this.music_volume.Size = new System.Drawing.Size(104, 34);
+            this.music_volume.TabIndex = 6;
+            this.music_volume.TabStop = false;
+            this.music_volume.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.music_volume.Value = 40;
+            this.music_volume.Scroll += new System.EventHandler(this.Music_volume_Scroll);
+            // 
+            // music_volume_label
+            // 
+            this.music_volume_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.music_volume_label.Location = new System.Drawing.Point(0, 0);
+            this.music_volume_label.Name = "music_volume_label";
+            this.music_volume_label.Size = new System.Drawing.Size(340, 34);
+            this.music_volume_label.TabIndex = 0;
+            this.music_volume_label.Text = "Громкость музыки";
+            this.music_volume_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // sound_panel
+            // 
+            this.sound_panel.Controls.Add(this.sounds_on_off);
+            this.sound_panel.Controls.Add(this.sounds_label);
+            this.sound_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.sound_panel.Location = new System.Drawing.Point(3, 3);
+            this.sound_panel.Name = "sound_panel";
+            this.sound_panel.Size = new System.Drawing.Size(476, 34);
+            this.sound_panel.TabIndex = 10;
+            // 
+            // sounds_on_off
+            // 
+            this.sounds_on_off.Appearance = System.Windows.Forms.Appearance.Button;
+            this.sounds_on_off.Checked = true;
+            this.sounds_on_off.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.sounds_on_off.Dock = System.Windows.Forms.DockStyle.Right;
+            this.sounds_on_off.Location = new System.Drawing.Point(406, 0);
+            this.sounds_on_off.Name = "sounds_on_off";
+            this.sounds_on_off.Size = new System.Drawing.Size(70, 34);
+            this.sounds_on_off.TabIndex = 1;
+            this.sounds_on_off.TabStop = false;
+            this.sounds_on_off.Text = "Вкл.";
+            this.sounds_on_off.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.sounds_on_off.UseVisualStyleBackColor = false;
+            this.sounds_on_off.CheckedChanged += new System.EventHandler(this.Sounds_on_off_CheckedChanged);
+            // 
+            // sounds_label
+            // 
+            this.sounds_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.sounds_label.Location = new System.Drawing.Point(0, 0);
+            this.sounds_label.Name = "sounds_label";
+            this.sounds_label.Size = new System.Drawing.Size(340, 34);
+            this.sounds_label.TabIndex = 0;
+            this.sounds_label.Text = "Игровые звуки";
+            this.sounds_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // video_settings
             // 
@@ -1742,7 +1834,7 @@
             this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 151);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
@@ -2776,7 +2868,7 @@
             // multiplayer_background
             // 
             this.multiplayer_background.BackColor = System.Drawing.Color.Black;
-            this.multiplayer_background.Controls.Add(this.label2);
+            this.multiplayer_background.Controls.Add(this.test_vesion_label);
             this.multiplayer_background.Controls.Add(this.connect_game_btn_cp);
             this.multiplayer_background.Controls.Add(this.host_btn_cp);
             this.multiplayer_background.Controls.Add(this.multiplayer_close_l);
@@ -2785,17 +2877,17 @@
             this.multiplayer_background.Size = new System.Drawing.Size(490, 276);
             this.multiplayer_background.TabIndex = 45;
             // 
-            // label2
+            // test_vesion_label
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(146, 216);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(337, 51);
-            this.label2.TabIndex = 63;
-            this.label2.Text = "TEST VERSION";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.test_vesion_label.AutoSize = true;
+            this.test_vesion_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.test_vesion_label.ForeColor = System.Drawing.Color.White;
+            this.test_vesion_label.Location = new System.Drawing.Point(146, 216);
+            this.test_vesion_label.Name = "test_vesion_label";
+            this.test_vesion_label.Size = new System.Drawing.Size(337, 51);
+            this.test_vesion_label.TabIndex = 63;
+            this.test_vesion_label.Text = "TEST VERSION";
+            this.test_vesion_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // connect_game_btn_cp
             // 
@@ -2841,17 +2933,6 @@
             this.multiplayer_close_l.Text = "Назад";
             this.multiplayer_close_l.UseVisualStyleBackColor = false;
             this.multiplayer_close_l.Click += new System.EventHandler(this.Multiplayer_close_Click);
-            // 
-            // coming_soon_label
-            // 
-            this.coming_soon_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.coming_soon_label.ForeColor = System.Drawing.Color.White;
-            this.coming_soon_label.Location = new System.Drawing.Point(3, 3);
-            this.coming_soon_label.Name = "coming_soon_label";
-            this.coming_soon_label.Size = new System.Drawing.Size(484, 220);
-            this.coming_soon_label.TabIndex = 63;
-            this.coming_soon_label.Text = "COMING\r\nSOON";
-            this.coming_soon_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // host_panel
             // 
@@ -3180,7 +3261,7 @@
             // account_background
             // 
             this.account_background.BackColor = System.Drawing.Color.Black;
-            this.account_background.Controls.Add(this.label1);
+            this.account_background.Controls.Add(this.coming_soon_label);
             this.account_background.Controls.Add(this.player_icon);
             this.account_background.Controls.Add(this.nickname);
             this.account_background.Controls.Add(this.close_account_btn_c);
@@ -3190,17 +3271,17 @@
             this.account_background.Size = new System.Drawing.Size(490, 276);
             this.account_background.TabIndex = 45;
             // 
-            // label1
+            // coming_soon_label
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(162, 94);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(295, 146);
-            this.label1.TabIndex = 62;
-            this.label1.Text = "COMING\r\nSOON";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.coming_soon_label.AutoSize = true;
+            this.coming_soon_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.coming_soon_label.ForeColor = System.Drawing.Color.White;
+            this.coming_soon_label.Location = new System.Drawing.Point(162, 94);
+            this.coming_soon_label.Name = "coming_soon_label";
+            this.coming_soon_label.Size = new System.Drawing.Size(295, 146);
+            this.coming_soon_label.TabIndex = 62;
+            this.coming_soon_label.Text = "COMING\r\nSOON";
+            this.coming_soon_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // player_icon
             // 
@@ -3512,12 +3593,19 @@
             this.localization_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.localization_error_pic)).EndInit();
             this.language_panel.ResumeLayout(false);
+            this.console_panel.ResumeLayout(false);
+            this.show_tutorial_panel.ResumeLayout(false);
+            this.sounds_settings.ResumeLayout(false);
             this.volume_panel.ResumeLayout(false);
             this.volume_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.volume)).EndInit();
+            this.effects_volume_panel.ResumeLayout(false);
+            this.effects_volume_panel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.effects_volume)).EndInit();
+            this.music_volume_panel.ResumeLayout(false);
+            this.music_volume_panel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.music_volume)).EndInit();
             this.sound_panel.ResumeLayout(false);
-            this.console_panel.ResumeLayout(false);
-            this.show_tutorial_panel.ResumeLayout(false);
             this.video_settings.ResumeLayout(false);
             this.interface_size_panel.ResumeLayout(false);
             this.interface_size_panel.PerformLayout();
@@ -3648,9 +3736,6 @@
         private System.Windows.Forms.TabControl settings;
         private System.Windows.Forms.TabPage all_settings;
         private System.Windows.Forms.Label version_label;
-        private System.Windows.Forms.Panel sound_panel;
-        private System.Windows.Forms.Label sounds_label;
-        private System.Windows.Forms.CheckBox sounds_on_off;
         private System.Windows.Forms.Panel language_panel;
         private System.Windows.Forms.Label language_label;
         private System.Windows.Forms.ComboBox language_list;
@@ -3758,9 +3843,6 @@
         private System.Windows.Forms.Panel multiplayer_background;
         private System.Windows.Forms.Button multiplayer_close_l;
         private System.Windows.Forms.Button host_btn_cp;
-        private System.Windows.Forms.Panel volume_panel;
-        private System.Windows.Forms.Label volume_label;
-        private System.Windows.Forms.TrackBar volume;
         private System.Windows.Forms.Button connect_game_btn_cp;
         private System.Windows.Forms.Panel host_panel;
         private System.Windows.Forms.Panel host_background;
@@ -3778,7 +3860,6 @@
         private System.Windows.Forms.TextBox ip_connect_input;
         private System.Windows.Forms.Label ip_input_label;
         private System.Windows.Forms.Button close_connect_btn_l;
-        private System.Windows.Forms.Label coming_soon_label;
         private System.Windows.Forms.Panel select_item_panel;
         private System.Windows.Forms.Button select_item_btn_c;
         private System.Windows.Forms.Label select_item_label;
@@ -3820,7 +3901,7 @@
         private System.Windows.Forms.PictureBox player_icon;
         private System.Windows.Forms.TextBox nickname;
         private System.Windows.Forms.Label nickname_label;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label coming_soon_label;
         private System.Windows.Forms.PictureBox update_error_pic;
         private System.Windows.Forms.Panel interface_size_panel;
         private System.Windows.Forms.TrackBar interface_size_choice;
@@ -3858,12 +3939,25 @@
         private System.Windows.Forms.Label darsin_about;
         private System.Windows.Forms.Button darsin_tg;
         private System.Windows.Forms.Label darsin_name;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label test_vesion_label;
         private System.Windows.Forms.CheckBox need_password;
         private System.Windows.Forms.TextBox password_connect_input;
         private System.Windows.Forms.Label password_input_label;
         private System.Windows.Forms.Panel inventory_panel;
         private System.Windows.Forms.Label inventory_label;
         private System.Windows.Forms.Button inventory_btn_c;
+        private System.Windows.Forms.TabPage sounds_settings;
+        private System.Windows.Forms.Panel volume_panel;
+        private System.Windows.Forms.Label volume_label;
+        private System.Windows.Forms.TrackBar volume;
+        private System.Windows.Forms.Panel effects_volume_panel;
+        private System.Windows.Forms.TrackBar effects_volume;
+        private System.Windows.Forms.Label effects_volume_label;
+        private System.Windows.Forms.Panel music_volume_panel;
+        private System.Windows.Forms.TrackBar music_volume;
+        private System.Windows.Forms.Label music_volume_label;
+        private System.Windows.Forms.Panel sound_panel;
+        private System.Windows.Forms.CheckBox sounds_on_off;
+        private System.Windows.Forms.Label sounds_label;
     }
 }

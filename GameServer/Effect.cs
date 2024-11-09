@@ -11,10 +11,7 @@ namespace GameServer
         public int EffectTimeRemaining { get; set; }
         public bool Infinity { get; set; }
 
-        public Effect()
-        {
-            Infinity = false;
-        }
+        public Effect() => Infinity = false;
 
         public bool ReducingTimeRemaining()
         {
@@ -37,7 +34,6 @@ namespace GameServer
         {
             this.EffectTimeRemaining = reader.GetInt();
         }
-
     }
 
     public class Debaf : Effect
@@ -81,18 +77,6 @@ namespace GameServer
         }
     }
 
-    public class Fatigue : Debaf
-    {
-        public Fatigue() : base()
-        {
-            ID = 3;
-            EffectTotalTime = 15;
-            Name = "Fatigue";
-            Description = "Prevents window entry";
-            UpdateTimeRemaining();
-        }
-    }
-
     public class Rider : Effect
     {
         public Rider() : base()
@@ -102,6 +86,18 @@ namespace GameServer
             EffectTotalTime = 1;
             Name = "Biker";
             Description = "I'm a Biker bitch!";
+            UpdateTimeRemaining();
+        }
+    }
+
+    public class Fatigue : Debaf
+    {
+        public Fatigue() : base()
+        {
+            ID = 3;
+            EffectTotalTime = 15;
+            Name = "Fatigue";
+            Description = "Prevents window entry";
             UpdateTimeRemaining();
         }
     }
@@ -126,6 +122,18 @@ namespace GameServer
             EffectTotalTime = 10;
             Name = "Blindness";
             Description = "Reduces visibility range";
+            UpdateTimeRemaining();
+        }
+    }
+
+    public class Stunned : Debaf
+    {
+        public Stunned() : base()
+        {
+            ID = 7;
+            EffectTotalTime = 7;
+            Name = "Stunned";
+            Description = "Reduces movement speed";
             UpdateTimeRemaining();
         }
     }

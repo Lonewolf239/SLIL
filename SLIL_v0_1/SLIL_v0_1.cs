@@ -469,7 +469,7 @@ namespace SLIL.SLIL_v0_1
             {
                 game_over_text.Visible = true;
                 if (MainMenu.sounds)
-                    game_over.Play(1);
+                    game_over.Play(SLIL.Volume);
                 difficulty = old_difficulty;
             }
             display.Image = null;
