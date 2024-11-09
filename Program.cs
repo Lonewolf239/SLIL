@@ -105,8 +105,7 @@ namespace SLIL
         {
             try
             {
-                var device = new SharpDX.Direct3D10.Device(SharpDX.Direct3D10.DriverType.Hardware,
-                                                           SharpDX.Direct3D10.DeviceCreationFlags.None);
+                var device = new SharpDX.Direct3D10.Device(SharpDX.Direct3D10.DriverType.Hardware, SharpDX.Direct3D10.DeviceCreationFlags.None);
                 device.Dispose();
                 return true;
             }

@@ -452,7 +452,7 @@ namespace SLIL
             sounds = INIReader.GetBool(Program.iniFolder, "CONFIG", "sounds", true);
             MusicVolume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "music_volume", 0.4f);
             EffectsVolume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "effects_volume", 0.4f);
-            Volume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "volume", 0.4f);
+            Volume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "sounds_volume", 0.4f);
             Gamma = INIReader.GetInt(Program.iniFolder, "CONFIG", "gamma", 100);
             LOOK_SPEED = INIReader.GetDouble(Program.iniFolder, "SLIL", "look_speed", 6.5);
             inv_y = INIReader.GetBool(Program.iniFolder, "SlIL", "inv_y", false);
@@ -484,26 +484,17 @@ namespace SLIL
             BindControls["inventory"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "inventory", Keys.I);
             SLIL_v0_1_LOOK_SPEED = INIReader.GetDouble(Program.iniFolder, "SLIL_V0_0_1", "look_speed", 1.75);
             SLIL_v0_1_difficulty = INIReader.GetInt(Program.iniFolder, "SLIL_V0_0_1", "difficulty", 1);
-            if (interface_size < 0 || interface_size > 3)
-                interface_size = 2;
+            if (interface_size < 0 || interface_size > 3) interface_size = 2;
             //if (display_size < 0 || display_size > 5)
             display_size = 0;
-            if (smoothing < 0 || smoothing > 3)
-                smoothing = 1;
-            if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10)
-                LOOK_SPEED = 6.5;
-            if (MusicVolume < 0 || MusicVolume > 1)
-                MusicVolume = 0.4f;
-            if (EffectsVolume < 0 || EffectsVolume > 1)
-                EffectsVolume = 0.4f;
-            if (Volume < 0 || Volume > 1)
-                Volume = 0.4f;
-            if (Gamma < 40 || Gamma > 120)
-                Gamma = 100;
-            if (scope_color < 0 || scope_color > 8)
-                scope_color = 0;
-            if (scope_type < 0 || scope_type > 4)
-                scope_type = 0;
+            if (smoothing < 0 || smoothing > 3) smoothing = 1;
+            if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10) LOOK_SPEED = 6.5;
+            if (MusicVolume < 0 || MusicVolume > 1) MusicVolume = 0.4f;
+            if (EffectsVolume < 0 || EffectsVolume > 1) EffectsVolume = 0.4f;
+            if (Volume < 0 || Volume > 1) Volume = 0.4f;
+            if (Gamma < 40 || Gamma > 120) Gamma = 100;
+            if (scope_color < 0 || scope_color > 8) scope_color = 0;
+            if (scope_type < 0 || scope_type > 4) scope_type = 0;
         }
 
         private void SaveSettings()
@@ -518,8 +509,8 @@ namespace SLIL
             INIReader.SetKey(Program.iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "music_volume", MusicVolume);
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "effects_volume", MusicVolume);
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "volume", Volume);
+            INIReader.SetKey(Program.iniFolder, "CONFIG", "effects_volume", EffectsVolume);
+            INIReader.SetKey(Program.iniFolder, "CONFIG", "sounds_volume", Volume);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "gamma", Gamma);
             INIReader.SetKey(Program.iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
             INIReader.SetKey(Program.iniFolder, "SLIL", "display_size", display_size);
@@ -1314,9 +1305,7 @@ namespace SLIL
             scope_type = 0;
             scope_color = 0;
             LOOK_SPEED = 6.5;
-            MusicVolume = 0.4f;
-            EffectsVolume = 0.4f;
-            Volume = 0.4f;
+            MusicVolume = EffectsVolume = Volume = 0.4f;
             Gamma = 100;
             BindControls.Clear();
             foreach (var kvp in ClassicBindControls)
@@ -1394,10 +1383,9 @@ namespace SLIL
             MusicVolume = (float)music_volume.Value / 100;
             MainMenuTheme.SetVolume(MusicVolume);
         }
+        private void Effects_volume_Scroll(object sender, EventArgs e) => EffectsVolume = (float)effects_volume.Value / 100;
 
         private void Volume_Scroll(object sender, EventArgs e) => Volume = (float)volume.Value / 100;
-
-        private void Effects_volume_Scroll(object sender, EventArgs e) => EffectsVolume = (float)effects_volume.Value / 100;
 
         private void Language_list_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1841,7 +1829,7 @@ namespace SLIL
             if (ShowingSLIL_v0_0_1 == 10)
             {
                 hmm.Stop();
-                omg.Play(Volume);
+                omg.Play(0.5f);
                 SLIL_v0_1_btn_c.Size = Size;
                 SLIL_v0_1_btn_c.Location = new Point(0, 0 - SLIL_v0_1_btn_c.Height);
                 slil_0_0_1_dev_panel.Visible = false;
@@ -1854,7 +1842,7 @@ namespace SLIL
             else if (ShowingSLIL_v0_0_1 < 10)
             {
                 ShowingSLIL_v0_0_1++;
-                hmm.Play(Volume);
+                hmm.Play(0.5f);
             }
         }
 
