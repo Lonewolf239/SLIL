@@ -21,10 +21,8 @@ namespace SLIL.UserControls
         public SLIL_StorageInterface()
         {
             InitializeComponent();
-            UpdateTimer = new Timer
-            {
-                Interval = 1000
-            };
+            Cursor = Program.SLILCursor;
+            UpdateTimer = new Timer { Interval = 1000 };
             UpdateTimer.Tick += UpdateTimer_Tick;
             UpdateTimer.Enabled = true;
         }

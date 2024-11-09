@@ -8,7 +8,11 @@ namespace SLIL.SLIL_v0_1
     {
         private Look_speed_percent form;
 
-        public SLIL_Settings() => InitializeComponent();
+        public SLIL_Settings()
+        {
+            InitializeComponent();
+            Cursor = Program.SLILCursor;
+        }
 
         private void Look_speed_Enter(object sender, EventArgs e) => look_speed_text.Focus();
 

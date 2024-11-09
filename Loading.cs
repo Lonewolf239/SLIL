@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.Net.Http;
 using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CGFReader;
@@ -32,9 +31,13 @@ namespace SLIL
         private bool isDragging = false;
         private Point lastCursor, lastForm;
 
-        public Loading() => InitializeComponent();
+        public Loading()
+        {
+            InitializeComponent();
+            Cursor = Program.SLILCursor;
+        }
 
-        private bool CheckInternet()
+        private static bool CheckInternet()
         {
             try
             {
@@ -52,6 +55,7 @@ namespace SLIL
 
         private async Task SetLocalizations(string[] codes, string[] languages)
         {
+            status_label.Text = "Unpacking localization...";
             SupportedLanguages.Clear();
             for (int i = 0; i < languages.Length; i++)
                 SupportedLanguages.Add(codes[i], languages[i]);
@@ -75,10 +79,8 @@ namespace SLIL
             double startProgress = UpdateProgress;
             var progress = new Progress<int>(percent =>
             {
-                if (percent == 100)
-                    UpdateProgress = startProgress + 10;
-                else
-                    UpdateProgress = startProgress + (percent * 10 / 100);
+                if (percent == 100) UpdateProgress = startProgress + 5;
+                else UpdateProgress = startProgress + (percent * 10 / 100);
             });
             await DownloadLocalizationList(progress);
         }
@@ -115,7 +117,7 @@ namespace SLIL
             Localizations.RemoveDuplicates();
         }
 
-        private async Task DownloadFileAsync(string url, string outputPath)
+        private static async Task DownloadFileAsync(string url, string outputPath)
         {
             using (var httpClient = new HttpClient())
             {
@@ -164,10 +166,8 @@ namespace SLIL
             double startProgress = UpdateProgress;
             var progress = new Progress<int>(percent =>
             {
-                if (percent == 100)
-                    UpdateProgress = startProgress + 40;
-                else
-                    UpdateProgress = startProgress + (percent * 40 / 100);
+                if (percent == 100) UpdateProgress = startProgress + 35;
+                else UpdateProgress = startProgress + (percent * 35 / 100);
             });
             await CGFReader.ProcessFileAsync(progress);
         }
@@ -178,9 +178,9 @@ namespace SLIL
             var progress = new Progress<int>(percent =>
             {
                 if (percent == 100)
-                    UpdateProgress = startProgress + 40;
+                    UpdateProgress = startProgress + 35;
                 else
-                    UpdateProgress = startProgress + (percent * 40 / 100);
+                    UpdateProgress = startProgress + (percent * 35 / 100);
             });
             await textureCache.LoadTextures(progress);
         }
@@ -189,7 +189,7 @@ namespace SLIL
         {
             if (!CheckInternet())
             {
-                UpdateProgress = 20;
+                UpdateProgress = 15;
                 await UnpackData();
             }
             else
@@ -205,7 +205,7 @@ namespace SLIL
                 Application.Exit();
                 return;
             }
-            UpdateProgress = 10;
+            UpdateProgress = 5;
             await DownloadLocalization();
         }
 
@@ -213,6 +213,7 @@ namespace SLIL
         {
             status_label.Text = "Downloading localization...";
             await DownloadLocalizationListTask();
+            UpdateProgress += 5;
             await UnpackData();
         }
 
@@ -464,9 +465,11 @@ namespace SLIL
 
         private async void GoToMainMenu()
         {
+            UpdateProgress += 7.5;
             status_label.Text = "Loading main menu...";
             mainMenu = await CreateMainMenuAsync(this);
             mainMenu.FormClosing += MainMenu_FormCLosing;
+            UpdateProgress += 7.5;
             await SLILInitialization();
         }
 
@@ -492,6 +495,7 @@ namespace SLIL
         {
             if (CompletedProgress < UpdateProgress)
                 CompletedProgress++;
+            progress_label.Text = $"{CompletedProgress}%";
             progress.Width = (int)(CompletedProgress / 100 * background_progress.Width);
             if (progress.Width == background_progress.Width)
                 progress_refresh.Stop();
@@ -538,8 +542,7 @@ namespace SLIL
 
         private void Loading_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-                isDragging = false;
+            if (e.Button == MouseButtons.Left) isDragging = false;
         }
     }
 }

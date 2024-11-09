@@ -10,8 +10,6 @@ namespace SLIL
 {
     public partial class LoginForm : Form
     {
-        public LoginForm() => InitializeComponent();
-
         public bool CanClose = false;
         public bool DownloadedLocalizationList { get; set; }
         public Dictionary<string, string> SupportedLanguages;
@@ -19,6 +17,12 @@ namespace SLIL
         private string Language;
         private bool isDragging = false;
         private Point lastCursor, lastForm;
+
+        public LoginForm()
+        {
+            InitializeComponent();
+            Cursor = Program.SLILCursor;
+        }
 
         private void Hide_show_pas_Click(object sender, EventArgs e)
         {
@@ -138,6 +142,24 @@ namespace SLIL
         {
             if (e.Button == MouseButtons.Left)
                 isDragging = false;
+        }
+
+        private void Nickname_input_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                password_input.Focus();
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void Password_input_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                login_btn_r.Focus();
+                e.SuppressKeyPress = true;
+            }
         }
 
         private void LoginForm_MouseMove(object sender, MouseEventArgs e)

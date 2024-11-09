@@ -15,7 +15,11 @@ namespace SLIL.UserControls
         public Player player;
         private readonly string[,] buy_text = { { "2-0", "2-15" }, { "Buy", "Maximum" } };
 
-        public SLIL_ConsumablesShopInterface() => InitializeComponent();
+        public SLIL_ConsumablesShopInterface()
+        {
+            InitializeComponent();
+            Cursor = Program.SLILCursor;
+        }
 
         private string GetBuyText()
         {

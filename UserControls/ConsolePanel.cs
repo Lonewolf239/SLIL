@@ -46,6 +46,7 @@ namespace SLIL.UserControls
         public ConsolePanel()
         {
             InitializeComponent();
+            Cursor = Program.SLILCursor;
         }
 
         private void GetItem(int index) => player.DisposableItems[index].AddItem(99);

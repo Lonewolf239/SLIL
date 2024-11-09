@@ -110,6 +110,7 @@
             this.password_input.TabIndex = 69;
             this.password_input.TabStop = false;
             this.password_input.UseSystemPasswordChar = true;
+            this.password_input.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Password_input_KeyDown);
             // 
             // nickname_input_label
             // 
@@ -135,6 +136,7 @@
             this.nickname_input.Size = new System.Drawing.Size(213, 26);
             this.nickname_input.TabIndex = 67;
             this.nickname_input.TabStop = false;
+            this.nickname_input.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Nickname_input_KeyDown);
             // 
             // title_label
             // 
@@ -357,6 +359,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(6);
             this.MaximizeBox = false;
             this.Name = "LoginForm";

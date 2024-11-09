@@ -667,6 +667,7 @@ namespace SLIL
 
         private void SetParameters()
         {
+            Cursor = Program.SLILCursor;
             IsTutorial = MainMenu.IsTutorial;
             difficulty = MainMenu.difficulty;
             switch (difficulty)

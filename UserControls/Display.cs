@@ -20,6 +20,7 @@ namespace SLIL.UserControls
         public Display()
         {
             InitializeComponent();
+            Cursor = Program.SLILCursor;
             RenderFactory = new SharpDX.Direct2D1.Factory();
             DestinationRect = new RawRectangleF(0, 0, ScreenWidth, ScreenHeight);
             RenderTarget?.Dispose();

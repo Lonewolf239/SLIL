@@ -7,8 +7,6 @@ namespace SLIL.UserControls
 {
     public partial class SLIL_PetShopInterface : UserControl
     {
-        public SLIL_PetShopInterface() => InitializeComponent();
-
         public Pet pet;
         public int index = 0;
         public int width;
@@ -16,6 +14,12 @@ namespace SLIL.UserControls
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
         private readonly string[,] buy_text = { { "2-0", "2-12" }, { "Buy", "Has already" } };
+
+        public SLIL_PetShopInterface()
+        {
+            InitializeComponent();
+            Cursor = Program.SLILCursor;
+        }
 
         private string GetBuyText()
         {

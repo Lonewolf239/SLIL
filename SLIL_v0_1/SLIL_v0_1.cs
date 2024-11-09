@@ -53,6 +53,7 @@ namespace SLIL.SLIL_v0_1
         public SLILv0_1()
         {
             InitializeComponent();
+            Cursor = Program.SLILCursor;
             Language = Check_Language();
         }
 

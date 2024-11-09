@@ -14,7 +14,11 @@ namespace SLIL.SLIL_v0_1
         private int MAP_WIDTH;
         private Bitmap screen;
 
-        public Map_form() => InitializeComponent();
+        public Map_form()
+        {
+            InitializeComponent();
+            Cursor = Program.SLILCursor;
+        }
 
         private void Map_form_Load(object sender, EventArgs e)
         {

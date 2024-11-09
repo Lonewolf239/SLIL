@@ -7,6 +7,7 @@ namespace SLIL.UserControls
         public PlayerPanel()
         {
             InitializeComponent();
+            Cursor = Program.SLILCursor;
         }
     }
 }

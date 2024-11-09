@@ -58,6 +58,7 @@ namespace SLIL
         public SLIL_Editor()
         {
             InitializeComponent();
+            Cursor = Program.SLILCursor;
             rand = new Random();
         }
 
@@ -224,6 +225,7 @@ namespace SLIL
             UserControl separator = new UserControl()
             {
                 Height = 2,
+                Cursor = Program.SLILCursor,
                 BackColor = Color.Black,
                 Dock = DockStyle.Top
             };
@@ -246,6 +248,7 @@ namespace SLIL
                 separator = new UserControl()
                 {
                     Height = 2,
+                    Cursor = Program.SLILCursor,
                     BackColor = Color.Black,
                     Dock = DockStyle.Top
                 };

@@ -11,6 +11,7 @@ namespace SLIL
     internal static class Program
     {
         public static Mutex mutex;
+        public static Cursor SLILCursor;
         public static string current_version = "|1.3.1|";
         public static string iniFolder = "config.ini";
 
@@ -51,6 +52,8 @@ namespace SLIL
                     else
                         Console.WriteLine("Warning: You have less than 4GB of RAM. The performance of the application may be reduced.");
                 }
+                using (var ms = new System.IO.MemoryStream(Properties.Resources.SLILCursor))
+                    SLILCursor = new Cursor(ms);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Loading());

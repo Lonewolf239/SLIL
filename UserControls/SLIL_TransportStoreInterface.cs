@@ -8,8 +8,6 @@ namespace SLIL.UserControls
 {
     public partial class SLIL_TransportStoreInterface : UserControl
     {
-        public SLIL_TransportStoreInterface() => InitializeComponent();
-
         public Transport transport;
         public int index = 0;
         public int width;
@@ -17,6 +15,12 @@ namespace SLIL.UserControls
         public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
         public Player player;
         private readonly string[] buy_text = { "2-0", "Buy" };
+
+        public SLIL_TransportStoreInterface()
+        {
+            InitializeComponent();
+            Cursor = Program.SLILCursor;
+        }
 
         private string GetBuyText()
         {

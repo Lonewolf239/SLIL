@@ -1154,10 +1154,10 @@
             this.sounds_settings.Controls.Add(this.music_volume_panel);
             this.sounds_settings.Controls.Add(this.sound_panel);
             this.sounds_settings.ForeColor = System.Drawing.Color.White;
-            this.sounds_settings.Location = new System.Drawing.Point(4, 33);
+            this.sounds_settings.Location = new System.Drawing.Point(4, 22);
             this.sounds_settings.Name = "sounds_settings";
             this.sounds_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.sounds_settings.Size = new System.Drawing.Size(482, 183);
+            this.sounds_settings.Size = new System.Drawing.Size(482, 194);
             this.sounds_settings.TabIndex = 4;
             this.sounds_settings.Text = "Звуки";
             // 

@@ -35,6 +35,7 @@
             this.progress = new System.Windows.Forms.Panel();
             this.progress_refresh = new System.Windows.Forms.Timer(this.components);
             this.close_btn = new System.Windows.Forms.PictureBox();
+            this.progress_label = new System.Windows.Forms.Label();
             this.background_progress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.close_btn)).BeginInit();
             this.SuspendLayout();
@@ -43,14 +44,14 @@
             // 
             this.status_label.BackColor = System.Drawing.Color.Transparent;
             this.status_label.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.status_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.status_label.Font = new System.Drawing.Font("Comic Sans MS", 18F);
             this.status_label.ForeColor = System.Drawing.Color.White;
-            this.status_label.Location = new System.Drawing.Point(0, 171);
+            this.status_label.Location = new System.Drawing.Point(93, 165);
             this.status_label.Name = "status_label";
-            this.status_label.Size = new System.Drawing.Size(484, 30);
+            this.status_label.Size = new System.Drawing.Size(391, 36);
             this.status_label.TabIndex = 0;
             this.status_label.Text = "Check for updates...";
-            this.status_label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.status_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.status_label.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseDown);
             this.status_label.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseMove);
             this.status_label.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseUp);
@@ -102,6 +103,22 @@
             this.close_btn.MouseEnter += new System.EventHandler(this.Close_btn_MouseEnter);
             this.close_btn.MouseLeave += new System.EventHandler(this.Close_btn_MouseLeave);
             // 
+            // progress_label
+            // 
+            this.progress_label.BackColor = System.Drawing.Color.Transparent;
+            this.progress_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.progress_label.Font = new System.Drawing.Font("Comic Sans MS", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.progress_label.ForeColor = System.Drawing.Color.White;
+            this.progress_label.Location = new System.Drawing.Point(0, 0);
+            this.progress_label.Name = "progress_label";
+            this.progress_label.Size = new System.Drawing.Size(93, 201);
+            this.progress_label.TabIndex = 3;
+            this.progress_label.Text = "100%";
+            this.progress_label.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.progress_label.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseDown);
+            this.progress_label.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseMove);
+            this.progress_label.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseUp);
+            // 
             // Loading
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -112,6 +129,7 @@
             this.ControlBox = false;
             this.Controls.Add(this.close_btn);
             this.Controls.Add(this.status_label);
+            this.Controls.Add(this.progress_label);
             this.Controls.Add(this.background_progress);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.DoubleBuffered = true;
@@ -143,5 +161,6 @@
         private System.Windows.Forms.Panel progress;
         private System.Windows.Forms.Timer progress_refresh;
         private System.Windows.Forms.PictureBox close_btn;
+        private System.Windows.Forms.Label progress_label;
     }
 }

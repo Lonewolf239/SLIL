@@ -5,7 +5,11 @@ namespace SLIL.SLIL_v0_1
 {
     public partial class SLIL_about : Form
     {
-        public SLIL_about() => InitializeComponent();
+        public SLIL_about()
+        {
+            InitializeComponent();
+            Cursor = Program.SLILCursor;
+        }
 
         private void SLIL_about_Load(object sender, EventArgs e)
         {

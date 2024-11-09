@@ -8,7 +8,11 @@ namespace SLIL.UserControls.Inventory
     {
         public Gun Weapon;
 
-        public WeaponToolTip() => InitializeComponent();
+        public WeaponToolTip()
+        {
+            InitializeComponent();
+            Cursor = Program.SLILCursor;
+        }
 
         private int GetDamage()
         {

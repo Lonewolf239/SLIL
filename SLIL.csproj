@@ -1462,12 +1462,7 @@
     <None Include="Images\full_medical_kit_0.png" />
     <None Include="Images\full_medical_kit.png" />
     <None Include="Images\medical_kit_icon.png" />
-    <Content Include="SLIL_v0_1\sounds\game_over.wav" />
-    <Content Include="SLIL_v0_1\sounds\step_0.wav" />
-    <Content Include="SLIL_v0_1\sounds\step_1.wav" />
-    <Content Include="SLIL_v0_1\sounds\step_2.wav" />
-    <Content Include="SLIL_v0_1\sounds\step_3.wav" />
-    <Content Include="SLIL_v0_1\sounds\step_4.wav" />
+    <Content Include="SLILCursor.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
