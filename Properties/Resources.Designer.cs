@@ -713,6 +713,26 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap empty_teleport_0 {
+            get {
+                object obj = ResourceManager.GetObject("empty_teleport_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap empty_teleport_1 {
+            get {
+                object obj = ResourceManager.GetObject("empty_teleport_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap enemy_0 {
             get {
                 object obj = ResourceManager.GetObject("enemy_0", resourceCulture);

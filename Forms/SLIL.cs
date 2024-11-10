@@ -412,7 +412,8 @@ namespace SLIL
             new PlaySound(null, false),
             new PlaySound(MainMenu.CGFReader.GetFile("gnome.wav"), true),
             new PlaySound(MainMenu.CGFReader.GetFile("cmode_ost.wav"), true),
-            new PlaySound(MainMenu.CGFReader.GetFile("backrooms_ost.wav"), true)
+            new PlaySound(MainMenu.CGFReader.GetFile("backrooms_ost.wav"), true),
+            new PlaySound(MainMenu.CGFReader.GetFile("empty_ost.wav"), true)
         };
         public static PlaySound[,] DeathSounds = new PlaySound[,]
         {
@@ -3259,6 +3260,7 @@ namespace SLIL
                 case '$': return Color.Pink;
                 case 'T':
                 case 't': return Color.Turquoise;
+                case 'V': return Color.GhostWhite;
                 case 'F':
                 case 'f': return Color.MediumVioletRed;
                 case '*': return Color.FromArgb(255, 128, 128);
@@ -3919,13 +3921,20 @@ namespace SLIL
             player.SetDefault();
             open_shop = false;
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
+            if (!Controller.IsMultiplayer() && Controller.InBackrooms() && Controller.GetBackroomsStage() == 1)
+                player.GiveEffect(6, false, 1, true);
             if (MainMenu.sounds)
             {
                 if (Controller.InBackrooms())
-                    ChangeOst(8);
+                {
+                    if (Controller.GetBackroomsStage() == 0)
+                        ChangeOst(8);
+                    else
+                        ChangeOst(9);
+                }
                 else if (!player.CuteMode)
                 {
-                    prev_ost = rand.Next(ost.Length - 4);
+                    prev_ost = rand.Next(ost.Length - 5);
                     ChangeOst(prev_ost);
                 }
                 else ChangeOst(7);
@@ -4400,7 +4409,7 @@ namespace SLIL
             }
             else if (ost_index == 7)
             {
-                prev_ost = rand.Next(ost.Length - 3);
+                prev_ost = rand.Next(ost.Length - 5);
                 ChangeOst(prev_ost);
             }
         }

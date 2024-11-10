@@ -736,6 +736,21 @@ namespace SLIL.Classes
         public override int Interaction() => 2;
     }
 
+    public class EmptyTeleport : GameObject
+    {
+        protected override int GetEntityID() => 22;
+
+        public EmptyTeleport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public EmptyTeleport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 33;
+            Animated = true;
+            base.SetAnimations(1, 0);
+        }
+    }
+
     public class BackroomsTeleport : GameObject
     {
         protected override int GetEntityID() => 21;

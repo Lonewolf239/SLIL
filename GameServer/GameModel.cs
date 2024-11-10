@@ -40,7 +40,7 @@ namespace GameServer
         private StringBuilder CUSTOM_MAP = new();
         private double CUSTOM_X, CUSTOM_Y;
         private static System.Timers.Timer? RespawnTimer;
-        private static System.Timers.Timer? EnemyTimer;
+        private static System.Timers.Timer? EntityTimer;
         private static System.Timers.Timer? TimeRemain;
         public int MaxEntityID;
         private readonly SendMessageFromGameCallback sendMessageFromGameCallback;
@@ -58,8 +58,8 @@ namespace GameServer
             this.sendMessageFromGameCallback = sendMessage;
             RespawnTimer = new System.Timers.Timer(1000);
             RespawnTimer.Elapsed += RespawnTimer_Tick;
-            EnemyTimer = new System.Timers.Timer(100);
-            EnemyTimer.Elapsed += EnemyTimer_Tick;
+            EntityTimer = new System.Timers.Timer(100);
+            EntityTimer.Elapsed += EntityTimer_Tick;
             TimeRemain = new System.Timers.Timer(1000);
             TimeRemain.Elapsed += TimeRemain_Tick;
         }
@@ -70,7 +70,7 @@ namespace GameServer
             MAP.Replace('P', '.');
             GameStarted = true;
             RespawnTimer?.Start();
-            EnemyTimer?.Start();
+            EntityTimer?.Start();
             TimeRemain?.Start();
             sendMessageFromGameCallback(102);
         }
@@ -128,7 +128,7 @@ namespace GameServer
             return MaxEntityID - 1;
         }
 
-        private void EnemyTimer_Tick(object? sender, EventArgs e)
+        private void EntityTimer_Tick(object? sender, EventArgs e)
         {
             List<Entity> targetsList = [];
             foreach (Entity ent in Entities)
@@ -167,7 +167,7 @@ namespace GameServer
                                         double damage = rand.Next(25, 50);
                                         if (ent is Player playerTarget)
                                         {
-                                            playerTarget.DealDamage(damage, true);
+                                            playerTarget.DealDamage(damage * 1.5, true);
                                             if (playerTarget.HP <= 0)
                                             {
                                                 if (GameMode == GameModes.Deathmatch)
@@ -892,7 +892,7 @@ namespace GameServer
 
         private void GameOver(int win)
         {
-            EnemyTimer?.Stop();
+            EntityTimer?.Stop();
             RespawnTimer?.Stop();
             TimeRemain?.Stop();
             GameStarted = false;
@@ -929,7 +929,7 @@ namespace GameServer
             }
             else if (win == 0)
             {
-                EnemyTimer?.Stop();
+                EntityTimer?.Stop();
                 RespawnTimer?.Stop();
                 TimeRemain?.Stop();
                 List<(int, string)> playerIDs = [];
@@ -967,7 +967,7 @@ namespace GameServer
             }
             else if (win == 3)
             {
-                EnemyTimer?.Stop();
+                EntityTimer?.Stop();
                 RespawnTimer?.Stop();
                 TimeRemain?.Stop();
                 List<Player> players = [];
@@ -982,7 +982,7 @@ namespace GameServer
             }
             else
             {
-                EnemyTimer?.Stop();
+                EntityTimer?.Stop();
                 RespawnTimer?.Stop();
                 TimeRemain?.Stop();
                 Entities.Clear();

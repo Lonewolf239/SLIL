@@ -343,7 +343,7 @@ namespace SLIL
                 loginForm.CanClose = true;
                 loginForm.Close();
                 loginForm.Dispose();
-                loginForm = null;
+                loginForm = null; 
             }
             Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT") { UseShellExecute = true });
             Application.Exit();

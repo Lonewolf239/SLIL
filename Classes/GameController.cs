@@ -209,6 +209,8 @@ namespace SLIL.Classes
 
         internal bool IsInSpectatorMode() => _isInSpectatorMode;
 
+        internal int GetBackroomsStage() => Game.GetBackroomsStage();
+
         internal bool InBackrooms() => Game.InBackrooms();
 
         internal StringBuilder GetMap() => Game.GetMap();

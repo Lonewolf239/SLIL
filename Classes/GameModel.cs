@@ -16,7 +16,8 @@ namespace SLIL.Classes
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
             bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################",
-            backroomsMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..F###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##..P...#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#.....#....##########################";
+            backroomsMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..V###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#.....#....##########################",
+            emptyMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..F###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#.....#....##########################";
         private int inDebug = 0;
         private readonly Pet[] PETS;
         private readonly Transport[] TRANSPORTS;
@@ -30,7 +31,8 @@ namespace SLIL.Classes
         private int difficulty;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
-        private bool inBackrooms = false, isTutorial = false;
+        private int BackroomsStage = 0;
+        private bool inBackrooms = false, BackroomsCompleted = false, isTutorial = false;
         private int CustomMazeHeight, CustomMazeWidth;
         private StringBuilder CUSTOM_MAP = new StringBuilder();
         private double CUSTOM_X, CUSTOM_Y;
@@ -39,7 +41,7 @@ namespace SLIL.Classes
         private readonly SetPlayerIDDelegate SetPlayerID;
         public bool IsMultiplayer;
         private static System.Windows.Forms.Timer RespawnTimer;
-        private static System.Windows.Forms.Timer EnemyTimer;
+        private static System.Windows.Forms.Timer EntityTimer;
         private static System.Windows.Forms.Timer TimeRemain;
         public int MaxEntityID;
         
@@ -62,11 +64,11 @@ namespace SLIL.Classes
                 Interval = 1000
             };
             RespawnTimer.Tick += RespawnTimer_Tick;
-            EnemyTimer = new System.Windows.Forms.Timer
+            EntityTimer = new System.Windows.Forms.Timer
             {
                 Interval = 100
             };
-            EnemyTimer.Tick += EnemyTimer_Tick;
+            EntityTimer.Tick += EntityTimer_Tick;
             TimeRemain = new System.Windows.Forms.Timer
             {
                 Interval = 1000
@@ -81,13 +83,13 @@ namespace SLIL.Classes
             {
                 TimeRemain.Stop();
                 RespawnTimer.Stop();
-                EnemyTimer.Stop();
+                EntityTimer.Stop();
             }
             else
             {
                 TimeRemain.Start();
                 RespawnTimer.Start();
-                EnemyTimer.Start();
+                EntityTimer.Start();
             }
         }
 
@@ -102,7 +104,7 @@ namespace SLIL.Classes
             if (startTimers && !IsMultiplayer)
             {
                 RespawnTimer.Start();
-                EnemyTimer.Start();
+                EntityTimer.Start();
                 TimeRemain.Start();
             }
         }
@@ -126,7 +128,7 @@ namespace SLIL.Classes
             return MaxEntityID - 1;
         }
 
-        private void EnemyTimer_Tick(object sender, EventArgs e)
+        private void EntityTimer_Tick(object sender, EventArgs e)
         {
             List<Entity> targetsList = new List<Entity>();
             foreach (Entity ent in Entities)
@@ -163,7 +165,7 @@ namespace SLIL.Classes
                                         double damage = rand.Next(25, 50);
                                         if (ent is Player playerTarget)
                                         {
-                                            playerTarget.DealDamage(damage, true);
+                                            playerTarget.DealDamage(damage * 1.5, true);
                                             if (playerTarget.HP <= 0)
                                             {
                                                 Entities.Add(new PlayerDeadBody(playerTarget.X, playerTarget.Y, MAP_WIDTH, ref MaxEntityID));
@@ -499,6 +501,11 @@ namespace SLIL.Classes
                         covering.Deserialize(reader);
                         tempEntities.Add(covering);
                         break;
+                    case 22:
+                        EmptyTeleport emptyTeleport = new EmptyTeleport(0, 0, MAP_WIDTH, ID);
+                        emptyTeleport.Deserialize(reader);
+                        tempEntities.Add(emptyTeleport);
+                        break;
                     default:
                         break;
                 }
@@ -647,6 +654,11 @@ namespace SLIL.Classes
                         covering.Deserialize(reader);
                         tempEntities.Add(covering);
                         break;
+                    case 22:
+                        EmptyTeleport emptyTeleport = new EmptyTeleport(0, 0, MAP_WIDTH, ID);
+                        emptyTeleport.Deserialize(reader);
+                        tempEntities.Add(emptyTeleport);
+                        break;
                     default:
                         break;
                 }
@@ -777,7 +789,7 @@ namespace SLIL.Classes
 
         private void GameOver(int win)
         {
-            EnemyTimer.Stop();
+            EntityTimer.Stop();
             RespawnTimer.Stop();
             TimeRemain.Stop();
             GameStarted = false;
@@ -807,21 +819,21 @@ namespace SLIL.Classes
             }
             else if (win == 0)
             {
-                EnemyTimer.Stop();
+                EntityTimer.Stop();
                 RespawnTimer.Stop();
                 TimeRemain.Stop();
                 Entities.Clear();
                 MaxEntityID = 0;
-                inBackrooms = false;
+                inBackrooms = BackroomsCompleted = false;
             }
             else
             {
-                EnemyTimer.Stop();
+                EntityTimer.Stop();
                 RespawnTimer.Stop();
                 TimeRemain.Stop();
                 Entities.Clear();
                 MaxEntityID = 0;
-                inBackrooms = false;
+                inBackrooms = BackroomsCompleted = false;
             }
             StopGameHandle(win);
         }
@@ -862,6 +874,11 @@ namespace SLIL.Classes
             {
                 if (!IsMultiplayer)
                 {
+                    if (inBackrooms)
+                    {
+                        BackroomsCompleted = true;
+                        p.StopEffect(6);
+                    }
                     inBackrooms = false;
                     GameOver(1);
                 }
@@ -871,8 +888,17 @@ namespace SLIL.Classes
                 if (!IsMultiplayer)
                 {
                     inBackrooms = true;
+                    BackroomsStage = 0;
                     if (p.InTransport)
                         GettingOffTheTransport(playerID, false);
+                    GameOver(1);
+                }
+            }
+            if (MAP[(int)p.Y * MAP_WIDTH + (int)p.X] == 'V')
+            {
+                if (!IsMultiplayer)
+                {
+                    BackroomsStage = 1;
                     GameOver(1);
                 }
             }
@@ -896,6 +922,10 @@ namespace SLIL.Classes
                 case 'f':
                     BackroomsTeleport backroomsTeleport = new BackroomsTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = backroomsTeleport;
+                    break;
+                case 'V':
+                    EmptyTeleport emptyTeleport = new EmptyTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = emptyTeleport;
                     break;
                 case 'D':
                     ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
@@ -959,8 +989,10 @@ namespace SLIL.Classes
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
             if (inBackrooms)
             {
-                MazeHeight = 25;
-                MazeWidth = 25;
+                if (BackroomsStage == 0)
+                    MazeHeight = MazeWidth = 25;
+                else
+                    MazeHeight = MazeWidth = 25;
             }
             else
             {
@@ -1008,10 +1040,16 @@ namespace SLIL.Classes
                 if (!(ent is Player player)) continue;
                 if (inBackrooms)
                 {
-                    player.X = 12.5;
-                    player.Y = 12.5;
-                    MazeHeight = 25;
-                    MazeWidth = 25;
+                    if (BackroomsStage == 0)
+                    {
+                        player.X = player.Y = 12.5;
+                        MazeHeight = MazeWidth = 25;
+                    }
+                    else
+                    {
+                        player.X = player.Y = 12.5;
+                        MazeHeight = MazeWidth = 25;
+                    }
                 }
                 else
                 {
@@ -1112,7 +1150,12 @@ namespace SLIL.Classes
             if (difficulty == 5 || inBackrooms)
             {
                 if (inBackrooms)
-                    MAP.Append(backroomsMap);
+                {
+                    if (BackroomsStage == 0)
+                        MAP.Append(backroomsMap);
+                    else
+                        MAP.Append(emptyMap);
+                }
                 else if (inDebug == 1)
                     MAP.AppendLine(debugMap);
                 else if (inDebug == 2)
@@ -1154,6 +1197,8 @@ namespace SLIL.Classes
                             catch { }
                             if (map[x, y] == '$')
                                 shops.Add(new int[] { x, y });
+                            if (BackroomsCompleted && map[x, y] == 'f')
+                                map[x, y] = '.';
                         }
                     }
                     if (shops.Count == 0)
@@ -1417,6 +1462,8 @@ namespace SLIL.Classes
             }
             return entity;
         }
+
+        internal int GetBackroomsStage() => BackroomsStage;
 
         internal bool InBackrooms() => inBackrooms;
 

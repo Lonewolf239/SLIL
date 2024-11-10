@@ -946,7 +946,7 @@ namespace SLIL
             // 
             // fps_timer
             // 
-            this.fps_timer.Interval = 500;
+            this.fps_timer.Interval = 1000;
             this.fps_timer.Tick += new System.EventHandler(this.Fps_timer_Tick);
             // 
             // SLIL
