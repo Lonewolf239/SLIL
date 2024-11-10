@@ -1955,6 +1955,7 @@ namespace GameServer
             p.CanUnblockCamera = false;
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
+            p.CanShoot = false;
             NetDataWriter writer = new();
             writer.Put(p.ID);
             p.Serialize(writer);
@@ -1987,6 +1988,7 @@ namespace GameServer
             p.Y = new_y;
             p.BlockInput = false;
             p.BlockCamera = false;
+            p.CanShoot = true;
         }
 
         internal void ChangeWeapon(int playerID, int new_gun)

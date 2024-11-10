@@ -1883,6 +1883,7 @@ namespace SLIL.Classes
             p.CanUnblockCamera = false;
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
+            p.CanShoot = false;
             new Thread(() => {
                 Thread.Sleep(p.InTransport ? 250 : 375);
                 StopParkour(playerID);
@@ -1907,6 +1908,7 @@ namespace SLIL.Classes
             p.Y = new_y;
             p.BlockInput = false;
             p.BlockCamera = false;
+            p.CanShoot = true;
         }
 
         internal void ChangeWeapon(int playerID, int new_gun)
