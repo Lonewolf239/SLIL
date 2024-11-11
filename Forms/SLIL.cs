@@ -943,6 +943,24 @@ namespace SLIL
                 case 18: // bike
                     entity = new Bike(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
+                case 19: // vine
+                    entity = new Vine(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 20: // lamp
+                    entity = new Lamp(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 21: // backrooms teleport
+                    entity = new BackroomsTeleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 22: // covering
+                    entity = new Covering(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 23: // void teleport
+                    entity = new VoidTeleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 24: // void stalker
+                    entity = new VoidStalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
             }
             if (entity == null) return false;
             entity.HasAI = hasAI;

@@ -537,7 +537,7 @@ namespace GameServer
                         lamp.Deserialize(reader);
                         tempEntities.Add(lamp);
                         break;
-                    case 21:
+                    case 22:
                         Covering covering = new(0,0, MAP_WIDTH, ID);
                         covering.Deserialize(reader);
                         tempEntities.Add(covering);
@@ -685,7 +685,7 @@ namespace GameServer
                         lamp.Deserialize(reader);
                         tempEntities.Add(lamp);
                         break;
-                    case 21:
+                    case 22:
                         Covering covering = new(0, 0, MAP_WIDTH, ID);
                         covering.Deserialize(reader);
                         tempEntities.Add(covering);

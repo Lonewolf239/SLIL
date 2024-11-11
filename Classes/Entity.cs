@@ -1,6 +1,9 @@
-﻿using LiteNetLib.Utils;
+﻿using CSCore.XAudio2.X3DAudio;
+using LiteNetLib.Utils;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace SLIL.Classes
 {
@@ -426,7 +429,7 @@ namespace SLIL.Classes
     {
         protected enum Stages { Roaming, Chasing };
         protected Stages stage;
-        protected double detectionRange;
+        protected double DetectionRange;
         public bool Fast { get; set; }
 
         public Enemy(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
@@ -533,7 +536,7 @@ namespace SLIL.Classes
     {
         public float HP { get; set; }
         public bool Broken { get; set; }
-        protected override int GetEntityID() => 21;
+        protected override int GetEntityID() => 22;
 
         public Covering(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
         public Covering(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
@@ -736,12 +739,12 @@ namespace SLIL.Classes
         public override int Interaction() => 2;
     }
 
-    public class EmptyTeleport : GameObject
+    public class VoidTeleport : GameObject
     {
-        protected override int GetEntityID() => 22;
+        protected override int GetEntityID() => 23;
 
-        public EmptyTeleport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        public EmptyTeleport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        public VoidTeleport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public VoidTeleport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
@@ -880,10 +883,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 1;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 10;
         protected override int GetTexture() => Texture;
@@ -900,7 +900,7 @@ namespace SLIL.Classes
         {
             DeathSound = 0;
             Texture = 8;
-            detectionRange = 5;
+            DetectionRange = 5;
             //HasSpriteRotation = true;
             base.SetAnimations(1, 0);
         }
@@ -908,7 +908,7 @@ namespace SLIL.Classes
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
-            if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -978,10 +978,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 2;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 5;
         protected override int GetTexture() => Texture;
@@ -998,7 +995,7 @@ namespace SLIL.Classes
         {
             DeathSound = 1;
             Texture = 9;
-            detectionRange = 7;
+            DetectionRange = 7;
             Fast = true;
             base.SetAnimations(1, 0);
         }
@@ -1006,7 +1003,7 @@ namespace SLIL.Classes
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
-            if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1076,10 +1073,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 3;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 40;
         protected override int GetMAX_HP() => 20;
         protected override int GetTexture() => Texture;
@@ -1096,14 +1090,14 @@ namespace SLIL.Classes
         {
             DeathSound = 2;
             Texture = 10;
-            detectionRange = 8;
+            DetectionRange = 8;
             base.SetAnimations(2, 0);
         }
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
-            if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1173,10 +1167,7 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 4;
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'W', 'S' };
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 2;
         protected override int GetTexture() => Texture;
@@ -1193,7 +1184,7 @@ namespace SLIL.Classes
         {
             DeathSound = 3;
             Texture = 11;
-            detectionRange = 6;
+            DetectionRange = 6;
             Fast = true;
             base.SetAnimations(1, 0);
         }
@@ -1201,7 +1192,7 @@ namespace SLIL.Classes
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
-            if (distanceToPlayer > detectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1264,6 +1255,125 @@ namespace SLIL.Classes
                 X = tempX;
                 Y = tempY;
             }
+        }
+    }
+
+    public class VoidStalker : Enemy
+    {
+        protected override int GetEntityID() => 24;
+        protected override double GetEntityWidth() => 0.4;
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
+        protected override int GetMovesInARow() => 10;
+        protected override int GetMAX_HP() => 1;
+        protected override int GetTexture() => Texture;
+        public override double GetMove() => 0.13;
+        protected override int GetMAX_MONEY() => 1;
+        protected override int GetMIN_MONEY() => 0;
+        protected override int GetMAX_DAMAGE() => 1000;
+        protected override int GetMIN_DAMAGE() => 999;
+        private List<(double, double)> CurrentPath;
+        private int CurrentPathIndex { get; set; }
+        private enum Dir { Left, Right, Up, Down, None }
+
+        public VoidStalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public VoidStalker(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 34;
+            CurrentPathIndex = 0;
+            DetectionRange = 10;
+            CurrentPath = new List<(double, double)>();
+            base.SetAnimations(2, 0);
+        }
+        public override void UpdateCoordinates(string map, double playerX, double playerY)
+        {
+            if (CurrentPath == null) CurrentPath = new List<(double, double)>();
+            bool isPlayerVisible = true;
+            double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
+            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
+            double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
+            if (isPlayerVisible)
+            {
+                double distance = 0;
+                double step = 0.01;
+                double rayAngleX = Math.Sin(angleToPlayer);
+                double rayAngleY = Math.Cos(angleToPlayer);
+                while (distance <= distanceToPlayer)
+                {
+                    int test_x = (int)(X + rayAngleX * distance);
+                    int test_y = (int)(Y + rayAngleY * distance);
+                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    {
+                        isPlayerVisible = false;
+                        break;
+                    }
+                    distance += step;
+                }
+            }
+            if (stage == Stages.Roaming)
+            {
+                base.UpdateCoordinates(map, playerX, playerY);
+                if (isPlayerVisible)
+                {
+                    stage = Stages.Chasing;
+                    CurrentPath.Clear();
+                    CurrentPathIndex = 0;
+                }
+                return;
+            }
+            if (stage == Stages.Chasing)
+            {
+                if (!isPlayerVisible)
+                {
+                    stage = Stages.Roaming;
+                    NumberOfMovesLeft = MovesInARow;
+                    CurrentPath.Clear();
+                    CurrentPathIndex = 0;
+                    return;
+                }
+                if (CurrentPath.Count == 0 || CurrentPathIndex >= CurrentPath.Count)
+                {
+                    CurrentPath.Clear();
+                    if (!FindPath(ref CurrentPath, map, X, Y, playerX, playerY, Dir.None, MAP_WIDTH))
+                        return;
+                    CurrentPath.Reverse();
+                    CurrentPathIndex = 0;
+                }
+                if (CurrentPathIndex < CurrentPath.Count)
+                {
+                    var targetPoint = CurrentPath[CurrentPathIndex];
+                    X = targetPoint.Item1;
+                    Y = targetPoint.Item2;
+                    CurrentPathIndex++;
+                }
+            }
+        }
+
+        private static bool FindPath(ref List<(double, double)> path, string map, double x, double y,
+            double playerX, double playerY, Dir dir, int mapWidth)
+        {
+            if (x < 0 || x >= mapWidth || y < 0 || y >= map.Length / mapWidth)
+                return false;
+            if (Math.Abs(x - playerX) < 0.1 && Math.Abs(y - playerY) < 0.1)
+            {
+                path.Add((x, y));
+                return true;
+            }
+            if (path.Contains((x, y)))
+                return false;
+            bool reached = false;
+            if (x > 0 && map[(int)(y * mapWidth + (x - 1))] == '.' && dir != Dir.Right)
+                reached = FindPath(ref path, map, x - 1, y, playerX, playerY, Dir.Left, mapWidth);
+            if (!reached && x < mapWidth - 1 && map[(int)(y * mapWidth + (x + 1))] == '.' && dir != Dir.Left)
+                reached = FindPath(ref path, map, x + 1, y, playerX, playerY, Dir.Right, mapWidth);
+            if (!reached && y > 0 && map[(int)((y - 1) * mapWidth + x)] == '.' && dir != Dir.Down)
+                reached = FindPath(ref path, map, x, y - 1, playerX, playerY, Dir.Up, mapWidth);
+            if (!reached && y < map.Length / mapWidth - 1 && map[(int)((y + 1) * mapWidth + x)] == '.' && dir != Dir.Up)
+                reached = FindPath(ref path, map, x, y + 1, playerX, playerY, Dir.Down, mapWidth);
+            if (reached)
+                path.Add((x, y));
+            return reached;
         }
     }
 

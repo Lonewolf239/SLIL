@@ -497,14 +497,24 @@ namespace SLIL.Classes
                         tempEntities.Add(lamp);
                         break;
                     case 21:
+                        BackroomsTeleport backroomsTeleport = new BackroomsTeleport(0, 0, MAP_WIDTH, ID);
+                        backroomsTeleport.Deserialize(reader);
+                        tempEntities.Add(backroomsTeleport);
+                        break;
+                    case 22:
                         Covering covering = new Covering(0, 0, MAP_WIDTH, ID);
                         covering.Deserialize(reader);
                         tempEntities.Add(covering);
                         break;
-                    case 22:
-                        EmptyTeleport emptyTeleport = new EmptyTeleport(0, 0, MAP_WIDTH, ID);
+                    case 23:
+                        VoidTeleport emptyTeleport = new VoidTeleport(0, 0, MAP_WIDTH, ID);
                         emptyTeleport.Deserialize(reader);
                         tempEntities.Add(emptyTeleport);
+                        break;
+                    case 24:
+                        VoidStalker voidStalker = new VoidStalker(0, 0, MAP_WIDTH, ID);
+                        voidStalker.Deserialize(reader);
+                        tempEntities.Add(voidStalker);
                         break;
                     default:
                         break;
@@ -650,14 +660,24 @@ namespace SLIL.Classes
                         tempEntities.Add(lamp);
                         break;
                     case 21:
+                        BackroomsTeleport backroomsTeleport = new BackroomsTeleport(0, 0, MAP_WIDTH, ID);
+                        backroomsTeleport.Deserialize(reader);
+                        tempEntities.Add(backroomsTeleport);
+                        break;
+                    case 22:
                         Covering covering = new Covering(0, 0, MAP_WIDTH, ID);
                         covering.Deserialize(reader);
                         tempEntities.Add(covering);
                         break;
-                    case 22:
-                        EmptyTeleport emptyTeleport = new EmptyTeleport(0, 0, MAP_WIDTH, ID);
+                    case 23:
+                        VoidTeleport emptyTeleport = new VoidTeleport(0, 0, MAP_WIDTH, ID);
                         emptyTeleport.Deserialize(reader);
                         tempEntities.Add(emptyTeleport);
+                        break;
+                    case 24:
+                        VoidStalker voidStalker = new VoidStalker(0, 0, MAP_WIDTH, ID);
+                        voidStalker.Deserialize(reader);
+                        tempEntities.Add(voidStalker);
                         break;
                     default:
                         break;
@@ -817,15 +837,6 @@ namespace SLIL.Classes
                     if (!inBackrooms) UpdatePet(player);
                 }
             }
-            else if (win == 0)
-            {
-                EntityTimer.Stop();
-                RespawnTimer.Stop();
-                TimeRemain.Stop();
-                Entities.Clear();
-                MaxEntityID = 0;
-                inBackrooms = BackroomsCompleted = false;
-            }
             else
             {
                 EntityTimer.Stop();
@@ -924,7 +935,7 @@ namespace SLIL.Classes
                     entity = backroomsTeleport;
                     break;
                 case 'V':
-                    EmptyTeleport emptyTeleport = new EmptyTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    VoidTeleport emptyTeleport = new VoidTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     entity = emptyTeleport;
                     break;
                 case 'D':

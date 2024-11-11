@@ -943,6 +943,12 @@ namespace SLIL.UserControls
                                 { "EnergyDrink", "16" },
                                 { "Pyro", "17" },
                                 { "Bike", "18" },
+                                { "Vine", "19" },
+                                { "Lamp", "20" },
+                                { "BackroomsTeleport", "21" },
+                                { "Covering", "22" },
+                                { "VoidTeleport", "23" },
+                                { "VoidStalker", "24" },
                             };
                             for (int i = 0; i < entities.GetLength(0); i++)
                             {
@@ -962,7 +968,7 @@ namespace SLIL.UserControls
                                 {
                                     int x = Convert.ToInt32(cheat.Split('_')[1]);
                                     int y = Convert.ToInt32(cheat.Split('_')[3]);
-                                    if (x >= 0 && x < 19)
+                                    if (x >= 0 && x < 25)
                                     {
                                         if (y < 0 || y > 1)
                                         {
@@ -1000,7 +1006,7 @@ namespace SLIL.UserControls
                                 try
                                 {
                                     int x = Convert.ToInt32(cheat.Split('_')[1]);
-                                    if (x >= 0 && x < 19)
+                                    if (x >= 0 && x < 25)
                                     {
                                         if (parent.SpawnEntity(x, true))
                                             message = $"Creature with ID {x} successfully spawned with AI enabled";

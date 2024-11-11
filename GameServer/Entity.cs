@@ -528,7 +528,7 @@ namespace GameServer
     {
         public float HP { get; set; }
         public bool Broken { get; set; }
-        protected override int GetEntityID() => 21;
+        protected override int GetEntityID() => 22;
 
         public Covering(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
         public Covering(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
