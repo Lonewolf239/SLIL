@@ -1271,7 +1271,7 @@ namespace SLIL.Classes
         protected override int GetMIN_MONEY() => 0;
         protected override int GetMAX_DAMAGE() => 1000;
         protected override int GetMIN_DAMAGE() => 999;
-        private List<(double, double)> CurrentPath;
+        private List<(int, int)> CurrentPath;
         private int CurrentPathIndex { get; set; }
         private enum Dir { Left, Right, Up, Down, None }
 
@@ -1283,12 +1283,13 @@ namespace SLIL.Classes
             Texture = 34;
             CurrentPathIndex = 0;
             DetectionRange = 10;
-            CurrentPath = new List<(double, double)>();
+            CurrentPath = new List<(int, int)>();
             base.SetAnimations(2, 0);
         }
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
-            if (CurrentPath == null) CurrentPath = new List<(double, double)>();
+            if (CurrentPath == null) CurrentPath = new List<(int, int)>();
+            IntX = (int)X; IntY = (int)Y;
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
@@ -1335,7 +1336,7 @@ namespace SLIL.Classes
                 if (CurrentPath.Count == 0 || CurrentPathIndex >= CurrentPath.Count)
                 {
                     CurrentPath.Clear();
-                    if (!FindPath(ref CurrentPath, map, X, Y, playerX, playerY, Dir.None, MAP_WIDTH))
+                    if (!FindPath(ref CurrentPath, map, IntX, IntY, playerX, playerY, Dir.None, MAP_WIDTH))
                         return;
                     CurrentPath.Reverse();
                     CurrentPathIndex = 0;
@@ -1343,19 +1344,19 @@ namespace SLIL.Classes
                 if (CurrentPathIndex < CurrentPath.Count)
                 {
                     var targetPoint = CurrentPath[CurrentPathIndex];
-                    X = targetPoint.Item1;
-                    Y = targetPoint.Item2;
+                    X = targetPoint.Item1 + 0.5;
+                    Y = targetPoint.Item2 + 0.5;
                     CurrentPathIndex++;
                 }
             }
         }
 
-        private static bool FindPath(ref List<(double, double)> path, string map, double x, double y,
+        private static bool FindPath(ref List<(int, int)> path, string map, int x, int y,
             double playerX, double playerY, Dir dir, int mapWidth)
         {
             if (x < 0 || x >= mapWidth || y < 0 || y >= map.Length / mapWidth)
                 return false;
-            if (Math.Abs(x - playerX) < 0.1 && Math.Abs(y - playerY) < 0.1)
+            if (Math.Abs(x - playerX) < 0.25 && Math.Abs(y - playerY) < 0.25)
             {
                 path.Add((x, y));
                 return true;
@@ -1363,13 +1364,13 @@ namespace SLIL.Classes
             if (path.Contains((x, y)))
                 return false;
             bool reached = false;
-            if (x > 0 && map[(int)(y * mapWidth + (x - 1))] == '.' && dir != Dir.Right)
+            if (x > 0 && map[y * mapWidth + (x - 1)] == '.' && dir != Dir.Right)
                 reached = FindPath(ref path, map, x - 1, y, playerX, playerY, Dir.Left, mapWidth);
-            if (!reached && x < mapWidth - 1 && map[(int)(y * mapWidth + (x + 1))] == '.' && dir != Dir.Left)
+            if (!reached && x < mapWidth - 1 && map[y * mapWidth + (x + 1)] == '.' && dir != Dir.Left)
                 reached = FindPath(ref path, map, x + 1, y, playerX, playerY, Dir.Right, mapWidth);
-            if (!reached && y > 0 && map[(int)((y - 1) * mapWidth + x)] == '.' && dir != Dir.Down)
+            if (!reached && y > 0 && map[(y - 1) * mapWidth + x] == '.' && dir != Dir.Down)
                 reached = FindPath(ref path, map, x, y - 1, playerX, playerY, Dir.Up, mapWidth);
-            if (!reached && y < map.Length / mapWidth - 1 && map[(int)((y + 1) * mapWidth + x)] == '.' && dir != Dir.Up)
+            if (!reached && y < map.Length / mapWidth - 1 && map[(y + 1) * mapWidth + x] == '.' && dir != Dir.Up)
                 reached = FindPath(ref path, map, x, y + 1, playerX, playerY, Dir.Down, mapWidth);
             if (reached)
                 path.Add((x, y));
