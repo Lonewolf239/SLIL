@@ -1,22 +1,21 @@
-﻿using System.IO;
-using System.IO.Compression;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+﻿using System;
+using System.IO;
 using CGFReader;
-using System.Globalization;
-using System;
 using IniReader;
+using Play_Sound;
 using System.Net;
+using System.Text;
+using System.Linq;
+using SLIL.Classes;
+using System.Drawing;
+using SLIL.SLIL_v0_1;
 using System.Net.Http;
 using System.Diagnostics;
-using SLIL.Classes;
-using Play_Sound;
+using System.Windows.Forms;
+using System.Globalization;
 using SLIL.SLIL_Localization;
-using System.Linq;
 using System.Threading.Tasks;
-using SLIL.SLIL_v0_1;
+using System.Collections.Generic;
 
 namespace SLIL
 {
@@ -80,7 +79,7 @@ namespace SLIL
             { "climb", Keys.Space },
             { "inventory", Keys.I },
         };
-        public static int resolution = 0, display_size = 0, smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
+        public static int smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
         public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true, IsTutorial = false;
         public static bool inv_y = false, inv_x = false;
         public static double SLIL_v0_1_LOOK_SPEED = 1.75;
@@ -266,10 +265,6 @@ namespace SLIL
             video_settings.Controls.Add(show_fps_panel);
             video_settings.Controls.Add(new Separator());
             video_settings.Controls.Add(smoothing_panel);
-            video_settings.Controls.Add(new Separator());
-            //video_settings.Controls.Add(display_size_panel);
-            //video_settings.Controls.Add(new Separator());
-            video_settings.Controls.Add(high_resolution_panel);
             mouse_settings.Controls.Clear();
             mouse_settings.Controls.Add(invert_x_panel);
             mouse_settings.Controls.Add(new Separator());
@@ -332,10 +327,6 @@ namespace SLIL
             press_any_btn_panel.Location = buttons_panel.Location;
             exit_panel.Location = buttons_panel.Location;
             change_logs_panel.Location = buttons_panel.Location;
-            game_mode_panel.Location = buttons_panel.Location;
-            multiplayer_panel.Location = buttons_panel.Location;
-            host_panel.Location = buttons_panel.Location;
-            connect_panel.Location = buttons_panel.Location;
             account_panel.Location = buttons_panel.Location;
             hilf_mir_panel.Location = buttons_panel.Location;
             errors_panel.Location = new Point(buttons_panel.Left, Height - errors_panel.Height - 16);
@@ -360,6 +351,8 @@ namespace SLIL
                 exit_panel.BringToFront();
                 return;
             }
+            secret_btn_timer.Stop();
+            omg?.Dispose();
             MainMenuTheme?.Dispose();
             SaveSettings();
         }
@@ -411,8 +404,6 @@ namespace SLIL
                     difficulty_panel.Visible = false;
                 if (change_logs_panel.Visible)
                     change_logs_panel.Visible = false;
-                if (game_mode_panel.Visible)
-                    game_mode_panel.Visible = false;
                 if (account_panel.Visible)
                 {
                     account_panel.Visible = false;
@@ -420,12 +411,6 @@ namespace SLIL
                 }
                 if (hilf_mir_panel.Visible)
                     hilf_mir_panel.Visible = false;
-                if (host_panel.Visible)
-                    host_panel.Visible = false;
-                if (connect_panel.Visible)
-                    connect_panel.Visible = false;
-                if (multiplayer_panel.Visible)
-                    multiplayer_panel.Visible = false;
                 if (help_panel.Visible)
                     help_panel.Visible = false;
             }
@@ -462,8 +447,6 @@ namespace SLIL
             ShowMiniMap = INIReader.GetBool(Program.iniFolder, "SLIL", "show_minimap", true);
             scope_color = INIReader.GetInt(Program.iniFolder, "SLIL", "scope_color", 0);
             scope_type = INIReader.GetInt(Program.iniFolder, "SLIL", "scope_type", 0);
-            resolution = INIReader.GetBool(Program.iniFolder, "SLIL", "hight_resolution", false) ? 1 : 0;
-            display_size = INIReader.GetInt(Program.iniFolder, "SLIL", "display_size", 0);
             interface_size = INIReader.GetInt(Program.iniFolder, "SLIL", "interface_size", 2);
             smoothing = INIReader.GetInt(Program.iniFolder, "SLIL", "smoothing", 1);
             hight_fps = INIReader.GetBool(Program.iniFolder, "SLIL", "hight_fps", true);
@@ -486,8 +469,6 @@ namespace SLIL
             SLIL_v0_1_LOOK_SPEED = INIReader.GetDouble(Program.iniFolder, "SLIL_V0_0_1", "look_speed", 1.75);
             SLIL_v0_1_difficulty = INIReader.GetInt(Program.iniFolder, "SLIL_V0_0_1", "difficulty", 1);
             if (interface_size < 0 || interface_size > 3) interface_size = 2;
-            //if (display_size < 0 || display_size > 5)
-            display_size = 0;
             if (smoothing < 0 || smoothing > 3) smoothing = 1;
             if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10) LOOK_SPEED = 6.5;
             if (MusicVolume < 0 || MusicVolume > 1) MusicVolume = 0.4f;
@@ -513,8 +494,6 @@ namespace SLIL
             INIReader.SetKey(Program.iniFolder, "CONFIG", "effects_volume", EffectsVolume);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "sounds_volume", Volume);
             INIReader.SetKey(Program.iniFolder, "CONFIG", "gamma", Gamma);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "hight_resolution", high_resolution_on_off.Checked);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "display_size", display_size);
             INIReader.SetKey(Program.iniFolder, "SLIL", "interface_size", interface_size);
             INIReader.SetKey(Program.iniFolder, "SLIL", "smoothing", smoothing);
             INIReader.SetKey(Program.iniFolder, "SLIL", "show_fps", ShowFPS);
@@ -645,12 +624,10 @@ namespace SLIL
             show_tutorial.Checked = show_hilf_mir.Checked;
             localization_error_pic.Visible = !DownloadedLocalizationList;
             errors_panel.Visible = localization_errors_background.Visible = !DownloadedLocalizationList;
-            display_size_list.SelectedIndex = display_size;
             interface_size_choice.Value = interface_size;
             smoothing_list.SelectedIndex = smoothing;
             console_btn.Checked = ConsoleEnabled;
             sounds_on_off.Checked = sounds;
-            high_resolution_on_off.Checked = resolution == 1;
             show_fps_on_off.Checked = ShowFPS;
             fps.Value = hight_fps ? 1 : 0;
             show_minimap.Checked = ShowMiniMap;
@@ -712,25 +689,12 @@ namespace SLIL
                 };
                 smoothing_list.Items.AddRange(smooth_list);
                 inventory_label.Text = Localizations.GetLString(Language, "0-130");
-                password_input_label.Text = Localizations.GetLString(Language, "0-125");
-                need_password.Text = Localizations.GetLString(Language, "0-126");
-                connect_btn_r.Text = Localizations.GetLString(Language, "0-127");
-                ip_input_label.Text = Localizations.GetLString(Language, "0-128");
-                close_connect_btn_l.Text = Localizations.GetLString(Language, "0-6");
                 localization_update_btn.Text = Localizations.GetLString(Language, "0-90");
-                display_size_label.Text = Localizations.GetLString(Language, "0-0");
                 smoothing_label.Text = Localizations.GetLString(Language, "0-1");
                 console_label.Text = Localizations.GetLString(Language, "0-2");
                 nickname_label.Text = Localizations.GetLString(Language, "0-3");
-                host_btn_cp.Text = Localizations.GetLString(Language, "0-4");
-                connect_game_btn_cp.Text = Localizations.GetLString(Language, "0-5");
                 help_close_l.Text = Localizations.GetLString(Language, "0-6");
-                multiplayer_close_l.Text = Localizations.GetLString(Language, "0-6");
-                close_host_btn_l.Text = Localizations.GetLString(Language, "0-6");
-                start_multiplayer_game_r.Text = Localizations.GetLString(Language, "0-7");
                 start_btn_cp.Text = Localizations.GetLString(Language, "0-8");
-                select_mode_btn_r.Text = Localizations.GetLString(Language, "0-9");
-                close_game_mode_panel_l.Text = Localizations.GetLString(Language, "0-10");
                 easy_btn.Text = Localizations.GetLString(Language, "0-11");
                 normal_btn.Text = Localizations.GetLString(Language, "0-12");
                 hard_btn.Text = Localizations.GetLString(Language, "0-13");
@@ -761,7 +725,6 @@ namespace SLIL
                 language_label.Text = Localizations.GetLString(Language, "0-29");
                 check_update_btn.Text = Localizations.GetLString(Language, "0-31");
                 video_settings.Text = Localizations.GetLString(Language, "0-32");
-                high_resolution_label.Text = Localizations.GetLString(Language, "0-33");
                 gamma_label.Text = Localizations.GetLString(Language, "0-121") + $" {GetGamma()}";
                 show_fps_label.Text = Localizations.GetLString(Language, "0-34");
                 show_minimap_label.Text = Localizations.GetLString(Language, "0-35");
@@ -781,7 +744,7 @@ namespace SLIL
                 show_tutorial_label.Text = Localizations.GetLString(Language, "0-116");
                 tutorial_label.Text = Localizations.GetLString(Language, "0-117");
                 tutorial_btn_cp.Text = Localizations.GetLString(Language, "0-118");
-                tutorial1_btn_cp.Text = Localizations.GetLString(Language, "0-119");
+                go_tutorial_btn_cp.Text = Localizations.GetLString(Language, "0-119");
                 press_any_btn_label.Text = Localizations.GetLString(Language, "0-45");
                 cant_use_panel.Text = Localizations.GetLString(Language, "0-107");
                 interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
@@ -810,25 +773,12 @@ namespace SLIL
             {
                 smoothing_list.Items.AddRange(new string[] { "No Antialiasing", "Default", "High Quality", "High Speed" });
                 inventory_label.Text = "Inventory";
-                password_input_label.Text = "Password:";
-                need_password.Text = "Need password:";
-                connect_btn_r.Text = "Join";
-                ip_input_label.Text = "Game IP:";
                 localization_update_btn.Text = "Update language list";
-                display_size_label.Text = "Screen resolution";
                 smoothing_label.Text = "Smoothing";
                 console_label.Text = "Developer console";
                 nickname_label.Text = "Player name:";
-                host_btn_cp.Text = "Create game";
-                connect_game_btn_cp.Text = "Join";
                 help_close_l.Text = "Back";
-                multiplayer_close_l.Text = "Back";
-                close_host_btn_l.Text = "Back";
-                start_multiplayer_game_r.Text = "Play";
                 start_btn_cp.Text = "Start game";
-                select_mode_btn_r.Text = "Select";
-                close_connect_btn_l.Text = "Back";
-                close_game_mode_panel_l.Text = "Close";
                 easy_btn.Text = "Easy";
                 normal_btn.Text = "Normal";
                 hard_btn.Text = "Difficult";
@@ -859,7 +809,6 @@ namespace SLIL
                 language_label.Text = "Language";
                 check_update_btn.Text = "Check for update";
                 video_settings.Text = "Graphics";
-                high_resolution_label.Text = "High resolution";
                 gamma_label.Text = "Gamma " + GetGamma();
                 show_fps_label.Text = "Display FPS";
                 show_minimap_label.Text = "Show minimap";
@@ -879,7 +828,7 @@ namespace SLIL
                 show_tutorial_label.Text = "Show tutorial";
                 tutorial_label.Text = "It seems you are a beginner.\nWould you like to take a training course?";
                 tutorial_btn_cp.Text = "Complete training";
-                tutorial1_btn_cp.Text = "Training";
+                go_tutorial_btn_cp.Text = "Training";
                 press_any_btn_label.Text = "Press any button or ESC to cancel";
                 cant_use_panel.Text = "This button can't be used!";
                 interface_size_label.Text = "Interface size: " + GetInterfaceSize();
@@ -945,20 +894,6 @@ namespace SLIL
                     sounds_on_off.Text = Localizations.GetLString(Language, "0-71");
                 else
                     sounds_on_off.Text = "Off";
-            }
-            if (high_resolution_on_off.Checked)
-            {
-                if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-70");
-                else
-                    high_resolution_on_off.Text = "On";
-            }
-            else
-            {
-                if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-71");
-                else
-                    high_resolution_on_off.Text = "Off";
             }
             if (ShowFPS)
             {
@@ -1207,12 +1142,6 @@ namespace SLIL
             change_logs_panel.Visible = false;
         }
 
-        private void Close_game_mode__panel_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            game_mode_panel.Visible = false;
-        }
-
         private void Close_account_btn_c_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
@@ -1226,25 +1155,6 @@ namespace SLIL
             hilf_mir_panel.Visible = false;
         }
 
-        private void Close_host_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            host_panel.Visible = false;
-            players_panel.Controls.Clear();
-        }
-
-        private void Close_connect_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            connect_panel.Visible = false;
-        }
-
-        private void Multiplayer_close_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            multiplayer_panel.Visible = false;
-        }
-
         private void Help_close_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
@@ -1256,10 +1166,10 @@ namespace SLIL
         private void Start_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            singleplayer.Checked = true;
+            IsTutorial = false;
             normal_btn.Checked = true;
-            game_mode_panel.Visible = true;
-            game_mode_panel.BringToFront();
+            difficulty_panel.Visible = true;
+            difficulty_panel.BringToFront();
         }
 
         private void Setting_btn_Click(object sender, EventArgs e)
@@ -1297,8 +1207,6 @@ namespace SLIL
             Language = GetLanguageName();
             sounds = true;
             ConsoleEnabled = false;
-            resolution = 0;
-            display_size = 0;
             interface_size = 2;
             ShowFPS = false;
             hight_fps = true;
@@ -1412,32 +1320,6 @@ namespace SLIL
         }
 
         //  #==     Video Settings     ==#
-
-        private void High_resolution_on_off_CheckedChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            resolution = high_resolution_on_off.Checked ? 1 : 0;
-            if (high_resolution_on_off.Checked)
-            {
-                if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-70");
-                else
-                    high_resolution_on_off.Text = "On";
-            }
-            else
-            {
-                if (DownloadedLocalizationList)
-                    high_resolution_on_off.Text = Localizations.GetLString(Language, "0-71");
-                else
-                    high_resolution_on_off.Text = "Off";
-            }
-        }
-
-        private void Display_size_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            display_size = display_size_list.SelectedIndex;
-        }
 
         private void Smoothing_list_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1587,23 +1469,6 @@ namespace SLIL
 
         //  #====      Game mode     ====#
 
-        private void Select_mode_btn_Click(object sender, EventArgs e)
-        {
-            IsTutorial = false;
-            if (singleplayer.Checked)
-            {
-                difficulty_panel.Visible = true;
-                difficulty_panel.BringToFront();
-            }
-            else if (multiplayer.Checked)
-            {
-                multiplayer_panel.Visible = true;
-                multiplayer_panel.BringToFront();
-            }
-            else if (tutorial1_btn_cp.Checked)
-                GoToTutorial();
-        }
-
         private void Difficulty_CheckedChanged(object sender, EventArgs e)
         {
             if (custom_btn.Checked)
@@ -1634,10 +1499,11 @@ namespace SLIL
             GetDifficulty();
         }
 
+        private void Go_tutorial_btn_cp_Click(object sender, EventArgs e) => GoToTutorial();
+
         private void Start_game_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            game_mode_panel.Visible = false;
             if (difficulty != 4)
             {
                 if (sounds) MainMenuTheme.Stop();
@@ -1790,8 +1656,7 @@ namespace SLIL
                 PlayerName = PlayerName
             };
             form.ShowDialog();
-            game_mode_panel.Visible = false;
-            hilf_mir_panel.Visible = false;
+            hilf_mir_panel.Visible = difficulty_panel.Visible = false;
             if (sounds) MainMenuTheme.Play(MusicVolume);
         }
 
@@ -1858,114 +1723,6 @@ namespace SLIL
             };
             sLILv0_1.ShowDialog();
             if (sounds) MainMenuTheme.Play(MusicVolume);
-        }
-
-        //  #====     Multiplayer    ====#
-
-        private void Need_password_CheckedChanged(object sender, EventArgs e)
-        {
-            password_connect_input.Enabled = need_password.Checked;
-            password_connect_input.BackColor = !password_connect_input.Enabled ?
-                Color.Gray : SystemColors.Window;
-            password_connect_input.Text = null;
-        }
-
-        private void UnpackGameServerZip()
-        {
-            if (!File.Exists("GameServer.zip")) return;
-            Directory.CreateDirectory("GameServer");
-            using (ZipArchive archive = ZipFile.OpenRead("GameServer.zip"))
-            {
-                foreach (ZipArchiveEntry entry in archive.Entries)
-                {
-                    if (entry.FullName.ToLower() != "readme.txt")
-                    {
-                        string filePath = Path.Combine("GameServer", entry.FullName);
-                        string directory = Path.GetDirectoryName(filePath);
-                        if (!string.IsNullOrEmpty(directory))
-                            Directory.CreateDirectory(directory);
-                        entry.ExtractToFile(filePath, true);
-                    }
-                }
-                File.Delete("GameServer.zip");
-            }
-        }
-
-        private void Host_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-
-            //  #====    TEMP    ====#
-            if (!File.Exists(@"GameServer\GameServer.exe"))
-            {
-                DownloadFile("https://base-escape.ru/downloads/GameServer.zip", "GameServer.zip");
-                UnpackGameServerZip();
-            }
-            Process.Start(new ProcessStartInfo(@"GameServer\GameServer.exe") { UseShellExecute = true });
-            //  #====    TEMP    ====#
-
-            //host_panel.Visible = true;
-            //host_panel.BringToFront();
-            ip_connect_input.Text = "000.000.000.000:0000";
-            connect_panel.Visible = true;
-            connect_panel.BringToFront();
-        }
-
-        private void Copy_ip_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            Clipboard.SetText(ip.Text);
-            if (DownloadedLocalizationList)
-                MessageBox.Show(Localizations.GetLString(Language, "0-86"), Localizations.GetLString(Language, "0-87"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-            else
-                MessageBox.Show("IP address successfully copied to clipboard", "IP Copying", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void Connect_game_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            ip_connect_input.Text = "000.000.000.000:0000";
-            connect_panel.Visible = true;
-            connect_panel.BringToFront();
-        }
-
-        private void Connect_btn_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
-            ConnectToGame();
-        }
-
-        private void ConnectToGame()
-        {
-            if (ip_connect_input.Text == "000.000.000.000:0000") return;
-            game_mode_panel.Visible = false;
-            if (sounds) MainMenuTheme.Stop();
-            try
-            {
-                string ip, port, password = "none";
-                if (ip_connect_input.Text.Contains(':'))
-                {
-                    ip = ip_connect_input.Text.Split(':')[0];
-                    port = ip_connect_input.Text.Split(':')[1];
-                }
-                else
-                {
-                    ip = ip_connect_input.Text;
-                    port = "9999";
-                }
-                if (need_password.Checked)
-                    password = password_connect_input.Text;
-                SLIL form = new SLIL(textureCache, ip, int.Parse(port), password, PlayerName);
-                form.ShowDialog();
-            }
-            catch { }
-            if (sounds) MainMenuTheme.Play(MusicVolume);
-            difficulty_panel.Visible = false;
-        }
-
-        private void Start_multiplayer_game_Click(object sender, EventArgs e)
-        {
-            lose_focus.Focus();
         }
     }
 }

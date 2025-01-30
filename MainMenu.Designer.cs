@@ -127,12 +127,6 @@
             this.smoothing_panel = new System.Windows.Forms.Panel();
             this.smoothing_list = new System.Windows.Forms.ComboBox();
             this.smoothing_label = new System.Windows.Forms.Label();
-            this.display_size_panel = new System.Windows.Forms.Panel();
-            this.display_size_list = new System.Windows.Forms.ComboBox();
-            this.display_size_label = new System.Windows.Forms.Label();
-            this.high_resolution_panel = new System.Windows.Forms.Panel();
-            this.high_resolution_on_off = new System.Windows.Forms.CheckBox();
-            this.high_resolution_label = new System.Windows.Forms.Label();
             this.controls_settings = new System.Windows.Forms.TabPage();
             this.controls_tabcontrol = new System.Windows.Forms.TabControl();
             this.mouse_settings = new System.Windows.Forms.TabPage();
@@ -212,6 +206,7 @@
             this.exit_label = new System.Windows.Forms.Label();
             this.difficulty_panel = new System.Windows.Forms.Panel();
             this.difficulty_background = new System.Windows.Forms.Panel();
+            this.go_tutorial_btn_cp = new System.Windows.Forms.Button();
             this.close_difficulty_panel_l = new System.Windows.Forms.Button();
             this.custom_btn = new System.Windows.Forms.RadioButton();
             this.very_hard_btn = new System.Windows.Forms.RadioButton();
@@ -225,38 +220,6 @@
             this.change_logs_close_btn_r = new System.Windows.Forms.Button();
             this.change_logs_background = new System.Windows.Forms.Panel();
             this.changes_list = new System.Windows.Forms.ListBox();
-            this.game_mode_panel = new System.Windows.Forms.Panel();
-            this.game_mode_background = new System.Windows.Forms.Panel();
-            this.multiplayer = new System.Windows.Forms.RadioButton();
-            this.singleplayer = new System.Windows.Forms.RadioButton();
-            this.tutorial1_btn_cp = new System.Windows.Forms.RadioButton();
-            this.close_game_mode_panel_l = new System.Windows.Forms.Button();
-            this.select_mode_btn_r = new System.Windows.Forms.Button();
-            this.multiplayer_panel = new System.Windows.Forms.Panel();
-            this.multiplayer_background = new System.Windows.Forms.Panel();
-            this.test_vesion_label = new System.Windows.Forms.Label();
-            this.connect_game_btn_cp = new System.Windows.Forms.Button();
-            this.host_btn_cp = new System.Windows.Forms.Button();
-            this.multiplayer_close_l = new System.Windows.Forms.Button();
-            this.host_panel = new System.Windows.Forms.Panel();
-            this.host_background = new System.Windows.Forms.Panel();
-            this.players_panel = new System.Windows.Forms.Panel();
-            this.top_panel = new System.Windows.Forms.Panel();
-            this.ip = new System.Windows.Forms.Label();
-            this.copy_ip_btn_c = new System.Windows.Forms.Button();
-            this.ip_label = new System.Windows.Forms.Label();
-            this.bottom_panel = new System.Windows.Forms.Panel();
-            this.start_multiplayer_game_r = new System.Windows.Forms.Button();
-            this.close_host_btn_l = new System.Windows.Forms.Button();
-            this.connect_panel = new System.Windows.Forms.Panel();
-            this.connect_background = new System.Windows.Forms.Panel();
-            this.need_password = new System.Windows.Forms.CheckBox();
-            this.password_connect_input = new System.Windows.Forms.TextBox();
-            this.password_input_label = new System.Windows.Forms.Label();
-            this.connect_btn_r = new System.Windows.Forms.Button();
-            this.ip_connect_input = new System.Windows.Forms.TextBox();
-            this.ip_input_label = new System.Windows.Forms.Label();
-            this.close_connect_btn_l = new System.Windows.Forms.Button();
             this.help_panel = new System.Windows.Forms.Panel();
             this.help_background = new System.Windows.Forms.Panel();
             this.create_translate_cp = new System.Windows.Forms.Button();
@@ -331,8 +294,6 @@
             this.fps_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fps)).BeginInit();
             this.smoothing_panel.SuspendLayout();
-            this.display_size_panel.SuspendLayout();
-            this.high_resolution_panel.SuspendLayout();
             this.controls_settings.SuspendLayout();
             this.controls_tabcontrol.SuspendLayout();
             this.mouse_settings.SuspendLayout();
@@ -368,16 +329,6 @@
             this.change_logs_panel.SuspendLayout();
             this.change_logs_bottom.SuspendLayout();
             this.change_logs_background.SuspendLayout();
-            this.game_mode_panel.SuspendLayout();
-            this.game_mode_background.SuspendLayout();
-            this.multiplayer_panel.SuspendLayout();
-            this.multiplayer_background.SuspendLayout();
-            this.host_panel.SuspendLayout();
-            this.host_background.SuspendLayout();
-            this.top_panel.SuspendLayout();
-            this.bottom_panel.SuspendLayout();
-            this.connect_panel.SuspendLayout();
-            this.connect_background.SuspendLayout();
             this.help_panel.SuspendLayout();
             this.help_background.SuspendLayout();
             this.account_panel.SuspendLayout();
@@ -508,7 +459,7 @@
             this.developers_panel.BackColor = System.Drawing.Color.DarkGray;
             this.developers_panel.Controls.Add(this.close_developers_panel);
             this.developers_panel.Controls.Add(this.developers_background);
-            this.developers_panel.Location = new System.Drawing.Point(1016, 12);
+            this.developers_panel.Location = new System.Drawing.Point(514, 297);
             this.developers_panel.Name = "developers_panel";
             this.developers_panel.Size = new System.Drawing.Size(496, 282);
             this.developers_panel.TabIndex = 50;
@@ -1308,8 +1259,6 @@
             this.video_settings.Controls.Add(this.gamma_panel);
             this.video_settings.Controls.Add(this.fps_panel);
             this.video_settings.Controls.Add(this.smoothing_panel);
-            this.video_settings.Controls.Add(this.display_size_panel);
-            this.video_settings.Controls.Add(this.high_resolution_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
             this.video_settings.Location = new System.Drawing.Point(4, 22);
             this.video_settings.Name = "video_settings";
@@ -1324,7 +1273,7 @@
             this.interface_size_panel.Controls.Add(this.interface_size_choice);
             this.interface_size_panel.Controls.Add(this.interface_size_label);
             this.interface_size_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.interface_size_panel.Location = new System.Drawing.Point(3, 309);
+            this.interface_size_panel.Location = new System.Drawing.Point(3, 241);
             this.interface_size_panel.Name = "interface_size_panel";
             this.interface_size_panel.Size = new System.Drawing.Size(459, 34);
             this.interface_size_panel.TabIndex = 8;
@@ -1356,7 +1305,7 @@
             this.scope_color_panel.Controls.Add(this.scope_color_choice);
             this.scope_color_panel.Controls.Add(this.scope_color_label);
             this.scope_color_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.scope_color_panel.Location = new System.Drawing.Point(3, 275);
+            this.scope_color_panel.Location = new System.Drawing.Point(3, 207);
             this.scope_color_panel.Name = "scope_color_panel";
             this.scope_color_panel.Size = new System.Drawing.Size(459, 34);
             this.scope_color_panel.TabIndex = 4;
@@ -1389,7 +1338,7 @@
             this.scope_panel.Controls.Add(this.scope_choice);
             this.scope_panel.Controls.Add(this.scope_label);
             this.scope_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.scope_panel.Location = new System.Drawing.Point(3, 241);
+            this.scope_panel.Location = new System.Drawing.Point(3, 173);
             this.scope_panel.Name = "scope_panel";
             this.scope_panel.Size = new System.Drawing.Size(459, 34);
             this.scope_panel.TabIndex = 3;
@@ -1421,7 +1370,7 @@
             this.show_minimap_panel.Controls.Add(this.show_minimap);
             this.show_minimap_panel.Controls.Add(this.show_minimap_label);
             this.show_minimap_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.show_minimap_panel.Location = new System.Drawing.Point(3, 207);
+            this.show_minimap_panel.Location = new System.Drawing.Point(3, 139);
             this.show_minimap_panel.Name = "show_minimap_panel";
             this.show_minimap_panel.Size = new System.Drawing.Size(459, 34);
             this.show_minimap_panel.TabIndex = 5;
@@ -1457,7 +1406,7 @@
             this.show_fps_panel.Controls.Add(this.show_fps_on_off);
             this.show_fps_panel.Controls.Add(this.show_fps_label);
             this.show_fps_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.show_fps_panel.Location = new System.Drawing.Point(3, 173);
+            this.show_fps_panel.Location = new System.Drawing.Point(3, 105);
             this.show_fps_panel.Name = "show_fps_panel";
             this.show_fps_panel.Size = new System.Drawing.Size(459, 34);
             this.show_fps_panel.TabIndex = 2;
@@ -1494,7 +1443,7 @@
             this.gamma_panel.Controls.Add(this.gamma_choice);
             this.gamma_panel.Controls.Add(this.gamma_label);
             this.gamma_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gamma_panel.Location = new System.Drawing.Point(3, 139);
+            this.gamma_panel.Location = new System.Drawing.Point(3, 71);
             this.gamma_panel.Name = "gamma_panel";
             this.gamma_panel.Size = new System.Drawing.Size(459, 34);
             this.gamma_panel.TabIndex = 9;
@@ -1529,7 +1478,7 @@
             this.fps_panel.Controls.Add(this.fps);
             this.fps_panel.Controls.Add(this.fps_label);
             this.fps_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fps_panel.Location = new System.Drawing.Point(3, 105);
+            this.fps_panel.Location = new System.Drawing.Point(3, 37);
             this.fps_panel.Name = "fps_panel";
             this.fps_panel.Size = new System.Drawing.Size(459, 34);
             this.fps_panel.TabIndex = 1;
@@ -1562,7 +1511,7 @@
             this.smoothing_panel.Controls.Add(this.smoothing_list);
             this.smoothing_panel.Controls.Add(this.smoothing_label);
             this.smoothing_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.smoothing_panel.Location = new System.Drawing.Point(3, 71);
+            this.smoothing_panel.Location = new System.Drawing.Point(3, 3);
             this.smoothing_panel.Name = "smoothing_panel";
             this.smoothing_panel.Size = new System.Drawing.Size(459, 34);
             this.smoothing_panel.TabIndex = 6;
@@ -1594,80 +1543,6 @@
             this.smoothing_label.TabIndex = 2;
             this.smoothing_label.Text = "Сглаживание";
             this.smoothing_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // display_size_panel
-            // 
-            this.display_size_panel.Controls.Add(this.display_size_list);
-            this.display_size_panel.Controls.Add(this.display_size_label);
-            this.display_size_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.display_size_panel.Location = new System.Drawing.Point(3, 37);
-            this.display_size_panel.Name = "display_size_panel";
-            this.display_size_panel.Size = new System.Drawing.Size(459, 34);
-            this.display_size_panel.TabIndex = 7;
-            // 
-            // display_size_list
-            // 
-            this.display_size_list.Dock = System.Windows.Forms.DockStyle.Right;
-            this.display_size_list.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.display_size_list.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.display_size_list.FormattingEnabled = true;
-            this.display_size_list.Items.AddRange(new object[] {
-            "256x128",
-            "512x256",
-            "640x480",
-            "800x600",
-            "1024x768",
-            "1280x720"});
-            this.display_size_list.Location = new System.Drawing.Point(346, 0);
-            this.display_size_list.Name = "display_size_list";
-            this.display_size_list.Size = new System.Drawing.Size(113, 32);
-            this.display_size_list.TabIndex = 3;
-            this.display_size_list.TabStop = false;
-            this.display_size_list.SelectedIndexChanged += new System.EventHandler(this.Display_size_SelectedIndexChanged);
-            // 
-            // display_size_label
-            // 
-            this.display_size_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.display_size_label.Location = new System.Drawing.Point(0, 0);
-            this.display_size_label.Name = "display_size_label";
-            this.display_size_label.Size = new System.Drawing.Size(273, 34);
-            this.display_size_label.TabIndex = 2;
-            this.display_size_label.Text = "Разрешение экрана";
-            this.display_size_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // high_resolution_panel
-            // 
-            this.high_resolution_panel.Controls.Add(this.high_resolution_on_off);
-            this.high_resolution_panel.Controls.Add(this.high_resolution_label);
-            this.high_resolution_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.high_resolution_panel.Location = new System.Drawing.Point(3, 3);
-            this.high_resolution_panel.Name = "high_resolution_panel";
-            this.high_resolution_panel.Size = new System.Drawing.Size(459, 34);
-            this.high_resolution_panel.TabIndex = 0;
-            // 
-            // high_resolution_on_off
-            // 
-            this.high_resolution_on_off.Appearance = System.Windows.Forms.Appearance.Button;
-            this.high_resolution_on_off.Dock = System.Windows.Forms.DockStyle.Right;
-            this.high_resolution_on_off.Location = new System.Drawing.Point(389, 0);
-            this.high_resolution_on_off.Name = "high_resolution_on_off";
-            this.high_resolution_on_off.Size = new System.Drawing.Size(70, 34);
-            this.high_resolution_on_off.TabIndex = 3;
-            this.high_resolution_on_off.TabStop = false;
-            this.high_resolution_on_off.Text = "Вкл.";
-            this.high_resolution_on_off.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.high_resolution_on_off.UseVisualStyleBackColor = false;
-            this.high_resolution_on_off.CheckedChanged += new System.EventHandler(this.High_resolution_on_off_CheckedChanged);
-            // 
-            // high_resolution_label
-            // 
-            this.high_resolution_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.high_resolution_label.Location = new System.Drawing.Point(0, 0);
-            this.high_resolution_label.Name = "high_resolution_label";
-            this.high_resolution_label.Size = new System.Drawing.Size(226, 34);
-            this.high_resolution_label.TabIndex = 2;
-            this.high_resolution_label.Text = "Высокое разрешение";
-            this.high_resolution_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // controls_settings
             // 
@@ -2489,7 +2364,7 @@
             // 
             this.exit_panel.BackColor = System.Drawing.Color.DarkGray;
             this.exit_panel.Controls.Add(this.exit_background);
-            this.exit_panel.Location = new System.Drawing.Point(1016, 12);
+            this.exit_panel.Location = new System.Drawing.Point(12, 582);
             this.exit_panel.Name = "exit_panel";
             this.exit_panel.Size = new System.Drawing.Size(496, 282);
             this.exit_panel.TabIndex = 54;
@@ -2570,6 +2445,7 @@
             // difficulty_background
             // 
             this.difficulty_background.BackColor = System.Drawing.Color.Black;
+            this.difficulty_background.Controls.Add(this.go_tutorial_btn_cp);
             this.difficulty_background.Controls.Add(this.close_difficulty_panel_l);
             this.difficulty_background.Controls.Add(this.custom_btn);
             this.difficulty_background.Controls.Add(this.very_hard_btn);
@@ -2582,6 +2458,21 @@
             this.difficulty_background.Name = "difficulty_background";
             this.difficulty_background.Size = new System.Drawing.Size(490, 276);
             this.difficulty_background.TabIndex = 45;
+            // 
+            // go_tutorial_btn_cp
+            // 
+            this.go_tutorial_btn_cp.AutoSize = true;
+            this.go_tutorial_btn_cp.BackColor = System.Drawing.Color.Black;
+            this.go_tutorial_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            this.go_tutorial_btn_cp.ForeColor = System.Drawing.Color.White;
+            this.go_tutorial_btn_cp.Location = new System.Drawing.Point(194, 226);
+            this.go_tutorial_btn_cp.Name = "go_tutorial_btn_cp";
+            this.go_tutorial_btn_cp.Size = new System.Drawing.Size(140, 41);
+            this.go_tutorial_btn_cp.TabIndex = 59;
+            this.go_tutorial_btn_cp.TabStop = false;
+            this.go_tutorial_btn_cp.Text = "Обучение";
+            this.go_tutorial_btn_cp.UseVisualStyleBackColor = false;
+            this.go_tutorial_btn_cp.Click += new System.EventHandler(this.Go_tutorial_btn_cp_Click);
             // 
             // close_difficulty_panel_l
             // 
@@ -2674,7 +2565,7 @@
             // 
             this.difficulty_label.AutoEllipsis = true;
             this.difficulty_label.ForeColor = System.Drawing.Color.White;
-            this.difficulty_label.Location = new System.Drawing.Point(142, 20);
+            this.difficulty_label.Location = new System.Drawing.Point(142, 19);
             this.difficulty_label.Name = "difficulty_label";
             this.difficulty_label.Size = new System.Drawing.Size(345, 194);
             this.difficulty_label.TabIndex = 51;
@@ -2757,416 +2648,6 @@
             this.changes_list.TabStop = false;
             this.changes_list.Enter += new System.EventHandler(this.Changes_list_Enter);
             // 
-            // game_mode_panel
-            // 
-            this.game_mode_panel.BackColor = System.Drawing.Color.DarkGray;
-            this.game_mode_panel.Controls.Add(this.game_mode_background);
-            this.game_mode_panel.Location = new System.Drawing.Point(1016, 12);
-            this.game_mode_panel.Name = "game_mode_panel";
-            this.game_mode_panel.Size = new System.Drawing.Size(496, 282);
-            this.game_mode_panel.TabIndex = 58;
-            this.game_mode_panel.Visible = false;
-            // 
-            // game_mode_background
-            // 
-            this.game_mode_background.BackColor = System.Drawing.Color.Black;
-            this.game_mode_background.Controls.Add(this.multiplayer);
-            this.game_mode_background.Controls.Add(this.singleplayer);
-            this.game_mode_background.Controls.Add(this.tutorial1_btn_cp);
-            this.game_mode_background.Controls.Add(this.close_game_mode_panel_l);
-            this.game_mode_background.Controls.Add(this.select_mode_btn_r);
-            this.game_mode_background.Location = new System.Drawing.Point(3, 3);
-            this.game_mode_background.Name = "game_mode_background";
-            this.game_mode_background.Size = new System.Drawing.Size(490, 276);
-            this.game_mode_background.TabIndex = 45;
-            // 
-            // multiplayer
-            // 
-            this.multiplayer.Appearance = System.Windows.Forms.Appearance.Button;
-            this.multiplayer.BackgroundImage = global::SLIL.Properties.Resources.multiplayer;
-            this.multiplayer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.multiplayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.multiplayer.ForeColor = System.Drawing.Color.White;
-            this.multiplayer.Image = global::SLIL.Properties.Resources.test;
-            this.multiplayer.Location = new System.Drawing.Point(270, 45);
-            this.multiplayer.Name = "multiplayer";
-            this.multiplayer.Size = new System.Drawing.Size(125, 125);
-            this.multiplayer.TabIndex = 54;
-            this.multiplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.multiplayer.UseVisualStyleBackColor = false;
-            // 
-            // singleplayer
-            // 
-            this.singleplayer.Appearance = System.Windows.Forms.Appearance.Button;
-            this.singleplayer.BackgroundImage = global::SLIL.Properties.Resources.singleplayer;
-            this.singleplayer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.singleplayer.Checked = true;
-            this.singleplayer.ForeColor = System.Drawing.Color.White;
-            this.singleplayer.Location = new System.Drawing.Point(95, 45);
-            this.singleplayer.Name = "singleplayer";
-            this.singleplayer.Size = new System.Drawing.Size(125, 125);
-            this.singleplayer.TabIndex = 53;
-            this.singleplayer.TabStop = true;
-            this.singleplayer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.singleplayer.UseVisualStyleBackColor = false;
-            // 
-            // tutorial1_btn_cp
-            // 
-            this.tutorial1_btn_cp.Appearance = System.Windows.Forms.Appearance.Button;
-            this.tutorial1_btn_cp.AutoSize = true;
-            this.tutorial1_btn_cp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.tutorial1_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.tutorial1_btn_cp.ForeColor = System.Drawing.Color.White;
-            this.tutorial1_btn_cp.Location = new System.Drawing.Point(175, 184);
-            this.tutorial1_btn_cp.Name = "tutorial1_btn_cp";
-            this.tutorial1_btn_cp.Size = new System.Drawing.Size(139, 39);
-            this.tutorial1_btn_cp.TabIndex = 61;
-            this.tutorial1_btn_cp.Text = "Обучение";
-            this.tutorial1_btn_cp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.tutorial1_btn_cp.UseVisualStyleBackColor = false;
-            // 
-            // close_game_mode_panel_l
-            // 
-            this.close_game_mode_panel_l.AutoSize = true;
-            this.close_game_mode_panel_l.BackColor = System.Drawing.Color.Black;
-            this.close_game_mode_panel_l.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.close_game_mode_panel_l.ForeColor = System.Drawing.Color.White;
-            this.close_game_mode_panel_l.Location = new System.Drawing.Point(10, 226);
-            this.close_game_mode_panel_l.Name = "close_game_mode_panel_l";
-            this.close_game_mode_panel_l.Size = new System.Drawing.Size(130, 41);
-            this.close_game_mode_panel_l.TabIndex = 58;
-            this.close_game_mode_panel_l.TabStop = false;
-            this.close_game_mode_panel_l.Text = "Закрыть";
-            this.close_game_mode_panel_l.UseVisualStyleBackColor = false;
-            this.close_game_mode_panel_l.Click += new System.EventHandler(this.Close_game_mode__panel_Click);
-            // 
-            // select_mode_btn_r
-            // 
-            this.select_mode_btn_r.AutoSize = true;
-            this.select_mode_btn_r.BackColor = System.Drawing.Color.Black;
-            this.select_mode_btn_r.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.select_mode_btn_r.ForeColor = System.Drawing.Color.White;
-            this.select_mode_btn_r.Location = new System.Drawing.Point(340, 226);
-            this.select_mode_btn_r.Name = "select_mode_btn_r";
-            this.select_mode_btn_r.Size = new System.Drawing.Size(140, 41);
-            this.select_mode_btn_r.TabIndex = 45;
-            this.select_mode_btn_r.TabStop = false;
-            this.select_mode_btn_r.Text = "Выбрать";
-            this.select_mode_btn_r.UseVisualStyleBackColor = false;
-            this.select_mode_btn_r.Click += new System.EventHandler(this.Select_mode_btn_Click);
-            // 
-            // multiplayer_panel
-            // 
-            this.multiplayer_panel.BackColor = System.Drawing.Color.DarkGray;
-            this.multiplayer_panel.Controls.Add(this.multiplayer_background);
-            this.multiplayer_panel.Location = new System.Drawing.Point(12, 582);
-            this.multiplayer_panel.Name = "multiplayer_panel";
-            this.multiplayer_panel.Size = new System.Drawing.Size(496, 282);
-            this.multiplayer_panel.TabIndex = 59;
-            this.multiplayer_panel.Visible = false;
-            // 
-            // multiplayer_background
-            // 
-            this.multiplayer_background.BackColor = System.Drawing.Color.Black;
-            this.multiplayer_background.Controls.Add(this.test_vesion_label);
-            this.multiplayer_background.Controls.Add(this.connect_game_btn_cp);
-            this.multiplayer_background.Controls.Add(this.host_btn_cp);
-            this.multiplayer_background.Controls.Add(this.multiplayer_close_l);
-            this.multiplayer_background.Location = new System.Drawing.Point(3, 3);
-            this.multiplayer_background.Name = "multiplayer_background";
-            this.multiplayer_background.Size = new System.Drawing.Size(490, 276);
-            this.multiplayer_background.TabIndex = 45;
-            // 
-            // test_vesion_label
-            // 
-            this.test_vesion_label.AutoSize = true;
-            this.test_vesion_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.test_vesion_label.ForeColor = System.Drawing.Color.White;
-            this.test_vesion_label.Location = new System.Drawing.Point(146, 216);
-            this.test_vesion_label.Name = "test_vesion_label";
-            this.test_vesion_label.Size = new System.Drawing.Size(337, 51);
-            this.test_vesion_label.TabIndex = 63;
-            this.test_vesion_label.Text = "TEST VERSION";
-            this.test_vesion_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // connect_game_btn_cp
-            // 
-            this.connect_game_btn_cp.AutoSize = true;
-            this.connect_game_btn_cp.BackColor = System.Drawing.Color.Black;
-            this.connect_game_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
-            this.connect_game_btn_cp.ForeColor = System.Drawing.Color.White;
-            this.connect_game_btn_cp.Location = new System.Drawing.Point(107, 124);
-            this.connect_game_btn_cp.Name = "connect_game_btn_cp";
-            this.connect_game_btn_cp.Size = new System.Drawing.Size(258, 47);
-            this.connect_game_btn_cp.TabIndex = 62;
-            this.connect_game_btn_cp.TabStop = false;
-            this.connect_game_btn_cp.Text = "Присоединиться";
-            this.connect_game_btn_cp.UseVisualStyleBackColor = false;
-            this.connect_game_btn_cp.Click += new System.EventHandler(this.Connect_game_btn_Click);
-            // 
-            // host_btn_cp
-            // 
-            this.host_btn_cp.AutoSize = true;
-            this.host_btn_cp.BackColor = System.Drawing.Color.Black;
-            this.host_btn_cp.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
-            this.host_btn_cp.ForeColor = System.Drawing.Color.White;
-            this.host_btn_cp.Location = new System.Drawing.Point(107, 60);
-            this.host_btn_cp.Name = "host_btn_cp";
-            this.host_btn_cp.Size = new System.Drawing.Size(240, 47);
-            this.host_btn_cp.TabIndex = 59;
-            this.host_btn_cp.TabStop = false;
-            this.host_btn_cp.Text = "Создать игру";
-            this.host_btn_cp.UseVisualStyleBackColor = false;
-            this.host_btn_cp.Click += new System.EventHandler(this.Host_btn_Click);
-            // 
-            // multiplayer_close_l
-            // 
-            this.multiplayer_close_l.AutoSize = true;
-            this.multiplayer_close_l.BackColor = System.Drawing.Color.Black;
-            this.multiplayer_close_l.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.multiplayer_close_l.ForeColor = System.Drawing.Color.White;
-            this.multiplayer_close_l.Location = new System.Drawing.Point(10, 226);
-            this.multiplayer_close_l.Name = "multiplayer_close_l";
-            this.multiplayer_close_l.Size = new System.Drawing.Size(130, 41);
-            this.multiplayer_close_l.TabIndex = 58;
-            this.multiplayer_close_l.TabStop = false;
-            this.multiplayer_close_l.Text = "Назад";
-            this.multiplayer_close_l.UseVisualStyleBackColor = false;
-            this.multiplayer_close_l.Click += new System.EventHandler(this.Multiplayer_close_Click);
-            // 
-            // host_panel
-            // 
-            this.host_panel.BackColor = System.Drawing.Color.DarkGray;
-            this.host_panel.Controls.Add(this.host_background);
-            this.host_panel.Location = new System.Drawing.Point(514, 297);
-            this.host_panel.Name = "host_panel";
-            this.host_panel.Size = new System.Drawing.Size(496, 282);
-            this.host_panel.TabIndex = 60;
-            this.host_panel.Visible = false;
-            // 
-            // host_background
-            // 
-            this.host_background.BackColor = System.Drawing.Color.Black;
-            this.host_background.Controls.Add(this.players_panel);
-            this.host_background.Controls.Add(this.top_panel);
-            this.host_background.Controls.Add(this.bottom_panel);
-            this.host_background.Location = new System.Drawing.Point(3, 3);
-            this.host_background.Name = "host_background";
-            this.host_background.Size = new System.Drawing.Size(490, 276);
-            this.host_background.TabIndex = 45;
-            // 
-            // players_panel
-            // 
-            this.players_panel.AutoScroll = true;
-            this.players_panel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.players_panel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.players_panel.Location = new System.Drawing.Point(0, 56);
-            this.players_panel.Name = "players_panel";
-            this.players_panel.Size = new System.Drawing.Size(490, 164);
-            this.players_panel.TabIndex = 54;
-            // 
-            // top_panel
-            // 
-            this.top_panel.Controls.Add(this.ip);
-            this.top_panel.Controls.Add(this.copy_ip_btn_c);
-            this.top_panel.Controls.Add(this.ip_label);
-            this.top_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.top_panel.Location = new System.Drawing.Point(0, 0);
-            this.top_panel.Name = "top_panel";
-            this.top_panel.Size = new System.Drawing.Size(490, 56);
-            this.top_panel.TabIndex = 53;
-            // 
-            // ip
-            // 
-            this.ip.AutoEllipsis = true;
-            this.ip.Dock = System.Windows.Forms.DockStyle.Left;
-            this.ip.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.ip.ForeColor = System.Drawing.Color.White;
-            this.ip.Location = new System.Drawing.Point(56, 0);
-            this.ip.Name = "ip";
-            this.ip.Size = new System.Drawing.Size(372, 56);
-            this.ip.TabIndex = 54;
-            this.ip.Text = "000.000.000.000:0000";
-            this.ip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // copy_ip_btn_c
-            // 
-            this.copy_ip_btn_c.BackColor = System.Drawing.Color.Black;
-            this.copy_ip_btn_c.BackgroundImage = global::SLIL.Properties.Resources.copy;
-            this.copy_ip_btn_c.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.copy_ip_btn_c.Dock = System.Windows.Forms.DockStyle.Right;
-            this.copy_ip_btn_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.copy_ip_btn_c.ForeColor = System.Drawing.Color.White;
-            this.copy_ip_btn_c.Location = new System.Drawing.Point(434, 0);
-            this.copy_ip_btn_c.Name = "copy_ip_btn_c";
-            this.copy_ip_btn_c.Size = new System.Drawing.Size(56, 56);
-            this.copy_ip_btn_c.TabIndex = 53;
-            this.copy_ip_btn_c.TabStop = false;
-            this.copy_ip_btn_c.UseVisualStyleBackColor = false;
-            this.copy_ip_btn_c.Click += new System.EventHandler(this.Copy_ip_btn_Click);
-            // 
-            // ip_label
-            // 
-            this.ip_label.AutoEllipsis = true;
-            this.ip_label.Dock = System.Windows.Forms.DockStyle.Left;
-            this.ip_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.ip_label.ForeColor = System.Drawing.Color.White;
-            this.ip_label.Location = new System.Drawing.Point(0, 0);
-            this.ip_label.Name = "ip_label";
-            this.ip_label.Size = new System.Drawing.Size(56, 56);
-            this.ip_label.TabIndex = 52;
-            this.ip_label.Text = "IP:";
-            this.ip_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // bottom_panel
-            // 
-            this.bottom_panel.Controls.Add(this.start_multiplayer_game_r);
-            this.bottom_panel.Controls.Add(this.close_host_btn_l);
-            this.bottom_panel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.bottom_panel.Location = new System.Drawing.Point(0, 220);
-            this.bottom_panel.Name = "bottom_panel";
-            this.bottom_panel.Size = new System.Drawing.Size(490, 56);
-            this.bottom_panel.TabIndex = 55;
-            // 
-            // start_multiplayer_game_r
-            // 
-            this.start_multiplayer_game_r.AutoSize = true;
-            this.start_multiplayer_game_r.BackColor = System.Drawing.Color.Black;
-            this.start_multiplayer_game_r.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.start_multiplayer_game_r.ForeColor = System.Drawing.Color.White;
-            this.start_multiplayer_game_r.Location = new System.Drawing.Point(340, 6);
-            this.start_multiplayer_game_r.Name = "start_multiplayer_game_r";
-            this.start_multiplayer_game_r.Size = new System.Drawing.Size(140, 41);
-            this.start_multiplayer_game_r.TabIndex = 60;
-            this.start_multiplayer_game_r.TabStop = false;
-            this.start_multiplayer_game_r.Text = "Играть";
-            this.start_multiplayer_game_r.UseVisualStyleBackColor = false;
-            this.start_multiplayer_game_r.Click += new System.EventHandler(this.Start_multiplayer_game_Click);
-            // 
-            // close_host_btn_l
-            // 
-            this.close_host_btn_l.AutoSize = true;
-            this.close_host_btn_l.BackColor = System.Drawing.Color.Black;
-            this.close_host_btn_l.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.close_host_btn_l.ForeColor = System.Drawing.Color.White;
-            this.close_host_btn_l.Location = new System.Drawing.Point(10, 6);
-            this.close_host_btn_l.Name = "close_host_btn_l";
-            this.close_host_btn_l.Size = new System.Drawing.Size(130, 41);
-            this.close_host_btn_l.TabIndex = 59;
-            this.close_host_btn_l.TabStop = false;
-            this.close_host_btn_l.Text = "Назад";
-            this.close_host_btn_l.UseVisualStyleBackColor = false;
-            this.close_host_btn_l.Click += new System.EventHandler(this.Close_host_btn_Click);
-            // 
-            // connect_panel
-            // 
-            this.connect_panel.BackColor = System.Drawing.Color.DarkGray;
-            this.connect_panel.Controls.Add(this.connect_background);
-            this.connect_panel.Location = new System.Drawing.Point(514, 582);
-            this.connect_panel.Name = "connect_panel";
-            this.connect_panel.Size = new System.Drawing.Size(496, 282);
-            this.connect_panel.TabIndex = 61;
-            this.connect_panel.Visible = false;
-            // 
-            // connect_background
-            // 
-            this.connect_background.BackColor = System.Drawing.Color.Black;
-            this.connect_background.Controls.Add(this.need_password);
-            this.connect_background.Controls.Add(this.password_connect_input);
-            this.connect_background.Controls.Add(this.password_input_label);
-            this.connect_background.Controls.Add(this.connect_btn_r);
-            this.connect_background.Controls.Add(this.ip_connect_input);
-            this.connect_background.Controls.Add(this.ip_input_label);
-            this.connect_background.Controls.Add(this.close_connect_btn_l);
-            this.connect_background.Location = new System.Drawing.Point(3, 3);
-            this.connect_background.Name = "connect_background";
-            this.connect_background.Size = new System.Drawing.Size(490, 276);
-            this.connect_background.TabIndex = 45;
-            // 
-            // need_password
-            // 
-            this.need_password.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.need_password.ForeColor = System.Drawing.Color.White;
-            this.need_password.Location = new System.Drawing.Point(6, 157);
-            this.need_password.Name = "need_password";
-            this.need_password.Size = new System.Drawing.Size(199, 34);
-            this.need_password.TabIndex = 65;
-            this.need_password.Text = "Нужен пароль";
-            this.need_password.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.need_password.UseVisualStyleBackColor = true;
-            this.need_password.CheckedChanged += new System.EventHandler(this.Need_password_CheckedChanged);
-            // 
-            // password_connect_input
-            // 
-            this.password_connect_input.BackColor = System.Drawing.Color.Gray;
-            this.password_connect_input.Enabled = false;
-            this.password_connect_input.Location = new System.Drawing.Point(211, 111);
-            this.password_connect_input.MaxLength = 10;
-            this.password_connect_input.Name = "password_connect_input";
-            this.password_connect_input.Size = new System.Drawing.Size(217, 29);
-            this.password_connect_input.TabIndex = 64;
-            this.password_connect_input.TabStop = false;
-            // 
-            // password_input_label
-            // 
-            this.password_input_label.ForeColor = System.Drawing.Color.White;
-            this.password_input_label.Location = new System.Drawing.Point(6, 109);
-            this.password_input_label.Name = "password_input_label";
-            this.password_input_label.Size = new System.Drawing.Size(199, 34);
-            this.password_input_label.TabIndex = 63;
-            this.password_input_label.Text = "Пароль:";
-            this.password_input_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // connect_btn_r
-            // 
-            this.connect_btn_r.AutoSize = true;
-            this.connect_btn_r.BackColor = System.Drawing.Color.Black;
-            this.connect_btn_r.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.connect_btn_r.ForeColor = System.Drawing.Color.White;
-            this.connect_btn_r.Location = new System.Drawing.Point(240, 226);
-            this.connect_btn_r.Name = "connect_btn_r";
-            this.connect_btn_r.Size = new System.Drawing.Size(240, 41);
-            this.connect_btn_r.TabIndex = 62;
-            this.connect_btn_r.TabStop = false;
-            this.connect_btn_r.Text = "Присоединиться";
-            this.connect_btn_r.UseVisualStyleBackColor = false;
-            this.connect_btn_r.Click += new System.EventHandler(this.Connect_btn_Click);
-            // 
-            // ip_connect_input
-            // 
-            this.ip_connect_input.Location = new System.Drawing.Point(211, 67);
-            this.ip_connect_input.MaxLength = 24;
-            this.ip_connect_input.Name = "ip_connect_input";
-            this.ip_connect_input.Size = new System.Drawing.Size(217, 29);
-            this.ip_connect_input.TabIndex = 61;
-            this.ip_connect_input.TabStop = false;
-            this.ip_connect_input.Text = "000.000.000.000:0000";
-            // 
-            // ip_input_label
-            // 
-            this.ip_input_label.ForeColor = System.Drawing.Color.White;
-            this.ip_input_label.Location = new System.Drawing.Point(6, 65);
-            this.ip_input_label.Name = "ip_input_label";
-            this.ip_input_label.Size = new System.Drawing.Size(199, 34);
-            this.ip_input_label.TabIndex = 60;
-            this.ip_input_label.Text = "IP игры:";
-            this.ip_input_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // close_connect_btn_l
-            // 
-            this.close_connect_btn_l.AutoSize = true;
-            this.close_connect_btn_l.BackColor = System.Drawing.Color.Black;
-            this.close_connect_btn_l.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.close_connect_btn_l.ForeColor = System.Drawing.Color.White;
-            this.close_connect_btn_l.Location = new System.Drawing.Point(10, 226);
-            this.close_connect_btn_l.Name = "close_connect_btn_l";
-            this.close_connect_btn_l.Size = new System.Drawing.Size(130, 41);
-            this.close_connect_btn_l.TabIndex = 58;
-            this.close_connect_btn_l.TabStop = false;
-            this.close_connect_btn_l.Text = "Назад";
-            this.close_connect_btn_l.UseVisualStyleBackColor = false;
-            this.close_connect_btn_l.Click += new System.EventHandler(this.Close_connect_btn_Click);
-            // 
             // help_panel
             // 
             this.help_panel.BackColor = System.Drawing.Color.DarkGray;
@@ -3236,7 +2717,7 @@
             // account_btn_c
             // 
             this.account_btn_c.BackColor = System.Drawing.Color.Black;
-            this.account_btn_c.BackgroundImage = global::SLIL.Properties.Resources.singleplayer;
+            this.account_btn_c.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("account_btn_c.BackgroundImage")));
             this.account_btn_c.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.account_btn_c.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
             this.account_btn_c.ForeColor = System.Drawing.Color.White;
@@ -3252,7 +2733,7 @@
             // 
             this.account_panel.BackColor = System.Drawing.Color.DarkGray;
             this.account_panel.Controls.Add(this.account_background);
-            this.account_panel.Location = new System.Drawing.Point(1016, 12);
+            this.account_panel.Location = new System.Drawing.Point(514, 582);
             this.account_panel.Name = "account_panel";
             this.account_panel.Size = new System.Drawing.Size(496, 282);
             this.account_panel.TabIndex = 64;
@@ -3527,18 +3008,13 @@
             this.BackgroundImage = global::SLIL.Properties.Resources.main_menu_background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1284, 896);
-            this.Controls.Add(this.developers_panel);
             this.Controls.Add(this.account_panel);
             this.Controls.Add(this.SLIL_v0_1_btn_c);
             this.Controls.Add(this.errors_panel);
             this.Controls.Add(this.exit_panel);
             this.Controls.Add(this.hilf_mir_panel);
             this.Controls.Add(this.account_btn_c);
-            this.Controls.Add(this.game_mode_panel);
             this.Controls.Add(this.help_panel);
-            this.Controls.Add(this.connect_panel);
-            this.Controls.Add(this.host_panel);
-            this.Controls.Add(this.multiplayer_panel);
             this.Controls.Add(this.press_any_btn_panel);
             this.Controls.Add(this.buttons_panel);
             this.Controls.Add(this.difficulty_panel);
@@ -3546,6 +3022,7 @@
             this.Controls.Add(this.settings_panel);
             this.Controls.Add(this.lose_focus);
             this.Controls.Add(this.change_logs_panel);
+            this.Controls.Add(this.developers_panel);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -3625,8 +3102,6 @@
             this.fps_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fps)).EndInit();
             this.smoothing_panel.ResumeLayout(false);
-            this.display_size_panel.ResumeLayout(false);
-            this.high_resolution_panel.ResumeLayout(false);
             this.controls_settings.ResumeLayout(false);
             this.controls_tabcontrol.ResumeLayout(false);
             this.mouse_settings.ResumeLayout(false);
@@ -3667,20 +3142,6 @@
             this.change_logs_bottom.ResumeLayout(false);
             this.change_logs_bottom.PerformLayout();
             this.change_logs_background.ResumeLayout(false);
-            this.game_mode_panel.ResumeLayout(false);
-            this.game_mode_background.ResumeLayout(false);
-            this.game_mode_background.PerformLayout();
-            this.multiplayer_panel.ResumeLayout(false);
-            this.multiplayer_background.ResumeLayout(false);
-            this.multiplayer_background.PerformLayout();
-            this.host_panel.ResumeLayout(false);
-            this.host_background.ResumeLayout(false);
-            this.top_panel.ResumeLayout(false);
-            this.bottom_panel.ResumeLayout(false);
-            this.bottom_panel.PerformLayout();
-            this.connect_panel.ResumeLayout(false);
-            this.connect_background.ResumeLayout(false);
-            this.connect_background.PerformLayout();
             this.help_panel.ResumeLayout(false);
             this.help_background.ResumeLayout(false);
             this.help_background.PerformLayout();
@@ -3743,9 +3204,6 @@
         private System.Windows.Forms.Button check_update_btn;
         private System.Windows.Forms.TabPage video_settings;
         private System.Windows.Forms.Panel fps_panel;
-        private System.Windows.Forms.Panel high_resolution_panel;
-        private System.Windows.Forms.CheckBox high_resolution_on_off;
-        private System.Windows.Forms.Label high_resolution_label;
         private System.Windows.Forms.Label fps_label;
         private System.Windows.Forms.TrackBar fps;
         private System.Windows.Forms.Panel show_fps_panel;
@@ -3833,33 +3291,6 @@
         private System.Windows.Forms.Button change_logs_close_btn_r;
         private System.Windows.Forms.Panel change_logs_background;
         private System.Windows.Forms.ListBox changes_list;
-        private System.Windows.Forms.Panel game_mode_panel;
-        private System.Windows.Forms.Panel game_mode_background;
-        private System.Windows.Forms.Button close_game_mode_panel_l;
-        private System.Windows.Forms.RadioButton multiplayer;
-        private System.Windows.Forms.RadioButton singleplayer;
-        private System.Windows.Forms.Button select_mode_btn_r;
-        private System.Windows.Forms.Panel multiplayer_panel;
-        private System.Windows.Forms.Panel multiplayer_background;
-        private System.Windows.Forms.Button multiplayer_close_l;
-        private System.Windows.Forms.Button host_btn_cp;
-        private System.Windows.Forms.Button connect_game_btn_cp;
-        private System.Windows.Forms.Panel host_panel;
-        private System.Windows.Forms.Panel host_background;
-        private System.Windows.Forms.Panel top_panel;
-        private System.Windows.Forms.Button copy_ip_btn_c;
-        private System.Windows.Forms.Label ip_label;
-        private System.Windows.Forms.Label ip;
-        private System.Windows.Forms.Panel players_panel;
-        private System.Windows.Forms.Panel bottom_panel;
-        private System.Windows.Forms.Button close_host_btn_l;
-        private System.Windows.Forms.Button start_multiplayer_game_r;
-        private System.Windows.Forms.Panel connect_panel;
-        private System.Windows.Forms.Panel connect_background;
-        private System.Windows.Forms.Button connect_btn_r;
-        private System.Windows.Forms.TextBox ip_connect_input;
-        private System.Windows.Forms.Label ip_input_label;
-        private System.Windows.Forms.Button close_connect_btn_l;
         private System.Windows.Forms.Panel select_item_panel;
         private System.Windows.Forms.Button select_item_btn_c;
         private System.Windows.Forms.Label select_item_label;
@@ -3878,9 +3309,6 @@
         private System.Windows.Forms.Panel smoothing_panel;
         private System.Windows.Forms.Label smoothing_label;
         private System.Windows.Forms.ComboBox smoothing_list;
-        private System.Windows.Forms.Panel display_size_panel;
-        private System.Windows.Forms.ComboBox display_size_list;
-        private System.Windows.Forms.Label display_size_label;
         private System.Windows.Forms.Panel help_panel;
         private System.Windows.Forms.Panel help_background;
         private System.Windows.Forms.Button help_close_l;
@@ -3921,7 +3349,6 @@
         private System.Windows.Forms.Panel gamma_panel;
         private System.Windows.Forms.TrackBar gamma_choice;
         private System.Windows.Forms.Label gamma_label;
-        private System.Windows.Forms.RadioButton tutorial1_btn_cp;
         private System.Windows.Forms.Panel errors_background;
         private System.Windows.Forms.Panel localization_errors_background;
         private System.Windows.Forms.PictureBox localization_error_icon;
@@ -3939,10 +3366,6 @@
         private System.Windows.Forms.Label darsin_about;
         private System.Windows.Forms.Button darsin_tg;
         private System.Windows.Forms.Label darsin_name;
-        private System.Windows.Forms.Label test_vesion_label;
-        private System.Windows.Forms.CheckBox need_password;
-        private System.Windows.Forms.TextBox password_connect_input;
-        private System.Windows.Forms.Label password_input_label;
         private System.Windows.Forms.Panel inventory_panel;
         private System.Windows.Forms.Label inventory_label;
         private System.Windows.Forms.Button inventory_btn_c;
@@ -3959,5 +3382,6 @@
         private System.Windows.Forms.Panel sound_panel;
         private System.Windows.Forms.CheckBox sounds_on_off;
         private System.Windows.Forms.Label sounds_label;
+        private System.Windows.Forms.Button go_tutorial_btn_cp;
     }
 }

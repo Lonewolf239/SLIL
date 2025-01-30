@@ -597,7 +597,7 @@ namespace SLIL
             // 
             // medical_kit_icon
             // 
-            this.medical_kit_icon.Image = global::SLIL.Properties.Resources.missing;
+            this.medical_kit_icon.Image = global::SLIL.Properties.Resources.super_medical_kit_icon;
             this.medical_kit_icon.Location = new System.Drawing.Point(144, 348);
             this.medical_kit_icon.Name = "medical_kit_icon";
             this.medical_kit_icon.Size = new System.Drawing.Size(50, 50);

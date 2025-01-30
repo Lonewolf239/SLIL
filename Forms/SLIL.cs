@@ -1,21 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
+using Play_Sound;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
+using SLIL.Classes;
+using System.Drawing;
+using Convert_Bitmap;
+using System.Threading;
+using SLIL.UserControls;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using Convert_Bitmap;
-using System.IO;
 using System.Drawing.Drawing2D;
-using System.Threading;
-using SLIL.Classes;
-using SLIL.UserControls;
-using Play_Sound;
+using System.Collections.Generic;
 using SLIL.UserControls.Inventory;
+using System.Runtime.InteropServices;
 
 namespace SLIL
 {
@@ -41,13 +41,9 @@ namespace SLIL
         public double CUSTOM_X, CUSTOM_Y;
         private readonly Random rand;
         private const int texWidth = 128;
-        private readonly int[] SCREEN_HEIGHT = { 128, 128 * 2 }, SCREEN_WIDTH = { 228, 228 * 2 };
-        private int display_size = 0, center_x = 0, center_y = 0, cursor_x = 0, cursor_y = 0;
-        private readonly int[,] DISPLAY_SIZE =
-        {
-            { 228, 128 },
-            { 456, 256 }
-        };
+        private readonly int SCREEN_HEIGHT = 128, SCREEN_WIDTH = 228;
+        private int center_x = 0, center_y = 0, cursor_x = 0, cursor_y = 0;
+        private readonly int[] DISPLAY_SIZE = { 228, 128 };
         public static int resolution = 0, smoothing = 1, interface_size = 2;
         private readonly SmoothingMode[] smoothingModes =
         {
@@ -335,7 +331,7 @@ namespace SLIL
             { typeof(FirstAidKit), Properties.Resources.first_aid },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
             { typeof(Helmet), Properties.Resources.helmet_count_icon },
-            { typeof(MedicalKit), Properties.Resources.missing },
+            { typeof(MedicalKit), Properties.Resources.super_medical_kit_icon },
         };
         public static readonly Dictionary<Type, Image> CuteItemIconDict = new Dictionary<Type, Image>
         {
@@ -689,8 +685,6 @@ namespace SLIL
                     Controller.SetEnemyDamageOffset(1);
                     break;
             }
-            resolution = MainMenu.resolution;
-            display_size = MainMenu.display_size;
             interface_size = MainMenu.interface_size;
             smoothing = MainMenu.smoothing;
             scope_type = MainMenu.scope_type;
@@ -712,11 +706,11 @@ namespace SLIL
             WEAPON?.Dispose();
             BUFFER?.Dispose();
             graphicsWeapon?.Dispose();
-            center_x = SCREEN_WIDTH[resolution] / 2;
-            center_y = SCREEN_HEIGHT[resolution] / 2;
-            SCREEN = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
-            WEAPON = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
-            BUFFER = new Bitmap(SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
+            center_x = SCREEN_WIDTH / 2;
+            center_y = SCREEN_HEIGHT / 2;
+            SCREEN = new Bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
+            WEAPON = new Bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
+            BUFFER = new Bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
             imageAttributes = new ImageAttributes();
             imageCuteAttributes = new ImageAttributes();
             float[][] colorMatrixElements =
@@ -741,7 +735,7 @@ namespace SLIL
             imageCuteAttributes.SetColorMatrix(colorCuteMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             graphicsWeapon = Graphics.FromImage(WEAPON);
             graphicsWeapon.SmoothingMode = smoothingModes[smoothing];
-            SLILDisplay.ResizeImage(DISPLAY_SIZE[display_size, 0], DISPLAY_SIZE[display_size, 1]);
+            SLILDisplay.ResizeImage(DISPLAY_SIZE[0], DISPLAY_SIZE[1]);
             raycast.Interval = hight_fps ? 15 : 30;
         }
 
@@ -1060,8 +1054,8 @@ namespace SLIL
                 PreviousTime = time.TimeOfDay.TotalSeconds;
                 PlayerMove();
                 ClearDisplayedMap();
-                double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
-                double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
+                double[] ZBuffer = new double[SCREEN_WIDTH];
+                double[] ZBufferWindow = new double[SCREEN_WIDTH];
                 Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
                 DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<int> enemiesCoords);
                 foreach (int i in enemiesCoords) DISPLAYED_MAP[i] = 'E';
@@ -1708,7 +1702,7 @@ namespace SLIL
                     }
                     if (e.KeyCode == Bind.Climb)
                     {
-                        double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
+                        double rayA = player.A + FOV / 2 - (SCREEN_WIDTH / 2) * FOV / SCREEN_WIDTH;
                         double ray_x = Math.Sin(rayA);
                         double ray_y = Math.Cos(rayA);
                         double distance = 0;
@@ -1757,8 +1751,8 @@ namespace SLIL
                     if (e.KeyCode == Bind.Inventory) OpenInventory();
                     if (e.KeyCode == Bind.Interaction_0 || e.KeyCode == Bind.Interaction_1)
                     {
-                        double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
-                        double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
+                        double[] ZBuffer = new double[SCREEN_WIDTH];
+                        double[] ZBufferWindow = new double[SCREEN_WIDTH];
                         Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
                         List<Entity> Entities = Controller.GetEntities();
                         int entityCount = Entities.Count;
@@ -1781,32 +1775,32 @@ namespace SLIL
                                 double spriteY = entity.Y - player.Y;
                                 double transformX = invDet * (dirY * spriteX - dirX * spriteY);
                                 double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-                                int spriteScreenX = (int)((SCREEN_WIDTH[resolution] / 2) * (1 + transformX / transformY));
+                                int spriteScreenX = (int)((SCREEN_WIDTH / 2) * (1 + transformX / transformY));
                                 double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
                                 if (Distance == 0) Distance = 0.01;
-                                double spriteTop = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / Distance;
-                                double spriteBottom = SCREEN_HEIGHT[resolution] - (spriteTop + player.Look);
+                                double spriteTop = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / Distance;
+                                double spriteBottom = SCREEN_HEIGHT - (spriteTop + player.Look);
                                 int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
                                 int drawStartY = (int)spriteTop;
                                 int drawEndY = (int)spriteBottom;
-                                int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
-                                int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
+                                int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT / Distance));
+                                int spriteWidth = Math.Abs((int)(SCREEN_WIDTH / Distance));
                                 int drawStartX = -spriteWidth / 2 + spriteScreenX;
                                 if (drawStartX < 0) drawStartX = 0;
                                 int drawEndX = spriteWidth / 2 + spriteScreenX;
-                                if (drawEndX >= SCREEN_WIDTH[resolution]) drawEndX = SCREEN_WIDTH[resolution];
+                                if (drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH;
                                 var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
                                 for (int stripe = drawStartX; stripe < drawEndX; stripe++)
                                 {
                                     int texWidth = 128;
                                     double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
-                                    if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH[resolution] && transformY < ZBuffer[stripe])
+                                    if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH && transformY < ZBuffer[stripe])
                                     {
-                                        for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT[resolution]; y++)
+                                        for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
                                         {
                                             if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
                                                 continue;
-                                            double d = y - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                                            double d = y - (SCREEN_HEIGHT - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
                                             double texY = d / (drawEndY - drawStartY);
                                             if (y == drawStartY) texY = 0;
                                             if (rays[stripe].Length > y && y >= 0)
@@ -1820,7 +1814,7 @@ namespace SLIL
                                                 rays[stripe][y].TextureX = texX;
                                                 rays[stripe][y].TextureY = texY;
                                                 Color color = GetColorForPixel(rays[stripe][y]);
-                                                if (color != Color.Transparent && stripe == SCREEN_WIDTH[resolution] / 2 && y == SCREEN_HEIGHT[resolution] / 2 && Distance <= 2)
+                                                if (color != Color.Transparent && stripe == SCREEN_WIDTH / 2 && y == SCREEN_HEIGHT / 2 && Distance <= 2)
                                                 {
                                                     switch (entity.Interaction())
                                                     {
@@ -1866,7 +1860,7 @@ namespace SLIL
                                 }
                             }
                         }
-                        double rayA = player.A + FOV / 2 - (SCREEN_WIDTH[resolution] / 2) * FOV / SCREEN_WIDTH[resolution];
+                        double rayA = player.A + FOV / 2 - (SCREEN_WIDTH / 2) * FOV / SCREEN_WIDTH;
                         double ray_x = Math.Sin(rayA);
                         double ray_y = Math.Cos(rayA);
                         double distance = 0;
@@ -2157,14 +2151,14 @@ namespace SLIL
 
         private Pixel[][] CastRaysParallel(double[] ZBuffer, double[] ZBufferWindow)
         {
-            Pixel[][] rays = new Pixel[SCREEN_WIDTH[resolution]][];
+            Pixel[][] rays = new Pixel[SCREEN_WIDTH][];
             Player player = Controller.GetPlayer();
             if (player == null || !GameStarted)
             {
-                for (int i = 0; i < SCREEN_WIDTH[resolution]; i++)
+                for (int i = 0; i < SCREEN_WIDTH; i++)
                 {
-                    rays[i] = new Pixel[SCREEN_HEIGHT[resolution]];
-                    for (int j = 0; j < SCREEN_HEIGHT[resolution]; j++)
+                    rays[i] = new Pixel[SCREEN_HEIGHT];
+                    for (int j = 0; j < SCREEN_HEIGHT; j++)
                         rays[i][j] = new Pixel(i, j, 100, 1, 1, 0, SpriteStates.Static);
                 }
                 return rays;
@@ -2178,14 +2172,14 @@ namespace SLIL
             StringBuilder MAP = Controller.GetMap();
             int MAP_WIDTH = Controller.GetMapWidth();
             int MAP_HEIGHT = Controller.GetMapHeight();
-            Parallel.For(0, SCREEN_WIDTH[resolution], x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, mapX, mapY, ref player, ref MAP, MAP_WIDTH, MAP_HEIGHT));
+            Parallel.For(0, SCREEN_WIDTH, x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, mapX, mapY, ref player, ref MAP, MAP_WIDTH, MAP_HEIGHT));
             return rays;
         }
 
         private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int mapX, int mapY, ref Player player, ref StringBuilder MAP, int MAP_WIDTH, int MAP_HEIGHT)
         {
-            Pixel[] result = new Pixel[SCREEN_HEIGHT[resolution]];
-            double cameraX = 2 * x / (double)SCREEN_WIDTH[resolution] - 1;
+            Pixel[] result = new Pixel[SCREEN_HEIGHT];
+            double cameraX = 2 * x / (double)SCREEN_WIDTH - 1;
             double rayDirX = dirX + planeX * cameraX;
             double rayDirY = dirY + planeY * cameraX;
             double sideDistX;
@@ -2283,8 +2277,8 @@ namespace SLIL
                         break;
                 }
             }
-            double ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / distance;
-            double floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
+            double ceiling = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / distance;
+            double floor = SCREEN_HEIGHT - (ceiling + player.Look);
             double mid = (ceiling + floor) / 2;
             bool get_texture = false, get_texture_window = false;
             int side = 0;
@@ -2302,19 +2296,19 @@ namespace SLIL
             windowX -= Math.Floor(windowX);
             if (wallX > 0.97 || wallX < 0.03) is_bound = true;
             if (windowX > 0.97 || windowX < 0.03) is_window_bound = true;
-            for (int y = 0; y < SCREEN_HEIGHT[resolution]; y++)
+            for (int y = 0; y < SCREEN_HEIGHT; y++)
             {
                 if (!GameStarted) break;
                 int blackout = 0, textureId = 1;
                 if (hit_window && y > mid)
                 {
-                    ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / window_distance;
-                    floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
+                    ceiling = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / window_distance;
+                    floor = SCREEN_HEIGHT - (ceiling + player.Look);
                 }
                 else
                 {
-                    ceiling = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / distance;
-                    floor = SCREEN_HEIGHT[resolution] - (ceiling + player.Look);
+                    ceiling = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / distance;
+                    floor = SCREEN_HEIGHT - (ceiling + player.Look);
                 }
                 if (y >= mid && y <= floor && hit_window)
                 {
@@ -2349,8 +2343,8 @@ namespace SLIL
                 result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId, SpriteStates.Static);
                 if (y <= ceiling)
                 {
-                    int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
-                    double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
+                    int p = y - (int)(SCREEN_HEIGHT - player.Look) / 2;
+                    double rowDistance = (double)SCREEN_HEIGHT / p;
                     double floorX = player.X - rowDistance * rayDirX;
                     double floorY = player.Y - rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
@@ -2364,8 +2358,8 @@ namespace SLIL
                 }
                 else if (y >= floor)
                 {
-                    int p = y - (int)(SCREEN_HEIGHT[resolution] - player.Look) / 2;
-                    double rowDistance = (double)SCREEN_HEIGHT[resolution] / p;
+                    int p = y - (int)(SCREEN_HEIGHT - player.Look) / 2;
+                    double rowDistance = (double)SCREEN_HEIGHT / p;
                     double floorX = player.X + rowDistance * rayDirX;
                     double floorY = player.Y + rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
@@ -2448,31 +2442,31 @@ namespace SLIL
                 double spriteY = entity.Y - player.Y;
                 double transformX = invDet * (dirY * spriteX - dirX * spriteY);
                 double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-                int spriteScreenX = (int)((SCREEN_WIDTH[resolution] / 2) * (1 + transformX / transformY));
-                double spriteTop = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / Distance;
-                double spriteBottom = SCREEN_HEIGHT[resolution] - (spriteTop + player.Look);
+                int spriteScreenX = (int)((SCREEN_WIDTH / 2) * (1 + transformX / transformY));
+                double spriteTop = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / Distance;
+                double spriteBottom = SCREEN_HEIGHT - (spriteTop + player.Look);
                 int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
                 int drawStartY = (int)spriteTop;
                 int drawEndY = (int)spriteBottom;
-                int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT[resolution] / Distance));
-                int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
+                int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT / Distance));
+                int spriteWidth = Math.Abs((int)(SCREEN_WIDTH / Distance));
                 double vMove = entity.VMove;
                 int vMoveScreen = (int)(vMove / transformY);
                 int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
                 if (drawStartX < 0) drawStartX = 0;
                 int drawEndX = spriteWidth / 2 + spriteScreenX + vMoveScreen;
-                if (drawEndX >= SCREEN_WIDTH[resolution]) drawEndX = SCREEN_WIDTH[resolution];
+                if (drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH;
                 var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
                 for (int stripe = drawStartX; stripe < drawEndX; stripe++)
                 {
                     double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
-                    if (transformY > 0 && stripe >= 0 && stripe <= SCREEN_WIDTH[resolution] && transformY < ZBuffer[stripe])
+                    if (transformY > 0 && stripe >= 0 && stripe <= SCREEN_WIDTH && transformY < ZBuffer[stripe])
                     {
-                        for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT[resolution]; y++)
+                        for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
                         {
                             if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
                                 continue;
-                            double d = (y - vMoveScreen) - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                            double d = (y - vMoveScreen) - (SCREEN_HEIGHT - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
                             double texY = d / (drawEndY - drawStartY);
                             if (y == drawStartY) texY = 0;
                             if (rays[stripe].Length > y && y >= 0)
@@ -2708,8 +2702,8 @@ namespace SLIL
 
         private void DrawTextOnSing(string text)
         {
-            RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH[resolution] - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT[resolution] - 2 * ScrollPadding);
-            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[2, resolution], SCREEN_WIDTH[resolution] - 40 - ScrollBarWidth);
+            RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT - 2 * ScrollPadding);
+            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[2, resolution], SCREEN_WIDTH - 40 - ScrollBarWidth);
             graphicsWeapon.SetClip(textRectangle);
             graphicsWeapon.DrawString(text, consolasFont[2, resolution], blackBrush, new RectangleF(textRectangle.X, textRectangle.Y - scrollPosition, textRectangle.Width, textSize.Height));
             graphicsWeapon.ResetClip();
@@ -2722,7 +2716,7 @@ namespace SLIL
             float scrollBarHeight = (viewportHeight / contentHeight) * viewportHeight;
             float scrollBarPosition = (scrollPosition / (contentHeight - viewportHeight)) * (viewportHeight - scrollBarHeight);
             RectangleF scrollBarRect = new RectangleF(
-                SCREEN_WIDTH[resolution] - ScrollBarWidth - ScrollPadding / 2,
+                SCREEN_WIDTH - ScrollBarWidth - ScrollPadding / 2,
                 ScrollPadding + scrollBarPosition,
                 ScrollBarWidth,
                 scrollBarHeight);
@@ -2732,8 +2726,8 @@ namespace SLIL
         public void UpdateScrollPosition(double delta)
         {
             string text = GetTextOnSing();
-            RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH[resolution] - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT[resolution] - 2 * ScrollPadding);
-            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[2, resolution], SCREEN_WIDTH[resolution] - 40 - ScrollBarWidth);
+            RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT - 2 * ScrollPadding);
+            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[2, resolution], SCREEN_WIDTH - 40 - ScrollBarWidth);
             float maxScroll = Math.Max(0, textSize.Height - textRectangle.Height);
             scrollPosition = (int)Math.Max(0, Math.Min(scrollPosition + delta, (int)maxScroll));
         }
@@ -2857,7 +2851,7 @@ namespace SLIL
                 SmoothingMode save1 = graphicsWeapon.SmoothingMode;
                 graphicsWeapon.SmoothingMode = SmoothingMode.None;
                 graphicsWeapon.Clear(Color.Black);
-                graphicsWeapon.DrawImage(Properties.Resources.sing, 0, 0, SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
+                graphicsWeapon.DrawImage(Properties.Resources.sing, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
                 DrawTextOnSing(GetTextOnSing());
                 graphicsWeapon.SmoothingMode = save1;
                 return;
@@ -2867,7 +2861,7 @@ namespace SLIL
                 SmoothingMode save1 = graphicsWeapon.SmoothingMode;
                 graphicsWeapon.SmoothingMode = SmoothingMode.None;
                 graphicsWeapon.Clear(Color.Black);
-                graphicsWeapon.DrawImage(DrawMap(), 0, 0, SCREEN_WIDTH[resolution], SCREEN_HEIGHT[resolution]);
+                graphicsWeapon.DrawImage(DrawMap(), 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
                 graphicsWeapon.SmoothingMode = save1;
                 return;
             }
@@ -2909,31 +2903,31 @@ namespace SLIL
             if (ShowFPS)
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
             if (player.InTransport)
-                graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][0], 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][0], 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
             else if (!player.CuteMode)
             {
-                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
                 if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
+                    graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
-                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
                 if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
+                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (!player.InTransport && !Controller.IsMultiplayer())
-                graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
+                graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - (icon_size * 2) - add);
             SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             if (Controller.IsMultiplayer()) DrawPing(fpsSize, icon_size);
-            graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
+            graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - icon_size - add);
             if (!player.IsPetting && !player.InParkour && !player.InTransport && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT - icon_size - add);
                 else
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
-                graphicsWeapon.DrawImage(GetAmmoIcon(player.GetCurrentGun().AmmoType), ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT - icon_size - add);
+                graphicsWeapon.DrawImage(GetAmmoIcon(player.GetCurrentGun().AmmoType), ammo_icon_x, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
             }
             SmoothingMode save = graphicsWeapon.SmoothingMode;
             graphicsWeapon.SmoothingMode = SmoothingMode.None;
@@ -2962,12 +2956,12 @@ namespace SLIL
             {
                 Bitmap mini_map = DrawMiniMap();
                 money_y = mini_map.Height + 3;
-                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH[resolution] - mini_map.Width - 1, size);
+                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH - mini_map.Width - 1, size);
                 mini_map.Dispose();
             }
             graphicsWeapon.SmoothingMode = save;
-            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH[resolution], money_y, rightToLeft);
-            graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH[resolution] - moneySize.Width - icon_size, money_y, icon_size, icon_size);
+            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH, money_y, rightToLeft);
+            graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH - moneySize.Width - icon_size, money_y, icon_size, icon_size);
             if (stage_timer.Enabled && StageOpacity > 0)
             {
                 string text = "STAGE: ";
@@ -3043,34 +3037,34 @@ namespace SLIL
             if (ShowFPS)
                 graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
             if (player.InTransport)
-                graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][0], 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][0], 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
             else if (!player.CuteMode)
             {
-                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
                 if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
+                    graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
-                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
                 if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add, icon_size, icon_size);
+                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (!player.InTransport && !Controller.IsMultiplayer())
-                graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - (icon_size * 2) - add);
+                graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - (icon_size * 2) - add);
             SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
             DrawPing(fpsSize, icon_size);
             string playerName = player.Name.Length == 0 ? "NoName" : player.Name;
             SizeF textSize = graphicsWeapon.MeasureString(playerName, consolasFont[0, 0]);
             graphicsWeapon.DrawString(playerName, consolasFont[0, 0], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 2);
-            graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT[resolution] - icon_size - add);
+            graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - icon_size - add);
             if (!player.IsPetting && !player.InParkour && !player.InTransport && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT - icon_size - add);
                 else
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT[resolution] - icon_size - add);
-                graphicsWeapon.DrawImage(GetAmmoIcon(player.GetCurrentGun().AmmoType), ammo_icon_x, SCREEN_HEIGHT[resolution] - icon_size - add, icon_size, icon_size);
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT - icon_size - add);
+                graphicsWeapon.DrawImage(GetAmmoIcon(player.GetCurrentGun().AmmoType), ammo_icon_x, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
             }
             SmoothingMode save = graphicsWeapon.SmoothingMode;
             graphicsWeapon.SmoothingMode = SmoothingMode.None;
@@ -3080,12 +3074,12 @@ namespace SLIL
             {
                 Bitmap mini_map = DrawMiniMap();
                 money_y = mini_map.Height + 3;
-                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH[resolution] - mini_map.Width - 1, size);
+                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH - mini_map.Width - 1, size);
                 mini_map.Dispose();
             }
             graphicsWeapon.SmoothingMode = save;
-            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH[resolution], money_y, rightToLeft);
-            graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH[resolution] - moneySize.Width - icon_size, money_y, icon_size, icon_size);
+            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH, money_y, rightToLeft);
+            graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH - moneySize.Width - icon_size, money_y, icon_size, icon_size);
             if (player.Effects.Count > 0)
             {
                 for (int i = 0; i < player.Effects.Count; i++)
@@ -3386,8 +3380,8 @@ namespace SLIL
             int stamine_width = 40 + (10 * interface_size);
             if (resolution == 1) stamine_width *= 2;
             int progress_width = (int)(player.STAMINE / player.MAX_STAMINE * (stamine_width - 2));
-            int stamine_top = SCREEN_HEIGHT[resolution] - (icon_size * 2);
-            int stamine_left = (SCREEN_WIDTH[resolution] - (stamine_width + icon_size + 2)) / 2;
+            int stamine_top = SCREEN_HEIGHT - (icon_size * 2);
+            int stamine_left = (SCREEN_WIDTH - (stamine_width + icon_size + 2)) / 2;
             if (RunKeyPressed || player.STAMINE < player.MAX_STAMINE)
                 DrawRunIcon(stamine_left, stamine_top, icon_size);
             if (player.STAMINE >= player.MAX_STAMINE) return;
@@ -3533,8 +3527,8 @@ namespace SLIL
                         bullet[1, 0] += 5;
                     }
                 }
-                double[] ZBuffer = new double[SCREEN_WIDTH[resolution]];
-                double[] ZBufferWindow = new double[SCREEN_WIDTH[resolution]];
+                double[] ZBuffer = new double[SCREEN_WIDTH];
+                double[] ZBufferWindow = new double[SCREEN_WIDTH];
                 Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
                 int entityCount = Entities.Count;
                 var spriteInfo = new (int Order, double Distance)[entityCount];
@@ -3556,33 +3550,33 @@ namespace SLIL
                     double spriteY = entity.Y - player.Y;
                     double transformX = invDet * (dirY * spriteX - dirX * spriteY);
                     double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-                    int spriteScreenX = (int)((SCREEN_WIDTH[resolution] / 2) * (1 + transformX / transformY));
+                    int spriteScreenX = (int)((SCREEN_WIDTH / 2) * (1 + transformX / transformY));
                     double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
                     if (Distance <= 0.1) Distance = 0.1;
-                    double spriteTop = (SCREEN_HEIGHT[resolution] - player.Look) / 2 - (SCREEN_HEIGHT[resolution] * FOV) / Distance;
-                    double spriteBottom = SCREEN_HEIGHT[resolution] - (spriteTop + player.Look);
+                    double spriteTop = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / Distance;
+                    double spriteBottom = SCREEN_HEIGHT - (spriteTop + player.Look);
                     int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
                     int drawStartY = (int)spriteTop;
                     int drawEndY = (int)spriteBottom;
                     double vMove = entity.VMove;
                     int vMoveScreen = (int)(vMove / transformY);
-                    int spriteWidth = Math.Abs((int)(SCREEN_WIDTH[resolution] / Distance));
+                    int spriteWidth = Math.Abs((int)(SCREEN_WIDTH / Distance));
                     int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
                     if (drawStartX < 0) drawStartX = 0;
                     int drawEndX = spriteWidth / 2 + spriteScreenX + vMoveScreen;
-                    if (drawEndX >= SCREEN_WIDTH[resolution]) drawEndX = SCREEN_WIDTH[resolution];
+                    if (drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH;
                     var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
                     for (int stripe = drawStartX; stripe < drawEndX; stripe++)
                     {
                         int texWidth = 128;
                         double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
-                        if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH[resolution] && transformY < ZBuffer[stripe])
+                        if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH && transformY < ZBuffer[stripe])
                         {
-                            for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT[resolution]; y++)
+                            for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
                             {
                                 if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
                                     continue;
-                                double d = (y - vMoveScreen) - (SCREEN_HEIGHT[resolution] - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                                double d = (y - vMoveScreen) - (SCREEN_HEIGHT - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
                                 double texY = d / (drawEndY - drawStartY);
                                 if (y == drawStartY) texY = 0;
                                 if (rays[stripe].Length > y && y >= 0)
@@ -3678,7 +3672,7 @@ namespace SLIL
                 for (int k = 0; k < bullet.GetLength(0); k++)
                 {
                     if (bullet[k, 0] == -1) continue;
-                    double deltaA = FOV / 2 - bullet[k, 0] * FOV / SCREEN_WIDTH[resolution];
+                    double deltaA = FOV / 2 - bullet[k, 0] * FOV / SCREEN_WIDTH;
                     double rayA = player.A + deltaA;
                     double ray_x = Math.Sin(rayA);
                     double ray_y = Math.Cos(rayA);
@@ -3693,15 +3687,15 @@ namespace SLIL
                         else
                         {
                             char test_wall = Controller.GetMap()[GetCoordinate(test_x, test_y)];
-                            double celling = (SCREEN_HEIGHT[resolution] - player.Look) / 2.25d - (SCREEN_HEIGHT[resolution] * FOV) / distance;
-                            double floor = SCREEN_HEIGHT[resolution] - (celling + player.Look);
+                            double celling = (SCREEN_HEIGHT - player.Look) / 2.25d - (SCREEN_HEIGHT * FOV) / distance;
+                            double floor = SCREEN_HEIGHT - (celling + player.Look);
                             double mid = (celling + floor) / 2;
-                            if (test_wall == '#' || test_wall == 'S'|| test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT[resolution] / 2 >= mid))
+                            if (test_wall == '#' || test_wall == 'S'|| test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT / 2 >= mid))
                             {
                                 hit = true;
                                 distance -= 0.2;
                                 if (bullet[k, 1] > floor || bullet[k, 1] < celling) continue;
-                                double vMove = player.Look / 2.25d + player.Look * FOV / (distance + 0.2) + SCREEN_HEIGHT[resolution] / 2 - bullet[k, 1];
+                                double vMove = player.Look / 2.25d + player.Look * FOV / (distance + 0.2) + SCREEN_HEIGHT / 2 - bullet[k, 1];
                                 Controller.AddHittingTheWall(player.X + ray_x * distance, player.Y + ray_y * distance, vMove);
                             }
                         }

@@ -1,6 +1,6 @@
-﻿using LiteNetLib.Utils;
-using System;
+﻿using System;
 using System.Linq;
+using LiteNetLib.Utils;
 
 namespace SLIL.Classes
 {
@@ -1268,9 +1268,6 @@ namespace SLIL.Classes
         protected override int GetMIN_MONEY() => 0;
         protected override int GetMAX_DAMAGE() => 1000;
         protected override int GetMIN_DAMAGE() => 999;
-        //private List<(int, int)> CurrentPath;
-        //private int CurrentPathIndex { get; set; }
-        //private enum Dir { Left, Right, Up, Down, None }
 
         public VoidStalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
         public VoidStalker(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
@@ -1278,14 +1275,12 @@ namespace SLIL.Classes
         private void Init()
         {
             Texture = 34;
-            //CurrentPathIndex = 0;
             DetectionRange = 10;
-            //CurrentPath = new List<(int, int)>();
             base.SetAnimations(2, 0);
         }
+
         public override void UpdateCoordinates(string map, double playerX, double playerY)
         {
-
             bool isPlayerVisible = true;
             double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
@@ -1350,95 +1345,7 @@ namespace SLIL.Classes
                 X = tempX;
                 Y = tempY;
             }
-
-            //if (CurrentPath == null) CurrentPath = new List<(int, int)>();
-            //IntX = (int)X; IntY = (int)Y;
-            //bool isPlayerVisible = true;
-            //double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
-            //if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
-            //double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
-            //if (isPlayerVisible)
-            //{
-            //    double distance = 0;
-            //    double step = 0.01;
-            //    double rayAngleX = Math.Sin(angleToPlayer);
-            //    double rayAngleY = Math.Cos(angleToPlayer);
-            //    while (distance <= distanceToPlayer)
-            //    {
-            //        int test_x = (int)(X + rayAngleX * distance);
-            //        int test_y = (int)(Y + rayAngleY * distance);
-            //        if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
-            //        {
-            //            isPlayerVisible = false;
-            //            break;
-            //        }
-            //        distance += step;
-            //    }
-            //}
-            //if (stage == Stages.Roaming)
-            //{
-            //    base.UpdateCoordinates(map, playerX, playerY);
-            //    if (isPlayerVisible)
-            //    {
-            //        stage = Stages.Chasing;
-            //        CurrentPath.Clear();
-            //        CurrentPathIndex = 0;
-            //    }
-            //    return;
-            //}
-            //if (stage == Stages.Chasing)
-            //{
-            //    if (!isPlayerVisible)
-            //    {
-            //        stage = Stages.Roaming;
-            //        NumberOfMovesLeft = MovesInARow;
-            //        CurrentPath.Clear();
-            //        CurrentPathIndex = 0;
-            //        return;
-            //    }
-            //    if (CurrentPath.Count == 0 || CurrentPathIndex >= CurrentPath.Count)
-            //    {
-            //        CurrentPath.Clear();
-            //        if (!FindPath(ref CurrentPath, map, IntX, IntY, playerX, playerY, Dir.None, MAP_WIDTH))
-            //            return;
-            //        CurrentPath.Reverse();
-            //        CurrentPathIndex = 0;
-            //    }
-            //    if (CurrentPathIndex < CurrentPath.Count)
-            //    {
-            //        var targetPoint = CurrentPath[CurrentPathIndex];
-            //        X = targetPoint.Item1 + 0.5;
-            //        Y = targetPoint.Item2 + 0.5;
-            //        CurrentPathIndex++;
-            //    }
-            //}
         }
-
-        //private static bool FindPath(ref List<(int, int)> path, string map, int x, int y,
-        //    double playerX, double playerY, Dir dir, int mapWidth)
-        //{
-        //    if (x < 0 || x >= mapWidth || y < 0 || y >= map.Length / mapWidth)
-        //        return false;
-        //    if (Math.Abs(x - playerX) < 0.25 && Math.Abs(y - playerY) < 0.25)
-        //    {
-        //        path.Add((x, y));
-        //        return true;
-        //    }
-        //    if (path.Contains((x, y)))
-        //        return false;
-        //    bool reached = false;
-        //    if (x > 0 && map[y * mapWidth + (x - 1)] == '.' && dir != Dir.Right)
-        //        reached = FindPath(ref path, map, x - 1, y, playerX, playerY, Dir.Left, mapWidth);
-        //    if (!reached && x < mapWidth - 1 && map[y * mapWidth + (x + 1)] == '.' && dir != Dir.Left)
-        //        reached = FindPath(ref path, map, x + 1, y, playerX, playerY, Dir.Right, mapWidth);
-        //    if (!reached && y > 0 && map[(y - 1) * mapWidth + x] == '.' && dir != Dir.Down)
-        //        reached = FindPath(ref path, map, x, y - 1, playerX, playerY, Dir.Up, mapWidth);
-        //    if (!reached && y < map.Length / mapWidth - 1 && map[(y + 1) * mapWidth + x] == '.' && dir != Dir.Up)
-        //        reached = FindPath(ref path, map, x, y + 1, playerX, playerY, Dir.Down, mapWidth);
-        //    if (reached)
-        //        path.Add((x, y));
-        //    return reached;
-        //}
     }
 
     public class Vine : Decoration
