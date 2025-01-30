@@ -36,10 +36,10 @@ namespace SLIL
             this.ShopInterface_panel = new System.Windows.Forms.Panel();
             this.shop_tab_control = new System.Windows.Forms.TabControl();
             this.weapon_shop_page = new System.Windows.Forms.TabPage();
+            this.storage_shop_page = new System.Windows.Forms.TabPage();
             this.pet_shop_page = new System.Windows.Forms.TabPage();
             this.consumables_shop_page = new System.Windows.Forms.TabPage();
             this.transport_shop_page = new System.Windows.Forms.TabPage();
-            this.storage_shop_page = new System.Windows.Forms.TabPage();
             this.shop_title_panel = new System.Windows.Forms.Panel();
             this.shop_title = new System.Windows.Forms.Label();
             this.shop_money = new System.Windows.Forms.Label();
@@ -161,10 +161,10 @@ namespace SLIL
             // shop_tab_control
             // 
             this.shop_tab_control.Controls.Add(this.weapon_shop_page);
+            this.shop_tab_control.Controls.Add(this.storage_shop_page);
             this.shop_tab_control.Controls.Add(this.pet_shop_page);
             this.shop_tab_control.Controls.Add(this.consumables_shop_page);
             this.shop_tab_control.Controls.Add(this.transport_shop_page);
-            this.shop_tab_control.Controls.Add(this.storage_shop_page);
             this.shop_tab_control.Dock = System.Windows.Forms.DockStyle.Fill;
             this.shop_tab_control.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.shop_tab_control.Location = new System.Drawing.Point(0, 0);
@@ -186,6 +186,18 @@ namespace SLIL
             this.weapon_shop_page.Size = new System.Drawing.Size(1097, 569);
             this.weapon_shop_page.TabIndex = 0;
             this.weapon_shop_page.Text = "Оружие";
+            // 
+            // storage_shop_page
+            // 
+            this.storage_shop_page.AutoScroll = true;
+            this.storage_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
+            this.storage_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.storage_shop_page.Location = new System.Drawing.Point(4, 25);
+            this.storage_shop_page.Name = "storage_shop_page";
+            this.storage_shop_page.Padding = new System.Windows.Forms.Padding(3);
+            this.storage_shop_page.Size = new System.Drawing.Size(1097, 569);
+            this.storage_shop_page.TabIndex = 4;
+            this.storage_shop_page.Text = "Хранилище";
             // 
             // pet_shop_page
             // 
@@ -220,18 +232,6 @@ namespace SLIL
             this.transport_shop_page.Size = new System.Drawing.Size(1097, 569);
             this.transport_shop_page.TabIndex = 3;
             this.transport_shop_page.Text = "Транспорт";
-            // 
-            // storage_shop_page
-            // 
-            this.storage_shop_page.AutoScroll = true;
-            this.storage_shop_page.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(50)))));
-            this.storage_shop_page.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.storage_shop_page.Location = new System.Drawing.Point(4, 25);
-            this.storage_shop_page.Name = "storage_shop_page";
-            this.storage_shop_page.Padding = new System.Windows.Forms.Padding(3);
-            this.storage_shop_page.Size = new System.Drawing.Size(1097, 569);
-            this.storage_shop_page.TabIndex = 4;
-            this.storage_shop_page.Text = "Хранилище";
             // 
             // shop_title_panel
             // 

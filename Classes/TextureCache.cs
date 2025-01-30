@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace SLIL.Classes
 {
@@ -224,6 +224,19 @@ namespace SLIL.Classes
                     { SpriteStates.StepForward_1, Properties.Resources.empty_teleport_1 }
                 }
             },
+            { 35, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_1 }
+                }
+            },
+            { 36, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.missing },
+                    { SpriteStates.StepForward_1, Properties.Resources.missing },
+                    { SpriteStates.DeadBody, Properties.Resources.missing },
+                }
+            },
         };
         private Dictionary<int, Dictionary<SpriteStates, Image>> cute_textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
         {
@@ -417,6 +430,19 @@ namespace SLIL.Classes
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.empty_teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.empty_teleport_1 }
+                }
+            },
+            { 35, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_1 }
+                }
+            },
+            { 36, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.missing },
+                    { SpriteStates.StepForward_1, Properties.Resources.missing },
+                    { SpriteStates.DeadBody, Properties.Resources.missing }
                 }
             },
         };

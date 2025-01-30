@@ -958,6 +958,12 @@ namespace SLIL
                 case 25: // stalker
                     entity = new Stalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
+                case 26: // shooter
+                    entity = new Shooter(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 27: // lost soul
+                    //entity = new LostSoul(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
             }
             if (entity == null) return false;
             entity.HasAI = hasAI;
@@ -1493,10 +1499,8 @@ namespace SLIL
                     Cursor.Position = new Point(x, y);
                 }
                 else if (!GameStarted) Close();
-                else if (ShowSing)
-                    ShowSing = player.BlockInput = player.BlockCamera = false;
-                else if (ShowInventory)
-                    CloseInventory();
+                else if (ShowSing) ShowSing = player.BlockInput = player.BlockCamera = false;
+                else if (ShowInventory) CloseInventory();
                 else Pause();
                 return;
             }
@@ -1513,7 +1517,7 @@ namespace SLIL
                         player.StrafeDirection = Directions.LEFT;
                     if (e.KeyCode == Bind.Right)
                         player.StrafeDirection = Directions.RIGHT;
-                    if (player != null && !shot_timer.Enabled && !reload_timer.Enabled && 
+                    if (player != null && !shot_timer.Enabled && !reload_timer.Enabled &&
                         !shotgun_pull_timer.Enabled && !player.BlockInput && !player.InTransport &&
                         !Controller.InBackrooms())
                     {
@@ -1990,8 +1994,7 @@ namespace SLIL
                             cancelReload = true;
                         else if (!reload_timer.Enabled && !mouse_hold_timer.Enabled && player.CanShoot && player.GetCurrentGun().CanShoot)
                         {
-                            if (Shoot(player))
-                                mouse_hold_timer.Start();
+                            if (Shoot(player)) mouse_hold_timer.Start();
                         }
                     }
                     else if (e.Button == MouseButtons.Right && !reload_timer.Enabled)
@@ -3504,8 +3507,7 @@ namespace SLIL
                         break;
                     foreach (Entity ent in Entities)
                     {
-                        if ((ent as Player) == player)
-                            continue;
+                        if ((ent as Player) == player) continue;
                         if ((ent.X - player.X) * (ent.X - player.X) + (ent.Y - player.Y) * (ent.Y - player.Y) <= 1)
                             break;
                     }

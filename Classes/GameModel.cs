@@ -250,6 +250,56 @@ namespace SLIL.Classes
                                     iteration++;
                                 }
                             }
+                            if (entity is Shooter shooter && shooter.DidShot)
+                            {
+                                PlaySoundHandle(SLIL.GunsSoundsDict[typeof(SniperRifle)][1, 0], shooter.X, shooter.Y);
+                                char[] ImpassibleCells = { '#', 'D', 'd', '=', 'W', 'S' };
+                                double shotDistance = 0;
+                                double shotStep = 0.01;
+                                double shotAX = Math.Sin(shooter.ShotA);
+                                double shotAY = Math.Cos(shooter.ShotA);
+                                bool hit = false;
+                                while (!hit && shotDistance <= 8)
+                                {
+                                    int test_x = (int)(shooter.X + shotAX * shotDistance);
+                                    int test_y = (int)(shooter.Y + shotAY * shotDistance);
+                                    foreach (var ent in targetListOrdered)
+                                    {
+                                        if (ent is Player player)
+                                        {
+                                            if (Math.Abs(test_x - player.X) <= 0.35 && Math.Abs(test_y - player.Y) <= 0.35)
+                                            {
+                                                if (!player.Invulnerable)
+                                                {
+                                                    if (player.InTransport) PlaySoundHandle(SLIL.hit[1], player.X, player.Y);
+                                                    else if (player.CuteMode) PlaySoundHandle(SLIL.hungry, player.X, player.Y);
+                                                    else PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
+                                                    player.DealDamage(rand.Next(15), true);
+                                                    if (player.HP <= 0)
+                                                    {
+                                                        Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                                        TotalKilled = player.TotalEnemiesKilled;
+                                                        DeathCause = SetDeathCause(entity);
+                                                        GameOver(0);
+                                                        return;
+                                                    }
+                                                }
+                                                hit = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (ImpassibleCells.Contains(MAP[test_y * MAP_WIDTH + test_x]))
+                                    {
+                                        AddHittingTheWall(test_x, test_y, 0);
+                                        hit = true;
+                                        break;
+                                    }
+                                    shotDistance += shotStep;
+                                }
+                                shooter.DidShot = false;
+                                shooter.ShotPause = Shooter.TotalShotPause;
+                            }
                         }
                     }
                     else if (entity is Pet)
@@ -273,8 +323,7 @@ namespace SLIL.Classes
                     }
                     else if (entity is Rockets rocket)
                     {
-                        if (!entity.DEAD)
-                            entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                        if (!entity.DEAD) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
                         char[] ImpassibleCells = { '#', 'D', 'd', '=' };
                         double newX = entity.X + entity.GetMove() * Math.Sin(entity.A);
                         double newY = entity.Y + entity.GetMove() * Math.Cos(entity.A);
@@ -292,7 +341,7 @@ namespace SLIL.Classes
                         {
                             if (ent == entity) continue;
                             if (ent is Creature creature && (creature.DEAD || !creature.CanHit || !creature.HasAI)) continue;
-                            if (Math.Sqrt((entity.X - ent.X) * (entity.X - ent.X) + (entity.Y - ent.Y) * (entity.Y - ent.Y)) < (entity.EntityWidth + ent.EntityWidth) * (entity.EntityWidth + ent.EntityWidth))
+                            if (ML.GetDistance(new TPoint(ent.X, ent.Y), new TPoint(entity.X, entity.Y)) < (entity.EntityWidth + ent.EntityWidth) * (entity.EntityWidth + ent.EntityWidth))
                             {
                                 Entities.Remove(entity);
                                 Entities.Add(new Explosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
@@ -328,6 +377,9 @@ namespace SLIL.Classes
             else if (entity is Ogr) return 2;
             else if (entity is Bat) return 3;
             else if (entity is Explosion) return 4;
+            else if (entity is Stalker) return -1;
+            else if (entity is VoidStalker) return -1;
+            else if (entity is Shooter) return -1;
             else return -1;
         }
 

@@ -1277,7 +1277,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 14;
+            Texture = 35;
             MovesInARow = 6;
             DetectionRange = 16;
             base.SetAnimations(2, 0);
@@ -1440,6 +1440,131 @@ namespace SLIL.Classes
                    ImpassibleCells.Contains(map[(int)y * MAP_WIDTH + (int)(x - EntityWidth / 2)]) ||
                    ImpassibleCells.Contains(map[(int)(y + EntityWidth / 2) * MAP_WIDTH + (int)x]) ||
                    ImpassibleCells.Contains(map[(int)(y - EntityWidth / 2) * MAP_WIDTH + (int)x]);
+        }
+    }
+
+    public class Shooter : Enemy
+    {
+        protected override int GetEntityID() => 25;
+        protected override double GetEntityWidth() => 0.4;
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
+        protected override int GetMovesInARow() => 10;
+        protected override int GetMAX_HP() => 10;
+        protected override int GetTexture() => Texture;
+        public override double GetMove() => 0.16;
+        protected override int GetMAX_MONEY() => 10;
+        protected override int GetMIN_MONEY() => 5;
+        protected override int GetMAX_DAMAGE() => 35;
+        protected override int GetMIN_DAMAGE() => 15;
+        private const int SafeDistance = 3, ShotDistance = 6;
+        public const int TotalShotPause = 12; // 1.2 sec
+        public int ShotPause = TotalShotPause;
+        public double ShotA = 0;
+        public bool ReadyToShot = false, DidShot = false;
+
+        public Shooter(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Shooter(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            DeathSound = 0;
+            Texture = 36;
+            DetectionRange = 7;
+            //HasSpriteRotation = true;
+            base.SetAnimations(1, 0);
+        }
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        {
+            if (DidShot) return;
+            bool isPlayerVisible = true;
+            double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
+            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
+            double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
+            if (isPlayerVisible)
+            {
+                double distance = 0;
+                double step = 0.01;
+                double rayAngleX = Math.Sin(angleToPlayer);
+                double rayAngleY = Math.Cos(angleToPlayer);
+                while (distance <= distanceToPlayer)
+                {
+                    int test_x = (int)(X + rayAngleX * distance);
+                    int test_y = (int)(Y + rayAngleY * distance);
+                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    {
+                        isPlayerVisible = false;
+                        break;
+                    }
+                    distance += step;
+                }
+            }
+            if (isPlayerVisible)
+            {
+                if (distanceToPlayer <= SafeDistance && !ReadyToShot) angleToPlayer = ML.NormalizeAngle(angleToPlayer + Math.PI);
+                else if (distanceToPlayer <= ShotDistance)
+                {
+                    ShotPause--;
+                    if (ShotPause < 0)
+                    {
+                        if (ReadyToShot)
+                        {
+                            DidShot = true;
+                            ReadyToShot = false;
+                            ShotPause = TotalShotPause;
+                        }
+                        else
+                        {
+                            ShotA = angleToPlayer;
+                            ReadyToShot = true;
+                            ShotPause = TotalShotPause / 2;
+                        }
+                    }
+                    return;
+                }
+            }
+            if (Stage == Stages.Roaming)
+            {
+                base.UpdateCoordinates(map, playerX, playerY);
+                if (isPlayerVisible)
+                    Stage = Stages.Chasing;
+                return;
+            }
+            if (Stage == Stages.Chasing)
+            {
+                if (!isPlayerVisible)
+                {
+                    Stage = Stages.Roaming;
+                    NumberOfMovesLeft = MovesInARow;
+                    return;
+                }
+                double move = this.GetMove();
+                double newX = X;
+                double newY = Y;
+                double tempX = X;
+                double tempY = Y;
+                A = angleToPlayer;
+                if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
+                newX += Math.Sin(A) * move;
+                newY += Math.Cos(A) * move;
+                IntX = (int)X;
+                IntY = (int)Y;
+                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                    tempX = newX;
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                    tempY = newY;
+                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                    tempX -= EntityWidth / 2 - (1 - tempX % 1);
+                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                    tempX += EntityWidth / 2 - (tempX % 1);
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                    tempY -= EntityWidth / 2 - (1 - tempY % 1);
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                    tempY += EntityWidth / 2 - (tempY % 1);
+                X = tempX;
+                Y = tempY;
+            }
         }
     }
 
