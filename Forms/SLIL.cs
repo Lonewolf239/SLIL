@@ -880,88 +880,85 @@ namespace SLIL
             if (Controller.GetMap()[GetCoordinate(x, y)] != '.') return false;
             switch (id)
             {
-                case 0: // player
-                    entity = new Player(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
-                    break;
-                case 1: // player dead
+                case 0: // player dead
                     entity = new PlayerDeadBody(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 2: // zombie
+                case 1: // zombie
                     entity = new Zombie(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 3: // dog
+                case 2: // dog
                     entity = new Dog(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 4: // abomination
+                case 3: // abomination
                     entity = new Ogr(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 5: // bat
+                case 4: // bat
                     entity = new Bat(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 6: // box
+                case 5: // box
                     entity = new Box(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 7: // barrel
+                case 6: // barrel
                     entity = new Barrel(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 8: // shop door
+                case 7: // shop door
                     entity = new ShopDoor(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 9: // shop man
+                case 8: // shop man
                     entity = new ShopMan(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 10: // teleport
+                case 9: // teleport
                     entity = new Teleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 11: // hitting the wall
+                case 10: // hitting the wall
                     entity = new HittingTheWall(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 12: // rpg rocket
+                case 11: // rpg rocket
                     entity = new RpgRocket(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 13: // explosion
+                case 12: // explosion
                     entity = new Explosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 14: // silly cat
+                case 13: // silly cat
                     entity = new SillyCat(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 15: // green gnome
+                case 14: // green gnome
                     entity = new GreenGnome(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 16: // energy drink
+                case 15: // energy drink
                     entity = new EnergyDrink(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 17: // pyro
+                case 16: // pyro
                     entity = new Pyro(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 18: // bike
+                case 17: // bike
                     entity = new Bike(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 19: // vine
+                case 18: // vine
                     entity = new Vine(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 20: // lamp
+                case 19: // lamp
                     entity = new Lamp(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 21: // backrooms teleport
+                case 20: // backrooms teleport
                     entity = new BackroomsTeleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 22: // covering
+                case 21: // covering
                     entity = new Covering(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 23: // void teleport
+                case 22: // void teleport
                     entity = new VoidTeleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 24: // void stalker
+                case 23: // void stalker
                     entity = new VoidStalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 25: // stalker
+                case 24: // stalker
                     entity = new Stalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 26: // shooter
+                case 25: // shooter
                     entity = new Shooter(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 27: // lost soul
+                case 26: // lost soul
                     //entity = new LostSoul(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
             }

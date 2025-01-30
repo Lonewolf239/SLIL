@@ -922,41 +922,40 @@ namespace SLIL.UserControls
                                  "~┌─────┬──────────────────┐~\n" +
                                  "~│~ *ID*  ~│~ *Entity*           ~│~\n" +
                                  "~├─────┼──────────────────┤~\n";
-                            string[,] entities =
+                            string[] entities =
                             {
-                                { "Player", "0" },
-                                { "PlayerDeadBody", "1" },
-                                { "Zombie", "2" },
-                                { "Dog", "3" },
-                                { "Ogr", "4" },
-                                { "Bat", "5" },
-                                { "Box", "6" },
-                                { "Barrel", "7" },
-                                { "ShopDoor", "8" },
-                                { "ShopMan", "9" },
-                                { "Teleport", "10" },
-                                { "HittingTheWall", "11" },
-                                { "RpgRocket", "12" },
-                                { "Explosion", "13" },
-                                { "SillyCat", "14" },
-                                { "GreenGnome", "15" },
-                                { "EnergyDrink", "16" },
-                                { "Pyro", "17" },
-                                { "Bike", "18" },
-                                { "Vine", "19" },
-                                { "Lamp", "20" },
-                                { "BackroomsTeleport", "21" },
-                                { "Covering", "22" },
-                                { "VoidTeleport", "23" },
-                                { "VoidStalker", "24" },
-                                { "Stalker", "25" },
-                                { "Shooter", "26" },
-                                { "LostSoul", "27" },
+                                 "PlayerDeadBody",
+                                 "Zombie",
+                                 "Dog",
+                                 "Ogr",
+                                 "Bat",
+                                 "Box",
+                                 "Barrel",
+                                 "ShopDoor",
+                                 "ShopMan" ,
+                                 "Teleport",
+                                 "HittingTheWall",
+                                 "RpgRocket",
+                                 "Explosion",
+                                 "SillyCat",
+                                 "GreenGnome",
+                                 "EnergyDrink",
+                                 "Pyro",
+                                 "Bike",
+                                 "Vine",
+                                 "Lamp",
+                                 "BackroomsTeleport",
+                                 "Covering",
+                                 "VoidTeleport",
+                                 "VoidStalker",
+                                 "Stalker",
+                                 "Shooter",
+                                 "LostSoul"
                             };
-                            for (int i = 0; i < entities.GetLength(0); i++)
+                            for (int i = 0; i < entities.Length; i++)
                             {
-                                string id = entities[i, 1].PadRight(4);
-                                string name = entities[i, 0].PadRight(17);
+                                string id = i.ToString().PadRight(4);
+                                string name = entities[i].PadRight(17);
                                 message += $"~│~ *{id}*~│~ -{name}-~│~\n";
                             }
                             message += "~└─────┴──────────────────┘~\n" +
@@ -971,7 +970,7 @@ namespace SLIL.UserControls
                                 {
                                     int x = Convert.ToInt32(cheat.Split('_')[1]);
                                     int y = Convert.ToInt32(cheat.Split('_')[3]);
-                                    if (x >= 0 && x < 28)
+                                    if (x >= 0 && x < 27)
                                     {
                                         if (y < 0 || y > 1)
                                         {
@@ -1009,7 +1008,7 @@ namespace SLIL.UserControls
                                 try
                                 {
                                     int x = Convert.ToInt32(cheat.Split('_')[1]);
-                                    if (x >= 0 && x < 28)
+                                    if (x >= 0 && x < 27)
                                     {
                                         if (parent.SpawnEntity(x, true))
                                             message = $"Creature with ID {x} successfully spawned with AI enabled";

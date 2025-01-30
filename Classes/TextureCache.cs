@@ -26,6 +26,8 @@ namespace SLIL.Classes
         FlashlightBlinded,
         PlayerAiming,
         PlayerShooted,
+        StepEscape_0,
+        StepEscape_1,
     } 
 
     public class TextureCache
@@ -181,6 +183,7 @@ namespace SLIL.Classes
             { 27, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
+                    { SpriteStates.Static, Properties.Resources.player_DEAD },
                 }
             },
             { 28, new Dictionary<SpriteStates, Image>()
@@ -389,6 +392,7 @@ namespace SLIL.Classes
             { 27, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
+                    { SpriteStates.Static, Properties.Resources.player_DEAD },
                 }
             },
             { 28, new Dictionary<SpriteStates, Image>()

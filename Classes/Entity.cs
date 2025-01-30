@@ -424,7 +424,7 @@ namespace SLIL.Classes
 
     public abstract class Enemy : Creature
     {
-        protected enum Stages { Roaming, Chasing };
+        protected enum Stages { Roaming, Chasing, Escaping };
         protected Stages Stage;
         protected double DetectionRange;
         public bool Fast { get; set; }
@@ -1451,7 +1451,7 @@ namespace SLIL.Classes
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 10;
         protected override int GetTexture() => Texture;
-        public override double GetMove() => 0.16;
+        public override double GetMove() => Stage == Stages.Escaping ? 0.26 : 0.16;
         protected override int GetMAX_MONEY() => 10;
         protected override int GetMIN_MONEY() => 5;
         protected override int GetMAX_DAMAGE() => 35;
@@ -1479,13 +1479,13 @@ namespace SLIL.Classes
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
-            double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
+            A = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
                 double distance = 0;
                 double step = 0.01;
-                double rayAngleX = Math.Sin(angleToPlayer);
-                double rayAngleY = Math.Cos(angleToPlayer);
+                double rayAngleX = Math.Sin(A);
+                double rayAngleY = Math.Cos(A);
                 while (distance <= distanceToPlayer)
                 {
                     int test_x = (int)(X + rayAngleX * distance);
@@ -1500,7 +1500,7 @@ namespace SLIL.Classes
             }
             if (isPlayerVisible)
             {
-                if (distanceToPlayer <= SafeDistance && !ReadyToShot) angleToPlayer = ML.NormalizeAngle(angleToPlayer + Math.PI);
+                if (distanceToPlayer <= SafeDistance && !ReadyToShot) Stage = Stages.Escaping;
                 else if (distanceToPlayer <= ShotDistance)
                 {
                     ShotPause--;
@@ -1514,13 +1514,14 @@ namespace SLIL.Classes
                         }
                         else
                         {
-                            ShotA = angleToPlayer;
+                            ShotA = A;
                             ReadyToShot = true;
                             ShotPause = TotalShotPause / 2;
                         }
                     }
                     return;
                 }
+                else Stage = Stages.Chasing;
             }
             if (Stage == Stages.Roaming)
             {
@@ -1529,7 +1530,7 @@ namespace SLIL.Classes
                     Stage = Stages.Chasing;
                 return;
             }
-            if (Stage == Stages.Chasing)
+            else if (Stage == Stages.Chasing || Stage == Stages.Escaping)
             {
                 if (!isPlayerVisible)
                 {
@@ -1542,7 +1543,7 @@ namespace SLIL.Classes
                 double newY = Y;
                 double tempX = X;
                 double tempY = Y;
-                A = angleToPlayer;
+                A = Stage == Stages.Escaping ? ML.NormalizeAngle(A + Math.PI) : A;
                 if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
@@ -1564,6 +1565,10 @@ namespace SLIL.Classes
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
+            }
+            else if (Stage == Stages.Escaping)
+            {
+                base.UpdateCoordinates(map, playerX, playerY);
             }
         }
     }

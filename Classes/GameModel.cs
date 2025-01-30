@@ -255,11 +255,11 @@ namespace SLIL.Classes
                                 PlaySoundHandle(SLIL.GunsSoundsDict[typeof(SniperRifle)][1, 0], shooter.X, shooter.Y);
                                 char[] ImpassibleCells = { '#', 'D', 'd', '=', 'W', 'S' };
                                 double shotDistance = 0;
-                                double shotStep = 0.01;
+                                double shotStep = 0.01d;
                                 double shotAX = Math.Sin(shooter.ShotA);
                                 double shotAY = Math.Cos(shooter.ShotA);
                                 bool hit = false;
-                                while (!hit && shotDistance <= 8)
+                                while (!hit && shotDistance <= 12)
                                 {
                                     int test_x = (int)(shooter.X + shotAX * shotDistance);
                                     int test_y = (int)(shooter.Y + shotAY * shotDistance);
@@ -267,7 +267,7 @@ namespace SLIL.Classes
                                     {
                                         if (ent is Player player)
                                         {
-                                            if (Math.Abs(test_x - player.X) <= 0.35 && Math.Abs(test_y - player.Y) <= 0.35)
+                                            if (Math.Abs(test_x - player.X) <= 0.5 && Math.Abs(test_y - player.Y) <= 0.5)
                                             {
                                                 if (!player.Invulnerable)
                                                 {
@@ -291,7 +291,7 @@ namespace SLIL.Classes
                                     }
                                     if (ImpassibleCells.Contains(MAP[test_y * MAP_WIDTH + test_x]))
                                     {
-                                        AddHittingTheWall(test_x, test_y, 0);
+                                        AddHittingTheWall(shooter.X + shotAX * (shotDistance - 0.5), shooter.Y + shotAY * (shotDistance - 0.5), 1);
                                         hit = true;
                                         break;
                                     }
