@@ -424,8 +424,8 @@ namespace SLIL.Classes
 
     public abstract class Enemy : Creature
     {
-        protected enum Stages { Roaming, Chasing, Escaping };
-        protected Stages Stage;
+        public enum Stages { Roaming, Chasing, Escaping };
+        public Stages Stage;
         protected double DetectionRange;
         public bool Fast { get; set; }
 
@@ -1380,7 +1380,7 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 1000;
         protected override int GetMIN_DAMAGE() => 999;
         private const int TotalPauseTime = 12; //1.2 sec
-        private int PauseTime = TotalPauseTime / 4, MovePauseTime = TotalPauseTime;
+        private int PauseTime = 1, MovePauseTime = TotalPauseTime;
         public bool PlayerSees = false, DidTP = false;
 
         public VoidStalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
@@ -1390,13 +1390,13 @@ namespace SLIL.Classes
         {
             Texture = 34;
             DetectionRange = 10;
-            base.SetAnimations(2, 0);
+            base.AnimationsToStatic();
         }
 
         public void ISeeU()
         {
             PlayerSees = true;
-            PauseTime = TotalPauseTime / 4;
+            PauseTime = 1;
         }
 
         public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
@@ -1409,7 +1409,7 @@ namespace SLIL.Classes
                 if (PauseTime < 0)
                 {
                     PlayerSees = false;
-                    PauseTime = TotalPauseTime / 4;
+                    PauseTime = 1;
                 }
                 return;
             }
@@ -1451,14 +1451,15 @@ namespace SLIL.Classes
         protected override int GetMovesInARow() => 10;
         protected override int GetMAX_HP() => 10;
         protected override int GetTexture() => Texture;
-        public override double GetMove() => Stage == Stages.Escaping ? 0.26 : 0.16;
+        public override double GetMove() => Stage == Stages.Escaping ? 0.5 : 0.16;
         protected override int GetMAX_MONEY() => 10;
         protected override int GetMIN_MONEY() => 5;
         protected override int GetMAX_DAMAGE() => 35;
         protected override int GetMIN_DAMAGE() => 15;
-        private const int SafeDistance = 3, ShotDistance = 6;
-        public const int TotalShotPause = 12; // 1.2 sec
-        public int ShotPause = TotalShotPause;
+        private const int SafeDistance = 4;
+        public const int ShotDistance = 6;
+        public const int TotalShotPause = 32; // 3.2 sec
+        public int ShotPause = TotalShotPause, TimeAfterShot = 0;
         public double ShotA = 0;
         public bool ReadyToShot = false, DidShot = false;
 
@@ -1473,6 +1474,7 @@ namespace SLIL.Classes
             //HasSpriteRotation = true;
             base.SetAnimations(1, 0);
         }
+
         public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             if (DidShot) return;
@@ -1498,6 +1500,7 @@ namespace SLIL.Classes
                     distance += step;
                 }
             }
+            if (TimeAfterShot > 0) TimeAfterShot--;
             if (isPlayerVisible)
             {
                 if (distanceToPlayer <= SafeDistance && !ReadyToShot) Stage = Stages.Escaping;
@@ -1511,14 +1514,16 @@ namespace SLIL.Classes
                             DidShot = true;
                             ReadyToShot = false;
                             ShotPause = TotalShotPause;
+                            TimeAfterShot = 5;
                         }
                         else
                         {
                             ShotA = A;
                             ReadyToShot = true;
-                            ShotPause = TotalShotPause / 2;
+                            ShotPause = 5;
                         }
                     }
+                    Stage = Stages.Chasing;
                     return;
                 }
                 else Stage = Stages.Chasing;
@@ -1526,50 +1531,43 @@ namespace SLIL.Classes
             if (Stage == Stages.Roaming)
             {
                 base.UpdateCoordinates(map, playerX, playerY);
-                if (isPlayerVisible)
-                    Stage = Stages.Chasing;
+                if (isPlayerVisible) Stage = Stages.Chasing;
                 return;
             }
-            else if (Stage == Stages.Chasing || Stage == Stages.Escaping)
+            if (!isPlayerVisible)
             {
-                if (!isPlayerVisible)
-                {
-                    Stage = Stages.Roaming;
-                    NumberOfMovesLeft = MovesInARow;
-                    return;
-                }
-                double move = this.GetMove();
-                double newX = X;
-                double newY = Y;
-                double tempX = X;
-                double tempY = Y;
-                A = Stage == Stages.Escaping ? ML.NormalizeAngle(A + Math.PI) : A;
-                if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
-                newX += Math.Sin(A) * move;
-                newY += Math.Cos(A) * move;
-                IntX = (int)X;
-                IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
-                    tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
-                    tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
-                    tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
-                    tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
-                    tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
-                    tempY += EntityWidth / 2 - (tempY % 1);
-                X = tempX;
-                Y = tempY;
+                Stage = Stages.Roaming;
+                NumberOfMovesLeft = MovesInARow;
+                return;
             }
-            else if (Stage == Stages.Escaping)
-            {
-                base.UpdateCoordinates(map, playerX, playerY);
-            }
+            if (ReadyToShot) return;
+            double move = this.GetMove();
+            double newX = X;
+            double newY = Y;
+            double tempX = X;
+            double tempY = Y;
+            A = Stage == Stages.Escaping ? ML.NormalizeAngle(A + Math.PI) : A;
+            if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
+            newX += Math.Sin(A) * move;
+            newY += Math.Cos(A) * move;
+            IntX = (int)X;
+            IntY = (int)Y;
+            if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                tempX = newX;
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                tempY = newY;
+            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                tempX -= EntityWidth / 2 - (1 - tempX % 1);
+            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                tempX += EntityWidth / 2 - (tempX % 1);
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                tempY -= EntityWidth / 2 - (1 - tempY % 1);
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                tempY += EntityWidth / 2 - (tempY % 1);
+            X = tempX;
+            Y = tempY;
         }
     }
 

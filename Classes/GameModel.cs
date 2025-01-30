@@ -259,7 +259,7 @@ namespace SLIL.Classes
                                 double shotAX = Math.Sin(shooter.ShotA);
                                 double shotAY = Math.Cos(shooter.ShotA);
                                 bool hit = false;
-                                while (!hit && shotDistance <= 12)
+                                while (!hit && shotDistance <= Shooter.ShotDistance + 6)
                                 {
                                     int test_x = (int)(shooter.X + shotAX * shotDistance);
                                     int test_y = (int)(shooter.Y + shotAY * shotDistance);
@@ -380,6 +380,7 @@ namespace SLIL.Classes
             else if (entity is Stalker) return -1;
             else if (entity is VoidStalker) return -1;
             else if (entity is Shooter) return -1;
+            //else if (entity is LostSoul) return -1;
             else return -1;
         }
 

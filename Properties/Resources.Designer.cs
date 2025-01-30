@@ -2253,6 +2253,36 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap player {
+            get {
+                object obj = ResourceManager.GetObject("player", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap player_1 {
+            get {
+                object obj = ResourceManager.GetObject("player_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap player_aiming {
+            get {
+                object obj = ResourceManager.GetObject("player_aiming", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap player_DEAD {
             get {
                 object obj = ResourceManager.GetObject("player_DEAD", resourceCulture);
@@ -2266,6 +2296,26 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap player_parkour {
             get {
                 object obj = ResourceManager.GetObject("player_parkour", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap player_shooted {
+            get {
+                object obj = ResourceManager.GetObject("player_shooted", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap player_stoped {
+            get {
+                object obj = ResourceManager.GetObject("player_stoped", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

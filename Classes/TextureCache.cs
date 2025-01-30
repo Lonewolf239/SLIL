@@ -24,8 +24,8 @@ namespace SLIL.Classes
         DeadBody,
         DeadBodyBlinded,
         FlashlightBlinded,
-        PlayerAiming,
-        PlayerShooted,
+        Aiming,
+        Shooted,
         StepEscape_0,
         StepEscape_1,
     } 
@@ -223,8 +223,7 @@ namespace SLIL.Classes
             },
             { 34, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.StepForward_0, Properties.Resources.empty_teleport_0 },
-                    { SpriteStates.StepForward_1, Properties.Resources.empty_teleport_1 }
+                    { SpriteStates.Static, Properties.Resources.empty_teleport_0 }
                 }
             },
             { 35, new Dictionary<SpriteStates, Image>()
@@ -235,9 +234,13 @@ namespace SLIL.Classes
             },
             { 36, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.StepForward_0, Properties.Resources.missing },
-                    { SpriteStates.StepForward_1, Properties.Resources.missing },
-                    { SpriteStates.DeadBody, Properties.Resources.missing },
+                    { SpriteStates.StepForward_0, Properties.Resources.player },
+                    { SpriteStates.StepForward_1, Properties.Resources.player_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
+                    { SpriteStates.Aiming, Properties.Resources.player_aiming },
+                    { SpriteStates.Shooted, Properties.Resources.player_shooted },
+                    { SpriteStates.StepEscape_0, Properties.Resources.player_stoped },
+                    { SpriteStates.StepEscape_1, Properties.Resources.player_stoped },
                 }
             },
         };
@@ -432,8 +435,7 @@ namespace SLIL.Classes
             },
             { 34, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.StepForward_0, Properties.Resources.empty_teleport_0 },
-                    { SpriteStates.StepForward_1, Properties.Resources.empty_teleport_1 }
+                    { SpriteStates.Static, Properties.Resources.empty_teleport_0 }
                 }
             },
             { 35, new Dictionary<SpriteStates, Image>()
@@ -444,9 +446,13 @@ namespace SLIL.Classes
             },
             { 36, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.StepForward_0, Properties.Resources.missing },
-                    { SpriteStates.StepForward_1, Properties.Resources.missing },
-                    { SpriteStates.DeadBody, Properties.Resources.missing }
+                    { SpriteStates.StepForward_0, Properties.Resources.player },
+                    { SpriteStates.StepForward_1, Properties.Resources.player_1 },
+                    { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
+                    { SpriteStates.Aiming, Properties.Resources.player_aiming },
+                    { SpriteStates.Shooted, Properties.Resources.player_shooted },
+                    { SpriteStates.StepEscape_0, Properties.Resources.player_stoped },
+                    { SpriteStates.StepEscape_1, Properties.Resources.player_stoped },
                 }
             },
         };

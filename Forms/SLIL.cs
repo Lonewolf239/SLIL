@@ -2626,6 +2626,16 @@ namespace SLIL
                     return SpriteStates.Static;
                 }
                 if (returnStopState) return SpriteStates.StopForward;
+                if (entity is Enemy enemy && enemy.Stage == Enemy.Stages.Escaping)
+                {
+                    if (state == 0) return SpriteStates.StepEscape_0;
+                    return SpriteStates.StepEscape_1;
+                }
+                if (entity is Shooter shooter)
+                {
+                    if (shooter.ReadyToShot) return SpriteStates.Aiming;
+                    if (shooter.TimeAfterShot > 0) return SpriteStates.Shooted;
+                }
                 if (state == 0) return SpriteStates.StepForward_0;
                 return SpriteStates.StepForward_1;
             }
