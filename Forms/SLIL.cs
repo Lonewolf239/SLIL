@@ -618,7 +618,7 @@ namespace SLIL
             InitPlayerHandle = InitPlayerInvoker;
             PlaySoundHandle = PlaySoundInvoker;
             CloseFormHandle = CloseFormInvoker;
-            Controller = new GameController(adress, port, password, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
+            //Controller = new GameController(adress, port, password, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
             SetParameters();
@@ -954,6 +954,9 @@ namespace SLIL
                     break;
                 case 24: // void stalker
                     entity = new VoidStalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 25: // stalker
+                    entity = new Stalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
             }
             if (entity == null) return false;
@@ -2435,8 +2438,8 @@ namespace SLIL
             for (int i = 0; i < spriteInfo.Length; i++)
             {
                 Entity entity = Entities[spriteInfo[i].Order];
-                if (entity is Player pl && player.ID == pl.ID) continue;
-                double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
+                if (entity is Player pl && player.ID == pl.ID) continue;                
+                double Distance = MathLogic.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(player.X, player.Y));
                 if (Distance > player.GetDrawDistance() || Distance == 0) continue;
                 double spriteX = entity.X - player.X;
                 double spriteY = entity.Y - player.Y;
@@ -3818,7 +3821,7 @@ namespace SLIL
 
         //  #====   Game methods    ====#
 
-        private int GetCoordinate(double x, double y) => (int)y * Controller.GetMapWidth() + (int)x;
+        private int GetCoordinate(double x, double y) => Controller.GetCoordinate(x, y);
 
         private bool PlayerCanRun()
         {

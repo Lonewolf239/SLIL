@@ -1,10 +1,10 @@
-﻿using LiteNetLib.Utils;
+﻿using Play_Sound;
 using LiteNetLib;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading;
+using LiteNetLib.Utils;
+using System.Collections.Generic;
 using System.Windows.Forms;
-using Play_Sound;
+using System;
 
 namespace SLIL.Classes
 {
@@ -38,150 +38,150 @@ namespace SLIL.Classes
             Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle);
         }
 
-        public GameController(string adress, int port, string password, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound, CloseFormDelegate closeForm, string playerName)
-        {
-            playerID = -1;
-            this.playerName = playerName;
-            StopGameHandle = stopGame;
-            PlaySoundHandle = playSound;
-            CloseForm = closeForm;
-            SetPlayerID = SetPlayerIDInvoker;
-            Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle)
-            {
-                IsMultiplayer = true
-            };
-            listener = new EventBasedNetListener();
-            client = new NetManager(listener);
-            processor = new NetPacketProcessor();
-            client.Start();
-            client.Connect(adress, port, $"SomeKey:{this.playerName}|{password}");
-            Application.ApplicationExit += (sender, e) => client.Stop();
-            listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
-            {
-                peer = fromPeer;
-                int packetType = dataReader.GetInt();
-                if (packetType == 100)
-                {
-                    playerID = dataReader.GetInt();
-                    Game.Deserialize(dataReader);
-                    //initPlayer();
-                    //Game.StartGame(false);
-                    //startGame();
-                }
-                if (packetType == 1)
-                    PlaySoundHandle(SLIL.door[1], dataReader.GetDouble(), dataReader.GetDouble());
-                if (packetType == 2)
-                    PlaySoundHandle(SLIL.door[0], dataReader.GetDouble(), dataReader.GetDouble());
-                if (packetType == 0)
-                {
-                    if (playerID != -1)
-                        Game.Deserialize(dataReader, playerID);
-                    else Game.Deserialize(dataReader);
-                }
-                if (packetType == 101)
-                {
-                    Game.StopGame(-1);
-                }
-                if (packetType == 102)
-                {
-                    Game.Deserialize(dataReader);
-                    this._isInSpectatorMode = GetPlayer(true).Dead;
-                    Game.StartGame(false);
-                    startGame();
-                }
-                if (packetType == 103)
-                {
-                    Game.Deserialize(dataReader);
-                    this._isInSpectatorMode = GetPlayer(true).Dead;
-                    if (_isInSpectatorMode) {
-                        foreach (Entity ent in Game.Entities)
-                        {
-                            if (ent is Player p)
-                            {
-                                if (!p.Dead)
-                                {
-                                    _spectatingForPlayerID = p.ID;
-                                    break;
-                                }
-                            }
-                        } 
-                    }
-                }
-                if (packetType == 403)
-                {
-                    closeForm();
-                }
-                if (packetType == 666)
-                {
-                    _isInSpectatorMode = true;
-                    foreach (Entity ent in Game.Entities)
-                    {
-                        if (ent is Player p)
-                        {
-                            if (!p.Dead)
-                            {
-                                _spectatingForPlayerID = p.ID;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (packetType == 1000)
-                {
-                    PlaySound sound = null;
-                    switch (dataReader.GetInt())
-                    {
-                        case 0:
-                            sound = SLIL.hit[0];
-                            break;
-                        case 1:
-                            sound = SLIL.hit[1];
-                            break;
-                        case 2:
-                            sound = SLIL.hungry;
-                            break;
-                        default:
-                            break;
-                    }
-                    PlaySoundHandle(sound, GetPlayer().X, GetPlayer().Y);
-                }
-                if (packetType == 1001)
-                {
-                    double X = dataReader.GetDouble();
-                    double Y = dataReader.GetDouble();
-                    int deathSound = dataReader.GetInt();
-                    PlaySoundHandle(SLIL.DeathSounds[deathSound, GetPlayer().CuteMode ? 1 : 0], X, Y);
-                }
-                if (packetType == 1334)
-                {
-                    Game.DeserializePlayer(playerID, dataReader.GetRemainingBytes());
-                }
-                dataReader.Recycle();
-            };
-            listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
-            {
-                CloseForm();
-            };
-            new Thread(() =>
-            {
-                while (client.IsRunning)
-                {
-                    if (GetPlayer() != null && !_isInSpectatorMode)
-                    {
-                        NetDataWriter writer = new NetDataWriter();
-                        writer.Put(1);
-                        writer.Put(GetPlayer().X);
-                        writer.Put(GetPlayer().Y);
-                        writer.Put(GetPlayer().A);
-                        writer.Put(GetPlayer().Look);
-                        writer.Put(playerID);
-                        peer.Send(writer, DeliveryMethod.Unreliable);
-                    }
-                    client.PollEvents();
-                    Thread.Sleep(10);
-                }
-            }).Start();
-        }
+        //public GameController(string adress, int port, string password, StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound, CloseFormDelegate closeForm, string playerName)
+        //{
+        //    playerID = -1;
+        //    this.playerName = playerName;
+        //    StopGameHandle = stopGame;
+        //    PlaySoundHandle = playSound;
+        //    CloseForm = closeForm;
+        //    SetPlayerID = SetPlayerIDInvoker;
+        //    Game = new GameModel(StopGameHandle, SetPlayerID, PlaySoundHandle)
+        //    {
+        //        IsMultiplayer = true
+        //    };
+        //    listener = new EventBasedNetListener();
+        //    client = new NetManager(listener);
+        //    processor = new NetPacketProcessor();
+        //    client.Start();
+        //    client.Connect(adress, port, $"SomeKey:{this.playerName}|{password}");
+        //    Application.ApplicationExit += (sender, e) => client.Stop();
+        //    listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
+        //    {
+        //        peer = fromPeer;
+        //        int packetType = dataReader.GetInt();
+        //        if (packetType == 100)
+        //        {
+        //            playerID = dataReader.GetInt();
+        //            Game.Deserialize(dataReader);
+        //            //initPlayer();
+        //            //Game.StartGame(false);
+        //            //startGame();
+        //        }
+        //        if (packetType == 1)
+        //            PlaySoundHandle(SLIL.door[1], dataReader.GetDouble(), dataReader.GetDouble());
+        //        if (packetType == 2)
+        //            PlaySoundHandle(SLIL.door[0], dataReader.GetDouble(), dataReader.GetDouble());
+        //        if (packetType == 0)
+        //        {
+        //            if (playerID != -1)
+        //                Game.Deserialize(dataReader, playerID);
+        //            else Game.Deserialize(dataReader);
+        //        }
+        //        if (packetType == 101)
+        //        {
+        //            Game.StopGame(-1);
+        //        }
+        //        if (packetType == 102)
+        //        {
+        //            Game.Deserialize(dataReader);
+        //            this._isInSpectatorMode = GetPlayer(true).Dead;
+        //            Game.StartGame(false);
+        //            startGame();
+        //        }
+        //        if (packetType == 103)
+        //        {
+        //            Game.Deserialize(dataReader);
+        //            this._isInSpectatorMode = GetPlayer(true).Dead;
+        //            if (_isInSpectatorMode) {
+        //                foreach (Entity ent in Game.Entities)
+        //                {
+        //                    if (ent is Player p)
+        //                    {
+        //                        if (!p.Dead)
+        //                        {
+        //                            _spectatingForPlayerID = p.ID;
+        //                            break;
+        //                        }
+        //                    }
+        //                } 
+        //            }
+        //        }
+        //        if (packetType == 403)
+        //        {
+        //            closeForm();
+        //        }
+        //        if (packetType == 666)
+        //        {
+        //            _isInSpectatorMode = true;
+        //            foreach (Entity ent in Game.Entities)
+        //            {
+        //                if (ent is Player p)
+        //                {
+        //                    if (!p.Dead)
+        //                    {
+        //                        _spectatingForPlayerID = p.ID;
+        //                        break;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (packetType == 1000)
+        //        {
+        //            PlaySound sound = null;
+        //            switch (dataReader.GetInt())
+        //            {
+        //                case 0:
+        //                    sound = SLIL.hit[0];
+        //                    break;
+        //                case 1:
+        //                    sound = SLIL.hit[1];
+        //                    break;
+        //                case 2:
+        //                    sound = SLIL.hungry;
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //            PlaySoundHandle(sound, GetPlayer().X, GetPlayer().Y);
+        //        }
+        //        if (packetType == 1001)
+        //        {
+        //            double X = dataReader.GetDouble();
+        //            double Y = dataReader.GetDouble();
+        //            int deathSound = dataReader.GetInt();
+        //            PlaySoundHandle(SLIL.DeathSounds[deathSound, GetPlayer().CuteMode ? 1 : 0], X, Y);
+        //        }
+        //        if (packetType == 1334)
+        //        {
+        //            Game.DeserializePlayer(playerID, dataReader.GetRemainingBytes());
+        //        }
+        //        dataReader.Recycle();
+        //    };
+        //    listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
+        //    {
+        //        CloseForm();
+        //    };
+        //    new Thread(() =>
+        //    {
+        //        while (client.IsRunning)
+        //        {
+        //            if (GetPlayer() != null && !_isInSpectatorMode)
+        //            {
+        //                NetDataWriter writer = new NetDataWriter();
+        //                writer.Put(1);
+        //                writer.Put(GetPlayer().X);
+        //                writer.Put(GetPlayer().Y);
+        //                writer.Put(GetPlayer().A);
+        //                writer.Put(GetPlayer().Look);
+        //                writer.Put(playerID);
+        //                peer.Send(writer, DeliveryMethod.Unreliable);
+        //            }
+        //            client.PollEvents();
+        //            Thread.Sleep(10);
+        //        }
+        //    }).Start();
+        //}
 
         public void CloseConnection() => client?.Stop();
 
@@ -724,5 +724,7 @@ namespace SLIL.Classes
                 //peer.Send(writer, DeliveryMethod.ReliableOrdered);
             }
         }
+
+        internal int GetCoordinate(double x, double y) => Game.GetCoordinate(x, y);
     }
 }

@@ -1,12 +1,12 @@
-﻿using MazeGenerator;
-using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using Play_Sound;
 using System.Text;
+using System.Linq;
+using MazeGenerator;
+using LiteNetLib.Utils;
 using System.Threading;
 using System.Threading.Tasks;
-using Play_Sound;
+using System.Collections.Generic;
 
 namespace SLIL.Classes
 {
@@ -16,7 +16,7 @@ namespace SLIL.Classes
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
             bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################",
-            backroomsMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..V###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#.....#....##########################",
+            backroomsMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..V###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#..0..#....##########################",
             emptyMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..F###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#.....#....##########################";
         private int inDebug = 0;
         private readonly Pet[] PETS;
@@ -146,7 +146,7 @@ namespace SLIL.Classes
                     var entity = Entities[i] as dynamic;
                     var targetListOrdered = targetsList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
                     Entity target = targetListOrdered.First();
-                    double distance = Math.Sqrt(Math.Pow(entity.X - target.X, 2) + Math.Pow(entity.Y - target.Y, 2));
+                    double distance = MathLogic.GetDistance(new TPoint(target.X, target.Y), new TPoint(entity.X, entity.Y));
                     if (entity is GameObject && entity.Temporarily)
                     {
                         entity.LifeTime++;
@@ -194,9 +194,8 @@ namespace SLIL.Classes
                             {
                                 if (!entity.DEAD && !playerTarget.Dead)
                                 {
-                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
-                                    if (entity.Fast)
-                                        entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A);
+                                    if (entity.Fast) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A);
                                     if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
 
                                     {
@@ -227,10 +226,32 @@ namespace SLIL.Classes
                                 if (!entity.DEAD && !coveringTarget.Broken)
                                 {
                                     entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
-                                    if (entity.Fast)
-                                        entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    if (entity.Fast) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
                                     if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
                                         coveringTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
+                                }
+                            }
+                            if (entity is Stalker stalker && stalker.DEAD)
+                            {
+                                double spawnDistance = 0;
+                                int iteration = 0;
+                                while (true)
+                                {
+                                    int x = rand.Next(0, MAP_WIDTH);
+                                    int y = rand.Next(0, MAP_HEIGHT);
+                                    spawnDistance = MathLogic.GetDistance(new TPoint(target.X, target.Y), new TPoint(x, y));
+                                    if (MAP[GetCoordinate(x, y)] == '.')
+                                    {
+                                        if (spawnDistance >= 14 || (iteration > 10000 && spawnDistance > 3))
+                                        {
+                                            stalker.X = x;
+                                            stalker.Y = y;
+                                            stalker.Respawn();
+                                            break;
+                                        }
+                                    }
+                                    if (iteration > 20000) break;
+                                    iteration++;
                                 }
                             }
                         }
@@ -246,14 +267,13 @@ namespace SLIL.Classes
                                 if ((ent as Player).PET == entity)
                                 {
                                     owner = player1;
-                                    distance = Math.Sqrt(Math.Pow(entity.X - target.X, 2) + Math.Pow(entity.Y - target.Y, 2));
+                                    distance = MathLogic.GetDistance(new TPoint(target.X, target.Y), new TPoint(entity.X, entity.Y));
                                 }
                             }
                         }
                         if (distance > 1 && !(owner.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight))
                             entity.UpdateCoordinates(MAP.ToString(), owner.X, owner.Y);
-                        else
-                            entity.Stoped = true;
+                        else entity.Stoped = true;
                     }
                     else if (entity is Rockets rocket)
                     {
@@ -332,7 +352,7 @@ namespace SLIL.Classes
                     var enemy = Entities[i] as dynamic;
                     playersList.OrderBy((playerI) => Math.Pow(enemy.X - playerI.X, 2) + Math.Pow(enemy.Y - playerI.Y, 2));
                     Player player = playersList[0];
-                    double distance = Math.Sqrt(Math.Pow(enemy.X - player.X, 2) + Math.Pow(enemy.Y - player.Y, 2));
+                    double distance = MathLogic.GetDistance(new TPoint(player.X, player.Y), new TPoint(enemy.X, enemy.Y));
                     if (distance <= 30)
                     {
                         if (difficulty <= 1)
@@ -927,44 +947,34 @@ namespace SLIL.Classes
             switch (c)
             {
                 case 'F':
-                    Teleport teleport = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = teleport;
+                    entity = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'f':
-                    BackroomsTeleport backroomsTeleport = new BackroomsTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = backroomsTeleport;
+                    entity = new BackroomsTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'V':
-                    VoidTeleport emptyTeleport = new VoidTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = emptyTeleport;
+                    entity = new VoidTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'D':
-                    ShopDoor shopDoor = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = shopDoor;
+                    entity = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case '$':
-                    ShopMan shopMan = new ShopMan(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = shopMan;
+                    entity = new ShopMan(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'b':
-                    Box box = new Box(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = box;
+                    entity = new Box(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'B':
-                    Barrel barrel = new Barrel(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = barrel;
+                    entity = new Barrel(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'L':
-                    Vine vine = new Vine(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = vine;
+                    entity = new Vine(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'l':
-                    Lamp lamp = new Lamp(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = lamp;
+                    entity = new Lamp(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID); ;
                     break;
                 case '5':
-                    Bike bike = new Bike(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                    entity = bike;
+                    entity = new Bike(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'E':
                     SpawnEnemis(x, y, MAP_WIDTH);
@@ -989,6 +999,16 @@ namespace SLIL.Classes
                 case '4':
                     SpawnEnemis(x, y, MAP_WIDTH, false, 3);
                     MAP[y * MAP_WIDTH + x] = '.';
+                    break;
+                case '0':
+                    if (inBackrooms)
+                    {
+                        if (BackroomsStage == 0)
+                            entity = new Stalker(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                        //else
+                        //    entity = new VoidStalker(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                        MAP[y * MAP_WIDTH + x] = '.';
+                    }
                     break;
             }
             return entity;
@@ -1736,8 +1756,7 @@ namespace SLIL.Classes
                 return;
             }
             p.A += v;
-            if (p.A >= Math.PI * 2) p.A = 0;
-            if (p.A <= -Math.PI * 2) p.A = 0;
+            p.A = MathLogic.NormalizeAngle(p.A);
         }
 
         internal void ChangePlayerLook(double lookDif, int playerID)
@@ -2126,5 +2145,7 @@ namespace SLIL.Classes
                 }
             }
         }
+
+        internal int GetCoordinate(double x, double y) => (int)y * GetMapWidth() + (int)x;
     }
 }

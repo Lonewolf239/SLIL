@@ -195,7 +195,7 @@ namespace SLIL.Classes
             DEAD = false;
         }
 
-        public virtual void UpdateCoordinates(string map, double playerX, double playerY)
+        public virtual void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             double move = this.GetMove();
             double newX = X;
@@ -274,7 +274,7 @@ namespace SLIL.Classes
         public NPC(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => RespondsToFlashlight = false;
         public NPC(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => RespondsToFlashlight = false;
 
-        public override void UpdateCoordinates(string map, double playerX, double playerY) { }
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0) { }
     }
 
     public abstract class Pet : Friend
@@ -325,11 +325,11 @@ namespace SLIL.Classes
 
         public int GetPetAbility() => PetAbility;
 
-        public override void UpdateCoordinates(string map, double playerX, double playerY)
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             Stoped = false;
             bool isPlayerVisible = true;
-            double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
+            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -358,7 +358,7 @@ namespace SLIL.Classes
             double tempX = X;
             double tempY = Y;
             A = angleToPlayer;
-            if (Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2)) <= EntityWidth) return;
+            if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
             newX += Math.Sin(A) * move;
             newY += Math.Cos(A) * move;
             IntX = (int)X;
@@ -379,7 +379,7 @@ namespace SLIL.Classes
                 tempY += EntityWidth / 2 - (tempY % 1);
             if (isPlayerVisible)
             {
-                if (Math.Sqrt(Math.Pow(tempX - playerX, 2) + Math.Pow(tempY - playerY, 2)) >= 0.75)
+                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(tempX, tempY)) >= 0.75)
                 {
                     X = tempX;
                     Y = tempY;
@@ -454,7 +454,7 @@ namespace SLIL.Classes
         public Rockets(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => CanHit = false;
 
         public void SetA(double value) => A = value;
-        public override void UpdateCoordinates(string map, double playerX, double playerY)
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             double move = this.GetMove();
             double newX = X;
@@ -901,10 +901,10 @@ namespace SLIL.Classes
             //HasSpriteRotation = true;
             base.SetAnimations(1, 0);
         }
-        public override void UpdateCoordinates(string map, double playerX, double playerY)
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             bool isPlayerVisible = true;
-            double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
+            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -946,7 +946,7 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-                if (Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2)) <= EntityWidth) return;
+                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -996,10 +996,10 @@ namespace SLIL.Classes
             Fast = true;
             base.SetAnimations(1, 0);
         }
-        public override void UpdateCoordinates(string map, double playerX, double playerY)
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             bool isPlayerVisible = true;
-            double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
+            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -1041,7 +1041,7 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-                if (Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2)) <= EntityWidth) return;
+                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -1090,10 +1090,10 @@ namespace SLIL.Classes
             DetectionRange = 8;
             base.SetAnimations(2, 0);
         }
-        public override void UpdateCoordinates(string map, double playerX, double playerY)
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             bool isPlayerVisible = true;
-            double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
+            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -1135,7 +1135,7 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-                if (Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2)) <= EntityWidth) return;
+                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -1185,10 +1185,10 @@ namespace SLIL.Classes
             Fast = true;
             base.SetAnimations(1, 0);
         }
-        public override void UpdateCoordinates(string map, double playerX, double playerY)
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             bool isPlayerVisible = true;
-            double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
+            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -1230,7 +1230,8 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-                if (Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2)) <= EntityWidth) return;
+
+                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -1255,34 +1256,36 @@ namespace SLIL.Classes
         }
     }
 
-    public class VoidStalker : Enemy
+    public class Stalker : Enemy
     {
-        protected override int GetEntityID() => 24;
+        protected override int GetEntityID() => 25;
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
-        protected override int GetMovesInARow() => 10;
+        protected override int GetMovesInARow() => 15;
         protected override int GetMAX_HP() => 1;
         protected override int GetTexture() => Texture;
-        public override double GetMove() => 0.13;
+        public override double GetMove() => 0.2;
         protected override int GetMAX_MONEY() => 1;
         protected override int GetMIN_MONEY() => 0;
         protected override int GetMAX_DAMAGE() => 1000;
         protected override int GetMIN_DAMAGE() => 999;
+        private const int TotalLifeTime = 180;
+        private int LifeTime = 180;
 
-        public VoidStalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        public VoidStalker(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        public Stalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Stalker(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
-            Texture = 34;
-            DetectionRange = 10;
+            Texture = 14;
+            DetectionRange = 16;
             base.SetAnimations(2, 0);
         }
 
-        public override void UpdateCoordinates(string map, double playerX, double playerY)
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
-            bool isPlayerVisible = true;
-            double distanceToPlayer = Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2));
+            bool isPlayerVisible = true;            
+            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -1323,7 +1326,7 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-                if (Math.Sqrt(Math.Pow(X - playerX, 2) + Math.Pow(Y - playerY, 2)) <= EntityWidth) return;
+                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -1344,7 +1347,79 @@ namespace SLIL.Classes
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
+                LifeTime--;
+                if (LifeTime < 0)
+                {
+                    DEAD = true;
+                    LifeTime = TotalLifeTime;
+                }
             }
+        }
+    }
+
+    public class VoidStalker : Enemy
+    {
+        protected override int GetEntityID() => 24;
+        protected override double GetEntityWidth() => 0.4;
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
+        protected override int GetMovesInARow() => 10;
+        protected override int GetMAX_HP() => 1;
+        protected override int GetTexture() => Texture;
+        public override double GetMove() => 0.13;
+        protected override int GetMAX_MONEY() => 1;
+        protected override int GetMIN_MONEY() => 0;
+        protected override int GetMAX_DAMAGE() => 1000;
+        protected override int GetMIN_DAMAGE() => 999;
+        private const int TotalPauseTime = 12; //1.2 sec
+        private int PauseTime = 12;
+        public bool PlayerSees = false, DidTP = false;
+
+        public VoidStalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public VoidStalker(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 34;
+            DetectionRange = 10;
+            base.SetAnimations(2, 0);
+        }
+
+        public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        {
+            PlayerSees = MathLogic.PointInFOV(playerX, playerY, playerA, 12, new TPoint(X, Y));
+            if (PlayerSees)
+            {
+                DidTP = false;
+                PauseTime = TotalPauseTime;
+                return;
+            }
+            if (DidTP)
+            {
+                PauseTime--;
+                if (PauseTime < 0)
+                {
+                    DidTP = false;
+                    PauseTime = TotalPauseTime;
+                }
+                return;
+            }
+            A = Math.Atan2(playerY - Y, playerX - X);
+            double newX = X + (playerX - X) / 2;
+            double newY = Y + (playerY - Y) / 2;
+            if (!CheckCollision(map, newX, newY))
+            {
+                X = newX;
+                Y = newY;
+                DidTP = true;
+            }
+        }
+
+        private bool CheckCollision(string map, double x, double y)
+        {
+            return ImpassibleCells.Contains(map[(int)y * MAP_WIDTH + (int)(x + EntityWidth / 2)]) ||
+                   ImpassibleCells.Contains(map[(int)y * MAP_WIDTH + (int)(x - EntityWidth / 2)]) ||
+                   ImpassibleCells.Contains(map[(int)(y + EntityWidth / 2) * MAP_WIDTH + (int)x]) ||
+                   ImpassibleCells.Contains(map[(int)(y - EntityWidth / 2) * MAP_WIDTH + (int)x]);
         }
     }
 
