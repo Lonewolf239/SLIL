@@ -2479,9 +2479,8 @@ namespace SLIL
                                 double tempTextureX = rays[stripe][y].TextureX;
                                 double tempTextureY = rays[stripe][y].TextureY;
                                 SpriteStates tempSpriteState = rays[stripe][y].SpriteState;
-                                if (entity is Creature)
+                                if (entity is Creature creature)
                                 {
-                                    Creature creature = entity as Creature;
                                     if (!creature.DEAD)
                                     {
                                         if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && entity is Pet pet && pet.Stoped && pet.HasStopAnimation)
@@ -2495,6 +2494,7 @@ namespace SLIL
                                         }
                                         if (creature is Enemy)
                                         {
+                                            if (creature is VoidStalker stalker) stalker.ISeeU();
                                             int coords = (int)entity.Y * mapWidth + (int)entity.X;
                                             if (!enemiesCoords.Contains(coords))
                                                 enemiesCoords.Add(coords);
@@ -2508,9 +2508,8 @@ namespace SLIL
                                             rays[stripe][y].SpriteState = SpriteStates.DeadBody;
                                     }
                                 }
-                                else if (entity is Player)
+                                else if (entity is Player playerTar)
                                 {
-                                    Player playerTar = entity as Player;
                                     if (!playerTar.Dead)
                                         rays[stripe][y].SpriteState = GetSpriteRotation(playerTar, timeNow);
                                     else
@@ -2518,9 +2517,8 @@ namespace SLIL
                                 }
                                 else
                                 {
-                                    if (entity is GameObject)
+                                    if (entity is GameObject gameObject)
                                     {
-                                        GameObject gameObject = entity as GameObject;
                                         if (gameObject.Animated && gameObject.Temporarily)
                                             rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, 0, false);
                                         else
