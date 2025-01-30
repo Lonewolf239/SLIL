@@ -329,7 +329,7 @@ namespace SLIL.Classes
         {
             Stoped = false;
             bool isPlayerVisible = true;
-            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
+            double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > detectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -358,7 +358,7 @@ namespace SLIL.Classes
             double tempX = X;
             double tempY = Y;
             A = angleToPlayer;
-            if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
+            if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
             newX += Math.Sin(A) * move;
             newY += Math.Cos(A) * move;
             IntX = (int)X;
@@ -379,7 +379,7 @@ namespace SLIL.Classes
                 tempY += EntityWidth / 2 - (tempY % 1);
             if (isPlayerVisible)
             {
-                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(tempX, tempY)) >= 0.75)
+                if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(tempX, tempY)) >= 0.75)
                 {
                     X = tempX;
                     Y = tempY;
@@ -904,7 +904,7 @@ namespace SLIL.Classes
         public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             bool isPlayerVisible = true;
-            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
+            double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -946,7 +946,7 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
+                if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -999,7 +999,7 @@ namespace SLIL.Classes
         public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             bool isPlayerVisible = true;
-            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
+            double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -1041,7 +1041,7 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
+                if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -1093,7 +1093,7 @@ namespace SLIL.Classes
         public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             bool isPlayerVisible = true;
-            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
+            double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -1135,7 +1135,7 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
+                if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -1188,7 +1188,7 @@ namespace SLIL.Classes
         public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             bool isPlayerVisible = true;
-            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
+            double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -1231,7 +1231,7 @@ namespace SLIL.Classes
                 double tempY = Y;
                 A = angleToPlayer;
 
-                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
+                if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -1264,13 +1264,13 @@ namespace SLIL.Classes
         protected override int GetMovesInARow() => 15;
         protected override int GetMAX_HP() => 1;
         protected override int GetTexture() => Texture;
-        public override double GetMove() => 0.2;
+        public override double GetMove() => Stage == Stages.Chasing ? 0.2 : 0.35;
         protected override int GetMAX_MONEY() => 1;
         protected override int GetMIN_MONEY() => 0;
         protected override int GetMAX_DAMAGE() => 1000;
         protected override int GetMIN_DAMAGE() => 999;
-        private const int TotalLifeTime = 180;
-        private int LifeTime = 180;
+        private const int TotalLifeTime = 180; //18 sec
+        private int RoamingTime = TotalLifeTime * 2, LifeTime = TotalLifeTime;
 
         public Stalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
         public Stalker(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
@@ -1278,6 +1278,7 @@ namespace SLIL.Classes
         private void Init()
         {
             Texture = 14;
+            MovesInARow = 6;
             DetectionRange = 16;
             base.SetAnimations(2, 0);
         }
@@ -1285,7 +1286,7 @@ namespace SLIL.Classes
         public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             bool isPlayerVisible = true;            
-            double distanceToPlayer = MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
+            double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
             if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
@@ -1309,6 +1310,13 @@ namespace SLIL.Classes
             if (Stage == Stages.Roaming)
             {
                 base.UpdateCoordinates(map, playerX, playerY);
+                RoamingTime--;
+                if (RoamingTime < 0)
+                {
+                    DEAD = true;
+                    LifeTime = TotalLifeTime;
+                    RoamingTime = TotalLifeTime * 2;
+                }
                 if (isPlayerVisible) Stage = Stages.Chasing;
                 return;
             }
@@ -1326,7 +1334,7 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-                if (MathLogic.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
+                if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
@@ -1352,6 +1360,7 @@ namespace SLIL.Classes
                 {
                     DEAD = true;
                     LifeTime = TotalLifeTime;
+                    RoamingTime = TotalLifeTime * 2;
                 }
             }
         }

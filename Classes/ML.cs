@@ -10,7 +10,7 @@ namespace SLIL.Classes
         internal TPoint(double x, double y) { X = x; Y = y; }
     }
 
-    internal class MathLogic
+    internal class ML
     {
         internal static double NormalizeAngle(double a)
         {

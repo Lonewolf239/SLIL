@@ -182,7 +182,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\SLILAccount.cs" />
-    <Compile Include="Classes\MathLogic.cs" />
+    <Compile Include="Classes\ML.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>

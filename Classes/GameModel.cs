@@ -17,7 +17,7 @@ namespace SLIL.Classes
             debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
             bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################",
             backroomsMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..V###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#..0..#....##########################",
-            emptyMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..F###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#.....#....##########################";
+            emptyMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..F###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#..0..#....##########################";
         private int inDebug = 0;
         private readonly Pet[] PETS;
         private readonly Transport[] TRANSPORTS;
@@ -146,7 +146,7 @@ namespace SLIL.Classes
                     var entity = Entities[i] as dynamic;
                     var targetListOrdered = targetsList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
                     Entity target = targetListOrdered.First();
-                    double distance = MathLogic.GetDistance(new TPoint(target.X, target.Y), new TPoint(entity.X, entity.Y));
+                    double distance = ML.GetDistance(new TPoint(target.X, target.Y), new TPoint(entity.X, entity.Y));
                     if (entity is GameObject && entity.Temporarily)
                     {
                         entity.LifeTime++;
@@ -197,16 +197,12 @@ namespace SLIL.Classes
                                     entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A);
                                     if (entity.Fast) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A);
                                     if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
-
                                     {
                                         if (!playerTarget.Invulnerable)
                                         {
-                                            if (playerTarget.InTransport)
-                                                PlaySoundHandle(SLIL.hit[1], target.X, target.Y);
-                                            else if (playerTarget.CuteMode)
-                                                PlaySoundHandle(SLIL.hungry, target.X, target.Y);
-                                            else
-                                                PlaySoundHandle(SLIL.hit[0], target.X, target.Y);
+                                            if (playerTarget.InTransport) PlaySoundHandle(SLIL.hit[1], target.X, target.Y);
+                                            else if (playerTarget.CuteMode) PlaySoundHandle(SLIL.hungry, target.X, target.Y);
+                                            else PlaySoundHandle(SLIL.hit[0], target.X, target.Y);
                                             GiveDebaf(playerTarget, entity);
                                             playerTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
                                             if (playerTarget.HP <= 0)
@@ -239,7 +235,7 @@ namespace SLIL.Classes
                                 {
                                     int x = rand.Next(0, MAP_WIDTH);
                                     int y = rand.Next(0, MAP_HEIGHT);
-                                    spawnDistance = MathLogic.GetDistance(new TPoint(target.X, target.Y), new TPoint(x, y));
+                                    spawnDistance = ML.GetDistance(new TPoint(target.X, target.Y), new TPoint(x, y));
                                     if (MAP[GetCoordinate(x, y)] == '.')
                                     {
                                         if (spawnDistance >= 14 || (iteration > 10000 && spawnDistance > 3))
@@ -267,7 +263,7 @@ namespace SLIL.Classes
                                 if ((ent as Player).PET == entity)
                                 {
                                     owner = player1;
-                                    distance = MathLogic.GetDistance(new TPoint(target.X, target.Y), new TPoint(entity.X, entity.Y));
+                                    distance = ML.GetDistance(new TPoint(target.X, target.Y), new TPoint(entity.X, entity.Y));
                                 }
                             }
                         }
@@ -352,7 +348,7 @@ namespace SLIL.Classes
                     var enemy = Entities[i] as dynamic;
                     playersList.OrderBy((playerI) => Math.Pow(enemy.X - playerI.X, 2) + Math.Pow(enemy.Y - playerI.Y, 2));
                     Player player = playersList[0];
-                    double distance = MathLogic.GetDistance(new TPoint(player.X, player.Y), new TPoint(enemy.X, enemy.Y));
+                    double distance = ML.GetDistance(new TPoint(player.X, player.Y), new TPoint(enemy.X, enemy.Y));
                     if (distance <= 30)
                     {
                         if (difficulty <= 1)
@@ -1003,10 +999,8 @@ namespace SLIL.Classes
                 case '0':
                     if (inBackrooms)
                     {
-                        if (BackroomsStage == 0)
-                            entity = new Stalker(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                        //else
-                        //    entity = new VoidStalker(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                        if (BackroomsStage == 0) entity = new Stalker(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                        else entity = new VoidStalker(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                         MAP[y * MAP_WIDTH + x] = '.';
                     }
                     break;
@@ -1756,7 +1750,7 @@ namespace SLIL.Classes
                 return;
             }
             p.A += v;
-            p.A = MathLogic.NormalizeAngle(p.A);
+            p.A = ML.NormalizeAngle(p.A);
         }
 
         internal void ChangePlayerLook(double lookDif, int playerID)

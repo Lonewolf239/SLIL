@@ -2439,7 +2439,7 @@ namespace SLIL
             {
                 Entity entity = Entities[spriteInfo[i].Order];
                 if (entity is Player pl && player.ID == pl.ID) continue;                
-                double Distance = MathLogic.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(player.X, player.Y));
+                double Distance = ML.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(player.X, player.Y));
                 if (Distance > player.GetDrawDistance() || Distance == 0) continue;
                 double spriteX = entity.X - player.X;
                 double spriteY = entity.Y - player.Y;
