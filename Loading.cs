@@ -20,7 +20,7 @@ namespace SLIL
         private double UpdateProgress = 0, CompletedProgress = 0;
         private bool UpdateVerified = false, CurrentVersion = false;
         private bool DownloadedLocalizationList = false;
-        public string PlayerName = "None", PlayerPassword = "None", License = "None";
+        public string HashedKey = "None", License = "None";
         private LoginForm loginForm;
         public static Localization Localizations = new Localization();
         public SLILAccount SLIL_Account;
@@ -271,14 +271,11 @@ namespace SLIL
         private async Task Login()
         {
             status_label.Text = "Login...";
-            PlayerName = INIReader.GetString(Program.iniFolder, "ACCOUNT", "player_name", "None");
-            if (PlayerName.Length > 14) PlayerName = "None";
-            PlayerPassword = INIReader.GetString(Program.iniFolder, "ACCOUNT", "player_password", "None");
-            if (PlayerPassword.Length > 24) PlayerPassword = "None";
+            HashedKey = INIReader.GetString(Program.iniFolder, "ACCOUNT", "hashed_key", "None");
             if (!CheckInternet())
             {
                 License = INIReader.GetString(Program.iniFolder, "ACCOUNT", "license", "None");
-                if (Hasher.CheckLicense(License, PlayerName, PlayerPassword))
+                if (Hasher.CheckLicense(License, HashedKey))
                 {
                     if (loginForm != null)
                     {
@@ -306,7 +303,7 @@ namespace SLIL
                 }
                 return;
             }
-            if (PlayerName == "None" || PlayerPassword == "None")
+            if (HashedKey == "None")
             {
                 loginForm = new LoginForm()
                 {
@@ -351,20 +348,18 @@ namespace SLIL
 
         private async void Login_btn_Click(object sender, EventArgs e)
         {
-            PlayerName = loginForm.nickname_input.Text;
-            PlayerPassword = loginForm.password_input.Text;
+            HashedKey = loginForm.key_input.Text;
             await CheckBD();
         }
 
         public async Task CheckBD()
         {
-            SLIL_Account = new SLILAccount(PlayerName, PlayerPassword);
+            SLIL_Account = new SLILAccount(HashedKey);
             AccountStates state = await SLIL_Account.LoadAccount();
             if (state == AccountStates.AllOk)
             {
-                INIReader.SetKey(Program.iniFolder, "ACCOUNT", "player_name", PlayerName);
-                INIReader.SetKey(Program.iniFolder, "ACCOUNT", "player_password", PlayerPassword);
-                if (!SLIL_Account.GamePurchased)
+                INIReader.SetKey(Program.iniFolder, "ACCOUNT", "hashed_key", HashedKey);
+                if (!SLIL_Account.AllOk)
                 {
                     INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", "None");
                     if (loginForm == null)
@@ -394,7 +389,7 @@ namespace SLIL
                         loginForm.Dispose();
                         loginForm = null;
                     }
-                    License = Hasher.SetLicense(PlayerName, PlayerPassword);
+                    License = Hasher.SetLicense(HashedKey);
                     INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", License);
                     GoToMainMenu();
                 }
@@ -414,7 +409,7 @@ namespace SLIL
                     loginForm.login_btn_r.Click += Login_btn_Click;
                     loginForm.exit_btn_cp.Click += Exit_btn_cp_Click;
                     loginForm.status_label.Visible = true;
-                    loginForm.nickname_input.Text = loginForm.password_input.Text = null;
+                    loginForm.key_input.Text = null;
                     if (!loginForm.Visible)
                     {
                         Hide();
@@ -483,8 +478,7 @@ namespace SLIL
                     downloadedLocalizationList = loading.DownloadedLocalizationList,
                     localizations = Localizations,
                     supportedLanguages = loading.SupportedLanguages,
-                    PlayerName = loading.PlayerName,
-                    PlayerPassword = loading.PlayerPassword,
+                    HashedKey = loading.HashedKey,
                     License = loading.License
                 };
                 return mainMenu;
@@ -504,6 +498,7 @@ namespace SLIL
         private async void Loading_Load(object sender, EventArgs e)
         {
             INIReader.CreateIniFileIfNotExist(Program.iniFolder);
+            if (!File.Exists("data.enc")) await DownloadFileAsync(@"https://base-escape.ru/downloads/SLIL/data.enc", "data.enc");
             await LoadingMainMenu();
         }
 

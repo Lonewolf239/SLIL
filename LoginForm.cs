@@ -24,15 +24,6 @@ namespace SLIL
             Cursor = Program.SLILCursor;
         }
 
-        private void Hide_show_pas_Click(object sender, EventArgs e)
-        {
-            nickname_input_label.Focus();
-            password_input.UseSystemPasswordChar = !password_input.UseSystemPasswordChar;
-            hide_show_pas_c.BackgroundImage = password_input.UseSystemPasswordChar ?
-                Properties.Resources.hide_pas :
-                Properties.Resources.show_pas;
-        }
-
         private void Create_account_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT") { UseShellExecute = true });
 
         private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -65,7 +56,6 @@ namespace SLIL
                 login_btn_r.Text = Loading.Localizations.GetLString(Language, "8-1");
                 create_account_l.Text = Loading.Localizations.GetLString(Language, "8-2");
                 status_label.Text = Loading.Localizations.GetLString(Language, "8-3");
-                password_label.Text = Loading.Localizations.GetLString(Language, "8-4");
                 nickname_input_label.Text = Loading.Localizations.GetLString(Language, "8-5");
                 error_label.Text = Loading.Localizations.GetLString(Language, "8-6") + $" {Error}";
                 exit_btn_cp.Text = Loading.Localizations.GetLString(Language, "8-7");
@@ -78,8 +68,7 @@ namespace SLIL
                 title_label.Text = "To start playing, please log in to your account";
                 login_btn_r.Text = "Login";
                 create_account_l.Text = "Create account";
-                status_label.Text = "Incorrect login or password!";
-                password_label.Text = "Password:";
+                status_label.Text = "Invalid or already used key!";
                 nickname_input_label.Text = "Username:";
                 error_label.Text = $"Something went wrong. Error code: {Error}";
                 exit_btn_cp.Text = "Exit";
@@ -144,21 +133,13 @@ namespace SLIL
                 isDragging = false;
         }
 
-        private void Nickname_input_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyCode == Keys.Enter)
-            {
-                password_input.Focus();
-                e.SuppressKeyPress = true;
-            }
-        }
-
-        private void Password_input_KeyDown(object sender, KeyEventArgs e)
+        private void Key_input_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
                 login_btn_r.Focus();
                 e.SuppressKeyPress = true;
+                e.Handled = true;
             }
         }
 

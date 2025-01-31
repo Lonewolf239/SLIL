@@ -55,7 +55,7 @@ nunit-*.xml
 [Rr]eleasePS/
 dlldata.c
 
-SLILAccount.cs
+
 Hasher.cs
 SLIL\ CGF\ Packer/path.txt
 

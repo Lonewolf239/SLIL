@@ -30,7 +30,7 @@ namespace SLIL
         public static Localization Localizations;
         private Dictionary<string, string> SupportedLanguages;
         public static string Language = "English";
-        public string PlayerName = "None", PlayerPassword = "None", License = "None";
+        public string HashedKey = "None", License = "None";
         public static bool sounds = true, ConsoleEnabled = false;
         public TextureCache textureCache;
         public static CGF_Reader CGFReader;
@@ -482,8 +482,7 @@ namespace SLIL
         private void SaveSettings()
         {
             INIReader.ClearFile(Program.iniFolder);
-            INIReader.SetKey(Program.iniFolder, "ACCOUNT", "player_name", PlayerName);
-            INIReader.SetKey(Program.iniFolder, "ACCOUNT", "player_password", PlayerPassword);
+            INIReader.SetKey(Program.iniFolder, "ACCOUNT", "hashed_key", HashedKey);
             INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", License);
             if (DownloadedLocalizationList)
                 INIReader.SetKey(Program.iniFolder, "CONFIG", "language", Language);
@@ -1507,10 +1506,7 @@ namespace SLIL
             if (difficulty != 4)
             {
                 if (sounds) MainMenuTheme.Stop();
-                SLIL form = new SLIL(textureCache)
-                {
-                    PlayerName = PlayerName
-                };
+                SLIL form = new SLIL(textureCache) { PlayerName = "Player" };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(MusicVolume);
                 difficulty_panel.Visible = false;
@@ -1535,10 +1531,7 @@ namespace SLIL
             if (Editor != null && Editor.OK)
             {
                 if (sounds) MainMenuTheme.Stop();
-                SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3, (Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y)
-                {
-                    PlayerName = PlayerName
-                };
+                SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3, (Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y) { PlayerName = "Player" };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(MusicVolume);
                 Editor = null;
@@ -1651,10 +1644,7 @@ namespace SLIL
             "#########################");
             IsTutorial = true;
             difficulty = 4;
-            SLIL form = new SLIL(textureCache, true, tutorialMap, 8, 8, 3.5, 3.5)
-            {
-                PlayerName = PlayerName
-            };
+            SLIL form = new SLIL(textureCache, true, tutorialMap, 8, 8, 3.5, 3.5) { PlayerName = "Player" };
             form.ShowDialog();
             hilf_mir_panel.Visible = difficulty_panel.Visible = false;
             if (sounds) MainMenuTheme.Play(MusicVolume);
