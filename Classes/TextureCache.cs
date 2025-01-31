@@ -34,105 +34,105 @@ namespace SLIL.Classes
     {
         private Dictionary<int, Dictionary<SpriteStates, Image>> textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
         {
-            { 3, new Dictionary<SpriteStates, Image>()
+            { 4, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.wall }
                 }
             },
-            { 4, new Dictionary<SpriteStates, Image>()
+            { 5, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.door }
                 }
             },
-            { 5, new Dictionary<SpriteStates, Image>()
+            { 6, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.shop_door }
                 }
             },
-            { 6, new Dictionary<SpriteStates, Image>()
+            { 7, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.floor }
                 }
             },
-            { 7, new Dictionary<SpriteStates, Image>()
+            { 8, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.ceiling }
                 }
             },
-            { 8, new Dictionary<SpriteStates, Image>()
+            { 9, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.enemy_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.enemy_0_1 },
                     { SpriteStates.DeadBody, Properties.Resources.enemy_0_DEAD },
                 }
             },
-            { 9, new Dictionary<SpriteStates, Image>()
+            { 10, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.enemy_1 },
                     { SpriteStates.StepForward_1, Properties.Resources.enemy_1_1 },
                     { SpriteStates.DeadBody, Properties.Resources.enemy_1_DEAD },
                 }
             },
-            { 10, new Dictionary<SpriteStates, Image>()
+            { 11, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.enemy_2 },
                     { SpriteStates.StepForward_1, Properties.Resources.enemy_2_1 },
                     { SpriteStates.DeadBody, Properties.Resources.enemy_2_DEAD },
                 }
             },
-            { 11, new Dictionary<SpriteStates, Image>()
+            { 12, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.enemy_3 },
                     { SpriteStates.StepForward_1, Properties.Resources.enemy_3_1 },
                     { SpriteStates.DeadBody, Properties.Resources.enemy_3_DEAD },
                 }
             },
-            { 12, new Dictionary<SpriteStates, Image>()
+            { 13, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.teleport_1 }
                 }
             },
-            { 13, new Dictionary<SpriteStates, Image>()
+            { 14, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.shop_man_0 },
                     { SpriteStates.FlashlightBlinded, Properties.Resources.shop_man_1 }
                 }
             },
-            { 14, new Dictionary<SpriteStates, Image>()
+            { 15, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.hit_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.hit_1 }
                 }
             },
-            { 15, new Dictionary<SpriteStates, Image>()
+            { 16, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.box },
                     { SpriteStates.DeadBody, Properties.Resources.box_broken }
                 }
             },
-            { 16, new Dictionary<SpriteStates, Image>()
+            { 17, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.barrel },
                     { SpriteStates.DeadBody, Properties.Resources.barrel_broken }
                 }
             },
-            { 17, new Dictionary<SpriteStates, Image>()
+            { 18, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.vine },
                 }
             },
-            { 18, new Dictionary<SpriteStates, Image>()
+            { 19, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.lamp },
                 }
             },
-            { 19, new Dictionary<SpriteStates, Image>()
+            { 20, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.wall_with_sing },
                 }
             },
-            { 20, new Dictionary<SpriteStates, Image>()
+            { 21, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.bike_forward },
                     { SpriteStates.StopForward, Properties.Resources.bike_forward },
@@ -141,7 +141,7 @@ namespace SLIL.Classes
                     { SpriteStates.StopRight, Properties.Resources.bike_right },
                 }
             },
-            { 21, new Dictionary<SpriteStates, Image>()
+            { 22, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.pet_cat_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.pet_cat_1 },
@@ -149,65 +149,65 @@ namespace SLIL.Classes
                     { SpriteStates.FlashlightBlinded, Properties.Resources.pet_cat_3 },
                 }
             },
-            { 22, new Dictionary<SpriteStates, Image>()
+            { 23, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.pet_gnome_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.pet_gnome_1 },
                     { SpriteStates.FlashlightBlinded, Properties.Resources.pet_gnome_2 },
                 }
             },
-            { 23, new Dictionary<SpriteStates, Image>()
+            { 24, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.pet_energy_drink_0 },
                 }
             },
-            { 24, new Dictionary<SpriteStates, Image>()
+            { 25, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.pet_pyro_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.pet_pyro_1 },
                     { SpriteStates.FlashlightBlinded, Properties.Resources.pet_pyro_3 },
                 }
             },
-            { 25, new Dictionary<SpriteStates, Image>()
+            { 26, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.rpg_rocket_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.rpg_rocket_1 },
                 }
             },
-            { 26, new Dictionary<SpriteStates, Image>()
+            { 27, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.rpg_explosion_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.rpg_explosion_1 },
                 }
             },
-            { 27, new Dictionary<SpriteStates, Image>()
+            { 28, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
                     { SpriteStates.Static, Properties.Resources.player_DEAD },
                 }
             },
-            { 28, new Dictionary<SpriteStates, Image>()
+            { 29, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.back_wall }
                 }
             },
-            { 29, new Dictionary<SpriteStates, Image>()
+            { 30, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.back_ceiling }
                 }
             },
-            { 30, new Dictionary<SpriteStates, Image>()
+            { 31, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.back_floor }
                 }
             },
-            { 31, new Dictionary<SpriteStates, Image>()
+            { 32, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_1 }
                 }
             },
-            { 32, new Dictionary<SpriteStates, Image>()
+            { 33, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.fake_teleport_0 },
                     { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
@@ -215,24 +215,24 @@ namespace SLIL.Classes
                     { SpriteStates.DeadBody, Properties.Resources.fake_teleport_0 }
                 }
             },
-            { 33, new Dictionary<SpriteStates, Image>()
+            { 34, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.empty_teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.empty_teleport_1 }
                 }
             },
-            { 34, new Dictionary<SpriteStates, Image>()
+            { 35, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.empty_teleport_0 }
                 }
             },
-            { 35, new Dictionary<SpriteStates, Image>()
+            { 36, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_1 }
                 }
             },
-            { 36, new Dictionary<SpriteStates, Image>()
+            { 37, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.player },
                     { SpriteStates.StepForward_1, Properties.Resources.player_1 },
@@ -243,108 +243,123 @@ namespace SLIL.Classes
                     { SpriteStates.StepEscape_1, Properties.Resources.player_stoped },
                 }
             },
+            { 38, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.void_wall }
+                }
+            },
+            { 39, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.void_floor }
+                }
+            },
+            { 40, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.void_ceiling }
+                }
+            },
         };
         private Dictionary<int, Dictionary<SpriteStates, Image>> cute_textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
         {
-            { 3, new Dictionary<SpriteStates, Image>()
+            { 4, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.c_wall }
                 }
             },
-            { 4, new Dictionary<SpriteStates, Image>()
+            { 5, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.c_door }
                 }
             },
-            { 5, new Dictionary<SpriteStates, Image>()
+            { 6, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.c_shop_door }
                 }
             },
-            { 6, new Dictionary<SpriteStates, Image>()
+            { 7, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.c_floor }
                 }
             },
-            { 7, new Dictionary<SpriteStates, Image>()
+            { 8, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.c_ceiling }
                 }
             },
-            { 8, new Dictionary<SpriteStates, Image>()
+            { 9, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.c_enemy_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.c_enemy_0_1 },
                     { SpriteStates.DeadBody, Properties.Resources.c_enemy_0_DEAD },
                 }
             },
-            { 9, new Dictionary<SpriteStates, Image>()
+            { 10, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.c_enemy_1 },
                     { SpriteStates.StepForward_1, Properties.Resources.c_enemy_1_1 },
                     { SpriteStates.DeadBody, Properties.Resources.c_enemy_1_DEAD },
                 }
             },
-            { 10, new Dictionary<SpriteStates, Image>()
+            { 11, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.c_enemy_2 },
                     { SpriteStates.StepForward_1, Properties.Resources.c_enemy_2_1 },
                     { SpriteStates.DeadBody, Properties.Resources.c_enemy_2_DEAD },
                 }
             },
-            { 11, new Dictionary<SpriteStates, Image>()
+            { 12, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.c_enemy_3 },
                     { SpriteStates.StepForward_1, Properties.Resources.c_enemy_3_1 },
                     { SpriteStates.DeadBody, Properties.Resources.c_enemy_3_DEAD },
                 }
             },
-            { 12, new Dictionary<SpriteStates, Image>()
+            { 13, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.c_teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.c_teleport_1 }
                 }
             },
-            { 13, new Dictionary<SpriteStates, Image>()
+            { 14, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.shop_man_0 },
                     { SpriteStates.FlashlightBlinded, Properties.Resources.shop_man_1 }
                 }
             },
-            { 14, new Dictionary<SpriteStates, Image>()
+            { 15, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.hit_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.hit_1 }
                 }
             },
-            { 15, new Dictionary<SpriteStates, Image>()
+            { 16, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.box },
                     { SpriteStates.DeadBody, Properties.Resources.box_broken }
                 }
             },
-            { 16, new Dictionary<SpriteStates, Image>()
+            { 17, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.barrel },
                     { SpriteStates.DeadBody, Properties.Resources.barrel_broken }
                 }
             },
-            { 17, new Dictionary<SpriteStates, Image>()
+            { 18, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.c_vine },
                 }
             },
-            { 18, new Dictionary<SpriteStates, Image>()
+            { 19, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.lamp },
                 }
             },
-            { 19, new Dictionary<SpriteStates, Image>()
+            { 20, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.wall_with_sing },
                 }
             },
-            { 20, new Dictionary<SpriteStates, Image>()
+            { 21, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.bike_forward },
                     { SpriteStates.StopForward, Properties.Resources.bike_forward },
@@ -353,7 +368,7 @@ namespace SLIL.Classes
                     { SpriteStates.StopRight, Properties.Resources.bike_right },
                 }
             },
-            { 21, new Dictionary<SpriteStates, Image>()
+            { 22, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.pet_cat_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.pet_cat_1 },
@@ -361,65 +376,65 @@ namespace SLIL.Classes
                     { SpriteStates.FlashlightBlinded, Properties.Resources.pet_cat_3 },
                 }
             },
-            { 22, new Dictionary<SpriteStates, Image>()
+            { 23, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.pet_gnome_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.pet_gnome_1 },
                     { SpriteStates.FlashlightBlinded, Properties.Resources.pet_gnome_2 },
                 }
             },
-            { 23, new Dictionary<SpriteStates, Image>()
+            { 24, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.pet_energy_drink_0 },
                 }
             },
-            { 24, new Dictionary<SpriteStates, Image>()
+            { 25, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.pet_pyro_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.pet_pyro_1 },
                     { SpriteStates.FlashlightBlinded, Properties.Resources.pet_pyro_3 },
                 }
             },
-            { 25, new Dictionary<SpriteStates, Image>()
+            { 26, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.rpg_rocket_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.rpg_rocket_1 },
                 }
             },
-            { 26, new Dictionary<SpriteStates, Image>()
+            { 27, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.rpg_explosion_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.rpg_explosion_1 },
                 }
             },
-            { 27, new Dictionary<SpriteStates, Image>()
+            { 28, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
                     { SpriteStates.Static, Properties.Resources.player_DEAD },
                 }
             },
-            { 28, new Dictionary<SpriteStates, Image>()
+            { 29, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.back_wall }
                 }
             },
-            { 29, new Dictionary<SpriteStates, Image>()
+            { 30, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.back_ceiling }
                 }
             },
-            { 30, new Dictionary<SpriteStates, Image>()
+            { 31, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.back_floor }
                 }
             },
-            { 31, new Dictionary<SpriteStates, Image>()
+            { 32, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_1 }
                 }
             },
-            { 32, new Dictionary<SpriteStates, Image>()
+            { 33, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.fake_teleport_0 },
                     { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
@@ -427,24 +442,24 @@ namespace SLIL.Classes
                     { SpriteStates.DeadBody, Properties.Resources.fake_teleport_0 }
                 }
             },
-            { 33, new Dictionary<SpriteStates, Image>()
+            { 34, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.empty_teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.empty_teleport_1 }
                 }
             },
-            { 34, new Dictionary<SpriteStates, Image>()
+            { 35, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.empty_teleport_0 }
                 }
             },
-            { 35, new Dictionary<SpriteStates, Image>()
+            { 36, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.fake_teleport_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.fake_teleport_1 }
                 }
             },
-            { 36, new Dictionary<SpriteStates, Image>()
+            { 37, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.player },
                     { SpriteStates.StepForward_1, Properties.Resources.player_1 },
@@ -453,6 +468,21 @@ namespace SLIL.Classes
                     { SpriteStates.Shooted, Properties.Resources.player_shooted },
                     { SpriteStates.StepEscape_0, Properties.Resources.player_stoped },
                     { SpriteStates.StepEscape_1, Properties.Resources.player_stoped },
+                }
+            },
+            { 38, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.void_wall }
+                }
+            },
+            { 39, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.void_floor }
+                }
+            },
+            { 40, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.Static, Properties.Resources.void_ceiling }
                 }
             },
         };
@@ -462,7 +492,9 @@ namespace SLIL.Classes
             Color.FromArgb(90, 80, 90),
             //dark
             Color.Black,
-            //back bound
+            //backrooms
+            Color.FromArgb(139, 126, 89),
+            //void
             Color.FromArgb(139, 126, 89)
         };
         private readonly Color[] CUTE_COLORS =
@@ -471,7 +503,9 @@ namespace SLIL.Classes
             Color.FromArgb(98, 138, 82),
             //dark
             Color.White,
-            //back bound
+            //backrooms
+            Color.FromArgb(139, 126, 89),
+            //void
             Color.FromArgb(139, 126, 89)
         };
         private Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureColorCache;
@@ -549,12 +583,10 @@ namespace SLIL.Classes
         {
             if (cute)
             {
-                if (blackout >= 96)
-                    return CUTE_COLORS[1];
+                if (blackout >= 96) return CUTE_COLORS[1];
                 return LightenColor(textureCuteColorCache[textureId][spriteState][x, y], blackout);
             }
-            if (blackout >= 96)
-                return COLORS[1];
+            if (blackout >= 96) return COLORS[1];
             return DarkenColor(textureColorCache[textureId][spriteState][x, y], blackout);
         }
 

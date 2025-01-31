@@ -1483,6 +1483,9 @@
     <None Include="Images\empty_teleport_0.png" />
     <None Include="Images\empty_teleport_1.png" />
     <None Include="Images\super_medical_kit_icon.png" />
+    <None Include="Images\void_ceiling.png" />
+    <None Include="Images\void_wall.png" />
+    <None Include="Images\void_floor.png" />
     <Content Include="SLILCursor.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

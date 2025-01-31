@@ -957,7 +957,7 @@ namespace SLIL.Classes
                     if (inBackrooms)
                     {
                         BackroomsCompleted = true;
-                        p.StopEffect(6);
+                        p.StopEffect(8);
                     }
                     inBackrooms = false;
                     GameOver(1);
@@ -1379,8 +1379,7 @@ namespace SLIL.Classes
                             else
                             {
                                 Entity entity = GetEntityForInitMap(map[x, y], x, y);
-                                if (entity != null)
-                                    Entities.Add(entity);
+                                if (entity != null) Entities.Add(entity);
                             }
                             sb.Append(map[x, y]);
                         }
@@ -1961,7 +1960,7 @@ namespace SLIL.Classes
                 {
                     if (p.ItemFrame > p.DISPOSABLE_ITEM.ReloadFrames)
                     {
-                        p.SetEffect();
+                        p.SetItemEffect();
                         p.DISPOSABLE_ITEM.Count--;
                         if (p.DISPOSABLE_ITEM.Count == 0)
                             p.DISPOSABLE_ITEM.SetDefault();

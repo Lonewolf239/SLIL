@@ -138,4 +138,17 @@ namespace SLIL.Classes
             UpdateTimeRemaining();
         }
     }
+
+    public class Void : Debaf
+    {
+        public Void() : base()
+        {
+            ID = 8;
+            EffectTotalTime = 1;
+            Infinity = true;
+            Name = "Void";
+            Description = "Void";
+            UpdateTimeRemaining();
+        }
+    }
 }

@@ -2315,31 +2315,42 @@ namespace SLIL
                 }
                 if (y >= mid && y <= floor && hit_window)
                 {
-                    textureId = 3;
-                    if (Controller.InBackrooms()) textureId = 28;
+                    textureId = 4;
+                    if (Controller.InBackrooms())
+                    {
+                        if (Controller.GetBackroomsStage() == 0) textureId = 29;
+                        if (Controller.GetBackroomsStage() == 1) textureId = 38;
+                    }
                     if (Math.Abs(y - mid) <= 6 / window_distance || is_window_bound)
                     {
                         textureId = 0;
                         if (Controller.InBackrooms())
-                            textureId = 2;
+                        {
+                            if (Controller.GetBackroomsStage() == 0) textureId = 2;
+                            if (Controller.GetBackroomsStage() == 1) textureId = 3;
+                        }
                     }
                     blackout = (int)(Math.Min(Math.Max(0, Math.Floor((window_distance / player.GetDrawDistance()) * 100)), 100));
                 }
                 else if ((y < mid || !hit_window) && y > ceiling && y < floor)
                 {
-                    textureId = 3;
-                    if (Controller.InBackrooms()) textureId = 28;
-                    if (hit_wall == 1)
-                        textureId = 19;
-                    if (hit_wall == 2)
-                        textureId = 1;
-                    if (hit_door)
-                        textureId = 4;
+                    textureId = 4;
+                    if (Controller.InBackrooms())
+                    {
+                        if (Controller.GetBackroomsStage() == 0) textureId = 29;
+                        if (Controller.GetBackroomsStage() == 1) textureId = 38;
+                    }
+                    if (hit_wall == 1) textureId = 20;
+                    if (hit_wall == 2) textureId = 1;
+                    if (hit_door) textureId = 5;
                     if (is_bound)
                     {
                         textureId = 0;
                         if (Controller.InBackrooms())
-                            textureId = 2;
+                        {
+                            if (Controller.GetBackroomsStage() == 0) textureId = 2;
+                            if (Controller.GetBackroomsStage() == 1) textureId = 3;
+                        }
                     }
                     blackout = (int)(Math.Min(Math.Max(0, Math.Floor((distance / player.GetDrawDistance()) * 100)), 100));
                 }
@@ -2352,8 +2363,12 @@ namespace SLIL
                     double floorY = player.Y - rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
-                    result[y].TextureId = 7;
-                    if (Controller.InBackrooms()) result[y].TextureId = 29;
+                    result[y].TextureId = 8;
+                    if (Controller.InBackrooms())
+                    {
+                        if (Controller.GetBackroomsStage() == 0) result[y].TextureId = 30;
+                        if (Controller.GetBackroomsStage() == 1) result[y].TextureId = 40;
+                    }
                     result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((-rowDistance / player.GetDrawDistance()) * 100)), 100));
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
@@ -2367,8 +2382,12 @@ namespace SLIL
                     double floorY = player.Y + rowDistance * rayDirY;
                     if (floorX < 0) floorX = 0;
                     if (floorY < 0) floorY = 0;
-                    result[y].TextureId = 6;
-                    if (Controller.InBackrooms()) result[y].TextureId = 30;
+                    result[y].TextureId = 7;
+                    if (Controller.InBackrooms())
+                    {
+                        if (Controller.GetBackroomsStage() == 0) result[y].TextureId = 31;
+                        if (Controller.GetBackroomsStage() == 1) result[y].TextureId = 39;
+                    }
                     result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((rowDistance / player.GetDrawDistance()) * 100)), 100));
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
@@ -2383,8 +2402,7 @@ namespace SLIL
                             get_texture_window = true;
                             side = windowSide;
                             wallX = windowX;
-                            if (side == -1)
-                                result[y].TextureId = 0;
+                            if (side == -1) result[y].TextureId = 0;
                         }
                     }
                     else if (hit_door || (hit_wall != -1 && hit_wall != 2))
@@ -2393,8 +2411,7 @@ namespace SLIL
                         {
                             get_texture = true;
                             side = wallSide;
-                            if (side == -1)
-                                result[y].TextureId = 0;
+                            if (side == -1) result[y].TextureId = 0;
                         }
                     }
                     else
@@ -2440,7 +2457,7 @@ namespace SLIL
                 Entity entity = Entities[spriteInfo[i].Order];
                 if (entity is Player pl && player.ID == pl.ID) continue;                
                 double Distance = ML.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(player.X, player.Y));
-                if (Distance > player.GetDrawDistance() || Distance == 0) continue;
+                if (Distance >= player.GetDrawDistance() + 1 || Distance == 0) continue;
                 double spriteX = entity.X - player.X;
                 double spriteY = entity.Y - player.Y;
                 double transformX = invDet * (dirY * spriteX - dirX * spriteY);
@@ -2644,12 +2661,12 @@ namespace SLIL
         private Color GetColorForPixel(Pixel pixel)
         {
             Player player = Controller.GetPlayer();
-            if(player==null) return Color.White;
+            if (player == null) return Color.White;
             bool cute = false;
             if (player != null) cute = player.CuteMode;
             int textureSize = 128;
             int x = 0, y = 0;
-            if (pixel.TextureId >= 3)
+            if (pixel.TextureId >= 4)
             {
                 x = (int)WrapTexture((int)(pixel.TextureX * textureSize), textureSize);
                 y = (int)WrapTexture((int)(pixel.TextureY * textureSize), textureSize);
@@ -3944,7 +3961,7 @@ namespace SLIL
             open_shop = false;
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
             if (!Controller.IsMultiplayer() && Controller.InBackrooms() && Controller.GetBackroomsStage() == 1)
-                player.GiveEffect(6, false, 1, true);
+                player.GiveEffect(8, true);
             if (MainMenu.sounds)
             {
                 if (Controller.InBackrooms())

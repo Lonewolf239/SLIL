@@ -629,6 +629,7 @@ namespace SLIL.Classes
         public double GetDrawDistance()
         {
             if (EffectCheck(6)) return 3.25;
+            if (EffectCheck(8)) return 5;
             if (InTransport) return DEPTH + 2;
             if (InParkour) return DEPTH;
             return DEPTH + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
@@ -852,103 +853,75 @@ namespace SLIL.Classes
         public void GiveEffect(int index, bool standart_time, int time = 0, bool infinity = false)
         {
             UseItem = false;
-            if (index == 0)
+            Effect effect = null;
+            switch (index)
             {
-                if (EffectCheck(0)) return;
-                if (EffectCheck(5)) StopEffect(5);
-                Regeneration effect = new Regeneration();
-                if (!standart_time)
-                    effect.SetTotalTime(time);
-                effect.Infinity = infinity;
-                effect.UpdateTimeRemaining();
-                Effects.Add(effect);
+                case 0:
+                    if (EffectCheck(0)) return;
+                    if (EffectCheck(5)) StopEffect(5);
+                    effect = new Regeneration();
+                    break;
+                case 1:
+                    if (EffectCheck(1) || EffectCheck(4)) return;
+                    effect = new Adrenaline();
+                    Fast = true;
+                    MAX_MOVE_SPEED += 1.5;
+                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                    break;
+                case 2:
+                    if (EffectCheck(2)) return;
+                    effect = new Protection();
+                    break;
+                case 3:
+                    if (EffectCheck(3)) return;
+                    effect = new Fatigue();
+                    MAX_STAMINE -= 450;
+                    if (STAMINE > MAX_STAMINE) STAMINE = MAX_STAMINE;
+                    break;
+                case 4:
+                    if (EffectCheck(4) || TRANSPORT == null) return;
+                    StopEffect(0);
+                    StopEffect(1);
+                    effect = new Rider();
+                    CanUnblockCamera = false;
+                    BlockMouse = true;
+                    CanShoot = false;
+                    Look = 0;
+                    InTransport = true;
+                    Fast = true;
+                    MAX_MOVE_SPEED += TRANSPORT.Speed;
+                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                    MOVE_SPEED = 0;
+                    STRAFE_SPEED = 0;
+                    break;
+                case 5:
+                    if (EffectCheck(5) || EffectCheck(4) || EffectCheck(0)) return;
+                    effect = new Bleeding();
+                    break;
+                case 6:
+                    if (EffectCheck(6)) return;
+                    effect = new Blindness();
+                    break;
+                case 7:
+                    if (EffectCheck(7)) return;
+                    effect = new Stunned();
+                    MAX_MOVE_SPEED -= 0.8;
+                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                    break;
+                case 8:
+                    if (EffectCheck(8)) return;
+                    effect = new Void();
+                    break;
             }
-            else if (index == 1)
+            if (effect != null)
             {
-                if (EffectCheck(1) || EffectCheck(4)) return;
-                Adrenaline effect = new Adrenaline();
                 if (!standart_time)
+                {
                     effect.SetTotalTime(time);
-                effect.Infinity = infinity;
+                    effect.Infinity = infinity;
+                }
                 effect.UpdateTimeRemaining();
                 Effects.Add(effect);
-                Fast = true;
-                MAX_MOVE_SPEED += 1.5;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-            }
-            else if (index == 2)
-            {
-                if (EffectCheck(2)) return;
-                Protection effect = new Protection();
-                if (!standart_time)
-                    effect.SetTotalTime(time);
-                effect.Infinity = infinity;
-                effect.UpdateTimeRemaining();
-                Effects.Add(effect);
-            }
-            else if (index == 3)
-            {
-                if (EffectCheck(3)) return;
-                Fatigue effect = new Fatigue();
-                if (!standart_time)
-                    effect.SetTotalTime(time);
-                effect.Infinity = infinity;
-                effect.UpdateTimeRemaining();
-                Effects.Add(effect);
-                MAX_STAMINE -= 450;
-                if (STAMINE > MAX_STAMINE)
-                    STAMINE = MAX_STAMINE;
-            }
-            else if (index == 4)
-            {
-                if (EffectCheck(4) || TRANSPORT == null) return;
-                StopEffect(0);
-                StopEffect(1);
-                Rider effect = new Rider();
-                effect.UpdateTimeRemaining();
-                Effects.Add(effect);
-                CanUnblockCamera = false;
-                BlockMouse = true;
-                CanShoot = false;
-                Look = 0;
-                InTransport = true;
-                Fast = true;
-                MAX_MOVE_SPEED += TRANSPORT.Speed;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                MOVE_SPEED = 0;
-                STRAFE_SPEED = 0;
-            }
-            else if (index == 5)
-            {
-                if (EffectCheck(5) || EffectCheck(4) || EffectCheck(0)) return;
-                Bleeding effect = new Bleeding();
-                if (!standart_time)
-                    effect.SetTotalTime(time);
-                effect.Infinity = infinity;
-                effect.UpdateTimeRemaining();
-                Effects.Add(effect);
-            }
-            else if (index == 6)
-            {
-                if (EffectCheck(6)) return;
-                Blindness effect = new Blindness();
-                if (!standart_time)
-                    effect.SetTotalTime(time);
-                effect.Infinity = infinity;
-                effect.UpdateTimeRemaining();
-                Effects.Add(effect);
-            }
-            else if (index == 7)
-            {
-                if (EffectCheck(7)) return;
-                Stunned effect = new Stunned();
-                if (!standart_time)
-                    effect.SetTotalTime(time);
-                effect.Infinity = infinity;
-                effect.UpdateTimeRemaining();
-                Effects.Add(effect);
-                MAX_MOVE_SPEED -= 0.8;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
             }
         }
 
@@ -962,7 +935,7 @@ namespace SLIL.Classes
             return false;
         }
 
-        public void SetEffect()
+        public void SetItemEffect()
         {
             UseItem = false;
             ItemFrame = 0;
