@@ -23,7 +23,6 @@ namespace SLIL.Classes
         public bool AllOk { get; set; }
         public string HWID { get; set; }
         public string Key { get; set; }
-        private string HashedKey { get => Hasher.HashSha256(Key); }
         
         public SLILAccount(string key)
         {
@@ -32,7 +31,7 @@ namespace SLIL.Classes
             AppSecrets = JsonConvert.DeserializeObject<PSD>(EncryptionHelper.DecryptFile("data.enc"));
         }
 
-        private bool CheckKey(string hashedKey) => Hasher.VerifyKey(Key, hashedKey);
+        private bool CheckKey(string hashedKey) => Key == hashedKey;
 
         public async Task<AccountStates> LoadAccount()
         {
@@ -65,7 +64,7 @@ namespace SLIL.Classes
             {
                 using (MySqlCommand command = new MySqlCommand("SELECT * FROM `keys` WHERE `key` = @key", connection))
                 {
-                    command.Parameters.AddWithValue("@key", HashedKey);
+                    command.Parameters.AddWithValue("@key", Key);
                     DataTable dataTable = new DataTable();
                     using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
                     {
@@ -80,7 +79,7 @@ namespace SLIL.Classes
                                 {
                                     using (MySqlCommand updateCommand = new MySqlCommand("UPDATE `keys` SET HWID = @hwid WHERE `key` = @key AND HWID IS NULL", connection))
                                     {
-                                        updateCommand.Parameters.AddWithValue("@key", HashedKey);
+                                        updateCommand.Parameters.AddWithValue("@key", Key);
                                         updateCommand.Parameters.AddWithValue("@hwid", HWID);
                                         await updateCommand.ExecuteNonQueryAsync();
                                         AllOk = true;

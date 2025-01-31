@@ -271,7 +271,7 @@ namespace SLIL
         private async Task Login()
         {
             status_label.Text = "Login...";
-            HashedKey = INIReader.GetString(Program.iniFolder, "ACCOUNT", "hashed_key", "None");
+            HashedKey = INIReader.GetString(Program.iniFolder, "ACCOUNT", "key", "None");
             if (!CheckInternet())
             {
                 License = INIReader.GetString(Program.iniFolder, "ACCOUNT", "license", "None");
@@ -348,7 +348,7 @@ namespace SLIL
 
         private async void Login_btn_Click(object sender, EventArgs e)
         {
-            HashedKey = loginForm.key_input.Text;
+            HashedKey = Hasher.HashSha256(loginForm.key_input.Text);
             await CheckBD();
         }
 
@@ -358,7 +358,7 @@ namespace SLIL
             AccountStates state = await SLIL_Account.LoadAccount();
             if (state == AccountStates.AllOk)
             {
-                INIReader.SetKey(Program.iniFolder, "ACCOUNT", "hashed_key", HashedKey);
+                INIReader.SetKey(Program.iniFolder, "ACCOUNT", "key", HashedKey);
                 if (!SLIL_Account.AllOk)
                 {
                     INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", "None");

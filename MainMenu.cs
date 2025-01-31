@@ -482,7 +482,7 @@ namespace SLIL
         private void SaveSettings()
         {
             INIReader.ClearFile(Program.iniFolder);
-            INIReader.SetKey(Program.iniFolder, "ACCOUNT", "hashed_key", HashedKey);
+            INIReader.SetKey(Program.iniFolder, "ACCOUNT", "key", HashedKey);
             INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", License);
             if (DownloadedLocalizationList)
                 INIReader.SetKey(Program.iniFolder, "CONFIG", "language", Language);
