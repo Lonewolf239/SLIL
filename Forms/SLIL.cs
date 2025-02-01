@@ -338,7 +338,7 @@ namespace SLIL
             { typeof(FirstAidKit), Properties.Resources.food_count },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
             { typeof(Helmet), Properties.Resources.helmet_count_icon },
-            { typeof(MedicalKit), Properties.Resources.missing },
+            { typeof(MedicalKit), Properties.Resources.super_medical_kit_icon },
         };
         public static readonly Dictionary<Type, Image> ShopImageDict = new Dictionary<Type, Image>
         {
@@ -443,11 +443,17 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box_1.wav"), false),
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box_2.wav"), false)
             },
-            //Player
+            //Shooter
             {
-                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
+                new PlaySound(MainMenu.CGFReader.GetFile("shooter_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("shooter_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("shooter_die_2.wav"), false)
+            },
+            //LostSoul
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("lost_soul_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("lost_soul_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("lost_soul_die_2.wav"), false)
             }
         };
         public static PlaySound[,] CuteDeathSounds = new PlaySound[,]
@@ -959,7 +965,7 @@ namespace SLIL
                     entity = new Shooter(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
                 case 26: // lost soul
-                    //entity = new LostSoul(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new LostSoul(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
             }
             if (entity == null) return false;
@@ -4139,10 +4145,8 @@ namespace SLIL
             adrenalin_count.Text = $"{player.DisposableItems[1].MaxCount}/{player.DisposableItems[1].Count}";
             helmet_count.Text = $"{player.DisposableItems[2].MaxCount}/{player.DisposableItems[2].Count}";
             medical_kit_count.Text = $"{player.DisposableItems[3].MaxCount}/{player.DisposableItems[3].Count}";
-            if (player.PET != null)
-                pet_icon.Image = ShopImageDict[player.PET.GetType()];
-            else
-                pet_icon.Image = Properties.Resources.empty;
+            if (player.PET != null) pet_icon.Image = ShopImageDict[player.PET.GetType()];
+            else pet_icon.Image = Properties.Resources.empty;
             if (MainMenu.DownloadedLocalizationList)
             {
                 if (player.PET != null)
@@ -4367,8 +4371,7 @@ namespace SLIL
                 {
                     if (Controller.IsMultiplayer() && !player.GUNS[i].InMultiplayer)
                         continue;
-                    if (!player.GUNS[i].AddToShop)
-                        continue;
+                    if (!player.GUNS[i].AddToShop) continue;
                     SLIL_ShopInterface ShopInterface = new SLIL_ShopInterface()
                     {
                         ParentSLILForm = this,

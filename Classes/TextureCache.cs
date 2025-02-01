@@ -258,6 +258,12 @@ namespace SLIL.Classes
                     { SpriteStates.Static, Properties.Resources.void_ceiling }
                 }
             },
+            { 41, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.missing },
+                    { SpriteStates.StepForward_1, Properties.Resources.missing }
+                }
+            },
         };
         private Dictionary<int, Dictionary<SpriteStates, Image>> cute_textures = new Dictionary<int, Dictionary<SpriteStates, Image>>()
         {
@@ -483,6 +489,12 @@ namespace SLIL.Classes
             { 40, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.Static, Properties.Resources.void_ceiling }
+                }
+            },
+            { 41, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.missing },
+                    { SpriteStates.StepForward_1, Properties.Resources.missing }
                 }
             },
         };

@@ -250,55 +250,58 @@ namespace SLIL.Classes
                                     iteration++;
                                 }
                             }
-                            if (entity is Shooter shooter && shooter.DidShot)
+                            if (entity is RangeEnemy range && range.DidShot)
                             {
-                                PlaySoundHandle(SLIL.GunsSoundsDict[typeof(SniperRifle)][1, 0], shooter.X, shooter.Y);
-                                char[] ImpassibleCells = { '#', 'D', 'd', '=', 'W', 'S' };
-                                double shotDistance = 0;
-                                double shotStep = 0.01d;
-                                double shotAX = Math.Sin(shooter.ShotA);
-                                double shotAY = Math.Cos(shooter.ShotA);
-                                bool hit = false;
-                                while (!hit && shotDistance <= Shooter.ShotDistance + 6)
+                                double shotAX = Math.Sin(range.ShotA);
+                                double shotAY = Math.Cos(range.ShotA);
+                                if (range is Shooter shooter)
                                 {
-                                    int test_x = (int)(shooter.X + shotAX * shotDistance);
-                                    int test_y = (int)(shooter.Y + shotAY * shotDistance);
-                                    foreach (var ent in targetListOrdered)
+                                    PlaySoundHandle(SLIL.GunsSoundsDict[typeof(SniperRifle)][1, 0], shooter.X, shooter.Y);
+                                    char[] ImpassibleCells = { '#', 'D', 'd', '=', 'W', 'S' };
+                                    double shotDistance = 0;
+                                    double shotStep = 0.01d;
+                                    bool hit = false;
+                                    while (!hit && shotDistance <= shooter.ShotDistance + 6)
                                     {
-                                        if (ent is Player player)
+                                        int test_x = (int)(shooter.X + shotAX * shotDistance);
+                                        int test_y = (int)(shooter.Y + shotAY * shotDistance);
+                                        foreach (var ent in targetListOrdered)
                                         {
-                                            if (Math.Abs(test_x - player.X) <= 0.5 && Math.Abs(test_y - player.Y) <= 0.5)
+                                            if (ent is Player player)
                                             {
-                                                if (!player.Invulnerable)
+                                                if (Math.Abs(test_x - player.X) <= 0.5 && Math.Abs(test_y - player.Y) <= 0.5)
                                                 {
-                                                    if (player.InTransport) PlaySoundHandle(SLIL.hit[1], player.X, player.Y);
-                                                    else if (player.CuteMode) PlaySoundHandle(SLIL.hungry, player.X, player.Y);
-                                                    else PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
-                                                    player.DealDamage(rand.Next(15), true);
-                                                    if (player.HP <= 0)
+                                                    if (!player.Invulnerable)
                                                     {
-                                                        Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
-                                                        TotalKilled = player.TotalEnemiesKilled;
-                                                        DeathCause = SetDeathCause(entity);
-                                                        GameOver(0);
-                                                        return;
+                                                        if (player.InTransport) PlaySoundHandle(SLIL.hit[1], player.X, player.Y);
+                                                        else if (player.CuteMode) PlaySoundHandle(SLIL.hungry, player.X, player.Y);
+                                                        else PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
+                                                        player.DealDamage(rand.Next(15), true);
+                                                        if (player.HP <= 0)
+                                                        {
+                                                            Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                                            TotalKilled = player.TotalEnemiesKilled;
+                                                            DeathCause = SetDeathCause(entity);
+                                                            GameOver(0);
+                                                            return;
+                                                        }
                                                     }
+                                                    hit = true;
+                                                    break;
                                                 }
-                                                hit = true;
-                                                break;
                                             }
                                         }
+                                        if (ImpassibleCells.Contains(MAP[test_y * MAP_WIDTH + test_x]))
+                                        {
+                                            AddHittingTheWall(shooter.X + shotAX * (shotDistance - 0.5), shooter.Y + shotAY * (shotDistance - 0.5), 1);
+                                            hit = true;
+                                            break;
+                                        }
+                                        shotDistance += shotStep;
                                     }
-                                    if (ImpassibleCells.Contains(MAP[test_y * MAP_WIDTH + test_x]))
-                                    {
-                                        AddHittingTheWall(shooter.X + shotAX * (shotDistance - 0.5), shooter.Y + shotAY * (shotDistance - 0.5), 1);
-                                        hit = true;
-                                        break;
-                                    }
-                                    shotDistance += shotStep;
+                                    shooter.DidShot = false;
+                                    shooter.ShotPause = shooter.TotalShotPause;
                                 }
-                                shooter.DidShot = false;
-                                shooter.ShotPause = Shooter.TotalShotPause;
                             }
                         }
                     }
@@ -2076,6 +2079,16 @@ namespace SLIL.Classes
             }
         }
 
+        private static int GetGunIndex(Player player, Gun weapon)
+        {
+            for (int i = 0; i < player.Guns.Count; i++)
+            {
+                if (player.Guns[i].GetType() == weapon.GetType())
+                    return i;
+            }
+            return -1;
+        }
+
         internal void BuyWeapon(int playerID, int weaponID)
         {
             foreach (Entity ent in Entities)
@@ -2090,6 +2103,8 @@ namespace SLIL.Classes
                         weapon.SetDefault();
                         weapon.HasIt = true;
                         p.Guns.Add(weapon);
+                        if (p.WeaponSlot_1 == -1) SetWeaponSlot(playerID, 1, GetGunIndex(p, weapon));
+                        if (p.WeaponSlot_0 == -1) SetWeaponSlot(playerID, 0, GetGunIndex(p, weapon));
                     }
                     return;
                 }

@@ -546,7 +546,7 @@ namespace SLIL.Classes
 
         private void InitPlayer()
         {
-            DeathSound = 5;
+            DeathSound = 0;
             DisposableItems.Add((FirstAidKit)GUNS[10]);
             DisposableItems.Add((Adrenalin)GUNS[13]);
             DisposableItems.Add((Helmet)GUNS[14]);

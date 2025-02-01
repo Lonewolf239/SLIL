@@ -3,8 +3,6 @@ using LiteNetLib;
 using System.Text;
 using LiteNetLib.Utils;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using System;
 
 namespace SLIL.Classes
 {

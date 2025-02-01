@@ -158,11 +158,9 @@ namespace SLIL.UserControls
 
         private int GetGunIndex()
         {
-            List<Gun> gunCopy = new List<Gun>();
-            gunCopy = player.Guns;
-            for(int i = 0; i<gunCopy.Count; i++)
+            for (int i = 0; i < player.Guns.Count; i++)
             {
-                if (gunCopy[i].GetType() == weapon.GetType())
+                if (player.Guns[i].GetType() == weapon.GetType())
                     return i;
             }
             return -1;
