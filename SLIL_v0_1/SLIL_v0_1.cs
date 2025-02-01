@@ -466,7 +466,7 @@ namespace SLIL.SLIL_v0_1
                     difficulty--;
                 StartGame();
             }
-            else if(win == 0)
+            else if (win == 0)
             {
                 game_over_text.Visible = true;
                 if (MainMenu.sounds)

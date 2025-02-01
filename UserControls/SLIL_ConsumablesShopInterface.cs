@@ -61,8 +61,7 @@ namespace SLIL.UserControls
             icon.Focus();
             if (player.Money >= item.GunCost && item.CanBuy())
             {
-                if (MainMenu.sounds)
-                    buy.Play(SLIL.EffectsVolume);
+                if (MainMenu.sounds) buy.Play(SLIL.EffectsVolume);
                 (Parent.FindForm() as SLIL).BuyConsumable(item);
                 if (item.Count == item.MaxCount)
                     buy_button.Text = $"{GetBuyText()}";

@@ -60,8 +60,7 @@ namespace SLIL.UserControls
             icon.Focus();
             if (player.PET != pet && player.Money >= pet.Cost)
             {
-                if (MainMenu.sounds)
-                    buy.Play(SLIL.EffectsVolume);
+                if (MainMenu.sounds) buy.Play(SLIL.EffectsVolume);
                 (Parent.FindForm() as SLIL).AddPet(pet.Index);
                 buy_button.Text = $"{GetBuyText()}";
             }

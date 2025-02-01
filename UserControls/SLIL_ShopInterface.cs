@@ -69,8 +69,7 @@ namespace SLIL.UserControls
             {
                 if (player.Money >= weapon.AmmoCost && weapon.AmmoInStock + weapon.AmmoCount <= weapon.MaxAmmo)
                 {
-                    if (MainMenu.sounds)
-                        buy.Play(SLIL.EffectsVolume);
+                    if (MainMenu.sounds) buy.Play(SLIL.EffectsVolume);
                     ParentSLILForm.BuyAmmo(weapon);
                     ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
                 }
@@ -79,10 +78,9 @@ namespace SLIL.UserControls
             }
             else
             {
-                if (player.Money  >= weapon.GunCost)
+                if (player.Money >= weapon.GunCost)
                 {
-                    if (MainMenu.sounds)
-                        buy.Play(SLIL.EffectsVolume);
+                    if (MainMenu.sounds) buy.Play(SLIL.EffectsVolume);
                     ParentSLILForm.BuyWeapon(weapon);
                     buy_button.Text = GetBuyText() + $" ${weapon.AmmoCost}";
                     ammo_count.Text = index == 0 ? $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-10")} {weapon.AmmoInStock}/{weapon.AmmoCount}" : $"Ammo: {weapon.AmmoInStock}/{weapon.AmmoCount}";
@@ -147,10 +145,9 @@ namespace SLIL.UserControls
         private void Update_button_Click(object sender, EventArgs e)
         {
             weapon_icon.Focus();
-            if (player.Money  >= weapon.UpdateCost)
+            if (player.Money >= weapon.UpdateCost)
             {
-                if (MainMenu.sounds)
-                    buy.Play(SLIL.EffectsVolume);
+                if (MainMenu.sounds) buy.Play(SLIL.EffectsVolume);
                 ParentSLILForm.UpdateWeapon(weapon);
                 weapon_name.Text = GetWeaponName() + $" {weapon.Level}";
                 weapon_icon.Image = SLIL.IconDict[weapon.GetType()][weapon.GetLevel()];

@@ -261,7 +261,12 @@ namespace SLIL.Classes
             { 41, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.missing },
-                    { SpriteStates.StepForward_1, Properties.Resources.missing }
+                    { SpriteStates.StepForward_1, Properties.Resources.missing },
+                    { SpriteStates.DeadBody, Properties.Resources.missing },
+                    { SpriteStates.Aiming, Properties.Resources.missing },
+                    { SpriteStates.Shooted, Properties.Resources.missing },
+                    { SpriteStates.StepEscape_0, Properties.Resources.missing },
+                    { SpriteStates.StepEscape_1, Properties.Resources.missing }
                 }
             },
         };
@@ -494,7 +499,12 @@ namespace SLIL.Classes
             { 41, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.missing },
-                    { SpriteStates.StepForward_1, Properties.Resources.missing }
+                    { SpriteStates.StepForward_1, Properties.Resources.missing },
+                    { SpriteStates.DeadBody, Properties.Resources.missing },
+                    { SpriteStates.Aiming, Properties.Resources.missing },
+                    { SpriteStates.Shooted, Properties.Resources.missing },
+                    { SpriteStates.StepEscape_0, Properties.Resources.missing },
+                    { SpriteStates.StepEscape_1, Properties.Resources.missing }
                 }
             },
         };
