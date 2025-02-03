@@ -123,18 +123,18 @@ namespace SLIL.Classes
         protected int MovesInARow;
         protected int NumberOfMovesLeft;
         public bool CanHit { get; set; }
-        public bool DEAD { get; set; }
-        public int RESPAWN { get; set; }
-        public int MAX_MONEY;
-        public int MIN_MONEY;
-        public int MAX_DAMAGE;
-        public int MIN_DAMAGE;
-        protected int MAP_WIDTH { get; set; }
-        protected int MAX_HP;
+        public bool Dead { get; set; }
+        public int Respawn { get; set; }
+        public int MaxMoney { get; set; }
+        public int MinMoney { get; set; }
+        public int MaxDamage { get; set; }
+        public int MinDamage { get; set; }
+        protected int MapWidth { get; set; }
+        protected int MaxHP { get; set; }
         public int DeathSound { get; set; }
-        protected const int RESPAWN_TIME = 60;
+        protected const int RespawnTime = 60;
 
-        protected abstract int GetMAX_HP();
+        protected abstract int GetMaxHP();
         protected abstract int GetMAX_MONEY();
         protected abstract int GetMIN_MONEY();
         protected abstract int GetMAX_DAMAGE();
@@ -150,29 +150,29 @@ namespace SLIL.Classes
         {
             base.Serialize(writer);
             writer.Put(HP);
-            writer.Put(DEAD);
+            writer.Put(Dead);
         }
 
         public override void Deserialize(NetDataReader reader)
         {
             base.Deserialize(reader);
             this.HP = reader.GetDouble();
-            this.DEAD = reader.GetBool();
+            this.Dead = reader.GetBool();
         }
 
         private void Init(int mapWidth)
         {
-            MAX_HP = this.GetMAX_HP();
-            MAX_MONEY = this.GetMAX_MONEY();
-            MIN_MONEY = this.GetMIN_MONEY();
-            MAX_DAMAGE = this.GetMAX_DAMAGE();
-            MIN_DAMAGE = this.GetMIN_DAMAGE();
+            MaxHP = this.GetMaxHP();
+            MaxMoney = this.GetMAX_MONEY();
+            MinMoney = this.GetMIN_MONEY();
+            MaxDamage = this.GetMAX_DAMAGE();
+            MinDamage = this.GetMIN_DAMAGE();
             ImpassibleCells = this.GetImpassibleCells();
             MovesInARow = this.GetMovesInARow();
             NumberOfMovesLeft = MovesInARow;
-            HP = MAX_HP;
+            HP = MaxHP;
             A = rand.NextDouble();
-            MAP_WIDTH = mapWidth;
+            MapWidth = mapWidth;
             DeathSound = -1;
         }
 
@@ -180,19 +180,19 @@ namespace SLIL.Classes
         {
             HP -= damage;
             if (HP <= 0) Kill();
-            return DEAD;
+            return Dead;
         }
 
         public void Kill()
         {
-            RESPAWN = RESPAWN_TIME;
-            DEAD = true;
+            Respawn = RespawnTime;
+            Dead = true;
         }
 
-        public void Respawn()
+        public void DoRespawn()
         {
-            HP = MAX_HP;
-            DEAD = false;
+            HP = MaxHP;
+            Dead = false;
         }
 
         public virtual void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
@@ -213,31 +213,31 @@ namespace SLIL.Classes
             }
             IntX = (int)X;
             IntY = (int)Y;
-            if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
             {
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
                 A = rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
             {
                 tempX += EntityWidth / 2 - (tempX % 1);
                 A = rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
             {
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
                 A = rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
             {
                 tempY += EntityWidth / 2 - (tempY % 1);
                 A = rand.NextDouble() * (Math.PI * 2);
@@ -262,7 +262,7 @@ namespace SLIL.Classes
             return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         }
         protected override int GetMovesInARow() => 0;
-        protected override int GetMAX_HP() => 0;
+        protected override int GetMaxHP() => 0;
         protected override int GetTexture() => Texture;
         public override double GetMove() => 0;
         protected override int GetMAX_MONEY() => 0;
@@ -297,7 +297,7 @@ namespace SLIL.Classes
             return new char[] { '#', 'D', 'd', '=', 'S' };
         }
         protected override int GetMovesInARow() => 0;
-        protected override int GetMAX_HP() => 0;
+        protected override int GetMaxHP() => 0;
         protected override int GetTexture() => Texture;
         public override double GetMove() => 0.2;
         protected override int GetMAX_MONEY() => 0;
@@ -320,7 +320,7 @@ namespace SLIL.Classes
         {
             X = x;
             Y = y;
-            MAP_WIDTH = mapWidth;
+            MapWidth = mapWidth;
         }
 
         public int GetPetAbility() => PetAbility;
@@ -344,7 +344,7 @@ namespace SLIL.Classes
                     int test_y = (int)(Y + rayAngleY * distance);
                     if (test_x == (int)playerX && test_y == (int)playerY)
                         break;
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -363,19 +363,19 @@ namespace SLIL.Classes
             newY += Math.Cos(A) * move;
             IntX = (int)X;
             IntY = (int)Y;
-            if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY += EntityWidth / 2 - (tempY % 1);
             if (isPlayerVisible)
             {
@@ -441,15 +441,15 @@ namespace SLIL.Classes
 
         public void SetDamage(double offset)
         {
-            MAX_DAMAGE = (int)(MAX_DAMAGE * offset);
-            MIN_DAMAGE = (int)(MIN_DAMAGE * offset);
+            MaxDamage = (int)(MaxDamage * offset);
+            MinDamage = (int)(MinDamage * offset);
         }
     }
 
     public abstract class RangeEnemy : Enemy
     {
-        protected int SafeDistance { get; set; }
-        public int ShotDistance { get; set; }
+        protected double SafeDistance { get; set; }
+        public double ShotDistance { get; set; }
         public int TotalShotPause { get; set; }
         protected int TotalTimeAfterShot { get; set; }
         public int ShotPause = 0, TimeAfterShot = 0;
@@ -461,43 +461,15 @@ namespace SLIL.Classes
 
         private void Init() => ShotPause = TotalShotPause;
 
-        protected bool ShotLogic(bool isPlayerVisible, double distanceToPlayer, double angleToPlayer)
-        {
-            if (TimeAfterShot > 0) TimeAfterShot--;
-            if (isPlayerVisible)
-            {
-                if (distanceToPlayer <= SafeDistance && !ReadyToShot) Stage = Stages.Escaping;
-                else if (distanceToPlayer <= ShotDistance)
-                {
-                    ShotPause--;
-                    if (ShotPause < 0)
-                    {
-                        if (ReadyToShot)
-                        {
-                            DidShot = true;
-                            ReadyToShot = false;
-                            ShotPause = TotalShotPause;
-                            TimeAfterShot = TotalTimeAfterShot;
-                        }
-                        else
-                        {
-                            ShotA = angleToPlayer;
-                            ReadyToShot = true;
-                            ShotPause = TotalTimeAfterShot;
-                        }
-                    }
-                    Stage = Stages.Chasing;
-                    return false;
-                }
-                else Stage = Stages.Chasing;
-            }
-            return true;
-        }
+        protected abstract bool ShotLogic(bool isPlayerVisible, double distanceToPlayer, double angleToPlayer);
     }
 
     public abstract class Rockets : NPC
     {
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S' };
+        public abstract char[] GetInpassibleRocketCells();
+        public bool CanHitOnlyPlayer = false;
+        public int ExplosionID { get; set; }
 
         public Rockets(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => CanHit = false;
         public Rockets(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => CanHit = false;
@@ -512,19 +484,19 @@ namespace SLIL.Classes
             double tempY = Y;
             newX += Math.Sin(A) * move;
             newY += Math.Cos(A) * move;
-            if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY += EntityWidth / 2 - (tempY % 1);
             X = tempX;
             Y = tempY;
@@ -556,8 +528,8 @@ namespace SLIL.Classes
             if (!CanHit) return false;
             HP -= damage;
             if (HP <= 0)
-                DEAD = true;
-            return DEAD;
+                Dead = true;
+            return Dead;
         }
     }
 
@@ -576,6 +548,26 @@ namespace SLIL.Classes
         public Transport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init() => A = rand.NextDouble();
+    }
+
+    public abstract class Explosions : GameObject
+    {
+        public int ShooterID;
+        public bool CanHitOnlyPlayer = false;
+        public int MinDamage { get; set; }
+        public int MaxDamage { get; set; }
+        public double HitDistance { get; set; }
+
+        public Explosions(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public Explosions(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            LifeTime = 0;
+            TotalLifeTime = 4;
+            Temporarily = true;
+            Animated = true;
+        }
     }
 
     public class Covering : GameObject
@@ -645,8 +637,9 @@ namespace SLIL.Classes
     public class RpgRocket : Rockets
     {
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'S' };
+        public override char[] GetInpassibleRocketCells() => GetImpassibleCells();
         protected override int GetEntityID() => 16;
-        protected override double GetEntityWidth() => 0.4;
+        protected override double GetEntityWidth() => 0.25;
         public override double GetMove() => 0.6;
 
         public RpgRocket(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
@@ -655,27 +648,64 @@ namespace SLIL.Classes
         private void Init()
         {
             Texture = 26;
+            ExplosionID = 0;
             base.SetAnimations(1, 0);
         }
     }
 
-    public class Explosion : GameObject
+    public class SoulClot : Rockets
+    {
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S' };
+        public override char[] GetInpassibleRocketCells() => GetImpassibleCells();
+        protected override int GetEntityID() => 28;
+        protected override double GetEntityWidth() => 0.25;
+        public override double GetMove() => 0.35;
+
+        public SoulClot(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public SoulClot(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 42;
+            ExplosionID = 1;
+            CanHitOnlyPlayer = true;
+            base.SetAnimations(1, 0);
+        }
+    }
+
+    public class RpgExplosion : Explosions
     {
         protected override int GetEntityID() => 17;
         protected override double GetEntityWidth() => 0.4;
 
-        public Explosion(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        public Explosion(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
-
-        public int ShooterID;
+        public RpgExplosion(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public RpgExplosion(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init()
         {
             Texture = 27;
-            LifeTime = 0;
-            TotalLifeTime = 4;
-            Temporarily = true;
-            Animated = true;
+            MinDamage = 25;
+            MaxDamage = 50;
+            HitDistance = 3;
+            base.SetAnimations(2, 2);
+        }
+    }
+
+    public class SoulExplosion : Explosions
+    {
+        protected override int GetEntityID() => 29;
+        protected override double GetEntityWidth() => 0.4;
+
+        public SoulExplosion(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public SoulExplosion(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 27;
+            MinDamage = 10;
+            MaxDamage = 25;
+            HitDistance = 1.75;
+            CanHitOnlyPlayer = true;
             base.SetAnimations(2, 2);
         }
     }
@@ -687,7 +717,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            DEAD = true;
+            Dead = true;
             Texture = 28;
             base.AnimationsToStatic();
         }
@@ -931,7 +961,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 10;
-        protected override int GetMAX_HP() => 10;
+        protected override int GetMaxHP() => 10;
         protected override int GetTexture() => Texture;
         public override double GetMove() => 0.16;
         protected override int GetMAX_MONEY() => 10;
@@ -966,7 +996,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1000,19 +1030,19 @@ namespace SLIL.Classes
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1026,7 +1056,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 10;
-        protected override int GetMAX_HP() => 5;
+        protected override int GetMaxHP() => 5;
         protected override int GetTexture() => Texture;
         public override double GetMove() => 0.125;
         protected override int GetMAX_MONEY() => 15;
@@ -1061,7 +1091,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1095,19 +1125,19 @@ namespace SLIL.Classes
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1121,7 +1151,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 40;
-        protected override int GetMAX_HP() => 20;
+        protected override int GetMaxHP() => 20;
         protected override int GetTexture() => Texture;
         public override double GetMove() => 0.125;
         protected override int GetMAX_MONEY() => 18;
@@ -1155,7 +1185,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1189,19 +1219,19 @@ namespace SLIL.Classes
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1215,7 +1245,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'W', 'S' };
         protected override int GetMovesInARow() => 10;
-        protected override int GetMAX_HP() => 2;
+        protected override int GetMaxHP() => 2;
         protected override int GetTexture() => Texture;
         public override double GetMove() => 0.13;
         protected override int GetMAX_MONEY() => 18;
@@ -1250,7 +1280,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1285,19 +1315,19 @@ namespace SLIL.Classes
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1311,7 +1341,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 15;
-        protected override int GetMAX_HP() => 1;
+        protected override int GetMaxHP() => 1;
         protected override int GetTexture() => Texture;
         public override double GetMove() => Stage == Stages.Chasing ? 0.2 : 0.35;
         protected override int GetMAX_MONEY() => 1;
@@ -1348,7 +1378,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1362,7 +1392,7 @@ namespace SLIL.Classes
                 RoamingTime--;
                 if (RoamingTime < 0)
                 {
-                    DEAD = true;
+                    Dead = true;
                     LifeTime = TotalLifeTime;
                     RoamingTime = TotalLifeTime * 2;
                 }
@@ -1388,26 +1418,26 @@ namespace SLIL.Classes
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
                 LifeTime--;
                 if (LifeTime < 0)
                 {
-                    DEAD = true;
+                    Dead = true;
                     LifeTime = TotalLifeTime;
                     RoamingTime = TotalLifeTime * 2;
                 }
@@ -1421,7 +1451,7 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 10;
-        protected override int GetMAX_HP() => 1;
+        protected override int GetMaxHP() => 1;
         protected override int GetTexture() => Texture;
         public override double GetMove() => 0.13;
         protected override int GetMAX_MONEY() => 1;
@@ -1485,10 +1515,10 @@ namespace SLIL.Classes
 
         private bool CheckCollision(string map, double x, double y)
         {
-            return ImpassibleCells.Contains(map[(int)y * MAP_WIDTH + (int)(x + EntityWidth / 2)]) ||
-                   ImpassibleCells.Contains(map[(int)y * MAP_WIDTH + (int)(x - EntityWidth / 2)]) ||
-                   ImpassibleCells.Contains(map[(int)(y + EntityWidth / 2) * MAP_WIDTH + (int)x]) ||
-                   ImpassibleCells.Contains(map[(int)(y - EntityWidth / 2) * MAP_WIDTH + (int)x]);
+            return ImpassibleCells.Contains(map[(int)y * MapWidth + (int)(x + EntityWidth / 2)]) ||
+                   ImpassibleCells.Contains(map[(int)y * MapWidth + (int)(x - EntityWidth / 2)]) ||
+                   ImpassibleCells.Contains(map[(int)(y + EntityWidth / 2) * MapWidth + (int)x]) ||
+                   ImpassibleCells.Contains(map[(int)(y - EntityWidth / 2) * MapWidth + (int)x]);
         }
     }
 
@@ -1498,13 +1528,13 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 10;
-        protected override int GetMAX_HP() => 10;
+        protected override int GetMaxHP() => 10;
         protected override int GetTexture() => Texture;
         public override double GetMove() => Stage == Stages.Escaping ? 0.5 : 0.16;
         protected override int GetMAX_MONEY() => 10;
         protected override int GetMIN_MONEY() => 5;
-        protected override int GetMAX_DAMAGE() => 35;
-        protected override int GetMIN_DAMAGE() => 15;
+        protected override int GetMAX_DAMAGE() => 15;
+        protected override int GetMIN_DAMAGE() => 8;
 
         public Shooter(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
         public Shooter(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
@@ -1513,9 +1543,9 @@ namespace SLIL.Classes
         {
             DeathSound = 5;
             Texture = 37;
-            DetectionRange = 7;
-            SafeDistance = 4;
-            ShotDistance = 6;
+            DetectionRange = 8;
+            SafeDistance = 4.25;
+            ShotDistance = 5;
             TotalShotPause = 32; // 3.2 sec
             TotalTimeAfterShot = 5; //0.5 sec
             base.SetAnimations(1, 0);
@@ -1532,13 +1562,13 @@ namespace SLIL.Classes
             {
                 double distance = 0;
                 double step = 0.01;
-                double rayAngleX = Math.Sin(A);
-                double rayAngleY = Math.Cos(A);
+                double rayAngleX = Math.Sin(angleToPlayer);
+                double rayAngleY = Math.Cos(angleToPlayer);
                 while (distance <= distanceToPlayer)
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1546,7 +1576,7 @@ namespace SLIL.Classes
                     distance += step;
                 }
             }
-            if (!base.ShotLogic(isPlayerVisible, distanceToPlayer, angleToPlayer)) return;
+            if (!ShotLogic(isPlayerVisible, distanceToPlayer, angleToPlayer)) return;
             if (Stage == Stages.Roaming)
             {
                 base.UpdateCoordinates(map, playerX, playerY);
@@ -1565,29 +1595,65 @@ namespace SLIL.Classes
             double newY = Y;
             double tempX = X;
             double tempY = Y;
-            A = Stage == Stages.Escaping ? ML.NormalizeAngle(A + Math.PI) : A;
+            A = Stage == Stages.Escaping ? ML.NormalizeAngle(angleToPlayer + Math.PI) : angleToPlayer;
             if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
-            newX += Math.Sin(angleToPlayer) * move;
-            newY += Math.Cos(angleToPlayer) * move;
+            newX += Math.Sin(A) * move;
+            newY += Math.Cos(A) * move;
             IntX = (int)X;
             IntY = (int)Y;
-            A = angleToPlayer;
-            if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
                 tempY += EntityWidth / 2 - (tempY % 1);
             X = tempX;
             Y = tempY;
+        }
+
+        protected override bool ShotLogic(bool isPlayerVisible, double distanceToPlayer, double angleToPlayer)
+        {
+            if (TimeAfterShot > 0) TimeAfterShot--;
+            if (isPlayerVisible)
+            {
+                if (distanceToPlayer <= SafeDistance && !ReadyToShot) Stage = Stages.Escaping;
+                else if (distanceToPlayer <= ShotDistance)
+                {
+                    ShotPause--;
+                    if (ShotPause < 0)
+                    {
+                        if (ReadyToShot)
+                        {
+                            DidShot = true;
+                            ReadyToShot = false;
+                            ShotPause = TotalShotPause;
+                            TimeAfterShot = TotalTimeAfterShot;
+                        }
+                        else
+                        {
+                            ShotA = angleToPlayer;
+                            ReadyToShot = true;
+                            ShotPause = TotalTimeAfterShot;
+                        }
+                    }
+                    Stage = Stages.Chasing;
+                    return false;
+                }
+                else
+                {
+                    if (ReadyToShot) ReadyToShot = false;
+                    Stage = Stages.Chasing;
+                }
+            }
+            return true;
         }
     }
 
@@ -1597,9 +1663,9 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'W', 'S' };
         protected override int GetMovesInARow() => 10;
-        protected override int GetMAX_HP() => 2;
+        protected override int GetMaxHP() => 3;
         protected override int GetTexture() => Texture;
-        public override double GetMove() => 0.13;
+        public override double GetMove() => Stage == Stages.Escaping ? 0.45 : 0.375;
         protected override int GetMAX_MONEY() => 18;
         protected override int GetMIN_MONEY() => 13;
         protected override int GetMAX_DAMAGE() => 8;
@@ -1612,12 +1678,12 @@ namespace SLIL.Classes
         {
             DeathSound = 6;
             Texture = 41;
-            DetectionRange = 6;
-            Fast = true;
-            SafeDistance = 4;
-            ShotDistance = 6;
-            TotalShotPause = 32; // 3.2 sec
+            DetectionRange = 11;
+            SafeDistance = 10;
+            ShotDistance = 5;
+            TotalShotPause = 25; // 2.5 sec
             TotalTimeAfterShot = 5; //0.5 sec
+            ShotPause = TotalShotPause;
             base.SetAnimations(1, 0);
         }
         public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
@@ -1636,7 +1702,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MAP_WIDTH + test_x]))
+                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1644,50 +1710,74 @@ namespace SLIL.Classes
                     distance += step;
                 }
             }
-            if (!base.ShotLogic(isPlayerVisible, distanceToPlayer, angleToPlayer)) return;
+            if (!ShotLogic(isPlayerVisible, distanceToPlayer, angleToPlayer)) return;
             if (Stage == Stages.Roaming)
             {
                 base.UpdateCoordinates(map, playerX, playerY);
-                if (isPlayerVisible)
-                    Stage = Stages.Chasing;
+                if (isPlayerVisible) Stage = Stages.Chasing;
                 return;
             }
-            if (Stage == Stages.Chasing)
+            if (!isPlayerVisible)
             {
-                if (!isPlayerVisible)
-                {
-                    Stage = Stages.Roaming;
-                    NumberOfMovesLeft = MovesInARow;
-                    return;
-                }
-                double move = this.GetMove();
-                double newX = X;
-                double newY = Y;
-                double tempX = X;
-                double tempY = Y;
-                A = angleToPlayer;
-                if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
-                newX += Math.Sin(A) * move;
-                newY += Math.Cos(A) * move;
-                IntX = (int)X;
-                IntY = (int)Y;
-                if (!(ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MAP_WIDTH + (int)(newX - EntityWidth / 2)])))
-                    tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MAP_WIDTH + (int)newX])))
-                    tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX + EntityWidth / 2)]))
-                    tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MAP_WIDTH + (int)(tempX - EntityWidth / 2)]))
-                    tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
-                    tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MAP_WIDTH + (int)tempX]))
-                    tempY += EntityWidth / 2 - (tempY % 1);
-                X = tempX;
-                Y = tempY;
+                Stage = Stages.Roaming;
+                NumberOfMovesLeft = MovesInARow;
+                return;
             }
+            double move = this.GetMove();
+            double newX = X;
+            double newY = Y;
+            double tempX = X;
+            double tempY = Y;
+            A = Stage == Stages.Escaping ? ML.NormalizeAngle(angleToPlayer + Math.PI) : angleToPlayer;
+            if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
+            newX += Math.Sin(A) * move;
+            newY += Math.Cos(A) * move;
+            IntX = (int)X;
+            IntY = (int)Y;
+            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
+                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+                tempX = newX;
+            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
+                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+                tempY = newY;
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+                tempX -= EntityWidth / 2 - (1 - tempX % 1);
+            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+                tempX += EntityWidth / 2 - (tempX % 1);
+            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+                tempY -= EntityWidth / 2 - (1 - tempY % 1);
+            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+                tempY += EntityWidth / 2 - (tempY % 1);
+            X = tempX;
+            Y = tempY;
+        }
+
+        protected override bool ShotLogic(bool isPlayerVisible, double distanceToPlayer, double angleToPlayer)
+        {
+            if (TimeAfterShot > 0) TimeAfterShot--;
+            ShotPause--;
+            if (isPlayerVisible)
+            {
+                if (ShotPause < 0)
+                {
+                    if (distanceToPlayer <= ShotDistance)
+                    {
+                        ShotA = angleToPlayer;
+                        DidShot = true;
+                        ShotPause = TotalShotPause;
+                        TimeAfterShot = TotalTimeAfterShot;
+                        Stage = Stages.Chasing;
+                        return false;
+                    }
+                }
+                else if (distanceToPlayer <= SafeDistance)
+                {
+                    Stage = Stages.Escaping;
+                    return true;
+                }
+            }
+            Stage = Stages.Chasing;
+            return true;
         }
     }
 

@@ -11,10 +11,10 @@ namespace SLIL.Classes
         public string Name { get; set; }
         public double Look { get; set; }
         public double HP { get; set; }
-        public double TRANSPORT_HP { get; set; }
+        public double TransportHP { get; set; }
         public bool Invulnerable { get; set; }
         public int TimeoutInvulnerable { get; set; }
-        public double STAMINE { get; set; }
+        public double Stamine { get; set; }
         public bool CanShoot { get; set; }
         public bool Aiming { get; set; }
         public bool UseItem { get; set; }
@@ -32,13 +32,13 @@ namespace SLIL.Classes
         public bool CuteMode { get; set; }
         public int TotalEnemiesKilled { get; set; }
         public int EnemiesKilled { get; set; }
-        public double MAX_MOVE_SPEED { get; set; }
-        public double MAX_STRAFE_SPEED { get; set; }
-        public double MOVE_SPEED { get; set; }
-        public double STRAFE_SPEED { get; set; }
-        public double MAX_RUN_SPEED { get; set; }
-        public double RUN_SPEED { get; set; }
-        public double DEPTH { get; set; }
+        public double MaxMoveSpeed { get; set; }
+        public double MaxStrafeSpeed { get; set; }
+        public double MoveSpeed { get; set; }
+        public double StrafeSpeed { get; set; }
+        public double MaxRunSpeed { get; set; }
+        public double RunSpeed { get; set; }
+        public double Depth { get; set; }
         public int SelectedItem { get; set; }
         public bool Fast { get; set; }
         public bool NoClip { get; set; }
@@ -63,14 +63,14 @@ namespace SLIL.Classes
         };
         public List<Gun> Guns = new List<Gun>();
         public List<DisposableItem> DisposableItems = new List<DisposableItem>();
-        public DisposableItem DISPOSABLE_ITEM = null;
+        public DisposableItem DisposableItem = null;
         public int WeaponSlot_0 { get; set; }
         public int WeaponSlot_1 { get; set; }
         public int ItemFrame { get; set; }
         public Pet PET = null;
         public Transport TRANSPORT = null;
-        public double MAX_HP { get; set; }
-        public double MAX_STAMINE { get; set; }
+        public double MaxHP { get; set; }
+        public double MaxStamine { get; set; }
 
         public Player(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => InitPlayer();
         public Player(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => InitPlayer();
@@ -93,8 +93,7 @@ namespace SLIL.Classes
             writer.Put(BlockInput);
             writer.Put(SelectedItem);
             writer.Put(GUNS.Length);
-            foreach (Gun gun in GUNS)
-                writer.Put(gun.HasIt);
+            foreach (Gun gun in GUNS) writer.Put(gun.HasIt);
             writer.Put(Guns.Count);
             foreach (Gun gun in Guns)
             {
@@ -561,9 +560,9 @@ namespace SLIL.Classes
         {
             if (Dead)
             {
-                MAX_HP = 100;
-                MAX_STAMINE = 650;
-                HP = MAX_HP;
+                MaxHP = 100;
+                MaxStamine = 650;
+                HP = MaxHP;
                 Effects.Clear();
                 Guns.Clear();
                 Guns.Add(GUNS[0]);
@@ -575,12 +574,12 @@ namespace SLIL.Classes
                 CurseCureChance = 0.08;
                 TotalEnemiesKilled = 0;
                 WeaponSlot_0 = WeaponSlot_1 = -1;
-                MAX_MOVE_SPEED = 1.8;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                MAX_RUN_SPEED = 2.25;
-                DEPTH = 8;
+                MaxMoveSpeed = 1.8;
+                MaxStrafeSpeed = MaxMoveSpeed / 2;
+                MaxRunSpeed = 2.25;
+                Depth = 8;
                 SelectedItem = 0;
-                DISPOSABLE_ITEM = DisposableItems[SelectedItem];
+                DisposableItem = DisposableItems[SelectedItem];
                 PET = null;
                 CuteMode = false;
                 Fast = false;
@@ -594,9 +593,9 @@ namespace SLIL.Classes
             EnemiesKilled = 0;
             Look = 0;
             GunState = 0;
-            MOVE_SPEED = 0;
-            STRAFE_SPEED = 0;
-            RUN_SPEED = 0;
+            MoveSpeed = 0;
+            StrafeSpeed = 0;
+            RunSpeed = 0;
             Dead = false;
             Invulnerable = false;
             TimeoutInvulnerable = 2;
@@ -616,7 +615,7 @@ namespace SLIL.Classes
                 CanUnblockCamera = true;
             }
             ParkourState = 0;
-            STAMINE = MAX_STAMINE;
+            Stamine = MaxStamine;
             PreviousGun = CurrentGun = 2;
             if (Guns.Count == 0)
             {
@@ -630,23 +629,23 @@ namespace SLIL.Classes
         {
             if (EffectCheck(6)) return 3.25;
             if (EffectCheck(8)) return 5;
-            if (InTransport) return DEPTH + 2;
-            if (InParkour) return DEPTH;
-            return DEPTH + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
+            if (InTransport) return Depth + 2;
+            if (InParkour) return Depth;
+            return Depth + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
         }
 
         public void ReducesStamine()
         {
             int x = 3;
             if (GetWeight() >= 0.95) x = 2;
-            STAMINE -= x;
+            Stamine -= x;
         }
 
         public void RestoreStamine()
         {
             int x = 2;
             if (EffectCheck(3)) x = 1;
-            STAMINE += x;
+            Stamine += x;
         }
 
         public double GetWeight()
@@ -661,150 +660,150 @@ namespace SLIL.Classes
             double walk = 0.075, transport = 0.05;
             if (!InTransport)
             {
-                if (STRAFE_SPEED > MAX_STRAFE_SPEED)
-                    STRAFE_SPEED -= walk;
-                if (MOVE_SPEED > MAX_MOVE_SPEED)
-                    MOVE_SPEED -= walk;
+                if (StrafeSpeed > MaxStrafeSpeed)
+                    StrafeSpeed -= walk;
+                if (MoveSpeed > MaxMoveSpeed)
+                    MoveSpeed -= walk;
             }
             else
             {
-                if (STRAFE_SPEED > MAX_STRAFE_SPEED)
-                    STRAFE_SPEED -= transport * 1.75;
-                if (MOVE_SPEED > MAX_MOVE_SPEED)
-                    MOVE_SPEED -= transport * 1.75;
+                if (StrafeSpeed > MaxStrafeSpeed)
+                    StrafeSpeed -= transport * 1.75;
+                if (MoveSpeed > MaxMoveSpeed)
+                    MoveSpeed -= transport * 1.75;
             }
             switch (StrafeDirection)
             {
                 case Directions.LEFT:
-                    if (STRAFE_SPEED < 0) speedFactor = 4;
+                    if (StrafeSpeed < 0) speedFactor = 4;
                     else speedFactor = 1;
                     if (!InTransport)
                     {
-                        if (STRAFE_SPEED + walk * speedFactor <= MAX_STRAFE_SPEED + 0.01)
-                            STRAFE_SPEED += walk * speedFactor;
+                        if (StrafeSpeed + walk * speedFactor <= MaxStrafeSpeed + 0.01)
+                            StrafeSpeed += walk * speedFactor;
                     }
                     else
                     {
-                        if (MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD ||
-                            MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK)
-                            STRAFE_SPEED = 0;
-                        if (STRAFE_SPEED + transport * 1.75 * speedFactor <= MAX_STRAFE_SPEED + 0.01)
-                            STRAFE_SPEED += transport * 1.75 * speedFactor;
+                        if (MoveSpeed < 0.25 && PlayerDirection == Directions.FORWARD ||
+                            MoveSpeed > -0.25 && PlayerDirection == Directions.BACK)
+                            StrafeSpeed = 0;
+                        if (StrafeSpeed + transport * 1.75 * speedFactor <= MaxStrafeSpeed + 0.01)
+                            StrafeSpeed += transport * 1.75 * speedFactor;
                     }
                     break;
                 case Directions.RIGHT:
-                    if (STRAFE_SPEED > 0) speedFactor = 4;
+                    if (StrafeSpeed > 0) speedFactor = 4;
                     else speedFactor = 1;
                     if (!InTransport)
                     {
-                        if (STRAFE_SPEED - walk * speedFactor >= -MAX_STRAFE_SPEED - 0.01)
-                            STRAFE_SPEED -= walk * speedFactor;
+                        if (StrafeSpeed - walk * speedFactor >= -MaxStrafeSpeed - 0.01)
+                            StrafeSpeed -= walk * speedFactor;
                     }
                     else
                     {
-                        if (MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD ||
-                            MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK)
-                            STRAFE_SPEED = 0;
-                        if (STRAFE_SPEED - transport * 1.75 * speedFactor >= -MAX_STRAFE_SPEED - 0.01)
-                            STRAFE_SPEED -= transport * 1.75 * speedFactor;
+                        if (MoveSpeed < 0.25 && PlayerDirection == Directions.FORWARD ||
+                            MoveSpeed > -0.25 && PlayerDirection == Directions.BACK)
+                            StrafeSpeed = 0;
+                        if (StrafeSpeed - transport * 1.75 * speedFactor >= -MaxStrafeSpeed - 0.01)
+                            StrafeSpeed -= transport * 1.75 * speedFactor;
                     }
                     break;
                 case Directions.STOP:
                     if (!InTransport)
                     {
-                        if (STRAFE_SPEED + walk * 2 <= 0)
-                            STRAFE_SPEED += walk * 2;
-                        else if (STRAFE_SPEED - walk * 2 >= 0)
-                            STRAFE_SPEED -= walk * 2;
+                        if (StrafeSpeed + walk * 2 <= 0)
+                            StrafeSpeed += walk * 2;
+                        else if (StrafeSpeed - walk * 2 >= 0)
+                            StrafeSpeed -= walk * 2;
                         else
-                            STRAFE_SPEED = 0;
+                            StrafeSpeed = 0;
                     }
                     else
                     {
-                        if (MOVE_SPEED < 0.25 && PlayerDirection == Directions.FORWARD ||
-                            MOVE_SPEED > -0.25 && PlayerDirection == Directions.BACK)
-                            STRAFE_SPEED = 0;
-                        if (STRAFE_SPEED + transport * 1.75 * 2 <= 0)
-                            STRAFE_SPEED += transport * 1.75 * 2;
-                        else if (STRAFE_SPEED - transport * 1.75 * 2 >= 0)
-                            STRAFE_SPEED -= transport * 1.75 * 2;
+                        if (MoveSpeed < 0.25 && PlayerDirection == Directions.FORWARD ||
+                            MoveSpeed > -0.25 && PlayerDirection == Directions.BACK)
+                            StrafeSpeed = 0;
+                        if (StrafeSpeed + transport * 1.75 * 2 <= 0)
+                            StrafeSpeed += transport * 1.75 * 2;
+                        else if (StrafeSpeed - transport * 1.75 * 2 >= 0)
+                            StrafeSpeed -= transport * 1.75 * 2;
                         else
-                            STRAFE_SPEED = 0;
+                            StrafeSpeed = 0;
                     }
                     break;
             }
             switch (PlayerDirection)
             {
                 case Directions.FORWARD:
-                    if (MOVE_SPEED < 0) speedFactor = 2;
+                    if (MoveSpeed < 0) speedFactor = 2;
                     else speedFactor = 1;
                     if (!InTransport)
                     {
-                        if (MOVE_SPEED + walk * speedFactor <= MAX_MOVE_SPEED + 0.01)
-                            MOVE_SPEED += walk * speedFactor;
+                        if (MoveSpeed + walk * speedFactor <= MaxMoveSpeed + 0.01)
+                            MoveSpeed += walk * speedFactor;
                     }
                     else
                     {
-                        if (MOVE_SPEED + transport * speedFactor <= MAX_MOVE_SPEED + 0.01)
-                            MOVE_SPEED += transport * speedFactor;
+                        if (MoveSpeed + transport * speedFactor <= MaxMoveSpeed + 0.01)
+                            MoveSpeed += transport * speedFactor;
                     }
                     break;
                 case Directions.BACK:
-                    if (MOVE_SPEED > 0) speedFactor = 2;
+                    if (MoveSpeed > 0) speedFactor = 2;
                     else speedFactor = 1;
                     if (!InTransport)
                     {
-                        if (MOVE_SPEED - walk * speedFactor >= -MAX_MOVE_SPEED - 0.01)
-                            MOVE_SPEED -= walk * speedFactor;
+                        if (MoveSpeed - walk * speedFactor >= -MaxMoveSpeed - 0.01)
+                            MoveSpeed -= walk * speedFactor;
                     }
                     else
                     {
-                        if (MOVE_SPEED - transport * speedFactor >= -MAX_MOVE_SPEED - 0.01)
-                            MOVE_SPEED -= transport * speedFactor;
+                        if (MoveSpeed - transport * speedFactor >= -MaxMoveSpeed - 0.01)
+                            MoveSpeed -= transport * speedFactor;
                     }
                     break;
                 case Directions.STOP:
                     if (!InTransport)
                     {
-                        if (MOVE_SPEED + walk * 2 <= 0)
-                            MOVE_SPEED += walk * 2;
-                        else if (MOVE_SPEED - walk * 2 >= 0)
-                            MOVE_SPEED -= walk * 2;
+                        if (MoveSpeed + walk * 2 <= 0)
+                            MoveSpeed += walk * 2;
+                        else if (MoveSpeed - walk * 2 >= 0)
+                            MoveSpeed -= walk * 2;
                         else
-                            MOVE_SPEED = 0;
+                            MoveSpeed = 0;
                     }
                     else
                     {
-                        if (MOVE_SPEED + transport * 2 <= 0)
-                            MOVE_SPEED += transport * 2;
-                        else if (MOVE_SPEED - transport * 2 >= 0)
-                            MOVE_SPEED -= transport * 2;
+                        if (MoveSpeed + transport * 2 <= 0)
+                            MoveSpeed += transport * 2;
+                        else if (MoveSpeed - transport * 2 >= 0)
+                            MoveSpeed -= transport * 2;
                         else
-                            MOVE_SPEED = 0;
+                            MoveSpeed = 0;
                     }
                     break;
             }
             switch (PlayerMoveStyle)
             {
                 case Directions.RUN:
-                    if (RUN_SPEED + walk <= MAX_RUN_SPEED + 0.01)
-                        RUN_SPEED += walk;
+                    if (RunSpeed + walk <= MaxRunSpeed + 0.01)
+                        RunSpeed += walk;
                     break;
                 default:
-                    if (RUN_SPEED > 1) RUN_SPEED -= walk * 2;
-                    else RUN_SPEED = 1;
+                    if (RunSpeed > 1) RunSpeed -= walk * 2;
+                    else RunSpeed = 1;
                     break;
             }
         }
 
-        public double GetMoveSpeed(double elapsed_time) => MOVE_SPEED * GetWeight() * RUN_SPEED * elapsed_time;
+        public double GetMoveSpeed(double elapsed_time) => MoveSpeed * GetWeight() * RunSpeed * elapsed_time;
 
-        public double GetStrafeSpeed(double elapsed_time) => STRAFE_SPEED * GetWeight() * RUN_SPEED * elapsed_time;
+        public double GetStrafeSpeed(double elapsed_time) => StrafeSpeed * GetWeight() * RunSpeed * elapsed_time;
 
         public void ChangeItem(int index)
         {
             SelectedItem = index;
-            DISPOSABLE_ITEM = DisposableItems[SelectedItem];
+            DisposableItem = DisposableItems[SelectedItem];
         }
 
         public Gun GetCurrentGun() => Guns[CurrentGun];
@@ -832,18 +831,18 @@ namespace SLIL.Classes
                     if (Effects[i].ID == 1)
                     {
                         Fast = false;
-                        MAX_MOVE_SPEED -= 1.5;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                        MaxMoveSpeed -= 1.5;
+                        MaxStrafeSpeed = MaxMoveSpeed / 2;
                     }
                     else if (Effects[i].ID == 3)
                     {
-                        MAX_STAMINE += 450;
-                        STAMINE = MAX_STAMINE;
+                        MaxStamine += 450;
+                        Stamine = MaxStamine;
                     }
                     else if (Effects[i].ID == 7)
                     {
-                        MAX_MOVE_SPEED += 0.8;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                        MaxMoveSpeed += 0.8;
+                        MaxStrafeSpeed = MaxMoveSpeed / 2;
                     }
                     Effects.RemoveAt(i);
                 }
@@ -865,8 +864,8 @@ namespace SLIL.Classes
                     if (EffectCheck(1) || EffectCheck(4)) return;
                     effect = new Adrenaline();
                     Fast = true;
-                    MAX_MOVE_SPEED += 1.5;
-                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                    MaxMoveSpeed += 1.5;
+                    MaxStrafeSpeed = MaxMoveSpeed / 2;
                     break;
                 case 2:
                     if (EffectCheck(2)) return;
@@ -875,8 +874,8 @@ namespace SLIL.Classes
                 case 3:
                     if (EffectCheck(3)) return;
                     effect = new Fatigue();
-                    MAX_STAMINE -= 450;
-                    if (STAMINE > MAX_STAMINE) STAMINE = MAX_STAMINE;
+                    MaxStamine -= 450;
+                    if (Stamine > MaxStamine) Stamine = MaxStamine;
                     break;
                 case 4:
                     if (EffectCheck(4) || TRANSPORT == null) return;
@@ -889,10 +888,10 @@ namespace SLIL.Classes
                     Look = 0;
                     InTransport = true;
                     Fast = true;
-                    MAX_MOVE_SPEED += TRANSPORT.Speed;
-                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                    MOVE_SPEED = 0;
-                    STRAFE_SPEED = 0;
+                    MaxMoveSpeed += TRANSPORT.Speed;
+                    MaxStrafeSpeed = MaxMoveSpeed / 2;
+                    MoveSpeed = 0;
+                    StrafeSpeed = 0;
                     break;
                 case 5:
                     if (EffectCheck(5) || EffectCheck(4) || EffectCheck(0)) return;
@@ -905,8 +904,8 @@ namespace SLIL.Classes
                 case 7:
                     if (EffectCheck(7)) return;
                     effect = new Stunned();
-                    MAX_MOVE_SPEED -= 0.8;
-                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                    MaxMoveSpeed -= 0.8;
+                    MaxStrafeSpeed = MaxMoveSpeed / 2;
                     break;
                 case 8:
                     if (EffectCheck(8)) return;
@@ -950,8 +949,8 @@ namespace SLIL.Classes
                 if (EffectCheck(1) || EffectCheck(4)) return;
                 Effects.Add(new Adrenaline());
                 Fast = true;
-                MAX_MOVE_SPEED += 1.5;
-                MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                MaxMoveSpeed += 1.5;
+                MaxStrafeSpeed = MaxMoveSpeed / 2;
             }
             else if (SelectedItem == 2)
             {
@@ -961,7 +960,7 @@ namespace SLIL.Classes
             else if (SelectedItem == 3)
             {
                 if (EffectCheck(5)) StopEffect(5);
-                HealHP((int)((MAX_HP - HP) * 0.8));
+                HealHP((int)((MaxHP - HP) * 0.8));
             }
         }
 
@@ -986,13 +985,13 @@ namespace SLIL.Classes
                     if (Effects[i].ID == 1)
                     {
                         Fast = false;
-                        MAX_MOVE_SPEED -= 1.5;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                        MaxMoveSpeed -= 1.5;
+                        MaxStrafeSpeed = MaxMoveSpeed / 2;
                     }
                     else if (Effects[i].ID == 3)
                     {
-                        MAX_STAMINE += 450;
-                        STAMINE = MAX_STAMINE;
+                        MaxStamine += 450;
+                        Stamine = MaxStamine;
                     }
                     else if (Effects[i].ID == 4)
                     {
@@ -1002,17 +1001,17 @@ namespace SLIL.Classes
                             CanShoot = true;
                             InTransport = false;
                             Fast = false;
-                            MAX_MOVE_SPEED -= TRANSPORT.Speed;
-                            MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                            MOVE_SPEED = 0;
-                            STRAFE_SPEED = 0;
+                            MaxMoveSpeed -= TRANSPORT.Speed;
+                            MaxStrafeSpeed = MaxMoveSpeed / 2;
+                            MoveSpeed = 0;
+                            StrafeSpeed = 0;
                             TRANSPORT = null;
                         }
                     }
                     else if (Effects[i].ID == 7)
                     {
-                        MAX_MOVE_SPEED += 0.8;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                        MaxMoveSpeed += 0.8;
+                        MaxStrafeSpeed = MaxMoveSpeed / 2;
                     }
                     Effects.RemoveAt(i);
                     break;
@@ -1027,13 +1026,13 @@ namespace SLIL.Classes
                 if (Effects[i].ID == 1)
                 {
                     Fast = false;
-                    MAX_MOVE_SPEED -= 1.5;
-                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                    MaxMoveSpeed -= 1.5;
+                    MaxStrafeSpeed = MaxMoveSpeed / 2;
                 }
                 else if (Effects[i].ID == 3)
                 {
-                    MAX_STAMINE += 450;
-                    STAMINE = MAX_STAMINE;
+                    MaxStamine += 450;
+                    Stamine = MaxStamine;
                 }
                 else if (Effects[i].ID == 4)
                 {
@@ -1043,17 +1042,17 @@ namespace SLIL.Classes
                         CanShoot = true;
                         InTransport = false;
                         Fast = false;
-                        MAX_MOVE_SPEED -= TRANSPORT.Speed;
-                        MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
-                        MOVE_SPEED = 0;
-                        STRAFE_SPEED = 0;
+                        MaxMoveSpeed -= TRANSPORT.Speed;
+                        MaxStrafeSpeed = MaxMoveSpeed / 2;
+                        MoveSpeed = 0;
+                        StrafeSpeed = 0;
                         TRANSPORT = null;
                     }
                 }
                 else if (Effects[i].ID == 7)
                 {
-                    MAX_MOVE_SPEED += 0.8;
-                    MAX_STRAFE_SPEED = MAX_MOVE_SPEED / 2;
+                    MaxMoveSpeed += 0.8;
+                    MaxStrafeSpeed = MaxMoveSpeed / 2;
                 }
             }
             Effects.Clear();
@@ -1062,7 +1061,7 @@ namespace SLIL.Classes
         public void HealHP(int value)
         {
             HP += value;
-            if (HP > MAX_HP) HP = MAX_HP;
+            if (HP > MaxHP) HP = MaxHP;
         }
 
         public void ChangeMoney(int value)
@@ -1082,7 +1081,7 @@ namespace SLIL.Classes
         {
             if (Invulnerable) return Dead;
             if (EffectCheck(2) || EffectCheck(4)) damage *= 0.8;
-            if (InTransport) TRANSPORT_HP -= damage;
+            if (InTransport) TransportHP -= damage;
             else HP -= damage;
             if (give_invulnerable)
             {
@@ -1090,7 +1089,7 @@ namespace SLIL.Classes
                 Invulnerable = true;
             }
             if (HP <= 0) Dead = true;
-            if (TRANSPORT_HP <= 0) StopEffect(4);
+            if (TransportHP <= 0) StopEffect(4);
             return Dead;
         }
     }

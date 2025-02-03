@@ -287,8 +287,8 @@ namespace SLIL.UserControls
                                 if (!(creature is Enemy))
                                     continue;
                                 string dead = "";
-                                if (creature.DEAD)
-                                    dead = "[DEAD]";
+                                if (creature.Dead)
+                                    dead = "[Dead]";
                                 string paddedName = $"Enemy #{i} {dead}".PadRight(maxLength);
                                 sb.AppendLine($"~|~ -{paddedName}- ~|~");
                             }
@@ -593,7 +593,7 @@ namespace SLIL.UserControls
                             else
                             {
                                 message += $"Mouse sensitivity is now {x}. *Default: 2,75*";
-                                SLIL.LOOK_SPEED = x;
+                                SLIL.LookSpeed = x;
                                 INIReader.SetKey(Program.iniFolder, "SLIL", "look_speed", x);
                             }
                         }
@@ -877,8 +877,8 @@ namespace SLIL.UserControls
                                 if (x >= 100 && x <= 5000)
                                 {
                                     message += $"Player stamina is now {x}. *Default: 650*";
-                                    player.MAX_STAMINE = x;
-                                    player.STAMINE = x;
+                                    player.MaxStamine = x;
+                                    player.Stamine = x;
                                 }
                                 else
                                 {
@@ -900,8 +900,8 @@ namespace SLIL.UserControls
                                 if (x >= 0.1 && x <= 20)
                                 {
                                     message += $"Player speed is now {x}. *Default: 1,75*";
-                                    player.MAX_MOVE_SPEED = x;
-                                    player.MAX_STRAFE_SPEED = x / 2;
+                                    player.MaxMoveSpeed = x;
+                                    player.MaxStrafeSpeed = x / 2;
                                 }
                                 else
                                 {

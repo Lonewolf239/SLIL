@@ -17,7 +17,6 @@ namespace SLIL.Classes
         private int _spectatingForPlayerID;
         private readonly EventBasedNetListener listener;
         private readonly NetManager client;
-        private readonly NetPacketProcessor processor;
         private NetPeer peer;
         private readonly StartGameDelegate StartGameHandle;
         private readonly InitPlayerDelegate InitPlayerHandle;

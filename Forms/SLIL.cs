@@ -36,7 +36,7 @@ namespace SLIL
         public bool inv_y = false, inv_x = false;
         public static int difficulty = 1;
         private int inDebug = 0;
-        public static double LOOK_SPEED = 2.5;
+        public static double LookSpeed = 2.5;
         public StringBuilder CUSTOM_MAP = new StringBuilder();
         public double CUSTOM_X, CUSTOM_Y;
         private readonly Random rand;
@@ -698,7 +698,7 @@ namespace SLIL
             hight_fps = MainMenu.hight_fps;
             ShowFPS = MainMenu.ShowFPS;
             ShowMiniMap = MainMenu.ShowMiniMap;
-            LOOK_SPEED = MainMenu.LOOK_SPEED;
+            LookSpeed = MainMenu.LOOK_SPEED;
             inv_x = MainMenu.inv_x;
             inv_y = MainMenu.inv_y;
             Volume = MainMenu.Volume;
@@ -923,7 +923,7 @@ namespace SLIL
                     entity = new RpgRocket(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
                 case 12: // explosion
-                    entity = new Explosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new RpgExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
                 case 13: // silly cat
                     entity = new SillyCat(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
@@ -1089,8 +1089,8 @@ namespace SLIL
             if (player == null) return;
             if (!player.InTransport || player.TRANSPORT == null)
                 transport_step?.Stop();
-            if ((player.MOVE_SPEED != 0
-                || (player.STRAFE_SPEED != 0 && !player.InTransport)
+            if ((player.MoveSpeed != 0
+                || (player.StrafeSpeed != 0 && !player.InTransport)
                 )
                 && !player.InParkour
                 && !player.Aiming
@@ -1105,8 +1105,8 @@ namespace SLIL
                 int i = player.PlayerMoveStyle == Directions.RUN || player.Fast ? 1 : 0;
                 if (player.InTransport && player.TRANSPORT != null)
                 {
-                    if (player.PlayerDirection == Directions.STOP || player.MOVE_SPEED < 0 ||
-                        (player.PlayerDirection == Directions.BACK && player.MOVE_SPEED > 0)) //stopping
+                    if (player.PlayerDirection == Directions.STOP || player.MoveSpeed < 0 ||
+                        (player.PlayerDirection == Directions.BACK && player.MoveSpeed > 0)) //stopping
                         step = TransportsSoundsDict[player.TRANSPORT.GetType()][1];
                     else //full speed
                         step = TransportsSoundsDict[player.TRANSPORT.GetType()][2];
@@ -1136,7 +1136,7 @@ namespace SLIL
                 }
                 currentIndex++;
             }
-            else if (player.InTransport && player.TRANSPORT != null && player.MOVE_SPEED == 0)
+            else if (player.InTransport && player.TRANSPORT != null && player.MoveSpeed == 0)
             {
                 //IDLE
                 step = TransportsSoundsDict[player.TRANSPORT.GetType()][0];
@@ -1165,15 +1165,15 @@ namespace SLIL
             if (player == null || Controller.IsInSpectatorMode()) return;
             if (RunKeyPressed && PlayerCanRun() && player.PlayerDirection == Directions.FORWARD)
             {
-                if (player.STAMINE >= player.MAX_STAMINE / 2.5)
+                if (player.Stamine >= player.MaxStamine / 2.5)
                     player.PlayerMoveStyle = Directions.RUN;
             }
             else player.PlayerMoveStyle = Directions.WALK;
             if (player.PlayerMoveStyle == Directions.RUN && player.PlayerDirection == Directions.FORWARD && !player.Aiming && !reload_timer.Enabled && !shotgun_pull_timer.Enabled)
             {
-                if (player.STAMINE <= 0)
+                if (player.Stamine <= 0)
                 {
-                    player.STAMINE = 0;
+                    player.Stamine = 0;
                     player.PlayerMoveStyle = Directions.WALK;
                     chill_timer.Start();
                     Controller.PlayGameSound(low_stamine);
@@ -1183,7 +1183,7 @@ namespace SLIL
             else
             {
                 player.PlayerMoveStyle = Directions.WALK;
-                if (player.STAMINE < player.MAX_STAMINE)
+                if (player.Stamine < player.MaxStamine)
                     player.RestoreStamine();
             }
         }
@@ -1453,8 +1453,8 @@ namespace SLIL
         {
             Player player = Controller.GetPlayer();
             if (player == null) return;
-            if (!player.InTransport && player.MOVE_SPEED == 0 && player.STRAFE_SPEED == 0 ||
-                player.InTransport && player.MOVE_SPEED == 0)
+            if (!player.InTransport && player.MoveSpeed == 0 && player.StrafeSpeed == 0 ||
+                player.InTransport && player.MoveSpeed == 0)
             {
                 xOffset = 0;
                 yOffset = 0;
@@ -1554,13 +1554,13 @@ namespace SLIL
                         {
                             //TEMP
                             if (Controller.IsMultiplayer()) return;
-                            if (player.DISPOSABLE_ITEM == null)
+                            if (player.DisposableItem == null)
                                 Controller.ChangeItem(player.SelectedItem);
-                            if (player.DisposableItems.Count > 0 && player.DISPOSABLE_ITEM.HasIt)
+                            if (player.DisposableItems.Count > 0 && player.DisposableItem.HasIt)
                             {
                                 if (player.UseItem) return;
                                 if (player.EffectCheck(player.GetEffectID())) return;
-                                if ((player.SelectedItem == 0 || player.SelectedItem == 3) && player.HP == player.MAX_HP) return;
+                                if ((player.SelectedItem == 0 || player.SelectedItem == 3) && player.HP == player.MaxHP) return;
                                 TakeFlashlight(false);
                                 Controller.DrawItem();
                                 new Thread(() =>
@@ -1568,7 +1568,7 @@ namespace SLIL
                                     Thread.Sleep(150);
                                     player.ItemFrame = 1;
                                 }).Start();
-                                Controller.PlayGameSound(GunsSoundsDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), 0]);
+                                Controller.PlayGameSound(GunsSoundsDict[player.DisposableItem.GetType()][player.DisposableItem.GetLevel(), 0]);
                                 Controller.UseItem();
                             }
                         }
@@ -1778,7 +1778,7 @@ namespace SLIL
                         {
                             Entity entity = Entities[spriteInfo[i].Order];
                             if (!entity.HasAI) continue;
-                            if (entity is Creature creature && creature.DEAD) continue;
+                            if (entity is Creature creature && creature.Dead) continue;
                             if (!(entity is Enemy))
                             {
                                 double spriteX = entity.X - player.X;
@@ -1928,8 +1928,8 @@ namespace SLIL
                 {
                     int invY = inv_y ? -1 : 1;
                     int invX = inv_x ? -1 : 1;
-                    double A = -(((X / x) / 10) * LOOK_SPEED) * 2.5;
-                    double Look = (((Y / y) * 20) * LOOK_SPEED) * 2.5;
+                    double A = -(((X / x) / 10) * LookSpeed) * 2.5;
+                    double Look = (((Y / y) * 20) * LookSpeed) * 2.5;
                     Controller.ChangePlayerA(A * invX);
                     Controller.ChangePlayerLook(Look * invY);
                     Cursor.Position = SLILDisplay.PointToScreen(new Point((int)x, (int)y));
@@ -2070,7 +2070,7 @@ namespace SLIL
             double tempX = player.X;
             double tempY = player.Y;
             double factor = 1;
-            if (player.MOVE_SPEED < 0)
+            if (player.MoveSpeed < 0)
             {
                 if (player.InTransport) factor = 0.25;
                 else factor = 0.65;
@@ -2085,10 +2085,10 @@ namespace SLIL
             else
             {
                 double turnAmount = 0;
-                if (player.MOVE_SPEED < 0)
-                    turnAmount = (-player.STRAFE_SPEED * 0.5) / (player.TRANSPORT.Controllability + 25);
-                else if (player.MOVE_SPEED > 0)
-                    turnAmount = (player.STRAFE_SPEED) / player.TRANSPORT.Controllability;
+                if (player.MoveSpeed < 0)
+                    turnAmount = (-player.StrafeSpeed * 0.5) / (player.TRANSPORT.Controllability + 25);
+                else if (player.MoveSpeed > 0)
+                    turnAmount = (player.StrafeSpeed) / player.TRANSPORT.Controllability;
                 Controller.ChangePlayerA(turnAmount * DeltaTime * 60);
             }
             if (!(HasImpassibleCells(GetCoordinate(newX + playerWidth / 2, newY))
@@ -2504,7 +2504,7 @@ namespace SLIL
                                 SpriteStates tempSpriteState = rays[stripe][y].SpriteState;
                                 if (entity is Creature creature)
                                 {
-                                    if (!creature.DEAD)
+                                    if (!creature.Dead)
                                     {
                                         if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && entity is Pet pet && pet.Stoped && pet.HasStopAnimation)
                                             rays[stripe][y].SpriteState = GetSpriteRotation(creature, 0, false, true);
@@ -2654,10 +2654,10 @@ namespace SLIL
                     if (state == 0) return SpriteStates.StepEscape_0;
                     return SpriteStates.StepEscape_1;
                 }
-                if (entity is Shooter shooter)
+                if (entity is RangeEnemy range)
                 {
-                    if (shooter.ReadyToShot) return SpriteStates.Aiming;
-                    if (shooter.TimeAfterShot > 0) return SpriteStates.Shooted;
+                    if (range.TimeAfterShot > 0) return SpriteStates.Shooted;
+                    if (range.ReadyToShot) return SpriteStates.Aiming;
                 }
                 if (state == 0) return SpriteStates.StepForward_0;
                 return SpriteStates.StepForward_1;
@@ -2900,16 +2900,16 @@ namespace SLIL
                 return;
             }
             int item_count = 0, item_max_count = 0;
-            if (player.DISPOSABLE_ITEM != null)
+            if (player.DisposableItem != null)
             {
-                item_count = player.DISPOSABLE_ITEM.Count;
-                item_max_count = player.DISPOSABLE_ITEM.MaxCount;
+                item_count = player.DisposableItem.Count;
+                item_max_count = player.DisposableItem.MaxCount;
             }
             int icon_size = 12 + (2 * interface_size);
             if (resolution == 1) icon_size *= 2;
             int size = resolution == 0 ? 1 : 2;
             int add = resolution == 0 ? 2 : 4;
-            double hp = player.InTransport ? player.TRANSPORT_HP : player.HP;
+            double hp = player.InTransport ? player.TransportHP : player.HP;
             SizeF hpSize = graphicsWeapon.MeasureString(hp.ToString("0"), consolasFont[interface_size, resolution]);
             SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), consolasFont[interface_size, resolution]);
             int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
@@ -2941,14 +2941,14 @@ namespace SLIL
             else if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
-                if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
+                if (player.DisposableItem != null && !Controller.IsMultiplayer())
+                    graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItem.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
-                if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
+                if (player.DisposableItem != null && !Controller.IsMultiplayer())
+                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItem.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (!player.InTransport && !Controller.IsMultiplayer())
                 graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - (icon_size * 2) - add);
@@ -3041,16 +3041,16 @@ namespace SLIL
             Player player = Controller.GetPlayer();
             if (player == null) return;
             int item_count = 0, item_max_count = 0;
-            if (player.DISPOSABLE_ITEM != null)
+            if (player.DisposableItem != null)
             {
-                item_count = player.DISPOSABLE_ITEM.Count;
-                item_max_count = player.DISPOSABLE_ITEM.MaxCount;
+                item_count = player.DisposableItem.Count;
+                item_max_count = player.DisposableItem.MaxCount;
             }
             int icon_size = 12 + (2 * interface_size);
             if (resolution == 1) icon_size *= 2;
             int size = resolution == 0 ? 1 : 2;
             int add = resolution == 0 ? 2 : 4;
-            double hp = player.InTransport ? player.TRANSPORT_HP : player.HP;
+            double hp = player.InTransport ? player.TransportHP : player.HP;
             SizeF hpSize = graphicsWeapon.MeasureString(hp.ToString("0"), consolasFont[interface_size, resolution]);
             SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), consolasFont[interface_size, resolution]);
             int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
@@ -3075,14 +3075,14 @@ namespace SLIL
             else if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
-                if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(ItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
+                if (player.DisposableItem != null && !Controller.IsMultiplayer())
+                    graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItem.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
             }
             else
             {
                 graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
-                if (player.DISPOSABLE_ITEM != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DISPOSABLE_ITEM.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
+                if (player.DisposableItem != null && !Controller.IsMultiplayer())
+                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItem.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
             }
             if (!player.InTransport && !Controller.IsMultiplayer())
                 graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - (icon_size * 2) - add);
@@ -3150,16 +3150,16 @@ namespace SLIL
                     "SS:  {6,5:0.##}  CSS: {7,5:0.##}\n" +
                     "MST: {8,5:0.##}  ST:  {9,5:0.##}\n" +
                     "CW:  {10,5:0.##}",
-                    player.MAX_MOVE_SPEED,
-                    player.MAX_STRAFE_SPEED,
-                    player.MAX_RUN_SPEED,
-                    player.RUN_SPEED,
-                    player.MOVE_SPEED,
+                    player.MaxMoveSpeed,
+                    player.MaxStrafeSpeed,
+                    player.MaxRunSpeed,
+                    player.RunSpeed,
+                    player.MoveSpeed,
                     player.GetMoveSpeed(ElapsedTime),
-                    player.STRAFE_SPEED,
+                    player.StrafeSpeed,
                     player.GetStrafeSpeed(ElapsedTime),
-                    player.MAX_STAMINE,
-                    player.STAMINE,
+                    player.MaxStamine,
+                    player.Stamine,
                     player.GetWeight()
                 );
             if (ShowPositongDebug)
@@ -3218,7 +3218,7 @@ namespace SLIL
             else if (player.InParkour)
                 imageToDraw = Properties.Resources.player_parkour;
             else if (player.UseItem)
-                imageToDraw = GunsImagesDict[player.DISPOSABLE_ITEM.GetType()][player.DISPOSABLE_ITEM.GetLevel(), player.ItemFrame];
+                imageToDraw = GunsImagesDict[player.DisposableItem.GetType()][player.DisposableItem.GetLevel(), player.ItemFrame];
             else
                 imageToDraw = GunsImagesDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), index];
             int safeXOffset = Math.Max(0, Math.Min((int)xOffset, imageToDraw.Width - WEAPON.Width));
@@ -3413,12 +3413,12 @@ namespace SLIL
         {
             int stamine_width = 40 + (10 * interface_size);
             if (resolution == 1) stamine_width *= 2;
-            int progress_width = (int)(player.STAMINE / player.MAX_STAMINE * (stamine_width - 2));
+            int progress_width = (int)(player.Stamine / player.MaxStamine * (stamine_width - 2));
             int stamine_top = SCREEN_HEIGHT - (icon_size * 2);
             int stamine_left = (SCREEN_WIDTH - (stamine_width + icon_size + 2)) / 2;
-            if (RunKeyPressed || player.STAMINE < player.MAX_STAMINE)
+            if (RunKeyPressed || player.Stamine < player.MaxStamine)
                 DrawRunIcon(stamine_left, stamine_top, icon_size);
-            if (player.STAMINE >= player.MAX_STAMINE) return;
+            if (player.Stamine >= player.MaxStamine) return;
             int stamine_progressbar_left = stamine_left + icon_size + 2;
             int stamine_progressbar_top = stamine_top + ((icon_size - 3) / 2);
             graphicsWeapon.FillRectangle(new SolidBrush(Color.Gray), stamine_progressbar_left, stamine_progressbar_top, stamine_width, 2.25f * size);
@@ -3629,7 +3629,7 @@ namespace SLIL
                                         {
                                             if (creature != null)
                                             {
-                                                if (creature.DEAD || !creature.CanHit) continue;
+                                                if (creature.Dead || !creature.CanHit) continue;
                                                 double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
                                                 if (Controller.DealDamage(creature, damage))
                                                 {

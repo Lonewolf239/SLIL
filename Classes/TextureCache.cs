@@ -63,28 +63,28 @@ namespace SLIL.Classes
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.enemy_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.enemy_0_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.enemy_0_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.enemy_0_Dead },
                 }
             },
             { 10, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.enemy_1 },
                     { SpriteStates.StepForward_1, Properties.Resources.enemy_1_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.enemy_1_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.enemy_1_Dead },
                 }
             },
             { 11, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.enemy_2 },
                     { SpriteStates.StepForward_1, Properties.Resources.enemy_2_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.enemy_2_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.enemy_2_Dead },
                 }
             },
             { 12, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.enemy_3 },
                     { SpriteStates.StepForward_1, Properties.Resources.enemy_3_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.enemy_3_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.enemy_3_Dead },
                 }
             },
             { 13, new Dictionary<SpriteStates, Image>()
@@ -182,8 +182,8 @@ namespace SLIL.Classes
             },
             { 28, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
-                    { SpriteStates.Static, Properties.Resources.player_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.player_Dead },
+                    { SpriteStates.Static, Properties.Resources.player_Dead },
                 }
             },
             { 29, new Dictionary<SpriteStates, Image>()
@@ -236,7 +236,7 @@ namespace SLIL.Classes
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.player },
                     { SpriteStates.StepForward_1, Properties.Resources.player_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.player_Dead },
                     { SpriteStates.Aiming, Properties.Resources.player_aiming },
                     { SpriteStates.Shooted, Properties.Resources.player_shooted },
                     { SpriteStates.StepEscape_0, Properties.Resources.player_stoped },
@@ -267,6 +267,12 @@ namespace SLIL.Classes
                     { SpriteStates.Shooted, Properties.Resources.missing },
                     { SpriteStates.StepEscape_0, Properties.Resources.missing },
                     { SpriteStates.StepEscape_1, Properties.Resources.missing }
+                }
+            },
+            { 42, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.rpg_rocket_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.rpg_rocket_1 },
                 }
             },
         };
@@ -301,28 +307,28 @@ namespace SLIL.Classes
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.c_enemy_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.c_enemy_0_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_0_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_0_Dead },
                 }
             },
             { 10, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.c_enemy_1 },
                     { SpriteStates.StepForward_1, Properties.Resources.c_enemy_1_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_1_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_1_Dead },
                 }
             },
             { 11, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.c_enemy_2 },
                     { SpriteStates.StepForward_1, Properties.Resources.c_enemy_2_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_2_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_2_Dead },
                 }
             },
             { 12, new Dictionary<SpriteStates, Image>()
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.c_enemy_3 },
                     { SpriteStates.StepForward_1, Properties.Resources.c_enemy_3_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_3_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.c_enemy_3_Dead },
                 }
             },
             { 13, new Dictionary<SpriteStates, Image>()
@@ -420,8 +426,8 @@ namespace SLIL.Classes
             },
             { 28, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
-                    { SpriteStates.Static, Properties.Resources.player_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.player_Dead },
+                    { SpriteStates.Static, Properties.Resources.player_Dead },
                 }
             },
             { 29, new Dictionary<SpriteStates, Image>()
@@ -474,7 +480,7 @@ namespace SLIL.Classes
                 {
                     { SpriteStates.StepForward_0, Properties.Resources.player },
                     { SpriteStates.StepForward_1, Properties.Resources.player_1 },
-                    { SpriteStates.DeadBody, Properties.Resources.player_DEAD },
+                    { SpriteStates.DeadBody, Properties.Resources.player_Dead },
                     { SpriteStates.Aiming, Properties.Resources.player_aiming },
                     { SpriteStates.Shooted, Properties.Resources.player_shooted },
                     { SpriteStates.StepEscape_0, Properties.Resources.player_stoped },
@@ -505,6 +511,12 @@ namespace SLIL.Classes
                     { SpriteStates.Shooted, Properties.Resources.missing },
                     { SpriteStates.StepEscape_0, Properties.Resources.missing },
                     { SpriteStates.StepEscape_1, Properties.Resources.missing }
+                }
+            },
+            { 42, new Dictionary<SpriteStates, Image>()
+                {
+                    { SpriteStates.StepForward_0, Properties.Resources.rpg_rocket_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.rpg_rocket_1 },
                 }
             },
         };
