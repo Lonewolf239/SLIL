@@ -3164,8 +3164,8 @@ namespace SLIL
                 );
             if (ShowPositongDebug)
                 debugInfo = string.Format(
-                    "PX: {0,5:0.##}  PY: {1,5:0.##}\n" +
-                    "PA: {2,5:0.##}  PL:  {3,5:0.##}\n",
+                    "PX: {0,5:0.##}  PY: {1,7:0.##}\n" +
+                    "PA: {2,5:0.##}  PL: {3,7:0.##}\n",
                     player.X,
                     player.Y,
                     player.A,

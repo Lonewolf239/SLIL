@@ -205,7 +205,7 @@ namespace SLIL.Classes
                                             else if (playerTarget.CuteMode) PlaySoundHandle(SLIL.hungry, target.X, target.Y);
                                             else PlaySoundHandle(SLIL.hit[0], target.X, target.Y);
                                             GiveDebaf(playerTarget, entity);
-                                            playerTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE), true);
+                                            playerTarget.DealDamage(rand.Next(entity.MinDamage, entity.MaxDamage), true);
                                             if (playerTarget.HP <= 0)
                                             {
                                                 Entities.Add(new PlayerDeadBody(target.X, target.Y, MAP_WIDTH, ref MaxEntityID));
@@ -225,7 +225,7 @@ namespace SLIL.Classes
                                     entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
                                     if (entity.Fast) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
                                     if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
-                                        coveringTarget.DealDamage(rand.Next(entity.MIN_DAMAGE, entity.MAX_DAMAGE));
+                                        coveringTarget.DealDamage(rand.Next(entity.MinDamage, entity.MaxDamage));
                                 }
                             }
                             if (entity is Stalker stalker && stalker.Dead)
