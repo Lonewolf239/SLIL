@@ -258,47 +258,51 @@ namespace SLIL.Classes
                                 if (range is Shooter shooter)
                                 {
                                     PlaySoundHandle(SLIL.GunsSoundsDict[typeof(SniperRifle)][1, 0], shooter.X, shooter.Y);
-                                    char[] ImpassibleCells = { '#', 'D', 'd', 'W', 'S' };
+                                    HashSet<char> impassibleCells = new HashSet<char> { '#', 'D', 'd', 'W', 'S' };
                                     double shotDistance = 0;
-                                    double shotStep = 0.01d;
+                                    const double shotStep = 0.01d;
                                     bool hit = false;
+                                    List<(int, int)> points = new List<(int, int)>();
                                     while (!hit && shotDistance <= shooter.ShotDistance + 6)
                                     {
-                                        int test_x = (int)(shooter.X + shotAX * shotDistance);
-                                        int test_y = (int)(shooter.Y + shotAY * shotDistance);
-                                        foreach (var ent in targetListOrdered)
-                                        {
-                                            if (ent is Player player)
-                                            {
-                                                if (Math.Abs(test_x - player.X) <= 0.5 && Math.Abs(test_y - player.Y) <= 0.5)
-                                                {
-                                                    if (!player.Invulnerable)
-                                                    {
-                                                        if (player.InTransport) PlaySoundHandle(SLIL.hit[1], player.X, player.Y);
-                                                        else if (player.CuteMode) PlaySoundHandle(SLIL.hungry, player.X, player.Y);
-                                                        else PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
-                                                        player.DealDamage(rand.Next(shooter.MinDamage, shooter.MaxDamage), true);
-                                                        if (player.HP <= 0)
-                                                        {
-                                                            Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
-                                                            TotalKilled = player.TotalEnemiesKilled;
-                                                            DeathCause = SetDeathCause(entity);
-                                                            GameOver(0);
-                                                            return;
-                                                        }
-                                                    }
-                                                    hit = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        if (ImpassibleCells.Contains(MAP[test_y * MAP_WIDTH + test_x]))
+                                        int pX = (int)(shooter.X + shotAX * shotDistance);
+                                        int pY = (int)(shooter.Y + shotAY * shotDistance);
+                                        points.Add((pX, pY));
+                                        if (impassibleCells.Contains(MAP[pY * MAP_WIDTH + pX]))
                                         {
                                             AddHittingTheWall(shooter.X + shotAX * (shotDistance - 0.5), shooter.Y + shotAY * (shotDistance - 0.5), 1);
                                             hit = true;
                                             break;
                                         }
                                         shotDistance += shotStep;
+                                    }
+                                    hit = false;
+                                    foreach (var point in points)
+                                    {
+                                        foreach (var ent in targetListOrdered)
+                                        {
+                                            if (ent is Player player)
+                                            {
+                                                if (Math.Abs(point.Item1 - player.X) <= 0.5 && Math.Abs(point.Item2 - player.Y) <= 0.5 && !player.Invulnerable)
+                                                {
+                                                    if (player.InTransport) PlaySoundHandle(SLIL.hit[1], player.X, player.Y);
+                                                    else if (player.CuteMode) PlaySoundHandle(SLIL.hungry, player.X, player.Y);
+                                                    else PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
+                                                    player.DealDamage(rand.Next(shooter.MinDamage, shooter.MaxDamage), true);
+                                                    if (player.HP <= 0)
+                                                    {
+                                                        Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                                        TotalKilled = player.TotalEnemiesKilled;
+                                                        DeathCause = SetDeathCause(entity);
+                                                        GameOver(0);
+                                                        return;
+                                                    }
+                                                    hit = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (hit) break;
                                     }
                                 }
                                 if (range is LostSoul soul) SpawnRockets(soul.X, soul.Y, 1, soul.ShotA);
@@ -940,12 +944,12 @@ namespace SLIL.Classes
             if (p == null || p.BlockInput) return;
             p.X += dX;
             p.Y += dY;
-            if (p.TRANSPORT != null)
+            if (p.TRANSPORT != null && p.EffectCheck(4))
             {
-                if (p.EffectCheck(4) && p.TRANSPORT.CanJump)
+                double extendedX = p.X + Math.Sin(p.A) * 0.3;
+                double extendedY = p.Y + Math.Cos(p.A) * 0.3;
+                if (p.TRANSPORT.CanJump && !p.EffectCheck(3))
                 {
-                    double extendedX = p.X + Math.Sin(p.A) * 0.3;
-                    double extendedY = p.Y + Math.Cos(p.A) * 0.3;
                     if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
                     {
                         double distance = 1;
@@ -960,6 +964,17 @@ namespace SLIL.Classes
                                 return;
                             }
                         }
+                    }
+                }
+                if (p.MoveSpeed >= 2.5)
+                {
+                    char[] c = { '#', 'd', 'D', 'S' };
+                    if (c.Contains(MAP[(int)extendedY * MAP_WIDTH + (int)extendedX]) ||
+                        (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=' && (!p.TRANSPORT.CanJump || p.EffectCheck(3))))
+                    {
+                        p.MoveSpeed = 0.5;
+                        PlaySoundHandle(SLIL.hit[1], p.X, p.Y);
+                        p.DealDamage(5, false);
                     }
                 }
             }
@@ -1905,15 +1920,9 @@ namespace SLIL.Classes
 
         internal bool HasNoClip(int playerID)
         {
-            foreach (Entity ent in Entities)
-            {
-                if (ent.ID == playerID)
-                {
-                    Player p = (Player)ent;
-                    return p.NoClip;
-                }
-            }
-            return false;
+            Player p = GetPlayer(playerID);
+            if (p == null) return false;
+            return p.NoClip;
         }
 
         internal void GettingOffTheTransport(int playerID, bool add_transport = true)
@@ -2069,7 +2078,7 @@ namespace SLIL.Classes
             p.Y = new_y;
             p.BlockInput = false;
             p.BlockCamera = false;
-            p.CanShoot = true;
+            if (!p.InTransport) p.CanShoot = true;
         }
 
         internal void ChangeWeapon(int playerID, int new_gun)

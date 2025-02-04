@@ -1555,8 +1555,6 @@ namespace SLIL
                         }
                         if (e.KeyCode == Bind.Item)
                         {
-                            //TEMP
-                            if (Controller.IsMultiplayer()) return;
                             if (player.DisposableItem == null)
                                 Controller.ChangeItem(player.SelectedItem);
                             if (player.DisposableItems.Count > 0 && player.DisposableItem.HasIt)
@@ -1755,8 +1753,6 @@ namespace SLIL
                     }
                     if (e.KeyCode == Bind.Select_item)
                     {
-                        //TEMP
-                        if (Controller.IsMultiplayer()) return;
                         player.InSelectingMode = false;
                         Cursor.Position = SLILDisplay.PointToScreen(new Point(SLILDisplay.Width / 2, SLILDisplay.Height / 2));
                         player.CanUnblockCamera = true;
