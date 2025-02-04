@@ -945,7 +945,6 @@ namespace SLIL.UserControls
                                  "Vine",
                                  "Lamp",
                                  "BackroomsTeleport",
-                                 "Covering",
                                  "VoidTeleport",
                                  "VoidStalker",
                                  "Stalker",
@@ -971,7 +970,7 @@ namespace SLIL.UserControls
                                 {
                                     int x = Convert.ToInt32(cheat.Split('_')[1]);
                                     int y = Convert.ToInt32(cheat.Split('_')[3]);
-                                    if (x >= 0 && x < 28)
+                                    if (x >= 0 && x < 27)
                                     {
                                         if (y < 0 || y > 1)
                                         {
@@ -1009,7 +1008,7 @@ namespace SLIL.UserControls
                                 try
                                 {
                                     int x = Convert.ToInt32(cheat.Split('_')[1]);
-                                    if (x >= 0 && x < 28)
+                                    if (x >= 0 && x < 27)
                                     {
                                         if (parent.SpawnEntity(x, true))
                                             message = $"Creature with ID {x} successfully spawned with AI enabled";

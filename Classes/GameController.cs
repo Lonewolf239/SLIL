@@ -207,6 +207,8 @@ namespace SLIL.Classes
 
         internal StringBuilder GetMap() => Game.GetMap();
 
+        internal void ChangeMapChar(int coordinate, char c) => Game.ChangeMapChar(coordinate, c);
+
         internal int GetMapWidth() => Game.GetMapWidth();
 
         internal int GetMapHeight() => Game.GetMapHeight();

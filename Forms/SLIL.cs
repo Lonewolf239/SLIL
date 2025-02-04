@@ -554,6 +554,8 @@ namespace SLIL
         private const int ScrollBarWidth = 4, ScrollPadding = 5;
         private bool open_shop = false, pressed_r = false, cancelReload = false;
         private float xOffset = 0, yOffset = 0, xOffsetDirection = 0.25f, yOffsetDirection = 0.25f;
+        private double RecoilY = 0, RecoilLX = 0, RecoilRX = 0;
+        private const double RecoilRecoverySpeed = 7.5f;
         private Display SLILDisplay;
         private Bitmap map;
         private ConsolePanel console_panel;
@@ -949,25 +951,22 @@ namespace SLIL
                 case 20: // backrooms teleport
                     entity = new BackroomsTeleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 21: // covering
-                    entity = new Covering(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
-                    break;
-                case 22: // void teleport
+                case 21: // void teleport
                     entity = new VoidTeleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 23: // void stalker
+                case 22: // void stalker
                     entity = new VoidStalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 24: // stalker
+                case 23: // stalker
                     entity = new Stalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 25: // shooter
+                case 24: // shooter
                     entity = new Shooter(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 26: // lost soul
+                case 25: // lost soul
                     entity = new LostSoul(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 27: // soul explosion
+                case 26: // soul explosion
                     entity = new SoulExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
             }
@@ -1221,10 +1220,7 @@ namespace SLIL
                     if (player.GetCurrentGun().CanShoot && player.GetCurrentGun().FireType != FireTypes.Single)
                     {
                         BulletRayCasting();
-                        if (player.Look - player.GetCurrentGun().RecoilY > -360)
-                            player.Look -= player.GetCurrentGun().RecoilY;
-                        else player.Look = -360;
-                        player.A += player.GetCurrentGun().GetRecoilX(rand.NextDouble());
+                        SetRecoil(player);
                     }
                     if (player.GetCurrentGun().AmmoCount <= 0 && player.GetCurrentGun().AmmoInStock > 0)
                     {
@@ -1477,6 +1473,30 @@ namespace SLIL
                 if (yOffset < 0)
                     yOffsetDirection = 0.15f * offSet;
                 yOffset += yOffsetDirection;
+            }
+        }
+
+        private void Recoil_timer_Tick(object sender, EventArgs e)
+        {
+            Player player = Controller.GetPlayer();
+            if (player == null) return;
+            if (RecoilY > 0)
+            {
+                double change = Math.Min(RecoilRecoverySpeed, RecoilY);
+                RecoilY -= change;
+                Controller.ChangePlayerLook(-change);
+            }
+            if (RecoilLX > 0)
+            {
+                double change = Math.Min(RecoilRecoverySpeed, RecoilLX);
+                RecoilLX -= change;
+                Controller.ChangePlayerA(-change);
+            }
+            if (RecoilRX > 0)
+            {
+                double change = Math.Min(RecoilRecoverySpeed, RecoilRX);
+                RecoilRX -= change;
+                Controller.ChangePlayerA(change);
             }
         }
 
@@ -2585,21 +2605,10 @@ namespace SLIL
             if (entity.HasSpriteRotation)
             {
                 Player player = Controller.GetPlayer();
-                //double entityVectorX = Math.Sin(entity.A%(2 * Math.PI));
-                //double entityVectorY = Math.Cos(entity.A%(2 * Math.PI));
-                //double magnitude = Math.Sqrt(Math.Pow(player.X - entity.X, 2) + Math.Pow(player.Y - entity.Y, 2));
-                //double vectorFromPlayerToEntityX = Math.Sin((player.X - entity.X) / magnitude);
-                //double vectorFromPlayerToEntityY = Math.Cos((player.Y - entity.Y) / magnitude);
-                //double entityRotationAngle = Math.Atan2(vectorFromPlayerToEntityY - entityVectorY, vectorFromPlayerToEntityX - entityVectorX);
                 double entityRotationAngle = Math.Atan2(player.Y - entity.Y, player.X - entity.X);
                 double normalizedEntityAngle = entity.A;
-                while (normalizedEntityAngle < -Math.PI)
-                    normalizedEntityAngle += 2 * Math.PI;
-                while (normalizedEntityAngle > Math.PI)
-                    normalizedEntityAngle -= 2 * Math.PI;
-                normalizedEntityAngle += Math.PI / 2;
                 entityRotationAngle -= normalizedEntityAngle;
-                //entityRotationAngle -= entity.A % (2 * Math.PI) + Math.PI/2;
+                entityRotationAngle = ML.NormalizeAngle(entityRotationAngle);
                 if (returnStopState || entity.HasStaticAnimation)
                 {
                     if (entityRotationAngle < Math.PI / 4 && entityRotationAngle > -Math.PI / 4)
@@ -2615,27 +2624,14 @@ namespace SLIL
                 else
                 {
                     if (entityRotationAngle < Math.PI / 4 && entityRotationAngle > -Math.PI / 4)
-                    {
-                        if (state == 0) return SpriteStates.StepBack_0;
-                        return SpriteStates.StepBack_1;
-                    }
+                        return state == 0 ? SpriteStates.StepBack_0 : SpriteStates.StepBack_1;
                     else if (entityRotationAngle >= Math.PI / 4 && entityRotationAngle < 3 * Math.PI / 4)
-                    {
-                        if (state == 0) return SpriteStates.StepLeft_0;
-                        return SpriteStates.StepLeft_1;
-                    }
+                        return state == 0 ? SpriteStates.StepLeft_0 : SpriteStates.StepLeft_1;
                     else if (entityRotationAngle >= 3 * Math.PI / 4 || entityRotationAngle < -3 * Math.PI / 4)
-                    {
-                        if (state == 0) return SpriteStates.StepForward_0;
-                        return SpriteStates.StepForward_1;
-                    }
+                        return state == 0 ? SpriteStates.StepForward_0 : SpriteStates.StepForward_1;
                     else if (entityRotationAngle >= -3 * Math.PI / 4 && entityRotationAngle <= -Math.PI / 4)
-                    {
-                        if (state == 0) return SpriteStates.StepRight_0;
-                        return SpriteStates.StepRight_1;
-                    }
-                    if (state == 0) return SpriteStates.StepForward_0;
-                    return SpriteStates.StepForward_1;
+                        return state == 0 ? SpriteStates.StepRight_0 : SpriteStates.StepRight_1;
+                    return state == 0 ? SpriteStates.StepForward_0 : SpriteStates.StepForward_1;
                 }
             }
             else
@@ -3472,6 +3468,14 @@ namespace SLIL
 
         //  #====      Shooting     ====#
 
+        private void SetRecoil(Player player)
+        {
+            RecoilY += player.GetCurrentGun().RecoilY;
+            double recoilX = player.GetCurrentGun().GetRecoilX(rand.NextDouble());
+            if (recoilX < 0) RecoilLX += (float)(-recoilX);
+            else RecoilRX += (float)recoilX;
+        }
+
         private bool Shoot(Player player)
         {
             if (player.GetCurrentGun() is DisposableItem) return false;
@@ -3491,10 +3495,7 @@ namespace SLIL
                 if (player.GetCurrentGun().FireType == FireTypes.Single)
                 {
                     BulletRayCasting();
-                    if (player.Look - player.GetCurrentGun().RecoilY > -360)
-                        player.Look -= player.GetCurrentGun().RecoilY;
-                    else player.Look = -360;
-                    Controller.ChangePlayerA(player.GetCurrentGun().GetRecoilX(rand.NextDouble()));
+                    SetRecoil(player);
                 }
                 shot_timer.Start();
                 return true;
@@ -3620,10 +3621,7 @@ namespace SLIL
                                 if (y == drawStartY) texY = 0;
                                 if (rays[stripe].Length > y && y >= 0)
                                 {
-                                    if (player.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight)
-                                        rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
-                                    else
-                                        rays[stripe][y].SpriteState = GetSpriteRotation(entity, timeNow);
+                                    rays[stripe][y].SpriteState = GetSpriteRotation(entity, timeNow);
                                     rays[stripe][y].TextureId = entity.Texture;
                                     rays[stripe][y].Blackout = 0;
                                     rays[stripe][y].TextureX = texX;
@@ -3678,6 +3676,28 @@ namespace SLIL
                                                             Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
                                                     }
                                                 }
+                                                if (!player.CuteMode)
+                                                {
+                                                    if (resolution == 0)
+                                                        scope_hit = Properties.Resources.scope_hit;
+                                                    else
+                                                        scope_hit = Properties.Resources.h_scope_hit;
+                                                }
+                                                else
+                                                {
+                                                    if (resolution == 0)
+                                                        scope_hit = Properties.Resources.scope_c_hit;
+                                                    else
+                                                        scope_hit = Properties.Resources.h_scope_c_hit;
+                                                }
+                                                bullet[k, 0] = -1;
+                                                bullet[k, 1] = -1;
+                                            }
+                                            else if (entity is Transport transport)
+                                            {
+                                                if (transport.TransportHP <= 0) continue;
+                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                Controller.DealDamage(transport, damage * 1.5);
                                                 if (!player.CuteMode)
                                                 {
                                                     if (resolution == 0)
@@ -3915,6 +3935,7 @@ namespace SLIL
             stamina_timer.Start();
             mouse_timer.Start();
             camera_shaking_timer.Start();
+            recoil_timer.Start();
             fps_timer.Start();
             if (MainMenu.sounds) step_sound_timer.Start();
             player.CanUnblockCamera = player.BlockCamera = true;
@@ -3934,6 +3955,7 @@ namespace SLIL
             stamina_timer.Stop();
             mouse_timer.Stop();
             camera_shaking_timer.Stop();
+            recoil_timer.Stop();
             fps_timer.Stop();
             ShowMap = false;
             shop_panel.Visible = false;

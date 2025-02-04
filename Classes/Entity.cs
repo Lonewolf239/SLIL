@@ -9,7 +9,8 @@ namespace SLIL.Classes
         public int ID { get; set; }
         public int EntityID { get; set; }
         public bool HasAI { get; set; }
-        public double A { get; set; }
+        protected double Angle { get; set; }
+        public double A { get => ML.NormalizeAngle(Angle); set => Angle = value; }
         public double X { get; set; }
         public double Y { get; set; }
         public double EntityWidth;
@@ -548,6 +549,13 @@ namespace SLIL.Classes
         public Transport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
         private void Init() => A = rand.NextDouble();
+
+        public bool DealDamage(double damage)
+        {
+            TransportHP -= damage;
+            if (TransportHP <= 0) return true;
+            return false;
+        }
     }
 
     public abstract class Explosions : GameObject
@@ -686,7 +694,7 @@ namespace SLIL.Classes
             Texture = 27;
             MinDamage = 25;
             MaxDamage = 50;
-            HitDistance = 3;
+            HitDistance = 2.66;
             base.SetAnimations(2, 2);
         }
     }

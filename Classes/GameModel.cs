@@ -7,6 +7,7 @@ using LiteNetLib.Utils;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using SharpDX.Direct2D1;
 
 namespace SLIL.Classes
 {
@@ -22,7 +23,7 @@ namespace SLIL.Classes
         private readonly Pet[] PETS;
         private readonly Transport[] TRANSPORTS;
         private readonly DisposableItem[] ITEMS;
-        public List<Entity> Entities = new List<Entity>();
+        internal List<Entity> Entities = new List<Entity>();
         private int TotalTime = 0, DeathCause = -1, Stage = 0, TotalKilled = 0;
         private double EnemyDamageOffset = 1;
         private const double playerWidth = 0.4;
@@ -39,13 +40,13 @@ namespace SLIL.Classes
         private readonly StopGameDelegate StopGameHandle;
         private readonly PlaySoundDelegate PlaySoundHandle;
         private readonly SetPlayerIDDelegate SetPlayerID;
-        public bool IsMultiplayer;
+        internal bool IsMultiplayer;
         private static System.Windows.Forms.Timer RespawnTimer;
         private static System.Windows.Forms.Timer EntityTimer;
         private static System.Windows.Forms.Timer TimeRemain;
-        public int MaxEntityID;
+        internal int MaxEntityID;
         
-        public GameModel(StopGameDelegate stopGame, SetPlayerIDDelegate setPlayerID, PlaySoundDelegate playSound)
+        internal GameModel(StopGameDelegate stopGame, SetPlayerIDDelegate setPlayerID, PlaySoundDelegate playSound)
         {
             StopGameHandle = stopGame;
             SetPlayerID = setPlayerID;
@@ -77,7 +78,7 @@ namespace SLIL.Classes
             PlaySoundHandle = playSound;
         }
 
-        public void Pause(bool paused)
+        internal void Pause(bool paused)
         {
             if (paused)
             {
@@ -93,7 +94,7 @@ namespace SLIL.Classes
             }
         }
 
-        public void StartGame(bool startTimers)
+        internal void StartGame(bool startTimers)
         {
             if (inDebug == 0) difficulty = SLIL.difficulty;
             else difficulty = 5;
@@ -109,11 +110,11 @@ namespace SLIL.Classes
             }
         }
 
-        public void ToTutorial() => isTutorial = true;
+        internal void ToTutorial() => isTutorial = true;
 
-        public bool IsGameStarted() => GameStarted;
+        internal bool IsGameStarted() => GameStarted;
 
-        public int AddPlayer()
+        internal int AddPlayer()
         {
             TotalTime = Stage = TotalKilled = 0;
             Player player = new Player(3, 3, MAP_WIDTH, ref MaxEntityID);
@@ -154,9 +155,10 @@ namespace SLIL.Classes
                         {
                             if (entity is Explosions explosion)
                             {
-                                foreach (Entity ent in Entities)
+                                for (int j = 0; j < Entities.Count; j++)
                                 {
-                                    if (ent is NPC || ent is Player || ent is Enemy)
+                                    var ent = Entities[j];
+                                    if (ent is NPC || ent is Player || ent is Enemy || ent is Transport)
                                     {
                                         if (ent is Creature creature && (creature.Dead || !creature.CanHit || !creature.HasAI)) continue;
                                         if (explosion.CanHitOnlyPlayer && !(ent is Player)) continue;
@@ -180,6 +182,7 @@ namespace SLIL.Classes
                                         }
                                         if (ent is NPC npc) npc.DealDamage(damage);
                                         if (ent is Enemy enemy) enemy.DealDamage(damage);
+                                        if (ent is Transport transport) DealDamage(transport.ID, damage * 1.5, explosion.ID);
                                     }
                                 }
                             }
@@ -436,7 +439,7 @@ namespace SLIL.Classes
             });
         }
 
-        public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, double customX, double customY)
+        internal void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, double customX, double customY)
         {
             CUSTOM = custom;
             CustomMazeWidth = CustomWidth;
@@ -772,13 +775,12 @@ namespace SLIL.Classes
             Entities = new List<Entity>(tempEntities);
         }
 
-        public void AddTransport(int playerID, int index)
+        internal void AddTransport(int playerID, int index)
         {
             Player p = GetPlayer(playerID);
             if (p == null) return;
             Transport transport = null;
-            if (index == 0)
-                transport = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID);
+            if (index == 0) transport = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID);
             if (transport != null)
             {
                 AddTransportOnMap(transport.Index, (int)p.Y * MAP_WIDTH + (int)p.X);
@@ -793,7 +795,7 @@ namespace SLIL.Classes
             if (index == 0) MAP[map_index] = '5';
         }
 
-        public void AddPet(int playerID, int index)
+        internal void AddPet(int playerID, int index)
         {
             Player player = GetPlayer(playerID);
             Pet pet = PETS[index];
@@ -937,7 +939,7 @@ namespace SLIL.Classes
 
         private void GetFirstAidKit(Player player) => player.DisposableItems[0].AddItem();
 
-        public void MovePlayer(double dX, double dY, int playerID)
+        internal void MovePlayer(double dX, double dY, int playerID)
         {
             if (!GameStarted) return;
             Player p = GetPlayer(playerID);
@@ -1012,7 +1014,7 @@ namespace SLIL.Classes
             }
         }
 
-        public void GoDebug(int debug)
+        internal void GoDebug(int debug)
         {
             inDebug = debug;
             difficulty = 5;
@@ -1097,7 +1099,7 @@ namespace SLIL.Classes
             return entity;
         }
 
-        public void InitMap()
+        internal void InitMap()
         {
             double enemy_count = 0;
             int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
@@ -1457,7 +1459,7 @@ namespace SLIL.Classes
             };
         }
 
-        public void SpawnRockets(double x, double y, int id, double a)
+        internal void SpawnRockets(double x, double y, int id, double a)
         {
             Rockets rocket = null;
             if (id == 0) rocket = new RpgRocket(x, y, MAP_WIDTH, ref MaxEntityID);
@@ -1516,10 +1518,14 @@ namespace SLIL.Classes
                 }
                 else // 10%
                 {
-                    if (rand.NextDouble() <= 0.5)
+                    if (rand.NextDouble() <= 0.25)
                         entity = new Vine(x + 0.5, y + 0.5, size, ref MaxEntityID);
-                    else
+                    else if (rand.NextDouble() <= 0.5)
                         entity = new Lamp(x + 0.5, y + 0.5, size, ref MaxEntityID);
+                    else if (rand.NextDouble() <= 0.75)
+                        entity = new Box(x + 0.5, y + 0.5, size, ref MaxEntityID);
+                    else
+                        entity = new Barrel(x + 0.5, y + 0.5, size, ref MaxEntityID);
                 }
                 Entities.Add(entity);
             }
@@ -1597,19 +1603,21 @@ namespace SLIL.Classes
 
         internal bool InBackrooms() => inBackrooms;
 
-        public StringBuilder GetMap() => MAP;
+        internal StringBuilder GetMap() => MAP;
 
-        public Pet[] GetPets() => PETS;
+        internal void ChangeMapChar(int coordinate, char c) => MAP[coordinate] = c;
 
-        public Transport[] GetTransports() => TRANSPORTS;
+        internal Pet[] GetPets() => PETS;
 
-        public int GetMapWidth() => MAP_WIDTH;
+        internal Transport[] GetTransports() => TRANSPORTS;
 
-        public int GetMapHeight() => MAP_HEIGHT;
+        internal int GetMapWidth() => MAP_WIDTH;
 
-        public List<Entity> GetEntities() => Entities;
+        internal int GetMapHeight() => MAP_HEIGHT;
 
-        public bool DealDamage(int ID, double damage, int attackerID)
+        internal List<Entity> GetEntities() => Entities;
+
+        internal bool DealDamage(int ID, double damage, int attackerID)
         {
             Entity target = null;
             Entity attacker = null;
@@ -1664,10 +1672,23 @@ namespace SLIL.Classes
                 }
                 return false;
             }
+            if (target is Transport t)
+            {
+                if (t.TransportHP <= 0) return false;
+                PlaySoundHandle(SLIL.hit[1], t.X, t.Y);
+                if (t.DealDamage(damage))
+                {
+                    int coordinate = GetCoordinate(t.X, t.Y);
+                    RemoveEntity(t.ID);
+                    ChangeMapChar(coordinate, '.');
+                    return true;
+                }
+                return false;
+            }
             return false;
         }
 
-        public void AddEntity(Entity entity)
+        internal void AddEntity(Entity entity)
         {
             entity.ID = MaxEntityID;
             MaxEntityID++;
@@ -1832,7 +1853,7 @@ namespace SLIL.Classes
             }*/
         }
 
-        public void AddHittingTheWall(double X, double Y, double vMove)
+        internal void AddHittingTheWall(double X, double Y, double vMove)
         {
             HittingTheWall hittingTheWall = new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID)
             {

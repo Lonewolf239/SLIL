@@ -106,6 +106,7 @@ namespace SLIL
             this.pistol_ammo_count = new System.Windows.Forms.Label();
             this.inventory_label = new System.Windows.Forms.Label();
             this.fps_timer = new System.Windows.Forms.Timer(this.components);
+            this.recoil_timer = new System.Windows.Forms.Timer(this.components);
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -949,6 +950,11 @@ namespace SLIL
             this.fps_timer.Interval = 1000;
             this.fps_timer.Tick += new System.EventHandler(this.Fps_timer_Tick);
             // 
+            // recoil_timer
+            // 
+            this.recoil_timer.Interval = 5;
+            this.recoil_timer.Tick += new System.EventHandler(this.Recoil_timer_Tick);
+            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1086,5 +1092,6 @@ namespace SLIL
         private Timer fps_timer;
         private Label medical_kit_count;
         private PictureBox medical_kit_icon;
+        private Timer recoil_timer;
     }
 }
