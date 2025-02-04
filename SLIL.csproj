@@ -547,9 +547,6 @@
     <None Include="Images\hand_using_2.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\hipolink.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\hit_0.png" />
   </ItemGroup>
   <ItemGroup>
@@ -577,16 +574,10 @@
     <None Include="Images\labyrinth.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\language.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\level_up.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\magic.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\me.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\medkit.png" />
@@ -724,9 +715,6 @@
     <None Include="Images\syringe_using_2.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\telegram.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Images\teleport_0.png" />
   </ItemGroup>
   <ItemGroup>
@@ -737,9 +725,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\warning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\web.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\bubbles.png" />
@@ -1513,7 +1498,6 @@
     <None Include="Images\enemy_0_r.png" />
     <None Include="Images\enemy_0_1_l.png" />
     <None Include="Images\enemy_0_l.png" />
-    <None Include="Images\test.png" />
     <None Include="Images\close_entered.png" />
     <None Include="Images\petition_icon.png" />
     <None Include="Images\gnome_icon.png" />

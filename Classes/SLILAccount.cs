@@ -28,7 +28,7 @@ namespace SLIL.Classes
         {
             Key = key;
             HWID = Hasher.GetHWID();
-            AppSecrets = JsonConvert.DeserializeObject<PSD>(Hasher.DecryptFile("data.enc"));
+            AppSecrets = JsonConvert.DeserializeObject<PSD>(Hasher.DecryptFile());
         }
 
         private bool CheckKey(string hashedKey) => Key == hashedKey;

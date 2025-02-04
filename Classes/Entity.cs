@@ -659,7 +659,7 @@ namespace SLIL.Classes
         public override char[] GetInpassibleRocketCells() => GetImpassibleCells();
         protected override int GetEntityID() => 28;
         protected override double GetEntityWidth() => 0.25;
-        public override double GetMove() => 0.35;
+        public override double GetMove() => 0.4;
 
         public SoulClot(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
         public SoulClot(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
@@ -1624,11 +1624,11 @@ namespace SLIL.Classes
             if (TimeAfterShot > 0) TimeAfterShot--;
             if (isPlayerVisible)
             {
-                if (distanceToPlayer <= SafeDistance && !ReadyToShot) Stage = Stages.Escaping;
+                ShotPause--;
+                if (distanceToPlayer <= SafeDistance && !ReadyToShot && ShotPause > 0) Stage = Stages.Escaping;
                 else if (distanceToPlayer <= ShotDistance)
                 {
-                    ShotPause--;
-                    if (ShotPause < 0)
+                    if (ShotPause <= 0)
                     {
                         if (ReadyToShot)
                         {
@@ -1758,7 +1758,7 @@ namespace SLIL.Classes
             ShotPause--;
             if (isPlayerVisible)
             {
-                if (ShotPause < 0)
+                if (ShotPause <= 0)
                 {
                     if (distanceToPlayer <= ShotDistance)
                     {

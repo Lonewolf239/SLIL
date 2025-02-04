@@ -168,7 +168,7 @@ namespace SLIL.Classes
                                             if (playerTarget.InTransport) PlaySoundHandle(SLIL.hit[1], playerTarget.X, playerTarget.Y);
                                             else if (playerTarget.CuteMode) PlaySoundHandle(SLIL.hungry, playerTarget.X, playerTarget.Y);
                                             else PlaySoundHandle(SLIL.hit[0], playerTarget.X, playerTarget.Y);
-                                            playerTarget.DealDamage(damage * 1.5, true);
+                                            playerTarget.DealDamage(damage, true);
                                             if (playerTarget.HP <= 0)
                                             {
                                                 Entities.Add(new PlayerDeadBody(playerTarget.X, playerTarget.Y, MAP_WIDTH, ref MaxEntityID));
@@ -258,7 +258,7 @@ namespace SLIL.Classes
                                 if (range is Shooter shooter)
                                 {
                                     PlaySoundHandle(SLIL.GunsSoundsDict[typeof(SniperRifle)][1, 0], shooter.X, shooter.Y);
-                                    char[] ImpassibleCells = { '#', 'D', 'd', '=', 'W', 'S' };
+                                    char[] ImpassibleCells = { '#', 'D', 'd', 'W', 'S' };
                                     double shotDistance = 0;
                                     double shotStep = 0.01d;
                                     bool hit = false;
@@ -392,7 +392,8 @@ namespace SLIL.Classes
             else if (entity is Stalker) return -1;
             else if (entity is VoidStalker) return -1;
             else if (entity is Shooter) return -1;
-            //else if (entity is LostSoul) return -1;
+            else if (entity is LostSoul) return -1;
+            else if (entity is SoulExplosion) return -1;
             else return -1;
         }
 
@@ -1061,6 +1062,14 @@ namespace SLIL.Classes
                     SpawnEnemis(x, y, MAP_WIDTH, false, 3);
                     MAP[y * MAP_WIDTH + x] = '.';
                     break;
+                case '6':
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 4);
+                    MAP[y * MAP_WIDTH + x] = '.';
+                    break;
+                case '7':
+                    SpawnEnemis(x, y, MAP_WIDTH, false, 5);
+                    MAP[y * MAP_WIDTH + x] = '.';
+                    break;
                 case '0':
                     if (inBackrooms)
                     {
@@ -1449,52 +1458,55 @@ namespace SLIL.Classes
 
         private void SpawnEnemis(double x, double y, int size, bool ai = true, int type = -1)
         {
-            x += 0.5;
-            y += 0.5;
+            x += 0.5; y += 0.5;
             if (type == -1)
             {
                 double dice = rand.NextDouble();
-                if (dice <= 0.35) // 35%
+                Entity entity;
+                if (dice <= 0.25) // 25%
                 {
-                    Zombie enemy = new Zombie(x, y, size, ref MaxEntityID);
-                    enemy.SetDamage(EnemyDamageOffset);
-                    enemy.HasAI = ai;
-                    Entities.Add(enemy);
+                    entity = new Zombie(x, y, size, ref MaxEntityID);
+                    ((Enemy)entity).SetDamage(EnemyDamageOffset);
+                    entity.HasAI = ai;
                 }
-                else if (dice > 0.35 && dice <= 0.6) // 25%
+                else if (dice <= 0.40) // 15%
                 {
-                    Dog enemy = new Dog(x, y, size, ref MaxEntityID);
-                    enemy.SetDamage(EnemyDamageOffset);
-                    enemy.HasAI = ai;
-                    Entities.Add(enemy);
+                    entity = new Dog(x, y, size, ref MaxEntityID);
+                    ((Enemy)entity).SetDamage(EnemyDamageOffset);
+                    entity.HasAI = ai;
                 }
-                else if (dice > 0.6 && dice <= 0.8) // 20%
+                else if (dice <= 0.55) // 15%
                 {
-                    Bat enemy = new Bat(x, y, size, ref MaxEntityID);
-                    enemy.SetDamage(EnemyDamageOffset);
-                    enemy.HasAI = ai;
-                    Entities.Add(enemy);
+                    entity = new Bat(x, y, size, ref MaxEntityID);
+                    ((Enemy)entity).SetDamage(EnemyDamageOffset);
+                    entity.HasAI = ai;
                 }
-                else if (dice > 0.8 && dice <= 0.95) // 15%
+                else if (dice <= 0.65) // 10%
                 {
-                    Ogr enemy = new Ogr(x, y, size, ref MaxEntityID);
-                    enemy.SetDamage(EnemyDamageOffset);
-                    enemy.HasAI = ai;
-                    Entities.Add(enemy);
+                    entity = new Ogr(x, y, size, ref MaxEntityID);
+                    ((Enemy)entity).SetDamage(EnemyDamageOffset);
+                    entity.HasAI = ai;
                 }
-                else
+                else if (dice <= 0.85) // 20%
+                {
+                    entity = new Shooter(x, y, size, ref MaxEntityID);
+                    ((Enemy)entity).SetDamage(EnemyDamageOffset);
+                    entity.HasAI = ai;
+                }
+                else if (dice <= 0.90) // 5%
+                {
+                    entity = new LostSoul(x, y, size, ref MaxEntityID);
+                    ((Enemy)entity).SetDamage(EnemyDamageOffset);
+                    entity.HasAI = ai;
+                }
+                else // 10%
                 {
                     if (rand.NextDouble() <= 0.5)
-                    {
-                        Vine vine = new Vine(x + 0.5, y + 0.5, size, ref MaxEntityID);
-                        Entities.Add(vine);
-                    }
+                        entity = new Vine(x + 0.5, y + 0.5, size, ref MaxEntityID);
                     else
-                    {
-                        Lamp lamp = new Lamp(x + 0.5, y + 0.5, size, ref MaxEntityID);
-                        Entities.Add(lamp);
-                    }
+                        entity = new Lamp(x + 0.5, y + 0.5, size, ref MaxEntityID);
                 }
+                Entities.Add(entity);
             }
             else if (type == 0)
             {
@@ -1520,6 +1532,20 @@ namespace SLIL.Classes
             else if (type == 3)
             {
                 Bat enemy = new Bat(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
+                enemy.HasAI = ai;
+                Entities.Add(enemy);
+            }
+            else if (type == 4)
+            {
+                Shooter enemy = new Shooter(x, y, size, ref MaxEntityID);
+                enemy.SetDamage(EnemyDamageOffset);
+                enemy.HasAI = ai;
+                Entities.Add(enemy);
+            }
+            else if (type == 5)
+            {
+                LostSoul enemy = new LostSoul(x, y, size, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);

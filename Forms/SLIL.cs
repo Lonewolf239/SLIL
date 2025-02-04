@@ -922,7 +922,7 @@ namespace SLIL
                 case 11: // rpg rocket
                     entity = new RpgRocket(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
-                case 12: // explosion
+                case 12: // rpg explosion
                     entity = new RpgExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
                 case 13: // silly cat
@@ -966,6 +966,9 @@ namespace SLIL
                     break;
                 case 26: // lost soul
                     entity = new LostSoul(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 27: // soul explosion
+                    entity = new SoulExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
             }
             if (entity == null) return false;
@@ -2046,6 +2049,10 @@ namespace SLIL
                 Controller.GetMap()[GetCoordinate(player.X, player.Y)] = '.';
                 DISPLAYED_MAP[GetCoordinate(player.X, player.Y)] = '.';
             }
+            if (player.X < 0) player.X = 1.5;
+            if (player.X >= Controller.GetMapWidth() - 0.5) player.X = Controller.GetMapWidth() - 1.5;
+            if (player.Y < 0) player.Y = 1.5;
+            if (player.Y >= Controller.GetMapHeight() - 0.5) player.Y = Controller.GetMapHeight() - 1.5;
             if (HasImpassibleCells(GetCoordinate(player.X, player.Y)))
             {
                 double x = player.X;
@@ -3164,10 +3171,13 @@ namespace SLIL
                 );
             if (ShowPositongDebug)
                 debugInfo = string.Format(
-                    "PX: {0,5:0.##}  PY: {1,7:0.##}\n" +
-                    "PA: {2,5:0.##}  PL: {3,7:0.##}\n",
+                    "PX:  {0,5:0.##}  PY:  {1,7:0.##}\n" +
+                    "PIX: {2,5:0.##}  PIY: {3,7:0.##}\n" +
+                    "PA:  {4,5:0.##}  PL:  {5,7:0.##}\n",
                     player.X,
                     player.Y,
+                    (int)player.X,
+                    (int)player.Y,
                     player.A,
                     player.Look
                 );

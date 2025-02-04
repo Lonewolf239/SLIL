@@ -199,11 +199,6 @@ namespace SLIL.Classes
             //}
         }
 
-        internal void InitMap()
-        {
-            //Game.InitMap();
-        }
-
         internal bool IsInSpectatorMode() => _isInSpectatorMode;
 
         internal int GetBackroomsStage() => Game.GetBackroomsStage();
