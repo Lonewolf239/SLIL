@@ -47,7 +47,7 @@ namespace SLIL.UserControls
         internal ConsolePanel()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         private void GetItem(int index) => player.DisposableItems[index].AddItem(99);
@@ -443,6 +443,7 @@ namespace SLIL.UserControls
                         show_message = false;
                         previous_cheat.Clear();
                     }
+                    else if (cheat == "SAY GEX") message += "GAY SEX";
                     else if (cheat.StartsWith("SAY "))
                     {
                         string[] say = cheat.Split(' ');

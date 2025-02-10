@@ -7,7 +7,7 @@ namespace SLIL.SLIL_v0_1
         public Look_speed_percent()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
     }
 }

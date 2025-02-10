@@ -21,7 +21,7 @@ namespace SLIL
         public LoginForm()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         private void Create_account_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT") { UseShellExecute = true });

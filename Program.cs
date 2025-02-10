@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Management;
@@ -11,7 +12,7 @@ namespace SLIL
     internal static class Program
     {
         public static Mutex mutex;
-        public static Cursor SLILCursor;
+        public static Cursor SLILCursorDefault, SLILCursorHelp;
         public static string current_version = "|1.3.1|";
         public static string iniFolder = "config.ini";
 
@@ -52,8 +53,10 @@ namespace SLIL
                     else
                         Console.WriteLine("Warning: You have less than 4GB of RAM. The performance of the application may be reduced.");
                 }
-                using (var ms = new System.IO.MemoryStream(Properties.Resources.SLILCursor))
-                    SLILCursor = new Cursor(ms);
+                using (var ms = new MemoryStream(Properties.Resources.SLILCursorDefault))
+                    SLILCursorDefault = new Cursor(ms);
+                using (var ms = new MemoryStream(Properties.Resources.SLILCursorHelp))
+                    SLILCursorHelp = new Cursor(ms);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Loading());
@@ -98,10 +101,7 @@ namespace SLIL
                 else
                     return false;
             }
-            catch
-            {
-                return false;
-            }
+            catch { return false; }
         }
 
         static bool IsDirectX10Available()
@@ -112,10 +112,7 @@ namespace SLIL
                 device.Dispose();
                 return true;
             }
-            catch (SharpDX.SharpDXException)
-            {
-                return false;
-            }
+            catch { return false; }
         }
     }
 }

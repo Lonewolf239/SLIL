@@ -8,7 +8,7 @@ namespace SLIL.SLIL_v0_1
         public SLIL_about()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         private void SLIL_about_Load(object sender, EventArgs e)

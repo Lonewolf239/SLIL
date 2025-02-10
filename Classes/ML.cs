@@ -26,5 +26,9 @@ namespace SLIL.Classes
             double dy = point2.Y - point1.Y;
             return Math.Sqrt(dx * dx + dy * dy);
         }
+
+        internal static double Clamp(double value, double min, double max) => Math.Max(min, Math.Min(max, value));
+        internal static float Clamp(float value, float min, float max) => Math.Max(min, Math.Min(max, value));
+        internal static int Clamp(int value, int min, int max) => Math.Max(min, Math.Min(max, value));
     }
 }

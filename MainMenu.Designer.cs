@@ -347,7 +347,6 @@
             // lose_focus
             // 
             this.lose_focus.BackColor = System.Drawing.Color.Transparent;
-            this.lose_focus.Cursor = System.Windows.Forms.Cursors.Default;
             this.lose_focus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lose_focus.ForeColor = System.Drawing.Color.White;
             this.lose_focus.Location = new System.Drawing.Point(0, 0);
@@ -534,7 +533,6 @@
             // slil_0_0_1_dev
             // 
             this.slil_0_0_1_dev.BackColor = System.Drawing.Color.Transparent;
-            this.slil_0_0_1_dev.Cursor = System.Windows.Forms.Cursors.Default;
             this.slil_0_0_1_dev.Dock = System.Windows.Forms.DockStyle.Top;
             this.slil_0_0_1_dev.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.slil_0_0_1_dev.ForeColor = System.Drawing.Color.White;
@@ -584,7 +582,6 @@
             // darsin_name
             // 
             this.darsin_name.BackColor = System.Drawing.Color.Transparent;
-            this.darsin_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.darsin_name.Dock = System.Windows.Forms.DockStyle.Top;
             this.darsin_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.darsin_name.ForeColor = System.Drawing.Color.White;
@@ -634,7 +631,6 @@
             // fazzy_name
             // 
             this.fazzy_name.BackColor = System.Drawing.Color.Transparent;
-            this.fazzy_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.fazzy_name.Dock = System.Windows.Forms.DockStyle.Top;
             this.fazzy_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.fazzy_name.ForeColor = System.Drawing.Color.White;
@@ -684,7 +680,6 @@
             // koyo_name
             // 
             this.koyo_name.BackColor = System.Drawing.Color.Transparent;
-            this.koyo_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.koyo_name.Dock = System.Windows.Forms.DockStyle.Top;
             this.koyo_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.koyo_name.ForeColor = System.Drawing.Color.White;
@@ -734,7 +729,6 @@
             // qsvhu_name
             // 
             this.qsvhu_name.BackColor = System.Drawing.Color.Transparent;
-            this.qsvhu_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.qsvhu_name.Dock = System.Windows.Forms.DockStyle.Top;
             this.qsvhu_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.qsvhu_name.ForeColor = System.Drawing.Color.White;
@@ -784,7 +778,6 @@
             // fatalan_name
             // 
             this.fatalan_name.BackColor = System.Drawing.Color.Transparent;
-            this.fatalan_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.fatalan_name.Dock = System.Windows.Forms.DockStyle.Top;
             this.fatalan_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
             this.fatalan_name.ForeColor = System.Drawing.Color.White;
@@ -856,7 +849,6 @@
             // lonewolf_name
             // 
             this.lonewolf_name.BackColor = System.Drawing.Color.Transparent;
-            this.lonewolf_name.Cursor = System.Windows.Forms.Cursors.Default;
             this.lonewolf_name.Dock = System.Windows.Forms.DockStyle.Top;
             this.lonewolf_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lonewolf_name.ForeColor = System.Drawing.Color.White;

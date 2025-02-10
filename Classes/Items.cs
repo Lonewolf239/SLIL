@@ -1207,8 +1207,8 @@ namespace SLIL.Classes
             Weight = 0.85;
             RechargeTime = 375;
             BulletCount = 1;
-            PauseBetweenShooting = 90;
-            FiringRate = 45;
+            PauseBetweenShooting = 60;
+            FiringRate = 30;
             UpdateCost = 0;
             GunCost = 0;
             AmmoCost = 0;
@@ -1218,8 +1218,8 @@ namespace SLIL.Classes
             FiringRange = 8;
             MaxDamage = 4;
             MinDamage = 3.5;
-            RecoilY = 18;
-            RecoilX = 1.75;
+            RecoilY = 22;
+            RecoilX = 2.4;
             BurstShots = 1;
             RadiusSound = 6;
             ReloadFrames = 2;

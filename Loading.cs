@@ -34,7 +34,7 @@ namespace SLIL
         internal Loading()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         private static bool CheckInternet()

@@ -8,7 +8,7 @@ namespace SLIL.UserControls
         public EditorElementSelector()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         public int Index { get; set; }

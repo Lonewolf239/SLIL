@@ -20,7 +20,7 @@ namespace SLIL.UserControls
         internal SLIL_ShopInterface()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
             UpdateTimer = new Timer { Interval = 1000 };
             UpdateTimer.Tick += UpdateTimer_Tick;
             UpdateTimer.Enabled = true;

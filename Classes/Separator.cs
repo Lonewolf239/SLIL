@@ -4,7 +4,7 @@
     {
         public Separator()
         {
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
             Dock = System.Windows.Forms.DockStyle.Top;
             BackColor = System.Drawing.Color.White;
             Height = 2;

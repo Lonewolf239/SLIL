@@ -2046,11 +2046,11 @@ namespace SLIL.Classes
             return null;
         }
 
-        internal bool DoParkour(int playerID, int y, int x)
+        internal void DoParkour(int playerID, int y, int x)
         {
             Player p = GetPlayer(playerID);
-            if (p == null || p.Stamine < 200) return false;
-            if (p.EffectCheck(3)) return false;
+            if (p == null || p.Stamine < 200) return;
+            if (p.EffectCheck(3)) return;
             if (p.InTransport) PlayGameSound(playerID, SLIL.climb[1]);
             else PlayGameSound(playerID, SLIL.climb[0]);
             p.InParkour = true;
@@ -2068,7 +2068,6 @@ namespace SLIL.Classes
                 StopParkour(playerID);
                 p.ParkourState++;
             }).Start();
-            return true;
         }
 
         internal void StopParkour(int playerID)
@@ -2095,6 +2094,7 @@ namespace SLIL.Classes
         {
             Player p = GetPlayer(playerID);
             if (p == null || p.Stamine < 200) return;
+            if (p.EffectCheck(3)) return;
             double distance = 0;
             char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't' };
             PlayGameSound(playerID, SLIL.climb[0]);

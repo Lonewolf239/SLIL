@@ -11,7 +11,7 @@ namespace SLIL.SLIL_v0_1
         public SLIL_Settings()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         private void Look_speed_Enter(object sender, EventArgs e) => look_speed_text.Focus();

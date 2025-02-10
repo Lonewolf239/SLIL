@@ -7,7 +7,7 @@ namespace SLIL.UserControls.Inventory
         public InfoToolTip(string description)
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
             description_label.Text = description;
         }
     }

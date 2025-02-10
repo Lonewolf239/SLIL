@@ -3173,9 +3173,19 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
-        internal static byte[] SLILCursor {
+        internal static byte[] SLILCursorDefault {
             get {
-                object obj = ResourceManager.GetObject("SLILCursor", resourceCulture);
+                object obj = ResourceManager.GetObject("SLILCursorDefault", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] SLILCursorHelp {
+            get {
+                object obj = ResourceManager.GetObject("SLILCursorHelp", resourceCulture);
                 return ((byte[])(obj));
             }
         }

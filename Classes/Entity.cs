@@ -1462,6 +1462,7 @@ namespace SLIL.Classes
         protected override int GetMIN_DAMAGE() => 999;
         private const int TotalPauseTime = 12; //1.2 sec
         private int PauseTime = 1, MovePauseTime = TotalPauseTime;
+        private bool IsFirstTime = true;
         public bool PlayerSees = false, DidTP = false;
 
         public VoidStalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
@@ -1474,10 +1475,13 @@ namespace SLIL.Classes
             base.AnimationsToStatic();
         }
 
-        public void ISeeU()
+        public bool ISeeU()
         {
             PlayerSees = true;
             PauseTime = 1;
+            if (!IsFirstTime) return false;
+            IsFirstTime = false;
+            return true;
         }
 
         public override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)

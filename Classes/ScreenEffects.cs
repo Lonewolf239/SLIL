@@ -1,4 +1,6 @@
-﻿namespace SLIL.Classes
+﻿using System.Drawing;
+
+namespace SLIL.Classes
 {
     internal class ScreenEffects
     {
@@ -21,4 +23,15 @@
     internal class BloodEffect2 : BloodEffects { }
     internal class BloodEffect3 : BloodEffects { }
     internal class BloodEffect4 : BloodEffects { }
+
+    internal class ScreenShot : ScreenEffects
+    {
+        internal Image SSImage { get; set; }
+
+        internal ScreenShot() : base()
+        {
+            TotalTime = 7; // 0.7 sec
+            TimeRemaining = TotalTime;
+        }
+    }
 }

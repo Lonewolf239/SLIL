@@ -1201,9 +1201,6 @@
   <data name="medical_kit_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\medical_kit_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SLILCursor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\SLILCursor.cur;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="empty_teleport_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\empty_teleport_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1263,5 +1260,11 @@
   </data>
   <data name="minigun_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\minigun_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SLILCursorDefault" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\SLILCursorDefault.cur;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SLILCursorHelp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\SLILCursorHelp.cur;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

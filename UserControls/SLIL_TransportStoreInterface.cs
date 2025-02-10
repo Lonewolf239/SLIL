@@ -18,7 +18,7 @@ namespace SLIL.UserControls
         internal SLIL_TransportStoreInterface()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         private string GetBuyText()

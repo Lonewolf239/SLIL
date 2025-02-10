@@ -17,7 +17,7 @@ namespace SLIL.SLIL_v0_1
         public Map_form()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         private void Map_form_Load(object sender, EventArgs e)

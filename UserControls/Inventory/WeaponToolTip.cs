@@ -11,7 +11,7 @@ namespace SLIL.UserControls.Inventory
         public WeaponToolTip()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         private int GetDamage()

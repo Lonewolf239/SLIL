@@ -708,7 +708,7 @@ namespace SLIL
 
         private void SetParameters()
         {
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
             IsTutorial = MainMenu.IsTutorial;
             difficulty = MainMenu.difficulty;
             switch (difficulty)
@@ -1113,7 +1113,7 @@ namespace SLIL
                 if (!Controller.InBackrooms())
                 {
                     if (!Controller.IsInSpectatorMode()) DrawGameInterface();
-                    else DrawSpectatorInterface();
+                    //else DrawSpectatorInterface();
                 }
                 else DrawCamera();
                 UpdateDisplay();
@@ -1811,7 +1811,7 @@ namespace SLIL
                                         int y1 = (int)(player.Y + ray_y * distance);
                                         if (!HasImpassibleCells(GetCoordinate(x1, y1)))
                                         {
-                                            DoParkour(y, x);
+                                            Controller.DoParkour(y, x);
                                             break;
                                         }
                                     }
@@ -2611,7 +2611,10 @@ namespace SLIL
                                             }
                                             if (creature is Enemy)
                                             {
-                                                if (creature is VoidStalker stalker) stalker.ISeeU();
+                                                if (creature is VoidStalker stalker)
+                                                {
+                                                    if (stalker.ISeeU()) Controller.PlayGameSound(screenshot);
+                                                }
                                                 int coords = (int)entity.Y * mapWidth + (int)entity.X;
                                                 if (!enemiesCoords.Contains(coords))
                                                     enemiesCoords.Add(coords);
@@ -2999,20 +3002,7 @@ namespace SLIL
             }
             if (player.EffectCheck(2))
                 graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
-            for (int i = 0; i < screenEffects.Count; i++)
-            {
-                var screenEffect = screenEffects[i];
-                ColorMatrix matrix = new ColorMatrix { Matrix33 = Math.Max(0, Math.Min(1, (float)screenEffect.TimeRemaining / screenEffect.TotalTime)) };
-                ImageAttributes attributes = new ImageAttributes();
-                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                Image effectImage = ScreenEffectsIcons[screenEffect.GetType()];
-                graphicsWeapon.DrawImage(effectImage, new Rectangle(0, 0, WEAPON.Width, WEAPON.Height), 0, 0, effectImage.Width, effectImage.Height, GraphicsUnit.Pixel, attributes);
-                if (screenEffects[i].TimeRemaining < 0)
-                {
-                    screenEffects.RemoveAt(i);
-                    i--;
-                }
-            }
+            DrawScreenEffects();
             if (player.EffectCheck(6) || Controller.InBackrooms())
             {
                 if (player.CuteMode && !Controller.InBackrooms())
@@ -3122,94 +3112,131 @@ namespace SLIL
             }
         }
 
-        private void DrawSpectatorInterface()
+        //private void DrawSpectatorInterface()
+        //{
+        //    Player player = GetPlayer();
+        //    if (player == null) return;
+        //    int item_count = 0, item_max_count = 0;
+        //    if (player.DisposableItem != null)
+        //    {
+        //        item_count = player.DisposableItem.Count;
+        //        item_max_count = player.DisposableItem.MaxCount;
+        //    }
+        //    int icon_size = 12 + (2 * interface_size);
+        //    if (resolution == 1) icon_size *= 2;
+        //    int size = resolution == 0 ? 1 : 2;
+        //    int add = resolution == 0 ? 2 : 4;
+        //    double hp = player.InTransport ? player.TransportHP : player.HP;
+        //    SizeF hpSize = graphicsWeapon.MeasureString(hp.ToString("0"), consolasFont[interface_size, resolution]);
+        //    SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), consolasFont[interface_size, resolution]);
+        //    int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
+        //    int ammo_x = ammo_icon_x + icon_size;
+        //    graphicsWeapon.Clear(Color.Transparent);
+        //    try
+        //    {
+        //        UpdateMoveStyle(player);
+        //        DrawWeapon(player, player.GunState);
+        //    }
+        //    catch
+        //    {
+        //        try { DrawWeapon(player, 0); }
+        //        catch { }
+        //    }
+        //    if (player.EffectCheck(2))
+        //        graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
+        //    if (ShowFPS)
+        //        graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
+        //    if (player.InTransport)
+        //        graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][0], 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
+        //    else if (!player.CuteMode)
+        //    {
+        //        graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
+        //        if (player.DisposableItem != null && !Controller.IsMultiplayer())
+        //            graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItem.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
+        //    }
+        //    else
+        //    {
+        //        graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
+        //        if (player.DisposableItem != null && !Controller.IsMultiplayer())
+        //            graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItem.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
+        //    }
+        //    if (!player.InTransport && !Controller.IsMultiplayer())
+        //        graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - (icon_size * 2) - add);
+        //    SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
+        //    DrawPing(fpsSize, icon_size);
+        //    string playerName = player.Name.Length == 0 ? "NoName" : player.Name;
+        //    SizeF textSize = graphicsWeapon.MeasureString(playerName, consolasFont[0, 0]);
+        //    graphicsWeapon.DrawString(playerName, consolasFont[0, 0], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 2);
+        //    graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - icon_size - add);
+        //    if (!player.IsPetting && !player.InParkour && !player.InTransport && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
+        //    {
+        //        if (player.GetCurrentGun().ShowAmmoAsNumber)
+        //            graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT - icon_size - add);
+        //        else
+        //            graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT - icon_size - add);
+        //        graphicsWeapon.DrawImage(GetAmmoIcon(player.GetCurrentGun().AmmoType), ammo_icon_x, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
+        //    }
+        //    SmoothingMode save = graphicsWeapon.SmoothingMode;
+        //    graphicsWeapon.SmoothingMode = SmoothingMode.None;
+        //    DisplayStamine(player, icon_size, size);
+        //    int money_y = 2;
+        //    if (ShowMiniMap)
+        //    {
+        //        Bitmap mini_map = DrawMiniMap();
+        //        money_y = mini_map.Height + 3;
+        //        graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH - mini_map.Width - 1, size);
+        //        mini_map.Dispose();
+        //    }
+        //    graphicsWeapon.SmoothingMode = save;
+        //    graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH, money_y, rightToLeft);
+        //    graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH - moneySize.Width - icon_size, money_y, icon_size, icon_size);
+        //    if (player.Effects.Count > 0)
+        //    {
+        //        for (int i = 0; i < player.Effects.Count; i++)
+        //            DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], icon_size, i, player.Effects[i] is Debaf);
+        //    }
+        //    ShowDebugs(player);
+        //    if (resolution == 1)
+        //    {
+        //        graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
+        //        graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
+        //    }
+        //}
+
+        private void DrawScreenEffects()
         {
-            Player player = GetPlayer();
-            if (player == null) return;
-            int item_count = 0, item_max_count = 0;
-            if (player.DisposableItem != null)
+            for (int i = 0; i < screenEffects.Count; i++)
             {
-                item_count = player.DisposableItem.Count;
-                item_max_count = player.DisposableItem.MaxCount;
-            }
-            int icon_size = 12 + (2 * interface_size);
-            if (resolution == 1) icon_size *= 2;
-            int size = resolution == 0 ? 1 : 2;
-            int add = resolution == 0 ? 2 : 4;
-            double hp = player.InTransport ? player.TransportHP : player.HP;
-            SizeF hpSize = graphicsWeapon.MeasureString(hp.ToString("0"), consolasFont[interface_size, resolution]);
-            SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), consolasFont[interface_size, resolution]);
-            int ammo_icon_x = (icon_size + 2) + (int)hpSize.Width + 2;
-            int ammo_x = ammo_icon_x + icon_size;
-            graphicsWeapon.Clear(Color.Transparent);
-            try
-            {
-                UpdateMoveStyle(player);
-                DrawWeapon(player, player.GunState);
-            }
-            catch
-            {
-                try { DrawWeapon(player, 0); }
-                catch { }
-            }
-            if (player.EffectCheck(2))
-                graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
-            if (ShowFPS)
-                graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
-            if (player.InTransport)
-                graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][0], 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
-            else if (!player.CuteMode)
-            {
-                graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
-                if (player.DisposableItem != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(ItemIconDict[player.DisposableItem.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
-            }
-            else
-            {
-                graphicsWeapon.DrawImage(Properties.Resources.food_hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
-                if (player.DisposableItem != null && !Controller.IsMultiplayer())
-                    graphicsWeapon.DrawImage(CuteItemIconDict[player.DisposableItem.GetType()], 2, SCREEN_HEIGHT - (icon_size * 2) - add, icon_size, icon_size);
-            }
-            if (!player.InTransport && !Controller.IsMultiplayer())
-                graphicsWeapon.DrawString($"{item_max_count}/{item_count}", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - (icon_size * 2) - add);
-            SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
-            DrawPing(fpsSize, icon_size);
-            string playerName = player.Name.Length == 0 ? "NoName" : player.Name;
-            SizeF textSize = graphicsWeapon.MeasureString(playerName, consolasFont[0, 0]);
-            graphicsWeapon.DrawString(playerName, consolasFont[0, 0], whiteBrush, (WEAPON.Width - textSize.Width) / 2, 2);
-            graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, SCREEN_HEIGHT - icon_size - add);
-            if (!player.IsPetting && !player.InParkour && !player.InTransport && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
-            {
-                if (player.GetCurrentGun().ShowAmmoAsNumber)
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT - icon_size - add);
-                else
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammo_x, SCREEN_HEIGHT - icon_size - add);
-                graphicsWeapon.DrawImage(GetAmmoIcon(player.GetCurrentGun().AmmoType), ammo_icon_x, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
-            }
-            SmoothingMode save = graphicsWeapon.SmoothingMode;
-            graphicsWeapon.SmoothingMode = SmoothingMode.None;
-            DisplayStamine(player, icon_size, size);
-            int money_y = 2;
-            if (ShowMiniMap)
-            {
-                Bitmap mini_map = DrawMiniMap();
-                money_y = mini_map.Height + 3;
-                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH - mini_map.Width - 1, size);
-                mini_map.Dispose();
-            }
-            graphicsWeapon.SmoothingMode = save;
-            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH, money_y, rightToLeft);
-            graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH - moneySize.Width - icon_size, money_y, icon_size, icon_size);
-            if (player.Effects.Count > 0)
-            {
-                for (int i = 0; i < player.Effects.Count; i++)
-                    DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], icon_size, i, player.Effects[i] is Debaf);
-            }
-            ShowDebugs(player);
-            if (resolution == 1)
-            {
-                graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
-                graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
+                var screenEffect = screenEffects[i];
+                float timeRatio = ML.Clamp((float)screenEffect.TimeRemaining / screenEffect.TotalTime, 0, 1);
+                using (var attributes = new ImageAttributes())
+                {
+                    var matrix = new ColorMatrix { Matrix33 = timeRatio };
+                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                    Image effectImage;
+                    if (screenEffect is ScreenShot ss)
+                    {
+                        effectImage = ss.SSImage;
+                        var (screenWidth, screenHeight) = (WEAPON.Width, WEAPON.Height);
+                        var imageSize = new Size(screenWidth * 2 / 3, screenHeight * 2 / 3);
+                        var offset = new Point((screenWidth - imageSize.Width) / 2, (screenHeight - imageSize.Height) / 2);
+                        graphicsWeapon.DrawImage(effectImage, new Rectangle(offset, imageSize),
+                            0, 0, effectImage.Width, effectImage.Height, GraphicsUnit.Pixel, attributes);
+                        using (var framePen = new Pen(Color.FromArgb((int)(255 * timeRatio), Color.White), 2))
+                            graphicsWeapon.DrawRectangle(framePen, new Rectangle(offset, imageSize));
+                    }
+                    else
+                    {
+                        effectImage = ScreenEffectsIcons[screenEffect.GetType()];
+                        graphicsWeapon.DrawImage(effectImage, new Rectangle(0, 0, WEAPON.Width, WEAPON.Height), 0, 0, effectImage.Width, effectImage.Height, GraphicsUnit.Pixel, attributes);
+                    }
+                }
+                if (screenEffect.TimeRemaining < 0)
+                {
+                    if (screenEffect is ScreenShot screenShot) screenShot.SSImage?.Dispose();
+                    screenEffects.RemoveAt(i);
+                    i--;
+                }
             }
         }
 
@@ -3855,13 +3882,6 @@ namespace SLIL
             }
         }
 
-        //  #====      Parkour      ====#
-
-        private void DoParkour(int y, int x)
-        {
-            if (!Controller.DoParkour(y, x)) return;
-        }
-
         //  #====    ChangeWeapon   ====#
 
         private void ChangeWeapon(int new_gun)
@@ -3922,6 +3942,7 @@ namespace SLIL
             console_panel.Log($"Screenshot successfully created and saved to path:\n<{path}<", true, true, Color.Lime);
             using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
                 BUFFER?.Save(fileStream, ImageFormat.Png);
+            screenEffects.Add(new ScreenShot() { SSImage = BUFFER?.Clone(new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), BUFFER.PixelFormat) });
             Controller.PlayGameSound(screenshot);
         }
 

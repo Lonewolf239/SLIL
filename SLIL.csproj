@@ -1484,6 +1484,7 @@
     <None Include="SLIL_v0_1\Images\control.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="SLILCursorHelp.cur" />
     <None Include="Images\player_parkour.png" />
     <None Include="Images\show_pas.png" />
     <None Include="Images\hide_pas.png" />
@@ -1534,7 +1535,7 @@
     <None Include="Images\minigun_shooted.png" />
     <None Include="Images\minigun.png" />
     <None Include="Images\minigun_icon.png" />
-    <Content Include="SLILCursor.cur" />
+    <Content Include="SLILCursorDefault.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -91,7 +91,8 @@ namespace SLIL
         internal MainMenu(CGF_Reader data, TextureCache textures)
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
+            version_label.Cursor = Program.SLILCursorHelp;
             CGFReader = data;
             textureCache = textures;
             if (!File.Exists("UpdateDownloader.exe"))

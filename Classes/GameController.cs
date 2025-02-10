@@ -537,10 +537,10 @@ namespace SLIL.Classes
             //}
         }
 
-        internal bool DoParkour(int y, int x)
+        internal void DoParkour(int y, int x)
         {
             //if (peer == null)
-            return Game.DoParkour(playerID, y, x);
+            Game.DoParkour(playerID, y, x);
             //else
             //{
             //    NetDataWriter writer = new NetDataWriter();

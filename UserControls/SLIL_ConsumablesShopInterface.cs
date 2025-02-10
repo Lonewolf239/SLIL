@@ -17,7 +17,7 @@ namespace SLIL.UserControls
         internal SLIL_ConsumablesShopInterface()
         {
             InitializeComponent();
-            Cursor = Program.SLILCursor;
+            Cursor = Program.SLILCursorDefault;
         }
 
         private string GetBuyText()
