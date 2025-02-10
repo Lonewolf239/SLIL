@@ -5,17 +5,16 @@ using SLIL.Classes;
 
 namespace SLIL.UserControls
 {
-    public partial class SLIL_ConsumablesShopInterface : UserControl
+    internal partial class SLIL_ConsumablesShopInterface : UserControl
     {
-        public DisposableItem item;
-        public int index = 0;
-        public int width;
-        public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
-        public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
-        public Player player;
+        internal DisposableItem item;
+        internal int index = 0;
+        internal static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
+        internal PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
+        internal Player player;
         private readonly string[,] buy_text = { { "2-0", "2-15" }, { "Buy", "Maximum" } };
 
-        public SLIL_ConsumablesShopInterface()
+        internal SLIL_ConsumablesShopInterface()
         {
             InitializeComponent();
             Cursor = Program.SLILCursor;
@@ -46,7 +45,6 @@ namespace SLIL.UserControls
 
         private void SLIL_ConsumablesShopInterface_VisibleChanged(object sender, EventArgs e)
         {
-            Width = width;
             icon.Image = SLIL.IconDict[item.GetType()][player.CuteMode ? 1 : 0];
             descryption.Text = GetItemDescription();
             name.Text = GetItemName();

@@ -7,9 +7,9 @@ using MySql.Data.MySqlClient;
 
 namespace SLIL.Classes
 {
-    public enum AccountStates { AllOk, AlreadyUsed, NotFound, ErrorDownloading, Error }
+    internal enum AccountStates { AllOk, AlreadyUsed, NotFound, ErrorDownloading, Error }
 
-    public class PSD
+    internal class PSD
     {
         public string ServerIp { get; set; }
         public string Username { get; set; }
@@ -17,14 +17,14 @@ namespace SLIL.Classes
         public string DatabaseName { get; set; }
     }
 
-    public class SLILAccount
+    internal class SLILAccount
     {
         private readonly PSD AppSecrets;
-        public bool AllOk { get; set; }
-        public string HWID { get; set; }
-        public string Key { get; set; }
+        internal bool AllOk { get; set; }
+        internal string HWID { get; set; }
+        internal string Key { get; set; }
         
-        public SLILAccount(string key)
+        internal SLILAccount(string key)
         {
             Key = key;
             HWID = Hasher.GetHWID();
@@ -33,7 +33,7 @@ namespace SLIL.Classes
 
         private bool CheckKey(string hashedKey) => Key == hashedKey;
 
-        public async Task<AccountStates> LoadAccount()
+        internal async Task<AccountStates> LoadAccount()
         {
             try
             {

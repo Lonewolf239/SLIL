@@ -6,19 +6,18 @@ using SLIL.Classes;
 
 namespace SLIL.UserControls
 {
-    public partial class SLIL_ShopInterface : UserControl
+    internal partial class SLIL_ShopInterface : UserControl
     {
-        public Timer UpdateTimer;
-        public SLIL ParentSLILForm;
-        public Gun weapon;
-        public int index = 0;
-        public int width;
-        public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
-        public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
-        public Player player;
+        internal Timer UpdateTimer;
+        internal SLIL ParentSLILForm;
+        internal Gun weapon;
+        internal int index = 0;
+        internal static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
+        internal PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
+        internal Player player;
         private readonly string[,] buy_text = { { "2-8", "2-9" }, { "Buy weapons", "Buy ammo" } };
 
-        public SLIL_ShopInterface()
+        internal SLIL_ShopInterface()
         {
             InitializeComponent();
             Cursor = Program.SLILCursor;
@@ -183,10 +182,6 @@ namespace SLIL.UserControls
             update_button.Visible = weapon.CanUpdate() && weapon.HasIt;
         }
 
-        private void SLIL_ShopInterface_VisibleChanged(object sender, EventArgs e)
-        {
-            UpdateInfo();
-            Width = width;
-        }
+        private void SLIL_ShopInterface_VisibleChanged(object sender, EventArgs e) => UpdateInfo();
     }
 }

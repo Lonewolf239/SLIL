@@ -3,56 +3,57 @@ using System.Collections.Generic;
 
 namespace SLIL.Classes
 {
-    public enum Directions { STOP, FORWARD, BACK, LEFT, RIGHT, WALK, RUN };
+    internal enum Directions { STOP, FORWARD, BACK, LEFT, RIGHT, WALK, RUN };
 
-    public class Player : Entity
+    internal class Player : Entity
     {
-        public int DeathSound { get; set; }
-        public string Name { get; set; }
-        public double Look { get; set; }
-        public double HP { get; set; }
-        public double TransportHP { get; set; }
-        public bool Invulnerable { get; set; }
-        public int TimeoutInvulnerable { get; set; }
-        public double Stamine { get; set; }
-        public bool CanShoot { get; set; }
-        public bool Aiming { get; set; }
-        public bool UseItem { get; set; }
-        public bool Dead { get; set; }
-        public int Money { get; set; }
-        public int CurrentGun { get; set; }
-        public int PreviousGun { get; set; }
-        public int GunState { get; set; }
-        public int MoveStyle { get; set; }
-        public bool LevelUpdated { get; set; }
-        public double CurseCureChance { get; set; }
-        public bool IsPetting { get; set; }
-        public bool InParkour { get; set; }
-        public int ParkourState { get; set; }
-        public bool CuteMode { get; set; }
-        public int TotalEnemiesKilled { get; set; }
-        public int EnemiesKilled { get; set; }
-        public double MaxMoveSpeed { get; set; }
-        public double MaxStrafeSpeed { get; set; }
-        public double MoveSpeed { get; set; }
-        public double StrafeSpeed { get; set; }
-        public double MaxRunSpeed { get; set; }
-        public double RunSpeed { get; set; }
-        public double Depth { get; set; }
-        public int SelectedItem { get; set; }
-        public bool Fast { get; set; }
-        public bool NoClip { get; set; }
-        public bool InTransport { get; set; }
-        public bool InSelectingMode { get; set; }
-        public bool BlockInput { get; set; }
-        public bool BlockCamera { get; set; }
-        public bool BlockMouse { get; set; }
-        public bool CanUnblockCamera { get; set; }
-        public Directions PlayerDirection { get; set; }
-        public Directions StrafeDirection { get; set; }
-        public Directions PlayerMoveStyle { get; set; }
-        public List<Effect> Effects = new List<Effect>();
-        public readonly Gun[] GUNS =
+        internal int DeathSound { get; set; }
+        internal string Name { get; set; }
+        internal double Look { get; set; }
+        internal double HP { get; set; }
+        internal double TransportHP { get; set; }
+        internal bool Invulnerable { get; set; }
+        internal bool Hit { get; set; }
+        internal int TimeoutInvulnerable { get; set; }
+        internal double Stamine { get; set; }
+        internal bool CanShoot { get; set; }
+        internal bool Aiming { get; set; }
+        internal bool UseItem { get; set; }
+        internal bool Dead { get; set; }
+        internal int Money { get; set; }
+        internal int CurrentGun { get; set; }
+        internal int PreviousGun { get; set; }
+        internal int GunState { get; set; }
+        internal int MoveStyle { get; set; }
+        internal bool LevelUpdated { get; set; }
+        internal double CurseCureChance { get; set; }
+        internal bool IsPetting { get; set; }
+        internal bool InParkour { get; set; }
+        internal int ParkourState { get; set; }
+        internal bool CuteMode { get; set; }
+        internal int TotalEnemiesKilled { get; set; }
+        internal int EnemiesKilled { get; set; }
+        internal double MaxMoveSpeed { get; set; }
+        internal double MaxStrafeSpeed { get; set; }
+        internal double MoveSpeed { get; set; }
+        internal double StrafeSpeed { get; set; }
+        internal double MaxRunSpeed { get; set; }
+        internal double RunSpeed { get; set; }
+        internal double Depth { get; set; }
+        internal int SelectedItem { get; set; }
+        internal bool Fast { get; set; }
+        internal bool NoClip { get; set; }
+        internal bool InTransport { get; set; }
+        internal bool InSelectingMode { get; set; }
+        internal bool BlockInput { get; set; }
+        internal bool BlockCamera { get; set; }
+        internal bool BlockMouse { get; set; }
+        internal bool CanUnblockCamera { get; set; }
+        internal Directions PlayerDirection { get; set; }
+        internal Directions StrafeDirection { get; set; }
+        internal Directions PlayerMoveStyle { get; set; }
+        internal List<Effect> Effects = new List<Effect>();
+        internal readonly Gun[] GUNS =
         {
             new Flashlight(), new Knife(), new Pistol(),
             new Shotgun(), new SubmachineGun(), new AssaultRifle(),
@@ -61,19 +62,19 @@ namespace SLIL.Classes
             new Rainblower(), new Adrenalin(), new Helmet(),
             new RPG(), new Petition(), new MedicalKit()
         };
-        public List<Gun> Guns = new List<Gun>();
-        public List<DisposableItem> DisposableItems = new List<DisposableItem>();
-        public DisposableItem DisposableItem = null;
-        public int WeaponSlot_0 { get; set; }
-        public int WeaponSlot_1 { get; set; }
-        public int ItemFrame { get; set; }
-        public Pet PET = null;
-        public Transport TRANSPORT = null;
-        public double MaxHP { get; set; }
-        public double MaxStamine { get; set; }
+        internal List<Gun> Guns = new List<Gun>();
+        internal List<DisposableItem> DisposableItems = new List<DisposableItem>();
+        internal DisposableItem DisposableItem = null;
+        internal int WeaponSlot_0 { get; set; }
+        internal int WeaponSlot_1 { get; set; }
+        internal int ItemFrame { get; set; }
+        internal Pet PET = null;
+        internal Transport TRANSPORT = null;
+        internal double MaxHP { get; set; }
+        internal double MaxStamine { get; set; }
 
-        public Player(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => InitPlayer();
-        public Player(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => InitPlayer();
+        internal Player(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => InitPlayer();
+        internal Player(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => InitPlayer();
 
         public override void Serialize(NetDataWriter writer)
         {
@@ -326,7 +327,7 @@ namespace SLIL.Classes
             Effects = tempEffects;
         }
 
-        public void Deserialize(NetDataReader reader, bool updateCoordinates)
+        internal void Deserialize(NetDataReader reader, bool updateCoordinates)
         {
             if (!updateCoordinates)
             {
@@ -556,7 +557,7 @@ namespace SLIL.Classes
             SetDefault();
         }
 
-        public void SetDefault()
+        internal void SetDefault()
         {
             if (Dead)
             {
@@ -625,7 +626,7 @@ namespace SLIL.Classes
             }
         }
 
-        public double GetDrawDistance()
+        internal double GetDrawDistance()
         {
             if (EffectCheck(6)) return 3.25;
             if (EffectCheck(8)) return 5;
@@ -634,27 +635,27 @@ namespace SLIL.Classes
             return Depth + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
         }
 
-        public void ReducesStamine()
+        internal void ReducesStamine()
         {
             int x = 3;
             if (GetWeight() >= 0.95) x = 2;
             Stamine -= x;
         }
 
-        public void RestoreStamine()
+        internal void RestoreStamine()
         {
             int x = 2;
             if (EffectCheck(3)) x = 1;
             Stamine += x;
         }
 
-        public double GetWeight()
+        internal double GetWeight()
         {
             if (InTransport) return 1;
             return GetCurrentGun().Weight;
         }
 
-        public void ChangeSpeed()
+        internal void ChangeSpeed()
         {
             int speedFactor;
             double walk = 0.075, transport = 0.05;
@@ -796,26 +797,26 @@ namespace SLIL.Classes
             }
         }
 
-        public double GetMoveSpeed(double elapsed_time) => MoveSpeed * GetWeight() * RunSpeed * elapsed_time;
+        internal double GetMoveSpeed(double elapsed_time) => MoveSpeed * GetWeight() * RunSpeed * elapsed_time;
 
-        public double GetStrafeSpeed(double elapsed_time) => StrafeSpeed * GetWeight() * RunSpeed * elapsed_time;
+        internal double GetStrafeSpeed(double elapsed_time) => StrafeSpeed * GetWeight() * RunSpeed * elapsed_time;
 
-        public void ChangeItem(int index)
+        internal void ChangeItem(int index)
         {
             SelectedItem = index;
             DisposableItem = DisposableItems[SelectedItem];
         }
 
-        public Gun GetCurrentGun() => Guns[CurrentGun];
+        internal Gun GetCurrentGun() => Guns[CurrentGun];
 
-        public void InvulnerableEnd()
+        internal void InvulnerableEnd()
         {
             TimeoutInvulnerable--;
             if (TimeoutInvulnerable <= 0)
                 Invulnerable = false;
         }
 
-        public void UpdateEffectsTime()
+        internal void UpdateEffectsTime()
         {
             if (Effects.Count == 0) return;
             for (int i = Effects.Count - 1; i >= 0; i--)
@@ -849,7 +850,7 @@ namespace SLIL.Classes
             }
         }
 
-        public void GiveEffect(int index, bool standart_time, int time = 0, bool infinity = false)
+        internal void GiveEffect(int index, bool standart_time, int time = 0, bool infinity = false)
         {
             UseItem = false;
             Effect effect = null;
@@ -929,9 +930,9 @@ namespace SLIL.Classes
             }
         }
 
-        public int GetEffectID() => DisposableItems[SelectedItem].EffectID;
+        internal int GetEffectID() => DisposableItems[SelectedItem].EffectID;
 
-        public bool EffectCheck(int id)
+        internal bool EffectCheck(int id)
         {
             if (Effects.Count >= 12) return true;
             for (int i = 0; i < Effects.Count; i++)
@@ -939,7 +940,7 @@ namespace SLIL.Classes
             return false;
         }
 
-        public void SetItemEffect()
+        internal void SetItemEffect()
         {
             UseItem = false;
             ItemFrame = 0;
@@ -969,7 +970,7 @@ namespace SLIL.Classes
             }
         }
 
-        public void ResetEffectTime(int id)
+        internal void ResetEffectTime(int id)
         {
             for (int i = 0; i < Effects.Count; i++)
             {
@@ -981,7 +982,7 @@ namespace SLIL.Classes
             }
         }
 
-        public void StopEffect(int id)
+        internal void StopEffect(int id)
         {
             for (int i = 0; i < Effects.Count; i++)
             {
@@ -1024,7 +1025,7 @@ namespace SLIL.Classes
             }
         }
 
-        public void StopEffects()
+        internal void StopEffects()
         {
             for (int i = 0; i < Effects.Count; i++)
             {
@@ -1063,13 +1064,13 @@ namespace SLIL.Classes
             Effects.Clear();
         }
 
-        public void HealHP(int value)
+        internal void HealHP(int value)
         {
             HP += value;
             if (HP > MaxHP) HP = MaxHP;
         }
 
-        public void ChangeMoney(int value)
+        internal void ChangeMoney(int value)
         {
             Money += value;
             if (Money > 9999) Money = 9999;
@@ -1082,12 +1083,13 @@ namespace SLIL.Classes
 
         protected override double GetEntityWidth() => 0.4;
 
-        public bool DealDamage(double damage, bool give_invulnerable)
+        internal bool DealDamage(double damage, bool give_invulnerable)
         {
             if (Invulnerable || EffectCheck(9)) return Dead;
             if (EffectCheck(2) || EffectCheck(4)) damage *= 0.8;
             if (InTransport) TransportHP -= damage;
             else HP -= damage;
+            Hit = true;
             if (give_invulnerable)
             {
                 TimeoutInvulnerable = 2;

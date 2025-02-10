@@ -6,17 +6,16 @@ using SLIL.Classes;
 
 namespace SLIL.UserControls
 {
-    public partial class SLIL_TransportStoreInterface : UserControl
+    internal partial class SLIL_TransportStoreInterface : UserControl
     {
-        public Transport transport;
-        public int index = 0;
-        public int width;
-        public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
-        public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
-        public Player player;
+        internal Transport transport;
+        internal int index = 0;
+        internal static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
+        internal PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
+        internal Player player;
         private readonly string[] buy_text = { "2-0", "Buy" };
 
-        public SLIL_TransportStoreInterface()
+        internal SLIL_TransportStoreInterface()
         {
             InitializeComponent();
             Cursor = Program.SLILCursor;
@@ -67,7 +66,6 @@ namespace SLIL.UserControls
 
         private void SLIL_TransportStoreInterface_VisibleChanged(object sender, EventArgs e)
         {
-            Width = width;
             name.Text = GetTransportName();
             icon.Image = SLIL.ShopImageDict[transport.GetType()];
             parametrs_image.Image = DrawWeaponParametrs();

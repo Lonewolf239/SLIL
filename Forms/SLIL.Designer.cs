@@ -107,6 +107,7 @@ namespace SLIL
             this.inventory_label = new System.Windows.Forms.Label();
             this.fps_timer = new System.Windows.Forms.Timer(this.components);
             this.recoil_timer = new System.Windows.Forms.Timer(this.components);
+            this.screen_effects_timer = new System.Windows.Forms.Timer(this.components);
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -955,6 +956,11 @@ namespace SLIL
             this.recoil_timer.Interval = 5;
             this.recoil_timer.Tick += new System.EventHandler(this.Recoil_timer_Tick);
             // 
+            // screen_effects_timer
+            // 
+            this.screen_effects_timer.Enabled = true;
+            this.screen_effects_timer.Tick += new System.EventHandler(this.Screen_effects_timer_Tick);
+            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1093,5 +1099,6 @@ namespace SLIL
         private Label medical_kit_count;
         private PictureBox medical_kit_icon;
         private Timer recoil_timer;
+        private Timer screen_effects_timer;
     }
 }

@@ -1527,6 +1527,10 @@
     <None Include="Images\void_wall.png" />
     <None Include="Images\void_floor.png" />
     <None Include="Images\stunned.png" />
+    <None Include="Images\blood_effect_3.png" />
+    <None Include="Images\blood_effect_2.png" />
+    <None Include="Images\blood_effect_1.png" />
+    <None Include="Images\blood_effect_0.png" />
     <Content Include="SLILCursor.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

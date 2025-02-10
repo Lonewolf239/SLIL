@@ -7,18 +7,17 @@ using SLIL.Classes;
 
 namespace SLIL.UserControls
 {
-    public partial class SLIL_StorageInterface : UserControl
+    internal partial class SLIL_StorageInterface : UserControl
     {
-        public Timer UpdateTimer;
-        public SLIL ParentSLILForm;
-        public Gun weapon;
-        public int index = 0;
-        public int width;
-        public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
-        public Player player;
+        internal Timer UpdateTimer;
+        internal SLIL ParentSLILForm;
+        internal Gun weapon;
+        internal int index = 0;
+        internal PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
+        internal Player player;
         private readonly string[,] slot_text = { { "2-17", "2-18", "2-19" }, { "Slot ", "Instead ", "Equipped" }  };
 
-        public SLIL_StorageInterface()
+        internal SLIL_StorageInterface()
         {
             InitializeComponent();
             Cursor = Program.SLILCursor;
@@ -150,11 +149,7 @@ namespace SLIL.UserControls
             parametrs_image.Image = DrawWeaponParametrs();
         }
 
-        private void SLIL_ShopInterface_VisibleChanged(object sender, EventArgs e)
-        {
-            UpdateInfo();
-            Width = width;
-        }
+        private void SLIL_ShopInterface_VisibleChanged(object sender, EventArgs e) => UpdateInfo();
 
         private int GetGunIndex()
         {

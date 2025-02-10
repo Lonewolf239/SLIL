@@ -13,7 +13,7 @@ using SLIL.Classes;
 
 namespace SLIL.UserControls
 {
-    public partial class ConsolePanel : UserControl
+    internal partial class ConsolePanel : UserControl
     {
         private static bool ImHonest = false;
         private int cheat_index = 0, color_index = 0;
@@ -26,9 +26,9 @@ namespace SLIL.UserControls
             new VoidE(), new God()
         };
         private readonly List<string> previous_cheat = new List<string>();
-        public List<Entity> Entities;
-        public Player player;
-        public string command = "";
+        internal List<Entity> Entities;
+        internal Player player;
+        internal string command = "";
         private readonly Dictionary<string, Color> colorMap = new Dictionary<string, Color>
         {
             { "-", Color.Yellow },
@@ -44,7 +44,7 @@ namespace SLIL.UserControls
             Color.Aquamarine, Color.Sienna
         };
 
-        public ConsolePanel()
+        internal ConsolePanel()
         {
             InitializeComponent();
             Cursor = Program.SLILCursor;
@@ -1271,7 +1271,7 @@ namespace SLIL.UserControls
             }
         }
 
-        public void ClearCommand()
+        internal void ClearCommand()
         {
             ConsoleDeleteText(command.Length);
             command = "";
@@ -1337,7 +1337,7 @@ namespace SLIL.UserControls
             }
         }
 
-        public void Log(string message, bool newline, bool showTime, Color color)
+        internal void Log(string message, bool newline, bool showTime, Color color)
         {
             string nline = "", time = $"-<{DateTime.Now:HH:mm}>- ";
             if (newline)

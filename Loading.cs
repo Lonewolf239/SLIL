@@ -14,16 +14,16 @@ using System.Net.NetworkInformation;
 
 namespace SLIL
 {
-    public partial class Loading : Form
+    internal partial class Loading : Form
     {
         private readonly string current_version = Program.current_version;
         private double UpdateProgress = 0, CompletedProgress = 0;
         private bool UpdateVerified = false, CurrentVersion = false;
         private bool DownloadedLocalizationList = false;
-        public string HashedKey = "None", License = "None";
+        internal string HashedKey = "None", License = "None";
         private LoginForm loginForm;
-        public static Localization Localizations = new Localization();
-        public SLILAccount SLIL_Account;
+        internal static Localization Localizations = new Localization();
+        internal SLILAccount SLIL_Account;
         private TextureCache textureCache;
         private CGF_Reader CGFReader;
         private MainMenu mainMenu;
@@ -31,7 +31,7 @@ namespace SLIL
         private bool isDragging = false;
         private Point lastCursor, lastForm;
 
-        public Loading()
+        internal Loading()
         {
             InitializeComponent();
             Cursor = Program.SLILCursor;
@@ -161,7 +161,7 @@ namespace SLIL
             }
         }
 
-        public async Task ProcessFileWithProgressAsync()
+        internal async Task ProcessFileWithProgressAsync()
         {
             double startProgress = UpdateProgress;
             var progress = new Progress<int>(percent =>
@@ -172,7 +172,7 @@ namespace SLIL
             await CGFReader.ProcessFileAsync(progress);
         }
 
-        public async Task ProcessTexturesWithProgressAsync()
+        internal async Task ProcessTexturesWithProgressAsync()
         {
             double startProgress = UpdateProgress;
             var progress = new Progress<int>(percent =>
@@ -352,7 +352,7 @@ namespace SLIL
             await CheckBD();
         }
 
-        public async Task CheckBD()
+        internal async Task CheckBD()
         {
             SLIL_Account = new SLILAccount(HashedKey);
             AccountStates state = await SLIL_Account.LoadAccount();
@@ -468,7 +468,7 @@ namespace SLIL
             await SLILInitialization();
         }
 
-        public static async Task<MainMenu> CreateMainMenuAsync(Loading loading)
+        internal static async Task<MainMenu> CreateMainMenuAsync(Loading loading)
         {
             return await Task.Run(() =>
             {

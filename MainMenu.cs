@@ -19,28 +19,27 @@ using System.Collections.Generic;
 
 namespace SLIL
 {
-    public partial class MainMenu : Form
+    internal partial class MainMenu : Form
     {
         private readonly string current_version = Program.current_version;
-        public bool UpdateVerified = false;
-        public bool downloadedLocalizationList = false;
-        public Localization localizations;
-        public Dictionary<string, string> supportedLanguages;
-        public static bool DownloadedLocalizationList = false;
-        public static Localization Localizations;
+        internal bool UpdateVerified = false;
+        internal bool downloadedLocalizationList = false;
+        internal Localization localizations;
+        internal Dictionary<string, string> supportedLanguages;
+        internal static bool DownloadedLocalizationList = false;
+        internal static Localization Localizations;
         private Dictionary<string, string> SupportedLanguages;
-        public static string Language = "English";
-        public string HashedKey = "None", License = "None";
-        public static bool sounds = true, ConsoleEnabled = false;
-        public TextureCache textureCache;
-        public static CGF_Reader CGFReader;
+        internal static string Language = "English";
+        internal string HashedKey = "None", License = "None";
+        internal static bool sounds = true, ConsoleEnabled = false;
+        internal TextureCache textureCache;
+        internal static CGF_Reader CGFReader;
         private string SelectButtonName;
         private SLIL_Editor Editor;
         private bool ChangeControlButton = false, CanClose = false;
         private readonly PlaySound hmm, omg;
         private readonly PlaySound MainMenuTheme;
         private readonly PlaySound game_over;
-        public static Player player;
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
             { "screenshot", Keys.F12 },
@@ -60,7 +59,7 @@ namespace SLIL
             { "climb", Keys.Space },
             { "inventory", Keys.I },
         };
-        public static Dictionary<string, Keys> BindControls = new Dictionary<string, Keys>()
+        internal static Dictionary<string, Keys> BindControls = new Dictionary<string, Keys>()
         {
             { "screenshot", Keys.F12 },
             { "reloading", Keys.R },
@@ -79,17 +78,17 @@ namespace SLIL
             { "climb", Keys.Space },
             { "inventory", Keys.I },
         };
-        public static int smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
-        public static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true, IsTutorial = false;
-        public static bool inv_y = false, inv_x = false;
-        public static double SLIL_v0_1_LOOK_SPEED = 1.75;
-        public static int SLIL_v0_1_difficulty = 1;
-        public static double LOOK_SPEED = 6.5;
-        public static float Volume = 0.4f, EffectsVolume = 0.4f, MusicVolume = 0.4f;
-        public static int Gamma = 100;
+        internal static int smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
+        internal static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true, IsTutorial = false;
+        internal static bool inv_y = false, inv_x = false;
+        internal static double SLIL_v0_1_LOOK_SPEED = 1.75;
+        internal static int SLIL_v0_1_difficulty = 1;
+        internal static double LOOK_SPEED = 6.5;
+        internal static float Volume = 0.4f, EffectsVolume = 0.4f, MusicVolume = 0.4f;
+        internal static int Gamma = 100;
         private int ShowingSLIL_v0_0_1 = 0;
 
-        public MainMenu(CGF_Reader data, TextureCache textures)
+        internal MainMenu(CGF_Reader data, TextureCache textures)
         {
             InitializeComponent();
             Cursor = Program.SLILCursor;
@@ -569,7 +568,7 @@ namespace SLIL
             Localizations.RemoveDuplicates();
         }
 
-        public void SetLocalization()
+        internal void SetLocalization()
         {
             DownloadedLocalizationList = downloadedLocalizationList;
             SupportedLanguages = supportedLanguages;

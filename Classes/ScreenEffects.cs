@@ -2,29 +2,27 @@
 {
     internal class ScreenEffects
     {
-        internal int ID { get; set; }
         internal int TotalTime { get; set; }
         internal int TimeRemaining { get; set; }
 
-        internal bool ReducingTimeRemaining()
-        {
-            TimeRemaining--;
-            if (TimeRemaining < 0) return true;
-            return false;
-        }
+        internal void ReducingTimeRemaining() => TimeRemaining--;
 
         internal void UpdateTimeRemaining() => TimeRemaining = TotalTime;
 
         internal void SetTotalTime(int value) => TotalTime = value;
     }
 
-    internal class BloodEffect : ScreenEffects
+    internal class BloodEffects : ScreenEffects
     {
-        internal BloodEffect() : base()
+        internal BloodEffects() : base()
         {
-            ID = 0;
-            TotalTime = 20;
+            TotalTime = 15; // 1.5 sec
             UpdateTimeRemaining();
         }
     }
+
+    internal class BloodEffect1 : BloodEffects { }
+    internal class BloodEffect2 : BloodEffects { }
+    internal class BloodEffect3 : BloodEffects { }
+    internal class BloodEffect4 : BloodEffects { }
 }

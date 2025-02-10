@@ -187,6 +187,7 @@ namespace SLIL.Classes
                                 }
                             }
                             Entities.Remove(entity);
+                            i--;
                             continue;
                         }
                     }
@@ -345,6 +346,7 @@ namespace SLIL.Classes
                         || ImpassibleCells.Contains(MAP[(int)(newY - entity.EntityWidth / 2) * MAP_WIDTH + (int)newX]))
                         {
                             Entities.Remove(entity);
+                            i--;
                             Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
                             PlayGameSound(SLIL.explosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
                         }
@@ -357,6 +359,7 @@ namespace SLIL.Classes
                             if (ML.GetDistance(new TPoint(ent.X, ent.Y), new TPoint(entity.X, entity.Y)) < (entity.EntityWidth + ent.EntityWidth) * (entity.EntityWidth + ent.EntityWidth))
                             {
                                 Entities.Remove(entity);
+                                i--;
                                 SpawnExplotion(entity);
                                 PlayGameSound(SLIL.explosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
                                 return;
@@ -827,6 +830,7 @@ namespace SLIL.Classes
                         }
                     }
                     Entities.RemoveAt(i);
+                    i--;
                 }
             }
             if (pet.IsInstantAbility != 0)

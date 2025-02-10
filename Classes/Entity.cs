@@ -258,10 +258,7 @@ namespace SLIL.Classes
     public abstract class NPC : Friend
     {
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'W', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S' };
         protected override int GetMovesInARow() => 0;
         protected override int GetMaxHP() => 0;
         protected override int GetTexture() => Texture;
@@ -293,10 +290,7 @@ namespace SLIL.Classes
         public int AbilityTimer { get; set; }
         protected int PetAbility { get; set; }
         protected override double GetEntityWidth() => 0.1;
-        protected override char[] GetImpassibleCells()
-        {
-            return new char[] { '#', 'D', 'd', '=', 'S' };
-        }
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'S' };
         protected override int GetMovesInARow() => 0;
         protected override int GetMaxHP() => 0;
         protected override int GetTexture() => Texture;

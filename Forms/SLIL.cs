@@ -76,6 +76,13 @@ namespace SLIL
         private int currentIndex = 0;
         private bool active = true;
         private bool Paused = false, RunKeyPressed = false;
+        public static readonly Dictionary<Type, Image> ScreenEffectsIcons = new Dictionary<Type, Image>()
+        { 
+            { typeof(BloodEffect1), Properties.Resources.blood_effect_0 },
+            { typeof(BloodEffect2), Properties.Resources.blood_effect_1 },
+            { typeof(BloodEffect3), Properties.Resources.blood_effect_2 },
+            { typeof(BloodEffect4), Properties.Resources.blood_effect_3 },
+        };
         public static readonly Dictionary<Type, Image[]> IconDict = new Dictionary<Type, Image[]>
         {
             { typeof(Flashlight), new[] { Properties.Resources.missing } },
@@ -352,6 +359,7 @@ namespace SLIL
         };
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
+        private readonly List<ScreenEffects> screenEffects;
         public static PlaySound[] hit = { new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("hit_transport.wav"), false) };
         public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
         private PlaySound step, transport_step;
@@ -592,6 +600,7 @@ namespace SLIL
             Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
+            screenEffects = new List<ScreenEffects>();
             SetParameters();
             textureCache = textures;
             Controller.StartGame();
@@ -607,6 +616,7 @@ namespace SLIL
             Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
+            screenEffects = new List<ScreenEffects>();
             SetParameters();
             textureCache = textures;
             CUSTOM = custom;
@@ -632,6 +642,7 @@ namespace SLIL
             //Controller = new GameController(adress, port, password, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
+            screenEffects = new List<ScreenEffects>();
             SetParameters();
             textureCache = textures;
         }
@@ -1009,7 +1020,7 @@ namespace SLIL
 
         private void SLIL_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Controller.CloseConnection();
+            //Controller.CloseConnection();
             if (!CorrectExit)
             {
                 e.Cancel = true;
@@ -1388,6 +1399,15 @@ namespace SLIL
             }
             Player player = Controller.GetPlayer();
             if (player == null) return;
+            if (player.Hit)
+            {
+                player.Hit = false;
+                int dice = rand.Next(100);
+                if (dice < 25) screenEffects.Add(new BloodEffect1());
+                else if (dice < 50) screenEffects.Add(new BloodEffect2());
+                else if (dice < 75) screenEffects.Add(new BloodEffect3());
+                else screenEffects.Add(new BloodEffect4());
+            }
             shop_money.Text = $"$: {player.Money}";
             try
             {
@@ -1510,6 +1530,12 @@ namespace SLIL
         }
 
         private void Fps_timer_Tick(object sender, EventArgs e) => fps = CalculateFPS();
+
+        private void Screen_effects_timer_Tick(object sender, EventArgs e)
+        {
+            for (int i = 0; i < screenEffects.Count; i++)
+                screenEffects[i].ReducingTimeRemaining();
+        }
 
         //  #====       Input       ====#
 
@@ -2935,6 +2961,20 @@ namespace SLIL
             }
             if (player.EffectCheck(2))
                 graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
+            for (int i = 0; i < screenEffects.Count; i++)
+            {
+                var screenEffect = screenEffects[i];
+                ColorMatrix matrix = new ColorMatrix { Matrix33 = Math.Max(0, Math.Min(1, (float)screenEffect.TimeRemaining / screenEffect.TotalTime)) };
+                ImageAttributes attributes = new ImageAttributes();
+                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                Image effectImage = ScreenEffectsIcons[screenEffect.GetType()];
+                graphicsWeapon.DrawImage(effectImage, new Rectangle(0, 0, WEAPON.Width, WEAPON.Height), 0, 0, effectImage.Width, effectImage.Height, GraphicsUnit.Pixel, attributes);
+                if (screenEffects[i].TimeRemaining < 0)
+                {
+                    screenEffects.RemoveAt(i);
+                    i--;
+                }
+            }
             if (player.EffectCheck(6) || Controller.InBackrooms())
             {
                 if (player.CuteMode && !Controller.InBackrooms())

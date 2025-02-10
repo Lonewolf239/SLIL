@@ -1,7 +1,7 @@
 ﻿using Play_Sound;
 using LiteNetLib;
 using System.Text;
-using LiteNetLib.Utils;
+//using LiteNetLib.Utils;
 using System.Collections.Generic;
 
 namespace SLIL.Classes
@@ -12,18 +12,18 @@ namespace SLIL.Classes
     {
         private readonly GameModel Game;
         public int playerID;
-        public string playerName;
+        public string playerName = "Player";
         private const bool _isInSpectatorMode = false;
         private int _spectatingForPlayerID;
-        private readonly EventBasedNetListener listener;
-        private readonly NetManager client;
-        private NetPeer peer;
+        //private readonly EventBasedNetListener listener;
+        //private readonly NetManager client;
+        //private NetPeer peer;
         private readonly StartGameDelegate StartGameHandle;
         private readonly InitPlayerDelegate InitPlayerHandle;
         private readonly StopGameDelegate StopGameHandle;
         private readonly PlaySoundDelegate PlaySoundHandle;
         private readonly SetPlayerIDDelegate SetPlayerID;
-        private readonly CloseFormDelegate CloseForm;
+        //private readonly CloseFormDelegate CloseForm;
 
         public GameController(StartGameDelegate startGame, InitPlayerDelegate initPlayer, StopGameDelegate stopGame, PlaySoundDelegate playSound)
         {
@@ -180,23 +180,14 @@ namespace SLIL.Classes
         //    }).Start();
         //}
 
-        public void CloseConnection() => client?.Stop();
+        //public void CloseConnection() => client?.Stop();
 
-        ~GameController() => client?.Stop();
+        //~GameController() => client?.Stop();
 
         internal void MovePlayer(double dX, double dY)
         {
-            if (_isInSpectatorMode) return;
+            //if (_isInSpectatorMode) return;
             Game.MovePlayer(dX, dY, playerID);
-            //if (peer != null)
-            //{
-            //    NetDataWriter writer = new NetDataWriter();
-            //    writer.Put(1);
-            //    writer.Put(dX);
-            //    writer.Put(dY);
-            //    writer.Put(playerID);
-            //    peer.Send(writer, DeliveryMethod.Unreliable);
-            //}
         }
 
         internal bool IsInSpectatorMode() => _isInSpectatorMode;
@@ -223,28 +214,28 @@ namespace SLIL.Classes
 
         public void AddTransport(int index)
         {
-            if (peer == null)
+            //if (peer == null)
                 Game.AddTransport(playerID, index);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(1889);
-                writer.Put(index);
-                peer.Send(writer, DeliveryMethod.ReliableUnordered);
-            }
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(1889);
+            //    writer.Put(index);
+            //    peer.Send(writer, DeliveryMethod.ReliableUnordered);
+            //}
         }
 
         public void AddPet(int index)
         {
-            if (peer == null)
+            //if (peer == null)
                 Game.AddPet(playerID, index);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(11);
-                writer.Put(index);
-                peer.Send(writer, DeliveryMethod.ReliableUnordered);
-            }
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(11);
+            //    writer.Put(index);
+            //    peer.Send(writer, DeliveryMethod.ReliableUnordered);
+            //}
         }
 
         public void AddPlayer() => playerID = Game.AddPlayer();
@@ -331,17 +322,18 @@ namespace SLIL.Classes
 
         public void SpawnRockets(double x, double y, int id, double a)
         {
-            if (!IsMultiplayer()) Game.SpawnRockets(x, y, id, a);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(89);
-                writer.Put(x);
-                writer.Put(y);
-                writer.Put(id);
-                writer.Put(a);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (!IsMultiplayer()) 
+                Game.SpawnRockets(x, y, id, a);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(89);
+            //    writer.Put(x);
+            //    writer.Put(y);
+            //    writer.Put(id);
+            //    writer.Put(a);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         public void Pause(bool paused) => Game.Pause(paused);
@@ -350,17 +342,17 @@ namespace SLIL.Classes
 
         public bool DealDamage(Entity ent, double damage)
         {
-            if (_isInSpectatorMode) return false;
-            if (peer != null)
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(5);
-                writer.Put(ent.ID);
-                writer.Put(damage);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-                return false;
-            }
-            else
+            //if (_isInSpectatorMode) return false;
+            //if (peer != null)
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(5);
+            //    writer.Put(ent.ID);
+            //    writer.Put(damage);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //    return false;
+            //}
+            //else
                 return Game.DealDamage(ent.ID, damage, playerID);
         }
 
@@ -370,18 +362,18 @@ namespace SLIL.Classes
 
         public void AddHittingTheWall(double X, double Y, double vMove) 
         {
-            if (_isInSpectatorMode) return;
-            if (peer == null)
-                Game.AddHittingTheWall(X, Y, vMove);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(77);
-                writer.Put(X);
-                writer.Put(Y);
-                writer.Put(vMove);
-                peer.Send(writer, DeliveryMethod.Unreliable);
-            }
+            //if (_isInSpectatorMode) return;
+            //if (peer == null)
+            Game.AddHittingTheWall(X, Y, vMove);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(77);
+            //    writer.Put(X);
+            //    writer.Put(Y);
+            //    writer.Put(vMove);
+            //    peer.Send(writer, DeliveryMethod.Unreliable);
+            //}
         }
 
         internal void ChangePlayerA(double v)
@@ -404,111 +396,114 @@ namespace SLIL.Classes
 
         public int GetPing()
         {
-            if (peer == null) return 0;
-            return peer.Ping;
+            return 0;
+            //if (peer == null) return 0;
+            //return peer.Ping;
         }
 
         internal int GetStage()
         {
-            if (peer == null)
-                return Game.GetStage();
-            else
-            {
-                //TODO:
-                return -1;
-            }
+           // if (peer == null)
+           return Game.GetStage();
+            //else
+            //{
+            //    //TODO:
+            //    return -1;
+            //}
         }
 
         internal int GetTotalKilled()
         {
-            if (peer == null)
+            //if (peer == null)
                 return Game.GetTotalKilled();
-            else
-            {
-                //TODO:
-                return -1;
-            }
+            //else
+            //{
+            //    //TODO:
+            //    return -1;
+            //}
         }
 
         internal int GetDeathCause()
         {
-            if (peer == null)
+            //if (peer == null)
                 return Game.GetDeathCause();
-            else
-            {
-                //TODO:
-                return -1;
-            }
+            //else
+            //{
+            //    //TODO:
+            //    return -1;
+            //}
         }
 
         internal string GetTotalTime()
         {
-            if (peer == null)
+            //if (peer == null)
                 return Game.GetTotalTime();
-            else
-            {
-                //TODO
-                return "00:00:00";
-            }
+            //else
+            //{
+            //    //TODO
+            //    return "00:00:00";
+            //}
         }
 
         internal void DrawItem()
         {
-            if (peer == null)
+            //if (peer == null)
                 Game.DrawItem(playerID);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(1556);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(1556);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         } 
         
         internal void UseItem()
         {
-            if (peer == null)
+            //if (peer == null)
                 Game.UseItem(playerID);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(1566);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(1566);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void ChangeItem(int index)
         {
-            if (peer == null)
+            //if (peer == null)
                 Game.ChangeItem(playerID, index);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(1577);
-                writer.Put(index);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(1577);
+            //    writer.Put(index);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void AmmoCountDecrease()
         {
-            if (peer == null) Game.AmmoCountDecrease(playerID);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(33);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.AmmoCountDecrease(playerID);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(33);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void ReloadClip()
         {
-            if (peer == null) Game.ReloadClip(playerID);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(34);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.ReloadClip(playerID);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(34);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal bool OnOffNoClip() => Game.OnOffNoClip(playerID);
@@ -517,57 +512,60 @@ namespace SLIL.Classes
 
         internal void ChangeWeapon(int new_gun)
         {
-            if (peer == null) Game.ChangeWeapon(playerID, new_gun);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(35);
-                writer.Put(new_gun);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+                Game.ChangeWeapon(playerID, new_gun);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(35);
+            //    writer.Put(new_gun);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
-        internal bool IsMultiplayer() => peer != null;
+        internal bool IsMultiplayer() => false;// peer != null;
 
         internal void GettingOffTheTransport()
         {
-            if (peer == null) Game.GettingOffTheTransport(playerID);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(1344);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.GettingOffTheTransport(playerID);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(1344);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal bool DoParkour(int y, int x)
         {
-            if (peer == null) return Game.DoParkour(playerID, y, x);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(1333);
-                writer.Put(y);
-                writer.Put(x);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-                return true;
-            }
+            //if (peer == null)
+            return Game.DoParkour(playerID, y, x);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(1333);
+            //    writer.Put(y);
+            //    writer.Put(x);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //    return true;
+            //}
         }
 
         internal void StopParkour() => Game.StopParkour(playerID);
 
         internal void SetWeaponSlot(int slot,int index)
         {
-            if (peer == null)
-                Game.SetWeaponSlot(playerID, slot, index);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(41);
-                writer.Put(slot);
-                writer.Put(index);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.SetWeaponSlot(playerID, slot, index);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(41);
+            //    writer.Put(slot);
+            //    writer.Put(index);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void BuyAmmo(Gun weapon)
@@ -581,15 +579,15 @@ namespace SLIL.Classes
                     break;
                 }
             }
-            if (peer == null)
-                Game.BuyAmmo(playerID, weaponID);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(36);
-                writer.Put(weaponID);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.BuyAmmo(playerID, weaponID);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(36);
+            //    writer.Put(weaponID);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void BuyWeapon(Gun weapon)
@@ -603,15 +601,15 @@ namespace SLIL.Classes
                     break;
                 }
             }
-            if (peer == null)
-                Game.BuyWeapon(playerID, weaponID);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(37);
-                writer.Put(weaponID);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.BuyWeapon(playerID, weaponID);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(37);
+            //    writer.Put(weaponID);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void UpdateWeapon(Gun weapon)
@@ -625,15 +623,15 @@ namespace SLIL.Classes
                     break;
                 }
             }
-            if (peer == null)
-                Game.UpdateWeapon(playerID, weaponID);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(38);
-                writer.Put(weaponID);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.UpdateWeapon(playerID, weaponID);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(38);
+            //    writer.Put(weaponID);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void BuyConsumable(DisposableItem item)
@@ -647,76 +645,76 @@ namespace SLIL.Classes
                     break;
                 }
             }
-            if (peer == null)
-                Game.BuyConsumable(playerID, itemID);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(39);
-                writer.Put(itemID);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.BuyConsumable(playerID, itemID);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(39);
+            //    writer.Put(itemID);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void PlayGameSound(PlaySound sound)
         {
             if (!MainMenu.sounds) return;
-            if (peer == null)
-                Game.PlayGameSound(playerID, sound);
-            else
-            {
-                //TODO:
-            }
+            //if (peer == null)
+            Game.PlayGameSound(playerID, sound);
+            //else
+            //{
+            //    //TODO:
+            //}
         }
 
         internal void PlayGameSound(PlaySound sound, int coordinate)
         {
             if (!MainMenu.sounds) return;
-            if (peer == null)
-                Game.PlayGameSound(sound, coordinate);
-            else
-            {
-                //TODO:
-            }
+            //if (peer == null)
+            Game.PlayGameSound(sound, coordinate);
+            //else
+            //{
+            //    //TODO:
+            //}
         }
 
         internal void RepairCovering(int id)
         {
-            if (peer != null)
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(9955);
-                writer.Put(id);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer != null)
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(9955);
+            //    writer.Put(id);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void InteractingWithDoors(int coordinate)
         {
-            if (peer == null)
-                Game.InteractingWithDoors(coordinate);
-            else
-            {
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(40);
-                writer.Put(coordinate);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.InteractingWithDoors(coordinate);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(40);
+            //    writer.Put(coordinate);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal void SetEnemyDamageOffset(double value) => Game.SetEnemyDamageOffset(value);
 
         internal void GetOnATransport(int ID)
         {
-            if (peer == null)
-                Game.GetOnATransport(ID, playerID);
-            else
-            {
-                //NetDataWriter writer = new NetDataWriter();
-                //writer.Put(1777);
-                //writer.Put(ID);
-                //peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            }
+            //if (peer == null)
+            Game.GetOnATransport(ID, playerID);
+            //else
+            //{
+            //    NetDataWriter writer = new NetDataWriter();
+            //    writer.Put(1777);
+            //    writer.Put(ID);
+            //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            //}
         }
 
         internal int GetCoordinate(double x, double y) => Game.GetCoordinate(x, y);

@@ -5,17 +5,16 @@ using SLIL.Classes;
 
 namespace SLIL.UserControls
 {
-    public partial class SLIL_PetShopInterface : UserControl
+    internal partial class SLIL_PetShopInterface : UserControl
     {
-        public Pet pet;
-        public int index = 0;
-        public int width;
-        public static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
-        public PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
-        public Player player;
+        internal Pet pet;
+        internal int index = 0;
+        internal static PlaySound buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false);
+        internal PlaySound cant_pressed = new PlaySound(MainMenu.CGFReader.GetFile("cant_pressed.wav"), false);
+        internal Player player;
         private readonly string[,] buy_text = { { "2-0", "2-12" }, { "Buy", "Has already" } };
 
-        public SLIL_PetShopInterface()
+        internal SLIL_PetShopInterface()
         {
             InitializeComponent();
             Cursor = Program.SLILCursor;
@@ -44,7 +43,6 @@ namespace SLIL.UserControls
 
         private void SLIL_PetShopInterface_VisibleChanged(object sender, EventArgs e)
         {
-            Width = width;
             name.Text = GetPetName();
             icon.Image = SLIL.ShopImageDict[pet.GetType()];
             descryption.Text = GetPetDescryption();
