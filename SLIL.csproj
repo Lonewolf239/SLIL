@@ -233,6 +233,7 @@
     <Compile Include="Classes\Pixel.cs" />
     <Compile Include="Classes\Player.cs" />
     <Compile Include="Classes\PlaySound.cs" />
+    <Compile Include="Classes\ScreenEffects.cs" />
     <Compile Include="Classes\Separator.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1525,6 +1526,7 @@
     <None Include="Images\void_ceiling.png" />
     <None Include="Images\void_wall.png" />
     <None Include="Images\void_floor.png" />
+    <None Include="Images\stunned.png" />
     <Content Include="SLILCursor.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

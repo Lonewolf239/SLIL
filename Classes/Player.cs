@@ -872,7 +872,7 @@ namespace SLIL.Classes
                     effect = new Protection();
                     break;
                 case 3:
-                    if (EffectCheck(3)) return;
+                    if (EffectCheck(3) || EffectCheck(9)) return;
                     effect = new Fatigue();
                     MaxStamine -= 450;
                     if (Stamine > MaxStamine) Stamine = MaxStamine;
@@ -895,21 +895,26 @@ namespace SLIL.Classes
                     break;
                 case 5:
                     if (EffectCheck(5) || EffectCheck(4) || EffectCheck(0)) return;
+                    if (EffectCheck(9)) return;
                     effect = new Bleeding();
                     break;
                 case 6:
-                    if (EffectCheck(6)) return;
+                    if (EffectCheck(6) || EffectCheck(9)) return;
                     effect = new Blindness();
                     break;
                 case 7:
-                    if (EffectCheck(7)) return;
+                    if (EffectCheck(7) || EffectCheck(9)) return;
                     effect = new Stunned();
                     MaxMoveSpeed -= 0.8;
                     MaxStrafeSpeed = MaxMoveSpeed / 2;
                     break;
                 case 8:
                     if (EffectCheck(8)) return;
-                    effect = new Void();
+                    effect = new VoidE();
+                    break;
+                case 9:
+                    if (EffectCheck(9)) return;
+                    effect = new God();
                     break;
             }
             if (effect != null)
@@ -1079,7 +1084,7 @@ namespace SLIL.Classes
 
         public bool DealDamage(double damage, bool give_invulnerable)
         {
-            if (Invulnerable) return Dead;
+            if (Invulnerable || EffectCheck(9)) return Dead;
             if (EffectCheck(2) || EffectCheck(4)) damage *= 0.8;
             if (InTransport) TransportHP -= damage;
             else HP -= damage;

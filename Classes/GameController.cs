@@ -13,7 +13,7 @@ namespace SLIL.Classes
         private readonly GameModel Game;
         public int playerID;
         public string playerName;
-        private bool _isInSpectatorMode;
+        private const bool _isInSpectatorMode = false;
         private int _spectatingForPlayerID;
         private readonly EventBasedNetListener listener;
         private readonly NetManager client;

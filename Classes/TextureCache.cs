@@ -529,7 +529,7 @@ namespace SLIL.Classes
             //backrooms
             Color.FromArgb(139, 126, 89),
             //void
-            Color.FromArgb(139, 126, 89)
+            Color.FromArgb(0, 0, 0)
         };
         private readonly Color[] CUTE_COLORS =
         {
@@ -540,7 +540,7 @@ namespace SLIL.Classes
             //backrooms
             Color.FromArgb(139, 126, 89),
             //void
-            Color.FromArgb(139, 126, 89)
+            Color.FromArgb(0, 0, 0)
         };
         private Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureColorCache;
         private Dictionary<int, Dictionary<SpriteStates, Color[,]>> textureCuteColorCache;

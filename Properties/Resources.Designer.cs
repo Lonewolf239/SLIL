@@ -3553,6 +3553,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap stunned {
+            get {
+                object obj = ResourceManager.GetObject("stunned", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap super_medical_kit_icon {
             get {
                 object obj = ResourceManager.GetObject("super_medical_kit_icon", resourceCulture);

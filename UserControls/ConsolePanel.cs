@@ -22,7 +22,8 @@ namespace SLIL.UserControls
             new Regeneration(), new Adrenaline(),
             new Protection(), new Fatigue(),
             new Rider(), new Bleeding(),
-            new Blindness(), new Stunned()
+            new Blindness(), new Stunned(),
+            new VoidE(), new God()
         };
         private readonly List<string> previous_cheat = new List<string>();
         public List<Entity> Entities;
@@ -72,7 +73,7 @@ namespace SLIL.UserControls
         {
             e.SuppressKeyPress = true;
             e.Handled = true;
-            SLIL parent = (Parent.FindForm() as SLIL);
+            SLIL parent = (SLIL)Parent.FindForm();
             if (e.KeyCode == Keys.Enter)
             {
                 Color color = foreColors[color_index];
@@ -635,17 +636,17 @@ namespace SLIL.UserControls
                         {
                             show_date = false;
                             message = "\n" +
-                                 "~┌─────┬──────────────────┬──────────────────────────────┐~\n" +
-                                 "~│~ *ID*  ~│~ *Effect*           ~│~ *Description*                  ~│~\n" +
-                                 "~├─────┼──────────────────┼──────────────────────────────┤~\n";
+                                 "~┌─────┬──────────────────┬─────────────────────────────────────┐~\n" +
+                                 "~│~ *ID*  ~│~ *Effect*           ~│~ *Description*                         ~│~\n" +
+                                 "~├─────┼──────────────────┼─────────────────────────────────────┤~\n";
                             for (int i = 0; i < effects.Length; i++)
                             {
                                 string id = effects[i].ID.ToString().PadRight(4);
                                 string name = effects[i].Name.PadRight(17);
-                                string description = effects[i].Description.PadRight(29);
+                                string description = effects[i].Description.PadRight(36);
                                 message += $"~│~ *{id}*~│~ -{name}-~│~ {description}~│~\n";
                             }
-                            message += "~└─────┴──────────────────┴──────────────────────────────┘~";
+                            message += "~└─────┴──────────────────┴─────────────────────────────────────┘~";
                         }
                         else if (cheat == "EFCLEAR")
                         {
@@ -656,7 +657,7 @@ namespace SLIL.UserControls
                         {
                             for (int i = 0; i < effects.Length; i++)
                             {
-                                if (!player.EffectCheck(i))
+                                if (!player.EffectCheck(i) && i != 4 && i != 8)
                                     player.GiveEffect(i, true);
                             }
                             message = $"All effects have been issued";
@@ -675,7 +676,7 @@ namespace SLIL.UserControls
                                     }
                                     else
                                     {
-                                        if (x == 4)
+                                        if (x == 4 || x == 8)
                                         {
                                             color = Color.Red;
                                             message = $"It is impossible to issue this effect with the command";
@@ -713,7 +714,7 @@ namespace SLIL.UserControls
                                     }
                                     else
                                     {
-                                        if (x == 4)
+                                        if (x == 4 || x == 8)
                                         {
                                             color = Color.Red;
                                             message = $"It is impossible to issue this effect with the command";
@@ -752,7 +753,7 @@ namespace SLIL.UserControls
                                     }
                                     else
                                     {
-                                        if (x == 4)
+                                        if (x == 4 || x == 8)
                                         {
                                             color = Color.Red;
                                             message = $"It is impossible to issue this effect with the command";
@@ -1033,10 +1034,21 @@ namespace SLIL.UserControls
                         }
                         else if (cheat == "NOCLIP")
                         {
-                            if (parent.OnOffNoClip())
-                                message = "noclip enabled";
+                            if (parent.OnOffNoClip()) message = "noclip enabled";
+                            else message = "noclip disabled";
+                        }
+                        else if (cheat == "GOD")
+                        {
+                            if (player.EffectCheck(9))
+                            {
+                                player.StopEffect(9);
+                                message = "god mod enabled";
+                            }
                             else
-                                message = "noclip disabled";
+                            {
+                                player.GiveEffect(9, true);
+                                message = "god mod disabled";
+                            }
                         }
                         else if (cheat == "KILL")
                         {

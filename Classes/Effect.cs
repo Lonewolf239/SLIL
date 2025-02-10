@@ -2,152 +2,165 @@
 
 namespace SLIL.Classes
 {
-    public class Effect
+    internal class Effect
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int EffectTotalTime { get; set; }
-        public int EffectTimeRemaining { get; set; }
-        public bool Infinity { get; set; }
+        internal int ID { get; set; }
+        internal string Name { get; set; }
+        internal string Description { get; set; }
+        internal int TotalTime { get; set; }
+        internal int TimeRemaining { get; set; }
+        internal bool Infinity { get; set; }
 
-        public Effect() => Infinity = false;
+        internal Effect() => Infinity = false;
 
-        public bool ReducingTimeRemaining()
+        internal bool ReducingTimeRemaining()
         {
             if (Infinity) return false;
-            EffectTimeRemaining--;
-            if (EffectTimeRemaining < 0)
+            TimeRemaining--;
+            if (TimeRemaining < 0)
                 return true;
             return false;
         }
 
-        public void UpdateTimeRemaining() => EffectTimeRemaining = EffectTotalTime;
+        internal void UpdateTimeRemaining() => TimeRemaining = TotalTime;
 
-        public void SetTotalTime(int value) => EffectTotalTime = value;
+        internal void SetTotalTime(int value) => TotalTime = value;
 
-        public void Serialize(NetDataWriter writer)
+        internal void Serialize(NetDataWriter writer)
         {
-            writer.Put(EffectTimeRemaining);
+            writer.Put(TimeRemaining);
         }
 
-        public void Deserialize(NetDataReader reader)
+        internal void Deserialize(NetDataReader reader)
         {
-            this.EffectTimeRemaining = reader.GetInt();
+            this.TimeRemaining = reader.GetInt();
         }
     }
 
-    public class Debaf : Effect
+    internal class Debaf : Effect
     {
-        public Debaf() : base() { }
+        internal Debaf() : base() { }
     }
 
-    public class Regeneration : Effect
+    internal class Regeneration : Effect
     {
-        public Regeneration() : base()
+        internal Regeneration() : base()
         {
             ID = 0;
-            EffectTotalTime = 15;
+            TotalTime = 15;
             Name = "Regeneration";
             Description = "Gradually restores health";
             UpdateTimeRemaining();
         }
     }
 
-    public class Adrenaline : Effect
+    internal class Adrenaline : Effect
     {
-        public Adrenaline() : base()
+        internal Adrenaline() : base()
         {
             ID = 1;
-            EffectTotalTime = 20;
+            TotalTime = 20;
             Name = "Adrenaline";
             Description = "Increases movement speed";
             UpdateTimeRemaining();
         }
     }
 
-    public class Protection : Effect
+    internal class Protection : Effect
     {
-        public Protection() : base()
+        internal Protection() : base()
         {
             ID = 2;
-            EffectTotalTime = 120;
+            TotalTime = 120;
             Name = "Protection";
             Description = "Reduces damage taken";
             UpdateTimeRemaining();
         }
     }
 
-    public class Rider : Effect
+    internal class Rider : Effect
     {
-        public Rider() : base()
+        internal Rider() : base()
         {
             ID = 4;
             Infinity = true;
-            EffectTotalTime = 1;
+            TotalTime = 1;
             Name = "Biker";
             Description = "I'm a Biker bitch!";
             UpdateTimeRemaining();
         }
     }
 
-    public class Fatigue : Debaf
+    internal class Fatigue : Debaf
     {
-        public Fatigue() : base()
+        internal Fatigue() : base()
         {
             ID = 3;
-            EffectTotalTime = 15;
+            TotalTime = 15;
             Name = "Fatigue";
             Description = "Prevents window entry";
             UpdateTimeRemaining();
         }
     }
 
-    public class Bleeding : Debaf
+    internal class Bleeding : Debaf
     {
-        public Bleeding() : base()
+        internal Bleeding() : base()
         {
             ID = 5;
-            EffectTotalTime = 15;
+            TotalTime = 15;
             Name = "Bleeding";
             Description = "Gradually reduces health";
             UpdateTimeRemaining();
         }
     }
 
-    public class Blindness : Debaf
+    internal class Blindness : Debaf
     {
-        public Blindness() : base()
+        internal Blindness() : base()
         {
             ID = 6;
-            EffectTotalTime = 10;
+            TotalTime = 10;
             Name = "Blindness";
             Description = "Reduces visibility range";
             UpdateTimeRemaining();
         }
     }
 
-    public class Stunned : Debaf
+    internal class Stunned : Debaf
     {
-        public Stunned() : base()
+        internal Stunned() : base()
         {
             ID = 7;
-            EffectTotalTime = 7;
+            TotalTime = 7;
             Name = "Stunned";
-            Description = "Reduces movement speed and invulnerability duration";
+            Description = "Reduces speed and invulnerability";
             UpdateTimeRemaining();
         }
     }
 
-    public class Void : Debaf
+    internal class VoidE : Debaf
     {
-        public Void() : base()
+        internal VoidE() : base()
         {
             ID = 8;
-            EffectTotalTime = 1;
+            TotalTime = 1;
             Infinity = true;
             Name = "Void";
             Description = "Void";
+            UpdateTimeRemaining();
+        }
+    }
+
+    internal class God : Effect
+    {
+        internal God() : base()
+        {
+            ID = 9;
+            TotalTime = 1;
+            Infinity = true;
+            Name = "God";
+            Description = "Cheater!";
             UpdateTimeRemaining();
         }
     }

@@ -324,7 +324,9 @@ namespace SLIL
             { typeof(Rider), Properties.Resources.driver },
             { typeof(Bleeding), Properties.Resources.bleeding },
             { typeof(Blindness), Properties.Resources.blindness },
-            { typeof(Stunned), Properties.Resources.missing },
+            { typeof(Stunned), Properties.Resources.stunned },
+            { typeof(VoidE), Properties.Resources.missing },
+            { typeof(God), Properties.Resources.missing },
         };
         public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
@@ -555,6 +557,7 @@ namespace SLIL
         private bool open_shop = false, pressed_r = false, cancelReload = false;
         private float xOffset = 0, yOffset = 0, xOffsetDirection = 0.25f, yOffsetDirection = 0.25f;
         private double RecoilY = 0, RecoilLX = 0, RecoilRX = 0;
+        private double RecoilOY = 0, RecoilLOX = 0, RecoilROX = 0;
         private const double RecoilRecoverySpeed = 7.5f;
         private Display SLILDisplay;
         private Bitmap map;
@@ -1482,22 +1485,28 @@ namespace SLIL
             if (player == null) return;
             if (RecoilY > 0)
             {
-                double change = Math.Min(RecoilRecoverySpeed, RecoilY);
+                double change = Math.Min(RecoilRecoverySpeed + RecoilOY, RecoilY);
+                RecoilOY++;
                 RecoilY -= change;
                 Controller.ChangePlayerLook(-change);
             }
+            else RecoilOY = 0;
             if (RecoilLX > 0)
             {
-                double change = Math.Min(RecoilRecoverySpeed, RecoilLX);
+                double change = Math.Min(RecoilRecoverySpeed + RecoilLOX, RecoilLX);
+                RecoilLOX++;
                 RecoilLX -= change;
                 Controller.ChangePlayerA(-change);
             }
+            else RecoilLOX = 0;
             if (RecoilRX > 0)
             {
-                double change = Math.Min(RecoilRecoverySpeed, RecoilRX);
+                double change = Math.Min(RecoilRecoverySpeed + RecoilROX, RecoilRX);
+                RecoilROX++;
                 RecoilRX -= change;
                 Controller.ChangePlayerA(change);
             }
+            else RecoilROX = 0;
         }
 
         private void Fps_timer_Tick(object sender, EventArgs e) => fps = CalculateFPS();
@@ -3352,7 +3361,7 @@ namespace SLIL
             RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
             using (Pen pen =  new Pen(debaf ? Color.FromArgb(96, 90, 121) : Color.FromArgb(90, 131, 182), 1.75f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
-            float sweepAngle = (float)player.Effects[index].EffectTimeRemaining / player.Effects[index].EffectTotalTime * 360;
+            float sweepAngle = (float)player.Effects[index].TimeRemaining / player.Effects[index].TotalTime * 360;
             using (Pen pen = new Pen(debaf ? Color.FromArgb(126, 199, 138) : Color.FromArgb(104, 213, 248), 3))
             using (GraphicsPath path = new GraphicsPath())
             {

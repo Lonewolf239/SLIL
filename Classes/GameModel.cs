@@ -40,7 +40,7 @@ namespace SLIL.Classes
         private readonly StopGameDelegate StopGameHandle;
         private readonly PlaySoundDelegate PlaySoundHandle;
         private readonly SetPlayerIDDelegate SetPlayerID;
-        internal bool IsMultiplayer;
+        internal const bool IsMultiplayer = false;
         private static System.Windows.Forms.Timer RespawnTimer;
         private static System.Windows.Forms.Timer EntityTimer;
         private static System.Windows.Forms.Timer TimeRemain;
