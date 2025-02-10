@@ -309,7 +309,7 @@ namespace SLIL
             } },
             { typeof(Minigun), new[,]
             {
-                   { new PlaySound(MainMenu.CGFReader.GetFile("minigun"), false), new PlaySound(null, false), new PlaySound(null, false) }
+                   { new PlaySound(MainMenu.CGFReader.GetFile("minigun.wav"), false), new PlaySound(null, false), new PlaySound(null, false) }
             } },
         };
         public static readonly Dictionary<Type, PlaySound[]> TransportsSoundsDict = new Dictionary<Type, PlaySound[]>
@@ -1790,14 +1790,6 @@ namespace SLIL
                     }
                     if (e.KeyCode == Bind.Climb)
                     {
-                        if (player.GetMoveSpeed(ElapsedTime) < 0)
-                        {
-                            double dodgeAngle = ML.NormalizeAngle(player.A + Math.PI);
-                            double strafeSpeed = player.GetStrafeSpeed(ElapsedTime);
-                            if (strafeSpeed != 0) dodgeAngle += (strafeSpeed > 0 ? -1 : 1) * (Math.PI / 2);
-                            Controller.DoDodge(Math.Sin(dodgeAngle), Math.Cos(dodgeAngle));
-                            return;
-                        }
                         double rayA = player.A + FOV / 2 - (SCREEN_WIDTH / 2) * FOV / SCREEN_WIDTH;
                         double ray_x = Math.Sin(rayA);
                         double ray_y = Math.Cos(rayA);
@@ -1834,6 +1826,18 @@ namespace SLIL
                                     hit = true;
                                     break;
                             }
+                        }
+                        if (player.GetMoveSpeed(ElapsedTime) < 0 || player.GetStrafeSpeed(ElapsedTime) != 0)
+                        {
+                            double dodgeAngle = player.GetMoveSpeed(ElapsedTime) < 0 ? ML.NormalizeAngle(player.A + Math.PI) : player.A;
+                            double strafeSpeed = player.GetStrafeSpeed(ElapsedTime);
+                            if (strafeSpeed != 0)
+                            {
+                                if (player.GetMoveSpeed(ElapsedTime) < 0) dodgeAngle += (strafeSpeed > 0 ? -1 : 1) * (Math.PI / 2);
+                                else dodgeAngle += (strafeSpeed > 0 ? 1 : -1) * (Math.PI / 2);
+                            }
+                            Controller.DoDodge(Math.Sin(dodgeAngle), Math.Cos(dodgeAngle));
+                            return;
                         }
                     }
                     if (e.KeyCode == Bind.Select_item)
@@ -3990,7 +3994,7 @@ namespace SLIL
                     player = player,
                     Entities = Controller.GetEntities()
                 };
-                console_panel.Log("SLIL console *v1.5*\nType \"-HELP-\" for a list of commands...", false, false, Color.Lime);
+                console_panel.Log("SLIL console *v1.6*\nType \"-HELP-\" for a list of commands...", false, false, Color.Lime);
                 console_panel.Log("\n\nEnter the command: ", false, false, Color.Lime);
                 Controls.Add(console_panel);
                 SLILDisplay = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };

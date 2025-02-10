@@ -302,6 +302,7 @@ namespace SLIL.UserControls
                     }
                     else if (cheat == "PLAYER")
                     {
+                        string[] banList = { "Animations", "rand", "Guns", "GUNS", "Effects", "DisposableItems", "Name", "Angle", "IntX", "IntY", "VMove", "Frames" };
                         PropertyInfo[] properties = typeof(Player).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                         int maxPropNameLength = properties.Max(p => p.Name.Length);
                         int maxValueLength = properties.Max(p => p.GetValue(player)?.ToString().Length ?? 0);
@@ -313,8 +314,7 @@ namespace SLIL.UserControls
                         table.AppendLine($"~├{line}┼{line}┤~");
                         foreach (PropertyInfo property in properties)
                         {
-                            if (property.Name == "Guns" || property.Name == "DisposableItems")
-                                continue;
+                            if (banList.Contains(property.Name)) continue;
                             string propName = property.Name.PadRight(columnWidth);
                             object propValueObj = property.GetValue(player);
                             string propValue = "";
@@ -347,7 +347,8 @@ namespace SLIL.UserControls
                         }
                         else
                         {
-                            PropertyInfo[] properties = typeof(Enemy).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                            string[] banList = { "Animations", "rand", "ImpassibleCells", "MapWidth" };
+                            PropertyInfo[] properties = typeof(Enemy).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                             int maxPropNameLength = properties.Max(p => p.Name.Length);
                             int maxValueLength = properties.Max(p => p.GetValue(selected)?.ToString().Length ?? 0);
                             int columnWidth = Math.Max(maxPropNameLength, maxValueLength);
@@ -358,8 +359,7 @@ namespace SLIL.UserControls
                             table.AppendLine($"~├{line}┼{line}┤~");
                             foreach (PropertyInfo property in properties)
                             {
-                                if (property.Name == "rand" || property.Name == "MAP_WIDTH")
-                                    continue;
+                                if (banList.Contains(property.Name)) continue;
                                 string propName = property.Name.PadRight(columnWidth);
                                 object propValueObj = property.GetValue(selected);
                                 string propValue = "";
@@ -395,7 +395,7 @@ namespace SLIL.UserControls
                         }
                         else
                         {
-                            PropertyInfo[] properties = typeof(Gun).GetProperties();
+                            PropertyInfo[] properties = typeof(Gun).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                             int maxPropNameLength = properties.Max(p => p.Name.Length);
                             int maxValueLength = properties.Max(p => p.GetValue(selected)?.ToString().Length ?? 0);
                             int columnWidth = Math.Max(maxPropNameLength, maxValueLength);
@@ -406,8 +406,6 @@ namespace SLIL.UserControls
                             table.AppendLine($"~├{line}┼{line}┤~");
                             foreach (PropertyInfo property in properties)
                             {
-                                if (property.Name == "Icon" || property.Name == "Images" || property.Name == "Sounds")
-                                    continue;
                                 string propName = property.Name.PadRight(columnWidth);
                                 object propValueObj = property.GetValue(selected);
                                 string propValue = "";
@@ -437,7 +435,7 @@ namespace SLIL.UserControls
                     {
                         show_date = false;
                         console.Text = null;
-                        message = "SLIL console *v1.5*\nType \"-HELP-\" for a list of commands...";
+                        message = "SLIL console *v1.6*\nType \"-HELP-\" for a list of commands...";
                         console.Refresh();
                     }
                     else if (cheat == "SLC")
@@ -621,7 +619,7 @@ namespace SLIL.UserControls
                                 color = foreColors[color_index];
                                 show_date = false;
                                 console.Text = null;
-                                message = "SLIL console *v1.5*\nType \"-HELP-\" for a list of commands...";
+                                message = "SLIL console *v1.6*\nType \"-HELP-\" for a list of commands...";
                                 console.Refresh();
                             }
                         }
@@ -1333,7 +1331,7 @@ namespace SLIL.UserControls
             if (console.Text.Length == console.MaxLength)
             {
                 console.Clear();
-                ConsoleAppendText("SLIL console *v1.5*\nType \"-HELP-\" for a list of commands...", foreColors[color_index]);
+                ConsoleAppendText("SLIL console *v1.6*\nType \"-HELP-\" for a list of commands...", foreColors[color_index]);
                 ConsoleAppendText("*The console was cleared due to a buffer overflow*", foreColors[color_index]);
                 ConsoleAppendText("\n\nEnter the command: ", foreColors[color_index]);
                 console.Refresh();

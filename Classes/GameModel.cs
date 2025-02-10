@@ -2049,7 +2049,7 @@ namespace SLIL.Classes
         internal bool DoParkour(int playerID, int y, int x)
         {
             Player p = GetPlayer(playerID);
-            if (p == null) return false;
+            if (p == null || p.Stamine < 200) return false;
             if (p.EffectCheck(3)) return false;
             if (p.InTransport) PlayGameSound(playerID, SLIL.climb[1]);
             else PlayGameSound(playerID, SLIL.climb[0]);
@@ -2078,6 +2078,7 @@ namespace SLIL.Classes
             double new_x = p.X + Math.Sin(p.A);
             double new_y = p.Y + Math.Cos(p.A);
             p.InParkour = false;
+            p.ReducesStamine(150);
             while (HasImpassibleCells((int)new_y * MAP_WIDTH + (int)(new_x), playerID))
             {
                 new_x += Math.Sin(p.A) / 4;
