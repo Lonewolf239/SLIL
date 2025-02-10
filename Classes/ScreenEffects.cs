@@ -6,10 +6,6 @@
         internal int TimeRemaining { get; set; }
 
         internal void ReducingTimeRemaining() => TimeRemaining--;
-
-        internal void UpdateTimeRemaining() => TimeRemaining = TotalTime;
-
-        internal void SetTotalTime(int value) => TotalTime = value;
     }
 
     internal class BloodEffects : ScreenEffects
@@ -17,7 +13,7 @@
         internal BloodEffects() : base()
         {
             TotalTime = 15; // 1.5 sec
-            UpdateTimeRemaining();
+            TimeRemaining = TotalTime;
         }
     }
 
