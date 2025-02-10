@@ -60,7 +60,8 @@ namespace SLIL.Classes
             new SniperRifle(), new Fingershot(), new TSPitW(),
             new Gnome(), new FirstAidKit(), new Candy(),
             new Rainblower(), new Adrenalin(), new Helmet(),
-            new RPG(), new Petition(), new MedicalKit()
+            new RPG(), new Petition(), new MedicalKit(),
+            new Minigun()
         };
         internal List<Gun> Guns = new List<Gun>();
         internal List<DisposableItem> DisposableItems = new List<DisposableItem>();
@@ -1075,6 +1076,19 @@ namespace SLIL.Classes
             Money += value;
             if (Money > 9999) Money = 9999;
             else if (Money < 0) Money = 0;
+        }
+
+        internal void AddWeapon(Gun gun, bool setMaxAmmo = true)
+        {
+            gun.HasIt = true;
+            if (setMaxAmmo) gun.AmmoInStock = gun.MaxAmmo;
+            else gun.AmmoCount = gun.CartridgesClip;
+            if (!Guns.Contains(gun))
+            {
+                Guns.Add(gun);
+                if (WeaponSlot_0 == -1) WeaponSlot_0 = Guns.IndexOf(gun);
+                else if (WeaponSlot_1 == -1) WeaponSlot_1 = Guns.IndexOf(gun);
+            }
         }
 
         protected override int GetEntityID() => 0;

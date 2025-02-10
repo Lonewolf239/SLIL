@@ -12,7 +12,7 @@
     {
         internal BloodEffects() : base()
         {
-            TotalTime = 15; // 1.5 sec
+            TotalTime = 35; // 3.5 sec
             TimeRemaining = TotalTime;
         }
     }

@@ -145,6 +145,7 @@ namespace SLIL
                 Properties.Resources.medical_kit_icon,
                 Properties.Resources.medical_kit_icon
             } },
+            { typeof(Minigun), new[] { Properties.Resources.minigun_icon } },
         };
         public static readonly Dictionary<Type, Image[,]> GunsImagesDict = new Dictionary<Type, Image[,]>
         {
@@ -225,6 +226,10 @@ namespace SLIL
             {
                    { Properties.Resources.full_medical_kit, Properties.Resources.full_medical_kit_0, Properties.Resources.full_medical_kit_1, Properties.Resources.full_medical_kit_2 }
             } },
+            { typeof(Minigun), new[,]
+            {
+                   { Properties.Resources.minigun, Properties.Resources.minigun_shooted, Properties.Resources.minigun, Properties.Resources.minigun, Properties.Resources.minigun, Properties.Resources.minigun }
+            } },
         };
         public static readonly Dictionary<Type, PlaySound[,]> GunsSoundsDict = new Dictionary<Type, PlaySound[,]>
         {
@@ -301,6 +306,10 @@ namespace SLIL
             { typeof(MedicalKit), new[,]
             {
                    { new PlaySound(MainMenu.CGFReader.GetFile("medical_kit_using.wav"), false) }
+            } },
+            { typeof(Minigun), new[,]
+            {
+                   { new PlaySound(MainMenu.CGFReader.GetFile("minigun"), false), new PlaySound(null, false), new PlaySound(null, false) }
             } },
         };
         public static readonly Dictionary<Type, PlaySound[]> TransportsSoundsDict = new Dictionary<Type, PlaySound[]>
@@ -566,7 +575,7 @@ namespace SLIL
         private float xOffset = 0, yOffset = 0, xOffsetDirection = 0.25f, yOffsetDirection = 0.25f;
         private double RecoilY = 0, RecoilLX = 0, RecoilRX = 0;
         private double RecoilOY = 0, RecoilLOX = 0, RecoilROX = 0;
-        private const double RecoilRecoverySpeed = 7.5f;
+        private const double RecoilRecoverySpeed = 9.5f;
         private Display SLILDisplay;
         private Bitmap map;
         private ConsolePanel console_panel;
@@ -586,7 +595,7 @@ namespace SLIL
         private readonly StopGameDelegate StopGameHandle;
         private readonly InitPlayerDelegate InitPlayerHandle;
         private readonly PlaySoundDelegate PlaySoundHandle;
-        private readonly CloseFormDelegate CloseFormHandle;
+        //private readonly CloseFormDelegate CloseFormHandle;
 
         public SLIL(TextureCache textures)
         {
@@ -638,7 +647,7 @@ namespace SLIL
             StopGameHandle = StopGameInvoker;
             InitPlayerHandle = InitPlayerInvoker;
             PlaySoundHandle = PlaySoundInvoker;
-            CloseFormHandle = CloseFormInvoker;
+            //CloseFormHandle = CloseFormInvoker;
             //Controller = new GameController(adress, port, password, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
             rand = new Random();
             Bind = new BindControls(MainMenu.BindControls);
@@ -811,20 +820,20 @@ namespace SLIL
             {
                 this.Invoke((MethodInvoker)delegate
                 {
-                    //player = Controller.GetPlayer();
+                    //player = GetPlayer();
                     //player.IsPetting = false;
                 });
             }
             else
             {
-                //player = Controller.GetPlayer();
+                //player = GetPlayer();
                 //player.IsPetting = false;
             }
         }
 
         public void PlaySoundInvoker(PlaySound sound, double X, double Y)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             float distance = (float)Math.Sqrt((player.X - X) * (player.X - X) + (player.Y - Y) * (player.Y - Y));
             if (distance > 14) return;
@@ -887,13 +896,13 @@ namespace SLIL
         public void KillFromConsole()
         {
             if (Controller.IsMultiplayer())
-                Controller.DealDamage(Controller.GetPlayer(), 9999);
+                Controller.DealDamage(GetPlayer(), 9999);
             else Controller.StopGame(0);
         }
 
         public bool SpawnEntity(int id, bool hasAI)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             Entity entity = null;
             double moveSin = Math.Sin(player.A) * 3;
             double moveCos = Math.Cos(player.A) * 3;
@@ -996,7 +1005,7 @@ namespace SLIL
 
         private void SLIL_Deactivate(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player != null)
             {
                 player.StrafeDirection = Directions.STOP;
@@ -1009,7 +1018,7 @@ namespace SLIL
 
         private void SLIL_LocationChanged(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player != null)
             {
                 player.StrafeDirection = Directions.STOP;
@@ -1101,7 +1110,7 @@ namespace SLIL
 
         private void Step_sound_timer_Tick(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             if (!player.InTransport || player.TRANSPORT == null)
                 transport_step?.Stop();
@@ -1177,7 +1186,7 @@ namespace SLIL
 
         private void Stamina_timer_Tick(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null || Controller.IsInSpectatorMode()) return;
             if (RunKeyPressed && PlayerCanRun() && player.PlayerDirection == Directions.FORWARD)
             {
@@ -1222,7 +1231,7 @@ namespace SLIL
         {
             try
             {
-                Player player = Controller.GetPlayer();
+                Player player = GetPlayer();
                 if (burst_shots < player.GetCurrentGun().BurstShots)
                 {
                     if (player.GetCurrentGun().FireType != FireTypes.Single)
@@ -1300,7 +1309,7 @@ namespace SLIL
                 if (GameStarted)
                 {
                     int index = 1;
-                    Player player = Controller.GetPlayer();
+                    Player player = GetPlayer();
                     if (player.GetCurrentGun().AmmoCount == 0 && player.GetCurrentGun().AmmoInStock == 0) reload_timer.Stop();
                     if (player.GetCurrentGun() is Shotgun && (player.GetCurrentGun().AmmoInStock == 0 || pressed_r))
                     {
@@ -1397,7 +1406,7 @@ namespace SLIL
                 cause_of_death_icon.Image = GetDeathCause(Controller.GetDeathCause());
                 total_time_label.Text = Controller.GetTotalTime();
             }
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             if (player.Hit)
             {
@@ -1439,7 +1448,7 @@ namespace SLIL
                 shotgun_pull_timer.Stop();
                 return;
             }
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             player.GunState = player.MoveStyle;
             player.CanShoot = true;
             shotgun_pull_timer.Stop();
@@ -1455,7 +1464,7 @@ namespace SLIL
                 mouse_hold_timer.Stop();
                 return;
             }
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player.GetCurrentGun() is DisposableItem || !HoldLMB)
             {
                 mouse_hold_timer.Stop();
@@ -1473,7 +1482,7 @@ namespace SLIL
 
         private void Camera_shaking_timer_Tick(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             if (!player.InTransport && player.MoveSpeed == 0 && player.StrafeSpeed == 0 ||
                 player.InTransport && player.MoveSpeed == 0)
@@ -1501,7 +1510,7 @@ namespace SLIL
 
         private void Recoil_timer_Tick(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             if (RecoilY > 0)
             {
@@ -1541,7 +1550,7 @@ namespace SLIL
 
         private void SLIL_KeyDown(object sender, KeyEventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (e.KeyCode == Keys.Escape)
             {
                 if (open_shop) HideShop();
@@ -1567,9 +1576,9 @@ namespace SLIL
             }
             if (GameStarted && !Paused)
             {
-                if (!console_panel.Visible && !open_shop)
+                if (!console_panel.Visible && !open_shop && !player.BlockInput)
                 {
-                    if (e.KeyCode == Bind.Run && !player.BlockInput) RunKeyPressed = true;
+                    if (e.KeyCode == Bind.Run) RunKeyPressed = true;
                     if (e.KeyCode == Bind.Forward)
                         player.PlayerDirection = Directions.FORWARD;
                     if (e.KeyCode == Bind.Back)
@@ -1579,7 +1588,7 @@ namespace SLIL
                     if (e.KeyCode == Bind.Right)
                         player.StrafeDirection = Directions.RIGHT;
                     if (player != null && !shot_timer.Enabled && !reload_timer.Enabled &&
-                        !shotgun_pull_timer.Enabled && !player.BlockInput && !player.InTransport &&
+                        !shotgun_pull_timer.Enabled && !player.InTransport &&
                         !Controller.InBackrooms())
                     {
                         int count = player.Guns.Count;
@@ -1673,7 +1682,7 @@ namespace SLIL
                     if (console_panel.Visible)
                     {
                         mouse_timer.Stop();
-                        console_panel.player = Controller.GetPlayer();
+                        console_panel.player = GetPlayer();
                         console_panel.ClearCommand();
                         console_panel.console.Focus();
                         console_panel.BringToFront();
@@ -1697,7 +1706,7 @@ namespace SLIL
 
         private void SLIL_KeyUp(object sender, KeyEventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (e.KeyCode == Bind.Run)
             {
                 RunKeyPressed = false;
@@ -1973,7 +1982,7 @@ namespace SLIL
         {
             if (GameStarted && active && !console_panel.Visible && !shop_panel.Visible)
             {
-                Player player = Controller.GetPlayer();
+                Player player = GetPlayer();
                 if (player == null || player.BlockMouse) return;
                 double x = SLILDisplay.Width / 2, y = SLILDisplay.Height / 2;
                 double X = e.X - x, Y = e.Y - y;
@@ -2007,7 +2016,7 @@ namespace SLIL
 
         private void Display_Scroll(object sender, MouseEventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             double delta = e.Delta / 10;
             if (ShowSing) UpdateScrollPosition(-delta);
             if (GameStarted && !Paused && !player.BlockInput && player.CanShoot && !shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.IsPetting)
@@ -2039,7 +2048,7 @@ namespace SLIL
         {
             if (!Controller.IsInSpectatorMode())
             {
-                Player player = Controller.GetPlayer();
+                Player player = GetPlayer();
                 if (GameStarted && !Paused && !player.BlockInput && !player.InSelectingMode && !player.IsPetting &&
                     !shotgun_pull_timer.Enabled && !shot_timer.Enabled && !Controller.IsInSpectatorMode() &&
                     !Controller.InBackrooms())
@@ -2086,14 +2095,14 @@ namespace SLIL
         private bool HasImpassibleCells(int index)
         {
             char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't' };
-            if (Controller.HasNoClip() || Controller.GetPlayer().InParkour) return false;
+            if (Controller.HasNoClip() || GetPlayer().InParkour) return false;
             if (index < 0 || index > Controller.GetMap().Length) return true;
             return impassibleCells.Contains(Controller.GetMap()[index]);
         }
 
         private void PlayerMove()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null || player.Aiming) return;
             if (Controller.GetMap()[GetCoordinate(player.X, player.Y)] == 'P')
             {
@@ -2198,7 +2207,7 @@ namespace SLIL
 
         private void ClearDisplayedMap()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null)
             {
                 for (int i = 0; i < DISPLAYED_MAP.Length; i++) DISPLAYED_MAP[i] = '.';
@@ -2219,7 +2228,7 @@ namespace SLIL
         private Pixel[][] CastRaysParallel(double[] ZBuffer, double[] ZBufferWindow)
         {
             Pixel[][] rays = new Pixel[SCREEN_WIDTH][];
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null || !GameStarted)
             {
                 for (int i = 0; i < SCREEN_WIDTH; i++)
@@ -2500,7 +2509,7 @@ namespace SLIL
 
         private void DrawSprites(ref Pixel[][] rays, ref double[] ZBuffer, ref double[] ZBufferWindow, out List<int> enemiesCoords)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             enemiesCoords = new List<int>();
             if (player == null) return;
             invDet = 1.0 / (planeX * dirY - dirX * planeY);
@@ -2518,113 +2527,117 @@ namespace SLIL
             Array.Sort(spriteInfo, (a, b) => b.Distance.CompareTo(a.Distance));
             for (int i = 0; i < spriteInfo.Length; i++)
             {
-                Entity entity = Entities[spriteInfo[i].Order];
-                if (entity is Player pl && player.ID == pl.ID) continue;                
-                double Distance = ML.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(player.X, player.Y));
-                if (Distance >= player.GetDrawDistance() + 1 || Distance == 0) continue;
-                double spriteX = entity.X - player.X;
-                double spriteY = entity.Y - player.Y;
-                double transformX = invDet * (dirY * spriteX - dirX * spriteY);
-                double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-                int spriteScreenX = (int)((SCREEN_WIDTH / 2) * (1 + transformX / transformY));
-                double spriteTop = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / Distance;
-                double spriteBottom = SCREEN_HEIGHT - (spriteTop + player.Look);
-                int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
-                int drawStartY = (int)spriteTop;
-                int drawEndY = (int)spriteBottom;
-                int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT / Distance));
-                int spriteWidth = Math.Abs((int)(SCREEN_WIDTH / Distance));
-                double vMove = entity.VMove;
-                int vMoveScreen = (int)(vMove / transformY);
-                int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
-                if (drawStartX < 0) drawStartX = 0;
-                int drawEndX = spriteWidth / 2 + spriteScreenX + vMoveScreen;
-                if (drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH;
-                var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
-                for (int stripe = drawStartX; stripe < drawEndX; stripe++)
+                try
                 {
-                    double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
-                    if (transformY > 0 && stripe >= 0 && stripe <= SCREEN_WIDTH && transformY < ZBuffer[stripe])
+                    Entity entity = Entities[spriteInfo[i].Order];
+                    if (entity is Player pl && player.ID == pl.ID) continue;
+                    double Distance = ML.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(player.X, player.Y));
+                    if (Distance >= player.GetDrawDistance() + 1 || Distance == 0) continue;
+                    double spriteX = entity.X - player.X;
+                    double spriteY = entity.Y - player.Y;
+                    double transformX = invDet * (dirY * spriteX - dirX * spriteY);
+                    double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
+                    int spriteScreenX = (int)((SCREEN_WIDTH / 2) * (1 + transformX / transformY));
+                    double spriteTop = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / Distance;
+                    double spriteBottom = SCREEN_HEIGHT - (spriteTop + player.Look);
+                    int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
+                    int drawStartY = (int)spriteTop;
+                    int drawEndY = (int)spriteBottom;
+                    int spriteHeight = Math.Abs((int)(SCREEN_HEIGHT / Distance));
+                    int spriteWidth = Math.Abs((int)(SCREEN_WIDTH / Distance));
+                    double vMove = entity.VMove;
+                    int vMoveScreen = (int)(vMove / transformY);
+                    int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
+                    if (drawStartX < 0) drawStartX = 0;
+                    int drawEndX = spriteWidth / 2 + spriteScreenX + vMoveScreen;
+                    if (drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH;
+                    var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
+                    for (int stripe = drawStartX; stripe < drawEndX; stripe++)
                     {
-                        for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
+                        double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
+                        if (transformY > 0 && stripe >= 0 && stripe <= SCREEN_WIDTH && transformY < ZBuffer[stripe])
                         {
-                            if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
-                                continue;
-                            double d = (y - vMoveScreen) - (SCREEN_HEIGHT - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
-                            double texY = d / (drawEndY - drawStartY);
-                            if (y == drawStartY) texY = 0;
-                            if (rays[stripe].Length > y && y >= 0)
+                            for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
                             {
-                                int tempTextureId = rays[stripe][y].TextureId;
-                                int tempBlackout = rays[stripe][y].Blackout;
-                                double tempTextureX = rays[stripe][y].TextureX;
-                                double tempTextureY = rays[stripe][y].TextureY;
-                                SpriteStates tempSpriteState = rays[stripe][y].SpriteState;
-                                if (entity is Creature creature)
+                                if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
+                                    continue;
+                                double d = (y - vMoveScreen) - (SCREEN_HEIGHT - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                                double texY = d / (drawEndY - drawStartY);
+                                if (y == drawStartY) texY = 0;
+                                if (rays[stripe].Length > y && y >= 0)
                                 {
-                                    if (!creature.Dead)
+                                    int tempTextureId = rays[stripe][y].TextureId;
+                                    int tempBlackout = rays[stripe][y].Blackout;
+                                    double tempTextureX = rays[stripe][y].TextureX;
+                                    double tempTextureY = rays[stripe][y].TextureY;
+                                    SpriteStates tempSpriteState = rays[stripe][y].SpriteState;
+                                    if (entity is Creature creature)
                                     {
-                                        if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && entity is Pet pet && pet.Stoped && pet.HasStopAnimation)
-                                            rays[stripe][y].SpriteState = GetSpriteRotation(creature, 0, false, true);
+                                        if (!creature.Dead)
+                                        {
+                                            if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && entity is Pet pet && pet.Stoped && pet.HasStopAnimation)
+                                                rays[stripe][y].SpriteState = GetSpriteRotation(creature, 0, false, true);
+                                            else
+                                            {
+                                                if (player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight)
+                                                    rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
+                                                else
+                                                    rays[stripe][y].SpriteState = GetSpriteRotation(creature, timeNow);
+                                            }
+                                            if (creature is Enemy)
+                                            {
+                                                if (creature is VoidStalker stalker) stalker.ISeeU();
+                                                int coords = (int)entity.Y * mapWidth + (int)entity.X;
+                                                if (!enemiesCoords.Contains(coords))
+                                                    enemiesCoords.Add(coords);
+                                            }
+                                        }
                                         else
                                         {
-                                            if (player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight)
-                                                rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
+                                            if (creature.RespondsToFlashlight)
+                                                rays[stripe][y].SpriteState = SpriteStates.DeadBodyBlinded;
                                             else
-                                                rays[stripe][y].SpriteState = GetSpriteRotation(creature, timeNow);
-                                        }
-                                        if (creature is Enemy)
-                                        {
-                                            if (creature is VoidStalker stalker) stalker.ISeeU();
-                                            int coords = (int)entity.Y * mapWidth + (int)entity.X;
-                                            if (!enemiesCoords.Contains(coords))
-                                                enemiesCoords.Add(coords);
+                                                rays[stripe][y].SpriteState = SpriteStates.DeadBody;
                                         }
                                     }
-                                    else
+                                    else if (entity is Player playerTar)
                                     {
-                                        if (creature.RespondsToFlashlight)
-                                            rays[stripe][y].SpriteState = SpriteStates.DeadBodyBlinded;
+                                        if (!playerTar.Dead)
+                                            rays[stripe][y].SpriteState = GetSpriteRotation(playerTar, timeNow);
                                         else
                                             rays[stripe][y].SpriteState = SpriteStates.DeadBody;
                                     }
-                                }
-                                else if (entity is Player playerTar)
-                                {
-                                    if (!playerTar.Dead)
-                                        rays[stripe][y].SpriteState = GetSpriteRotation(playerTar, timeNow);
                                     else
-                                        rays[stripe][y].SpriteState = SpriteStates.DeadBody;
-                                }
-                                else
-                                {
-                                    if (entity is GameObject gameObject)
                                     {
-                                        if (gameObject.Animated && gameObject.Temporarily)
-                                            rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, 0, false);
+                                        if (entity is GameObject gameObject)
+                                        {
+                                            if (gameObject.Animated && gameObject.Temporarily)
+                                                rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, 0, false);
+                                            else
+                                                rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, timeNow);
+                                        }
                                         else
-                                            rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, timeNow);
+                                            rays[stripe][y].SpriteState = SpriteStates.Static;
                                     }
-                                    else
-                                        rays[stripe][y].SpriteState = SpriteStates.Static;
-                                }
-                                rays[stripe][y].TextureId = entity.Texture;
-                                rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / player.GetDrawDistance()) * 100)), 100));
-                                rays[stripe][y].TextureX = texX;
-                                rays[stripe][y].TextureY = texY;
-                                Color color = GetColorForPixel(rays[stripe][y]);
-                                if (color == Color.Transparent)
-                                {
-                                    rays[stripe][y].TextureId = tempTextureId;
-                                    rays[stripe][y].Blackout = tempBlackout;
-                                    rays[stripe][y].TextureX = tempTextureX;
-                                    rays[stripe][y].TextureY = tempTextureY;
-                                    rays[stripe][y].SpriteState = tempSpriteState;
+                                    rays[stripe][y].TextureId = entity.Texture;
+                                    rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / player.GetDrawDistance()) * 100)), 100));
+                                    rays[stripe][y].TextureX = texX;
+                                    rays[stripe][y].TextureY = texY;
+                                    Color color = GetColorForPixel(rays[stripe][y]);
+                                    if (color == Color.Transparent)
+                                    {
+                                        rays[stripe][y].TextureId = tempTextureId;
+                                        rays[stripe][y].Blackout = tempBlackout;
+                                        rays[stripe][y].TextureX = tempTextureX;
+                                        rays[stripe][y].TextureY = tempTextureY;
+                                        rays[stripe][y].SpriteState = tempSpriteState;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                catch { }
             }
         }
 
@@ -2639,7 +2652,7 @@ namespace SLIL
             }
             if (entity.HasSpriteRotation)
             {
-                Player player = Controller.GetPlayer();
+                Player player = GetPlayer();
                 double entityRotationAngle = Math.Atan2(player.Y - entity.Y, player.X - entity.X);
                 double normalizedEntityAngle = entity.A;
                 entityRotationAngle -= normalizedEntityAngle;
@@ -2700,7 +2713,7 @@ namespace SLIL
 
         private Color GetColorForPixel(Pixel pixel)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return Color.White;
             bool cute = false;
             if (player != null) cute = player.CuteMode;
@@ -2747,7 +2760,7 @@ namespace SLIL
 
         private void UpdateDisplay()
         {
-            bool cute = Controller.GetPlayer() != null && Controller.GetPlayer().CuteMode;
+            bool cute = GetPlayer() != null && GetPlayer().CuteMode;
             using (Graphics g = Graphics.FromImage(BUFFER))
             {
                 g.Clear(Color.Black);
@@ -2903,7 +2916,7 @@ namespace SLIL
 
         private void DrawCamera()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             graphicsWeapon.Clear(Color.Transparent);
             DrawWeapon(player, 0);
@@ -2912,7 +2925,7 @@ namespace SLIL
 
         private void DrawGameInterface()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             if (ShowSing)
             {
@@ -3086,7 +3099,7 @@ namespace SLIL
 
         private void DrawSpectatorInterface()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             int item_count = 0, item_max_count = 0;
             if (player.DisposableItem != null)
@@ -3287,7 +3300,7 @@ namespace SLIL
 
         private Bitmap DrawMiniMap()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             int FACTOR = resolution == 1 ? 2 : 1;
             const int MINI_MAP_SIZE = 25;
             const int BORDER_SIZE = 1;
@@ -3393,7 +3406,7 @@ namespace SLIL
 
         private void DrawDurationEffect(Image effect_image, int icon_size, int index, bool debaf)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             int diameter = icon_size;
             int x = WEAPON.Width - icon_size - 4 - ((icon_size + 4) * index);
@@ -3413,7 +3426,7 @@ namespace SLIL
 
         private void DrawItemSelecter(Image item_image, int icon_size, int index, bool selected)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             int x = center_x - (icon_size / 2);
             int y = center_y - (icon_size / 2);
@@ -3574,7 +3587,7 @@ namespace SLIL
         private void BulletRayCasting()
         {
             scope_hit = null;
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null || !GameStarted) return;
             List<Entity> Entities = Controller.GetEntities();
             if (player.GetCurrentGun() is RPG) Controller.SpawnRockets(player.X, player.Y, 0, player.A);
@@ -3630,144 +3643,148 @@ namespace SLIL
                 Array.Sort(spriteInfo, (b, a) => b.Distance.CompareTo(a.Distance));
                 for (int i = 0; i < Entities.Count; i++)
                 {
-                    if (Entities[spriteInfo[i].Order] is Player p && Controller.GetPlayer().ID == p.ID) continue;
-                    Entity entity = Entities[spriteInfo[i].Order];
-                    if (!entity.HasAI) continue;
-                    Creature creature = null;
-                    if (entity is Creature c) creature = c;
-                    double spriteX = entity.X - player.X;
-                    double spriteY = entity.Y - player.Y;
-                    double transformX = invDet * (dirY * spriteX - dirX * spriteY);
-                    double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-                    int spriteScreenX = (int)((SCREEN_WIDTH / 2) * (1 + transformX / transformY));
-                    double Distance = Math.Sqrt((player.X - entity.X) * (player.X - entity.X) + (player.Y - entity.Y) * (player.Y - entity.Y));
-                    if (Distance <= 0.1) Distance = 0.1;
-                    double spriteTop = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / Distance;
-                    double spriteBottom = SCREEN_HEIGHT - (spriteTop + player.Look);
-                    int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
-                    int drawStartY = (int)spriteTop;
-                    int drawEndY = (int)spriteBottom;
-                    double vMove = entity.VMove;
-                    int vMoveScreen = (int)(vMove / transformY);
-                    int spriteWidth = Math.Abs((int)(SCREEN_WIDTH / Distance));
-                    int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
-                    if (drawStartX < 0) drawStartX = 0;
-                    int drawEndX = spriteWidth / 2 + spriteScreenX + vMoveScreen;
-                    if (drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH;
-                    var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
-                    for (int stripe = drawStartX; stripe < drawEndX; stripe++)
+                    try
                     {
-                        int texWidth = 128;
-                        double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
-                        if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH && transformY < ZBuffer[stripe])
+                        if (Entities[spriteInfo[i].Order] is HittingTheWall) continue;
+                        if (Entities[spriteInfo[i].Order] is Player p && GetPlayer().ID == p.ID) continue;
+                        Entity entity = Entities[spriteInfo[i].Order];
+                        if (!entity.HasAI) continue;
+                        Creature creature = null;
+                        if (entity is Creature c) creature = c;
+                        double spriteX = entity.X - player.X;
+                        double spriteY = entity.Y - player.Y;
+                        double transformX = invDet * (dirY * spriteX - dirX * spriteY);
+                        double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
+                        int spriteScreenX = (int)((SCREEN_WIDTH / 2) * (1 + transformX / transformY));
+                        double Distance = ML.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(player.X, player.Y));
+                        if (Distance <= 0.1) Distance = 0.1;
+                        double spriteTop = (SCREEN_HEIGHT - player.Look) / 2 - (SCREEN_HEIGHT * FOV) / Distance;
+                        double spriteBottom = SCREEN_HEIGHT - (spriteTop + player.Look);
+                        int spriteCenterY = (int)((spriteTop + spriteBottom) / 2);
+                        int drawStartY = (int)spriteTop;
+                        int drawEndY = (int)spriteBottom;
+                        double vMove = entity.VMove;
+                        int vMoveScreen = (int)(vMove / transformY);
+                        int spriteWidth = Math.Abs((int)(SCREEN_WIDTH / Distance));
+                        int drawStartX = -spriteWidth / 2 + spriteScreenX + vMoveScreen;
+                        if (drawStartX < 0) drawStartX = 0;
+                        int drawEndX = spriteWidth / 2 + spriteScreenX + vMoveScreen;
+                        if (drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH;
+                        var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
+                        for (int stripe = drawStartX; stripe < drawEndX; stripe++)
                         {
-                            for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
+                            int texWidth = 128;
+                            double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
+                            if (transformY > 0 && stripe > 0 && stripe < SCREEN_WIDTH && transformY < ZBuffer[stripe])
                             {
-                                if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
-                                    continue;
-                                double d = (y - vMoveScreen) - (SCREEN_HEIGHT - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
-                                double texY = d / (drawEndY - drawStartY);
-                                if (y == drawStartY) texY = 0;
-                                if (rays[stripe].Length > y && y >= 0)
+                                for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
                                 {
-                                    rays[stripe][y].SpriteState = GetSpriteRotation(entity, timeNow);
-                                    rays[stripe][y].TextureId = entity.Texture;
-                                    rays[stripe][y].Blackout = 0;
-                                    rays[stripe][y].TextureX = texX;
-                                    rays[stripe][y].TextureY = texY;
-                                    Color color = GetColorForPixel(rays[stripe][y]);
-                                    for (int k = 0; k < bullet.GetLength(0); k++)
+                                    if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
+                                        continue;
+                                    double d = (y - vMoveScreen) - (SCREEN_HEIGHT - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                                    double texY = d / (drawEndY - drawStartY);
+                                    if (y == drawStartY) texY = 0;
+                                    if (rays[stripe].Length > y && y >= 0)
                                     {
-                                        if (color != Color.Transparent && stripe == bullet[k, 0] && y == bullet[k, 1] && player.GetCurrentGun().FiringRange >= Distance)
+                                        rays[stripe][y].SpriteState = GetSpriteRotation(entity, timeNow);
+                                        rays[stripe][y].TextureId = entity.Texture;
+                                        rays[stripe][y].Blackout = 0;
+                                        rays[stripe][y].TextureX = texX;
+                                        rays[stripe][y].TextureY = texY;
+                                        Color color = GetColorForPixel(rays[stripe][y]);
+                                        for (int k = 0; k < bullet.GetLength(0); k++)
                                         {
-                                            if (creature != null)
+                                            if (color != Color.Transparent && stripe == bullet[k, 0] && y == bullet[k, 1] && player.GetCurrentGun().FiringRange >= Distance)
                                             {
-                                                if (creature.Dead || !creature.CanHit) continue;
-                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                                if (Controller.DealDamage(creature, damage))
+                                                if (creature != null)
                                                 {
-                                                    if (MainMenu.sounds)
+                                                    if (creature.Dead || !creature.CanHit) continue;
+                                                    double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                    if (Controller.DealDamage(creature, damage))
                                                     {
-                                                        if (player.CuteMode)
-                                                            Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
-                                                        else
-                                                            Controller.PlayGameSound(DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
+                                                        if (MainMenu.sounds)
+                                                        {
+                                                            if (player.CuteMode)
+                                                                Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
+                                                            else
+                                                                Controller.PlayGameSound(DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
+                                                        }
                                                     }
-                                                }
-                                                if (!player.CuteMode)
-                                                {
-                                                    if (resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_hit;
-                                                    else
-                                                        scope_hit = Properties.Resources.h_scope_hit;
-                                                }
-                                                else
-                                                {
-                                                    if (resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_c_hit;
-                                                    else
-                                                        scope_hit = Properties.Resources.h_scope_c_hit;
-                                                }
-                                                bullet[k, 0] = -1;
-                                                bullet[k, 1] = -1;
-                                            }
-                                            else if (entity is Player targetPlayer && entity.ID != player.ID)
-                                            {
-                                                if (targetPlayer.Dead) continue;
-                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                                if (Controller.DealDamage(targetPlayer, damage * 5))
-                                                {
-                                                    if (MainMenu.sounds)
+                                                    if (!player.CuteMode)
                                                     {
-                                                        if (player.CuteMode)
-                                                            Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                        if (resolution == 0)
+                                                            scope_hit = Properties.Resources.scope_hit;
                                                         else
-                                                            Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                            scope_hit = Properties.Resources.h_scope_hit;
                                                     }
-                                                }
-                                                if (!player.CuteMode)
-                                                {
-                                                    if (resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_hit;
                                                     else
-                                                        scope_hit = Properties.Resources.h_scope_hit;
+                                                    {
+                                                        if (resolution == 0)
+                                                            scope_hit = Properties.Resources.scope_c_hit;
+                                                        else
+                                                            scope_hit = Properties.Resources.h_scope_c_hit;
+                                                    }
+                                                    bullet[k, 0] = -1;
+                                                    bullet[k, 1] = -1;
+                                                }
+                                                else if (entity is Player targetPlayer && entity.ID != player.ID)
+                                                {
+                                                    if (targetPlayer.Dead) continue;
+                                                    double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                    if (Controller.DealDamage(targetPlayer, damage * 5))
+                                                    {
+                                                        if (MainMenu.sounds)
+                                                        {
+                                                            if (player.CuteMode)
+                                                                Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                            else
+                                                                Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                        }
+                                                    }
+                                                    if (!player.CuteMode)
+                                                    {
+                                                        if (resolution == 0)
+                                                            scope_hit = Properties.Resources.scope_hit;
+                                                        else
+                                                            scope_hit = Properties.Resources.h_scope_hit;
+                                                    }
+                                                    else
+                                                    {
+                                                        if (resolution == 0)
+                                                            scope_hit = Properties.Resources.scope_c_hit;
+                                                        else
+                                                            scope_hit = Properties.Resources.h_scope_c_hit;
+                                                    }
+                                                    bullet[k, 0] = -1;
+                                                    bullet[k, 1] = -1;
+                                                }
+                                                else if (entity is Transport transport)
+                                                {
+                                                    if (transport.TransportHP <= 0) continue;
+                                                    double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                    Controller.DealDamage(transport, damage * 1.5);
+                                                    if (!player.CuteMode)
+                                                    {
+                                                        if (resolution == 0)
+                                                            scope_hit = Properties.Resources.scope_hit;
+                                                        else
+                                                            scope_hit = Properties.Resources.h_scope_hit;
+                                                    }
+                                                    else
+                                                    {
+                                                        if (resolution == 0)
+                                                            scope_hit = Properties.Resources.scope_c_hit;
+                                                        else
+                                                            scope_hit = Properties.Resources.h_scope_c_hit;
+                                                    }
+                                                    bullet[k, 0] = -1;
+                                                    bullet[k, 1] = -1;
                                                 }
                                                 else
                                                 {
-                                                    if (resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_c_hit;
-                                                    else
-                                                        scope_hit = Properties.Resources.h_scope_c_hit;
+                                                    bullet[k, 0] = -1;
+                                                    bullet[k, 1] = -1;
                                                 }
-                                                bullet[k, 0] = -1;
-                                                bullet[k, 1] = -1;
-                                            }
-                                            else if (entity is Transport transport)
-                                            {
-                                                if (transport.TransportHP <= 0) continue;
-                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                                Controller.DealDamage(transport, damage * 1.5);
-                                                if (!player.CuteMode)
-                                                {
-                                                    if (resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_hit;
-                                                    else
-                                                        scope_hit = Properties.Resources.h_scope_hit;
-                                                }
-                                                else
-                                                {
-                                                    if (resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_c_hit;
-                                                    else
-                                                        scope_hit = Properties.Resources.h_scope_c_hit;
-                                                }
-                                                bullet[k, 0] = -1;
-                                                bullet[k, 1] = -1;
-                                            }
-                                            else
-                                            {
-                                                bullet[k, 0] = -1;
-                                                bullet[k, 1] = -1;
                                             }
                                         }
                                     }
@@ -3775,6 +3792,7 @@ namespace SLIL
                             }
                         }
                     }
+                    catch { }
                 }
                 if (player.CuteMode) return;
                 for (int k = 0; k < bullet.GetLength(0); k++)
@@ -3823,7 +3841,7 @@ namespace SLIL
 
         private void ChangeWeapon(int new_gun)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null || player.UseItem || Controller.InBackrooms()) return;
             if ((new_gun != player.CurrentGun || player.LevelUpdated) && !player.InSelectingMode && player.Guns[new_gun].HasIt)
             {
@@ -3860,7 +3878,7 @@ namespace SLIL
 
         private void TakeFlashlight(bool take)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player.CuteMode || player.UseItem) return;
             if (take)
             {
@@ -3930,7 +3948,7 @@ namespace SLIL
 
         private bool PlayerCanRun()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             return player.GetCurrentGun().CanRun && !player.InParkour &&
                 !player.Fast && !player.IsPetting && !player.Aiming &&
                 !shot_timer.Enabled && !reload_timer.Enabled &&
@@ -3941,7 +3959,7 @@ namespace SLIL
         private void StartGame()
         {
             Controller.RestartGame();
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (console_panel == null)
             {
                 console_panel = new ConsolePanel()
@@ -4120,7 +4138,7 @@ namespace SLIL
         private void ShopToDefault()
         {
             shop_tab_control.Controls.Clear();
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null || !player.CuteMode)
                 shop_tab_control.Controls.Add(weapon_shop_page);
             //TEMP
@@ -4191,7 +4209,7 @@ namespace SLIL
         {
             ShowInventory = true;
             mouse_timer.Stop();
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             player.BlockInput = player.BlockCamera = true;
             player.PlayerDirection = Directions.STOP;
             player.StrafeDirection = Directions.STOP;
@@ -4209,13 +4227,13 @@ namespace SLIL
             int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
             Cursor.Position = new Point(x, y);
             inventory_panel.Visible = false;
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             player.BlockInput = player.BlockCamera = false;
         }
 
         private void UpdateInventory()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             inventory_content_panel.Location = new Point((Width - inventory_content_panel.Width) / 2, (Height - inventory_content_panel.Height) / 2);
             medkit_count.Text = $"{player.DisposableItems[0].MaxCount}/{player.DisposableItems[0].Count}";
@@ -4307,7 +4325,7 @@ namespace SLIL
             if (inventory_content_panel.Controls.Contains(InventoryWeaponToolTip))
                 inventory_content_panel.Controls.Remove(InventoryWeaponToolTip);
             InventoryWeaponToolTip?.Dispose();
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             Gun weapon;
             if (((Control)sender).Name == "pistol_icon")
@@ -4336,7 +4354,7 @@ namespace SLIL
 
         private void Info_icon_MouseEnter(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             if (inventory_content_panel.Controls.Contains(InventoryInfoToolTip))
                 inventory_content_panel.Controls.Remove(InventoryInfoToolTip);
@@ -4395,14 +4413,14 @@ namespace SLIL
 
         private void Shop_panel_VisibleChanged(object sender, EventArgs e)
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player != null) player.Look = 0;
             shop_panel.BringToFront();
         }
 
         public void UpdateStorage()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             storage_shop_page.Controls.Clear();
             if (!player.CuteMode)
@@ -4429,7 +4447,7 @@ namespace SLIL
 
         public void ShowShop()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player == null) return;
             open_shop = true;
             ShopInterface_panel.VerticalScroll.Value = 0;
@@ -4514,13 +4532,13 @@ namespace SLIL
             int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
             Cursor.Position = new Point(x, y);
             shop_panel.Visible = false;
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             player.BlockInput = player.BlockCamera = false;
         }
 
         private void CuteMode()
         {
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             if (player.CuteMode && ost_index != 7)
             {
                 prev_ost = ost_index;
@@ -4547,7 +4565,7 @@ namespace SLIL
                     : $"Buy ${control.pet.Cost}";
             Controller.AddPet(index);
             CuteMode();
-            Player player = Controller.GetPlayer();
+            Player player = GetPlayer();
             HideShop();
             if (player.CuteMode && shop_tab_control.Controls.ContainsKey("weapon_shop_page"))
             {

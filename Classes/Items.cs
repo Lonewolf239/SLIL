@@ -1188,4 +1188,47 @@ namespace SLIL.Classes
 
         public override int GetItemID() => 18;
     }
+
+    public class Minigun : Gun
+    {
+        public Minigun() : base()
+        {
+            AmmoType = AmmoTypes.Bullet;
+            FireType = FireTypes.Single;
+            Upgradeable = false;
+            CanRun = false;
+            ShowScope = false;
+            AddToShop = false;
+            HasIt = false;
+            InMultiplayer = true;
+            ShowAmmoAsNumber = true;
+            Name = new[] { "3-15", "Minigun" };
+            Accuracy = 0.75;
+            Weight = 0.85;
+            RechargeTime = 375;
+            BulletCount = 1;
+            PauseBetweenShooting = 90;
+            FiringRate = 45;
+            UpdateCost = 0;
+            GunCost = 0;
+            AmmoCost = 0;
+            CartridgesClip = 1488;
+            AmmoInStock = 0;
+            MaxAmmo = 0;
+            FiringRange = 8;
+            MaxDamage = 4;
+            MinDamage = 3.5;
+            RecoilY = 18;
+            RecoilX = 1.75;
+            BurstShots = 1;
+            RadiusSound = 6;
+            ReloadFrames = 2;
+            AmmoCount = CartridgesClip;
+        }
+
+        public override void LevelUpdate() => ApplyUpdate();
+        public override void LevelDowngrade() => ApplyUpdate();
+        public override bool CanUpdate() => false;
+        public override int GetItemID() => 19;
+    }
 }

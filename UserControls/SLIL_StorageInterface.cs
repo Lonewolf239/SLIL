@@ -151,18 +151,8 @@ namespace SLIL.UserControls
 
         private void SLIL_ShopInterface_VisibleChanged(object sender, EventArgs e) => UpdateInfo();
 
-        private int GetGunIndex()
-        {
-            for (int i = 0; i < player.Guns.Count; i++)
-            {
-                if (player.Guns[i].GetType() == weapon.GetType())
-                    return i;
-            }
-            return -1;
-        }
+        private void Slot_0_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(0, player.Guns.IndexOf(weapon));
 
-        private void Slot_0_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(0, GetGunIndex());
-
-        private void Slot_1_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(1, GetGunIndex());
+        private void Slot_1_btn_Click(object sender, EventArgs e) => ParentSLILForm.SetWeaponSlot(1, player.Guns.IndexOf(weapon));
     }
 }

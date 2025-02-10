@@ -1531,6 +1531,9 @@
     <None Include="Images\blood_effect_2.png" />
     <None Include="Images\blood_effect_1.png" />
     <None Include="Images\blood_effect_0.png" />
+    <None Include="Images\minigun_shooted.png" />
+    <None Include="Images\minigun.png" />
+    <None Include="Images\minigun_icon.png" />
     <Content Include="SLILCursor.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

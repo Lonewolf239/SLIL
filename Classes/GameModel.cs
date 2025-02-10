@@ -1879,8 +1879,7 @@ namespace SLIL.Classes
                 }
                 return;
             }
-            p.A += v;
-            p.A = ML.NormalizeAngle(p.A);
+            p.A = ML.NormalizeAngle(p.A + v);
         }
 
         internal void ChangePlayerLook(double lookDif, int playerID)
@@ -1905,42 +1904,25 @@ namespace SLIL.Classes
 
         internal void AmmoCountDecrease(int playerID)
         {
-            foreach (Entity entity in Entities)
-            {
-                if (entity.ID == playerID)
-                {
-                    Gun gun = (entity as Player).GetCurrentGun();
-                    int ammo = gun is SubmachineGun && gun.Level == Levels.LV3 ? 2 : 1;
-                    gun.AmmoCount -= ammo;
-                    return;
-                }
-            }
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            Gun gun = p.GetCurrentGun();
+            int ammo = gun is SubmachineGun && gun.Level == Levels.LV3 ? 2 : 1;
+            gun.AmmoCount -= ammo;
         }
 
         internal void ReloadClip(int playerID)
         {
-            foreach(Entity entity in Entities)
-            {
-                if(entity.ID == playerID)
-                {
-                    (entity as Player).GetCurrentGun().ReloadClip();
-                    return;
-                }
-            }
+            Player p = GetPlayer(playerID);
+            p?.GetCurrentGun().ReloadClip();
         }
 
         internal bool OnOffNoClip(int playerID)
         {
-            foreach (Entity ent in Entities)
-            {
-                if (ent.ID == playerID)
-                {
-                    Player p = (Player)ent;
-                    p.NoClip = !p.NoClip;
-                    return p.NoClip;
-                }
-            }
-            return false;
+            Player p = GetPlayer(playerID);
+            if (p == null) return false;
+            p.NoClip = !p.NoClip;
+            return p.NoClip;
         }
 
         internal bool HasNoClip(int playerID)
@@ -2066,10 +2048,8 @@ namespace SLIL.Classes
             Player p = GetPlayer(playerID);
             if (p == null) return false;
             if (p.EffectCheck(3)) return false;
-            if (p.InTransport)
-                PlayGameSound(playerID, SLIL.climb[1]);
-            else
-                PlayGameSound(playerID, SLIL.climb[0]);
+            if (p.InTransport) PlayGameSound(playerID, SLIL.climb[1]);
+            else PlayGameSound(playerID, SLIL.climb[0]);
             p.InParkour = true;
             p.ParkourState = 0;
             p.X = x + 0.5;
@@ -2079,7 +2059,8 @@ namespace SLIL.Classes
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
             p.CanShoot = false;
-            new Thread(() => {
+            new Thread(() =>
+            {
                 Thread.Sleep(p.InTransport ? 250 : 375);
                 StopParkour(playerID);
                 p.ParkourState++;

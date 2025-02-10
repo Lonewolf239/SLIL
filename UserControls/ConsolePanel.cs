@@ -173,6 +173,7 @@ namespace SLIL.UserControls
                                  "~│~ -YHRII-       ~│~ Give \"Fingershot\"                           ~│~\n" +
                                  "~│~ -IMGNOME-     ~│~ Give \"Wizard Gnome\"                         ~│~\n" +
                                  "~│~ -ILLKLURDOG-  ~│~ Give \"Petition\"                             ~│~\n" +
+                                 "~│~ -COMEGETSOME- ~│~ Give \"Minigun\"                              ~│~\n" +
                                  "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                                  "~│~ -CAT-         ~│~ Give a pet: \"Silly cat\"                     ~│~\n" +
                                  "~│~ -GNOME-       ~│~ Give a pet: \"Wizard Gnome\"                  ~│~\n" +
@@ -1134,10 +1135,7 @@ namespace SLIL.UserControls
                         {
                             if (!player.GUNS[8].HasIt)
                             {
-                                player.GUNS[8].HasIt = true;
-                                player.GUNS[8].AmmoInStock = player.GUNS[8].MaxAmmo;
-                                if (!player.Guns.Contains(player.GUNS[8]))
-                                    player.Guns.Add(player.GUNS[8]);
+                                player.AddWeapon(player.GUNS[8]);
                                 message += "\"The Smallest Pistol in the World\" has been issued.";
                             }
                             else
@@ -1150,10 +1148,7 @@ namespace SLIL.UserControls
                         {
                             if (!player.GUNS[9].HasIt)
                             {
-                                player.GUNS[9].HasIt = true;
-                                player.GUNS[9].AmmoInStock = player.GUNS[9].MaxAmmo;
-                                if (!player.Guns.Contains(player.GUNS[9]))
-                                    player.Guns.Add(player.GUNS[9]);
+                                player.AddWeapon(player.GUNS[9]);
                                 message += "\"Wizard Gnome\" has been issued.";
                             }
                             else
@@ -1166,16 +1161,26 @@ namespace SLIL.UserControls
                         {
                             if (!player.GUNS[16].HasIt)
                             {
-                                player.GUNS[16].HasIt = true;
-                                player.GUNS[16].AmmoInStock = player.GUNS[16].MaxAmmo;
-                                if (!player.Guns.Contains(player.GUNS[16]))
-                                    player.Guns.Add(player.GUNS[16]);
+                                player.AddWeapon(player.GUNS[16]);
                                 message += "\"Petition\" has been issued.";
                             }
                             else
                             {
                                 color = Color.Red;
                                 message = "Code not applied! You already have \"Petition\"";
+                            }
+                        }
+                        else if (cheat == "COMEGETSOME")
+                        {
+                            if (!player.GUNS[18].HasIt)
+                            {
+                                player.AddWeapon(player.GUNS[18], false);
+                                message += "\"Minigun\" has been issued.";
+                            }
+                            else
+                            {
+                                color = Color.Red;
+                                message = "Code not applied! You already have \"Minigun\"";
                             }
                         }
                         else if (cheat == "GKIFK")
@@ -1221,10 +1226,8 @@ namespace SLIL.UserControls
                         color = Color.Red;
                         message = $"Unknown command: {cheat}";
                     }
-                    if (show_date)
-                        time = $"\n-<{DateTime.Now:HH:mm}>- ";
-                    if (show_message)
-                        ConsoleAppendText($"\n{time}{message}", color);
+                    if (show_date) time = $"\n-<{DateTime.Now:HH:mm}>- ";
+                    if (show_message) ConsoleAppendText($"\n{time}{message}", color);
                     if (color != Color.Red)
                     {
                         previous_cheat.Add(cheat);
