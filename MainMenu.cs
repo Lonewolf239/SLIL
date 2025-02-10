@@ -124,6 +124,8 @@ namespace SLIL
 
         private void Darsin_tg_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://t.me/DARSINrock") { UseShellExecute = true });
 
+        private void Maru_web_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("http://pornhub.com/") { UseShellExecute = true });
+
         //  #====      Updating      ====#
 
         private void Check_Update()
@@ -767,6 +769,7 @@ namespace SLIL
                 update_error_label.Text = Localizations.GetLString(Language, "0-122");
                 localization_error_label.Text = Localizations.GetLString(Language, "0-123");
                 darsin_about.Text = Localizations.GetLString(Language, "0-124");
+                maru_about.Text = Localizations.GetLString(Language, "0-125");
             }
             else
             {
@@ -851,6 +854,7 @@ namespace SLIL
                 update_error_label.Text = "Error checking for update";
                 localization_error_label.Text = "Error loading localization";
                 darsin_about.Text = "Creating death sounds for enemies, motorcycles, and others";
+                maru_about.Text = "Author of dibal ideas";
             }
             if (show_tutorial.Checked)
             {

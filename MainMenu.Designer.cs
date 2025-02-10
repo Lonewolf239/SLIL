@@ -45,6 +45,10 @@
             this.slil_0_0_1_dev_panel = new System.Windows.Forms.Panel();
             this.launch_slil_0_0_1_dev = new System.Windows.Forms.Button();
             this.slil_0_0_1_dev = new System.Windows.Forms.Label();
+            this.maru_panel = new System.Windows.Forms.Panel();
+            this.maru_about = new System.Windows.Forms.Label();
+            this.maru_web = new System.Windows.Forms.Button();
+            this.maru_name = new System.Windows.Forms.Label();
             this.darsin_panel = new System.Windows.Forms.Panel();
             this.darsin_about = new System.Windows.Forms.Label();
             this.darsin_tg = new System.Windows.Forms.Button();
@@ -255,6 +259,7 @@
             this.close_developers_panel.SuspendLayout();
             this.developers_background.SuspendLayout();
             this.slil_0_0_1_dev_panel.SuspendLayout();
+            this.maru_panel.SuspendLayout();
             this.darsin_panel.SuspendLayout();
             this.fazzy_panel.SuspendLayout();
             this.koyo_panel.SuspendLayout();
@@ -493,6 +498,7 @@
             this.developers_background.AutoScroll = true;
             this.developers_background.BackColor = System.Drawing.Color.Black;
             this.developers_background.Controls.Add(this.slil_0_0_1_dev_panel);
+            this.developers_background.Controls.Add(this.maru_panel);
             this.developers_background.Controls.Add(this.darsin_panel);
             this.developers_background.Controls.Add(this.fazzy_panel);
             this.developers_background.Controls.Add(this.koyo_panel);
@@ -510,7 +516,7 @@
             this.slil_0_0_1_dev_panel.Controls.Add(this.launch_slil_0_0_1_dev);
             this.slil_0_0_1_dev_panel.Controls.Add(this.slil_0_0_1_dev);
             this.slil_0_0_1_dev_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.slil_0_0_1_dev_panel.Location = new System.Drawing.Point(0, 845);
+            this.slil_0_0_1_dev_panel.Location = new System.Drawing.Point(0, 995);
             this.slil_0_0_1_dev_panel.Name = "slil_0_0_1_dev_panel";
             this.slil_0_0_1_dev_panel.Size = new System.Drawing.Size(473, 150);
             this.slil_0_0_1_dev_panel.TabIndex = 49;
@@ -542,6 +548,55 @@
             this.slil_0_0_1_dev.TabIndex = 43;
             this.slil_0_0_1_dev.Text = "SLIL v0.0.1";
             this.slil_0_0_1_dev.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
+            // maru_panel
+            // 
+            this.maru_panel.BackColor = System.Drawing.Color.Black;
+            this.maru_panel.Controls.Add(this.maru_about);
+            this.maru_panel.Controls.Add(this.maru_web);
+            this.maru_panel.Controls.Add(this.maru_name);
+            this.maru_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.maru_panel.Location = new System.Drawing.Point(0, 845);
+            this.maru_panel.Name = "maru_panel";
+            this.maru_panel.Size = new System.Drawing.Size(473, 150);
+            this.maru_panel.TabIndex = 51;
+            // 
+            // maru_about
+            // 
+            this.maru_about.ForeColor = System.Drawing.Color.White;
+            this.maru_about.Location = new System.Drawing.Point(6, 36);
+            this.maru_about.Name = "maru_about";
+            this.maru_about.Size = new System.Drawing.Size(440, 61);
+            this.maru_about.TabIndex = 50;
+            this.maru_about.Text = "Автор дибильных идей";
+            // 
+            // maru_web
+            // 
+            this.maru_web.AutoSize = true;
+            this.maru_web.BackColor = System.Drawing.Color.Black;
+            this.maru_web.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.maru_web.ForeColor = System.Drawing.Color.White;
+            this.maru_web.Location = new System.Drawing.Point(6, 100);
+            this.maru_web.Name = "maru_web";
+            this.maru_web.Size = new System.Drawing.Size(130, 41);
+            this.maru_web.TabIndex = 48;
+            this.maru_web.TabStop = false;
+            this.maru_web.Text = "Web site";
+            this.maru_web.UseVisualStyleBackColor = false;
+            this.maru_web.Click += new System.EventHandler(this.Maru_web_Click);
+            // 
+            // maru_name
+            // 
+            this.maru_name.BackColor = System.Drawing.Color.Transparent;
+            this.maru_name.Dock = System.Windows.Forms.DockStyle.Top;
+            this.maru_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
+            this.maru_name.ForeColor = System.Drawing.Color.White;
+            this.maru_name.Location = new System.Drawing.Point(0, 0);
+            this.maru_name.Name = "maru_name";
+            this.maru_name.Size = new System.Drawing.Size(473, 36);
+            this.maru_name.TabIndex = 43;
+            this.maru_name.Text = "maru";
+            this.maru_name.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // darsin_panel
             // 
@@ -758,7 +813,7 @@
             this.fatalan_about.Name = "fatalan_about";
             this.fatalan_about.Size = new System.Drawing.Size(440, 61);
             this.fatalan_about.TabIndex = 50;
-            this.fatalan_about.Text = "Текстурирование, рендеринг спрайтов, ИИ врагов и питомцев";
+            this.fatalan_about.Text = "Текстурирование, рендеринг спрайтов, переработка ИИ и поведения существ";
             // 
             // fatalan_git_c
             // 
@@ -1756,7 +1811,7 @@
             this.climb_label.Name = "climb_label";
             this.climb_label.Size = new System.Drawing.Size(306, 34);
             this.climb_label.TabIndex = 0;
-            this.climb_label.Text = "Перелезть";
+            this.climb_label.Text = "Перелезть/Уклонение";
             this.climb_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // climb_btn_c
@@ -3039,6 +3094,8 @@
             this.developers_background.ResumeLayout(false);
             this.slil_0_0_1_dev_panel.ResumeLayout(false);
             this.slil_0_0_1_dev_panel.PerformLayout();
+            this.maru_panel.ResumeLayout(false);
+            this.maru_panel.PerformLayout();
             this.darsin_panel.ResumeLayout(false);
             this.darsin_panel.PerformLayout();
             this.fazzy_panel.ResumeLayout(false);
@@ -3375,5 +3432,9 @@
         private System.Windows.Forms.CheckBox sounds_on_off;
         private System.Windows.Forms.Label sounds_label;
         private System.Windows.Forms.Button go_tutorial_btn_cp;
+        private System.Windows.Forms.Panel maru_panel;
+        private System.Windows.Forms.Label maru_about;
+        private System.Windows.Forms.Button maru_web;
+        private System.Windows.Forms.Label maru_name;
     }
 }
