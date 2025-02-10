@@ -21,6 +21,7 @@ namespace SLIL.Classes
         internal bool UseItem { get; set; }
         internal bool Dead { get; set; }
         internal int Money { get; set; }
+        internal int Fear { get; set; }
         internal int CurrentGun { get; set; }
         internal int PreviousGun { get; set; }
         internal int GunState { get; set; }
@@ -589,6 +590,7 @@ namespace SLIL.Classes
                 PlayerDirection = Directions.STOP;
                 StrafeDirection = Directions.STOP;
                 PlayerMoveStyle = Directions.WALK;
+                Fear = 0;
                 if (InTransport) StopEffect(4);
             }
             ItemFrame = 0;
@@ -636,11 +638,23 @@ namespace SLIL.Classes
             return Depth + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
         }
 
-        internal void ReducesStamine()
+        internal bool IncreasingFear(int v = 1)
         {
-            int x = 3;
-            if (GetWeight() >= 0.95) x = 2;
-            Stamine -= x;
+            if (EffectCheck(6) || EffectCheck(8)) v += 2;
+            Fear += v;
+            if (Fear >= 100)
+            {
+                Fear = 0;
+                return true;
+            }
+            return false;
+        }
+
+        internal void ReducesStamine(int v = 3)
+        {
+            if (GetWeight() >= 0.95) v--;
+            Stamine -= v;
+            if (Stamine < 0) Stamine = 0;
         }
 
         internal void RestoreStamine()

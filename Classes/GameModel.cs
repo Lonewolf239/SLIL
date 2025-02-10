@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using SharpDX.Direct2D1;
+using System.Numerics;
 
 namespace SLIL.Classes
 {
@@ -1704,37 +1705,39 @@ namespace SLIL.Classes
             TotalTime++;
             for (int i = 0; i < Entities.Count; i++)
             {
-                if (!(Entities[i] is Player player)) continue;
-                if (player.Invulnerable)
-                    player.InvulnerableEnd();
-                player.UpdateEffectsTime();
-                Pet playerPet = player.PET;
-                if (playerPet != null && playerPet.IsInstantAbility != 1)
+                if (Entities[i] is Player player)
                 {
-                    if (playerPet.PetAbilityReloading)
+                    if (player.Invulnerable) player.InvulnerableEnd();
+                    player.UpdateEffectsTime();
+                    if (player.IncreasingFear()) PlayGameSound(player.ID, SLIL.scary_sounds[rand.Next(SLIL.scary_sounds.Length)]);
+                    Pet playerPet = player.PET;
+                    if (playerPet != null && playerPet.IsInstantAbility != 1)
                     {
-                        if (playerPet.AbilityTimer >= playerPet.AbilityReloadTime)
-                            playerPet.PetAbilityReloading = false;
-                        else
-                            playerPet.AbilityTimer++;
-                    }
-                    if (!playerPet.PetAbilityReloading)
-                    {
-                        switch (playerPet.GetPetAbility())
+                        if (playerPet.PetAbilityReloading)
                         {
-                            case 0: //Silly Cat
-                                player.HealHP(2);
-                                playerPet.AbilityTimer = 0;
-                                playerPet.PetAbilityReloading = true;
-                                break;
-                            case 3: //Pyro
-                                if (player.GUNS[12].AmmoCount + 10 <= player.GUNS[12].MaxAmmo)
-                                    player.GUNS[12].AmmoCount += 10;
-                                else
-                                    player.GUNS[12].AmmoCount = player.GUNS[12].MaxAmmo;
-                                playerPet.AbilityTimer = 0;
-                                playerPet.PetAbilityReloading = true;
-                                break;
+                            if (playerPet.AbilityTimer >= playerPet.AbilityReloadTime)
+                                playerPet.PetAbilityReloading = false;
+                            else
+                                playerPet.AbilityTimer++;
+                        }
+                        if (!playerPet.PetAbilityReloading)
+                        {
+                            switch (playerPet.GetPetAbility())
+                            {
+                                case 0: //Silly Cat
+                                    player.HealHP(2);
+                                    playerPet.AbilityTimer = 0;
+                                    playerPet.PetAbilityReloading = true;
+                                    break;
+                                case 3: //Pyro
+                                    if (player.GUNS[12].AmmoCount + 10 <= player.GUNS[12].MaxAmmo)
+                                        player.GUNS[12].AmmoCount += 10;
+                                    else
+                                        player.GUNS[12].AmmoCount = player.GUNS[12].MaxAmmo;
+                                    playerPet.AbilityTimer = 0;
+                                    playerPet.PetAbilityReloading = true;
+                                    break;
+                            }
                         }
                     }
                 }
@@ -2087,6 +2090,30 @@ namespace SLIL.Classes
             if (!p.InTransport) p.CanShoot = true;
         }
 
+        internal void DoDodge(double dodgeX, double dodgeY, int playerID)
+        {
+            Player p = GetPlayer(playerID);
+            if (p == null || p.Stamine < 200) return;
+            double distance = 0;
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't' };
+            PlayGameSound(playerID, SLIL.climb[0]);
+            p.ReducesStamine(150);
+            new Thread(() =>
+            {
+                while (distance <= 0.09)
+                {
+                    distance += 0.01d;
+                    double x = p.X + dodgeX * distance;
+                    double y = p.Y + dodgeY * distance;
+                    char test_wall = GetMap()[GetCoordinate(x, y)];
+                    if (impassibleCells.Contains(test_wall)) return;
+                    p.X = x;
+                    p.Y = y;
+                    Thread.Sleep(10);
+                }
+            }).Start();
+        }
+
         internal void ChangeWeapon(int playerID, int new_gun)
         {
             Player p = GetPlayer(playerID);
@@ -2113,19 +2140,13 @@ namespace SLIL.Classes
 
         internal void BuyAmmo(int playerID, int weaponID)
         {
-            foreach (Entity ent in Entities)
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            Gun weapon = p.Guns[weaponID];
+            if (p.Money >= weapon.AmmoCost && weapon.AmmoInStock + weapon.AmmoCount <= weapon.MaxAmmo)
             {
-                if (ent.ID == playerID)
-                {
-                    Player p = (Player)ent;
-                    Gun weapon = p.Guns[weaponID];
-                    if (p.Money >= weapon.AmmoCost && weapon.AmmoInStock + weapon.AmmoCount <= weapon.MaxAmmo)
-                    {
-                        p.ChangeMoney(-weapon.AmmoCost);
-                        weapon.AmmoInStock += weapon.CartridgesClip;
-                    }
-                    return;
-                }
+                p.ChangeMoney(-weapon.AmmoCost);
+                weapon.AmmoInStock += weapon.CartridgesClip;
             }
         }
 
@@ -2141,42 +2162,30 @@ namespace SLIL.Classes
 
         internal void BuyWeapon(int playerID, int weaponID)
         {
-            foreach (Entity ent in Entities)
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            Gun weapon = p.GUNS[weaponID];
+            if (p.Money >= weapon.GunCost)
             {
-                if (ent.ID == playerID)
-                {
-                    Player p = (Player)ent;
-                    Gun weapon = p.GUNS[weaponID];
-                    if (p.Money >= weapon.GunCost)
-                    {
-                        p.ChangeMoney(-weapon.GunCost);
-                        weapon.SetDefault();
-                        weapon.HasIt = true;
-                        p.Guns.Add(weapon);
-                        if (p.WeaponSlot_1 == -1) SetWeaponSlot(playerID, 1, GetGunIndex(p, weapon));
-                        if (p.WeaponSlot_0 == -1) SetWeaponSlot(playerID, 0, GetGunIndex(p, weapon));
-                    }
-                    return;
-                }
+                p.ChangeMoney(-weapon.GunCost);
+                weapon.SetDefault();
+                weapon.HasIt = true;
+                p.Guns.Add(weapon);
+                if (p.WeaponSlot_1 == -1) SetWeaponSlot(playerID, 1, GetGunIndex(p, weapon));
+                if (p.WeaponSlot_0 == -1) SetWeaponSlot(playerID, 0, GetGunIndex(p, weapon));
             }
         }
 
         internal void UpdateWeapon(int playerID, int weaponID)
         {
-            foreach (Entity ent in Entities)
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            Gun weapon = p.Guns[weaponID];
+            if (p.Money >= weapon.UpdateCost)
             {
-                if (ent.ID == playerID)
-                {
-                    Player p = (Player)ent;
-                    Gun weapon = p.Guns[weaponID];
-                    if (p.Money >= weapon.UpdateCost)
-                    {
-                        p.ChangeMoney(-weapon.UpdateCost);
-                        weapon.LevelUpdate();
-                        p.LevelUpdated = true;
-                    }
-                    return;
-                }
+                p.ChangeMoney(-weapon.UpdateCost);
+                weapon.LevelUpdate();
+                p.LevelUpdated = true;
             }
         }
 
@@ -2245,9 +2254,9 @@ namespace SLIL.Classes
 
         internal void DeserializePlayer(int playerID, byte[] rawData)
         {
-            foreach(Entity ent in Entities)
+            foreach (Entity ent in Entities)
             {
-                if(ent.ID == playerID)
+                if (ent.ID == playerID)
                 {
                     Player p = (Player)ent;
                     NetDataReader reader = new NetDataReader(rawData);
@@ -2257,6 +2266,11 @@ namespace SLIL.Classes
             }
         }
 
-        internal int GetCoordinate(double x, double y) => (int)y * GetMapWidth() + (int)x;
+        internal int GetCoordinate(double x, double y)
+        {
+            if (y < 0 || x < 0 || y > GetMapHeight() || x > GetMapWidth())
+                return 0;
+            return (int)y * GetMapWidth() + (int)x;
+        }
     }
 }

@@ -554,6 +554,8 @@ namespace SLIL.Classes
 
         internal void StopParkour() => Game.StopParkour(playerID);
 
+        internal void DoDodge(double dodgeX, double dodgeY) => Game.DoDodge(dodgeX, dodgeY, playerID);
+
         internal void SetWeaponSlot(int slot,int index)
         {
             //if (peer == null)

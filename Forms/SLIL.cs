@@ -372,6 +372,19 @@ namespace SLIL
         public static PlaySound[] hit = { new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("hit_transport.wav"), false) };
         public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
         private PlaySound step, transport_step;
+        public static PlaySound[] scary_sounds = new PlaySound[]
+        {
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_0.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_1.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_2.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_3.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_4.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_5.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_6.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_7.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_8.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_9.wav"), false)
+        };
         public static PlaySound[,] steps = new PlaySound[,]
         {
             {
@@ -1777,6 +1790,14 @@ namespace SLIL
                     }
                     if (e.KeyCode == Bind.Climb)
                     {
+                        if (player.GetMoveSpeed(ElapsedTime) < 0)
+                        {
+                            double dodgeAngle = ML.NormalizeAngle(player.A + Math.PI);
+                            double strafeSpeed = player.GetStrafeSpeed(ElapsedTime);
+                            if (strafeSpeed != 0) dodgeAngle += (strafeSpeed > 0 ? -1 : 1) * (Math.PI / 2);
+                            Controller.DoDodge(Math.Sin(dodgeAngle), Math.Cos(dodgeAngle));
+                            return;
+                        }
                         double rayA = player.A + FOV / 2 - (SCREEN_WIDTH / 2) * FOV / SCREEN_WIDTH;
                         double ray_x = Math.Sin(rayA);
                         double ray_y = Math.Cos(rayA);
@@ -3204,13 +3225,13 @@ namespace SLIL
         {
             string debugInfo = null;
             if (ShowDebugSpeed)
-                debugInfo = string.Format(
+                debugInfo += string.Format(
                     "MMS: {0,5:0.##}  MSS: {1,5:0.##}\n" +
                     "MRS: {2,5:0.##}  RS:  {3,5:0.##}\n" +
                     "MS:  {4,5:0.##}  CMS: {5,5:0.##}\n" +
                     "SS:  {6,5:0.##}  CSS: {7,5:0.##}\n" +
                     "MST: {8,5:0.##}  ST:  {9,5:0.##}\n" +
-                    "CW:  {10,5:0.##}",
+                    "CW:  {10,5:0.##}\n",
                     player.MaxMoveSpeed,
                     player.MaxStrafeSpeed,
                     player.MaxRunSpeed,
@@ -3224,7 +3245,7 @@ namespace SLIL
                     player.GetWeight()
                 );
             if (ShowPositongDebug)
-                debugInfo = string.Format(
+                debugInfo += string.Format(
                     "PX:  {0,5:0.##}  PY:  {1,7:0.##}\n" +
                     "PIX: {2,5:0.##}  PIY: {3,7:0.##}\n" +
                     "PA:  {4,5:0.##}  PL:  {5,7:0.##}\n",
@@ -3969,7 +3990,7 @@ namespace SLIL
                     player = player,
                     Entities = Controller.GetEntities()
                 };
-                console_panel.Log("SLIL console *v1.5*\nType \"-help-\" for a list of commands...", false, false, Color.Lime);
+                console_panel.Log("SLIL console *v1.5*\nType \"-HELP-\" for a list of commands...", false, false, Color.Lime);
                 console_panel.Log("\n\nEnter the command: ", false, false, Color.Lime);
                 Controls.Add(console_panel);
                 SLILDisplay = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
@@ -4083,13 +4104,13 @@ namespace SLIL
 
         private void StopAllSounds()
         {
-            foreach (PlaySound ostTrack in ost)
+            foreach (var ostTrack in ost)
                 ostTrack?.Stop();
-            foreach (PlaySound hitSound in hit)
+            foreach (var hitSound in hit)
                 hitSound?.Stop();
-            foreach (PlaySound climbSound in climb)
+            foreach (var climbSound in climb)
                 climbSound?.Stop();
-            foreach (PlaySound doorSound in door)
+            foreach (var doorSound in door)
                 doorSound?.Stop();
             for (int i = 0; i < steps.GetLength(0); i++)
             {
@@ -4106,21 +4127,23 @@ namespace SLIL
                 for (int j = 0; j < CuteDeathSounds.GetLength(1); j++)
                     CuteDeathSounds[i, j]?.Stop();
             }
-            foreach (Type key in GunsSoundsDict.Keys)
+            foreach (var key in GunsSoundsDict.Keys)
             {
-                PlaySound[,] soundDict = GunsSoundsDict[key];
+                var soundDict = GunsSoundsDict[key];
                 for (int i = 0; i < soundDict.GetLength(0); i++)
                 {
                     for (int j = 0; j < soundDict.GetLength(1); j++)
                         soundDict[i, j]?.Stop();
                 }
             }
-            foreach (Type key in TransportsSoundsDict.Keys)
+            foreach (var key in TransportsSoundsDict.Keys)
             {
-                PlaySound[] transportSoundDict = TransportsSoundsDict[key];
-                foreach (PlaySound transportSound in transportSoundDict)
+                var transportSoundDict = TransportsSoundsDict[key];
+                foreach (var transportSound in transportSoundDict)
                     transportSound?.Stop();
             }
+            foreach (var scary_sound in scary_sounds)
+                scary_sound?.Stop();
             hungry?.Stop();
             step?.Stop();
             transport_step?.Stop();

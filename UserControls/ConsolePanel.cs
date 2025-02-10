@@ -302,7 +302,7 @@ namespace SLIL.UserControls
                     }
                     else if (cheat == "PLAYER")
                     {
-                        PropertyInfo[] properties = typeof(Player).GetProperties();
+                        PropertyInfo[] properties = typeof(Player).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                         int maxPropNameLength = properties.Max(p => p.Name.Length);
                         int maxValueLength = properties.Max(p => p.GetValue(player)?.ToString().Length ?? 0);
                         int columnWidth = Math.Max(maxPropNameLength, maxValueLength);
@@ -313,7 +313,7 @@ namespace SLIL.UserControls
                         table.AppendLine($"~├{line}┼{line}┤~");
                         foreach (PropertyInfo property in properties)
                         {
-                            if (property.Name == "Guns" || property.Name == "FirstAidKits")
+                            if (property.Name == "Guns" || property.Name == "DisposableItems")
                                 continue;
                             string propName = property.Name.PadRight(columnWidth);
                             object propValueObj = property.GetValue(player);
@@ -437,7 +437,7 @@ namespace SLIL.UserControls
                     {
                         show_date = false;
                         console.Text = null;
-                        message = "SLIL console *v1.5*\nType \"-help-\" for a list of commands...";
+                        message = "SLIL console *v1.5*\nType \"-HELP-\" for a list of commands...";
                         console.Refresh();
                     }
                     else if (cheat == "SLC")
@@ -621,7 +621,7 @@ namespace SLIL.UserControls
                                 color = foreColors[color_index];
                                 show_date = false;
                                 console.Text = null;
-                                message = "SLIL console *v1.5*\nType \"-help-\" for a list of commands...";
+                                message = "SLIL console *v1.5*\nType \"-HELP-\" for a list of commands...";
                                 console.Refresh();
                             }
                         }
@@ -1333,7 +1333,7 @@ namespace SLIL.UserControls
             if (console.Text.Length == console.MaxLength)
             {
                 console.Clear();
-                ConsoleAppendText("SLIL console *v1.5*\nType \"-help-\" for a list of commands...", foreColors[color_index]);
+                ConsoleAppendText("SLIL console *v1.5*\nType \"-HELP-\" for a list of commands...", foreColors[color_index]);
                 ConsoleAppendText("*The console was cleared due to a buffer overflow*", foreColors[color_index]);
                 ConsoleAppendText("\n\nEnter the command: ", foreColors[color_index]);
                 console.Refresh();
