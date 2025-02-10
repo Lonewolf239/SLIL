@@ -1829,6 +1829,7 @@ namespace SLIL
                         }
                         if (player.GetMoveSpeed(ElapsedTime) < 0 || player.GetStrafeSpeed(ElapsedTime) != 0)
                         {
+                            if (!PlayerCanDodge()) return;
                             double dodgeAngle = player.GetMoveSpeed(ElapsedTime) < 0 ? ML.NormalizeAngle(player.A + Math.PI) : player.A;
                             double strafeSpeed = player.GetStrafeSpeed(ElapsedTime);
                             if (strafeSpeed != 0)
@@ -3999,6 +4000,16 @@ namespace SLIL
                 !player.Fast && !player.IsPetting && !player.Aiming &&
                 !shot_timer.Enabled && !reload_timer.Enabled &&
                 !shotgun_pull_timer.Enabled && !chill_timer.Enabled && 
+                !mouse_hold_timer.Enabled && !player.UseItem;
+        }
+
+        private bool PlayerCanDodge()
+        {
+            Player player = GetPlayer();
+            return player.GetCurrentGun().CanRun && !player.InParkour &&
+                !player.IsPetting && !player.Aiming &&
+                !shot_timer.Enabled && !reload_timer.Enabled &&
+                !shotgun_pull_timer.Enabled && !chill_timer.Enabled &&
                 !mouse_hold_timer.Enabled && !player.UseItem;
         }
 

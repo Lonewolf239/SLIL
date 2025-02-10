@@ -1204,11 +1204,11 @@ namespace SLIL.Classes
             ShowAmmoAsNumber = true;
             Name = new[] { "3-15", "Minigun" };
             Accuracy = 0.75;
-            Weight = 0.85;
+            Weight = 0.5;
             RechargeTime = 375;
             BulletCount = 1;
-            PauseBetweenShooting = 60;
-            FiringRate = 30;
+            PauseBetweenShooting = 80;
+            FiringRate = 40;
             UpdateCost = 0;
             GunCost = 0;
             AmmoCost = 0;
