@@ -100,7 +100,7 @@ namespace SLIL.Classes
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка при работе с базой данных: {ex.Message}");
+                MessageBox.Show($"Ошибка при работе с базой данных: {ex.Message}");
                 return AccountStates.Error;
             }
             return AccountStates.NotFound;

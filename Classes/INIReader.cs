@@ -317,9 +317,7 @@ namespace IniReader
         /// <param name="section">The section from which reading will be performed.</param>
         /// <param name="key">The key by which the reading will be performed.</param>
         /// <param name="default_value">The default value that will be returned in case of a read error.</param>
-        /// <returns>
-        /// Line
-        /// </returns>
+        /// <returns>Line</returns>
         public string GetString(string section, string key, string default_value = "")
         {
             string result = default_value;
