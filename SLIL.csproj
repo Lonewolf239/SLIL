@@ -1535,6 +1535,7 @@
     <None Include="Images\minigun_shooted.png" />
     <None Include="Images\minigun.png" />
     <None Include="Images\minigun_icon.png" />
+    <None Include="Images\god_display_effect.png" />
     <Content Include="SLILCursorDefault.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

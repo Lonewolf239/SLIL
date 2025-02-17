@@ -453,7 +453,7 @@ namespace SLIL.UserControls
                     else if (cheat == "FPS")
                     {
                         parent.ShowFPS = !parent.ShowFPS;
-                        INIReader.SetKey(Program.iniFolder, "SLIL", "show_fps", parent.ShowFPS);
+                        Program.iniReader.SetKey("SLIL", "show_fps", parent.ShowFPS);
                         if (parent.ShowFPS)
                             message += "FPS display enabled.";
                         else
@@ -462,7 +462,7 @@ namespace SLIL.UserControls
                     else if (cheat == "MINIMAP")
                     {
                         parent.ShowMiniMap = !parent.ShowMiniMap;
-                        INIReader.SetKey(Program.iniFolder, "SLIL", "show_minimap", parent.ShowMiniMap);
+                        Program.iniReader.SetKey("SLIL", "show_minimap", parent.ShowMiniMap);
                         if (parent.ShowMiniMap)
                             message += "Minimap enabled.";
                         else
@@ -544,7 +544,7 @@ namespace SLIL.UserControls
                             {
                                 message += $"Current crosshair is now {x}. *Default: 0*";
                                 SLIL.scope_type = x;
-                                INIReader.SetKey(Program.iniFolder, "SLIL", "scope_type", x);
+                                Program.iniReader.SetKey("SLIL", "scope_type", x);
                             }
                             else
                             {
@@ -567,7 +567,7 @@ namespace SLIL.UserControls
                             {
                                 message += $"Current crosshair color is now {x}. *Default: 0*";
                                 SLIL.scope_color = x;
-                                INIReader.SetKey(Program.iniFolder, "SLIL", "scope_color", x);
+                                Program.iniReader.SetKey("SLIL", "scope_color", x);
                             }
                             else
                             {
@@ -595,7 +595,7 @@ namespace SLIL.UserControls
                             {
                                 message += $"Mouse sensitivity is now {x}. *Default: 2,75*";
                                 SLIL.LookSpeed = x;
-                                INIReader.SetKey(Program.iniFolder, "SLIL", "look_speed", x);
+                                Program.iniReader.SetKey("SLIL", "look_speed", x);
                             }
                         }
                         catch

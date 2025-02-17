@@ -26,10 +26,7 @@ namespace SLIL
 
         private void Create_account_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo("https://t.me/SLIL_AccountBOT") { UseShellExecute = true });
 
-        private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (!CanClose) e.Cancel = true;
-        }
+        private void LoginForm_FormClosing(object sender, FormClosingEventArgs e) { if (!CanClose) e.Cancel = true; }
 
         private void ResizeButtonsInControl(Control control)
         {
@@ -80,15 +77,12 @@ namespace SLIL
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-            Language = INIReader.GetString(Program.iniFolder, "CONFIG", "language", "English");
+            Language = Program.iniReader.GetString("CONFIG", "language", "English");
             if (!SupportedLanguages.Values.Contains(Language)) Language = "English";
             SetLanguage();
         }
 
-        private void Hide_btn_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left) WindowState = FormWindowState.Minimized;
-        }
+        private void Hide_btn_MouseClick(object sender, MouseEventArgs e) { if (e.Button == MouseButtons.Left) WindowState = FormWindowState.Minimized; }
 
         private void Hide_btn_MouseEnter(object sender, EventArgs e) => hide_btn.Image = Properties.Resources.minimized_entered;
 
@@ -127,11 +121,7 @@ namespace SLIL
             }
         }
 
-        private void LoginForm_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-                isDragging = false;
-        }
+        private void LoginForm_MouseUp(object sender, MouseEventArgs e) { if (e.Button == MouseButtons.Left) isDragging = false; }
 
         private void Key_input_KeyDown(object sender, KeyEventArgs e)
         {

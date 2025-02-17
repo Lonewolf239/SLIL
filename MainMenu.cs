@@ -338,11 +338,7 @@ namespace SLIL
             if (sounds) MainMenuTheme.Play(MusicVolume);
         }
 
-        private void MainMenu_Shown(object sender, EventArgs e)
-        {
-            if (show_hilf_mir.Checked)
-                hilf_mir_panel.Visible = true;
-        }
+        private void MainMenu_Shown(object sender, EventArgs e) { if (show_hilf_mir.Checked) hilf_mir_panel.Visible = true; }
 
         private void MainMenu_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -383,7 +379,7 @@ namespace SLIL
                     btn.Text = key.ToString().Replace("Key", null).Replace("Return", "Enter");
                     ChangeControlButton = false;
                     press_any_btn_panel.Visible = false;
-                    INIReader.SetKey(Program.iniFolder, "SLIL", SelectButtonName, key);
+                    Program.iniReader.SetKey("SLIL", SelectButtonName, key);
                 }
             }
         }
@@ -411,12 +407,10 @@ namespace SLIL
                     account_panel.Visible = false;
                     SaveSettings();
                 }
-                if (hilf_mir_panel.Visible)
-                    hilf_mir_panel.Visible = false;
-                if (help_panel.Visible)
-                    help_panel.Visible = false;
+                if (hilf_mir_panel.Visible) hilf_mir_panel.Visible = false;
+                if (help_panel.Visible) help_panel.Visible = false;
             }
-            else if (e.KeyCode== Keys.Enter)
+            else if (e.KeyCode == Keys.Enter)
             {
                 if (exit_panel.Visible)
                 {
@@ -432,97 +426,96 @@ namespace SLIL
 
         private void GetGameParametrs()
         {
-            show_hilf_mir.Checked = INIReader.GetBool(Program.iniFolder, "CONFIG", "show_tutorial", true);
+            show_hilf_mir.Checked = Program.iniReader.GetBool("CONFIG", "show_tutorial", true);
             show_tutorial.Checked = show_hilf_mir.Checked;
-            Language = INIReader.GetString(Program.iniFolder, "CONFIG", "language", Language);
+            Language = Program.iniReader.GetString("CONFIG", "language", Language);
             if (!SupportedLanguages.Values.Contains(Language)) Language = "English";
-            ConsoleEnabled = INIReader.GetBool(Program.iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
-            sounds = INIReader.GetBool(Program.iniFolder, "CONFIG", "sounds", true);
-            MusicVolume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "music_volume", 0.4f);
-            EffectsVolume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "effects_volume", 0.4f);
-            Volume = INIReader.GetSingle(Program.iniFolder, "CONFIG", "sounds_volume", 0.4f);
-            Gamma = INIReader.GetInt(Program.iniFolder, "CONFIG", "gamma", 100);
-            LOOK_SPEED = INIReader.GetDouble(Program.iniFolder, "SLIL", "look_speed", 6.5);
-            inv_y = INIReader.GetBool(Program.iniFolder, "SlIL", "inv_y", false);
-            inv_x = INIReader.GetBool(Program.iniFolder, "SlIL", "inv_x", false);
-            ShowFPS = INIReader.GetBool(Program.iniFolder, "SLIL", "show_fps", true);
-            ShowMiniMap = INIReader.GetBool(Program.iniFolder, "SLIL", "show_minimap", true);
-            scope_color = INIReader.GetInt(Program.iniFolder, "SLIL", "scope_color", 0);
-            scope_type = INIReader.GetInt(Program.iniFolder, "SLIL", "scope_type", 0);
-            interface_size = INIReader.GetInt(Program.iniFolder, "SLIL", "interface_size", 2);
-            smoothing = INIReader.GetInt(Program.iniFolder, "SLIL", "smoothing", 1);
-            hight_fps = INIReader.GetBool(Program.iniFolder, "SLIL", "hight_fps", true);
-            BindControls["screenshot"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "screenshot", Keys.F12);
-            BindControls["reloading"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "reloading", Keys.R);
-            BindControls["forward"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "forward", Keys.W);
-            BindControls["back"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "back", Keys.S);
-            BindControls["left"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "left", Keys.A);
-            BindControls["right"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "right", Keys.D);
-            BindControls["interaction_0"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "interaction_0", Keys.E);
-            BindControls["interaction_1"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "interaction_1", Keys.Enter);
-            BindControls["show_map_0"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "show_map_0", Keys.M);
-            BindControls["show_map_1"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "show_map_1", Keys.Tab);
-            BindControls["flashlight"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "flashlight", Keys.F);
-            BindControls["item"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "item", Keys.H);
-            BindControls["select_item"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "select_item", Keys.Q);
-            BindControls["run"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "run", Keys.ShiftKey);
-            BindControls["climb"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "climb", Keys.Space);
-            BindControls["inventory"] = INIReader.GetKeys(Program.iniFolder, "HOTKEYS", "inventory", Keys.I);
-            SLIL_v0_1_LOOK_SPEED = INIReader.GetDouble(Program.iniFolder, "SLIL_V0_0_1", "look_speed", 1.75);
-            SLIL_v0_1_difficulty = INIReader.GetInt(Program.iniFolder, "SLIL_V0_0_1", "difficulty", 1);
-            if (interface_size < 0 || interface_size > 3) interface_size = 2;
-            if (smoothing < 0 || smoothing > 3) smoothing = 1;
-            if (LOOK_SPEED < 2.5 || LOOK_SPEED > 10) LOOK_SPEED = 6.5;
-            if (MusicVolume < 0 || MusicVolume > 1) MusicVolume = 0.4f;
-            if (EffectsVolume < 0 || EffectsVolume > 1) EffectsVolume = 0.4f;
-            if (Volume < 0 || Volume > 1) Volume = 0.4f;
-            if (Gamma < 40 || Gamma > 120) Gamma = 100;
-            if (scope_color < 0 || scope_color > 8) scope_color = 0;
-            if (scope_type < 0 || scope_type > 4) scope_type = 0;
+            ConsoleEnabled = Program.iniReader.GetBool("CONFIG", "console_enabled", ConsoleEnabled);
+            sounds = Program.iniReader.GetBool("CONFIG", "sounds", true);
+            MusicVolume = Program.iniReader.GetSingle("CONFIG", "music_volume", 0.4f);
+            EffectsVolume = Program.iniReader.GetSingle("CONFIG", "effects_volume", 0.4f);
+            Volume = Program.iniReader.GetSingle("CONFIG", "sounds_volume", 0.4f);
+            Gamma = Program.iniReader.GetInt("CONFIG", "gamma", 100);
+            LOOK_SPEED = Program.iniReader.GetDouble("SLIL", "look_speed", 6.5);
+            inv_y = Program.iniReader.GetBool("SlIL", "inv_y", false);
+            inv_x = Program.iniReader.GetBool("SlIL", "inv_x", false);
+            ShowFPS = Program.iniReader.GetBool("SLIL", "show_fps", true);
+            ShowMiniMap = Program.iniReader.GetBool("SLIL", "show_minimap", true);
+            scope_color = Program.iniReader.GetInt("SLIL", "scope_color", 0);
+            scope_type = Program.iniReader.GetInt("SLIL", "scope_type", 0);
+            interface_size = Program.iniReader.GetInt("SLIL", "interface_size", 2);
+            smoothing = Program.iniReader.GetInt("SLIL", "smoothing", 1);
+            hight_fps = Program.iniReader.GetBool("SLIL", "hight_fps", true);
+            BindControls["screenshot"] = Program.iniReader.GetKeys("HOTKEYS", "screenshot", Keys.F12);
+            BindControls["reloading"] = Program.iniReader.GetKeys("HOTKEYS", "reloading", Keys.R);
+            BindControls["forward"] = Program.iniReader.GetKeys("HOTKEYS", "forward", Keys.W);
+            BindControls["back"] = Program.iniReader.GetKeys("HOTKEYS", "back", Keys.S);
+            BindControls["left"] = Program.iniReader.GetKeys("HOTKEYS", "left", Keys.A);
+            BindControls["right"] = Program.iniReader.GetKeys("HOTKEYS", "right", Keys.D);
+            BindControls["interaction_0"] = Program.iniReader.GetKeys("HOTKEYS", "interaction_0", Keys.E);
+            BindControls["interaction_1"] = Program.iniReader.GetKeys("HOTKEYS", "interaction_1", Keys.Enter);
+            BindControls["show_map_0"] = Program.iniReader.GetKeys("HOTKEYS", "show_map_0", Keys.M);
+            BindControls["show_map_1"] = Program.iniReader.GetKeys("HOTKEYS", "show_map_1", Keys.Tab);
+            BindControls["flashlight"] = Program.iniReader.GetKeys("HOTKEYS", "flashlight", Keys.F);
+            BindControls["item"] = Program.iniReader.GetKeys("HOTKEYS", "item", Keys.H);
+            BindControls["select_item"] = Program.iniReader.GetKeys("HOTKEYS", "select_item", Keys.Q);
+            BindControls["run"] = Program.iniReader.GetKeys("HOTKEYS", "run", Keys.ShiftKey);
+            BindControls["climb"] = Program.iniReader.GetKeys("HOTKEYS", "climb", Keys.Space);
+            BindControls["inventory"] = Program.iniReader.GetKeys("HOTKEYS", "inventory", Keys.I);
+            SLIL_v0_1_LOOK_SPEED = Program.iniReader.GetDouble("SLIL_V0_0_1", "look_speed", 1.75);
+            SLIL_v0_1_difficulty = Program.iniReader.GetInt("SLIL_V0_0_1", "difficulty", 1);
+            interface_size = ML.Clamp(interface_size, 0, 3);
+            smoothing = ML.Clamp(smoothing, 0, 3);
+            LOOK_SPEED = ML.Clamp(LOOK_SPEED, 2.5, 10);
+            MusicVolume = ML.Clamp(MusicVolume, 0, 1);
+            EffectsVolume = ML.Clamp(EffectsVolume, 0, 1);
+            Volume = ML.Clamp(Volume, 0, 1);
+            Gamma = ML.Clamp(Gamma, 40, 120);
+            scope_color = ML.Clamp(scope_color, 0, 8);
+            scope_type = ML.Clamp(scope_type, 0, 4);
         }
 
         private void SaveSettings()
         {
-            INIReader.ClearFile(Program.iniFolder);
-            INIReader.SetKey(Program.iniFolder, "ACCOUNT", "key", HashedKey);
-            INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", License);
-            if (DownloadedLocalizationList)
-                INIReader.SetKey(Program.iniFolder, "CONFIG", "language", Language);
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "sounds", sounds);
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "console_enabled", ConsoleEnabled);
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "music_volume", MusicVolume);
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "effects_volume", EffectsVolume);
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "sounds_volume", Volume);
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "gamma", Gamma);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "interface_size", interface_size);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "smoothing", smoothing);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "show_fps", ShowFPS);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "hight_fps", hight_fps);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "show_minimap", ShowMiniMap);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "scope_type", scope_type);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "scope_color", scope_color);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "look_speed", LOOK_SPEED);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "inv_y", inv_y);
-            INIReader.SetKey(Program.iniFolder, "SLIL", "inv_x", inv_x);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "screenshot", BindControls["screenshot"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "reloading", BindControls["reloading"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "forward", BindControls["forward"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "back", BindControls["back"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "left", BindControls["left"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "right", BindControls["right"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "interaction_0", BindControls["interaction_0"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "interaction_1", BindControls["interaction_1"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "show_map_0", BindControls["show_map_0"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "show_map_1", BindControls["show_map_1"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "flashlight", BindControls["flashlight"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "item", BindControls["item"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "select_item", BindControls["select_item"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "run", BindControls["run"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "climb", BindControls["climb"]);
-            INIReader.SetKey(Program.iniFolder, "HOTKEYS", "inventory", BindControls["inventory"]);
-            INIReader.SetKey(Program.iniFolder, "SLIL_V0_0_1", "look_speed", SLIL_v0_1_LOOK_SPEED);
-            INIReader.SetKey(Program.iniFolder, "SLIL_V0_0_1", "difficulty", difficulty);
+            Program.iniReader.ClearFile();
+            Program.iniReader.SetKey("ACCOUNT", "key", HashedKey);
+            Program.iniReader.SetKey("ACCOUNT", "license", License);
+            if (DownloadedLocalizationList) Program.iniReader.SetKey("CONFIG", "language", Language);
+            Program.iniReader.SetKey("CONFIG", "sounds", sounds);
+            Program.iniReader.SetKey("CONFIG", "console_enabled", ConsoleEnabled);
+            Program.iniReader.SetKey("CONFIG", "show_tutorial", show_hilf_mir.Checked);
+            Program.iniReader.SetKey("CONFIG", "music_volume", MusicVolume);
+            Program.iniReader.SetKey("CONFIG", "effects_volume", EffectsVolume);
+            Program.iniReader.SetKey("CONFIG", "sounds_volume", Volume);
+            Program.iniReader.SetKey("CONFIG", "gamma", Gamma);
+            Program.iniReader.SetKey("SLIL", "interface_size", interface_size);
+            Program.iniReader.SetKey("SLIL", "smoothing", smoothing);
+            Program.iniReader.SetKey("SLIL", "show_fps", ShowFPS);
+            Program.iniReader.SetKey("SLIL", "hight_fps", hight_fps);
+            Program.iniReader.SetKey("SLIL", "show_minimap", ShowMiniMap);
+            Program.iniReader.SetKey("SLIL", "scope_type", scope_type);
+            Program.iniReader.SetKey("SLIL", "scope_color", scope_color);
+            Program.iniReader.SetKey("SLIL", "look_speed", LOOK_SPEED);
+            Program.iniReader.SetKey("SLIL", "inv_y", inv_y);
+            Program.iniReader.SetKey("SLIL", "inv_x", inv_x);
+            Program.iniReader.SetKey("HOTKEYS", "screenshot", BindControls["screenshot"]);
+            Program.iniReader.SetKey("HOTKEYS", "reloading", BindControls["reloading"]);
+            Program.iniReader.SetKey("HOTKEYS", "forward", BindControls["forward"]);
+            Program.iniReader.SetKey("HOTKEYS", "back", BindControls["back"]);
+            Program.iniReader.SetKey("HOTKEYS", "left", BindControls["left"]);
+            Program.iniReader.SetKey("HOTKEYS", "right", BindControls["right"]);
+            Program.iniReader.SetKey("HOTKEYS", "interaction_0", BindControls["interaction_0"]);
+            Program.iniReader.SetKey("HOTKEYS", "interaction_1", BindControls["interaction_1"]);
+            Program.iniReader.SetKey("HOTKEYS", "show_map_0", BindControls["show_map_0"]);
+            Program.iniReader.SetKey("HOTKEYS", "show_map_1", BindControls["show_map_1"]);
+            Program.iniReader.SetKey("HOTKEYS", "flashlight", BindControls["flashlight"]);
+            Program.iniReader.SetKey("HOTKEYS", "item", BindControls["item"]);
+            Program.iniReader.SetKey("HOTKEYS", "select_item", BindControls["select_item"]);
+            Program.iniReader.SetKey("HOTKEYS", "run", BindControls["run"]);
+            Program.iniReader.SetKey("HOTKEYS", "climb", BindControls["climb"]);
+            Program.iniReader.SetKey("HOTKEYS", "inventory", BindControls["inventory"]);
+            Program.iniReader.SetKey("SLIL_V0_0_1", "look_speed", SLIL_v0_1_LOOK_SPEED);
+            Program.iniReader.SetKey("SLIL_V0_0_1", "difficulty", difficulty);
         }
 
         //  #====    Localization    ====#
@@ -1310,7 +1303,7 @@ namespace SLIL
         {
             lose_focus.Focus();
             DownloadedLocalizationList = false;
-            Language = INIReader.GetString(Program.iniFolder, "CONFIG", "language", Language);
+            Language = Program.iniReader.GetString("CONFIG", "language", Language);
             await DownloadLocalizationList();
             SetVisualSettings();
             SetLanguage();
@@ -1658,7 +1651,7 @@ namespace SLIL
         {
             lose_focus.Focus();
             show_tutorial.Checked = show_hilf_mir.Checked;
-            INIReader.SetKey(Program.iniFolder, "CONFIG", "show_tutorial", show_hilf_mir.Checked);
+            Program.iniReader.SetKey("CONFIG", "show_tutorial", show_hilf_mir.Checked);
         }
 
         //  #====      SLIL v0.0.1     ====#

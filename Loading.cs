@@ -231,8 +231,8 @@ namespace SLIL
                 string title = "Missing \"data.cgf\" file!", message = $"The file \"data.cgf\" is missing! It may have been renamed, moved, or deleted. Do you want to download the installer again?";
                 if (DownloadedLocalizationList)
                 {
-                    title = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-92");
-                    message = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-93");
+                    title = Localizations.GetLString(Program.iniReader.GetString("CONFIG", "language", "English"), "0-92");
+                    message = Localizations.GetLString(Program.iniReader.GetString("CONFIG", "language", "English"), "0-93");
                 }
                 if (MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                 {
@@ -242,8 +242,8 @@ namespace SLIL
                         string caption = "Error";
                         if (DownloadedLocalizationList)
                         {
-                            caption = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-94");
-                            message = Localizations.GetLString(INIReader.GetString("config.ini", "CONFIG", "language", "English"), "0-95");
+                            caption = Localizations.GetLString(Program.iniReader.GetString("CONFIG", "language", "English"), "0-94");
+                            message = Localizations.GetLString(Program.iniReader.GetString("CONFIG", "language", "English"), "0-95");
                         }
                         MessageBox.Show(message, caption, MessageBoxButtons.OK);
                         await DownloadFileAsync("https://base-escape.ru/downloads/UpdateDownloader.exe", "UpdateDownloader.exe");
@@ -271,10 +271,10 @@ namespace SLIL
         private async Task Login()
         {
             status_label.Text = "Login...";
-            HashedKey = INIReader.GetString(Program.iniFolder, "ACCOUNT", "key", "None");
+            HashedKey = Program.iniReader.GetString("ACCOUNT", "key", "None");
             if (!CheckInternet())
             {
-                License = INIReader.GetString(Program.iniFolder, "ACCOUNT", "license", "None");
+                License = Program.iniReader.GetString("ACCOUNT", "license", "None");
                 if (Hasher.CheckLicense(License, HashedKey))
                 {
                     if (loginForm != null)
@@ -330,6 +330,7 @@ namespace SLIL
                 loginForm.Dispose();
                 loginForm = null;
             }
+            Program.iniReader.RemoveKey("ACCOUNT", "license");
             Application.Exit();
         }
 
@@ -358,10 +359,10 @@ namespace SLIL
             AccountStates state = await SLIL_Account.LoadAccount();
             if (state == AccountStates.AllOk)
             {
-                INIReader.SetKey(Program.iniFolder, "ACCOUNT", "key", HashedKey);
+                Program.iniReader.SetKey("ACCOUNT", "key", HashedKey);
                 if (!SLIL_Account.AllOk)
                 {
-                    INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", "None");
+                    Program.iniReader.SetKey("ACCOUNT", "license", "None");
                     if (loginForm == null)
                     {
                         loginForm = new LoginForm()
@@ -390,7 +391,7 @@ namespace SLIL
                         loginForm = null;
                     }
                     License = Hasher.SetLicense(HashedKey);
-                    INIReader.SetKey(Program.iniFolder, "ACCOUNT", "license", License);
+                    Program.iniReader.SetKey("ACCOUNT", "license", License);
                     GoToMainMenu();
                 }
             }
@@ -497,7 +498,6 @@ namespace SLIL
 
         private async void Loading_Load(object sender, EventArgs e)
         {
-            INIReader.CreateIniFileIfNotExist(Program.iniFolder);
             if (!File.Exists("data.enc")) await DownloadFileAsync(@"https://base-escape.ru/downloads/SLIL/data.enc", "data.enc");
             await LoadingMainMenu();
         }

@@ -9,6 +9,7 @@ using SLIL_v0_1.MazeGenerator;
 using System.Diagnostics;
 using System.Globalization;
 using Play_Sound;
+using SLIL.Classes;
 
 namespace SLIL.SLIL_v0_1
 {
@@ -259,8 +260,8 @@ namespace SLIL.SLIL_v0_1
             if (!Language) start_btn.Text = "START";
             LOOK_SPEED = MainMenu.SLIL_v0_1_LOOK_SPEED;
             difficulty = MainMenu.SLIL_v0_1_difficulty;
-            if (LOOK_SPEED < 1 || LOOK_SPEED > 4.5) LOOK_SPEED = 1.75;
-            if (difficulty < 0 || difficulty > 2) difficulty = 1;
+            LOOK_SPEED = ML.Clamp(LOOK_SPEED, 1, 4.5);
+            difficulty = ML.Clamp(difficulty, 0, 2);
             old_difficulty = difficulty;
             Activate();
         }

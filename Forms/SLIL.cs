@@ -3001,20 +3001,9 @@ namespace SLIL
                 try { DrawWeapon(player, 0); }
                 catch { }
             }
-            if (player.EffectCheck(2))
-                graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
-            DrawScreenEffects();
-            if (player.EffectCheck(6) || Controller.InBackrooms())
-            {
-                if (player.CuteMode && !Controller.InBackrooms())
-                    graphicsWeapon.DrawImage(Properties.Resources.blindness_display_cute_effect, 0, 0, WEAPON.Width, WEAPON.Height);
-                else
-                    graphicsWeapon.DrawImage(Properties.Resources.blindness_display_effect, 0, 0, WEAPON.Width, WEAPON.Height);
-            }
-            if (ShowFPS)
-                graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
-            if (player.InTransport)
-                graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][0], 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
+            DrawScreenEffects(player);
+            if (ShowFPS) graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
+            if (player.InTransport) graphicsWeapon.DrawImage(TransportImages[player.TRANSPORT.GetType()][0], 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
             else if (!player.CuteMode)
             {
                 graphicsWeapon.DrawImage(Properties.Resources.hp, 2, SCREEN_HEIGHT - icon_size - add, icon_size, icon_size);
@@ -3204,8 +3193,10 @@ namespace SLIL
         //    }
         //}
 
-        private void DrawScreenEffects()
+        private void DrawScreenEffects(Player player)
         {
+            if (player.EffectCheck(2))
+                graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
             for (int i = 0; i < screenEffects.Count; i++)
             {
                 var screenEffect = screenEffects[i];
@@ -3239,6 +3230,15 @@ namespace SLIL
                     i--;
                 }
             }
+            if (player.EffectCheck(6) || Controller.InBackrooms())
+            {
+                if (player.CuteMode && !Controller.InBackrooms())
+                    graphicsWeapon.DrawImage(Properties.Resources.blindness_display_cute_effect, 0, 0, WEAPON.Width, WEAPON.Height);
+                else
+                    graphicsWeapon.DrawImage(Properties.Resources.blindness_display_effect, 0, 0, WEAPON.Width, WEAPON.Height);
+            }
+            if (player.EffectCheck(9))
+                graphicsWeapon.DrawImage(Properties.Resources.god_display_effect, 0, 0, WEAPON.Width, WEAPON.Height);
         }
 
         private void DrawPing(SizeF fpsSize, int icon_size)

@@ -1313,6 +1313,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap god_display_effect {
+            get {
+                object obj = ResourceManager.GetObject("god_display_effect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap good_connection {
             get {
                 object obj = ResourceManager.GetObject("good_connection", resourceCulture);

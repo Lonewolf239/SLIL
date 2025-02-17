@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using IniReader;
 using System.Linq;
 using System.Threading;
 using System.Management;
@@ -14,7 +15,7 @@ namespace SLIL
         public static Mutex mutex;
         public static Cursor SLILCursorDefault, SLILCursorHelp;
         public static string current_version = "|1.3.1|";
-        public static string iniFolder = "config.ini";
+        public static INIReader iniReader = new INIReader("config.ini");
 
         [STAThread]
         static void Main()
