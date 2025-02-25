@@ -120,11 +120,10 @@ namespace SLIL.Classes
             TotalTime = Stage = TotalKilled = 0;
             Player player = new Player(3, 3, MAP_WIDTH, ref MaxEntityID);
             Entities.Add(player);
-            if (difficulty == 3 || difficulty == 2)
-            {
-                player.Guns[2].LevelUpdate();
-                ((DisposableItem)player.GUNS[10]).AddItem(2);
-            }
+            if (difficulty == 0) player.Money = 15;
+            else if (difficulty == 1) player.Money = 15;
+            else if (difficulty == 2) player.Money = 15;
+            else if (difficulty == 3) player.Money = 915;
             if (isTutorial) player.Money = 500;
             if (inDebug != 0) player.Money = 1234;
             return MaxEntityID - 1;
@@ -1179,23 +1178,9 @@ namespace SLIL.Classes
                     else if (difficulty == 1)
                         enemy_count = 0.065;
                     else if (difficulty == 2)
-                    {
                         enemy_count = 0.055;
-                        if (Stage == 0 && player.Guns[2].Level == Levels.LV1)
-                        {
-                            player.Guns[2].LevelUpdate();
-                            ((DisposableItem)player.GUNS[10]).AddItem(2);
-                        }
-                    }
                     else if (difficulty == 3)
-                    {
                         enemy_count = 0.045;
-                        if (Stage == 0 && player.Guns[2].Level == Levels.LV1)
-                        {
-                            player.Guns[2].LevelUpdate();
-                            ((DisposableItem)player.GUNS[10]).AddItem(2);
-                        }
-                    }
                     else if (difficulty == 4)
                     {
                         MazeHeight = CustomMazeHeight;
@@ -1443,8 +1428,7 @@ namespace SLIL.Classes
                 }
                 for (int i = 0; i < MAP.Length; i++)
                 {
-                    if (MAP[i] == 'o')
-                        MAP[i] = 'd';
+                    if (MAP[i] == 'o') MAP[i] = 'd';
                 }
             }
             foreach (Entity ent in Entities)
@@ -2018,9 +2002,7 @@ namespace SLIL.Classes
                     if (p.ItemFrame > p.DisposableItem.ReloadFrames)
                     {
                         p.SetItemEffect();
-                        p.DisposableItem.Count--;
-                        if (p.DisposableItem.Count == 0)
-                            p.DisposableItem.SetDefault();
+                        p.DisposableItem.RemoveItem();
                         p.GunState = p.MoveStyle;
                         p.CanShoot = true;
                     }

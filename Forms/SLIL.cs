@@ -32,7 +32,7 @@ namespace SLIL
         private bool isCursorVisible = true;
         public int CustomMazeHeight, CustomMazeWidth;
         public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
-        public bool ShowDebugSpeed = false, ShowPositongDebug = false;
+        public bool ShowDebugSpeed = false, ShowPositongDebug = false, ShowGameDebug = false;
         public bool inv_y = false, inv_x = false;
         public static int difficulty = 1;
         private int inDebug = 0;
@@ -584,7 +584,7 @@ namespace SLIL
         private bool ShowSing = false, ShowInventory = false;
         private int SingID, scrollPosition = 0;
         private const int ScrollBarWidth = 4, ScrollPadding = 5;
-        private bool open_shop = false, pressed_r = false, cancelReload = false;
+        private bool ShopOpen = false, StartShopOpen = false, pressed_r = false, cancelReload = false;
         private float xOffset = 0, yOffset = 0, xOffsetDirection = 0.25f, yOffsetDirection = 0.25f;
         private double RecoilY = 0, RecoilLX = 0, RecoilRX = 0;
         private double RecoilOY = 0, RecoilLOX = 0, RecoilROX = 0;
@@ -821,10 +821,7 @@ namespace SLIL
                     this.GameOver(win);
                 });
             }
-            else
-            {
-                this.GameOver(win);
-            }
+            else this.GameOver(win);
         }
 
         public void InitPlayerInvoker()
@@ -1384,7 +1381,7 @@ namespace SLIL
         {
             if (SLILDisplay == null) return;
             if (!raycast.Enabled && SLILDisplay.Screen != null) SLILDisplay.Screen = null;
-            bool shouldShowCursor = !GameStarted || open_shop || ShowInventory || console_panel.Visible || (active && !GameStarted) || Paused;
+            bool shouldShowCursor = StartShopOpen || !GameStarted || ShopOpen || ShowInventory || console_panel.Visible || (active && !GameStarted) || Paused;
             if (shouldShowCursor != isCursorVisible)
             {
                 if (shouldShowCursor)
@@ -1437,7 +1434,7 @@ namespace SLIL
                     shot_timer.Enabled = reload_timer.Enabled = shotgun_pull_timer.Enabled = false;
                 if (!player.GetCurrentGun().CanRun)
                     player.PlayerMoveStyle = Directions.WALK;
-                if (player.LevelUpdated && !open_shop)
+                if (player.LevelUpdated && !ShopOpen)
                 {
                     ChangeWeapon(player.CurrentGun);
                     player.LevelUpdated = false;
@@ -1566,7 +1563,7 @@ namespace SLIL
             Player player = GetPlayer();
             if (e.KeyCode == Keys.Escape)
             {
-                if (open_shop) HideShop();
+                if (ShopOpen) HideShop();
                 else if (console_panel.Visible)
                 {
                     scope[scope_type] = GetScope(scope[scope_type]);
@@ -1589,7 +1586,7 @@ namespace SLIL
             }
             if (GameStarted && !Paused)
             {
-                if (!console_panel.Visible && !open_shop && !player.BlockInput)
+                if (!console_panel.Visible && !ShopOpen && !player.BlockInput)
                 {
                     if (e.KeyCode == Bind.Run) RunKeyPressed = true;
                     if (e.KeyCode == Bind.Forward)
@@ -1688,7 +1685,7 @@ namespace SLIL
                         }
                     }
                 }
-                if (!Controller.IsMultiplayer() && !Controller.InBackrooms() && e.KeyCode == Keys.Oemtilde && !open_shop && MainMenu.ConsoleEnabled)
+                if (!Controller.IsMultiplayer() && !Controller.InBackrooms() && e.KeyCode == Keys.Oemtilde && !ShopOpen && MainMenu.ConsoleEnabled)
                 {
                     console_panel.Visible = !console_panel.Visible;
                     ShowMap = false;
@@ -1768,7 +1765,7 @@ namespace SLIL
                 CloseInventory();
                 return;
             }
-            if (GameStarted && !Paused && !console_panel.Visible && !open_shop)
+            if (GameStarted && !Paused && !console_panel.Visible && !ShopOpen)
             {
                 if (e.KeyCode == Bind.Screenshot) DoScreenshot();
                 if ((e.KeyCode == Bind.Show_map_0 || e.KeyCode == Bind.Show_map_1) && !player.BlockInput)
@@ -3288,6 +3285,17 @@ namespace SLIL
                     player.A,
                     player.Look
                 );
+            if (ShowGameDebug)
+                debugInfo += string.Format(
+                    "Stage:  {0,3}\n" +
+                    "BStage: {1,3}\n" +
+                    "MaxEID: {2,3}\n" +
+                    "Difclt: {3,3}", 
+                    Controller.GetStage(),
+                    Controller.GetBackroomsStage(),
+                    Controller.GetMaxEntityID(),
+                    difficulty
+                );
             graphicsWeapon.DrawString(debugInfo, consolasFont[0, 0], whiteBrush, 0, 16);
         }
 
@@ -4054,19 +4062,13 @@ namespace SLIL
             }
             catch { player.A = 0; }
             StageOpacity = 1;
-            stage_timer.Start();
-            raycast.Start();
-            stamina_timer.Start();
-            mouse_timer.Start();
-            camera_shaking_timer.Start();
-            recoil_timer.Start();
-            fps_timer.Start();
             if (MainMenu.sounds) step_sound_timer.Start();
             player.CanUnblockCamera = player.BlockCamera = true;
             GameStarted = true;
             game_over_panel.Visible = false;
             SLILDisplay.BringToFront();
             SLILDisplay.Focus();
+            StartShop(player);
         }
 
         private void GameOver(int win)
@@ -4116,7 +4118,7 @@ namespace SLIL
             int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
             Cursor.Position = new Point(x, y);
             player.SetDefault();
-            open_shop = false;
+            ShopOpen = false;
             map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
             if (!Controller.IsMultiplayer() && Controller.InBackrooms() && Controller.GetBackroomsStage() == 1)
                 player.GiveEffect(8, true);
@@ -4247,6 +4249,47 @@ namespace SLIL
                 else if (inDebug == 3)
                     DISPLAYED_MAP.Append(bikeMap);
             }
+        }
+
+        private void DeleteInterface(Control control) => control.Dispose();
+
+        //  #====     StartShop     ====#
+
+        private void StartShop(Player player)
+        {
+            if (Controller.GetStage() != 0 || difficulty <= 1)
+            {
+                StartTimers();
+                return;
+            }
+            Controller.Pause(true);
+            player.CanUnblockCamera = false;
+            player.BlockCamera = player.BlockInput = true;
+            StartShopOpen = true;
+            StartShopInterface startShopInterface = new StartShopInterface(player) { Dock = DockStyle.Fill };
+            startShopInterface.stop_start_shop_btn.Click += (Sender, E) =>
+            {
+                Controller.Pause(false);
+                player.CanUnblockCamera = true;
+                player.BlockCamera = player.BlockInput = false;
+                StartShopOpen = false;
+                StartTimers();
+                DeleteInterface(startShopInterface);
+            };
+            Controls.Add(startShopInterface);
+            startShopInterface.BringToFront();
+            startShopInterface.Focus();
+        }
+
+        private void StartTimers()
+        {
+            raycast.Start();
+            stamina_timer.Start();
+            camera_shaking_timer.Start();
+            recoil_timer.Start();
+            fps_timer.Start();
+            stage_timer.Start();
+            mouse_timer.Start();
         }
 
         //  #====     Inventory     ====#
@@ -4508,7 +4551,7 @@ namespace SLIL
         {
             Player player = GetPlayer();
             if (player == null) return;
-            open_shop = true;
+            ShopOpen = true;
             ShopInterface_panel.VerticalScroll.Value = 0;
             mouse_timer.Stop();
             weapon_shop_page.Controls.Clear();
@@ -4585,7 +4628,7 @@ namespace SLIL
 
         private void HideShop()
         {
-            open_shop = false;
+            ShopOpen = false;
             mouse_timer.Start();
             int x = SLILDisplay.PointToScreen(Point.Empty).X + (SLILDisplay.Width / 2);
             int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);

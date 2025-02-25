@@ -1,5 +1,4 @@
-﻿using IniReader;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -97,6 +96,7 @@ namespace SLIL.UserControls
                              "~│~ -DEBUG_BIKE-  ~│~ Go to bike debug map                        ~│~\n" +
                              "~│~ -DEBUG_SPEED- ~│~ Show/hide debug player speed                ~│~\n" +
                              "~│~ -DEBUG_POS-   ~│~ Show/hide debug player position             ~│~\n" +
+                             "~│~ -DEBUG_GAME-  ~│~ Show/hide game debug state                  ~│~\n" +
                              "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                              "~│~ -FPS-         ~│~ Show/hide FPS                               ~│~\n" +
                              "~│~ -MINIMAP-     ~│~ Show/hide Minimap                           ~│~\n" +
@@ -135,6 +135,14 @@ namespace SLIL.UserControls
                             message = "Display debug player position enabled";
                         else
                             message = "Display debug player position disabled";
+                    }
+                    else if (cheat == "DEBUG_GAME")
+                    {
+                        parent.ShowGameDebug = !parent.ShowGameDebug;
+                        if (parent.ShowGameDebug)
+                            message = "Display game debug state enabled";
+                        else
+                            message = "Display game debug state disabled";
                     }
                     else if (cheat == "DEBUG")
                     {

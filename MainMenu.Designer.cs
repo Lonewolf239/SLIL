@@ -3045,7 +3045,7 @@
             // 
             // secret_btn_timer
             // 
-            this.secret_btn_timer.Interval = 16;
+            this.secret_btn_timer.Interval = 50;
             this.secret_btn_timer.Tick += new System.EventHandler(this.Secret_btn_timer_Tick);
             // 
             // MainMenu

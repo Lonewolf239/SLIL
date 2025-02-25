@@ -573,7 +573,6 @@ namespace SLIL.Classes
                 Guns.Add(GUNS[2]);
                 for (int i = 0; i < DisposableItems.Count; i++)
                     DisposableItems[i].SetDefault();
-                Money = 15;
                 CurseCureChance = 0.08;
                 TotalEnemiesKilled = 0;
                 WeaponSlot_0 = WeaponSlot_1 = -1;

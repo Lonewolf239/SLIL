@@ -260,13 +260,13 @@ namespace SLIL.Classes
             },
             { 41, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.StepForward_0, Properties.Resources.missing },
-                    { SpriteStates.StepForward_1, Properties.Resources.missing },
+                    { SpriteStates.StepForward_0, Properties.Resources.lost_soul_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.lost_soul_1 },
                     { SpriteStates.DeadBody, Properties.Resources.missing },
-                    { SpriteStates.Aiming, Properties.Resources.missing },
-                    { SpriteStates.Shooted, Properties.Resources.missing },
-                    { SpriteStates.StepEscape_0, Properties.Resources.missing },
-                    { SpriteStates.StepEscape_1, Properties.Resources.missing }
+                    { SpriteStates.Aiming, Properties.Resources.lost_soul_aiming },
+                    { SpriteStates.Shooted, Properties.Resources.lost_soul_shoot },
+                    { SpriteStates.StepEscape_0, Properties.Resources.lost_soul_escaping_0 },
+                    { SpriteStates.StepEscape_1, Properties.Resources.lost_soul_escaping_1 }
                 }
             },
             { 42, new Dictionary<SpriteStates, Image>()
@@ -504,13 +504,13 @@ namespace SLIL.Classes
             },
             { 41, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.StepForward_0, Properties.Resources.missing },
-                    { SpriteStates.StepForward_1, Properties.Resources.missing },
+                    { SpriteStates.StepForward_0, Properties.Resources.lost_soul_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.lost_soul_1 },
                     { SpriteStates.DeadBody, Properties.Resources.missing },
-                    { SpriteStates.Aiming, Properties.Resources.missing },
-                    { SpriteStates.Shooted, Properties.Resources.missing },
-                    { SpriteStates.StepEscape_0, Properties.Resources.missing },
-                    { SpriteStates.StepEscape_1, Properties.Resources.missing }
+                    { SpriteStates.Aiming, Properties.Resources.lost_soul_aiming },
+                    { SpriteStates.Shooted, Properties.Resources.lost_soul_shoot },
+                    { SpriteStates.StepEscape_0, Properties.Resources.lost_soul_escaping_0 },
+                    { SpriteStates.StepEscape_1, Properties.Resources.lost_soul_escaping_1 }
                 }
             },
             { 42, new Dictionary<SpriteStates, Image>()

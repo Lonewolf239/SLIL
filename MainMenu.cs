@@ -1502,7 +1502,7 @@ namespace SLIL
             lose_focus.Focus();
             if (difficulty != 4)
             {
-                if (sounds) MainMenuTheme.Stop();
+                MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache) { PlayerName = "Player" };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(MusicVolume);
@@ -1510,7 +1510,7 @@ namespace SLIL
             }
             else
             {
-                if (sounds) MainMenuTheme.Stop();
+                MainMenuTheme.Stop();
                 Editor = new SLIL_Editor
                 {
                     Owner = this,
@@ -1527,7 +1527,7 @@ namespace SLIL
         {
             if (Editor != null && Editor.OK)
             {
-                if (sounds) MainMenuTheme.Stop();
+                MainMenuTheme.Stop();
                 SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3, (Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y) { PlayerName = "Player" };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(MusicVolume);
@@ -1612,7 +1612,7 @@ namespace SLIL
 
         private void GoToTutorial()
         {
-            if (sounds) MainMenuTheme.Stop();
+            MainMenuTheme.Stop();
             StringBuilder tutorialMap = new StringBuilder(
             "#########################" +
             "#.....######.....########" +
@@ -1656,35 +1656,32 @@ namespace SLIL
 
         //  #====      SLIL v0.0.1     ====#
 
-        private void Secret_btn_timer_Tick(object sender, EventArgs e)
-        {
-            if (SLIL_v0_1_btn_c.Size == new Size(301, 47))
-            {
-                SLIL_v0_1_btn_c.Location = new Point((Width - SLIL_v0_1_btn_c.Width) / 2, (Height - buttons_panel.Height) / 2 - 75);
-                secret_btn_timer.Stop();
-                return;
-            }
-            if (SLIL_v0_1_btn_c.Left > (Width - SLIL_v0_1_btn_c.Width) / 2)
-                SLIL_v0_1_btn_c.Left--;
-            else if (SLIL_v0_1_btn_c.Left < (Width - SLIL_v0_1_btn_c.Width) / 2)
-                SLIL_v0_1_btn_c.Left++;
-            if (SLIL_v0_1_btn_c.Top < (Height - buttons_panel.Height) / 2 - 75)
-                SLIL_v0_1_btn_c.Top += 2;
-            else if (SLIL_v0_1_btn_c.Top > (Height - buttons_panel.Height) / 2 - 75)
-                SLIL_v0_1_btn_c.Top--;
-            SLIL_v0_1_btn_c.Width--;
-            SLIL_v0_1_btn_c.Height--;
-        }
+        private const int TotalSecretTicks = 500;
+        private int CurrentSecretTick = 0;
+        private double initialLeft, initialTop, initialWidth, initialHeight;
+        private double finalLeft, finalTop;
+        private double deltaLeft, deltaTop, deltaWidth, deltaHeight;
 
         private void Secret_panel_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
-            if (ShowingSLIL_v0_0_1 == 10)
+            if (ShowingSLIL_v0_0_1 == 10) 
             {
                 hmm.Stop();
-                omg.Play(0.5f);
-                SLIL_v0_1_btn_c.Size = Size;
-                SLIL_v0_1_btn_c.Location = new Point(0, 0 - SLIL_v0_1_btn_c.Height);
+                omg.Play(1);
+                initialWidth = Width;
+                initialHeight = Height;
+                initialLeft = 0;
+                initialTop = -initialHeight;
+                SLIL_v0_1_btn_c.Size = new Size((int)initialWidth, (int)initialHeight);
+                SLIL_v0_1_btn_c.Location = new Point((int)initialLeft, (int)initialTop);
+                finalLeft = (Width - 301) / 2;
+                finalTop = (Height - buttons_panel.Height) / 2 - 75;
+                deltaLeft = (finalLeft - initialLeft) / TotalSecretTicks;
+                deltaTop = (finalTop - initialTop) / TotalSecretTicks;
+                deltaWidth = (301 - initialWidth) / TotalSecretTicks;
+                deltaHeight = (47 - initialHeight) / TotalSecretTicks;
+                CurrentSecretTick = 0;
                 slil_0_0_1_dev_panel.Visible = false;
                 developers_panel.Visible = false;
                 SLIL_v0_1_btn_c.Visible = true;
@@ -1699,16 +1696,30 @@ namespace SLIL
             }
         }
 
+        private void Secret_btn_timer_Tick(object sender, EventArgs e)
+        {
+            if (CurrentSecretTick >= TotalSecretTicks)
+            {
+                SLIL_v0_1_btn_c.Size = new Size((int)301, (int)47);
+                SLIL_v0_1_btn_c.Location = new Point((int)finalLeft, (int)finalTop);
+                secret_btn_timer.Stop();
+                return;
+            }
+            CurrentSecretTick++;
+            double newLeft = initialLeft + deltaLeft * CurrentSecretTick;
+            double newTop = initialTop + deltaTop * CurrentSecretTick;
+            double newWidth = initialWidth + deltaWidth * CurrentSecretTick;
+            double newHeight = initialHeight + deltaHeight * CurrentSecretTick;
+            SLIL_v0_1_btn_c.Size = new Size((int)newWidth, (int)newHeight);
+            SLIL_v0_1_btn_c.Location = new Point((int)newLeft, (int)newTop);
+        }
+
         private void SLIL_v0_1_btn_c_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
             if (secret_btn_timer.Enabled) return;
-            if (sounds) MainMenuTheme.Stop();
-            SLILv0_1 sLILv0_1 = new SLILv0_1()
-            {
-                game_over = game_over
-            };
-            sLILv0_1.ShowDialog();
+            MainMenuTheme.Stop();
+            new SLILv0_1() { game_over = game_over }.ShowDialog();
             if (sounds) MainMenuTheme.Play(MusicVolume);
         }
     }

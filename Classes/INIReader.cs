@@ -152,7 +152,7 @@ namespace IniReader
                                 parts[1] = parts[1].Trim();
                                 if (Keys.TryParse(parts[1], out Keys res))
                                     result = res;
-                                break;
+                                return result;
                             }
                         }
                         if (!key_exist)
@@ -190,7 +190,7 @@ namespace IniReader
                                 parts[1] = parts[1].Trim();
                                 if (bool.TryParse(parts[1], out bool res))
                                     result = res;
-                                break;
+                                return result;
                             }
                         }
                         if (!key_exist)
@@ -227,7 +227,7 @@ namespace IniReader
                                 parts[0] = parts[0].Trim();
                                 parts[1] = parts[1].Trim();
                                 result = Convert.ToInt32(parts[1]);
-                                break;
+                                return result;
                             }
                         }
                         if (!key_exist)
@@ -264,7 +264,7 @@ namespace IniReader
                                 parts[0] = parts[0].Trim();
                                 parts[1] = parts[1].Trim();
                                 result = Convert.ToSingle(parts[1]);
-                                break;
+                                return result;
                             }
                         }
                         if (!key_exist)
@@ -301,7 +301,7 @@ namespace IniReader
                                 parts[0] = parts[0].Trim();
                                 parts[1] = parts[1].Trim();
                                 result = Convert.ToDouble(parts[1]);
-                                break;
+                                return result;
                             }
                         }
                         if (!key_exist)
@@ -338,7 +338,7 @@ namespace IniReader
                                 parts[0] = parts[0].Trim();
                                 parts[1] = parts[1].Trim();
                                 result = parts[1];
-                                break;
+                                return result;
                             }
                         }
                         if (!key_exist)

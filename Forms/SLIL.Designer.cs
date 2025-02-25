@@ -72,7 +72,10 @@ namespace SLIL
             this.shotgun_pull_timer = new System.Windows.Forms.Timer(this.components);
             this.mouse_hold_timer = new System.Windows.Forms.Timer(this.components);
             this.camera_shaking_timer = new System.Windows.Forms.Timer(this.components);
-            this.inventory_panel = new System.Windows.Forms.Panel();
+            this.fps_timer = new System.Windows.Forms.Timer(this.components);
+            this.recoil_timer = new System.Windows.Forms.Timer(this.components);
+            this.screen_effects_timer = new System.Windows.Forms.Timer(this.components);
+            this.inventory_label = new System.Windows.Forms.Label();
             this.inventory_content_panel = new System.Windows.Forms.Panel();
             this.medical_kit_count = new System.Windows.Forms.Label();
             this.medical_kit_icon = new System.Windows.Forms.PictureBox();
@@ -104,10 +107,7 @@ namespace SLIL
             this.pistol_ammo_icon = new System.Windows.Forms.PictureBox();
             this.pistol_label = new System.Windows.Forms.Label();
             this.pistol_ammo_count = new System.Windows.Forms.Label();
-            this.inventory_label = new System.Windows.Forms.Label();
-            this.fps_timer = new System.Windows.Forms.Timer(this.components);
-            this.recoil_timer = new System.Windows.Forms.Timer(this.components);
-            this.screen_effects_timer = new System.Windows.Forms.Timer(this.components);
+            this.inventory_panel = new System.Windows.Forms.Panel();
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -119,7 +119,6 @@ namespace SLIL
             ((System.ComponentModel.ISupportInitialize)(this.total_time_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.last_stage_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.total_killed_icon)).BeginInit();
-            this.inventory_panel.SuspendLayout();
             this.inventory_content_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.medical_kit_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).BeginInit();
@@ -137,6 +136,7 @@ namespace SLIL
             this.pistol_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).BeginInit();
+            this.inventory_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // shop_panel
@@ -551,16 +551,32 @@ namespace SLIL
             this.camera_shaking_timer.Interval = 75;
             this.camera_shaking_timer.Tick += new System.EventHandler(this.Camera_shaking_timer_Tick);
             // 
-            // inventory_panel
+            // fps_timer
             // 
-            this.inventory_panel.Controls.Add(this.inventory_content_panel);
-            this.inventory_panel.Controls.Add(this.inventory_label);
-            this.inventory_panel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.inventory_panel.Location = new System.Drawing.Point(0, 0);
-            this.inventory_panel.Name = "inventory_panel";
-            this.inventory_panel.Size = new System.Drawing.Size(1105, 633);
-            this.inventory_panel.TabIndex = 0;
-            this.inventory_panel.Visible = false;
+            this.fps_timer.Interval = 1000;
+            this.fps_timer.Tick += new System.EventHandler(this.Fps_timer_Tick);
+            // 
+            // recoil_timer
+            // 
+            this.recoil_timer.Interval = 5;
+            this.recoil_timer.Tick += new System.EventHandler(this.Recoil_timer_Tick);
+            // 
+            // screen_effects_timer
+            // 
+            this.screen_effects_timer.Enabled = true;
+            this.screen_effects_timer.Tick += new System.EventHandler(this.Screen_effects_timer_Tick);
+            // 
+            // inventory_label
+            // 
+            this.inventory_label.Dock = System.Windows.Forms.DockStyle.Top;
+            this.inventory_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.inventory_label.ForeColor = System.Drawing.Color.White;
+            this.inventory_label.Location = new System.Drawing.Point(0, 0);
+            this.inventory_label.Name = "inventory_label";
+            this.inventory_label.Size = new System.Drawing.Size(1105, 33);
+            this.inventory_label.TabIndex = 0;
+            this.inventory_label.Text = "Инвентарь";
+            this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // inventory_content_panel
             // 
@@ -934,32 +950,16 @@ namespace SLIL
             this.pistol_ammo_count.Text = "0/0";
             this.pistol_ammo_count.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // inventory_label
+            // inventory_panel
             // 
-            this.inventory_label.Dock = System.Windows.Forms.DockStyle.Top;
-            this.inventory_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.inventory_label.ForeColor = System.Drawing.Color.White;
-            this.inventory_label.Location = new System.Drawing.Point(0, 0);
-            this.inventory_label.Name = "inventory_label";
-            this.inventory_label.Size = new System.Drawing.Size(1105, 33);
-            this.inventory_label.TabIndex = 0;
-            this.inventory_label.Text = "Инвентарь";
-            this.inventory_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // fps_timer
-            // 
-            this.fps_timer.Interval = 1000;
-            this.fps_timer.Tick += new System.EventHandler(this.Fps_timer_Tick);
-            // 
-            // recoil_timer
-            // 
-            this.recoil_timer.Interval = 5;
-            this.recoil_timer.Tick += new System.EventHandler(this.Recoil_timer_Tick);
-            // 
-            // screen_effects_timer
-            // 
-            this.screen_effects_timer.Enabled = true;
-            this.screen_effects_timer.Tick += new System.EventHandler(this.Screen_effects_timer_Tick);
+            this.inventory_panel.Controls.Add(this.inventory_content_panel);
+            this.inventory_panel.Controls.Add(this.inventory_label);
+            this.inventory_panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.inventory_panel.Location = new System.Drawing.Point(0, 0);
+            this.inventory_panel.Name = "inventory_panel";
+            this.inventory_panel.Size = new System.Drawing.Size(1105, 633);
+            this.inventory_panel.TabIndex = 0;
+            this.inventory_panel.Visible = false;
             // 
             // SLIL
             // 
@@ -1001,7 +1001,6 @@ namespace SLIL
             ((System.ComponentModel.ISupportInitialize)(this.total_time_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.last_stage_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.total_killed_icon)).EndInit();
-            this.inventory_panel.ResumeLayout(false);
             this.inventory_content_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.medical_kit_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.hide_weapon_picture)).EndInit();
@@ -1019,6 +1018,7 @@ namespace SLIL
             this.pistol_panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pistol_icon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pistol_ammo_icon)).EndInit();
+            this.inventory_panel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1049,13 +1049,40 @@ namespace SLIL
         private Timer shotgun_pull_timer;
         private Timer mouse_hold_timer;
         private Timer camera_shaking_timer;
-        private Panel inventory_panel;
+        private TabControl shop_tab_control;
+        private TabPage weapon_shop_page;
+        private TabPage pet_shop_page;
+        private TabPage consumables_shop_page;
+        private TabPage transport_shop_page;
+        private TabPage storage_shop_page;
+        private Panel game_over_interface;
+        private Label total_killed_label;
+        private PictureBox total_time_icon;
+        private PictureBox last_stage_icon;
+        private PictureBox total_killed_icon;
+        private PictureBox cause_of_death_icon;
+        private Label cause_of_death_label;
+        private Label total_time_label;
+        private Label last_stage_label;
+        private Timer fps_timer;
+        private Timer recoil_timer;
+        private Timer screen_effects_timer;
         private Label inventory_label;
-        private Panel pistol_panel;
-        private Label pistol_label;
-        private Label pistol_ammo_count;
-        private PictureBox pistol_icon;
-        private PictureBox pistol_ammo_icon;
+        private Panel inventory_content_panel;
+        private Label medical_kit_count;
+        private PictureBox medical_kit_icon;
+        private PictureBox hide_weapon_picture;
+        private Panel pet_panel;
+        private PictureBox pet_icon;
+        private Label pet_label;
+        private Label pet_title;
+        private Label helmet_count;
+        private PictureBox helmet_icon;
+        private Label adrenalin_count;
+        private PictureBox adrenalin_icon;
+        private Label medkit_count;
+        private PictureBox medkit_icon;
+        private Label items_title;
         private Label weapon_title;
         private Panel weapon_1_panel;
         private PictureBox weapon_1_icon;
@@ -1067,38 +1094,11 @@ namespace SLIL
         private PictureBox weapon_0_ammo_icon;
         private Label weapon_0_label;
         private Label weapon_0_ammo_count;
-        private PictureBox medkit_icon;
-        private Label items_title;
-        private Label medkit_count;
-        private Label adrenalin_count;
-        private PictureBox adrenalin_icon;
-        private Label helmet_count;
-        private PictureBox helmet_icon;
-        private Label pet_title;
-        private Panel pet_panel;
-        private PictureBox pet_icon;
-        private Label pet_label;
-        private Panel inventory_content_panel;
-        private TabControl shop_tab_control;
-        private TabPage weapon_shop_page;
-        private TabPage pet_shop_page;
-        private TabPage consumables_shop_page;
-        private TabPage transport_shop_page;
-        private TabPage storage_shop_page;
-        private PictureBox hide_weapon_picture;
-        private Panel game_over_interface;
-        private Label total_killed_label;
-        private PictureBox total_time_icon;
-        private PictureBox last_stage_icon;
-        private PictureBox total_killed_icon;
-        private PictureBox cause_of_death_icon;
-        private Label cause_of_death_label;
-        private Label total_time_label;
-        private Label last_stage_label;
-        private Timer fps_timer;
-        private Label medical_kit_count;
-        private PictureBox medical_kit_icon;
-        private Timer recoil_timer;
-        private Timer screen_effects_timer;
+        private Panel pistol_panel;
+        private PictureBox pistol_icon;
+        private PictureBox pistol_ammo_icon;
+        private Label pistol_label;
+        private Label pistol_ammo_count;
+        private Panel inventory_panel;
     }
 }

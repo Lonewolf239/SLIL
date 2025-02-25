@@ -382,6 +382,12 @@
     <Compile Include="UserControls\SLIL_TransportStoreInterface.Designer.cs">
       <DependentUpon>SLIL_TransportStoreInterface.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\StartShopInterface.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\StartShopInterface.Designer.cs">
+      <DependentUpon>StartShopInterface.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Forms\SLIL_Editor.resx">
       <DependentUpon>SLIL_Editor.cs</DependentUpon>
     </EmbeddedResource>
@@ -449,6 +455,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\SLIL_TransportStoreInterface.resx">
       <DependentUpon>SLIL_TransportStoreInterface.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\StartShopInterface.resx">
+      <DependentUpon>StartShopInterface.cs</DependentUpon>
     </EmbeddedResource>
     <None Include=".editorconfig" />
     <None Include="app.manifest" />
@@ -1536,6 +1545,12 @@
     <None Include="Images\minigun.png" />
     <None Include="Images\minigun_icon.png" />
     <None Include="Images\god_display_effect.png" />
+    <None Include="Images\lost_soul_escaping_1.png" />
+    <None Include="Images\lost_soul_escaping_0.png" />
+    <None Include="Images\lost_soul_1.png" />
+    <None Include="Images\lost_soul_aiming.png" />
+    <None Include="Images\lost_soul_shoot.png" />
+    <None Include="Images\lost_soul_0.png" />
     <Content Include="SLILCursorDefault.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

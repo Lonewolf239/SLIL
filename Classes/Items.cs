@@ -246,6 +246,12 @@ namespace SLIL.Classes
             HasIt = true;
         }
 
+        public void RemoveItem(int count = 1)
+        {
+            Count -= count;
+            if (Count < 0) SetDefault();
+        }
+
         public bool CanBuy() => Count < MaxCount;
 
         public override void SetDefault()

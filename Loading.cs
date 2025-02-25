@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using CGFReader;
-using IniReader;
 using SLIL.Classes;
 using System.Drawing;
 using System.Net.Http;
@@ -397,7 +396,7 @@ namespace SLIL
             }
             else
             {
-                if (state == AccountStates.NotFound)
+                if (state == AccountStates.NotFound || state == AccountStates.AlreadyUsed)
                 {
                     if (loginForm == null)
                     {
