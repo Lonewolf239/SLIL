@@ -347,7 +347,7 @@ namespace SLIL.Classes
                         {
                             Entities.Remove(entity);
                             i--;
-                            Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                            SpawnExplotion(rocket);
                             PlayGameSound(SLIL.explosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
                         }
                         if (!Entities.Contains(entity)) continue;
@@ -360,7 +360,7 @@ namespace SLIL.Classes
                             {
                                 Entities.Remove(entity);
                                 i--;
-                                SpawnExplotion(entity);
+                                SpawnExplotion(rocket);
                                 PlayGameSound(SLIL.explosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
                                 return;
                             }

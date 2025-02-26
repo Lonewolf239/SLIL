@@ -19,32 +19,32 @@ using System.Runtime.InteropServices;
 
 namespace SLIL
 {
-    public delegate void StartGameDelegate();
-    public delegate void StopGameDelegate(int win);
-    public delegate void InitPlayerDelegate();
-    public delegate void PlaySoundDelegate(PlaySound sound, double X, double Y);
-    public delegate void CloseFormDelegate();
+    internal delegate void StartGameDelegate();
+    internal delegate void StopGameDelegate(int win);
+    internal delegate void InitPlayerDelegate();
+    internal delegate void PlaySoundDelegate(PlaySound sound, double X, double Y);
+    internal delegate void CloseFormDelegate();
 
-    public partial class SLIL : Form
+    internal partial class SLIL : Form
     {
         private readonly GameController Controller;
-        public string PlayerName;
+        internal string PlayerName;
         private bool isCursorVisible = true;
-        public int CustomMazeHeight, CustomMazeWidth;
-        public bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
-        public bool ShowDebugSpeed = false, ShowPositongDebug = false, ShowGameDebug = false;
-        public bool inv_y = false, inv_x = false;
-        public static int difficulty = 1;
+        internal int CustomMazeHeight, CustomMazeWidth;
+        internal bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
+        internal bool ShowDebugSpeed = false, ShowPositongDebug = false, ShowGameDebug = false;
+        internal bool inv_y = false, inv_x = false;
+        internal static int difficulty = 1;
         private int inDebug = 0;
-        public static double LookSpeed = 2.5;
-        public StringBuilder CUSTOM_MAP = new StringBuilder();
-        public double CUSTOM_X, CUSTOM_Y;
+        internal static double LookSpeed = 2.5;
+        internal StringBuilder CUSTOM_MAP = new StringBuilder();
+        internal double CUSTOM_X, CUSTOM_Y;
         private readonly Random rand;
         private const int texWidth = 128;
         private readonly int SCREEN_HEIGHT = 128, SCREEN_WIDTH = 228;
         private int center_x = 0, center_y = 0, cursor_x = 0, cursor_y = 0;
         private readonly int[] DISPLAY_SIZE = { 228, 128 };
-        public static int resolution = 0, smoothing = 1, interface_size = 2;
+        internal static int resolution = 0, smoothing = 1, interface_size = 2;
         private readonly SmoothingMode[] smoothingModes =
         {
             SmoothingMode.None,
@@ -53,7 +53,7 @@ namespace SLIL
             SmoothingMode.HighSpeed
         };
         private float StageOpacity = 1;
-        public static bool hight_fps = true;
+        internal static bool hight_fps = true;
         private const double FOV = Math.PI / 3;
         private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
         private Bitmap SCREEN, WEAPON, BUFFER;
@@ -76,14 +76,14 @@ namespace SLIL
         private int currentIndex = 0;
         private bool active = true;
         private bool Paused = false, RunKeyPressed = false;
-        public static readonly Dictionary<Type, Image> ScreenEffectsIcons = new Dictionary<Type, Image>()
-        { 
+        internal static readonly Dictionary<Type, Image> ScreenEffectsIcons = new Dictionary<Type, Image>()
+        {
             { typeof(BloodEffect1), Properties.Resources.blood_effect_0 },
             { typeof(BloodEffect2), Properties.Resources.blood_effect_1 },
             { typeof(BloodEffect3), Properties.Resources.blood_effect_2 },
             { typeof(BloodEffect4), Properties.Resources.blood_effect_3 },
         };
-        public static readonly Dictionary<Type, Image[]> IconDict = new Dictionary<Type, Image[]>
+        internal static readonly Dictionary<Type, Image[]> IconDict = new Dictionary<Type, Image[]>
         {
             { typeof(Flashlight), new[] { Properties.Resources.missing } },
             { typeof(Knife), new[] { Properties.Resources.missing } },
@@ -147,7 +147,7 @@ namespace SLIL
             } },
             { typeof(Minigun), new[] { Properties.Resources.minigun_icon } },
         };
-        public static readonly Dictionary<Type, Image[,]> GunsImagesDict = new Dictionary<Type, Image[,]>
+        internal static readonly Dictionary<Type, Image[,]> GunsImagesDict = new Dictionary<Type, Image[,]>
         {
             { typeof(Flashlight), new[,] { { Properties.Resources.flashlight, Properties.Resources.flashlight_run } } },
             { typeof(Knife), new[,] { { Properties.Resources.knife, Properties.Resources.knife_hit, Properties.Resources.knife_run } } },
@@ -231,7 +231,7 @@ namespace SLIL
                    { Properties.Resources.minigun, Properties.Resources.minigun_shooted, Properties.Resources.minigun, Properties.Resources.minigun, Properties.Resources.minigun, Properties.Resources.minigun }
             } },
         };
-        public static readonly Dictionary<Type, PlaySound[,]> GunsSoundsDict = new Dictionary<Type, PlaySound[,]>
+        internal static readonly Dictionary<Type, PlaySound[,]> GunsSoundsDict = new Dictionary<Type, PlaySound[,]>
         {
             { typeof(Flashlight), new[,] { { new PlaySound(null, false), } } },
             { typeof(Knife), new[,] { { new PlaySound(MainMenu.CGFReader.GetFile("knife.wav"), false) } } },
@@ -312,7 +312,7 @@ namespace SLIL
                    { new PlaySound(MainMenu.CGFReader.GetFile("minigun.wav"), false), new PlaySound(null, false), new PlaySound(null, false) }
             } },
         };
-        public static readonly Dictionary<Type, PlaySound[]> TransportsSoundsDict = new Dictionary<Type, PlaySound[]>
+        internal static readonly Dictionary<Type, PlaySound[]> TransportsSoundsDict = new Dictionary<Type, PlaySound[]>
         {
             {typeof(Bike), new[] {
                     new PlaySound(MainMenu.CGFReader.GetFile("bike_idle.wav"), false),
@@ -320,10 +320,10 @@ namespace SLIL
                     new PlaySound(MainMenu.CGFReader.GetFile("bike_full_speed.wav"), false)
             } },
         };
-        public static readonly Dictionary<Type, Image[]> TransportImages = new Dictionary<Type, Image[]>
+        internal static readonly Dictionary<Type, Image[]> TransportImages = new Dictionary<Type, Image[]>
         {
-            { typeof(Bike), new[] 
-            { 
+            { typeof(Bike), new[]
+            {
                 Properties.Resources.im_biker,
                 Properties.Resources.on_bike,
                 Properties.Resources.using_bike_left,
@@ -331,7 +331,7 @@ namespace SLIL
                 Properties.Resources.bike_jump,
             } },
         };
-        public static readonly Dictionary<Type, Image> EffectIcon = new Dictionary<Type, Image>
+        internal static readonly Dictionary<Type, Image> EffectIcon = new Dictionary<Type, Image>
         {
             { typeof(Regeneration), Properties.Resources.regeneration_effect },
             { typeof(Adrenaline), Properties.Resources.adrenalin_effect },
@@ -344,21 +344,21 @@ namespace SLIL
             { typeof(VoidE), Properties.Resources.missing },
             { typeof(God), Properties.Resources.missing },
         };
-        public static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
+        internal static readonly Dictionary<Type, Image> ItemIconDict = new Dictionary<Type, Image>
         {
             { typeof(FirstAidKit), Properties.Resources.first_aid },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
             { typeof(Helmet), Properties.Resources.helmet_count_icon },
             { typeof(MedicalKit), Properties.Resources.super_medical_kit_icon },
         };
-        public static readonly Dictionary<Type, Image> CuteItemIconDict = new Dictionary<Type, Image>
+        internal static readonly Dictionary<Type, Image> CuteItemIconDict = new Dictionary<Type, Image>
         {
             { typeof(FirstAidKit), Properties.Resources.food_count },
             { typeof(Adrenalin), Properties.Resources.adrenalin_count_icon },
             { typeof(Helmet), Properties.Resources.helmet_count_icon },
             { typeof(MedicalKit), Properties.Resources.super_medical_kit_icon },
         };
-        public static readonly Dictionary<Type, Image> ShopImageDict = new Dictionary<Type, Image>
+        internal static readonly Dictionary<Type, Image> ShopImageDict = new Dictionary<Type, Image>
         {
             { typeof(SillyCat), Properties.Resources.pet_cat_icon },
             { typeof(GreenGnome), Properties.Resources.pet_gnome_icon },
@@ -369,10 +369,10 @@ namespace SLIL
         private readonly BindControls Bind;
         private readonly TextureCache textureCache;
         private readonly List<ScreenEffects> screenEffects;
-        public static PlaySound[] hit = { new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("hit_transport.wav"), false) };
-        public static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
+        internal static PlaySound[] hit = { new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("hit_transport.wav"), false) };
+        internal static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
         private PlaySound step, transport_step;
-        public static PlaySound[] scary_sounds = new PlaySound[]
+        internal static PlaySound[] scary_sounds = new PlaySound[]
         {
             new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_0.wav"), false),
             new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_1.wav"), false),
@@ -385,7 +385,7 @@ namespace SLIL
             new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_8.wav"), false),
             new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_9.wav"), false)
         };
-        public static PlaySound[,] steps = new PlaySound[,]
+        internal static PlaySound[,] steps = new PlaySound[,]
         {
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("step_0.wav"), false),
@@ -430,7 +430,7 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("step_run_back_4.wav"), false)
             },
         };
-        public static PlaySound[] ost = new PlaySound[]
+        internal static PlaySound[] ost = new PlaySound[]
         {
             new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
             new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_1.wav"), true),
@@ -443,7 +443,7 @@ namespace SLIL
             new PlaySound(MainMenu.CGFReader.GetFile("backrooms_ost.wav"), true),
             new PlaySound(MainMenu.CGFReader.GetFile("empty_ost.wav"), true)
         };
-        public static PlaySound[,] DeathSounds = new PlaySound[,]
+        internal static PlaySound[,] DeathSounds = new PlaySound[,]
         {
             //Zombie
             {
@@ -488,7 +488,7 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("lost_soul_die_2.wav"), false)
             }
         };
-        public static PlaySound[,] CuteDeathSounds = new PlaySound[,]
+        internal static PlaySound[,] CuteDeathSounds = new PlaySound[,]
         {
             //Zombie
             {
@@ -527,7 +527,7 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
             }
         };
-        public static PlaySound game_over = new PlaySound(MainMenu.CGFReader.GetFile("game_over.wav"), false),
+        internal static PlaySound game_over = new PlaySound(MainMenu.CGFReader.GetFile("game_over.wav"), false),
             draw = new PlaySound(MainMenu.CGFReader.GetFile("draw.wav"), false),
             buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false),
             wall = new PlaySound(MainMenu.CGFReader.GetFile("wall_interaction.wav"), false),
@@ -536,31 +536,31 @@ namespace SLIL
             low_stamine = new PlaySound(MainMenu.CGFReader.GetFile("low_stamine.wav"), false),
             starter = new PlaySound(MainMenu.CGFReader.GetFile("starter.wav"), false),
             explosion = new PlaySound(MainMenu.CGFReader.GetFile("explosion.wav"), false);
-        public static PlaySound[] climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
-        public static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
+        internal static PlaySound[] climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
+        internal static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
             bikeMap = @"############################......######.......#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######.......############################";
-        public static float Volume = 0.4f, EffectsVolume = 0.4f, MusicVolume = 0.4f;
+        internal static float Volume = 0.4f, EffectsVolume = 0.4f, MusicVolume = 0.4f;
         private int burst_shots = 0, reload_frames = 0;
-        public static int ost_index = 0;
-        public static int prev_ost;
+        internal static int ost_index = 0;
+        internal static int prev_ost;
         private Image scope_hit = null;
         private readonly Image[] scope =
-        { 
+        {
             Properties.Resources.scope,
             Properties.Resources.scope_cross,
             Properties.Resources.scope_line,
             Properties.Resources.scope_dot,
-            Properties.Resources.scope_null 
+            Properties.Resources.scope_null
         };
         private readonly Image[] scope_shotgun =
-        { 
+        {
             Properties.Resources.scope_shotgun,
             Properties.Resources.scope_cross,
             Properties.Resources.scope_line,
             Properties.Resources.scope_dot,
-            Properties.Resources.scope_null 
+            Properties.Resources.scope_null
         };
         private readonly Image[] h_scope =
         {
@@ -579,8 +579,8 @@ namespace SLIL
             Properties.Resources.scope_null
         };
         private bool IsTutorial = false;
-        public static int scope_color = 0, scope_type = 0;
-        public static bool ShowMap = false;
+        internal static int scope_color = 0, scope_type = 0;
+        internal static bool ShowMap = false;
         private bool ShowSing = false, ShowInventory = false;
         private int SingID, scrollPosition = 0;
         private const int ScrollBarWidth = 4, ScrollPadding = 5;
@@ -610,7 +610,7 @@ namespace SLIL
         private readonly PlaySoundDelegate PlaySoundHandle;
         //private readonly CloseFormDelegate CloseFormHandle;
 
-        public SLIL(TextureCache textures)
+        internal SLIL(TextureCache textures)
         {
             InitializeComponent();
             SetLocalization();
@@ -627,7 +627,7 @@ namespace SLIL
             textureCache = textures;
             Controller.StartGame();
         }
-        public SLIL(TextureCache textures, bool custom, StringBuilder customMap, int mazeWidth, int mazeHeight, double customX, double customY)
+        internal SLIL(TextureCache textures, bool custom, StringBuilder customMap, int mazeWidth, int mazeHeight, double customX, double customY)
         {
             InitializeComponent();
             SetLocalization();
@@ -651,7 +651,7 @@ namespace SLIL
             if (IsTutorial) Controller.ToTutorial();
             Controller.StartGame();
         }
-        public SLIL(TextureCache textures, string adress, int port, string password, string PlayerName)
+        internal SLIL(TextureCache textures, string adress, int port, string password, string PlayerName)
         {
             InitializeComponent();
             SetLocalization();
@@ -668,7 +668,7 @@ namespace SLIL
             SetParameters();
             textureCache = textures;
         }
-        public SLIL() { }
+        internal SLIL() { }
 
         private void SetLocalization()
         {
@@ -786,7 +786,7 @@ namespace SLIL
 
         //  #====      Invokers     ====#
 
-        public void StartGameInvokerSinglePlayer()
+        internal void StartGameInvokerSinglePlayer()
         {
             if (this.InvokeRequired && this.IsHandleCreated)
             {
@@ -801,7 +801,7 @@ namespace SLIL
             }
         }
 
-        public void StartGameInvokerMultiPlayer()
+        internal void StartGameInvokerMultiPlayer()
         {
             while (!this.IsHandleCreated)
             {
@@ -813,7 +813,7 @@ namespace SLIL
             });
         }
 
-        public void StopGameInvoker(int win)
+        internal void StopGameInvoker(int win)
         {
             if (this.InvokeRequired && this.IsHandleCreated)
             {
@@ -825,7 +825,7 @@ namespace SLIL
             else this.GameOver(win);
         }
 
-        public void InitPlayerInvoker()
+        internal void InitPlayerInvoker()
         {
             if (this.InvokeRequired)
             {
@@ -842,7 +842,7 @@ namespace SLIL
             }
         }
 
-        public void PlaySoundInvoker(PlaySound sound, double X, double Y)
+        internal void PlaySoundInvoker(PlaySound sound, double X, double Y)
         {
             Player player = GetPlayer();
             if (player == null) return;
@@ -863,7 +863,7 @@ namespace SLIL
             }
         }
 
-        public void CloseFormInvoker()
+        internal void CloseFormInvoker()
         {
             if (this.InvokeRequired && this.IsHandleCreated)
             {
@@ -882,11 +882,11 @@ namespace SLIL
 
         //  #====  Console methods  ====#
 
-        public static void SetVolume() => ost[ost_index].SetVolume(MusicVolume);
+        internal static void SetVolume() => ost[ost_index].SetVolume(MusicVolume);
 
-        public bool OnOffNoClip() => Controller.OnOffNoClip();
+        internal bool OnOffNoClip() => Controller.OnOffNoClip();
 
-        public static void GoDebug(SLIL slil, int debug)
+        internal static void GoDebug(SLIL slil, int debug)
         {
             slil.IsTutorial = false;
             slil.Controller.StopGame(-1);
@@ -896,7 +896,7 @@ namespace SLIL
             slil.StartGame();
         }
 
-        public static void ChangeOst(int index)
+        internal static void ChangeOst(int index)
         {
             if (!MainMenu.sounds) return;
             ost[ost_index]?.Stop();
@@ -904,14 +904,14 @@ namespace SLIL
             ost[ost_index].LoopPlay(MusicVolume);
         }
 
-        public void KillFromConsole()
+        internal void KillFromConsole()
         {
             if (Controller.IsMultiplayer())
                 Controller.DealDamage(GetPlayer(), 9999);
             else Controller.StopGame(0);
         }
 
-        public bool SpawnEntity(int id, bool hasAI)
+        internal bool SpawnEntity(int id, bool hasAI)
         {
             Player player = GetPlayer();
             Entity entity = null;
@@ -2426,7 +2426,7 @@ namespace SLIL
                             if (Controller.GetBackroomsStage() == 1) textureId = 3;
                         }
                     }
-                    blackout = (int)(Math.Min(Math.Max(0, Math.Floor((window_distance / player.GetDrawDistance()) * 100)), 100));
+                    blackout = (int)Math.Floor((window_distance / player.GetDrawDistance()) * 100);
                 }
                 else if ((y < mid || !hit_window) && y > ceiling && y < floor)
                 {
@@ -2448,7 +2448,7 @@ namespace SLIL
                             if (Controller.GetBackroomsStage() == 1) textureId = 3;
                         }
                     }
-                    blackout = (int)(Math.Min(Math.Max(0, Math.Floor((distance / player.GetDrawDistance()) * 100)), 100));
+                    blackout = (int)Math.Floor((distance / player.GetDrawDistance()) * 100);
                 }
                 result[y] = new Pixel(x, y, blackout, distance, ceiling - floor, textureId, SpriteStates.Static);
                 if (y <= ceiling)
@@ -2465,7 +2465,7 @@ namespace SLIL
                         if (Controller.GetBackroomsStage() == 0) result[y].TextureId = 30;
                         if (Controller.GetBackroomsStage() == 1) result[y].TextureId = 40;
                     }
-                    result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((-rowDistance / player.GetDrawDistance()) * 100)), 100));
+                    result[y].Blackout = (int)Math.Floor((-rowDistance / player.GetDrawDistance()) * 100);
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
                     result[y].Side = 0;
@@ -2484,7 +2484,7 @@ namespace SLIL
                         if (Controller.GetBackroomsStage() == 0) result[y].TextureId = 31;
                         if (Controller.GetBackroomsStage() == 1) result[y].TextureId = 39;
                     }
-                    result[y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((rowDistance / player.GetDrawDistance()) * 100)), 100));
+                    result[y].Blackout = (int)Math.Floor((rowDistance / player.GetDrawDistance()) * 100);
                     result[y].TextureX = floorX % 1;
                     result[y].TextureY = floorY % 1;
                     result[y].Side = 0;
@@ -2554,6 +2554,7 @@ namespace SLIL
                 spriteInfo[i] = (i, dx * dx + dy * dy, Entities[i].Texture);
             }
             Array.Sort(spriteInfo, (a, b) => b.Distance.CompareTo(a.Distance));
+            var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
             for (int i = 0; i < spriteInfo.Length; i++)
             {
                 try
@@ -2580,97 +2581,107 @@ namespace SLIL
                     if (drawStartX < 0) drawStartX = 0;
                     int drawEndX = spriteWidth / 2 + spriteScreenX + vMoveScreen;
                     if (drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH;
-                    var timeNow = (long)((DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds * 2);
                     for (int stripe = drawStartX; stripe < drawEndX; stripe++)
                     {
                         double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
-                        if (transformY > 0 && stripe >= 0 && stripe <= SCREEN_WIDTH && transformY < ZBuffer[stripe])
+                        if (!(transformY > 0 && stripe >= 0 && stripe <= SCREEN_WIDTH && transformY < ZBuffer[stripe])) continue;
+                        for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
                         {
-                            for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
+                            if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY)) continue;
+                            double d = (y - vMoveScreen) - (SCREEN_HEIGHT - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
+                            double texY = d / (drawEndY - drawStartY);
+                            if (y == drawStartY) texY = 0;
+                            if (!(rays[stripe].Length > y && y >= 0)) continue;
+                            int tempTextureId = rays[stripe][y].TextureId;
+                            int tempBlackout = rays[stripe][y].Blackout;
+                            double tempTextureX = rays[stripe][y].TextureX;
+                            double tempTextureY = rays[stripe][y].TextureY;
+                            SpriteStates tempSpriteState = rays[stripe][y].SpriteState;
+                            if (entity is Creature creature)
                             {
-                                if (y < 0 || (transformY > ZBufferWindow[stripe] && y > spriteCenterY))
-                                    continue;
-                                double d = (y - vMoveScreen) - (SCREEN_HEIGHT - (int)player.Look) / 2 + (drawEndY - drawStartY) / 2;
-                                double texY = d / (drawEndY - drawStartY);
-                                if (y == drawStartY) texY = 0;
-                                if (rays[stripe].Length > y && y >= 0)
+                                if (!creature.Dead)
                                 {
-                                    int tempTextureId = rays[stripe][y].TextureId;
-                                    int tempBlackout = rays[stripe][y].Blackout;
-                                    double tempTextureX = rays[stripe][y].TextureX;
-                                    double tempTextureY = rays[stripe][y].TextureY;
-                                    SpriteStates tempSpriteState = rays[stripe][y].SpriteState;
-                                    if (entity is Creature creature)
-                                    {
-                                        if (!creature.Dead)
-                                        {
-                                            if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && entity is Pet pet && pet.Stoped && pet.HasStopAnimation)
-                                                rays[stripe][y].SpriteState = GetSpriteRotation(creature, 0, false, true);
-                                            else
-                                            {
-                                                if (player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight)
-                                                    rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
-                                                else
-                                                    rays[stripe][y].SpriteState = GetSpriteRotation(creature, timeNow);
-                                            }
-                                            if (creature is Enemy)
-                                            {
-                                                if (creature is VoidStalker stalker)
-                                                {
-                                                    if (stalker.ISeeU()) Controller.PlayGameSound(screenshot);
-                                                }
-                                                int coords = (int)entity.Y * mapWidth + (int)entity.X;
-                                                if (!enemiesCoords.Contains(coords))
-                                                    enemiesCoords.Add(coords);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (creature.RespondsToFlashlight)
-                                                rays[stripe][y].SpriteState = SpriteStates.DeadBodyBlinded;
-                                            else
-                                                rays[stripe][y].SpriteState = SpriteStates.DeadBody;
-                                        }
-                                    }
-                                    else if (entity is Player playerTar)
-                                    {
-                                        if (!playerTar.Dead)
-                                            rays[stripe][y].SpriteState = GetSpriteRotation(playerTar, timeNow);
-                                        else
-                                            rays[stripe][y].SpriteState = SpriteStates.DeadBody;
-                                    }
+                                    if (!(player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight) && entity is Pet pet && pet.Stoped && pet.HasStopAnimation)
+                                        rays[stripe][y].SpriteState = GetSpriteRotation(creature, 0, false, true);
                                     else
                                     {
-                                        if (entity is GameObject gameObject)
-                                        {
-                                            if (gameObject.Animated && gameObject.Temporarily)
-                                                rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, 0, false);
-                                            else
-                                                rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, timeNow);
-                                        }
+                                        if (player.GetCurrentGun() is Flashlight && creature.RespondsToFlashlight)
+                                            rays[stripe][y].SpriteState = SpriteStates.FlashlightBlinded;
                                         else
-                                            rays[stripe][y].SpriteState = SpriteStates.Static;
+                                            rays[stripe][y].SpriteState = GetSpriteRotation(creature, timeNow);
                                     }
-                                    rays[stripe][y].TextureId = entity.Texture;
-                                    rays[stripe][y].Blackout = (int)(Math.Min(Math.Max(0, Math.Floor((Distance / player.GetDrawDistance()) * 100)), 100));
-                                    rays[stripe][y].TextureX = texX;
-                                    rays[stripe][y].TextureY = texY;
-                                    Color color = GetColorForPixel(rays[stripe][y]);
-                                    if (color == Color.Transparent)
+                                    if (creature is Enemy)
                                     {
-                                        rays[stripe][y].TextureId = tempTextureId;
-                                        rays[stripe][y].Blackout = tempBlackout;
-                                        rays[stripe][y].TextureX = tempTextureX;
-                                        rays[stripe][y].TextureY = tempTextureY;
-                                        rays[stripe][y].SpriteState = tempSpriteState;
+                                        if (creature is VoidStalker stalker)
+                                        {
+                                            if (stalker.ISeeU()) Controller.PlayGameSound(screenshot);
+                                        }
+                                        int coords = (int)entity.Y * mapWidth + (int)entity.X;
+                                        if (!enemiesCoords.Contains(coords))
+                                            enemiesCoords.Add(coords);
                                     }
                                 }
+                                else
+                                {
+                                    if (creature.RespondsToFlashlight)
+                                        rays[stripe][y].SpriteState = SpriteStates.DeadBodyBlinded;
+                                    else
+                                        rays[stripe][y].SpriteState = SpriteStates.DeadBody;
+                                }
+                            }
+                            else if (entity is Player playerTar)
+                            {
+                                if (!playerTar.Dead)
+                                    rays[stripe][y].SpriteState = GetSpriteRotation(playerTar, timeNow);
+                                else
+                                    rays[stripe][y].SpriteState = SpriteStates.DeadBody;
+                            }
+                            else
+                            {
+                                if (entity is GameObject gameObject)
+                                {
+                                    if (gameObject.Animated && gameObject.Temporarily)
+                                        rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, 0, false);
+                                    else
+                                        rays[stripe][y].SpriteState = GetSpriteRotation(gameObject, timeNow);
+                                }
+                                else
+                                    rays[stripe][y].SpriteState = SpriteStates.Static;
+                            }
+                            rays[stripe][y].TextureId = entity.Texture;
+                            rays[stripe][y].Blackout = (int)Math.Floor((Distance / player.GetDrawDistance()) * 100);
+                            rays[stripe][y].TextureX = texX;
+                            rays[stripe][y].TextureY = texY;
+                            if (IsTransparent(rays[stripe][y]))
+                            {
+                                rays[stripe][y].TextureId = tempTextureId;
+                                rays[stripe][y].Blackout = tempBlackout;
+                                rays[stripe][y].TextureX = tempTextureX;
+                                rays[stripe][y].TextureY = tempTextureY;
+                                rays[stripe][y].SpriteState = tempSpriteState;
                             }
                         }
                     }
                 }
                 catch { }
             }
+        }
+
+        private bool IsTransparent(Pixel pixel)
+        {
+            Player player = GetPlayer();
+            if (player == null) return true;
+            const int textureSize = 128;
+            int x = 0, y = 0;
+            if (pixel.TextureId >= 4)
+            {
+                x = ((int)(pixel.TextureX * textureSize)) % textureSize;
+                if (x < 0) x += textureSize;
+                y = ((int)(pixel.TextureY * textureSize)) % textureSize;
+                if (y < 0) y += textureSize;
+            }
+            bool cuteMode = !Controller.InBackrooms() && player.CuteMode;
+            return textureCache.IsTransparent(pixel.TextureId, pixel.SpriteState, x, y, cuteMode);
         }
 
         private SpriteStates GetSpriteRotation(Entity entity, long timeNow, bool useTimeNow = true, bool returnStopState = false)
@@ -2751,18 +2762,13 @@ namespace SLIL
             int x = 0, y = 0;
             if (pixel.TextureId >= 4)
             {
-                x = (int)WrapTexture(pixel.TextureX * textureSize, textureSize);
-                y = (int)WrapTexture(pixel.TextureY * textureSize, textureSize);
+                x = ((int)(pixel.TextureX * textureSize)) % textureSize;
+                if (x < 0) x += textureSize;
+                y = ((int)(pixel.TextureY * textureSize)) % textureSize;
+                if (y < 0) y += textureSize;
             }
-            Color color = textureCache.GetTextureColor(pixel.TextureId, pixel.SpriteState, x, y, pixel.Blackout, !Controller.InBackrooms() && player.CuteMode);
-            return color;
-        }
-
-        private double WrapTexture(double value, int textureSize)
-        {
-            value %= textureSize;
-            if (value < 0) value += textureSize;
-            return value;
+            bool cuteMode = !Controller.InBackrooms() && player.CuteMode;
+            return textureCache.GetTextureColor(pixel.TextureId, pixel.SpriteState, x, y, pixel.Blackout, cuteMode);
         }
 
         private void DrawRaysOnScreen(Pixel[][] rays)
@@ -2834,7 +2840,7 @@ namespace SLIL
             graphicsWeapon.FillRectangle(Brushes.Gray, scrollBarRect);
         }
 
-        public void UpdateScrollPosition(double delta)
+        internal void UpdateScrollPosition(double delta)
         {
             string text = GetTextOnSing();
             RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT - 2 * ScrollPadding);
@@ -3294,7 +3300,7 @@ namespace SLIL
                     "Stage:  {0,3}\n" +
                     "BStage: {1,3}\n" +
                     "MaxEID: {2,3}\n" +
-                    "Difclt: {3,3}", 
+                    "Difclt: {3,3}",
                     Controller.GetStage(),
                     Controller.GetBackroomsStage(),
                     Controller.GetMaxEntityID(),
@@ -3477,7 +3483,7 @@ namespace SLIL
             int x = WEAPON.Width - icon_size - 4 - ((icon_size + 4) * index);
             int y = WEAPON.Height - icon_size - 4;
             RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
-            using (Pen pen =  new Pen(debaf ? Color.FromArgb(96, 90, 121) : Color.FromArgb(90, 131, 182), 1.75f))
+            using (Pen pen = new Pen(debaf ? Color.FromArgb(96, 90, 121) : Color.FromArgb(90, 131, 182), 1.75f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
             float sweepAngle = (float)player.Effects[index].TimeRemaining / player.Effects[index].TotalTime * 360;
             using (Pen pen = new Pen(debaf ? Color.FromArgb(126, 199, 138) : Color.FromArgb(104, 213, 248), 3))
@@ -3759,97 +3765,96 @@ namespace SLIL
                                         Color color = GetColorForPixel(rays[stripe][y]);
                                         for (int k = 0; k < bullet.GetLength(0); k++)
                                         {
-                                            if (color != Color.Transparent && stripe == bullet[k, 0] && y == bullet[k, 1] && player.GetCurrentGun().FiringRange >= Distance)
+                                            if (!(color != Color.Transparent && stripe == bullet[k, 0] && y == bullet[k, 1] && player.GetCurrentGun().FiringRange >= Distance))
+                                                continue;
+                                            if (creature != null)
                                             {
-                                                if (creature != null)
+                                                if (creature.Dead || !creature.CanHit) continue;
+                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                if (Controller.DealDamage(creature, damage))
                                                 {
-                                                    if (creature.Dead || !creature.CanHit) continue;
-                                                    double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                                    if (Controller.DealDamage(creature, damage))
+                                                    if (MainMenu.sounds)
                                                     {
-                                                        if (MainMenu.sounds)
-                                                        {
-                                                            if (player.CuteMode)
-                                                                Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
-                                                            else
-                                                                Controller.PlayGameSound(DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
-                                                        }
-                                                    }
-                                                    if (!player.CuteMode)
-                                                    {
-                                                        if (resolution == 0)
-                                                            scope_hit = Properties.Resources.scope_hit;
+                                                        if (player.CuteMode)
+                                                            Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
                                                         else
-                                                            scope_hit = Properties.Resources.h_scope_hit;
+                                                            Controller.PlayGameSound(DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
                                                     }
-                                                    else
-                                                    {
-                                                        if (resolution == 0)
-                                                            scope_hit = Properties.Resources.scope_c_hit;
-                                                        else
-                                                            scope_hit = Properties.Resources.h_scope_c_hit;
-                                                    }
-                                                    bullet[k, 0] = -1;
-                                                    bullet[k, 1] = -1;
                                                 }
-                                                else if (entity is Player targetPlayer && entity.ID != player.ID)
+                                                if (!player.CuteMode)
                                                 {
-                                                    if (targetPlayer.Dead) continue;
-                                                    double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                                    if (Controller.DealDamage(targetPlayer, damage * 5))
-                                                    {
-                                                        if (MainMenu.sounds)
-                                                        {
-                                                            if (player.CuteMode)
-                                                                Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
-                                                            else
-                                                                Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
-                                                        }
-                                                    }
-                                                    if (!player.CuteMode)
-                                                    {
-                                                        if (resolution == 0)
-                                                            scope_hit = Properties.Resources.scope_hit;
-                                                        else
-                                                            scope_hit = Properties.Resources.h_scope_hit;
-                                                    }
+                                                    if (resolution == 0)
+                                                        scope_hit = Properties.Resources.scope_hit;
                                                     else
-                                                    {
-                                                        if (resolution == 0)
-                                                            scope_hit = Properties.Resources.scope_c_hit;
-                                                        else
-                                                            scope_hit = Properties.Resources.h_scope_c_hit;
-                                                    }
-                                                    bullet[k, 0] = -1;
-                                                    bullet[k, 1] = -1;
-                                                }
-                                                else if (entity is Transport transport)
-                                                {
-                                                    if (transport.TransportHP <= 0) continue;
-                                                    double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
-                                                    Controller.DealDamage(transport, damage * 1.5);
-                                                    if (!player.CuteMode)
-                                                    {
-                                                        if (resolution == 0)
-                                                            scope_hit = Properties.Resources.scope_hit;
-                                                        else
-                                                            scope_hit = Properties.Resources.h_scope_hit;
-                                                    }
-                                                    else
-                                                    {
-                                                        if (resolution == 0)
-                                                            scope_hit = Properties.Resources.scope_c_hit;
-                                                        else
-                                                            scope_hit = Properties.Resources.h_scope_c_hit;
-                                                    }
-                                                    bullet[k, 0] = -1;
-                                                    bullet[k, 1] = -1;
+                                                        scope_hit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
-                                                    bullet[k, 0] = -1;
-                                                    bullet[k, 1] = -1;
+                                                    if (resolution == 0)
+                                                        scope_hit = Properties.Resources.scope_c_hit;
+                                                    else
+                                                        scope_hit = Properties.Resources.h_scope_c_hit;
                                                 }
+                                                bullet[k, 0] = -1;
+                                                bullet[k, 1] = -1;
+                                            }
+                                            else if (entity is Player targetPlayer && entity.ID != player.ID)
+                                            {
+                                                if (targetPlayer.Dead) continue;
+                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                if (Controller.DealDamage(targetPlayer, damage * 5))
+                                                {
+                                                    if (MainMenu.sounds)
+                                                    {
+                                                        if (player.CuteMode)
+                                                            Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                        else
+                                                            Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                    }
+                                                }
+                                                if (!player.CuteMode)
+                                                {
+                                                    if (resolution == 0)
+                                                        scope_hit = Properties.Resources.scope_hit;
+                                                    else
+                                                        scope_hit = Properties.Resources.h_scope_hit;
+                                                }
+                                                else
+                                                {
+                                                    if (resolution == 0)
+                                                        scope_hit = Properties.Resources.scope_c_hit;
+                                                    else
+                                                        scope_hit = Properties.Resources.h_scope_c_hit;
+                                                }
+                                                bullet[k, 0] = -1;
+                                                bullet[k, 1] = -1;
+                                            }
+                                            else if (entity is Transport transport)
+                                            {
+                                                if (transport.TransportHP <= 0) continue;
+                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                Controller.DealDamage(transport, damage * 1.5);
+                                                if (!player.CuteMode)
+                                                {
+                                                    if (resolution == 0)
+                                                        scope_hit = Properties.Resources.scope_hit;
+                                                    else
+                                                        scope_hit = Properties.Resources.h_scope_hit;
+                                                }
+                                                else
+                                                {
+                                                    if (resolution == 0)
+                                                        scope_hit = Properties.Resources.scope_c_hit;
+                                                    else
+                                                        scope_hit = Properties.Resources.h_scope_c_hit;
+                                                }
+                                                bullet[k, 0] = -1;
+                                                bullet[k, 1] = -1;
+                                            }
+                                            else
+                                            {
+                                                bullet[k, 0] = -1;
+                                                bullet[k, 1] = -1;
                                             }
                                         }
                                     }
@@ -3874,14 +3879,14 @@ namespace SLIL
                         distance += 0.01d;
                         int test_x = (int)(player.X + ray_x * distance);
                         int test_y = (int)(player.Y + ray_y * distance);
-                        if (test_x < 0 || test_x >= (player.GetDrawDistance()) + player.X || test_y < 0 || test_y >= (player.GetDrawDistance()) + player.Y) hit = true;
+                        if (test_x < 0 || test_x >= player.GetCurrentGun().FiringRange + player.X || test_y < 0 || test_y >= player.GetCurrentGun().FiringRange + player.Y) hit = true;
                         else
                         {
                             char test_wall = Controller.GetMap()[GetCoordinate(test_x, test_y)];
                             double celling = (SCREEN_HEIGHT - player.Look) / 2.25d - (SCREEN_HEIGHT * FOV) / distance;
                             double floor = SCREEN_HEIGHT - (celling + player.Look);
                             double mid = (celling + floor) / 2;
-                            if (test_wall == '#' || test_wall == 'S'|| test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT / 2 >= mid))
+                            if (test_wall == '#' || test_wall == 'S' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT / 2 >= mid))
                             {
                                 hit = true;
                                 distance -= 0.2;
@@ -4028,7 +4033,7 @@ namespace SLIL
             return player.GetCurrentGun().CanRun && !player.InParkour &&
                 !player.Fast && !player.IsPetting && !player.Aiming &&
                 !shot_timer.Enabled && !reload_timer.Enabled &&
-                !shotgun_pull_timer.Enabled && !chill_timer.Enabled && 
+                !shotgun_pull_timer.Enabled && !chill_timer.Enabled &&
                 !mouse_hold_timer.Enabled && !player.UseItem;
         }
 
@@ -4461,7 +4466,7 @@ namespace SLIL
             InventoryWeaponToolTip = new WeaponToolTip
             {
                 Weapon = weapon,
-                Left = 0               
+                Left = 0
             };
             InventoryWeaponToolTip.Top = inventory_content_panel.Height - InventoryWeaponToolTip.Height;
             inventory_content_panel.Controls.Add(InventoryWeaponToolTip);
@@ -4541,7 +4546,7 @@ namespace SLIL
             shop_panel.BringToFront();
         }
 
-        public void UpdateStorage()
+        internal void UpdateStorage()
         {
             Player player = GetPlayer();
             if (player == null) return;
@@ -4568,7 +4573,7 @@ namespace SLIL
             }
         }
 
-        public void ShowShop()
+        internal void ShowShop()
         {
             Player player = GetPlayer();
             if (player == null) return;
@@ -4674,13 +4679,13 @@ namespace SLIL
             }
         }
 
-        public void AddTransport(int index)
+        internal void AddTransport(int index)
         {
             Controller.AddTransport(index);
             HideShop();
         }
 
-        public void AddPet(int index)
+        internal void AddPet(int index)
         {
             foreach (SLIL_PetShopInterface control in pet_shop_page.Controls.Find("SLIL_PetShopInterface", true).Cast<SLIL_PetShopInterface>())
                 control.buy_button.Text = MainMenu.DownloadedLocalizationList
@@ -4712,7 +4717,7 @@ namespace SLIL
             }
         }
 
-        public int GetPetCost(int index)
+        internal int GetPetCost(int index)
         {
             int cost = 0;
             switch (index)

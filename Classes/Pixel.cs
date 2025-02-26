@@ -1,28 +1,29 @@
 ﻿namespace SLIL.Classes
 {
-    public class Pixel
+    internal class Pixel
     {
         private int _Blackout;
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Blackout
+        internal int X { get; set; }
+        internal int Y { get; set; }
+        internal int Blackout
         {
             get
             {
                 if (_Blackout > 100) return 100;
+                if (_Blackout < 0) return 0;
                 return _Blackout;
             }
             set => _Blackout = value;
         }
-        public double Distance { get; set; }
-        public double WallHeight { get; set; }
-        public int TextureId { get; set; }
-        public double TextureX { get; set; }
-        public double TextureY { get; set; }
-        public int Side { get; set; }
-        public SpriteStates SpriteState { get; set; }
+        internal double Distance { get; set; }
+        internal double WallHeight { get; set; }
+        internal int TextureId { get; set; }
+        internal double TextureX { get; set; }
+        internal double TextureY { get; set; }
+        internal int Side { get; set; }
+        internal SpriteStates SpriteState { get; set; }
 
-        public Pixel(int x, int y, int blackout, double distance, double wallHeight, int textureId, SpriteStates spriteState)
+        internal Pixel(int x, int y, int blackout, double distance, double wallHeight, int textureId, SpriteStates spriteState)
         {
             X = x;
             Y = y;
