@@ -12,7 +12,7 @@ namespace SLIL.UserControls
         private WeaponToolTip WeaponToolTip;
         private InfoToolTip InfoToolTip;
         private int CurrentMoney, CurrentAmmo = 0;
-        private Pistol PPistol { get => (Pistol)Player.Guns[2]; }
+        private Gun Pistol { get => Player.Guns[2]; }
 
         internal StartShopInterface(Player player)
         {
@@ -30,11 +30,11 @@ namespace SLIL.UserControls
         private void Plus_ammo_btn_Click(object sender, EventArgs e)
         {
             start_shop_panel.Focus();
-            if (CurrentMoney - PPistol.AmmoCost < 0) return;
-            if (PPistol.AmmoInStock + (PPistol.CartridgesClip * CurrentAmmo) < PPistol.MaxAmmo)
+            if (CurrentMoney - Pistol.AmmoCost < 0) return;
+            if (Pistol.AmmoInStock + (Pistol.CartridgesClip * CurrentAmmo) < Pistol.MaxAmmo)
             {
                 CurrentAmmo++;
-                CurrentMoney -= PPistol.AmmoCost;
+                CurrentMoney -= Pistol.AmmoCost;
             }
             UpdateInfo();
         }
@@ -44,26 +44,26 @@ namespace SLIL.UserControls
             start_shop_panel.Focus();
             if (CurrentAmmo <= 0) return;
             CurrentAmmo--;
-            CurrentMoney += PPistol.AmmoCost;
+            CurrentMoney += Pistol.AmmoCost;
             UpdateInfo();
         }
 
         private void Plus_level_btn_Click(object sender, EventArgs e)
         {
             start_shop_panel.Focus();
-            if (CurrentMoney - PPistol.UpdateCost < 0) return;
-            if (!PPistol.CanUpdate()) return;
-            CurrentMoney -= PPistol.UpdateCost;
-            PPistol.LevelUpdate();
+            if (CurrentMoney - Pistol.UpdateCost < 0) return;
+            if (!Pistol.CanUpdate()) return;
+            CurrentMoney -= Pistol.UpdateCost;
+            Pistol.LevelUpdate();
             UpdateInfo();
         }
 
         private void Minus_level_btn_Click(object sender, EventArgs e)
         {
             start_shop_panel.Focus();
-            if (!PPistol.CanDowngrade()) return;
-            PPistol.LevelDowngrade();
-            CurrentMoney += PPistol.UpdateCost;
+            if (!Pistol.CanDowngrade()) return;
+            Pistol.LevelDowngrade();
+            CurrentMoney += Pistol.UpdateCost;
             UpdateInfo();
         }
 
@@ -74,7 +74,7 @@ namespace SLIL.UserControls
             WeaponToolTip?.Dispose();
             WeaponToolTip = new WeaponToolTip
             {
-                Weapon = PPistol,
+                Weapon = Pistol,
                 Left = 0
             };
             WeaponToolTip.Top = start_shop_panel.Height - WeaponToolTip.Height;
@@ -173,14 +173,14 @@ namespace SLIL.UserControls
 
         private void UpdateInfo()
         {
-            while (PPistol.AmmoInStock + (PPistol.CartridgesClip * CurrentAmmo) > PPistol.MaxAmmo)
+            while (Pistol.AmmoInStock + (Pistol.CartridgesClip * CurrentAmmo) > Pistol.MaxAmmo)
             {
-                CurrentMoney += PPistol.AmmoCost;
+                CurrentMoney += Pistol.AmmoCost;
                 CurrentAmmo--;
             }
             money_count.Text = $"Деньги {CurrentMoney}$";
-            pistol_ammo_count.Text = $"{PPistol.AmmoInStock + (PPistol.CartridgesClip * CurrentAmmo)}/{PPistol.AmmoCount}";
-            pistol_icon.Image = SLIL.IconDict[PPistol.GetType()][PPistol.GetLevel()];
+            pistol_ammo_count.Text = $"{Pistol.AmmoInStock + (Pistol.CartridgesClip * CurrentAmmo)}/{Pistol.AmmoCount}";
+            pistol_icon.Image = SLIL.IconDict[Pistol.GetType()][Pistol.GetLevel()];
             medkit_count.Text = $"{Player.DisposableItems[0].MaxCount}/{Player.DisposableItems[0].Count}";
             adrenalin_count.Text = $"{Player.DisposableItems[1].MaxCount}/{Player.DisposableItems[1].Count}";
             helmet_count.Text = $"{Player.DisposableItems[2].MaxCount}/{Player.DisposableItems[2].Count}";
@@ -191,7 +191,7 @@ namespace SLIL.UserControls
         {
             start_shop_panel.Focus();
             Player.Money = CurrentMoney;
-            PPistol.AmmoInStock += CurrentAmmo * PPistol.CartridgesClip;
+            Pistol.AmmoInStock += CurrentAmmo * Pistol.CartridgesClip;
         }
     }
 }

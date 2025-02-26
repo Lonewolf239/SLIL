@@ -263,7 +263,7 @@ namespace SLIL.Classes
                     { SpriteStates.StepForward_0, Properties.Resources.lost_soul_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.lost_soul_1 },
                     { SpriteStates.DeadBody, Properties.Resources.missing },
-                    { SpriteStates.Aiming, Properties.Resources.lost_soul_aiming },
+                    { SpriteStates.Aiming, Properties.Resources.lost_soul_shoot },
                     { SpriteStates.Shooted, Properties.Resources.lost_soul_shoot },
                     { SpriteStates.StepEscape_0, Properties.Resources.lost_soul_escaping_0 },
                     { SpriteStates.StepEscape_1, Properties.Resources.lost_soul_escaping_1 }
@@ -507,7 +507,7 @@ namespace SLIL.Classes
                     { SpriteStates.StepForward_0, Properties.Resources.lost_soul_c_0 },
                     { SpriteStates.StepForward_1, Properties.Resources.lost_soul_c_1 },
                     { SpriteStates.DeadBody, Properties.Resources.missing },
-                    { SpriteStates.Aiming, Properties.Resources.lost_soul_aiming },
+                    { SpriteStates.Aiming, Properties.Resources.lost_soul_c_shoot },
                     { SpriteStates.Shooted, Properties.Resources.lost_soul_c_shoot },
                     { SpriteStates.StepEscape_0, Properties.Resources.lost_soul_c_escaping_0 },
                     { SpriteStates.StepEscape_1, Properties.Resources.lost_soul_c_escaping_1 }
@@ -617,10 +617,10 @@ namespace SLIL.Classes
         {
             if (cute)
             {
-                if (blackout >= 96) return CUTE_COLORS[1];
+                if (blackout == 100) return CUTE_COLORS[1];
                 return LightenColor(textureCuteColorCache[textureId][spriteState][x, y], blackout);
             }
-            if (blackout >= 96) return COLORS[1];
+            if (blackout == 100) return COLORS[1];
             return DarkenColor(textureColorCache[textureId][spriteState][x, y], blackout);
         }
 

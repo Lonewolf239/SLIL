@@ -778,6 +778,7 @@ namespace SLIL
             imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             imageCuteAttributes.SetColorMatrix(colorCuteMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             graphicsWeapon = Graphics.FromImage(WEAPON);
+            graphicsWeapon.InterpolationMode = InterpolationMode.NearestNeighbor;
             graphicsWeapon.SmoothingMode = smoothingModes[smoothing];
             SLILDisplay.ResizeImage(DISPLAY_SIZE[0], DISPLAY_SIZE[1]);
             raycast.Interval = hight_fps ? 15 : 30;
@@ -2382,19 +2383,18 @@ namespace SLIL
             bool get_texture = false, get_texture_window = false;
             int side = 0;
             double wallX = 0;
-            if (wallSide == 1)
-                wallX = player.X + distance * rayDirX;
-            else if (wallSide == 0)
-                wallX = player.Y + distance * rayDirY;
+            if (wallSide == 1) wallX = player.X + distance * rayDirX;
+            else if (wallSide == 0) wallX = player.Y + distance * rayDirY;
             wallX -= Math.Floor(wallX);
             double windowX = 0;
-            if (windowSide == 1)
-                windowX = player.X + window_distance * rayDirX;
-            else if (windowSide == 0)
-                windowX = player.Y + window_distance * rayDirY;
+            if (windowSide == 1) windowX = player.X + window_distance * rayDirX;
+            else if (windowSide == 0) windowX = player.Y + window_distance * rayDirY;
             windowX -= Math.Floor(windowX);
-            if (wallX > 0.97 || wallX < 0.03) is_bound = true;
-            if (windowX > 0.97 || windowX < 0.03) is_window_bound = true;
+            if (ShowBounds())
+            {
+                if (wallX > 0.97 || wallX < 0.03) is_bound = true;
+                if (windowX > 0.97 || windowX < 0.03) is_window_bound = true;
+            }
             for (int y = 0; y < SCREEN_HEIGHT; y++)
             {
                 if (!GameStarted) break;
@@ -2528,6 +2528,12 @@ namespace SLIL
             ZBuffer[x] = distance;
             ZBufferWindow[x] = window_distance;
             return result;
+        }
+
+        private bool ShowBounds()
+        {
+            if (Controller.InBackrooms() && Controller.GetBackroomsStage() == 1) return false;
+            return true;
         }
 
         private void DrawSprites(ref Pixel[][] rays, ref double[] ZBuffer, ref double[] ZBufferWindow, out List<int> enemiesCoords)
@@ -2741,16 +2747,14 @@ namespace SLIL
         {
             Player player = GetPlayer();
             if (player == null) return Color.White;
-            bool cute = false;
-            if (player != null) cute = player.CuteMode;
-            int textureSize = 128;
+            const int textureSize = 128;
             int x = 0, y = 0;
             if (pixel.TextureId >= 4)
             {
-                x = (int)WrapTexture((int)(pixel.TextureX * textureSize), textureSize);
-                y = (int)WrapTexture((int)(pixel.TextureY * textureSize), textureSize);
+                x = (int)WrapTexture(pixel.TextureX * textureSize, textureSize);
+                y = (int)WrapTexture(pixel.TextureY * textureSize, textureSize);
             }
-            Color color = textureCache.GetTextureColor(pixel.TextureId, pixel.SpriteState, x, y, pixel.Blackout, !Controller.InBackrooms() && cute);
+            Color color = textureCache.GetTextureColor(pixel.TextureId, pixel.SpriteState, x, y, pixel.Blackout, !Controller.InBackrooms() && player.CuteMode);
             return color;
         }
 
@@ -3948,10 +3952,27 @@ namespace SLIL
         private void DoScreenshot()
         {
             string path = GetPath();
-            console_panel.Log($"Screenshot successfully created and saved to path:\n<{path}<", true, true, Color.Lime);
-            using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
-                BUFFER?.Save(fileStream, ImageFormat.Png);
-            screenEffects.Add(new ScreenShot() { SSImage = BUFFER?.Clone(new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), BUFFER.PixelFormat) });
+            if (BUFFER != null)
+            {
+                const int scaleFactor = 4;
+                int newWidth = BUFFER.Width * scaleFactor;
+                int newHeight = BUFFER.Height * scaleFactor;
+                using (Bitmap resizedImage = new Bitmap(newWidth, newHeight))
+                {
+                    using (Graphics g = Graphics.FromImage(resizedImage))
+                    {
+                        g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                        g.Clear(Color.Black);
+                        g.DrawImage(BUFFER, 0, 0, newWidth, newHeight);
+                    }
+                    using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
+                        resizedImage.Save(fileStream, ImageFormat.Png);
+                }
+                screenEffects.Add(new ScreenShot(BUFFER.Clone(new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), BUFFER.PixelFormat)));
+                console_panel.Log($"Screenshot successfully created and saved to path:\n<{path}<", true, true, Color.Lime);
+            }
+            else console_panel.Log("Error: BUFFER is null. Cannot take screenshot.", true, true, Color.Red);
+
             Controller.PlayGameSound(screenshot);
         }
 

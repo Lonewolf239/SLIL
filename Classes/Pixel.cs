@@ -2,9 +2,18 @@
 {
     public class Pixel
     {
+        private int _Blackout;
         public int X { get; set; }
         public int Y { get; set; }
-        public int Blackout { get; set; }
+        public int Blackout
+        {
+            get
+            {
+                if (_Blackout > 100) return 100;
+                return _Blackout;
+            }
+            set => _Blackout = value;
+        }
         public double Distance { get; set; }
         public double WallHeight { get; set; }
         public int TextureId { get; set; }

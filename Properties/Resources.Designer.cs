@@ -1703,16 +1703,6 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap lost_soul_aiming {
-            get {
-                object obj = ResourceManager.GetObject("lost_soul_aiming", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap lost_soul_c_0 {
             get {
                 object obj = ResourceManager.GetObject("lost_soul_c_0", resourceCulture);

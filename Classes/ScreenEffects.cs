@@ -26,12 +26,13 @@ namespace SLIL.Classes
 
     internal class ScreenShot : ScreenEffects
     {
-        internal Image SSImage { get; set; }
+        internal Image SSImage { get; }
 
-        internal ScreenShot() : base()
+        internal ScreenShot(Image ssImage) : base()
         {
             TotalTime = 7; // 0.7 sec
             TimeRemaining = TotalTime;
+            SSImage = ssImage;
         }
     }
 }
