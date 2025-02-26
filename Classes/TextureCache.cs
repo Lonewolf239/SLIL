@@ -28,7 +28,7 @@ namespace SLIL.Classes
         Shooted,
         StepEscape_0,
         StepEscape_1,
-    } 
+    }
 
     public class TextureCache
     {
@@ -504,13 +504,13 @@ namespace SLIL.Classes
             },
             { 41, new Dictionary<SpriteStates, Image>()
                 {
-                    { SpriteStates.StepForward_0, Properties.Resources.lost_soul_0 },
-                    { SpriteStates.StepForward_1, Properties.Resources.lost_soul_1 },
+                    { SpriteStates.StepForward_0, Properties.Resources.lost_soul_c_0 },
+                    { SpriteStates.StepForward_1, Properties.Resources.lost_soul_c_1 },
                     { SpriteStates.DeadBody, Properties.Resources.missing },
                     { SpriteStates.Aiming, Properties.Resources.lost_soul_aiming },
-                    { SpriteStates.Shooted, Properties.Resources.lost_soul_shoot },
-                    { SpriteStates.StepEscape_0, Properties.Resources.lost_soul_escaping_0 },
-                    { SpriteStates.StepEscape_1, Properties.Resources.lost_soul_escaping_1 }
+                    { SpriteStates.Shooted, Properties.Resources.lost_soul_c_shoot },
+                    { SpriteStates.StepEscape_0, Properties.Resources.lost_soul_c_escaping_0 },
+                    { SpriteStates.StepEscape_1, Properties.Resources.lost_soul_c_escaping_1 }
                 }
             },
             { 42, new Dictionary<SpriteStates, Image>()
@@ -651,21 +651,29 @@ namespace SLIL.Classes
         private Color LightenColor(Color color, float blackout)
         {
             if (color.A <= 50) return Color.Transparent;
-            blackout = 0.65f / (0.96f - (blackout / 100));
-            int r = (int)(color.R * blackout);
-            int g = (int)(color.G * blackout);
-            int b = (int)(color.B * blackout);
-            return Color.FromArgb(color.A, Math.Min(r, 255), Math.Min(g, 255), Math.Min(b, 255));
+            float fogFactor = (blackout / 100.0f) * 0.75f;
+            int r = (int)(color.R * (1 - fogFactor) + 255 * fogFactor);
+            int g = (int)(color.G * (1 - fogFactor) + 255 * fogFactor);
+            int b = (int)(color.B * (1 - fogFactor) + 255 * fogFactor);
+            int a = (int)(color.A * (1 - fogFactor) + 255 * fogFactor);
+            r = ML.Clamp(r, 0, 255);
+            g = ML.Clamp(g, 0, 255);
+            b = ML.Clamp(b, 0, 255);
+            a = ML.Clamp(a, 0, 255);
+            return Color.FromArgb(a, r, g, b);
         }
 
         private Color DarkenColor(Color color, float blackout)
         {
             if (color.A <= 50) return Color.Transparent;
-            blackout = 0.96f - (blackout / 100);
-            int r = (int)(color.R * blackout);
-            int g = (int)(color.G * blackout);
-            int b = (int)(color.B * blackout);
-            return Color.FromArgb(color.A, Math.Min(r, 255), Math.Min(g, 255), Math.Min(b, 255));
+            float fogFactor = blackout / 100.0f;
+            int r = (int)(color.R * (1 - fogFactor));
+            int g = (int)(color.G * (1 - fogFactor));
+            int b = (int)(color.B * (1 - fogFactor));
+            r = ML.Clamp(r, 0, 255);
+            g = ML.Clamp(g, 0, 255);
+            b = ML.Clamp(b, 0, 255);
+            return Color.FromArgb(color.A, r, g, b);
         }
     }
 }

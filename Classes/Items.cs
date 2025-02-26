@@ -267,7 +267,7 @@ namespace SLIL.Classes
     {
         public Flashlight() : base()
         {
-            AimingFactor = 8;
+            AimingFactor = 4;
             Weight = 1;
             HasIt = true;
             Name = new[] { "3-0", "Flashlight" };

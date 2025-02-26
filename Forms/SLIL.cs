@@ -2722,15 +2722,15 @@ namespace SLIL
                     return SpriteStates.Static;
                 }
                 if (returnStopState) return SpriteStates.StopForward;
-                if (entity is Enemy enemy && enemy.Stage == Enemy.Stages.Escaping)
-                {
-                    if (state == 0) return SpriteStates.StepEscape_0;
-                    return SpriteStates.StepEscape_1;
-                }
                 if (entity is RangeEnemy range)
                 {
                     if (range.TimeAfterShot > 0) return SpriteStates.Shooted;
                     if (range.ReadyToShot) return SpriteStates.Aiming;
+                }
+                if (entity is Enemy enemy && enemy.Stage == Enemy.Stages.Escaping)
+                {
+                    if (state == 0) return SpriteStates.StepEscape_0;
+                    return SpriteStates.StepEscape_1;
                 }
                 if (state == 0) return SpriteStates.StepForward_0;
                 return SpriteStates.StepForward_1;

@@ -1553,7 +1553,7 @@ namespace SLIL.Classes
             SafeDistance = 4.25;
             ShotDistance = 5;
             TotalShotPause = 32; // 3.2 sec
-            TotalTimeAfterShot = 5; //0.5 sec
+            TotalTimeAfterShot = 2; //0.5 sec
             base.SetAnimations(1, 0);
         }
 
@@ -1688,7 +1688,7 @@ namespace SLIL.Classes
             SafeDistance = 10;
             ShotDistance = 5;
             TotalShotPause = 25; // 2.5 sec
-            TotalTimeAfterShot = 5; //0.5 sec
+            TotalTimeAfterShot = 3; //1.5 sec
             ShotPause = TotalShotPause;
             base.SetAnimations(1, 0);
         }
