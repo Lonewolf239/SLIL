@@ -896,6 +896,21 @@ namespace SLIL.Classes
         }
     }
 
+    public class ExplodingBarrel : Boxes
+    {
+        protected override int GetEntityID() => 29;
+
+        public ExplodingBarrel(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        public ExplodingBarrel(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 43;
+            DeathSound = -1;
+            base.SetAnimations(1, 0);
+        }
+    }
+
     public class HittingTheWall : GameObject
     {
         protected override int GetEntityID() => 10;

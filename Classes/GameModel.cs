@@ -370,10 +370,14 @@ namespace SLIL.Classes
             }
         }
 
-        private void SpawnExplotion(Rockets entity)
+        private void SpawnExplotion(Entity entity)
         {
-            if (entity.ExplosionID == 0) Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
-            if (entity.ExplosionID == 1) Entities.Add(new SoulExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+            if (entity is Rockets rocket)
+            {
+                if (rocket.ExplosionID == 0) Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                if (rocket.ExplosionID == 1) Entities.Add(new SoulExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+            }
+            else Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
         }
 
         private static void GiveDebaf(Player player, Entity entity)
@@ -1637,14 +1641,13 @@ namespace SLIL.Classes
                 {
                     if (attacker is Player attackerPlayer)
                     {
-                        double multiplier = 1;
-                        if (difficulty == 3)
-                            multiplier = 1.5;
-                        attackerPlayer.ChangeMoney(rand.Next((int)(c.MinMoney * multiplier), (int)(c.MaxMoney * multiplier)));
-                        attackerPlayer.EnemiesKilled++;
-                        attackerPlayer.TotalEnemiesKilled++;
                         if (target is Boxes box && !attackerPlayer.CuteMode)
                         {
+                            if (box is ExplodingBarrel barrel)
+                            {
+                                SpawnExplotion(barrel);
+                                return true;
+                            }
                             if (box.BoxWithMoney)
                                 attackerPlayer.ChangeMoney(rand.Next(5, 11));
                             else
@@ -1655,7 +1658,13 @@ namespace SLIL.Classes
                                 if (ammo > max) ammo = max;
                                 attackerPlayer.Guns[type].AmmoInStock = ammo;
                             }
+                            return true;
                         }
+                        double multiplier = 1;
+                        if (difficulty == 3) multiplier = 1.5;
+                        attackerPlayer.ChangeMoney(rand.Next((int)(c.MinMoney * multiplier), (int)(c.MaxMoney * multiplier)));
+                        attackerPlayer.EnemiesKilled++;
+                        attackerPlayer.TotalEnemiesKilled++;
                         return true;
                     }
                 }

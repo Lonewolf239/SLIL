@@ -188,6 +188,9 @@ namespace SLIL.Classes
             //SoulClot
             { new TextureKey(42, SpriteStates.StepForward_0), Properties.Resources. rpg_rocket_0},
             { new TextureKey(42, SpriteStates.StepForward_1), Properties.Resources. rpg_rocket_1},
+            //ExplodingBarrel
+            { new TextureKey(43, SpriteStates.StepForward_0), Properties.Resources. exploding_barrel_0},
+            { new TextureKey(43, SpriteStates.StepForward_1), Properties.Resources. exploding_barrel_1},
         };
         private Dictionary<TextureKey, Image> cute_textures = new Dictionary<TextureKey, Image>()
         {
@@ -315,6 +318,9 @@ namespace SLIL.Classes
             //SoulClot
             { new TextureKey(42, SpriteStates.StepForward_0), Properties.Resources. rpg_rocket_0},
             { new TextureKey(42, SpriteStates.StepForward_1), Properties.Resources. rpg_rocket_1},
+            //ExplodingBarrel
+            { new TextureKey(43, SpriteStates.StepForward_0), Properties.Resources. exploding_barrel_0},
+            { new TextureKey(43, SpriteStates.StepForward_1), Properties.Resources. exploding_barrel_1},
         };
         private readonly Color[] COLORS =
         {

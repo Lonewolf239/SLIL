@@ -3061,10 +3061,11 @@ namespace SLIL
             int money_y = 2;
             if (ShowMiniMap)
             {
-                Bitmap mini_map = DrawMiniMap();
-                money_y = mini_map.Height + 3;
-                graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH - mini_map.Width - 1, size);
-                mini_map.Dispose();
+                using (Bitmap mini_map = DrawMiniMap())
+                {
+                    money_y = mini_map.Height + 3;
+                    graphicsWeapon.DrawImage(mini_map, SCREEN_WIDTH - mini_map.Width - 1, size);
+                }
             }
             graphicsWeapon.SmoothingMode = save;
             graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH, money_y, rightToLeft);
@@ -3078,25 +3079,19 @@ namespace SLIL
                 else if (inDebug == 2) text += "Debug Boss";
                 else if (inDebug == 3) text += "Debug Bike";
                 else if (difficulty == 4) text += "Custom";
-                else text += (Controller.GetStage() + 1).ToString();
-                SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
+                else text += (Controller.GetStage() + 1).ToString(); SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
                 SolidBrush brush = (SolidBrush)whiteBrush.Clone();
-                brush.Color = Color.FromArgb((int)(brush.Color.R * StageOpacity), (int)(brush.Color.G * StageOpacity), (int)(brush.Color.B * StageOpacity));
+                brush.Color = Color.FromArgb((int)(255 * StageOpacity), brush.Color.R, brush.Color.G, brush.Color.B);
                 graphicsWeapon.DrawString(text, consolasFont[interface_size, resolution + 1], brush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }
-            if (player.Effects.Count > 0)
-            {
-                for (int i = 0; i < player.Effects.Count; i++)
-                    DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], icon_size, i, player.Effects[i] is Debaf);
-            }
+            for (int i = 0; i < player.Effects.Count; i++) DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], icon_size, i, player.Effects[i] is Debaf);
             if (player.InSelectingMode)
             {
                 for (int i = 0; i < player.DisposableItems.Count; i++)
                 {
                     Image icon = ItemIconDict[player.DisposableItems[i].GetType()];
                     bool selected = false;
-                    if (player.CuteMode)
-                        icon = CuteItemIconDict[player.DisposableItems[i].GetType()];
+                    if (player.CuteMode) icon = CuteItemIconDict[player.DisposableItems[i].GetType()];
                     if (player.SelectedItem == i) selected = true;
                     DrawItemSelecter(icon, icon_size, i, selected);
                 }
@@ -3475,40 +3470,54 @@ namespace SLIL
             return map;
         }
 
-        private void DrawDurationEffect(Image effect_image, int icon_size, int index, bool debaf)
+        private void DrawDurationEffect(Image effect_image, int icon_size, int index, bool isDebuff)
         {
             Player player = GetPlayer();
             if (player == null) return;
-            int diameter = icon_size;
             int x = WEAPON.Width - icon_size - 4 - ((icon_size + 4) * index);
             int y = WEAPON.Height - icon_size - 4;
-            RectangleF circleRect = new RectangleF(x, y, diameter, diameter);
-            using (Pen pen = new Pen(debaf ? Color.FromArgb(96, 90, 121) : Color.FromArgb(90, 131, 182), 1.75f))
-                graphicsWeapon.DrawEllipse(pen, circleRect);
+            RectangleF circleRect = new RectangleF(x, y, icon_size, icon_size);
+            RectangleF shadowRect = new RectangleF(x + 2, y + 2, icon_size, icon_size);
+            using (Brush shadowBrush = new SolidBrush(Color.FromArgb(50, 0, 0, 0)))
+                graphicsWeapon.FillEllipse(shadowBrush, shadowRect);
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(circleRect,
+                isDebuff ? Color.FromArgb(130, 110, 140) : Color.FromArgb(110, 150, 200),
+                isDebuff ? Color.FromArgb(90, 70, 120) : Color.FromArgb(70, 110, 170), LinearGradientMode.ForwardDiagonal))
+                graphicsWeapon.FillEllipse(gradientBrush, circleRect);
+            using (Pen outerPen = new Pen(isDebuff ? Color.FromArgb(96, 90, 121) : Color.FromArgb(90, 131, 182), 2f))
+                graphicsWeapon.DrawEllipse(outerPen, circleRect);
             float sweepAngle = (float)player.Effects[index].TimeRemaining / player.Effects[index].TotalTime * 360;
-            using (Pen pen = new Pen(debaf ? Color.FromArgb(126, 199, 138) : Color.FromArgb(104, 213, 248), 3))
+            using (Pen progressPen = new Pen(isDebuff ? Color.FromArgb(220, 80, 80) : Color.FromArgb(80, 200, 250), 1.75f))
             using (GraphicsPath path = new GraphicsPath())
             {
                 path.AddArc(circleRect, -90, sweepAngle);
-                graphicsWeapon.DrawPath(pen, path);
+                graphicsWeapon.DrawPath(progressPen, path);
             }
-            graphicsWeapon.DrawImage(effect_image, x + 0.25f, y + 0.25f, icon_size, icon_size);
+            graphicsWeapon.DrawImage(effect_image, x + 0.5f, y + 0.5f, icon_size, icon_size);
         }
 
-        private void DrawItemSelecter(Image item_image, int icon_size, int index, bool selected)
+        private void DrawItemSelecter(Image item_image, int icon_size, int index, bool isHighlighted)
         {
             Player player = GetPlayer();
             if (player == null) return;
             int x = center_x - (icon_size / 2);
             int y = center_y - (icon_size / 2);
-            if (index == 0) x -= icon_size * 2;
-            else if (index == 1) y -= icon_size * 2;
-            else if (index == 2) x += icon_size * 2;
-            else if (index == 3) y += icon_size * 2;
+            switch (index)
+            {
+                case 0: x -= icon_size * 2; break;
+                case 1: y -= icon_size * 2; break;
+                case 2: x += icon_size * 2; break;
+                case 3: y += icon_size * 2; break;
+            }
             RectangleF circleRect = new RectangleF(x, y, icon_size, icon_size);
-            using (Pen pen = !selected ? new Pen(Color.FromArgb(100, 150, 200), 3.75f) : new Pen(Color.FromArgb(125, 175, 225), 5f))
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(circleRect, Color.FromArgb(150, 180, 210), Color.FromArgb(100, 130, 165), LinearGradientMode.ForwardDiagonal))
+                graphicsWeapon.FillEllipse(gradientBrush, circleRect);
+            RectangleF shadowRect = new RectangleF(x + 3, y + 3, icon_size, icon_size);
+            using (Brush shadowBrush = new SolidBrush(Color.FromArgb(50, 0, 0, 0)))
+                graphicsWeapon.FillEllipse(shadowBrush, shadowRect);
+            using (Pen pen = new Pen(isHighlighted ? Color.FromArgb(128, 230, 255) : Color.FromArgb(100, 180, 230), isHighlighted ? 4.5f : 3f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
-            if (selected) DrawArrow(cursor_x, cursor_y);
+            if (isHighlighted) DrawArrow(cursor_x, cursor_y);
             graphicsWeapon.DrawImage(item_image, x, y, icon_size, icon_size);
         }
 
@@ -3529,7 +3538,7 @@ namespace SLIL
                 (center_x - 1) + (float)(arrowLength * 0.7 * Math.Cos(angle - Math.PI / 6)),
                 (center_y - 1) + (float)(arrowLength * 0.7 * Math.Sin(angle - Math.PI / 6))
             );
-            using (Pen arrowPen = new Pen(Color.FromArgb(104, 213, 248), 2f))
+            using (Pen arrowPen = new Pen(Color.FromArgb(104, 233, 248), 2.5f))
             {
                 graphicsWeapon.DrawLine(arrowPen, center_x - 1, center_y - 1, arrowTip.X, arrowTip.Y);
                 graphicsWeapon.DrawLine(arrowPen, arrowTip.X, arrowTip.Y, arrowBase1.X, arrowBase1.Y);
@@ -4089,6 +4098,7 @@ namespace SLIL
             catch { player.A = 0; }
             StageOpacity = 1;
             if (MainMenu.sounds) step_sound_timer.Start();
+            StartShopOpen = false;
             player.CanUnblockCamera = player.BlockCamera = true;
             GameStarted = true;
             game_over_panel.Visible = false;
@@ -4283,7 +4293,12 @@ namespace SLIL
 
         private void StartShop(Player player)
         {
-            if (Controller.GetStage() != 0 || difficulty <= 1)
+            foreach (Control control in Controls)
+            {
+                if (control is StartShopInterface)
+                    DeleteInterface(control);
+            }
+            if (Controller.GetStage() != 0 || difficulty <= 1 || inDebug != 0)
             {
                 StartTimers();
                 return;
