@@ -1054,14 +1054,14 @@ namespace SLIL.Classes
                 case 'B':
                     entity = new Barrel(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
+                case 'X':
+                    entity = new ExplodingBarrel(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    break;
                 case 'L':
                     entity = new Vine(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'l':
                     entity = new Lamp(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID); ;
-                    break;
-                case '5':
-                    entity = new Bike(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case 'E':
                     SpawnEnemis(x, y, MAP_WIDTH);
@@ -1086,6 +1086,9 @@ namespace SLIL.Classes
                 case '4':
                     SpawnEnemis(x, y, MAP_WIDTH, false, 3);
                     MAP[y * MAP_WIDTH + x] = '.';
+                    break;
+                case '5':
+                    entity = new Bike(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
                     break;
                 case '6':
                     SpawnEnemis(x, y, MAP_WIDTH, false, 4);
@@ -1511,14 +1514,16 @@ namespace SLIL.Classes
                 }
                 else // 10%
                 {
-                    if (rand.NextDouble() <= 0.25)
-                        entity = new Vine(x + 0.5, y + 0.5, size, ref MaxEntityID);
-                    else if (rand.NextDouble() <= 0.5)
-                        entity = new Lamp(x + 0.5, y + 0.5, size, ref MaxEntityID);
-                    else if (rand.NextDouble() <= 0.75)
-                        entity = new Box(x + 0.5, y + 0.5, size, ref MaxEntityID);
-                    else
-                        entity = new Barrel(x + 0.5, y + 0.5, size, ref MaxEntityID);
+                    if (rand.NextDouble() <= 0.2)
+                        entity = new Vine(x, y, size, ref MaxEntityID);
+                    else if (rand.NextDouble() <= 0.4)
+                        entity = new Lamp(x, y, size, ref MaxEntityID);
+                    else if (rand.NextDouble() <= 0.6)
+                        entity = new Box(x, y, size, ref MaxEntityID);
+                    else if(rand.NextDouble() <= 0.8)
+                        entity = new Barrel(x, y, size, ref MaxEntityID);
+                    else 
+                        entity = new ExplodingBarrel(x, y, size, ref MaxEntityID);
                 }
                 Entities.Add(entity);
             }

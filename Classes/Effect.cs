@@ -10,8 +10,13 @@ namespace SLIL.Classes
         internal int TotalTime { get; set; }
         internal int TimeRemaining { get; set; }
         internal bool Infinity { get; set; }
+        internal bool CanIssuedByConsole { get; set; }
 
-        internal Effect() => Infinity = false;
+        internal Effect()
+        {
+            Infinity = false;
+            CanIssuedByConsole = true;
+        }
 
         internal bool ReducingTimeRemaining()
         {
@@ -146,6 +151,7 @@ namespace SLIL.Classes
             ID = 8;
             TotalTime = 1;
             Infinity = true;
+            CanIssuedByConsole = false;
             Name = "Void";
             Description = "Void";
             UpdateTimeRemaining();
@@ -159,6 +165,7 @@ namespace SLIL.Classes
             ID = 9;
             TotalTime = 1;
             Infinity = true;
+            CanIssuedByConsole = false;
             Name = "God";
             Description = "Cheater!";
             UpdateTimeRemaining();

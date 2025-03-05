@@ -665,6 +665,7 @@ namespace SLIL.UserControls
                         {
                             for (int i = 0; i < effects.Length; i++)
                             {
+                                if (!effects[i].CanIssuedByConsole) continue;
                                 if (!player.EffectCheck(i) && i != 4 && i != 8)
                                     player.GiveEffect(i, true);
                             }
@@ -684,7 +685,7 @@ namespace SLIL.UserControls
                                     }
                                     else
                                     {
-                                        if (x == 4 || x == 8)
+                                        if (!effects[x].CanIssuedByConsole)
                                         {
                                             color = Color.Red;
                                             message = $"It is impossible to issue this effect with the command";
@@ -722,7 +723,7 @@ namespace SLIL.UserControls
                                     }
                                     else
                                     {
-                                        if (x == 4 || x == 8)
+                                        if (!effects[x].CanIssuedByConsole)
                                         {
                                             color = Color.Red;
                                             message = $"It is impossible to issue this effect with the command";
@@ -761,7 +762,7 @@ namespace SLIL.UserControls
                                     }
                                     else
                                     {
-                                        if (x == 4 || x == 8)
+                                        if (!effects[x].CanIssuedByConsole)
                                         {
                                             color = Color.Red;
                                             message = $"It is impossible to issue this effect with the command";
@@ -959,7 +960,8 @@ namespace SLIL.UserControls
                                  "Stalker",
                                  "Shooter",
                                  "LostSoul",
-                                 "SoulExplosion"
+                                 "SoulExplosion",
+                                 "ExplodingBarrel"
                             };
                             for (int i = 0; i < entities.Length; i++)
                             {
@@ -979,7 +981,7 @@ namespace SLIL.UserControls
                                 {
                                     int x = Convert.ToInt32(cheat.Split('_')[1]);
                                     int y = Convert.ToInt32(cheat.Split('_')[3]);
-                                    if (x >= 0 && x < 27)
+                                    if (x >= 0 && x < 28)
                                     {
                                         if (y < 0 || y > 1)
                                         {
@@ -1017,7 +1019,7 @@ namespace SLIL.UserControls
                                 try
                                 {
                                     int x = Convert.ToInt32(cheat.Split('_')[1]);
-                                    if (x >= 0 && x < 27)
+                                    if (x >= 0 && x < 28)
                                     {
                                         if (parent.SpawnEntity(x, true))
                                             message = $"Creature with ID {x} successfully spawned with AI enabled";
