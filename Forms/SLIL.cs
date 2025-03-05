@@ -2276,12 +2276,11 @@ namespace SLIL
             int mapY = (int)(player.Y);
             StringBuilder MAP = Controller.GetMap();
             int MAP_WIDTH = Controller.GetMapWidth();
-            int MAP_HEIGHT = Controller.GetMapHeight();
-            Parallel.For(0, SCREEN_WIDTH, x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, mapX, mapY, ref player, ref MAP, MAP_WIDTH, MAP_HEIGHT));
+            Parallel.For(0, SCREEN_WIDTH, x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, mapX, mapY, ref player, ref MAP, MAP_WIDTH));
             return rays;
         }
 
-        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int mapX, int mapY, ref Player player, ref StringBuilder MAP, int MAP_WIDTH, int MAP_HEIGHT)
+        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int mapX, int mapY, ref Player player, ref StringBuilder MAP, int MAP_WIDTH)
         {
             Pixel[] result = new Pixel[SCREEN_HEIGHT];
             double cameraX = 2 * x / (double)SCREEN_WIDTH - 1;
@@ -2347,7 +2346,7 @@ namespace SLIL
                     if (wallSide == 0) window_distance = (sideDistX - deltaDistX);
                     else window_distance = (sideDistY - deltaDistY);
                 }
-                if (mapX < 0 || mapX >= (player.GetDrawDistance()) + player.X || mapY < 0 || mapY >= (player.GetDrawDistance()) + player.Y || distance >= player.GetDrawDistance())
+                if (mapX < 0 || mapX >= player.GetDrawDistance() + player.X || mapY < 0 || mapY >= player.GetDrawDistance() + player.Y || distance >= player.GetDrawDistance())
                 {
                     hit_wall = 0;
                     distance = player.GetDrawDistance();
@@ -3278,7 +3277,7 @@ namespace SLIL
                 graphicsWeapon.DrawImage(Properties.Resources.god_display_effect, 0, 0, WEAPON.Width, WEAPON.Height);
         }
 
-        private void DrawPing(SizeF fpsSize, int icon_size)
+        private void DrawPing(SizeF fpsSize, int iconSize)
         {
             int ping = Controller.GetPing();
             int connection_status;
@@ -3286,8 +3285,8 @@ namespace SLIL
             else if (ping < 150) connection_status = 1;
             else if (ping < 300) connection_status = 2;
             else connection_status = 3;
-            graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, ShowFPS ? fpsSize.Height : 0, icon_size, icon_size);
-            graphicsWeapon.DrawString($"{ping}ms", consolasFont[interface_size, resolution], whiteBrush, icon_size + 2, ShowFPS ? fpsSize.Height : 0);
+            graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, ShowFPS ? fpsSize.Height : 0, iconSize, iconSize);
+            graphicsWeapon.DrawString($"{ping}ms", consolasFont[interface_size, resolution], whiteBrush, iconSize + 2, ShowFPS ? fpsSize.Height : 0);
         }
 
         private void ShowDebugs(Player player)
@@ -3506,8 +3505,7 @@ namespace SLIL
                     pixels[i] = color.B;
                     pixels[i + 1] = color.G;
                     pixels[i + 2] = color.R;
-                    if (bytesPerPixel == 4)
-                        pixels[i + 3] = color.A;
+                    if (bytesPerPixel == 4) pixels[i + 3] = color.A;
                 }
             }
             Marshal.Copy(pixels, 0, data.Scan0, pixels.Length);
@@ -3515,14 +3513,14 @@ namespace SLIL
             return map;
         }
 
-        private void DrawDurationEffect(Image effect_image, int icon_size, int index, bool isDebuff)
+        private void DrawDurationEffect(Image effectImage, int iconSize, int index, bool isDebuff)
         {
             Player player = GetPlayer();
             if (player == null) return;
-            int x = WEAPON.Width - icon_size - 4 - ((icon_size + 4) * index);
-            int y = WEAPON.Height - icon_size - 4;
-            RectangleF circleRect = new RectangleF(x, y, icon_size, icon_size);
-            RectangleF shadowRect = new RectangleF(x + 2, y + 2, icon_size, icon_size);
+            int x = WEAPON.Width - iconSize - 4 - ((iconSize + 4) * index);
+            int y = WEAPON.Height - iconSize - 4;
+            RectangleF circleRect = new RectangleF(x, y, iconSize, iconSize);
+            RectangleF shadowRect = new RectangleF(x + 2, y + 2, iconSize, iconSize);
             using (Brush shadowBrush = new SolidBrush(Color.FromArgb(50, 0, 0, 0)))
                 graphicsWeapon.FillEllipse(shadowBrush, shadowRect);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(circleRect,
@@ -3538,32 +3536,32 @@ namespace SLIL
                 path.AddArc(circleRect, -90, sweepAngle);
                 graphicsWeapon.DrawPath(progressPen, path);
             }
-            graphicsWeapon.DrawImage(effect_image, x + 0.5f, y + 0.5f, icon_size, icon_size);
+            graphicsWeapon.DrawImage(effectImage, x + 0.5f, y + 0.5f, iconSize, iconSize);
         }
 
-        private void DrawItemSelecter(Image item_image, int icon_size, int index, bool isHighlighted)
+        private void DrawItemSelecter(Image itemImage, int iconSize, int index, bool isHighlighted)
         {
             Player player = GetPlayer();
             if (player == null) return;
-            int x = center_x - (icon_size / 2);
-            int y = center_y - (icon_size / 2);
+            int x = center_x - (iconSize / 2);
+            int y = center_y - (iconSize / 2);
             switch (index)
             {
-                case 0: x -= icon_size * 2; break;
-                case 1: y -= icon_size * 2; break;
-                case 2: x += icon_size * 2; break;
-                case 3: y += icon_size * 2; break;
+                case 0: x -= iconSize * 2; break;
+                case 1: y -= iconSize * 2; break;
+                case 2: x += iconSize * 2; break;
+                case 3: y += iconSize * 2; break;
             }
-            RectangleF circleRect = new RectangleF(x, y, icon_size, icon_size);
+            RectangleF circleRect = new RectangleF(x, y, iconSize, iconSize);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(circleRect, Color.FromArgb(150, 180, 210), Color.FromArgb(100, 130, 165), LinearGradientMode.ForwardDiagonal))
                 graphicsWeapon.FillEllipse(gradientBrush, circleRect);
-            RectangleF shadowRect = new RectangleF(x + 3, y + 3, icon_size, icon_size);
+            RectangleF shadowRect = new RectangleF(x + 3, y + 3, iconSize, iconSize);
             using (Brush shadowBrush = new SolidBrush(Color.FromArgb(50, 0, 0, 0)))
                 graphicsWeapon.FillEllipse(shadowBrush, shadowRect);
             using (Pen pen = new Pen(isHighlighted ? Color.FromArgb(128, 230, 255) : Color.FromArgb(100, 180, 230), isHighlighted ? 4.5f : 3f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
             if (isHighlighted) DrawArrow(cursor_x, cursor_y);
-            graphicsWeapon.DrawImage(item_image, x, y, icon_size, icon_size);
+            graphicsWeapon.DrawImage(itemImage, x, y, iconSize, iconSize);
         }
 
         private void DrawArrow(int targetX, int targetY)
@@ -3591,25 +3589,25 @@ namespace SLIL
             }
         }
 
-        private void DrawRunIcon(int stamine_left, int stamine_top, int icon_size)
+        private void DrawRunIcon(int stamineLeft, int stamineTop, int iconSize)
         {
             Image icon = PlayerCanRun() ?
                 Properties.Resources.stamine_icon : Properties.Resources.stamine_cant_run_icon;
-            graphicsWeapon.DrawImage(icon, stamine_left, stamine_top, icon_size, icon_size);
+            graphicsWeapon.DrawImage(icon, stamineLeft, stamineTop, iconSize, iconSize);
         }
 
-        private void DisplayStamine(Player player, int icon_size, int size)
+        private void DisplayStamine(Player player, int iconSize, int size)
         {
             int stamine_width = 40 + (10 * interface_size);
             if (resolution == 1) stamine_width *= 2;
             int progress_width = (int)(player.Stamine / player.MaxStamine * (stamine_width - 2));
-            int stamine_top = SCREEN_HEIGHT - (icon_size * 2);
-            int stamine_left = (SCREEN_WIDTH - (stamine_width + icon_size + 2)) / 2;
+            int stamine_top = SCREEN_HEIGHT - (iconSize * 2);
+            int stamine_left = (SCREEN_WIDTH - (stamine_width + iconSize + 2)) / 2;
             if (RunKeyPressed || player.Stamine < player.MaxStamine)
-                DrawRunIcon(stamine_left, stamine_top, icon_size);
+                DrawRunIcon(stamine_left, stamine_top, iconSize);
             if (player.Stamine >= player.MaxStamine) return;
-            int stamine_progressbar_left = stamine_left + icon_size + 2;
-            int stamine_progressbar_top = stamine_top + ((icon_size - 3) / 2);
+            int stamine_progressbar_left = stamine_left + iconSize + 2;
+            int stamine_progressbar_top = stamine_top + ((iconSize - 3) / 2);
             graphicsWeapon.FillRectangle(new SolidBrush(Color.Gray), stamine_progressbar_left, stamine_progressbar_top, stamine_width, 2.25f * size);
             Rectangle progressBackgroundRect = new Rectangle(stamine_progressbar_left + 1, stamine_progressbar_top + 1, stamine_width - 2, size);
             using (LinearGradientBrush progressBrush = new LinearGradientBrush(progressBackgroundRect, Color.Red, Color.White, LinearGradientMode.Horizontal))

@@ -180,7 +180,11 @@ namespace SLIL.Classes
                                                 return;
                                             }
                                         }
-                                        if (ent is NPC npc) npc.DealDamage(damage);
+                                        if (ent is NPC npc)
+                                        {
+                                            if (npc.DealDamage(damage) && npc is ExplodingBarrel)
+                                                SpawnExplotion(npc);
+                                        }
                                         if (ent is Enemy enemy) enemy.DealDamage(damage);
                                         if (ent is Transport transport) DealDamage(transport.ID, damage * 1.5, explosion.ID);
                                     }

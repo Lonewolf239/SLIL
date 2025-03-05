@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using MazeGenerator;
+using System.Drawing;
 using SLIL.UserControls;
+using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace SLIL
 {
@@ -23,9 +23,9 @@ namespace SLIL
         public bool OK = false;
         private readonly Random rand;
         private Panel panel;
-        private int element = -1;
-        private const int elements_count = 13;
-        private readonly Color[] elements_color =
+        private int Element = -1;
+        private const int ElementsCount = 14;
+        private readonly Color[] ElementsColor =
         {
             //игрок
              Color.Red,
@@ -51,6 +51,8 @@ namespace SLIL
              Color.OliveDrab,
             //светильник
              Color.DarkGoldenrod,
+            //взрывающаяся бочка
+             Color.OrangeRed,
             //невидимая стена
              Color.Purple,
         };
@@ -70,7 +72,8 @@ namespace SLIL
                 c == 'D' || c == 'd' || c == 'b' ||
                 c == 'B' || c == 'F' || c == 'P' ||
                 c == 'E' || c == '$' || c == 'W' ||
-                c == 'L' || c == 'l' || c == '5';
+                c == 'L' || c == 'l' || c == '5' ||
+                c == 'X';
         }
 
         private string GetElementsName(int index)
@@ -125,6 +128,10 @@ namespace SLIL
                     if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-28");
                     return "Lamp";
+                case 12:
+                    if (MainMenu.DownloadedLocalizationList)
+                        return MainMenu.Localizations.GetLString(MainMenu.Language, "1-28");
+                    return "Exploding Barrel";
                 default:
                     if (MainMenu.DownloadedLocalizationList)
                         return MainMenu.Localizations.GetLString(MainMenu.Language, "1-25");
@@ -231,13 +238,13 @@ namespace SLIL
             };
             elements_panel.Controls.Add(separator);
             separator.BringToFront();
-            for (int i = 0; i < elements_count; i++)
+            for (int i = 0; i < ElementsCount; i++)
             {
                 EditorElementSelector selector = new EditorElementSelector()
                 {
                     Index = i,
                     ElementName = GetElementsName(i),
-                    ElementColor = elements_color[i],
+                    ElementColor = ElementsColor[i],
                     Dock = DockStyle.Top
                 };
                 selector.element_color.Click += Select_btn_Click;
@@ -267,7 +274,7 @@ namespace SLIL
 
         private void ClearSelector()
         {
-            element = -1;
+            Element = -1;
             foreach (EditorElementSelector selector in elements_panel.Controls.Find("EditorElementSelector", false).Cast<EditorElementSelector>())
                 selector.select_btn.Image = null;
         }
@@ -277,7 +284,7 @@ namespace SLIL
             editor_interface.Focus();
             ClearSelector();
             EditorElementSelector parent = (sender as Control).Parent as EditorElementSelector;
-            element = Convert.ToInt32(parent.Index);
+            Element = Convert.ToInt32(parent.Index);
             parent.select_btn.Image = Properties.Resources.selected;
         }
 
@@ -341,6 +348,8 @@ namespace SLIL
                             color = Color.OliveDrab;
                         else if (c == 'l')
                             color = Color.DarkGoldenrod;
+                        else if (c == 'X')
+                            color = Color.OrangeRed;
                     }
                     Panel panel = new Panel
                     {
@@ -415,6 +424,8 @@ namespace SLIL
                         MAP.Append("L");
                     else if (panels[i, j].BackColor == Color.DarkGoldenrod)
                         MAP.Append("l");
+                    else if (panels[i, j].BackColor == Color.OrangeRed)
+                        MAP.Append("X");
                 }
             }
             return MAP;
@@ -578,7 +589,7 @@ namespace SLIL
         private void SLIL_Editor_KeyDown(object sender, KeyEventArgs e)
         {
             if (panel == null) return;
-            int index = element;
+            int index = Element;
             if (panel.BackColor == Color.White)
             {
                 if (e.KeyCode == Keys.Space || e.KeyCode == Keys.Enter)
@@ -688,6 +699,8 @@ namespace SLIL
                     else if (index == 11)
                         panel.BackColor = Color.DarkGoldenrod;
                     else if (index == 12)
+                        panel.BackColor = Color.OrangeRed;
+                    else if (index == 13)
                         panel.BackColor = Color.Purple;
                 }
             }
