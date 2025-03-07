@@ -1743,6 +1743,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap lost_soul_c_Dead {
+            get {
+                object obj = ResourceManager.GetObject("lost_soul_c_Dead", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap lost_soul_c_escaping_0 {
             get {
                 object obj = ResourceManager.GetObject("lost_soul_c_escaping_0", resourceCulture);
@@ -1766,6 +1776,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap lost_soul_c_shoot {
             get {
                 object obj = ResourceManager.GetObject("lost_soul_c_shoot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap lost_soul_Dead {
+            get {
+                object obj = ResourceManager.GetObject("lost_soul_Dead", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

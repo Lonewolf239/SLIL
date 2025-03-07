@@ -660,7 +660,6 @@ namespace SLIL.Classes
 
         internal void PlayGameSound(PlaySound sound)
         {
-            if (!MainMenu.sounds) return;
             //if (peer == null)
             Game.PlayGameSound(playerID, sound);
             //else
@@ -671,7 +670,6 @@ namespace SLIL.Classes
 
         internal void PlayGameSound(PlaySound sound, int coordinate)
         {
-            if (!MainMenu.sounds) return;
             //if (peer == null)
             Game.PlayGameSound(sound, coordinate);
             //else

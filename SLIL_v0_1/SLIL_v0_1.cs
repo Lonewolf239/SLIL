@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using Play_Sound;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using SLIL_v0_1.MazeGenerator;
-using System.Diagnostics;
-using System.Globalization;
-using Play_Sound;
 using SLIL.Classes;
+using System.Drawing;
+using System.Diagnostics;
+using System.Windows.Forms;
+using System.Globalization;
+using SLIL_v0_1.MazeGenerator;
+using System.Collections.Generic;
 
 namespace SLIL.SLIL_v0_1
 {
@@ -17,7 +17,7 @@ namespace SLIL.SLIL_v0_1
     {
         private static readonly Maze MazeGenerator = new Maze();
         public static bool Language = true;
-        private readonly Random rand = new Random();
+        private readonly Random rand = new Random(Guid.NewGuid().GetHashCode());
         private const int SCREEN_HEIGHT = 228, SCREEN_WIDTH = 344;
         private static int MazeHeight;
         private static int MazeWidth;
@@ -444,8 +444,7 @@ namespace SLIL.SLIL_v0_1
             status_text.Text = $"FPS: {fps} | TIME LEFT: {space_0}{minutes}:{space_1}{seconds}";
             raycast.Start();
             time_remein.Start();
-            if (MainMenu.sounds)
-                step_sound_timer.Start();
+            if (MainMenu.sounds) step_sound_timer.Start();
         }
 
         private void GameOver(int win)
@@ -470,8 +469,7 @@ namespace SLIL.SLIL_v0_1
             else if (win == 0)
             {
                 game_over_text.Visible = true;
-                if (MainMenu.sounds)
-                    game_over.Play(SLIL.Volume);
+                if (MainMenu.sounds) game_over.Play(SLIL.Volume);
                 difficulty = old_difficulty;
             }
             display.Image = null;

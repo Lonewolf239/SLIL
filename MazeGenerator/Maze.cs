@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using MazeGenerator.Enum;
+using System.Collections.Generic;
 
 namespace MazeGenerator
 {
     public class Maze
     {
-        private static readonly Random rand = new Random();
+        private static readonly Random rand = new Random(Guid.NewGuid().GetHashCode());
         Room finishRoom = null;
         Room fakeFinishRoom = null;
 

@@ -121,7 +121,7 @@ namespace SLIL.Classes
             { (32, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
             { (32, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
             //Covering
-            { (33, SpriteStates.Static), Properties.Resources. fake_teleport_0},
+            { (33, SpriteStates.Static), Properties.Resources.fake_teleport_0},
             { (33, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
             { (33, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_0 },
             { (33, SpriteStates.DeadBody), Properties.Resources.fake_teleport_0 },
@@ -137,7 +137,7 @@ namespace SLIL.Classes
             { (37, SpriteStates.StepForward_0), Properties.Resources.player },
             { (37, SpriteStates.StepForward_1), Properties.Resources.player_1 },
             { (37, SpriteStates.DeadBody), Properties.Resources.player_Dead },
-            { (37, SpriteStates.Aiming), Properties.Resources. player_aiming},
+            { (37, SpriteStates.Aiming), Properties.Resources.player_aiming},
             { (37, SpriteStates.Shooted), Properties.Resources.player_shooted },
             { (37, SpriteStates.StepEscape_0), Properties.Resources.player_stoped },
             { (37, SpriteStates.StepEscape_1), Properties.Resources.player_stoped },
@@ -146,23 +146,27 @@ namespace SLIL.Classes
             //VoidFloor
             { (39, SpriteStates.Static), Properties.Resources.void_floor },
             //VoidCelling
-            { (40, SpriteStates.Static), Properties.Resources. void_ceiling},
+            { (40, SpriteStates.Static), Properties.Resources.void_ceiling},
             //LostSoul
-            { (41, SpriteStates.StepForward_0), Properties.Resources. lost_soul_0},
-            { (41, SpriteStates.StepForward_1), Properties.Resources. lost_soul_1},
-            { (41, SpriteStates.DeadBody), Properties.Resources.missing },
-            { (41, SpriteStates.Aiming), Properties.Resources. lost_soul_shoot},
-            { (41, SpriteStates.Shooted), Properties.Resources. lost_soul_shoot},
+            { (41, SpriteStates.StepForward_0), Properties.Resources.lost_soul_0},
+            { (41, SpriteStates.StepForward_1), Properties.Resources.lost_soul_1},
+            { (41, SpriteStates.DeadBody), Properties.Resources.lost_soul_Dead },
+            { (41, SpriteStates.Aiming), Properties.Resources.lost_soul_shoot},
+            { (41, SpriteStates.Shooted), Properties.Resources.lost_soul_shoot},
             { (41, SpriteStates.StepEscape_0), Properties.Resources.lost_soul_escaping_0 },
             { (41, SpriteStates.StepEscape_1), Properties.Resources.lost_soul_escaping_1 },
             //SoulClot
-            { (42, SpriteStates.StepForward_0), Properties.Resources. rpg_rocket_0},
-            { (42, SpriteStates.StepForward_1), Properties.Resources. rpg_rocket_1},
+            { (42, SpriteStates.StepForward_0), Properties.Resources.rpg_rocket_0},
+            { (42, SpriteStates.StepForward_1), Properties.Resources.rpg_rocket_1},
             //ExplodingBarrel
-            { (43, SpriteStates.StepForward_0), Properties.Resources. exploding_barrel_0},
-            { (43, SpriteStates.StepForward_1), Properties.Resources. exploding_barrel_1},
+            { (43, SpriteStates.StepForward_0), Properties.Resources.exploding_barrel_0},
+            { (43, SpriteStates.StepForward_1), Properties.Resources.exploding_barrel_1},
             //AmmoBox
-            { (44, SpriteStates.Static), Properties.Resources. missing},
+            { (44, SpriteStates.Static), Properties.Resources.missing},
+            //BrokenAmmoBox
+            { (45, SpriteStates.Static), Properties.Resources.back_wall},
+            //BrokenDoor
+            { (46, SpriteStates.Static), Properties.Resources.missing},
         };
         private Dictionary<(int , SpriteStates), Image> cute_textures = new Dictionary<(int, SpriteStates), Image>()
         {
@@ -253,7 +257,7 @@ namespace SLIL.Classes
             { (32, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
             { (32, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
             //Covering
-            { (33, SpriteStates.Static), Properties.Resources. fake_teleport_0},
+            { (33, SpriteStates.Static), Properties.Resources.fake_teleport_0},
             { (33, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
             { (33, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_0 },
             { (33, SpriteStates.DeadBody), Properties.Resources.fake_teleport_0 },
@@ -269,7 +273,7 @@ namespace SLIL.Classes
             { (37, SpriteStates.StepForward_0), Properties.Resources.player },
             { (37, SpriteStates.StepForward_1), Properties.Resources.player_1 },
             { (37, SpriteStates.DeadBody), Properties.Resources.player_Dead },
-            { (37, SpriteStates.Aiming), Properties.Resources. player_aiming},
+            { (37, SpriteStates.Aiming), Properties.Resources.player_aiming},
             { (37, SpriteStates.Shooted), Properties.Resources.player_shooted },
             { (37, SpriteStates.StepEscape_0), Properties.Resources.player_stoped },
             { (37, SpriteStates.StepEscape_1), Properties.Resources.player_stoped },
@@ -278,23 +282,27 @@ namespace SLIL.Classes
             //VoidFloor
             { (39, SpriteStates.Static), Properties.Resources.void_floor },
             //VoidCelling
-            { (40, SpriteStates.Static), Properties.Resources. void_ceiling},
+            { (40, SpriteStates.Static), Properties.Resources.void_ceiling},
             //LostSoul
-            { (41, SpriteStates.StepForward_0), Properties.Resources. lost_soul_c_0},
-            { (41, SpriteStates.StepForward_1), Properties.Resources. lost_soul_c_1},
-            { (41, SpriteStates.DeadBody), Properties.Resources.missing },
-            { (41, SpriteStates.Aiming), Properties.Resources. lost_soul_c_shoot},
-            { (41, SpriteStates.Shooted), Properties.Resources. lost_soul_c_shoot},
+            { (41, SpriteStates.StepForward_0), Properties.Resources.lost_soul_c_0},
+            { (41, SpriteStates.StepForward_1), Properties.Resources.lost_soul_c_1},
+            { (41, SpriteStates.DeadBody), Properties.Resources.lost_soul_c_Dead },
+            { (41, SpriteStates.Aiming), Properties.Resources.lost_soul_c_shoot},
+            { (41, SpriteStates.Shooted), Properties.Resources.lost_soul_c_shoot},
             { (41, SpriteStates.StepEscape_0), Properties.Resources.lost_soul_c_escaping_0 },
             { (41, SpriteStates.StepEscape_1), Properties.Resources.lost_soul_c_escaping_1 },
             //SoulClot
-            { (42, SpriteStates.StepForward_0), Properties.Resources. rpg_rocket_0},
-            { (42, SpriteStates.StepForward_1), Properties.Resources. rpg_rocket_1},
+            { (42, SpriteStates.StepForward_0), Properties.Resources.rpg_rocket_0},
+            { (42, SpriteStates.StepForward_1), Properties.Resources.rpg_rocket_1},
             //ExplodingBarrel
-            { (43, SpriteStates.StepForward_0), Properties.Resources. exploding_barrel_0},
-            { (43, SpriteStates.StepForward_1), Properties.Resources. exploding_barrel_1},
+            { (43, SpriteStates.StepForward_0), Properties.Resources.exploding_barrel_0},
+            { (43, SpriteStates.StepForward_1), Properties.Resources.exploding_barrel_1},
             //AmmoBox
-            { (44, SpriteStates.Static), Properties.Resources. missing},
+            { (44, SpriteStates.Static), Properties.Resources.missing},
+            //BrokenAmmoBox
+            { (45, SpriteStates.Static), Properties.Resources.back_wall},
+            //BrokenDoor
+            { (46, SpriteStates.Static), Properties.Resources.missing},
         };
         private readonly Color[] COLORS =
         {
@@ -428,10 +436,11 @@ namespace SLIL.Classes
             if (lighten) fogFactor = (fogFactor * 75) / 100;
             int inverseFogFactor = 100 - fogFactor;
             int baseComponent = lighten ? 255 : 0;
-            int r = (color.R * inverseFogFactor + baseComponent * fogFactor) / 100;
-            int g = (color.G * inverseFogFactor + baseComponent * fogFactor) / 100;
-            int b = (color.B * inverseFogFactor + baseComponent * fogFactor) / 100;
-            int a = lighten ? (color.A * inverseFogFactor + 255 * fogFactor) / 100 : color.A;
+            int adjustIntense = baseComponent * fogFactor;
+            int r = (color.R * inverseFogFactor + adjustIntense) / 100;
+            int g = (color.G * inverseFogFactor + adjustIntense) / 100;
+            int b = (color.B * inverseFogFactor + adjustIntense) / 100;
+            int a = lighten ? (color.A * inverseFogFactor + adjustIntense) / 100 : color.A;
             r = ML.Clamp(r, 0, 255);
             g = ML.Clamp(g, 0, 255);
             b = ML.Clamp(b, 0, 255);

@@ -7,6 +7,7 @@ using LiteNetLib.Utils;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace SLIL.Classes
 {
@@ -57,7 +58,7 @@ namespace SLIL.Classes
             TRANSPORTS = transports;
             MAP_WIDTH = 16;
             MAP_HEIGHT = 16;
-            rand = new Random();
+            rand = new Random(Guid.NewGuid().GetHashCode());
             difficulty = MainMenu.difficulty;
             RespawnTimer = new System.Windows.Forms.Timer
             {
@@ -145,13 +146,41 @@ namespace SLIL.Classes
                     var targetListOrdered = targetsList.OrderBy((playerI) => Math.Pow(entity.X - playerI.X, 2) + Math.Pow(entity.Y - playerI.Y, 2));
                     Entity target = targetListOrdered.First();
                     double distance = ML.GetDistance(new TPoint(target.X, target.Y), new TPoint(entity.X, entity.Y));
+                    if (entity is Creature c && c.CanHitByTransport && !(!c.HasAI || c.Dead || !c.CanHit))
+                    {
+                        if (target is Player playerOnTransport)
+                        {
+                            bool playerCanHitc = true;
+                            if (!playerOnTransport.InTransport || playerOnTransport.MoveSpeed < 2.5) playerCanHitc = false;
+                            if (Math.Abs(c.X - playerOnTransport.X) > 0.5|| Math.Abs(c.Y - playerOnTransport.Y) > 0.5) playerCanHitc = false;
+                            if (playerCanHitc)
+                            {
+                                if (DealDamageFromPlayerToCreature(c, 5, playerOnTransport))
+                                {
+                                    if (c.DeathSound != -1)
+                                    {
+                                        if (playerOnTransport.CuteMode)
+                                            PlayGameSound(SLIL.CuteDeathSounds[c.DeathSound, rand.Next(0, SLIL.DeathSounds.GetLength(1))], GetCoordinate(c.X, c.Y));
+                                        else
+                                            PlayGameSound(SLIL.DeathSounds[c.DeathSound, rand.Next(0, SLIL.DeathSounds.GetLength(1))], GetCoordinate(c.X, c.Y));
+                                    }
+                                }
+                            }
+                        }
+                    }
                     if (entity is GameObject && entity.Temporarily)
                     {
                         entity.LifeTime++;
                         entity.CurrentFrame++;
                         if (entity.LifeTime >= entity.TotalLifeTime)
+                        {                            
+                            Entities.Remove(entity);
+                            i--;
+                            continue;
+                        }
+                        else if (entity.LifeTime >= entity.TotalLifeTime / 2)
                         {
-                            if (entity is Explosions explosion)
+                            if (entity is Explosions explosion && !explosion.ExplosionOccurred)
                             {
                                 if (explosion.CanBrakeDoors)
                                 {
@@ -163,7 +192,12 @@ namespace SLIL.Classes
                                             if (k < 0 || k > MAP_WIDTH || l < 0 || l > MAP_HEIGHT) continue;
                                             double dis = ML.GetDistance(new TPoint(explosion.X, explosion.Y), new TPoint(k, l));
                                             if (dis > explosion.HitDistance) continue;
-                                            if (MAP[GetCoordinate(k, l)] == 'd') MAP[GetCoordinate(k, l)] = '.';
+                                            if (MAP[GetCoordinate(k, l)] == 'd')
+                                            {
+                                                MAP[GetCoordinate(k, l)] = 'R';
+                                                PlayGameSound(SLIL.BreakdownDoors, GetCoordinate(k, l));
+                                                Entities.Add(new BrokenDoor(k + 0.5, l + 0.5, MAP_WIDTH, ref MaxEntityID));
+                                            }
                                         }
                                     }
                                 }
@@ -196,7 +230,7 @@ namespace SLIL.Classes
                                         {
                                             if (npc.DealDamage(damage) && npc is ExplodingBarrel)
                                             {
-                                                PlayGameSound(SLIL.explosion, (int)npc.Y * MAP_WIDTH + (int)npc.X);
+                                                PlayGameSound(SLIL.RPGExplosion, (int)npc.Y * MAP_WIDTH + (int)npc.X);
                                                 SpawnExplotion(npc);
                                             }
                                         }
@@ -204,10 +238,9 @@ namespace SLIL.Classes
                                         if (ent is Transport transport) DealDamage(transport.ID, damage * 1.5, explosion.ID);
                                     }
                                 }
+                                explosion.ExplosionOccurred = true;
+                                continue;
                             }
-                            Entities.Remove(entity);
-                            i--;
-                            continue;
                         }
                     }
                     if (entity is Enemy)
@@ -281,7 +314,7 @@ namespace SLIL.Classes
                                 if (range is Shooter shooter)
                                 {
                                     PlaySoundHandle(SLIL.GunsSoundsDict[typeof(SniperRifle)][1, 0], shooter.X, shooter.Y);
-                                    HashSet<char> impassibleCells = new HashSet<char> { '#', 'D', 'd', 'W', 'S' };
+                                    HashSet<char> impassibleCells = new HashSet<char> { '#', 'D', 'd', 'W', 'S', 'R' };
                                     double shotDistance = 0;
                                     const double shotStep = 0.01d;
                                     bool hit = false;
@@ -367,7 +400,7 @@ namespace SLIL.Classes
                             Entities.Remove(entity);
                             i--;
                             SpawnExplotion(rocket);
-                            PlayGameSound(SLIL.explosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
+                            PlayGameSound(SLIL.RPGExplosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
                         }
                         if (!Entities.Contains(entity)) continue;
                         foreach (Entity ent in Entities)
@@ -380,7 +413,7 @@ namespace SLIL.Classes
                                 Entities.Remove(entity);
                                 i--;
                                 SpawnExplotion(rocket);
-                                PlayGameSound(SLIL.explosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
+                                PlayGameSound(SLIL.RPGExplosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
                                 return;
                             }
                         }
@@ -391,6 +424,7 @@ namespace SLIL.Classes
                         {
                             if (Math.Abs(ammoBox.X - p.X) <= 0.5 && Math.Abs(ammoBox.Y - p.Y) <= 0.5)
                             {
+                                if (ammoBox.WeaponType == null) continue;
                                 int weaponIndex = -1;
                                 for (int j = 0; j < p.Guns.Count; j++)
                                 {
@@ -1025,7 +1059,7 @@ namespace SLIL.Classes
                 }
                 if (p.MoveSpeed >= 2.5)
                 {
-                    char[] c = { '#', 'd', 'D', 'S' };
+                    char[] c = { '#', 'd', 'D', 'S', 'R' };
                     if (c.Contains(MAP[(int)extendedY * MAP_WIDTH + (int)extendedX]) ||
                         (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=' && (!p.TRANSPORT.CanJump || p.EffectCheck(3))))
                     {
@@ -1336,7 +1370,7 @@ namespace SLIL.Classes
             {
                 if (!CUSTOM)
                 {
-                    Random random = new Random();
+                    Random random = new Random(Guid.NewGuid().GetHashCode());
                     StringBuilder sb = new StringBuilder();
                     char[,] map = (new Maze()).GenerateCharMap(MazeWidth, MazeHeight, '#', '=', 'd', '.', 'F', MAX_SHOP_COUNT);
                     map[1, 1] = 'P';
@@ -1686,46 +1720,7 @@ namespace SLIL.Classes
                 }
                 return false;
             }
-            if (target is Creature c)
-            {
-                if (!c.HasAI || c.Dead || !c.CanHit) return false;
-                if (c.DealDamage(damage))
-                {
-                    if (attacker is Player attackerPlayer)
-                    {
-                        if (target is Boxes box)
-                        {
-                            if (box is ExplodingBarrel barrel)
-                            {
-                                PlayGameSound(SLIL.explosion, (int)barrel.Y * MAP_WIDTH + (int)barrel.X);
-                                SpawnExplotion(barrel);
-                                return true;
-                            }
-                            if (box.BoxWithMoney)
-                                attackerPlayer.ChangeMoney(rand.Next(5, 11));
-                            else if (!attackerPlayer.CuteMode)
-                            {
-                                Type type;
-                                Gun gun;
-                                do
-                                {
-                                    gun = attackerPlayer.Guns[rand.Next(attackerPlayer.Guns.Count)];
-                                    type = gun.GetType();
-                                } while (gun is Knife || gun is Item || gun is Magic);
-                                AddEntity(new AmmoBox(box.X, box.Y, MAP_WIDTH, ref MaxEntityID) { WeaponType = type });
-                            }
-                            return true;
-                        }
-                        double multiplier = 1;
-                        if (difficulty == 3) multiplier = 1.5;
-                        attackerPlayer.ChangeMoney(rand.Next((int)(c.MinMoney * multiplier), (int)(c.MaxMoney * multiplier)));
-                        attackerPlayer.EnemiesKilled++;
-                        attackerPlayer.TotalEnemiesKilled++;
-                        return true;
-                    }
-                }
-                return false;
-            }
+            if (target is Creature c) return DealDamageFromPlayerToCreature(c, damage, attacker);
             if (target is Transport t)
             {
                 if (t.TransportHP <= 0) return false;
@@ -1740,6 +1735,61 @@ namespace SLIL.Classes
                 return false;
             }
             return false;
+        }
+
+        private bool DealDamageFromPlayerToCreature(Creature c, double damage, Entity attacker)
+        {
+            if (!c.HasAI || c.Dead || !c.CanHit) return false;
+            if (c.DealDamage(damage))
+            {
+                if (attacker is Player attackerPlayer)
+                {
+                    if (c is Boxes box)
+                    {
+                        BoxBreakage(box, attackerPlayer);
+                        return true;
+                    }
+                    double multiplier = difficulty == 3 ? 1.5 : 1;
+                    attackerPlayer.ChangeMoney(rand.Next((int)(c.MinMoney * multiplier), (int)(c.MaxMoney * multiplier)));
+                    if (c is Enemy)
+                    {
+                        attackerPlayer.EnemiesKilled++;
+                        attackerPlayer.TotalEnemiesKilled++;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void BoxBreakage(Boxes box, Player p)
+        {
+            if (box is ExplodingBarrel barrel)
+            {
+                PlayGameSound(SLIL.RPGExplosion, (int)barrel.Y * MAP_WIDTH + (int)barrel.X);
+                SpawnExplotion(barrel);
+                return;
+            }
+            if (box.BoxWithMoney)
+                p.ChangeMoney(rand.Next(5, 11));
+            else if (!p.CuteMode)
+            {
+                Type type = null;
+                Gun gun;
+                for (int i = 0; i < 5; i++)
+                {
+                    gun = p.Guns[rand.Next(p.Guns.Count)];
+                    if (gun.CanGetAmmoFromBox)
+                    {
+                        type = gun.GetType();
+                        break;
+                    }
+                }
+                if (rand.Next(100) <= 15) type = null;
+                AmmoBox ammoBox = new AmmoBox(box.X, box.Y, MAP_WIDTH, ref MaxEntityID) { WeaponType = type };
+                if (type == null) ammoBox.Texture = 45;
+                AddEntity(ammoBox);
+            }
         }
 
         internal void AddEntity(Entity entity)
@@ -1791,122 +1841,6 @@ namespace SLIL.Classes
                     }
                 }
             }
-        }
-
-        private void ResetDefault()
-        {
-            /*
-            map = null;
-            display.SCREEN = null;
-            scope[scope_type] = GetScope(scope[scope_type]);
-            scope_shotgun[scope_type] = GetScope(scope_shotgun[scope_type]);
-            display.Refresh();
-            int x = display.PointToScreen(Point.Empty).X + (display.Width / 2);
-            int y = display.PointToScreen(Point.Empty).Y + (display.Height / 2);
-            Cursor.Position = new Point(x, y);
-            seconds = 0;
-            if (!CUSTOM)
-                player.X = player.Y = 1.5d;
-            else
-            {
-                player.X = CUSTOM_X;
-                player.Y = CUSTOM_Y;
-            }
-            if (player.Guns.Count == 0)
-            {
-                player.Guns.Add(player.GUNS[1]);
-                player.Guns.Add(player.GUNS[2]);
-            }
-            player.SetDefault();
-            player.LevelUpdated = false;
-            open_shop = false;
-            Entities.Clear();
-            strafeDirection = playerDirection = Direction.STOP;
-            playerMoveStyle = Direction.WALK;
-            if (difficulty == 0)
-                enemy_count = 0.07;
-            else if (difficulty == 1)
-                enemy_count = 0.065;
-            else if (difficulty == 2)
-            {
-                enemy_count = 0.055;
-                if (player.Guns[1].Level == Levels.LV1)
-                    player.Guns[1].LevelUpdate();
-            }
-            else if (difficulty == 3)
-            {
-                enemy_count = 0.045;
-                if (player.Guns[1].Level == Levels.LV1)
-                    player.Guns[1].LevelUpdate();
-            }
-            else if (difficulty == 4)
-            {
-                minutes = 9999;
-                MazeHeight = CustomMazeHeight;
-                MazeWidth = CustomMazeWidth;
-                enemy_count = 0.06;
-                MAX_SHOP_COUNT = 5;
-            }
-            else
-            {
-                if (inDebug == 1)
-                {
-                    player.X = 9;
-                    player.Y = 9;
-                    MazeHeight = 6;
-                    MazeWidth = 6;
-                }
-                else if (inDebug == 2)
-                {
-                    player.X = 10.5;
-                    player.Y = 19.5;
-                    MazeHeight = 7;
-                    MazeWidth = 7;
-                }
-                minutes = 9999;
-            }
-            if (difficulty != 4 && difficulty != 5)
-            {
-                if (player.Stage == 0)
-                {
-                    minutes = START_EASY;
-                    MazeHeight = MazeWidth = 10;
-                    MAX_SHOP_COUNT = 2;
-                }
-                else if (player.Stage == 1)
-                {
-                    minutes = START_NORMAL;
-                    MazeHeight = MazeWidth = 15;
-                    MAX_SHOP_COUNT = 4;
-                }
-                else if (player.Stage == 2)
-                {
-                    minutes = START_HARD;
-                    MazeHeight = MazeWidth = 20;
-                    MAX_SHOP_COUNT = 6;
-                }
-                else if (player.Stage == 3)
-                {
-                    minutes = START_VERY_HARD;
-                    MazeHeight = MazeWidth = 25;
-                    MAX_SHOP_COUNT = 8;
-                }
-                else
-                {
-                    minutes = START_VERY_HARD;
-                    MazeHeight = MazeWidth = 25;
-                    MAX_SHOP_COUNT = 8;
-                }
-            }
-            MAP_WIDTH = MazeWidth * 3 + 1;
-            MAP_HEIGHT = MazeHeight * 3 + 1;
-            //map = new Bitmap(Controller.GetMapWidth(), Controller.GetMapHeight());
-            map = new Bitmap(MAP_WIDTH, MAP_HEIGHT);
-            if (MainMenu.sounds)
-            {
-                prev_ost = rand.Next(ost.Length - 2);
-                ChangeOst(prev_ost);
-            }*/
         }
 
         internal void AddHittingTheWall(double X, double Y, double vMove)
@@ -2010,7 +1944,7 @@ namespace SLIL.Classes
         {
             Player p = GetPlayer(playerID);
             if (p == null) return false;
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$' };
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'R' };
             if (HasNoClip(playerID) || p.InParkour) return false;
             return impassibleCells.Contains(GetMap()[index]);
         }
@@ -2098,8 +2032,8 @@ namespace SLIL.Classes
             Player p = GetPlayer(playerID);
             if (p == null || p.Stamine < 200) return;
             if (p.EffectCheck(3)) return;
-            if (p.InTransport) PlayGameSound(playerID, SLIL.climb[1]);
-            else PlayGameSound(playerID, SLIL.climb[0]);
+            if (p.InTransport) PlayGameSound(playerID, SLIL.Climb[1]);
+            else PlayGameSound(playerID, SLIL.Climb[0]);
             p.InParkour = true;
             p.ParkourState = 0;
             p.X = x + 0.5;
@@ -2143,8 +2077,8 @@ namespace SLIL.Classes
             if (p == null || p.Stamine < 200) return;
             if (p.EffectCheck(3)) return;
             double distance = 0;
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't' };
-            PlayGameSound(playerID, SLIL.climb[0]);
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't', 'R' };
+            PlayGameSound(playerID, SLIL.Climb[0]);
             p.ReducesStamine(150);
             new Thread(() =>
             {
@@ -2252,12 +2186,13 @@ namespace SLIL.Classes
         internal void PlayGameSound(int playerID, PlaySound sound)
         {
             Player p = GetPlayer(playerID);
-            if (p == null) return;
+            if (p == null || !MainMenu.sounds) return;
             PlaySoundHandle(sound, p.X, p.Y);
         }
 
         internal void PlayGameSound(PlaySound sound, int coordinate)
         {
+            if (!MainMenu.sounds) return;
             double X = coordinate % MAP_HEIGHT;
             double Y = (coordinate - X) / MAP_WIDTH;
             PlaySoundHandle(sound, X, Y);
@@ -2270,12 +2205,12 @@ namespace SLIL.Classes
             if (MAP[coordinate] == 'o')
             {
                 MAP[coordinate] = 'd';
-                PlaySoundHandle(SLIL.door[1], X, Y);
+                PlaySoundHandle(SLIL.Door[1], X, Y);
             }
             else
             {
                 MAP[coordinate] = 'o';
-                PlaySoundHandle(SLIL.door[0], X, Y);
+                PlaySoundHandle(SLIL.Door[0], X, Y);
             }
         }
 

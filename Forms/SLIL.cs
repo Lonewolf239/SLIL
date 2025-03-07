@@ -527,16 +527,18 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
             }
         };
-        internal static PlaySound draw = new PlaySound(MainMenu.CGFReader.GetFile("draw.wav"), false),
-            buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false),
-            wall = new PlaySound(MainMenu.CGFReader.GetFile("wall_interaction.wav"), false),
-            tp = new PlaySound(MainMenu.CGFReader.GetFile("tp.wav"), false),
-            screenshot = new PlaySound(MainMenu.CGFReader.GetFile("screenshot.wav"), false),
-            low_stamine = new PlaySound(MainMenu.CGFReader.GetFile("low_stamine.wav"), false),
-            starter = new PlaySound(MainMenu.CGFReader.GetFile("starter.wav"), false),
-            explosion = new PlaySound(MainMenu.CGFReader.GetFile("explosion.wav"), false);
-        internal static PlaySound[] climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
-        internal static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
+        internal static PlaySound Draw = new PlaySound(MainMenu.CGFReader.GetFile("draw.wav"), false),
+            Buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false),
+            Wall = new PlaySound(MainMenu.CGFReader.GetFile("wall_interaction.wav"), false),
+            Wp = new PlaySound(MainMenu.CGFReader.GetFile("tp.wav"), false),
+            Screenshot = new PlaySound(MainMenu.CGFReader.GetFile("screenshot.wav"), false),
+            LowStamine = new PlaySound(MainMenu.CGFReader.GetFile("low_stamine.wav"), false),
+            Starter = new PlaySound(MainMenu.CGFReader.GetFile("starter.wav"), false),
+            RPGExplosion = new PlaySound(MainMenu.CGFReader.GetFile("explosion.wav"), false),
+            BreakdownDoors = new PlaySound(MainMenu.CGFReader.GetFile("breakdown_doors.wav"), false),
+            LiftingAmmoBox = new PlaySound(MainMenu.CGFReader.GetFile("lifting_ammo_box.wav"), false);
+        internal static PlaySound[] Climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
+        internal static PlaySound[] Door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"##########################.......................##.......................##..WWWW..7.6.4.3.2.1.#..##..WE.W.................##..W.EW.................##..WWWW...........b..d..##.......................##.......................##.................B..=..##.......................##..#....................##..#b.......P.....L..F..##..####X................##..#B...................##..#..............l..b..##..####.................##..X....................##....................B..##.......................##......b=5#D#...##d#=#####...======#$#L###X.#....##.....=B..###.#B#....#..##...............L..l##.f##########################",
             bikeMap = @"############################......######.......#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######.......############################";
@@ -619,7 +621,7 @@ namespace SLIL
             PlaySoundHandle = PlaySoundInvoker;
             Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
             Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
-            rand = new Random();
+            rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
             screenEffects = new List<ScreenEffects>();
             SetParameters();
@@ -635,7 +637,7 @@ namespace SLIL
             InitPlayerHandle = InitPlayerInvoker;
             PlaySoundHandle = PlaySoundInvoker;
             Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
-            rand = new Random();
+            rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
             screenEffects = new List<ScreenEffects>();
             SetParameters();
@@ -661,7 +663,7 @@ namespace SLIL
             PlaySoundHandle = PlaySoundInvoker;
             //CloseFormHandle = CloseFormInvoker;
             //Controller = new GameController(adress, port, password, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
-            rand = new Random();
+            rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
             screenEffects = new List<ScreenEffects>();
             SetParameters();
@@ -853,13 +855,10 @@ namespace SLIL
             {
                 this.BeginInvoke((MethodInvoker)delegate
                 {
-                    if (MainMenu.sounds) sound.Play(vol);
+                    sound.Play(vol);
                 });
             }
-            else
-            {
-                if (MainMenu.sounds) sound.Play(vol);
-            }
+            else sound.Play(vol);
         }
 
         internal void CloseFormInvoker()
@@ -1219,7 +1218,7 @@ namespace SLIL
                     player.Stamine = 0;
                     player.PlayerMoveStyle = Directions.WALK;
                     chill_timer.Start();
-                    Controller.PlayGameSound(low_stamine);
+                    Controller.PlayGameSound(LowStamine);
                 }
                 else player.ReducesStamine();
             }
@@ -1657,7 +1656,6 @@ namespace SLIL
                         }
                         if (e.KeyCode == Bind.Select_item)
                         {
-                            //TEMP
                             if (Controller.IsMultiplayer()) return;
                             if (!player.InSelectingMode || player.UseItem)
                             {
@@ -1809,6 +1807,7 @@ namespace SLIL
                             switch (test_wall)
                             {
                                 case '=':
+                                case 'R':
                                     while (raycast.Enabled && !hit && distance <= 2)
                                     {
                                         distance += 0.1d;
@@ -1949,8 +1948,8 @@ namespace SLIL
                                                                 player.IsPetting = false;
                                                             }).Start();
                                                             return;
-                                                        case 4:
-                                                            Controller.PlayGameSound(starter);
+                                                        case 4: //Transport
+                                                            Controller.PlayGameSound(Starter);
                                                             Controller.GetOnATransport(entity.ID);
                                                             return;
                                                         case 5:
@@ -1981,7 +1980,7 @@ namespace SLIL
                                 case '=':
                                 case 'F':
                                     hit = true;
-                                    Controller.PlayGameSound(wall);
+                                    Controller.PlayGameSound(Wall);
                                     break;
                                 case 'D':
                                     hit = true;
@@ -2125,7 +2124,7 @@ namespace SLIL
 
         private bool HasImpassibleCells(int index)
         {
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't' };
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't', 'R' };
             if (Controller.HasNoClip() || GetPlayer().InParkour) return false;
             if (index < 0 || index > Controller.GetMap().Length) return true;
             return impassibleCells.Contains(Controller.GetMap()[index]);
@@ -2620,7 +2619,7 @@ namespace SLIL
                                     {
                                         if (creature is VoidStalker stalker)
                                         {
-                                            if (stalker.ISeeU()) Controller.PlayGameSound(screenshot);
+                                            if (stalker.ISeeU()) Controller.PlayGameSound(Screenshot);
                                         }
                                         int coords = (int)entity.Y * mapWidth + (int)entity.X;
                                         if (!enemiesCoords.Contains(coords))
@@ -3472,6 +3471,7 @@ namespace SLIL
                 case 'B':
                 case 'X':
                 case 'b': return Color.Brown;
+                case 'R':
                 case 'd':
                 case 'o':
                 case 'D':
@@ -3701,7 +3701,7 @@ namespace SLIL
                 return false;
             }
             else if (!(player.GetCurrentGun() is Pistol && player.GetCurrentGun().Level == Levels.LV1) &&
-                !(player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level == Levels.LV1) && MainMenu.sounds)
+                !(player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level == Levels.LV1))
             {
                 Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 2]);
                 return false;
@@ -3722,7 +3722,7 @@ namespace SLIL
                 double step = 0.01;
                 double rayAngleX = Math.Sin(player.A);
                 double rayAngleY = Math.Cos(player.A);
-                char[] impassibleCells = { '#', '=', 'd', 'D', 'S' };
+                char[] impassibleCells = { '#', '=', 'd', 'D', 'S', 'R' };
                 while (shotDistance <= player.GetCurrentGun().FiringRange)
                 {
                     int test_x = (int)(player.X + rayAngleX * shotDistance);
@@ -3827,7 +3827,7 @@ namespace SLIL
                                                 double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
                                                 if (Controller.DealDamage(creature, damage))
                                                 {
-                                                    if (MainMenu.sounds && creature.DeathSound != -1)
+                                                    if (creature.DeathSound != -1)
                                                     {
                                                         if (player.CuteMode)
                                                             Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
@@ -3858,13 +3858,10 @@ namespace SLIL
                                                 double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
                                                 if (Controller.DealDamage(targetPlayer, damage * 5))
                                                 {
-                                                    if (MainMenu.sounds)
-                                                    {
-                                                        if (player.CuteMode)
-                                                            Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
-                                                        else
-                                                            Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
-                                                    }
+                                                    if (player.CuteMode)
+                                                        Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                    else
+                                                        Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
                                                 }
                                                 if (!player.CuteMode)
                                                 {
@@ -3962,7 +3959,7 @@ namespace SLIL
             if (player == null || player.UseItem || Controller.InBackrooms()) return;
             if ((new_gun != player.CurrentGun || player.LevelUpdated) && !player.InSelectingMode && player.Guns[new_gun].HasIt)
             {
-                Controller.PlayGameSound(draw);
+                Controller.PlayGameSound(Draw);
                 Controller.ChangeWeapon(new_gun);
                 player.GunState = 0;
                 player.Aiming = false;
@@ -4031,8 +4028,7 @@ namespace SLIL
                 ConsolePanel.Log($"Screenshot successfully created and saved to path:\n<{path}<", true, true, Color.Lime);
             }
             else ConsolePanel.Log("Error: BUFFER is null. Cannot take screenshot.", true, true, Color.Red);
-
-            Controller.PlayGameSound(screenshot);
+            Controller.PlayGameSound(Screenshot);
         }
 
         private string GetPath()
@@ -4172,7 +4168,7 @@ namespace SLIL
             GameStarted = false;
             if (win == 1)
             {
-                Controller.PlayGameSound(tp);
+                Controller.PlayGameSound(Wp);
                 StartGame();
             }
             else if (win == 0)
@@ -4222,14 +4218,10 @@ namespace SLIL
 
         private void StopAllSounds()
         {
-            foreach (var ostTrack in ost)
-                ostTrack?.Stop();
-            foreach (var hitSound in hit)
-                hitSound?.Stop();
-            foreach (var climbSound in climb)
-                climbSound?.Stop();
-            foreach (var doorSound in door)
-                doorSound?.Stop();
+            foreach (var ostTrack in ost) ostTrack?.Stop();
+            foreach (var hitSound in hit) hitSound?.Stop();
+            foreach (var climbSound in Climb) climbSound?.Stop();
+            foreach (var doorSound in Door) doorSound?.Stop();
             for (int i = 0; i < steps.GetLength(0); i++)
             {
                 for (int j = 0; j < steps.GetLength(1); j++)
@@ -4260,27 +4252,28 @@ namespace SLIL
                 foreach (var transportSound in transportSoundDict)
                     transportSound?.Stop();
             }
-            foreach (var scary_sound in scary_sounds)
-                scary_sound?.Stop();
+            foreach (var scary_sound in scary_sounds) scary_sound?.Stop();
             hungry?.Stop();
             step?.Stop();
             transport_step?.Stop();
-            draw?.Stop();
-            buy?.Stop();
-            wall?.Stop();
-            tp?.Stop();
-            screenshot?.Stop();
-            low_stamine?.Stop();
-            starter?.Stop();
-            explosion?.Stop();
+            Draw?.Stop();
+            Buy?.Stop();
+            Wall?.Stop();
+            Wp?.Stop();
+            Screenshot?.Stop();
+            LowStamine?.Stop();
+            Starter?.Stop();
+            RPGExplosion?.Stop();
+            BreakdownDoors?.Stop();
+            LiftingAmmoBox?.Stop();
         }
 
         private void ShopToDefault()
         {
             shop_tab_control.Controls.Clear();
             Player player = GetPlayer();
-            if (player == null || !player.CuteMode)
-                shop_tab_control.Controls.Add(weapon_shop_page);
+            if (player == null || !player.CuteMode) shop_tab_control.Controls.Add(weapon_shop_page);
+            if (player == null || !player.CuteMode) shop_tab_control.Controls.Add(storage_shop_page);
             //TEMP
             if (!Controller.IsMultiplayer())
             {
@@ -4288,8 +4281,6 @@ namespace SLIL
                 shop_tab_control.Controls.Add(consumables_shop_page);
                 shop_tab_control.Controls.Add(transport_shop_page);
             }
-            if (player == null || !player.CuteMode)
-                shop_tab_control.Controls.Add(storage_shop_page);
         }
 
         private void Pause()

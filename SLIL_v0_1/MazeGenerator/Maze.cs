@@ -7,7 +7,7 @@ namespace SLIL_v0_1.MazeGenerator
 {
     public class Maze
     {
-        private static readonly Random rand = new Random();
+        private static readonly Random rand = new Random(Guid.NewGuid().GetHashCode());
         Room finishRoom = null;
 
         public List<Room> Generate(int width, int height)

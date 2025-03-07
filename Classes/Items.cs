@@ -27,6 +27,7 @@ namespace SLIL.Classes
         public bool ShowScope { get; set; }
         public bool ShowHitScope { get; set; }
         public bool InfinityAmmo { get; set; }
+        public bool CanGetAmmoFromBox { get; set; }
         public int BulletCount { get; set; }
         public int AimingState { get; set; }
         public int AimingFactor { get; set; }
@@ -74,6 +75,7 @@ namespace SLIL.Classes
             ShowScope = true;
             ShowHitScope = true;
             InfinityAmmo = false;
+            CanGetAmmoFromBox = true;
         }
 
         public abstract int GetItemID();
@@ -183,6 +185,7 @@ namespace SLIL.Classes
             FiringRange = 10;
             RadiusSound = 0;
             BurstShots = 1;
+            CanGetAmmoFromBox = false;
         }
 
         public override bool CanUpdate() => false;
@@ -213,6 +216,7 @@ namespace SLIL.Classes
             BurstShots = 1;
             Description = null;
             AmmoCount = CartridgesClip;
+            CanGetAmmoFromBox = false;
         }
 
         public override bool CanUpdate() => false;
@@ -292,6 +296,7 @@ namespace SLIL.Classes
             AddToStorage = false;
             AddToShop = false;
             HasIt = true;
+            CanGetAmmoFromBox = false;
             Name = new[] { "3-1", "Knife" };
             FireType = FireTypes.Single;
             Accuracy = 1;
@@ -365,6 +370,7 @@ namespace SLIL.Classes
             AddToShop = false;
             HasIt = false;
             ShowAmmoAsNumber = true;
+            CanGetAmmoFromBox = false;
             Name = new[] { "3-3", "Rainblower" };
             Accuracy = 0.9;
             Weight = 0.8;
@@ -1124,6 +1130,7 @@ namespace SLIL.Classes
             HasIt = false;
             InMultiplayer = true;
             ShowAmmoAsNumber = true;
+            CanGetAmmoFromBox = false;
             Name = new[] { "3-15", "Minigun" };
             Accuracy = 0.75;
             Weight = 0.5;

@@ -61,7 +61,7 @@ namespace SLIL
         {
             InitializeComponent();
             Cursor = Program.SLILCursorDefault;
-            rand = new Random();
+            rand = new Random(Guid.NewGuid().GetHashCode());
         }
 
         private void SLIL_Editor_MouseEnter(object sender, EventArgs e) => panel = null;
