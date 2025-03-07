@@ -1,4 +1,5 @@
 ﻿using LiteNetLib.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace SLIL.Classes
@@ -835,10 +836,10 @@ namespace SLIL.Classes
             if (Effects.Count == 0) return;
             for (int i = Effects.Count - 1; i >= 0; i--)
             {
-                if (Effects[i].ID == 0) HealHP(rand.Next(2, 6));
+                if (Effects[i].ID == 0) HealHP(Rand.Next(2, 6));
                 if (Effects[i].ID == 5)
                 {
-                    int damage = rand.Next(3);
+                    int damage = Rand.Next(3);
                     if (HP - damage >= 1) DealDamage(damage, false);
                 }
                 if (Effects[i].ReducingTimeRemaining())

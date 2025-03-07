@@ -7,8 +7,6 @@ using LiteNetLib.Utils;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using SharpDX.Direct2D1;
-using System.Numerics;
 
 namespace SLIL.Classes
 {
@@ -16,7 +14,7 @@ namespace SLIL.Classes
     {
         private StringBuilder MAP = new StringBuilder();
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
+            debugMap = @"##########################.......................##.......................##..WWWW..7.6.4.3.2.1.#..##..WE.W.................##..W.EW.................##..WWWW...........b..d..##.......................##.......................##.................B..=..##.......................##..#....................##..#b.......P.....L..F..##..####X................##..#B...................##..#..............l..b..##..####.................##..X....................##....................B..##.......................##......b=5#D#...##d#=#####...======#$#L###X.#....##.....=B..###.#B#....#..##...............L..l##.f##########################",
             bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################",
             backroomsMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..V###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#..0..#....##########################",
             emptyMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..F###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#..0..#....##########################";
@@ -155,6 +153,20 @@ namespace SLIL.Classes
                         {
                             if (entity is Explosions explosion)
                             {
+                                if (explosion.CanBrakeDoors)
+                                {
+                                    int explosinDistance = (int)explosion.HitDistance + 3;
+                                    for (int k = (int)explosion.X - explosinDistance; k <= (int)explosion.X + explosinDistance; k++)
+                                    {
+                                        for (int l = (int)explosion.Y - explosinDistance; l <= (int)explosion.Y + explosinDistance; l++)
+                                        {
+                                            if (k < 0 || k > MAP_WIDTH || l < 0 || l > MAP_HEIGHT) continue;
+                                            double dis = ML.GetDistance(new TPoint(explosion.X, explosion.Y), new TPoint(k, l));
+                                            if (dis > explosion.HitDistance) continue;
+                                            if (MAP[GetCoordinate(k, l)] == 'd') MAP[GetCoordinate(k, l)] = '.';
+                                        }
+                                    }
+                                }
                                 for (int j = 0; j < Entities.Count; j++)
                                 {
                                     var ent = Entities[j];
@@ -183,7 +195,10 @@ namespace SLIL.Classes
                                         if (ent is NPC npc)
                                         {
                                             if (npc.DealDamage(damage) && npc is ExplodingBarrel)
+                                            {
+                                                PlayGameSound(SLIL.explosion, (int)npc.Y * MAP_WIDTH + (int)npc.X);
                                                 SpawnExplotion(npc);
+                                            }
                                         }
                                         if (ent is Enemy enemy) enemy.DealDamage(damage);
                                         if (ent is Transport transport) DealDamage(transport.ID, damage * 1.5, explosion.ID);
@@ -370,6 +385,30 @@ namespace SLIL.Classes
                             }
                         }
                     }
+                    else if (entity is AmmoBox ammoBox)
+                    {
+                        if (target is Player p)
+                        {
+                            if (Math.Abs(ammoBox.X - p.X) <= 0.5 && Math.Abs(ammoBox.Y - p.Y) <= 0.5)
+                            {
+                                int weaponIndex = -1;
+                                for (int j = 0; j < p.Guns.Count; j++)
+                                {
+                                    if (p.Guns[j].GetType() == ammoBox.WeaponType)
+                                    {
+                                        weaponIndex = j;
+                                        break;
+                                    }
+                                }
+                                if (weaponIndex == -1) continue;
+                                int ammo = p.Guns[weaponIndex].CartridgesClip + p.Guns[weaponIndex].AmmoInStock;
+                                if (ammo > p.Guns[weaponIndex].MaxAmmo) continue;
+                                p.Guns[weaponIndex].AmmoInStock = ammo;
+                                Entities.Remove(entity);
+                                i--;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -381,7 +420,11 @@ namespace SLIL.Classes
                 if (rocket.ExplosionID == 0) Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
                 if (rocket.ExplosionID == 1) Entities.Add(new SoulExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
             }
-            else Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+            else
+            {
+                if (entity is ExplodingBarrel) Entities.Add(new BarrelExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                else Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+            }
         }
 
         private static void GiveDebaf(Player player, Entity entity)
@@ -1146,8 +1189,8 @@ namespace SLIL.Classes
                 {
                     if (inDebug == 1)
                     {
-                        MazeHeight = 21;
-                        MazeWidth = 21;
+                        MazeHeight = 25;
+                        MazeWidth = 25;
                     }
                     else if (inDebug == 2)
                     {
@@ -1203,10 +1246,10 @@ namespace SLIL.Classes
                     {
                         if (inDebug == 1)
                         {
-                            player.X = 10.5;
-                            player.Y = 10.5;
-                            MazeHeight = 21;
-                            MazeWidth = 21;
+                            player.X = 12.5;
+                            player.Y = 12.5;
+                            MazeHeight = 25;
+                            MazeWidth = 25;
                         }
                         else if (inDebug == 2)
                         {
@@ -1650,22 +1693,26 @@ namespace SLIL.Classes
                 {
                     if (attacker is Player attackerPlayer)
                     {
-                        if (target is Boxes box && !attackerPlayer.CuteMode)
+                        if (target is Boxes box)
                         {
                             if (box is ExplodingBarrel barrel)
                             {
+                                PlayGameSound(SLIL.explosion, (int)barrel.Y * MAP_WIDTH + (int)barrel.X);
                                 SpawnExplotion(barrel);
                                 return true;
                             }
                             if (box.BoxWithMoney)
                                 attackerPlayer.ChangeMoney(rand.Next(5, 11));
-                            else
+                            else if (!attackerPlayer.CuteMode)
                             {
-                                int type = rand.Next(1, attackerPlayer.Guns.Count);
-                                int max = attackerPlayer.Guns[type].MaxAmmo;
-                                int ammo = attackerPlayer.Guns[type].CartridgesClip + attackerPlayer.Guns[type].AmmoInStock;
-                                if (ammo > max) ammo = max;
-                                attackerPlayer.Guns[type].AmmoInStock = ammo;
+                                Type type;
+                                Gun gun;
+                                do
+                                {
+                                    gun = attackerPlayer.Guns[rand.Next(attackerPlayer.Guns.Count)];
+                                    type = gun.GetType();
+                                } while (gun is Knife || gun is Item || gun is Magic);
+                                AddEntity(new AmmoBox(box.X, box.Y, MAP_WIDTH, ref MaxEntityID) { WeaponType = type });
                             }
                             return true;
                         }

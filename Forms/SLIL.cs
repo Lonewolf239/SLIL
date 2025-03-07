@@ -527,8 +527,7 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
             }
         };
-        internal static PlaySound game_over = new PlaySound(MainMenu.CGFReader.GetFile("game_over.wav"), false),
-            draw = new PlaySound(MainMenu.CGFReader.GetFile("draw.wav"), false),
+        internal static PlaySound draw = new PlaySound(MainMenu.CGFReader.GetFile("draw.wav"), false),
             buy = new PlaySound(MainMenu.CGFReader.GetFile("buy.wav"), false),
             wall = new PlaySound(MainMenu.CGFReader.GetFile("wall_interaction.wav"), false),
             tp = new PlaySound(MainMenu.CGFReader.GetFile("tp.wav"), false),
@@ -539,14 +538,14 @@ namespace SLIL
         internal static PlaySound[] climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
         internal static PlaySound[] door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
-            debugMap = @"######################...................##...................##..WWWW.1.2.3.4..#..##..W.EW.............##..WE.W..........d..##..WWWW.............##................=..##..L................##................S..##..l......P.........##................F..##.#b................##.###............#..##.#B............#d=.##................=..##...B=5#D#..........##..====#$#L####d##=###...=b.###.#.L..l#.f##............#...L..######################",
+            debugMap = @"##########################.......................##.......................##..WWWW..7.6.4.3.2.1.#..##..WE.W.................##..W.EW.................##..WWWW...........b..d..##.......................##.......................##.................B..=..##.......................##..#....................##..#b.......P.....L..F..##..####X................##..#B...................##..#..............l..b..##..####.................##..X....................##....................B..##.......................##......b=5#D#...##d#=#####...======#$#L###X.#....##.....=B..###.#B#....#..##...............L..l##.f##########################",
             bikeMap = @"############################......######.......#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######.......############################";
         internal static float Volume = 0.4f, EffectsVolume = 0.4f, MusicVolume = 0.4f;
-        private int burst_shots = 0, reload_frames = 0;
-        internal static int ost_index = 0;
-        internal static int prev_ost;
+        private int BurstShots = 0, ReloadFrames = 0;
+        internal static int OstIndex = 0;
+        internal static int PrevOst;
         private Image scope_hit = null;
-        private readonly Image[] scope =
+        private readonly Image[] Scope =
         {
             Properties.Resources.scope,
             Properties.Resources.scope_cross,
@@ -554,7 +553,7 @@ namespace SLIL
             Properties.Resources.scope_dot,
             Properties.Resources.scope_null
         };
-        private readonly Image[] scope_shotgun =
+        private readonly Image[] ScopeShotgun =
         {
             Properties.Resources.scope_shotgun,
             Properties.Resources.scope_cross,
@@ -562,7 +561,7 @@ namespace SLIL
             Properties.Resources.scope_dot,
             Properties.Resources.scope_null
         };
-        private readonly Image[] h_scope =
+        private readonly Image[] HScope =
         {
             Properties.Resources.h_scope,
             Properties.Resources.h_scope_cross,
@@ -570,7 +569,7 @@ namespace SLIL
             Properties.Resources.h_scope_dot,
             Properties.Resources.scope_null
         };
-        private readonly Image[] h_scope_shotgun =
+        private readonly Image[] HScopeShotgun =
         {
             Properties.Resources.h_scope_shotgun,
             Properties.Resources.h_scope_cross,
@@ -579,19 +578,19 @@ namespace SLIL
             Properties.Resources.scope_null
         };
         private bool IsTutorial = false;
-        internal static int scope_color = 0, scope_type = 0;
+        internal static int ScopeColor = 0, ScopeType = 0;
         internal static bool ShowMap = false;
         private bool ShowSing = false, ShowInventory = false;
         private int SingID, scrollPosition = 0;
         private const int ScrollBarWidth = 4, ScrollPadding = 5;
-        private bool ShopOpen = false, StartShopOpen = false, pressed_r = false, cancelReload = false;
+        private bool ShopOpen = false, StartShopOpen = false, PressedR = false, CancelReload = false;
         private float xOffset = 0, yOffset = 0, xOffsetDirection = 0.25f, yOffsetDirection = 0.25f;
         private double RecoilY = 0, RecoilLX = 0, RecoilRX = 0;
         private double RecoilOY = 0, RecoilLOX = 0, RecoilROX = 0;
         private const double RecoilRecoverySpeed = 9.5f;
         private Display SLILDisplay;
         private Bitmap map;
-        private ConsolePanel console_panel;
+        private ConsolePanel ConsolePanel;
         private const double playerWidth = 0.4;
         private bool GameStarted = false, CorrectExit = false;
         private bool HoldLMB = false;
@@ -731,8 +730,8 @@ namespace SLIL
             }
             interface_size = MainMenu.interface_size;
             smoothing = MainMenu.smoothing;
-            scope_type = MainMenu.scope_type;
-            scope_color = MainMenu.scope_color;
+            ScopeType = MainMenu.scope_type;
+            ScopeColor = MainMenu.scope_color;
             hight_fps = MainMenu.hight_fps;
             ShowFPS = MainMenu.ShowFPS;
             ShowMiniMap = MainMenu.ShowMiniMap;
@@ -882,7 +881,7 @@ namespace SLIL
 
         //  #====  Console methods  ====#
 
-        internal static void SetVolume() => ost[ost_index].SetVolume(MusicVolume);
+        internal static void SetVolume() => ost[OstIndex].SetVolume(MusicVolume);
 
         internal bool OnOffNoClip() => Controller.OnOffNoClip();
 
@@ -899,9 +898,9 @@ namespace SLIL
         internal static void ChangeOst(int index)
         {
             if (!MainMenu.sounds) return;
-            ost[ost_index]?.Stop();
-            ost_index = index;
-            ost[ost_index].LoopPlay(MusicVolume);
+            ost[OstIndex]?.Stop();
+            OstIndex = index;
+            ost[OstIndex].LoopPlay(MusicVolume);
         }
 
         internal void KillFromConsole()
@@ -1002,11 +1001,14 @@ namespace SLIL
                     break;
                 case 26: // soul explosion
                     entity = new SoulExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
-                    entity = new ExplodingBarrel(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
                 case 27:
                     //exploding barrel
                     entity = new ExplodingBarrel(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 28:
+                    //barrel explosion
+                    entity = new BarrelExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
             }
             if (entity == null) return false;
@@ -1248,7 +1250,7 @@ namespace SLIL
             try
             {
                 Player player = GetPlayer();
-                if (burst_shots < player.GetCurrentGun().BurstShots)
+                if (BurstShots < player.GetCurrentGun().BurstShots)
                 {
                     if (player.GetCurrentGun().FireType != FireTypes.Single)
                         player.GunState = player.GunState == 1 ? 0 : 1;
@@ -1308,8 +1310,8 @@ namespace SLIL
                         player.CanShoot = true;
                     }
                 }
-                burst_shots++;
-                if (burst_shots >= player.GetCurrentGun().BurstShots)
+                BurstShots++;
+                if (BurstShots >= player.GetCurrentGun().BurstShots)
                     shot_timer.Stop();
                 if (!shot_timer.Enabled || player.GetCurrentGun().FireType == FireTypes.Single)
                     scope_hit = null;
@@ -1327,56 +1329,56 @@ namespace SLIL
                     int index = 1;
                     Player player = GetPlayer();
                     if (player.GetCurrentGun().AmmoCount == 0 && player.GetCurrentGun().AmmoInStock == 0) reload_timer.Stop();
-                    if (player.GetCurrentGun() is Shotgun && (player.GetCurrentGun().AmmoInStock == 0 || pressed_r))
+                    if (player.GetCurrentGun() is Shotgun && (player.GetCurrentGun().AmmoInStock == 0 || PressedR))
                     {
                         if (player.GetCurrentGun().Level == Levels.LV1) index = 2;
                         else
                         {
                             index = 3;
-                            if (pressed_r) index--;
+                            if (PressedR) index--;
                         }
                     }
-                    if (reload_frames >= player.GetCurrentGun().ReloadFrames - index)
+                    if (ReloadFrames >= player.GetCurrentGun().ReloadFrames - index)
                     {
                         if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
                         {
                             if (player.GetCurrentGun().AmmoInStock > 0)
                             {
                                 player.GunState = 3;
-                                reload_frames = pressed_r ? -1 : 0;
+                                ReloadFrames = PressedR ? -1 : 0;
                                 Controller.ReloadClip();
                             }
-                            if (cancelReload || player.GetCurrentGun().AmmoInStock == 0 || player.GetCurrentGun().AmmoCount == player.GetCurrentGun().CartridgesClip)
+                            if (CancelReload || player.GetCurrentGun().AmmoInStock == 0 || player.GetCurrentGun().AmmoCount == player.GetCurrentGun().CartridgesClip)
                             {
-                                cancelReload = false;
-                                pressed_r = false;
+                                CancelReload = false;
+                                PressedR = false;
                                 player.CanShoot = true;
                                 reload_timer.Stop();
-                                reload_frames = 0;
+                                ReloadFrames = 0;
                                 return;
                             }
                         }
                         else
                         {
                             player.GunState = player.MoveStyle;
-                            pressed_r = false;
+                            PressedR = false;
                             player.CanShoot = true;
                             Controller.ReloadClip();
                             reload_timer.Stop();
-                            reload_frames = 0;
+                            ReloadFrames = 0;
                             return;
                         }
                     }
                     else if (player.GetCurrentGun().ReloadFrames > 1) player.GunState++;
-                    reload_frames++;
+                    ReloadFrames++;
                     if (player.GetCurrentGun() is Shotgun)
                         Controller.PlayGameSound(GunsSoundsDict[player.GetCurrentGun().GetType()][player.GetCurrentGun().GetLevel(), 3]);
                 }
                 else
                 {
-                    cancelReload = false;
-                    pressed_r = false;
-                    reload_frames = 0;
+                    CancelReload = false;
+                    PressedR = false;
+                    ReloadFrames = 0;
                     reload_timer.Stop();
                 }
             }
@@ -1387,7 +1389,7 @@ namespace SLIL
         {
             if (SLILDisplay == null) return;
             if (!raycast.Enabled && SLILDisplay.Screen != null) SLILDisplay.Screen = null;
-            bool shouldShowCursor = StartShopOpen || !GameStarted || ShopOpen || ShowInventory || console_panel.Visible || (active && !GameStarted) || Paused;
+            bool shouldShowCursor = StartShopOpen || !GameStarted || ShopOpen || ShowInventory || ConsolePanel.Visible || (active && !GameStarted) || Paused;
             if (shouldShowCursor != isCursorVisible)
             {
                 if (shouldShowCursor)
@@ -1468,7 +1470,7 @@ namespace SLIL
             player.GunState = player.MoveStyle;
             player.CanShoot = true;
             shotgun_pull_timer.Stop();
-            reload_frames = 0;
+            ReloadFrames = 0;
             if (player.GetCurrentGun().AmmoCount == 0)
                 reload_timer.Start();
         }
@@ -1570,15 +1572,15 @@ namespace SLIL
             if (e.KeyCode == Keys.Escape)
             {
                 if (ShopOpen) HideShop();
-                else if (console_panel.Visible)
+                else if (ConsolePanel.Visible)
                 {
-                    scope[scope_type] = GetScope(scope[scope_type]);
-                    h_scope[scope_type] = GetScope(h_scope[scope_type]);
-                    scope_shotgun[scope_type] = GetScope(scope_shotgun[scope_type]);
-                    h_scope_shotgun[scope_type] = GetScope(h_scope_shotgun[scope_type]);
-                    console_panel.Visible = false;
+                    Scope[ScopeType] = GetScope(Scope[ScopeType]);
+                    HScope[ScopeType] = GetScope(HScope[ScopeType]);
+                    ScopeShotgun[ScopeType] = GetScope(ScopeShotgun[ScopeType]);
+                    HScopeShotgun[ScopeType] = GetScope(HScopeShotgun[ScopeType]);
+                    ConsolePanel.Visible = false;
                     mouse_timer.Start();
-                    console_panel.ClearCommand();
+                    ConsolePanel.ClearCommand();
                     SLILDisplay.Focus();
                     int x = SLILDisplay.PointToScreen(Point.Empty).X + (SLILDisplay.Width / 2);
                     int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
@@ -1592,7 +1594,7 @@ namespace SLIL
             }
             if (GameStarted && !Paused)
             {
-                if (!console_panel.Visible && !ShopOpen && !player.BlockInput)
+                if (!ConsolePanel.Visible && !ShopOpen && !player.BlockInput)
                 {
                     if (e.KeyCode == Bind.Run) RunKeyPressed = true;
                     if (e.KeyCode == Bind.Forward)
@@ -1613,7 +1615,7 @@ namespace SLIL
                             if (player.UseItem) return;
                             if (player.GetCurrentGun().AmmoCount != player.GetCurrentGun().CartridgesClip && player.GetCurrentGun().AmmoInStock > 0)
                             {
-                                pressed_r = true;
+                                PressedR = true;
                                 player.CanShoot = false;
                                 player.Aiming = false;
                                 int sound = 1;
@@ -1693,29 +1695,29 @@ namespace SLIL
                 }
                 if (!Controller.IsMultiplayer() && !Controller.InBackrooms() && e.KeyCode == Keys.Oemtilde && !ShopOpen && MainMenu.ConsoleEnabled)
                 {
-                    console_panel.Visible = !console_panel.Visible;
+                    ConsolePanel.Visible = !ConsolePanel.Visible;
                     ShowMap = false;
-                    if (console_panel.Visible)
+                    if (ConsolePanel.Visible)
                     {
                         mouse_timer.Stop();
-                        console_panel.player = GetPlayer();
-                        console_panel.ClearCommand();
-                        console_panel.console.Focus();
-                        console_panel.BringToFront();
+                        ConsolePanel.player = GetPlayer();
+                        ConsolePanel.ClearCommand();
+                        ConsolePanel.console.Focus();
+                        ConsolePanel.BringToFront();
                     }
                     else
                     {
                         mouse_timer.Start();
-                        console_panel.ClearCommand();
+                        ConsolePanel.ClearCommand();
                         SLILDisplay.Focus();
                         int x = SLILDisplay.PointToScreen(Point.Empty).X + (SLILDisplay.Width / 2);
                         int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
                         Cursor.Position = new Point(x, y);
                     }
-                    scope[scope_type] = GetScope(scope[scope_type]);
-                    h_scope[scope_type] = GetScope(h_scope[scope_type]);
-                    scope_shotgun[scope_type] = GetScope(scope_shotgun[scope_type]);
-                    h_scope_shotgun[scope_type] = GetScope(h_scope_shotgun[scope_type]);
+                    Scope[ScopeType] = GetScope(Scope[ScopeType]);
+                    HScope[ScopeType] = GetScope(HScope[ScopeType]);
+                    ScopeShotgun[ScopeType] = GetScope(ScopeShotgun[ScopeType]);
+                    HScopeShotgun[ScopeType] = GetScope(HScopeShotgun[ScopeType]);
                 }
             }
         }
@@ -1771,7 +1773,7 @@ namespace SLIL
                 CloseInventory();
                 return;
             }
-            if (GameStarted && !Paused && !console_panel.Visible && !ShopOpen)
+            if (GameStarted && !Paused && !ConsolePanel.Visible && !ShopOpen)
             {
                 if (e.KeyCode == Bind.Screenshot) DoScreenshot();
                 if ((e.KeyCode == Bind.Show_map_0 || e.KeyCode == Bind.Show_map_1) && !player.BlockInput)
@@ -2009,7 +2011,7 @@ namespace SLIL
 
         private void Display_MouseMove(object sender, MouseEventArgs e)
         {
-            if (GameStarted && active && !console_panel.Visible && !shop_panel.Visible)
+            if (GameStarted && active && !ConsolePanel.Visible && !shop_panel.Visible)
             {
                 Player player = GetPlayer();
                 if (player == null || player.BlockMouse) return;
@@ -2086,7 +2088,7 @@ namespace SLIL
                     {
                         HoldLMB = true;
                         if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1 && reload_timer.Enabled)
-                            cancelReload = true;
+                            CancelReload = true;
                         else if (!reload_timer.Enabled && !mouse_hold_timer.Enabled && player.CanShoot && player.GetCurrentGun().CanShoot)
                         {
                             if (Shoot(player)) mouse_hold_timer.Start();
@@ -3159,16 +3161,16 @@ namespace SLIL
                 if (resolution == 0)
                 {
                     if (player.GetCurrentGun() is Shotgun)
-                        graphicsWeapon.DrawImage(scope_shotgun[scope_type], 0, 0, WEAPON.Width, WEAPON.Height);
+                        graphicsWeapon.DrawImage(ScopeShotgun[ScopeType], 0, 0, WEAPON.Width, WEAPON.Height);
                     else
-                        graphicsWeapon.DrawImage(scope[scope_type], 0, 0, WEAPON.Width, WEAPON.Height);
+                        graphicsWeapon.DrawImage(Scope[ScopeType], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
                 else
                 {
                     if (player.GetCurrentGun() is Shotgun)
-                        graphicsWeapon.DrawImage(h_scope_shotgun[scope_type], 0, 0, WEAPON.Width, WEAPON.Height);
+                        graphicsWeapon.DrawImage(HScopeShotgun[ScopeType], 0, 0, WEAPON.Width, WEAPON.Height);
                     else
-                        graphicsWeapon.DrawImage(h_scope[scope_type], 0, 0, WEAPON.Width, WEAPON.Height);
+                        graphicsWeapon.DrawImage(HScope[ScopeType], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
             }
             if (player.GetCurrentGun().ShowHitScope && scope_hit != null)
@@ -3676,7 +3678,7 @@ namespace SLIL
                 player.GunState = 1;
                 player.Aiming = false;
                 player.CanShoot = false;
-                burst_shots = 0;
+                BurstShots = 0;
                 if (player.GetCurrentGun().FireType == FireTypes.Single)
                 {
                     BulletRayCasting();
@@ -3691,7 +3693,7 @@ namespace SLIL
                 if (player.GetCurrentGun() is Pistol || player.GetCurrentGun() is Shotgun)
                     player.GunState = 3;
                 player.Aiming = false;
-                pressed_r = true;
+                PressedR = true;
                 reload_timer.Start();
                 if (player.GetCurrentGun() is Shotgun && player.GetCurrentGun().Level != Levels.LV1)
                     return false;
@@ -3971,22 +3973,22 @@ namespace SLIL
                     shotgun_pull_timer.Interval = shotgun.PullTime;
                 if (player.GetCurrentGun() is Gnome)
                 {
-                    prev_ost = ost_index;
+                    PrevOst = OstIndex;
                     ChangeOst(6);
                 }
-                else if (prev_ost != ost_index)
+                else if (PrevOst != OstIndex)
                 {
                     if (player.CuteMode)
                     {
-                        if (ost_index != 7)
+                        if (OstIndex != 7)
                             ChangeOst(7);
                     }
                     else if (Controller.InBackrooms())
                     {
-                        if (ost_index != 8)
+                        if (OstIndex != 8)
                             ChangeOst(8);
                     }
-                    else ChangeOst(prev_ost);
+                    else ChangeOst(PrevOst);
                 }
             }
         }
@@ -4026,9 +4028,9 @@ namespace SLIL
                         resizedImage.Save(fileStream, ImageFormat.Png);
                 }
                 screenEffects.Add(new ScreenShot(BUFFER.Clone(new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), BUFFER.PixelFormat)));
-                console_panel.Log($"Screenshot successfully created and saved to path:\n<{path}<", true, true, Color.Lime);
+                ConsolePanel.Log($"Screenshot successfully created and saved to path:\n<{path}<", true, true, Color.Lime);
             }
-            else console_panel.Log("Error: BUFFER is null. Cannot take screenshot.", true, true, Color.Red);
+            else ConsolePanel.Log("Error: BUFFER is null. Cannot take screenshot.", true, true, Color.Red);
 
             Controller.PlayGameSound(screenshot);
         }
@@ -4046,7 +4048,7 @@ namespace SLIL
         private Image GetScope(Image scope)
         {
             Bitmap bmp = new Bitmap(scope);
-            Color color = GetScopeColor(scope_color);
+            Color color = GetScopeColor(ScopeColor);
             for (int x = 0; x < bmp.Width; x++)
             {
                 for (int y = 0; y < bmp.Height; y++)
@@ -4103,18 +4105,18 @@ namespace SLIL
         {
             Controller.RestartGame();
             Player player = GetPlayer();
-            if (console_panel == null)
+            if (ConsolePanel == null)
             {
-                console_panel = new ConsolePanel()
+                ConsolePanel = new ConsolePanel()
                 {
                     Dock = DockStyle.Fill,
                     Visible = false,
                     player = player,
                     Entities = Controller.GetEntities()
                 };
-                console_panel.Log("SLIL console *v1.6*\nType \"-HELP-\" for a list of commands...", false, false, Color.Lime);
-                console_panel.Log("\n\nEnter the command: ", false, false, Color.Lime);
-                Controls.Add(console_panel);
+                ConsolePanel.Log("SLIL console *v1.6*\nType \"-HELP-\" for a list of commands...", false, false, Color.Lime);
+                ConsolePanel.Log("\n\nEnter the command: ", false, false, Color.Lime);
+                Controls.Add(ConsolePanel);
                 SLILDisplay = new Display() { Size = Size, Dock = DockStyle.Fill, TabStop = false };
                 SLILDisplay.MouseDown += new MouseEventHandler(Display_MouseDown);
                 SLILDisplay.MouseUp += new MouseEventHandler(Display_MouseUp);
@@ -4164,7 +4166,7 @@ namespace SLIL
             fps_timer.Stop();
             ShowMap = false;
             shop_panel.Visible = false;
-            console_panel.Visible = false;
+            ConsolePanel.Visible = false;
             SLILDisplay.Screen = null;
             SLILDisplay.Refresh();
             GameStarted = false;
@@ -4178,7 +4180,6 @@ namespace SLIL
                 ShopToDefault();
                 game_over_panel.Visible = true;
                 game_over_panel.BringToFront();
-                Controller.PlayGameSound(game_over);
             }
             else ShopToDefault();
         }
@@ -4188,10 +4189,10 @@ namespace SLIL
             map = null;
             SLILDisplay.Screen = null;
             PreviousTime = DateTime.Now.TimeOfDay.TotalSeconds;
-            scope[scope_type] = GetScope(scope[scope_type]);
-            h_scope[scope_type] = GetScope(h_scope[scope_type]);
-            scope_shotgun[scope_type] = GetScope(scope_shotgun[scope_type]);
-            h_scope_shotgun[scope_type] = GetScope(h_scope_shotgun[scope_type]);
+            Scope[ScopeType] = GetScope(Scope[ScopeType]);
+            HScope[ScopeType] = GetScope(HScope[ScopeType]);
+            ScopeShotgun[ScopeType] = GetScope(ScopeShotgun[ScopeType]);
+            HScopeShotgun[ScopeType] = GetScope(HScopeShotgun[ScopeType]);
             SLILDisplay.Refresh();
             int x = SLILDisplay.PointToScreen(Point.Empty).X + (SLILDisplay.Width / 2);
             int y = SLILDisplay.PointToScreen(Point.Empty).Y + (SLILDisplay.Height / 2);
@@ -4212,8 +4213,8 @@ namespace SLIL
                 }
                 else if (!player.CuteMode)
                 {
-                    prev_ost = rand.Next(ost.Length - 5);
-                    ChangeOst(prev_ost);
+                    PrevOst = rand.Next(ost.Length - 5);
+                    ChangeOst(PrevOst);
                 }
                 else ChangeOst(7);
             }
@@ -4264,7 +4265,6 @@ namespace SLIL
             hungry?.Stop();
             step?.Stop();
             transport_step?.Stop();
-            game_over?.Stop();
             draw?.Stop();
             buy?.Stop();
             wall?.Stop();
@@ -4725,15 +4725,15 @@ namespace SLIL
         private void CuteMode()
         {
             Player player = GetPlayer();
-            if (player.CuteMode && ost_index != 7)
+            if (player.CuteMode && OstIndex != 7)
             {
-                prev_ost = ost_index;
+                PrevOst = OstIndex;
                 ChangeOst(7);
             }
-            else if (ost_index == 7)
+            else if (OstIndex == 7)
             {
-                prev_ost = rand.Next(ost.Length - 5);
-                ChangeOst(prev_ost);
+                PrevOst = rand.Next(ost.Length - 5);
+                ChangeOst(PrevOst);
             }
         }
 

@@ -23,7 +23,7 @@ namespace SLIL.Classes
         internal int Frames { get; set; }
         internal bool HasStaticAnimation { get; set; }
         internal bool HasSpriteRotation { get; set; }
-        protected readonly Random rand;
+        protected readonly Random Rand;
 
         protected abstract int GetEntityID();
 
@@ -36,7 +36,7 @@ namespace SLIL.Classes
             ID = maxEntityID;
             maxEntityID++;
             EntityID = this.GetEntityID();
-            rand = new Random();
+            Rand = new Random(Guid.NewGuid().GetHashCode());
             VMove = this.GetVMove();
             Frames = 24;
             EntityWidth = this.GetEntityWidth();
@@ -54,7 +54,7 @@ namespace SLIL.Classes
         {
             ID = maxEntityID;
             EntityID = this.GetEntityID();
-            rand = new Random();
+            Rand = new Random(Guid.NewGuid().GetHashCode());
             VMove = this.GetVMove();
             Frames = 24;
             Texture = this.GetTexture();
@@ -172,7 +172,7 @@ namespace SLIL.Classes
             MovesInARow = this.GetMovesInARow();
             NumberOfMovesLeft = MovesInARow;
             HP = MaxHP;
-            A = rand.NextDouble();
+            A = Rand.NextDouble();
             MapWidth = mapWidth;
             DeathSound = -1;
         }
@@ -209,7 +209,7 @@ namespace SLIL.Classes
                 NumberOfMovesLeft--;
             else
             {
-                A = rand.NextDouble() * (Math.PI * 2);
+                A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
             IntX = (int)X;
@@ -223,25 +223,25 @@ namespace SLIL.Classes
             if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
             {
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                A = rand.NextDouble() * (Math.PI * 2);
+                A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
             if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
             {
                 tempX += EntityWidth / 2 - (tempX % 1);
-                A = rand.NextDouble() * (Math.PI * 2);
+                A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
             if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
             {
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                A = rand.NextDouble() * (Math.PI * 2);
+                A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
             if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
             {
                 tempY += EntityWidth / 2 - (tempY % 1);
-                A = rand.NextDouble() * (Math.PI * 2);
+                A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
             X = tempX;
@@ -512,9 +512,9 @@ namespace SLIL.Classes
             HP = 2.5;
         }
 
-        internal void SetMoneyChance(Random r)
+        internal void SetMoneyChance()
         {
-            if (r.NextDouble() <= MoneyChance)
+            if (Rand.NextDouble() <= MoneyChance)
                 BoxWithMoney = true;
         }
 
@@ -542,7 +542,7 @@ namespace SLIL.Classes
         internal Transport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
         internal Transport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
-        private void Init() => A = rand.NextDouble();
+        private void Init() => A = Rand.NextDouble();
 
         internal bool DealDamage(double damage)
         {
@@ -554,7 +554,7 @@ namespace SLIL.Classes
 
     internal abstract class Explosions : GameObject
     {
-        internal int ShooterID;
+        internal bool CanBrakeDoors = false;
         internal bool CanHitOnlyPlayer = false;
         internal int MinDamage { get; set; }
         internal int MaxDamage { get; set; }
@@ -709,6 +709,42 @@ namespace SLIL.Classes
             HitDistance = 1.75;
             CanHitOnlyPlayer = true;
             base.SetAnimations(2, 2);
+        }
+    }
+
+    internal class BarrelExplosion : Explosions
+    {
+        protected override int GetEntityID() => 30;
+        protected override double GetEntityWidth() => 0.4;
+
+        internal BarrelExplosion(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        internal BarrelExplosion(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 27;
+            MinDamage = 35;
+            MaxDamage = 50;
+            HitDistance = 3.15;
+            CanBrakeDoors = true;
+            base.SetAnimations(2, 2);
+        }
+    }
+
+    internal class AmmoBox : GameObject
+    {
+        internal Type WeaponType;
+
+        protected override int GetEntityID() => 31;
+        protected override double GetEntityWidth() => 0.4;
+
+        internal AmmoBox(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        internal AmmoBox(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 44;
+            base.AnimationsToStatic();
         }
     }
 
@@ -874,7 +910,7 @@ namespace SLIL.Classes
             Texture = 16;
             DeathSound = 4;
             MoneyChance = 0.25;
-            SetMoneyChance(new Random());
+            SetMoneyChance();
             base.AnimationsToStatic();
         }
     }
@@ -891,7 +927,7 @@ namespace SLIL.Classes
             Texture = 17;
             DeathSound = 4;
             MoneyChance = 0.75;
-            SetMoneyChance(new Random());
+            SetMoneyChance();
             base.AnimationsToStatic();
         }
     }

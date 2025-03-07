@@ -30,297 +30,271 @@ namespace SLIL.Classes
         StepEscape_1,
     }
 
-    internal readonly struct TextureKey
-    {
-        internal int Id { get; }
-        internal SpriteStates State { get; }
-
-        internal TextureKey(int id, SpriteStates state)
-        {
-            Id = id;
-            State = state;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is TextureKey)) return false;
-            TextureKey other = (TextureKey)obj;
-            return Id == other.Id && State == other.State;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + Id.GetHashCode();
-                hash = hash * 23 + State.GetHashCode();
-                return hash;
-            }
-        }
-    }
-
     internal class TextureCache
     {
-        private Dictionary<TextureKey, Image> textures = new Dictionary<TextureKey, Image>()
+        private Dictionary<(int, SpriteStates), Image> textures = new Dictionary<(int, SpriteStates), Image>()
         {
             //Wall
-            { new TextureKey(4, SpriteStates.Static), Properties.Resources.wall },
+            { (4, SpriteStates.Static), Properties.Resources.wall },
             //Door
-            { new TextureKey(5, SpriteStates.Static), Properties.Resources.door },
+            { (5, SpriteStates.Static), Properties.Resources.door },
             //ShopDoor
-            { new TextureKey(6, SpriteStates.Static), Properties.Resources.shop_door },
+            { (6, SpriteStates.Static), Properties.Resources.shop_door },
             //Floor
-            { new TextureKey(7, SpriteStates.Static), Properties.Resources.floor },
+            { (7, SpriteStates.Static), Properties.Resources.floor },
             //Celling
-            { new TextureKey(8, SpriteStates.Static), Properties.Resources.ceiling },
+            { (8, SpriteStates.Static), Properties.Resources.ceiling },
             //Zombie
-            { new TextureKey(9, SpriteStates.StepForward_0), Properties.Resources.enemy_0 },
-            { new TextureKey(9, SpriteStates.StepForward_1), Properties.Resources.enemy_0_1 },
-            { new TextureKey(9, SpriteStates.DeadBody), Properties.Resources.enemy_0_Dead },
+            { (9, SpriteStates.StepForward_0), Properties.Resources.enemy_0 },
+            { (9, SpriteStates.StepForward_1), Properties.Resources.enemy_0_1 },
+            { (9, SpriteStates.DeadBody), Properties.Resources.enemy_0_Dead },
             //Dog
-            { new TextureKey(10, SpriteStates.StepForward_0), Properties.Resources.enemy_1 },
-            { new TextureKey(10, SpriteStates.StepForward_1), Properties.Resources.enemy_1_1 },
-            { new TextureKey(10, SpriteStates.DeadBody), Properties.Resources.enemy_1_Dead },
+            { (10, SpriteStates.StepForward_0), Properties.Resources.enemy_1 },
+            { (10, SpriteStates.StepForward_1), Properties.Resources.enemy_1_1 },
+            { (10, SpriteStates.DeadBody), Properties.Resources.enemy_1_Dead },
             //Ogr
-            { new TextureKey(11, SpriteStates.StepForward_0), Properties.Resources.enemy_2 },
-            { new TextureKey(11, SpriteStates.StepForward_1), Properties.Resources.enemy_2_1 },
-            { new TextureKey(11, SpriteStates.DeadBody), Properties.Resources.enemy_2_Dead },
+            { (11, SpriteStates.StepForward_0), Properties.Resources.enemy_2 },
+            { (11, SpriteStates.StepForward_1), Properties.Resources.enemy_2_1 },
+            { (11, SpriteStates.DeadBody), Properties.Resources.enemy_2_Dead },
             //Bat
-            { new TextureKey(12, SpriteStates.StepForward_0), Properties.Resources.enemy_3 },
-            { new TextureKey(12, SpriteStates.StepForward_1), Properties.Resources.enemy_3_1 },
-            { new TextureKey(12, SpriteStates.DeadBody), Properties.Resources.enemy_3_Dead },
+            { (12, SpriteStates.StepForward_0), Properties.Resources.enemy_3 },
+            { (12, SpriteStates.StepForward_1), Properties.Resources.enemy_3_1 },
+            { (12, SpriteStates.DeadBody), Properties.Resources.enemy_3_Dead },
             //Teleport
-            { new TextureKey(13, SpriteStates.StepForward_0), Properties.Resources.teleport_0 },
-            { new TextureKey(13, SpriteStates.StepForward_1), Properties.Resources.teleport_1 },
+            { (13, SpriteStates.StepForward_0), Properties.Resources.teleport_0 },
+            { (13, SpriteStates.StepForward_1), Properties.Resources.teleport_1 },
             //ShopMan
-            { new TextureKey(14, SpriteStates.Static), Properties.Resources.shop_man_0 },
-            { new TextureKey(14, SpriteStates.FlashlightBlinded), Properties.Resources.shop_man_1 },
+            { (14, SpriteStates.Static), Properties.Resources.shop_man_0 },
+            { (14, SpriteStates.FlashlightBlinded), Properties.Resources.shop_man_1 },
             //HittingTheWall
-            { new TextureKey(15, SpriteStates.StepForward_0), Properties.Resources.hit_0 },
-            { new TextureKey(15, SpriteStates.StepForward_1), Properties.Resources.hit_1 },
+            { (15, SpriteStates.StepForward_0), Properties.Resources.hit_0 },
+            { (15, SpriteStates.StepForward_1), Properties.Resources.hit_1 },
             //Box
-            { new TextureKey(16, SpriteStates.Static), Properties.Resources.box },
-            { new TextureKey(16, SpriteStates.DeadBody), Properties.Resources.box_broken },
+            { (16, SpriteStates.Static), Properties.Resources.box },
+            { (16, SpriteStates.DeadBody), Properties.Resources.box_broken },
             //Barrel
-            { new TextureKey(17, SpriteStates.Static), Properties.Resources.barrel },
-            { new TextureKey(17, SpriteStates.DeadBody), Properties.Resources.barrel_broken },
+            { (17, SpriteStates.Static), Properties.Resources.barrel },
+            { (17, SpriteStates.DeadBody), Properties.Resources.barrel_broken },
             //Vine
-            { new TextureKey(18, SpriteStates.Static), Properties.Resources.vine },
+            { (18, SpriteStates.Static), Properties.Resources.vine },
             //Lamp
-            { new TextureKey(19, SpriteStates.Static), Properties.Resources.lamp },
+            { (19, SpriteStates.Static), Properties.Resources.lamp },
             //WallWithSing
-            { new TextureKey(20, SpriteStates.Static), Properties.Resources.wall_with_sing },
+            { (20, SpriteStates.Static), Properties.Resources.wall_with_sing },
             //Bike
-            { new TextureKey(21, SpriteStates.Static), Properties.Resources.bike_forward },
-            { new TextureKey(21, SpriteStates.StopForward), Properties.Resources.bike_forward },
-            { new TextureKey(21, SpriteStates.StopBack), Properties.Resources.bike_back },
-            { new TextureKey(21, SpriteStates.StopLeft), Properties.Resources.bike_left },
-            { new TextureKey(21, SpriteStates.StopRight), Properties.Resources.bike_right },
+            { (21, SpriteStates.Static), Properties.Resources.bike_forward },
+            { (21, SpriteStates.StopForward), Properties.Resources.bike_forward },
+            { (21, SpriteStates.StopBack), Properties.Resources.bike_back },
+            { (21, SpriteStates.StopLeft), Properties.Resources.bike_left },
+            { (21, SpriteStates.StopRight), Properties.Resources.bike_right },
             //SillyCat
-            { new TextureKey(22, SpriteStates.StepForward_0), Properties.Resources.pet_cat_0 },
-            { new TextureKey(22, SpriteStates.StepForward_1), Properties.Resources.pet_cat_1 },
-            { new TextureKey(22, SpriteStates.StopForward), Properties.Resources.pet_cat_2 },
-            { new TextureKey(22, SpriteStates.FlashlightBlinded), Properties.Resources.pet_cat_3 },
+            { (22, SpriteStates.StepForward_0), Properties.Resources.pet_cat_0 },
+            { (22, SpriteStates.StepForward_1), Properties.Resources.pet_cat_1 },
+            { (22, SpriteStates.StopForward), Properties.Resources.pet_cat_2 },
+            { (22, SpriteStates.FlashlightBlinded), Properties.Resources.pet_cat_3 },
             //GreenGnome
-            { new TextureKey(23, SpriteStates.StepForward_0), Properties.Resources.pet_gnome_0 },
-            { new TextureKey(23, SpriteStates.StepForward_1), Properties.Resources.pet_gnome_1 },
-            { new TextureKey(23, SpriteStates.FlashlightBlinded), Properties.Resources.pet_gnome_2 },
+            { (23, SpriteStates.StepForward_0), Properties.Resources.pet_gnome_0 },
+            { (23, SpriteStates.StepForward_1), Properties.Resources.pet_gnome_1 },
+            { (23, SpriteStates.FlashlightBlinded), Properties.Resources.pet_gnome_2 },
             //EnergyDrink
-            { new TextureKey(24, SpriteStates.Static), Properties.Resources.pet_energy_drink_0 },
+            { (24, SpriteStates.Static), Properties.Resources.pet_energy_drink_0 },
             //Pyro
-            { new TextureKey(25, SpriteStates.StepForward_0), Properties.Resources.pet_pyro_0 },
-            { new TextureKey(25, SpriteStates.StepForward_1), Properties.Resources.pet_pyro_1 },
-            { new TextureKey(25, SpriteStates.FlashlightBlinded), Properties.Resources.pet_pyro_3 },
+            { (25, SpriteStates.StepForward_0), Properties.Resources.pet_pyro_0 },
+            { (25, SpriteStates.StepForward_1), Properties.Resources.pet_pyro_1 },
+            { (25, SpriteStates.FlashlightBlinded), Properties.Resources.pet_pyro_3 },
             //RpgRocket
-            { new TextureKey(26, SpriteStates.StepForward_0), Properties.Resources.rpg_rocket_0 },
-            { new TextureKey(26, SpriteStates.StepForward_1), Properties.Resources.rpg_rocket_1 },
+            { (26, SpriteStates.StepForward_0), Properties.Resources.rpg_rocket_0 },
+            { (26, SpriteStates.StepForward_1), Properties.Resources.rpg_rocket_1 },
             //RpgExplosion
-            { new TextureKey(27, SpriteStates.StepForward_0), Properties.Resources.rpg_explosion_0 },
-            { new TextureKey(27, SpriteStates.StepForward_1), Properties.Resources.rpg_explosion_1 },
+            { (27, SpriteStates.StepForward_0), Properties.Resources.rpg_explosion_0 },
+            { (27, SpriteStates.StepForward_1), Properties.Resources.rpg_explosion_1 },
             //PlayerDeadBody
-            { new TextureKey(28, SpriteStates.Static), Properties.Resources.player_Dead },
-            { new TextureKey(28, SpriteStates.DeadBody), Properties.Resources.player_Dead },
+            { (28, SpriteStates.Static), Properties.Resources.player_Dead },
+            { (28, SpriteStates.DeadBody), Properties.Resources.player_Dead },
             //BackWall
-            { new TextureKey(29, SpriteStates.Static), Properties.Resources.back_wall },
+            { (29, SpriteStates.Static), Properties.Resources.back_wall },
             //BackCelling
-            { new TextureKey(30, SpriteStates.Static), Properties.Resources.back_ceiling },
+            { (30, SpriteStates.Static), Properties.Resources.back_ceiling },
             //BackFloor
-            { new TextureKey(31, SpriteStates.Static), Properties.Resources.back_floor },
+            { (31, SpriteStates.Static), Properties.Resources.back_floor },
             //BackroomsTeleport
-            { new TextureKey(32, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
-            { new TextureKey(32, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
+            { (32, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
+            { (32, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
             //Covering
-            { new TextureKey(33, SpriteStates.Static), Properties.Resources. fake_teleport_0},
-            { new TextureKey(33, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
-            { new TextureKey(33, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_0 },
-            { new TextureKey(33, SpriteStates.DeadBody), Properties.Resources.fake_teleport_0 },
+            { (33, SpriteStates.Static), Properties.Resources. fake_teleport_0},
+            { (33, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
+            { (33, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_0 },
+            { (33, SpriteStates.DeadBody), Properties.Resources.fake_teleport_0 },
             //VoidTeleport
-            { new TextureKey(34, SpriteStates.StepForward_0), Properties.Resources.empty_teleport_0 },
-            { new TextureKey(34, SpriteStates.StepForward_1), Properties.Resources.empty_teleport_1 },
+            { (34, SpriteStates.StepForward_0), Properties.Resources.empty_teleport_0 },
+            { (34, SpriteStates.StepForward_1), Properties.Resources.empty_teleport_1 },
             //VoidStalker
-            { new TextureKey(35, SpriteStates.Static), Properties.Resources.empty_teleport_0 },
+            { (35, SpriteStates.Static), Properties.Resources.empty_teleport_0 },
             //Stalker
-            { new TextureKey(36, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
-            { new TextureKey(36, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
+            { (36, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
+            { (36, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
             //Shooter
-            { new TextureKey(37, SpriteStates.StepForward_0), Properties.Resources.player },
-            { new TextureKey(37, SpriteStates.StepForward_1), Properties.Resources.player_1 },
-            { new TextureKey(37, SpriteStates.DeadBody), Properties.Resources.player_Dead },
-            { new TextureKey(37, SpriteStates.Aiming), Properties.Resources. player_aiming},
-            { new TextureKey(37, SpriteStates.Shooted), Properties.Resources.player_shooted },
-            { new TextureKey(37, SpriteStates.StepEscape_0), Properties.Resources.player_stoped },
-            { new TextureKey(37, SpriteStates.StepEscape_1), Properties.Resources.player_stoped },
+            { (37, SpriteStates.StepForward_0), Properties.Resources.player },
+            { (37, SpriteStates.StepForward_1), Properties.Resources.player_1 },
+            { (37, SpriteStates.DeadBody), Properties.Resources.player_Dead },
+            { (37, SpriteStates.Aiming), Properties.Resources. player_aiming},
+            { (37, SpriteStates.Shooted), Properties.Resources.player_shooted },
+            { (37, SpriteStates.StepEscape_0), Properties.Resources.player_stoped },
+            { (37, SpriteStates.StepEscape_1), Properties.Resources.player_stoped },
             //VoidWall
-            { new TextureKey(38, SpriteStates.Static), Properties.Resources.void_wall },
+            { (38, SpriteStates.Static), Properties.Resources.void_wall },
             //VoidFloor
-            { new TextureKey(39, SpriteStates.Static), Properties.Resources.void_floor },
+            { (39, SpriteStates.Static), Properties.Resources.void_floor },
             //VoidCelling
-            { new TextureKey(40, SpriteStates.Static), Properties.Resources. void_ceiling},
+            { (40, SpriteStates.Static), Properties.Resources. void_ceiling},
             //LostSoul
-            { new TextureKey(41, SpriteStates.StepForward_0), Properties.Resources. lost_soul_0},
-            { new TextureKey(41, SpriteStates.StepForward_1), Properties.Resources. lost_soul_1},
-            { new TextureKey(41, SpriteStates.DeadBody), Properties.Resources.missing },
-            { new TextureKey(41, SpriteStates.Aiming), Properties.Resources. lost_soul_shoot},
-            { new TextureKey(41, SpriteStates.Shooted), Properties.Resources. lost_soul_shoot},
-            { new TextureKey(41, SpriteStates.StepEscape_0), Properties.Resources.lost_soul_escaping_0 },
-            { new TextureKey(41, SpriteStates.StepEscape_1), Properties.Resources.lost_soul_escaping_1 },
+            { (41, SpriteStates.StepForward_0), Properties.Resources. lost_soul_0},
+            { (41, SpriteStates.StepForward_1), Properties.Resources. lost_soul_1},
+            { (41, SpriteStates.DeadBody), Properties.Resources.missing },
+            { (41, SpriteStates.Aiming), Properties.Resources. lost_soul_shoot},
+            { (41, SpriteStates.Shooted), Properties.Resources. lost_soul_shoot},
+            { (41, SpriteStates.StepEscape_0), Properties.Resources.lost_soul_escaping_0 },
+            { (41, SpriteStates.StepEscape_1), Properties.Resources.lost_soul_escaping_1 },
             //SoulClot
-            { new TextureKey(42, SpriteStates.StepForward_0), Properties.Resources. rpg_rocket_0},
-            { new TextureKey(42, SpriteStates.StepForward_1), Properties.Resources. rpg_rocket_1},
+            { (42, SpriteStates.StepForward_0), Properties.Resources. rpg_rocket_0},
+            { (42, SpriteStates.StepForward_1), Properties.Resources. rpg_rocket_1},
             //ExplodingBarrel
-            { new TextureKey(43, SpriteStates.StepForward_0), Properties.Resources. exploding_barrel_0},
-            { new TextureKey(43, SpriteStates.StepForward_1), Properties.Resources. exploding_barrel_1},
+            { (43, SpriteStates.StepForward_0), Properties.Resources. exploding_barrel_0},
+            { (43, SpriteStates.StepForward_1), Properties.Resources. exploding_barrel_1},
+            //AmmoBox
+            { (44, SpriteStates.Static), Properties.Resources. missing},
         };
-        private Dictionary<TextureKey, Image> cute_textures = new Dictionary<TextureKey, Image>()
+        private Dictionary<(int , SpriteStates), Image> cute_textures = new Dictionary<(int, SpriteStates), Image>()
         {
             //Wall
-            { new TextureKey(4, SpriteStates.Static), Properties.Resources.c_wall },
+            { (4, SpriteStates.Static), Properties.Resources.c_wall },
             //Door
-            { new TextureKey(5, SpriteStates.Static), Properties.Resources.c_door },
+            { (5, SpriteStates.Static), Properties.Resources.c_door },
             //ShopDoor
-            { new TextureKey(6, SpriteStates.Static), Properties.Resources.c_shop_door },
+            { (6, SpriteStates.Static), Properties.Resources.c_shop_door },
             //Floor
-            { new TextureKey(7, SpriteStates.Static), Properties.Resources.c_floor },
+            { (7, SpriteStates.Static), Properties.Resources.c_floor },
             //Celling
-            { new TextureKey(8, SpriteStates.Static), Properties.Resources.c_ceiling },
+            { (8, SpriteStates.Static), Properties.Resources.c_ceiling },
             //Zombie
-            { new TextureKey(9, SpriteStates.StepForward_0), Properties.Resources.c_enemy_0 },
-            { new TextureKey(9, SpriteStates.StepForward_1), Properties.Resources.c_enemy_0_1 },
-            { new TextureKey(9, SpriteStates.DeadBody), Properties.Resources.c_enemy_0_Dead },
+            { (9, SpriteStates.StepForward_0), Properties.Resources.c_enemy_0 },
+            { (9, SpriteStates.StepForward_1), Properties.Resources.c_enemy_0_1 },
+            { (9, SpriteStates.DeadBody), Properties.Resources.c_enemy_0_Dead },
             //Dog
-            { new TextureKey(10, SpriteStates.StepForward_0), Properties.Resources.c_enemy_1 },
-            { new TextureKey(10, SpriteStates.StepForward_1), Properties.Resources.c_enemy_1_1 },
-            { new TextureKey(10, SpriteStates.DeadBody), Properties.Resources.c_enemy_1_Dead },
+            { (10, SpriteStates.StepForward_0), Properties.Resources.c_enemy_1 },
+            { (10, SpriteStates.StepForward_1), Properties.Resources.c_enemy_1_1 },
+            { (10, SpriteStates.DeadBody), Properties.Resources.c_enemy_1_Dead },
             //Ogr
-            { new TextureKey(11, SpriteStates.StepForward_0), Properties.Resources.c_enemy_2 },
-            { new TextureKey(11, SpriteStates.StepForward_1), Properties.Resources.c_enemy_2_1 },
-            { new TextureKey(11, SpriteStates.DeadBody), Properties.Resources.c_enemy_2_Dead },
+            { (11, SpriteStates.StepForward_0), Properties.Resources.c_enemy_2 },
+            { (11, SpriteStates.StepForward_1), Properties.Resources.c_enemy_2_1 },
+            { (11, SpriteStates.DeadBody), Properties.Resources.c_enemy_2_Dead },
             //Bat
-            { new TextureKey(12, SpriteStates.StepForward_0), Properties.Resources.c_enemy_3 },
-            { new TextureKey(12, SpriteStates.StepForward_1), Properties.Resources.c_enemy_3_1 },
-            { new TextureKey(12, SpriteStates.DeadBody), Properties.Resources.c_enemy_3_Dead },
+            { (12, SpriteStates.StepForward_0), Properties.Resources.c_enemy_3 },
+            { (12, SpriteStates.StepForward_1), Properties.Resources.c_enemy_3_1 },
+            { (12, SpriteStates.DeadBody), Properties.Resources.c_enemy_3_Dead },
             //Teleport
-            { new TextureKey(13, SpriteStates.StepForward_0), Properties.Resources.c_teleport_0 },
-            { new TextureKey(13, SpriteStates.StepForward_1), Properties.Resources.c_teleport_1 },
+            { (13, SpriteStates.StepForward_0), Properties.Resources.c_teleport_0 },
+            { (13, SpriteStates.StepForward_1), Properties.Resources.c_teleport_1 },
             //ShopMan
-            { new TextureKey(14, SpriteStates.Static), Properties.Resources.shop_man_0 },
-            { new TextureKey(14, SpriteStates.FlashlightBlinded), Properties.Resources.shop_man_1 },
+            { (14, SpriteStates.Static), Properties.Resources.shop_man_0 },
+            { (14, SpriteStates.FlashlightBlinded), Properties.Resources.shop_man_1 },
             //HittingTheWall
-            { new TextureKey(15, SpriteStates.StepForward_0), Properties.Resources.hit_0 },
-            { new TextureKey(15, SpriteStates.StepForward_1), Properties.Resources.hit_1 },
+            { (15, SpriteStates.StepForward_0), Properties.Resources.hit_0 },
+            { (15, SpriteStates.StepForward_1), Properties.Resources.hit_1 },
             //Box
-            { new TextureKey(16, SpriteStates.Static), Properties.Resources.box },
-            { new TextureKey(16, SpriteStates.DeadBody), Properties.Resources.box_broken },
+            { (16, SpriteStates.Static), Properties.Resources.box },
+            { (16, SpriteStates.DeadBody), Properties.Resources.box_broken },
             //Barrel
-            { new TextureKey(17, SpriteStates.Static), Properties.Resources.barrel },
-            { new TextureKey(17, SpriteStates.DeadBody), Properties.Resources.barrel_broken },
+            { (17, SpriteStates.Static), Properties.Resources.barrel },
+            { (17, SpriteStates.DeadBody), Properties.Resources.barrel_broken },
             //Vine
-            { new TextureKey(18, SpriteStates.Static), Properties.Resources.c_vine },
+            { (18, SpriteStates.Static), Properties.Resources.c_vine },
             //Lamp
-            { new TextureKey(19, SpriteStates.Static), Properties.Resources.lamp },
+            { (19, SpriteStates.Static), Properties.Resources.lamp },
             //WallWithSing
-            { new TextureKey(20, SpriteStates.Static), Properties.Resources.wall_with_sing },
+            { (20, SpriteStates.Static), Properties.Resources.wall_with_sing },
             //Bike
-            { new TextureKey(21, SpriteStates.Static), Properties.Resources.bike_forward },
-            { new TextureKey(21, SpriteStates.StopForward), Properties.Resources.bike_forward },
-            { new TextureKey(21, SpriteStates.StopBack), Properties.Resources.bike_back },
-            { new TextureKey(21, SpriteStates.StopLeft), Properties.Resources.bike_left },
-            { new TextureKey(21, SpriteStates.StopRight), Properties.Resources.bike_right },
+            { (21, SpriteStates.Static), Properties.Resources.bike_forward },
+            { (21, SpriteStates.StopForward), Properties.Resources.bike_forward },
+            { (21, SpriteStates.StopBack), Properties.Resources.bike_back },
+            { (21, SpriteStates.StopLeft), Properties.Resources.bike_left },
+            { (21, SpriteStates.StopRight), Properties.Resources.bike_right },
             //SillyCat
-            { new TextureKey(22, SpriteStates.StepForward_0), Properties.Resources.pet_cat_0 },
-            { new TextureKey(22, SpriteStates.StepForward_1), Properties.Resources.pet_cat_1 },
-            { new TextureKey(22, SpriteStates.StopForward), Properties.Resources.pet_cat_2 },
-            { new TextureKey(22, SpriteStates.FlashlightBlinded), Properties.Resources.pet_cat_3 },
+            { (22, SpriteStates.StepForward_0), Properties.Resources.pet_cat_0 },
+            { (22, SpriteStates.StepForward_1), Properties.Resources.pet_cat_1 },
+            { (22, SpriteStates.StopForward), Properties.Resources.pet_cat_2 },
+            { (22, SpriteStates.FlashlightBlinded), Properties.Resources.pet_cat_3 },
             //GreenGnome
-            { new TextureKey(23, SpriteStates.StepForward_0), Properties.Resources.pet_gnome_0 },
-            { new TextureKey(23, SpriteStates.StepForward_1), Properties.Resources.pet_gnome_1 },
-            { new TextureKey(23, SpriteStates.FlashlightBlinded), Properties.Resources.pet_gnome_2 },
+            { (23, SpriteStates.StepForward_0), Properties.Resources.pet_gnome_0 },
+            { (23, SpriteStates.StepForward_1), Properties.Resources.pet_gnome_1 },
+            { (23, SpriteStates.FlashlightBlinded), Properties.Resources.pet_gnome_2 },
             //EnergyDrink
-            { new TextureKey(24, SpriteStates.Static), Properties.Resources.pet_energy_drink_0 },
+            { (24, SpriteStates.Static), Properties.Resources.pet_energy_drink_0 },
             //Pyro
-            { new TextureKey(25, SpriteStates.StepForward_0), Properties.Resources.pet_pyro_0 },
-            { new TextureKey(25, SpriteStates.StepForward_1), Properties.Resources.pet_pyro_1 },
-            { new TextureKey(25, SpriteStates.FlashlightBlinded), Properties.Resources.pet_pyro_3 },
+            { (25, SpriteStates.StepForward_0), Properties.Resources.pet_pyro_0 },
+            { (25, SpriteStates.StepForward_1), Properties.Resources.pet_pyro_1 },
+            { (25, SpriteStates.FlashlightBlinded), Properties.Resources.pet_pyro_3 },
             //RpgRocket
-            { new TextureKey(26, SpriteStates.StepForward_0), Properties.Resources.rpg_rocket_0 },
-            { new TextureKey(26, SpriteStates.StepForward_1), Properties.Resources.rpg_rocket_1 },
+            { (26, SpriteStates.StepForward_0), Properties.Resources.rpg_rocket_0 },
+            { (26, SpriteStates.StepForward_1), Properties.Resources.rpg_rocket_1 },
             //RpgExplosion
-            { new TextureKey(27, SpriteStates.StepForward_0), Properties.Resources.rpg_explosion_0 },
-            { new TextureKey(27, SpriteStates.StepForward_1), Properties.Resources.rpg_explosion_1 },
+            { (27, SpriteStates.StepForward_0), Properties.Resources.rpg_explosion_0 },
+            { (27, SpriteStates.StepForward_1), Properties.Resources.rpg_explosion_1 },
             //PlayerDeadBody
-            { new TextureKey(28, SpriteStates.Static), Properties.Resources.player_Dead },
-            { new TextureKey(28, SpriteStates.DeadBody), Properties.Resources.player_Dead },
+            { (28, SpriteStates.Static), Properties.Resources.player_Dead },
+            { (28, SpriteStates.DeadBody), Properties.Resources.player_Dead },
             //BackWall
-            { new TextureKey(29, SpriteStates.Static), Properties.Resources.back_wall },
+            { (29, SpriteStates.Static), Properties.Resources.back_wall },
             //BackCelling
-            { new TextureKey(30, SpriteStates.Static), Properties.Resources.back_ceiling },
+            { (30, SpriteStates.Static), Properties.Resources.back_ceiling },
             //BackFloor
-            { new TextureKey(31, SpriteStates.Static), Properties.Resources.back_floor },
+            { (31, SpriteStates.Static), Properties.Resources.back_floor },
             //BackroomsTeleport
-            { new TextureKey(32, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
-            { new TextureKey(32, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
+            { (32, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
+            { (32, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
             //Covering
-            { new TextureKey(33, SpriteStates.Static), Properties.Resources. fake_teleport_0},
-            { new TextureKey(33, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
-            { new TextureKey(33, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_0 },
-            { new TextureKey(33, SpriteStates.DeadBody), Properties.Resources.fake_teleport_0 },
+            { (33, SpriteStates.Static), Properties.Resources. fake_teleport_0},
+            { (33, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
+            { (33, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_0 },
+            { (33, SpriteStates.DeadBody), Properties.Resources.fake_teleport_0 },
             //VoidTeleport
-            { new TextureKey(34, SpriteStates.StepForward_0), Properties.Resources.empty_teleport_0 },
-            { new TextureKey(34, SpriteStates.StepForward_1), Properties.Resources.empty_teleport_1 },
+            { (34, SpriteStates.StepForward_0), Properties.Resources.empty_teleport_0 },
+            { (34, SpriteStates.StepForward_1), Properties.Resources.empty_teleport_1 },
             //VoidStalker
-            { new TextureKey(35, SpriteStates.Static), Properties.Resources.empty_teleport_0 },
+            { (35, SpriteStates.Static), Properties.Resources.empty_teleport_0 },
             //Stalker
-            { new TextureKey(36, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
-            { new TextureKey(36, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
+            { (36, SpriteStates.StepForward_0), Properties.Resources.fake_teleport_0 },
+            { (36, SpriteStates.StepForward_1), Properties.Resources.fake_teleport_1 },
             //Shooter
-            { new TextureKey(37, SpriteStates.StepForward_0), Properties.Resources.player },
-            { new TextureKey(37, SpriteStates.StepForward_1), Properties.Resources.player_1 },
-            { new TextureKey(37, SpriteStates.DeadBody), Properties.Resources.player_Dead },
-            { new TextureKey(37, SpriteStates.Aiming), Properties.Resources. player_aiming},
-            { new TextureKey(37, SpriteStates.Shooted), Properties.Resources.player_shooted },
-            { new TextureKey(37, SpriteStates.StepEscape_0), Properties.Resources.player_stoped },
-            { new TextureKey(37, SpriteStates.StepEscape_1), Properties.Resources.player_stoped },
+            { (37, SpriteStates.StepForward_0), Properties.Resources.player },
+            { (37, SpriteStates.StepForward_1), Properties.Resources.player_1 },
+            { (37, SpriteStates.DeadBody), Properties.Resources.player_Dead },
+            { (37, SpriteStates.Aiming), Properties.Resources. player_aiming},
+            { (37, SpriteStates.Shooted), Properties.Resources.player_shooted },
+            { (37, SpriteStates.StepEscape_0), Properties.Resources.player_stoped },
+            { (37, SpriteStates.StepEscape_1), Properties.Resources.player_stoped },
             //VoidWall
-            { new TextureKey(38, SpriteStates.Static), Properties.Resources.void_wall },
+            { (38, SpriteStates.Static), Properties.Resources.void_wall },
             //VoidFloor
-            { new TextureKey(39, SpriteStates.Static), Properties.Resources.void_floor },
+            { (39, SpriteStates.Static), Properties.Resources.void_floor },
             //VoidCelling
-            { new TextureKey(40, SpriteStates.Static), Properties.Resources. void_ceiling},
+            { (40, SpriteStates.Static), Properties.Resources. void_ceiling},
             //LostSoul
-            { new TextureKey(41, SpriteStates.StepForward_0), Properties.Resources. lost_soul_c_0},
-            { new TextureKey(41, SpriteStates.StepForward_1), Properties.Resources. lost_soul_c_1},
-            { new TextureKey(41, SpriteStates.DeadBody), Properties.Resources.missing },
-            { new TextureKey(41, SpriteStates.Aiming), Properties.Resources. lost_soul_c_shoot},
-            { new TextureKey(41, SpriteStates.Shooted), Properties.Resources. lost_soul_c_shoot},
-            { new TextureKey(41, SpriteStates.StepEscape_0), Properties.Resources.lost_soul_c_escaping_0 },
-            { new TextureKey(41, SpriteStates.StepEscape_1), Properties.Resources.lost_soul_c_escaping_1 },
+            { (41, SpriteStates.StepForward_0), Properties.Resources. lost_soul_c_0},
+            { (41, SpriteStates.StepForward_1), Properties.Resources. lost_soul_c_1},
+            { (41, SpriteStates.DeadBody), Properties.Resources.missing },
+            { (41, SpriteStates.Aiming), Properties.Resources. lost_soul_c_shoot},
+            { (41, SpriteStates.Shooted), Properties.Resources. lost_soul_c_shoot},
+            { (41, SpriteStates.StepEscape_0), Properties.Resources.lost_soul_c_escaping_0 },
+            { (41, SpriteStates.StepEscape_1), Properties.Resources.lost_soul_c_escaping_1 },
             //SoulClot
-            { new TextureKey(42, SpriteStates.StepForward_0), Properties.Resources. rpg_rocket_0},
-            { new TextureKey(42, SpriteStates.StepForward_1), Properties.Resources. rpg_rocket_1},
+            { (42, SpriteStates.StepForward_0), Properties.Resources. rpg_rocket_0},
+            { (42, SpriteStates.StepForward_1), Properties.Resources. rpg_rocket_1},
             //ExplodingBarrel
-            { new TextureKey(43, SpriteStates.StepForward_0), Properties.Resources. exploding_barrel_0},
-            { new TextureKey(43, SpriteStates.StepForward_1), Properties.Resources. exploding_barrel_1},
+            { (43, SpriteStates.StepForward_0), Properties.Resources. exploding_barrel_0},
+            { (43, SpriteStates.StepForward_1), Properties.Resources. exploding_barrel_1},
+            //AmmoBox
+            { (44, SpriteStates.Static), Properties.Resources. missing},
         };
         private readonly Color[] COLORS =
         {
@@ -344,18 +318,18 @@ namespace SLIL.Classes
             //void
             Color.FromArgb(0, 0, 0)
         };
-        private Dictionary<TextureKey, Color[,]> textureColorCache;
-        private Dictionary<TextureKey, Color[,]> textureCuteColorCache;
+        private Dictionary<(int, SpriteStates), Color[,]> textureColorCache;
+        private Dictionary<(int, SpriteStates), Color[,]> textureCuteColorCache;
 
         internal async Task LoadTextures(IProgress<int> progress)
         {
-            textureColorCache = new Dictionary<TextureKey, Color[,]>();
-            textureCuteColorCache = new Dictionary<TextureKey, Color[,]>();
+            textureColorCache = new Dictionary<(int, SpriteStates), Color[,]>();
+            textureCuteColorCache = new Dictionary<(int, SpriteStates), Color[,]>();
             int totalTextures = textures.Count + COLORS.Length;
             int processedTextures = 0;
             for (int i = 0; i < COLORS.Length; i++)
             {
-                TextureKey key = new TextureKey(i, SpriteStates.Static);
+                var key = (i, SpriteStates.Static);
                 textureColorCache[key] = new Color[1, 1];
                 textureColorCache[key][0, 0] = COLORS[i];
                 processedTextures++;
@@ -364,7 +338,7 @@ namespace SLIL.Classes
             }
             foreach (var kvp in textures)
             {
-                TextureKey key = kvp.Key;
+                var key = kvp.Key;
                 Image image = kvp.Value;
                 textureColorCache[key] = ProcessImage(image);
                 processedTextures++;
@@ -377,7 +351,7 @@ namespace SLIL.Classes
             processedTextures = 0;
             for (int i = 0; i < CUTE_COLORS.Length; i++)
             {
-                TextureKey key = new TextureKey(i, SpriteStates.Static);
+                var key = (i, SpriteStates.Static);
                 textureCuteColorCache[key] = new Color[1, 1];
                 textureCuteColorCache[key][0, 0] = CUTE_COLORS[i];
                 processedTextures++;
@@ -386,7 +360,7 @@ namespace SLIL.Classes
             }
             foreach (var kvp in cute_textures)
             {
-                TextureKey key = kvp.Key;
+                var key = kvp.Key;
                 Image image = kvp.Value;
                 textureCuteColorCache[key] = ProcessImage(image);
                 processedTextures++;
@@ -422,8 +396,7 @@ namespace SLIL.Classes
                     bytes[0] = pixels[offset];
                     bytes[1] = pixels[offset + 1];
                     bytes[2] = pixels[offset + 2];
-                    if (bytesPerPixel == 4)
-                        bytes[3] = pixels[offset + 3];
+                    if (bytesPerPixel == 4) bytes[3] = pixels[offset + 3];
                     if (bytes[3] <= 50) colors[x, y] = Color.Transparent;
                     else colors[x, y] = Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
                 }
@@ -434,20 +407,18 @@ namespace SLIL.Classes
         internal bool IsTransparent(int textureId, SpriteStates spriteState, int x, int y, bool cuteMode)
         {
             var colorCache = cuteMode ? textureCuteColorCache : textureColorCache;
-            if (!colorCache.TryGetValue(new TextureKey(textureId, spriteState), out var colors))
+            if (!colorCache.TryGetValue((textureId, spriteState), out var colors))
                 return true;
-            Color color = colors[x, y];
-            return color.A <= 50;
+            return colors[x, y].A <= 50;
         }
 
         internal Color GetTextureColor(int textureId, SpriteStates spriteState, int x, int y, int blackout, bool cuteMode)
         {
             if (blackout == 100) return cuteMode ? CUTE_COLORS[1] : COLORS[1];
             var colorCache = cuteMode ? textureCuteColorCache : textureColorCache;
-            if (!colorCache.TryGetValue(new TextureKey(textureId, spriteState), out var colors))
+            if (!colorCache.TryGetValue((textureId, spriteState), out var colors))
                 return Color.Transparent;
-            Color color = colors[x, y];
-            return AdjustColor(color, blackout, cuteMode);
+            return AdjustColor(colors[x, y], blackout, cuteMode);
         }
 
         private static Color AdjustColor(Color color, int blackout, bool lighten)
