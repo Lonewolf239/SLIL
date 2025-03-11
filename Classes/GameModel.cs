@@ -134,7 +134,6 @@ namespace SLIL.Classes
             foreach (Entity ent in Entities)
             {
                 if (ent is Player) targetsList.Add(ent);
-                if (ent is Covering) targetsList.Add(ent);
             }
             if (targetsList.Count == 0) return;
             for (int i = 0; i < Entities.Count; i++)
@@ -230,7 +229,7 @@ namespace SLIL.Classes
                                         {
                                             if (npc.DealDamage(damage) && npc is ExplodingBarrel)
                                             {
-                                                PlayGameSound(SLIL.RPGExplosion, (int)npc.Y * MAP_WIDTH + (int)npc.X);
+                                                PlayGameSound(SLIL.BarrelExplosion, (int)npc.Y * MAP_WIDTH + (int)npc.X);
                                                 SpawnExplotion(npc);
                                             }
                                         }
@@ -313,7 +312,7 @@ namespace SLIL.Classes
                                 double shotAY = Math.Cos(range.ShotA);
                                 if (range is Shooter shooter)
                                 {
-                                    PlaySoundHandle(SLIL.GunsSoundsDict[typeof(SniperRifle)][1, 0], shooter.X, shooter.Y);
+                                    PlaySoundHandle(SLIL.SoundsofShotsEnemies[0, ((Player)target).CuteMode ? 1 : 0], shooter.X, shooter.Y);
                                     HashSet<char> impassibleCells = new HashSet<char> { '#', 'D', 'd', 'W', 'S', 'R' };
                                     double shotDistance = 0;
                                     const double shotStep = 0.01d;
@@ -361,7 +360,11 @@ namespace SLIL.Classes
                                         if (hit) break;
                                     }
                                 }
-                                if (range is LostSoul soul) SpawnRockets(soul.X, soul.Y, 1, soul.ShotA);
+                                if (range is LostSoul soul)
+                                {
+                                    PlaySoundHandle(SLIL.SoundsofShotsEnemies[1, ((Player)target).CuteMode ? 1 : 0], soul.X, soul.Y);
+                                    SpawnRockets(soul.X, soul.Y, 1, soul.ShotA);
+                                }
                                 range.DidShot = false;
                                 range.ShotPause = range.TotalShotPause;
                             }
@@ -437,6 +440,7 @@ namespace SLIL.Classes
                                 if (weaponIndex == -1) continue;
                                 int ammo = p.Guns[weaponIndex].CartridgesClip + p.Guns[weaponIndex].AmmoInStock;
                                 if (ammo > p.Guns[weaponIndex].MaxAmmo) continue;
+                                PlayGameSound(SLIL.LiftingAmmoBox, GetCoordinate(p.X, p.Y));
                                 p.Guns[weaponIndex].AmmoInStock = ammo;
                                 Entities.Remove(entity);
                                 i--;
@@ -1766,7 +1770,7 @@ namespace SLIL.Classes
         {
             if (box is ExplodingBarrel barrel)
             {
-                PlayGameSound(SLIL.RPGExplosion, (int)barrel.Y * MAP_WIDTH + (int)barrel.X);
+                PlayGameSound(SLIL.BarrelExplosion, (int)barrel.Y * MAP_WIDTH + (int)barrel.X);
                 SpawnExplotion(barrel);
                 return;
             }

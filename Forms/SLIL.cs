@@ -429,6 +429,20 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("step_run_back_3.wav"), false),
                 new PlaySound(MainMenu.CGFReader.GetFile("step_run_back_4.wav"), false)
             },
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("step_void_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_void_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_void_2.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_void_3.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_void_4.wav"), false)
+            },
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_void_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_void_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_void_2.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_void_3.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("step_run_void_4.wav"), false)
+            },
         };
         internal static PlaySound[] ost = new PlaySound[]
         {
@@ -520,11 +534,30 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box_1.wav"), false),
                 new PlaySound(MainMenu.CGFReader.GetFile("break_box_2.wav"), false)
             },
-            //Player
+            //Shooter
             {
-                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false),
-                new PlaySound(MainMenu.CGFReader.GetFile("break_box.wav"), false)
+                new PlaySound(MainMenu.CGFReader.GetFile("c_shooter_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_shooter_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_shooter_die_2.wav"), false)
+            },
+            //LostSoul
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("c_lost_soul_die_0.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_lost_soul_die_1.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("c_lost_soul_die_2.wav"), false)
+            }
+        };
+        internal static PlaySound[,] SoundsofShotsEnemies = new PlaySound[,]
+        {
+            //Shooter
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("shooter_shot.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("shooter_c_shot.wav"), false)
+            },
+            //LostSoul
+            {
+                new PlaySound(MainMenu.CGFReader.GetFile("lost_soul_shot.wav"), false),
+                new PlaySound(MainMenu.CGFReader.GetFile("lost_soul_c_shot.wav"), false)
             }
         };
         internal static PlaySound Draw = new PlaySound(MainMenu.CGFReader.GetFile("draw.wav"), false),
@@ -535,8 +568,10 @@ namespace SLIL
             LowStamine = new PlaySound(MainMenu.CGFReader.GetFile("low_stamine.wav"), false),
             Starter = new PlaySound(MainMenu.CGFReader.GetFile("starter.wav"), false),
             RPGExplosion = new PlaySound(MainMenu.CGFReader.GetFile("explosion.wav"), false),
+            BarrelExplosion = new PlaySound(MainMenu.CGFReader.GetFile("barrel_explosion.wav"), false),
             BreakdownDoors = new PlaySound(MainMenu.CGFReader.GetFile("breakdown_doors.wav"), false),
-            LiftingAmmoBox = new PlaySound(MainMenu.CGFReader.GetFile("lifting_ammo_box.wav"), false);
+            LiftingAmmoBox = new PlaySound(MainMenu.CGFReader.GetFile("lifting_ammo_box.wav"), false),
+            VoidStalkerScreamer = new PlaySound(MainMenu.CGFReader.GetFile("void_stalker_screamer.wav"), false);
         internal static PlaySound[] Climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
         internal static PlaySound[] Door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
@@ -1131,13 +1166,7 @@ namespace SLIL
             if (player == null) return;
             if (!player.InTransport || player.TRANSPORT == null)
                 transport_step?.Stop();
-            if ((player.MoveSpeed != 0
-                || (player.StrafeSpeed != 0 && !player.InTransport)
-                )
-                && !player.InParkour
-                && !player.Aiming
-                && (step == null || !step.IsPlaying)
-                )
+            if ((player.MoveSpeed != 0 || (player.StrafeSpeed != 0 && !player.InTransport)) && !player.InParkour && !player.Aiming && (step == null || !step.IsPlaying))
             {
                 if (currentIndex >= soundIndices.Count)
                 {
@@ -1171,7 +1200,12 @@ namespace SLIL
                 else
                 {
                     int index = i;
-                    if (Controller.InBackrooms()) index = i + 4;
+                    if (Controller.InBackrooms())
+                    {
+                        if (Controller.GetBackroomsStage() == 0)
+                            index = i + 4;
+                        else index = i + 6;
+                    }
                     else if (player.CuteMode) index = i + 2;
                     step = steps[index, soundIndices[currentIndex]];
                     step.PlayWithWait(Volume);
@@ -2619,7 +2653,7 @@ namespace SLIL
                                     {
                                         if (creature is VoidStalker stalker)
                                         {
-                                            if (stalker.ISeeU()) Controller.PlayGameSound(Screenshot);
+                                            if (stalker.ISeeU()) Controller.PlayGameSound(VoidStalkerScreamer);
                                         }
                                         int coords = (int)entity.Y * mapWidth + (int)entity.X;
                                         if (!enemiesCoords.Contains(coords))
@@ -4222,21 +4256,10 @@ namespace SLIL
             foreach (var hitSound in hit) hitSound?.Stop();
             foreach (var climbSound in Climb) climbSound?.Stop();
             foreach (var doorSound in Door) doorSound?.Stop();
-            for (int i = 0; i < steps.GetLength(0); i++)
-            {
-                for (int j = 0; j < steps.GetLength(1); j++)
-                    steps[i, j]?.Stop();
-            }
-            for (int i = 0; i < DeathSounds.GetLength(0); i++)
-            {
-                for (int j = 0; j < DeathSounds.GetLength(1); j++)
-                    DeathSounds[i, j]?.Stop();
-            }
-            for (int i = 0; i < CuteDeathSounds.GetLength(0); i++)
-            {
-                for (int j = 0; j < CuteDeathSounds.GetLength(1); j++)
-                    CuteDeathSounds[i, j]?.Stop();
-            }
+            StopTwoDimensionalSoundsArray(steps);
+            StopTwoDimensionalSoundsArray(DeathSounds);
+            StopTwoDimensionalSoundsArray(CuteDeathSounds);
+            StopTwoDimensionalSoundsArray(SoundsofShotsEnemies);
             foreach (var key in GunsSoundsDict.Keys)
             {
                 var soundDict = GunsSoundsDict[key];
@@ -4264,8 +4287,19 @@ namespace SLIL
             LowStamine?.Stop();
             Starter?.Stop();
             RPGExplosion?.Stop();
+            BarrelExplosion?.Stop();
             BreakdownDoors?.Stop();
             LiftingAmmoBox?.Stop();
+            VoidStalkerScreamer?.Stop();
+        }
+
+        private static void StopTwoDimensionalSoundsArray(PlaySound[,] array)
+        {
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                    array[i, j]?.Stop();
+            }
         }
 
         private void ShopToDefault()
