@@ -33,19 +33,19 @@ namespace SLIL
         internal int CustomMazeHeight, CustomMazeWidth;
         internal bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
         internal bool ShowDebugSpeed = false, ShowPositongDebug = false, ShowGameDebug = false;
-        internal bool inv_y = false, inv_x = false;
+        internal bool InvY = false, InvX = false;
         internal static int difficulty = 1;
         private int inDebug = 0;
         internal static double LookSpeed = 2.5;
         internal StringBuilder CUSTOM_MAP = new StringBuilder();
         internal double CUSTOM_X, CUSTOM_Y;
-        private readonly Random rand;
-        private const int texWidth = 128;
+        private readonly Random Rand;
+        private const int TexWidth = 128;
         private readonly int SCREEN_HEIGHT = 128, SCREEN_WIDTH = 228;
-        private int center_x = 0, center_y = 0, cursor_x = 0, cursor_y = 0;
+        private int CenterX = 0, CenterY = 0, CursorX = 0, CursorY = 0;
         private readonly int[] DISPLAY_SIZE = { 228, 128 };
-        internal static int resolution = 0, smoothing = 1, interface_size = 2;
-        private readonly SmoothingMode[] smoothingModes =
+        internal static int Resolution = 0, Smoothing = 1, InterfaceSize = 2;
+        private readonly SmoothingMode[] SmoothingModes =
         {
             SmoothingMode.None,
             SmoothingMode.AntiAlias,
@@ -53,19 +53,19 @@ namespace SLIL
             SmoothingMode.HighSpeed
         };
         private float StageOpacity = 1;
-        internal static bool hight_fps = true;
+        internal static bool HightFps = true;
         private const double FOV = Math.PI / 3;
         private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
         private Bitmap SCREEN, WEAPON, BUFFER;
         private ImageAttributes imageAttributes, imageCuteAttributes;
-        private readonly Font[,] consolasFont =
+        private readonly Font[,] ConsolasFont =
         {
             { new Font("Consolas", 8F), new Font("Consolas", 14F), new Font("Consolas", 20F) },
             { new Font("Consolas", 8F), new Font("Consolas", 16F), new Font("Consolas", 20F) },
             { new Font("Consolas", 10F), new Font("Consolas", 18F), new Font("Consolas", 20F) },
             { new Font("Consolas", 12F), new Font("Consolas", 18F), new Font("Consolas", 20F) },
         };
-        private readonly SolidBrush whiteBrush = new SolidBrush(Color.White), blackBrush = new SolidBrush(Color.Black);
+        private readonly SolidBrush WhiteBrush = new SolidBrush(Color.White), blackBrush = new SolidBrush(Color.Black);
         private readonly StringFormat rightToLeft = new StringFormat() { FormatFlags = StringFormatFlags.DirectionRightToLeft };
         private Graphics graphicsWeapon;
         private int fps;
@@ -82,6 +82,10 @@ namespace SLIL
             { typeof(BloodEffect2), Properties.Resources.blood_effect_1 },
             { typeof(BloodEffect3), Properties.Resources.blood_effect_2 },
             { typeof(BloodEffect4), Properties.Resources.blood_effect_3 },
+            { typeof(CuteBloodEffect1), Properties.Resources.blood_effect_0 },
+            { typeof(CuteBloodEffect2), Properties.Resources.blood_effect_1 },
+            { typeof(CuteBloodEffect3), Properties.Resources.blood_effect_2 },
+            { typeof(CuteBloodEffect4), Properties.Resources.blood_effect_3 },
         };
         internal static readonly Dictionary<Type, Image[]> IconDict = new Dictionary<Type, Image[]>
         {
@@ -657,7 +661,7 @@ namespace SLIL
             PlaySoundHandle = PlaySoundInvoker;
             Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
             Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
-            rand = new Random(Guid.NewGuid().GetHashCode());
+            Rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
             screenEffects = new List<ScreenEffects>();
             SetParameters();
@@ -673,7 +677,7 @@ namespace SLIL
             InitPlayerHandle = InitPlayerInvoker;
             PlaySoundHandle = PlaySoundInvoker;
             Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
-            rand = new Random(Guid.NewGuid().GetHashCode());
+            Rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
             screenEffects = new List<ScreenEffects>();
             SetParameters();
@@ -699,7 +703,7 @@ namespace SLIL
             PlaySoundHandle = PlaySoundInvoker;
             //CloseFormHandle = CloseFormInvoker;
             //Controller = new GameController(adress, port, password, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
-            rand = new Random(Guid.NewGuid().GetHashCode());
+            Rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
             screenEffects = new List<ScreenEffects>();
             SetParameters();
@@ -766,16 +770,16 @@ namespace SLIL
                     Controller.SetEnemyDamageOffset(1);
                     break;
             }
-            interface_size = MainMenu.interface_size;
-            smoothing = MainMenu.smoothing;
+            InterfaceSize = MainMenu.interface_size;
+            Smoothing = MainMenu.smoothing;
             ScopeType = MainMenu.scope_type;
             ScopeColor = MainMenu.scope_color;
-            hight_fps = MainMenu.hight_fps;
+            HightFps = MainMenu.hight_fps;
             ShowFPS = MainMenu.ShowFPS;
             ShowMiniMap = MainMenu.ShowMiniMap;
             LookSpeed = MainMenu.LOOK_SPEED;
-            inv_x = MainMenu.inv_x;
-            inv_y = MainMenu.inv_y;
+            InvX = MainMenu.inv_x;
+            InvY = MainMenu.inv_y;
             Volume = MainMenu.Volume;
             EffectsVolume = MainMenu.EffectsVolume;
             MusicVolume = MainMenu.MusicVolume;
@@ -787,8 +791,8 @@ namespace SLIL
             WEAPON?.Dispose();
             BUFFER?.Dispose();
             graphicsWeapon?.Dispose();
-            center_x = SCREEN_WIDTH / 2;
-            center_y = SCREEN_HEIGHT / 2;
+            CenterX = SCREEN_WIDTH / 2;
+            CenterY = SCREEN_HEIGHT / 2;
             SCREEN = new Bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
             WEAPON = new Bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
             BUFFER = new Bitmap(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -816,9 +820,9 @@ namespace SLIL
             imageCuteAttributes.SetColorMatrix(colorCuteMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             graphicsWeapon = Graphics.FromImage(WEAPON);
             graphicsWeapon.InterpolationMode = InterpolationMode.NearestNeighbor;
-            graphicsWeapon.SmoothingMode = smoothingModes[smoothing];
+            graphicsWeapon.SmoothingMode = SmoothingModes[Smoothing];
             SLILDisplay.ResizeImage(DISPLAY_SIZE[0], DISPLAY_SIZE[1]);
-            raycast.Interval = hight_fps ? 15 : 30;
+            raycast.Interval = HightFps ? 15 : 30;
         }
 
         //  #====      Invokers     ====#
@@ -1171,7 +1175,7 @@ namespace SLIL
             {
                 if (currentIndex >= soundIndices.Count)
                 {
-                    soundIndices = soundIndices.OrderBy(x => rand.Next()).ToList();
+                    soundIndices = soundIndices.OrderBy(x => Rand.Next()).ToList();
                     currentIndex = 0;
                 }
                 int i = player.PlayerMoveStyle == Directions.RUN || player.Fast ? 1 : 0;
@@ -1463,11 +1467,21 @@ namespace SLIL
             if (player.Hit)
             {
                 player.Hit = false;
-                int dice = rand.Next(100);
-                if (dice < 25) screenEffects.Add(new BloodEffect1());
-                else if (dice < 50) screenEffects.Add(new BloodEffect2());
-                else if (dice < 75) screenEffects.Add(new BloodEffect3());
-                else screenEffects.Add(new BloodEffect4());
+                int dice = Rand.Next(100);
+                if (player.CuteMode)
+                {
+                    if (dice < 25) screenEffects.Add(new CuteBloodEffect1());
+                    else if (dice < 50) screenEffects.Add(new CuteBloodEffect2());
+                    else if (dice < 75) screenEffects.Add(new CuteBloodEffect3());
+                    else screenEffects.Add(new CuteBloodEffect4());
+                }
+                else
+                {
+                    if (dice < 25) screenEffects.Add(new BloodEffect1());
+                    else if (dice < 50) screenEffects.Add(new BloodEffect2());
+                    else if (dice < 75) screenEffects.Add(new BloodEffect3());
+                    else screenEffects.Add(new BloodEffect4());
+                }
             }
             shop_money.Text = $"$: {player.Money}";
             try
@@ -2055,11 +2069,11 @@ namespace SLIL
                 if (player == null || player.BlockMouse) return;
                 double x = SLILDisplay.Width / 2, y = SLILDisplay.Height / 2;
                 double X = e.X - x, Y = e.Y - y;
-                cursor_x = (int)X; cursor_y = (int)Y;
+                CursorX = (int)X; CursorY = (int)Y;
                 if (!player.InSelectingMode)
                 {
-                    int invY = inv_y ? -1 : 1;
-                    int invX = inv_x ? -1 : 1;
+                    int invY = InvY ? -1 : 1;
+                    int invX = InvX ? -1 : 1;
                     double A = -(((X / x) / 10) * LookSpeed) * 2.5;
                     double Look = (((Y / y) * 20) * LookSpeed) * 2.5;
                     Controller.ChangePlayerA(A * invX);
@@ -2621,7 +2635,7 @@ namespace SLIL
                     if (drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH;
                     for (int stripe = drawStartX; stripe < drawEndX; stripe++)
                     {
-                        double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256) / texWidth;
+                        double texX = (double)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * TexWidth / spriteWidth) / 256) / TexWidth;
                         if (!(transformY > 0 && stripe >= 0 && stripe <= SCREEN_WIDTH && transformY < ZBuffer[stripe])) continue;
                         for (int y = drawStartY; y < drawEndY && y < SCREEN_HEIGHT; y++)
                         {
@@ -2858,9 +2872,9 @@ namespace SLIL
         private void DrawTextOnSing(string text)
         {
             RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT - 2 * ScrollPadding);
-            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[2, resolution], SCREEN_WIDTH - 40 - ScrollBarWidth);
+            SizeF textSize = graphicsWeapon.MeasureString(text, ConsolasFont[2, Resolution], SCREEN_WIDTH - 40 - ScrollBarWidth);
             graphicsWeapon.SetClip(textRectangle);
-            graphicsWeapon.DrawString(text, consolasFont[2, resolution], blackBrush, new RectangleF(textRectangle.X, textRectangle.Y - scrollPosition, textRectangle.Width, textSize.Height));
+            graphicsWeapon.DrawString(text, ConsolasFont[2, Resolution], blackBrush, new RectangleF(textRectangle.X, textRectangle.Y - scrollPosition, textRectangle.Width, textSize.Height));
             graphicsWeapon.ResetClip();
             DrawScrollBar(textSize.Height, textRectangle.Height);
         }
@@ -2882,7 +2896,7 @@ namespace SLIL
         {
             string text = GetTextOnSing();
             RectangleF textRectangle = new RectangleF(ScrollPadding, ScrollPadding, SCREEN_WIDTH - 2 * ScrollPadding - ScrollBarWidth, SCREEN_HEIGHT - 2 * ScrollPadding);
-            SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[2, resolution], SCREEN_WIDTH - 40 - ScrollBarWidth);
+            SizeF textSize = graphicsWeapon.MeasureString(text, ConsolasFont[2, Resolution], SCREEN_WIDTH - 40 - ScrollBarWidth);
             float maxScroll = Math.Max(0, textSize.Height - textRectangle.Height);
             scrollPosition = (int)Math.Max(0, Math.Min(scrollPosition + delta, (int)maxScroll));
         }
@@ -3018,11 +3032,11 @@ namespace SLIL
                 graphicsWeapon.SmoothingMode = save1;
                 return;
             }
-            int iconSize = 12 + (2 * interface_size);
-            if (resolution == 1) iconSize *= 2;
-            int size = resolution == 0 ? 1 : 2;
-            int add = resolution == 0 ? 2 : 4;
-            SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), consolasFont[interface_size, resolution]);
+            int iconSize = 12 + (2 * InterfaceSize);
+            if (Resolution == 1) iconSize *= 2;
+            int size = Resolution == 0 ? 1 : 2;
+            int add = Resolution == 0 ? 2 : 4;
+            SizeF moneySize = graphicsWeapon.MeasureString(player.Money.ToString(), ConsolasFont[InterfaceSize, Resolution]);
             graphicsWeapon.Clear(Color.Transparent);
             try
             {
@@ -3035,7 +3049,7 @@ namespace SLIL
                 catch { }
             }
             DrawScreenEffects(player);
-            if (ShowFPS) graphicsWeapon.DrawString($"FPS: {fps}", consolasFont[interface_size, resolution], whiteBrush, 0, 0);
+            if (ShowFPS) graphicsWeapon.DrawString($"FPS: {fps}", ConsolasFont[InterfaceSize, Resolution], WhiteBrush, 0, 0);
             DrawHPIcons(player, iconSize, add);
             DrawPing(iconSize);
             DrawHPAndItemCount(player, iconSize, add);
@@ -3052,7 +3066,7 @@ namespace SLIL
                 }
             }
             graphicsWeapon.SmoothingMode = save;
-            graphicsWeapon.DrawString(player.Money.ToString(), consolasFont[interface_size, resolution], whiteBrush, SCREEN_WIDTH, moneyY, rightToLeft);
+            graphicsWeapon.DrawString(player.Money.ToString(), ConsolasFont[InterfaceSize, Resolution], WhiteBrush, SCREEN_WIDTH, moneyY, rightToLeft);
             graphicsWeapon.DrawImage(Properties.Resources.money, SCREEN_WIDTH - moneySize.Width - iconSize, moneyY, iconSize, iconSize);
             DrawStageTitle(size);
             for (int i = 0; i < player.Effects.Count; i++) DrawDurationEffect(EffectIcon[player.Effects[i].GetType()], iconSize, i, player.Effects[i] is Debaf);
@@ -3068,7 +3082,7 @@ namespace SLIL
                 }
             }
             ShowDebugs(player);
-            if (resolution == 1)
+            if (Resolution == 1)
             {
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
@@ -3179,10 +3193,10 @@ namespace SLIL
                 else if (inDebug == 2) text += "Debug Boss";
                 else if (inDebug == 3) text += "Debug Bike";
                 else if (difficulty == 4) text += "Custom";
-                else text += (Controller.GetStage() + 1).ToString(); SizeF textSize = graphicsWeapon.MeasureString(text, consolasFont[interface_size, resolution + 1]);
-                SolidBrush brush = (SolidBrush)whiteBrush.Clone();
+                else text += (Controller.GetStage() + 1).ToString(); SizeF textSize = graphicsWeapon.MeasureString(text, ConsolasFont[InterfaceSize, Resolution + 1]);
+                SolidBrush brush = (SolidBrush)WhiteBrush.Clone();
                 brush.Color = Color.FromArgb((int)(255 * StageOpacity), brush.Color.R, brush.Color.G, brush.Color.B);
-                graphicsWeapon.DrawString(text, consolasFont[interface_size, resolution + 1], brush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
+                graphicsWeapon.DrawString(text, ConsolasFont[InterfaceSize, Resolution + 1], brush, (WEAPON.Width - textSize.Width) / 2, 30 * size);
             }
         }
 
@@ -3190,7 +3204,7 @@ namespace SLIL
         {
             if (player.GetCurrentGun().ShowScope && !player.IsPetting && !player.InParkour && !player.InTransport && !player.InSelectingMode)
             {
-                if (resolution == 0)
+                if (Resolution == 0)
                 {
                     if (player.GetCurrentGun() is Shotgun)
                         graphicsWeapon.DrawImage(ScopeShotgun[ScopeType], 0, 0, WEAPON.Width, WEAPON.Height);
@@ -3235,7 +3249,7 @@ namespace SLIL
         private void DrawHPAndItemCount(Player player, int iconSize, int add)
         {
             double hp = player.InTransport ? player.TransportHP : player.HP;
-            SizeF hpSize = graphicsWeapon.MeasureString(hp.ToString("0"), consolasFont[interface_size, resolution]);
+            SizeF hpSize = graphicsWeapon.MeasureString(hp.ToString("0"), ConsolasFont[InterfaceSize, Resolution]);
             int ammoIconX = (iconSize + 2) + (int)hpSize.Width + 2;
             int ammoX = ammoIconX + iconSize;
             int itemCount = 0, itemMaxCount = 0;
@@ -3245,21 +3259,21 @@ namespace SLIL
                 itemMaxCount = player.DisposableItem.MaxCount;
             }
             if (!player.InTransport && !Controller.IsMultiplayer())
-                graphicsWeapon.DrawString($"{itemMaxCount}/{itemCount}", consolasFont[interface_size, resolution], whiteBrush, iconSize + 2, SCREEN_HEIGHT - (iconSize * 2) - add);
-            graphicsWeapon.DrawString(hp.ToString("0"), consolasFont[interface_size, resolution], whiteBrush, iconSize + 2, SCREEN_HEIGHT - iconSize - add);
+                graphicsWeapon.DrawString($"{itemMaxCount}/{itemCount}", ConsolasFont[InterfaceSize, Resolution], WhiteBrush, iconSize + 2, SCREEN_HEIGHT - (iconSize * 2) - add);
+            graphicsWeapon.DrawString(hp.ToString("0"), ConsolasFont[InterfaceSize, Resolution], WhiteBrush, iconSize + 2, SCREEN_HEIGHT - iconSize - add);
             if (!player.IsPetting && !player.InParkour && !player.InTransport && player.Guns.Count > 0 && player.GetCurrentGun().ShowAmmo)
             {
                 if (player.GetCurrentGun().ShowAmmoAsNumber)
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammoX, SCREEN_HEIGHT - iconSize - add);
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock + player.GetCurrentGun().AmmoCount}", ConsolasFont[InterfaceSize, Resolution], WhiteBrush, ammoX, SCREEN_HEIGHT - iconSize - add);
                 else
-                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", consolasFont[interface_size, resolution], whiteBrush, ammoX, SCREEN_HEIGHT - iconSize - add);
+                    graphicsWeapon.DrawString($"{player.GetCurrentGun().AmmoInStock}/{player.GetCurrentGun().AmmoCount}", ConsolasFont[InterfaceSize, Resolution], WhiteBrush, ammoX, SCREEN_HEIGHT - iconSize - add);
                 graphicsWeapon.DrawImage(GetAmmoIcon(player.GetCurrentGun().AmmoType), ammoIconX, SCREEN_HEIGHT - iconSize - add, iconSize, iconSize);
             }            
         }
 
         private void DrawPing(int iconSize)
         {
-            SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", consolasFont[interface_size, resolution]);
+            SizeF fpsSize = graphicsWeapon.MeasureString($"FPS: {fps}", ConsolasFont[InterfaceSize, Resolution]);
             if (Controller.IsMultiplayer()) DrawPing(fpsSize, iconSize);
         }
 
@@ -3320,7 +3334,7 @@ namespace SLIL
             else if (ping < 300) connection_status = 2;
             else connection_status = 3;
             graphicsWeapon.DrawImage(ConnectionIcons[connection_status], 2, ShowFPS ? fpsSize.Height : 0, iconSize, iconSize);
-            graphicsWeapon.DrawString($"{ping}ms", consolasFont[interface_size, resolution], whiteBrush, iconSize + 2, ShowFPS ? fpsSize.Height : 0);
+            graphicsWeapon.DrawString($"{ping}ms", ConsolasFont[InterfaceSize, Resolution], WhiteBrush, iconSize + 2, ShowFPS ? fpsSize.Height : 0);
         }
 
         private void ShowDebugs(Player player)
@@ -3370,7 +3384,7 @@ namespace SLIL
                     Controller.GetMaxEntityID(),
                     difficulty
                 );
-            graphicsWeapon.DrawString(debugInfo, consolasFont[0, 0], whiteBrush, 0, 16);
+            graphicsWeapon.DrawString(debugInfo, ConsolasFont[0, 0], WhiteBrush, 0, 16);
             graphicsWeapon.SmoothingMode = save;
         }
 
@@ -3437,7 +3451,7 @@ namespace SLIL
         private Bitmap DrawMiniMap()
         {
             Player player = GetPlayer();
-            int FACTOR = resolution == 1 ? 2 : 1;
+            int FACTOR = Resolution == 1 ? 2 : 1;
             const int MINI_MAP_SIZE = 25;
             const int BORDER_SIZE = 1;
             const int MINI_MAP_DRAW_SIZE = 37;
@@ -3580,8 +3594,8 @@ namespace SLIL
         {
             Player player = GetPlayer();
             if (player == null) return;
-            int x = center_x - (iconSize / 2);
-            int y = center_y - (iconSize / 2);
+            int x = CenterX - (iconSize / 2);
+            int y = CenterY - (iconSize / 2);
             switch (index)
             {
                 case 0: x -= iconSize * 2; break;
@@ -3597,30 +3611,30 @@ namespace SLIL
                 graphicsWeapon.FillEllipse(shadowBrush, shadowRect);
             using (Pen pen = new Pen(isHighlighted ? Color.FromArgb(128, 230, 255) : Color.FromArgb(100, 180, 230), isHighlighted ? 4.5f : 3f))
                 graphicsWeapon.DrawEllipse(pen, circleRect);
-            if (isHighlighted) DrawArrow(cursor_x, cursor_y);
+            if (isHighlighted) DrawArrow(CursorX, CursorY);
             graphicsWeapon.DrawImage(itemImage, x, y, iconSize, iconSize);
         }
 
         private void DrawArrow(int targetX, int targetY)
         {
-            int arrowLength = 8 + (2 * interface_size);
-            if (resolution == 1) arrowLength *= 2;
-            float angle = (float)Math.Atan2(targetY - (center_y - 1), targetX - (center_x - 1));
+            int arrowLength = 8 + (2 * InterfaceSize);
+            if (Resolution == 1) arrowLength *= 2;
+            float angle = (float)Math.Atan2(targetY - (CenterY - 1), targetX - (CenterX - 1));
             PointF arrowTip = new PointF(
-                (center_x - 1) + (float)(arrowLength * Math.Cos(angle)),
-                (center_y - 1) + (float)(arrowLength * Math.Sin(angle))
+                (CenterX - 1) + (float)(arrowLength * Math.Cos(angle)),
+                (CenterY - 1) + (float)(arrowLength * Math.Sin(angle))
             );
             PointF arrowBase1 = new PointF(
-                (center_x - 1) + (float)(arrowLength * 0.7 * Math.Cos(angle + Math.PI / 6)),
-                (center_y - 1) + (float)(arrowLength * 0.7 * Math.Sin(angle + Math.PI / 6))
+                (CenterX - 1) + (float)(arrowLength * 0.7 * Math.Cos(angle + Math.PI / 6)),
+                (CenterY - 1) + (float)(arrowLength * 0.7 * Math.Sin(angle + Math.PI / 6))
             );
             PointF arrowBase2 = new PointF(
-                (center_x - 1) + (float)(arrowLength * 0.7 * Math.Cos(angle - Math.PI / 6)),
-                (center_y - 1) + (float)(arrowLength * 0.7 * Math.Sin(angle - Math.PI / 6))
+                (CenterX - 1) + (float)(arrowLength * 0.7 * Math.Cos(angle - Math.PI / 6)),
+                (CenterY - 1) + (float)(arrowLength * 0.7 * Math.Sin(angle - Math.PI / 6))
             );
             using (Pen arrowPen = new Pen(Color.FromArgb(104, 233, 248), 2.5f))
             {
-                graphicsWeapon.DrawLine(arrowPen, center_x - 1, center_y - 1, arrowTip.X, arrowTip.Y);
+                graphicsWeapon.DrawLine(arrowPen, CenterX - 1, CenterY - 1, arrowTip.X, arrowTip.Y);
                 graphicsWeapon.DrawLine(arrowPen, arrowTip.X, arrowTip.Y, arrowBase1.X, arrowBase1.Y);
                 graphicsWeapon.DrawLine(arrowPen, arrowTip.X, arrowTip.Y, arrowBase2.X, arrowBase2.Y);
             }
@@ -3635,8 +3649,8 @@ namespace SLIL
 
         private void DisplayStamine(Player player, int iconSize, int size)
         {
-            int stamine_width = 40 + (10 * interface_size);
-            if (resolution == 1) stamine_width *= 2;
+            int stamine_width = 40 + (10 * InterfaceSize);
+            if (Resolution == 1) stamine_width *= 2;
             int progress_width = (int)(player.Stamine / player.MaxStamine * (stamine_width - 2));
             int stamine_top = SCREEN_HEIGHT - (iconSize * 2);
             int stamine_left = (SCREEN_WIDTH - (stamine_width + iconSize + 2)) / 2;
@@ -3693,7 +3707,7 @@ namespace SLIL
         private void SetRecoil(Player player)
         {
             RecoilY += player.GetCurrentGun().RecoilY;
-            double recoilX = player.GetCurrentGun().GetRecoilX(rand.NextDouble());
+            double recoilX = player.GetCurrentGun().GetRecoilX(Rand.NextDouble());
             if (recoilX < 0) RecoilLX += (float)(-recoilX);
             else RecoilRX += (float)recoilX;
         }
@@ -3775,13 +3789,13 @@ namespace SLIL
                 int[,] bullet = new int[player.GetCurrentGun().BulletCount, 2];
                 int maxOffset = (int)(shotDistance * 5 * (1 - player.GetCurrentGun().Accuracy));
                 if (player.GetCurrentGun().BulletCount == 1)
-                    bullet = new int[,] { { center_x + rand.Next(-maxOffset, maxOffset), center_y + rand.Next(-maxOffset, maxOffset) } };
+                    bullet = new int[,] { { CenterX + Rand.Next(-maxOffset, maxOffset), CenterY + Rand.Next(-maxOffset, maxOffset) } };
                 else
                 {
                     for (int i = 0; i < player.GetCurrentGun().BulletCount; i++)
                     {
-                        bullet[i, 0] = center_x + rand.Next(-maxOffset, maxOffset);
-                        bullet[i, 1] = center_y + rand.Next(-maxOffset, maxOffset);
+                        bullet[i, 0] = CenterX + Rand.Next(-maxOffset, maxOffset);
+                        bullet[i, 1] = CenterY + Rand.Next(-maxOffset, maxOffset);
                     }
                     if (player.GetCurrentGun() is SubmachineGun && player.GetCurrentGun().Level == Levels.LV3)
                     {
@@ -3859,27 +3873,27 @@ namespace SLIL
                                             if (creature != null)
                                             {
                                                 if (creature.Dead || !creature.CanHit) continue;
-                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                double damage = (double)Rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
                                                 if (Controller.DealDamage(creature, damage))
                                                 {
                                                     if (creature.DeathSound != -1)
                                                     {
                                                         if (player.CuteMode)
-                                                            Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
+                                                            Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
                                                         else
-                                                            Controller.PlayGameSound(DeathSounds[creature.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
+                                                            Controller.PlayGameSound(DeathSounds[creature.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
                                                     }
                                                 }
                                                 if (!player.CuteMode)
                                                 {
-                                                    if (resolution == 0)
+                                                    if (Resolution == 0)
                                                         scope_hit = Properties.Resources.scope_hit;
                                                     else
                                                         scope_hit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
-                                                    if (resolution == 0)
+                                                    if (Resolution == 0)
                                                         scope_hit = Properties.Resources.scope_c_hit;
                                                     else
                                                         scope_hit = Properties.Resources.h_scope_c_hit;
@@ -3890,24 +3904,24 @@ namespace SLIL
                                             else if (entity is Player targetPlayer && entity.ID != player.ID)
                                             {
                                                 if (targetPlayer.Dead) continue;
-                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                double damage = (double)Rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
                                                 if (Controller.DealDamage(targetPlayer, damage * 5))
                                                 {
                                                     if (player.CuteMode)
-                                                        Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                        Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
                                                     else
-                                                        Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                        Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
                                                 }
                                                 if (!player.CuteMode)
                                                 {
-                                                    if (resolution == 0)
+                                                    if (Resolution == 0)
                                                         scope_hit = Properties.Resources.scope_hit;
                                                     else
                                                         scope_hit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
-                                                    if (resolution == 0)
+                                                    if (Resolution == 0)
                                                         scope_hit = Properties.Resources.scope_c_hit;
                                                     else
                                                         scope_hit = Properties.Resources.h_scope_c_hit;
@@ -3918,18 +3932,18 @@ namespace SLIL
                                             else if (entity is Transport transport)
                                             {
                                                 if (transport.TransportHP <= 0) continue;
-                                                double damage = (double)rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
+                                                double damage = (double)Rand.Next((int)(player.GetCurrentGun().MinDamage * 100), (int)(player.GetCurrentGun().MaxDamage * 100)) / 100;
                                                 Controller.DealDamage(transport, damage * 1.5);
                                                 if (!player.CuteMode)
                                                 {
-                                                    if (resolution == 0)
+                                                    if (Resolution == 0)
                                                         scope_hit = Properties.Resources.scope_hit;
                                                     else
                                                         scope_hit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
-                                                    if (resolution == 0)
+                                                    if (Resolution == 0)
                                                         scope_hit = Properties.Resources.scope_c_hit;
                                                     else
                                                         scope_hit = Properties.Resources.h_scope_c_hit;
@@ -4096,9 +4110,9 @@ namespace SLIL
         {
             if (scope_color == 8)
             {
-                int r = rand.Next(125, 200);
-                int g = rand.Next(125, 200);
-                int b = rand.Next(125, 200);
+                int r = Rand.Next(125, 200);
+                int g = Rand.Next(125, 200);
+                int b = Rand.Next(125, 200);
                 return Color.FromArgb(r, g, b);
             }
             else
@@ -4244,7 +4258,7 @@ namespace SLIL
                 }
                 else if (!player.CuteMode)
                 {
-                    PrevOst = rand.Next(ost.Length - 5);
+                    PrevOst = Rand.Next(ost.Length - 5);
                     ChangeOst(PrevOst);
                 }
                 else ChangeOst(7);
@@ -4759,7 +4773,7 @@ namespace SLIL
             }
             else if (OstIndex == 7)
             {
-                PrevOst = rand.Next(ost.Length - 5);
+                PrevOst = Rand.Next(ost.Length - 5);
                 ChangeOst(PrevOst);
             }
         }

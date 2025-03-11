@@ -24,6 +24,11 @@ namespace SLIL.Classes
     internal class BloodEffect3 : BloodEffects { }
     internal class BloodEffect4 : BloodEffects { }
 
+    internal class CuteBloodEffect1 : BloodEffects { }
+    internal class CuteBloodEffect2 : BloodEffects { }
+    internal class CuteBloodEffect3 : BloodEffects { }
+    internal class CuteBloodEffect4 : BloodEffects { }
+
     internal class ScreenShot : ScreenEffects
     {
         internal Image SSImage { get; }
