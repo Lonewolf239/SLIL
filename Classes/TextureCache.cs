@@ -156,7 +156,7 @@ namespace SLIL.Classes
             { (41, SpriteStates.StepEscape_0), Properties.Resources.lost_soul_escaping_0 },
             { (41, SpriteStates.StepEscape_1), Properties.Resources.lost_soul_escaping_1 },
             //SoulClot
-            { (42, SpriteStates.StepForward_0), Properties.Resources.rpg_rocket_0},
+            { (42, SpriteStates.StepForward_0), Properties.Resources.soul_clot_0},
             { (42, SpriteStates.StepForward_1), Properties.Resources.rpg_rocket_1},
             //ExplodingBarrel
             { (43, SpriteStates.StepForward_0), Properties.Resources.exploding_barrel_0},
@@ -167,6 +167,9 @@ namespace SLIL.Classes
             { (45, SpriteStates.Static), Properties.Resources.back_wall},
             //BrokenDoor
             { (46, SpriteStates.Static), Properties.Resources.missing},
+            //SoulExplosion
+            { (47, SpriteStates.StepForward_0), Properties.Resources.soul_explosion_0},
+            { (47, SpriteStates.StepForward_1), Properties.Resources.exploding_barrel_1},
         };
         private Dictionary<(int , SpriteStates), Image> cute_textures = new Dictionary<(int, SpriteStates), Image>()
         {
@@ -292,7 +295,7 @@ namespace SLIL.Classes
             { (41, SpriteStates.StepEscape_0), Properties.Resources.lost_soul_c_escaping_0 },
             { (41, SpriteStates.StepEscape_1), Properties.Resources.lost_soul_c_escaping_1 },
             //SoulClot
-            { (42, SpriteStates.StepForward_0), Properties.Resources.rpg_rocket_0},
+            { (42, SpriteStates.StepForward_0), Properties.Resources.soul_clot_c_0},
             { (42, SpriteStates.StepForward_1), Properties.Resources.rpg_rocket_1},
             //ExplodingBarrel
             { (43, SpriteStates.StepForward_0), Properties.Resources.exploding_barrel_0},
@@ -303,6 +306,9 @@ namespace SLIL.Classes
             { (45, SpriteStates.Static), Properties.Resources.back_wall},
             //BrokenDoor
             { (46, SpriteStates.Static), Properties.Resources.missing},
+            //SoulExplosion
+            { (47, SpriteStates.StepForward_0), Properties.Resources.soul_explosion_c_0},
+            { (47, SpriteStates.StepForward_1), Properties.Resources.exploding_barrel_1},
         };
         private readonly Color[] COLORS =
         {

@@ -1,7 +1,5 @@
 ﻿using Play_Sound;
-using LiteNetLib;
 using System.Text;
-//using LiteNetLib.Utils;
 using System.Collections.Generic;
 
 namespace SLIL.Classes
@@ -444,6 +442,8 @@ namespace SLIL.Classes
             //    return "00:00:00";
             //}
         }
+
+        internal void DidKick() => Game.DidKick(playerID);
 
         internal void DrawItem()
         {

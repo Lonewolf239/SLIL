@@ -1565,6 +1565,10 @@
     <None Include="Images\exploding_barrel_1.png" />
     <None Include="Images\lost_soul_c_Dead.png" />
     <None Include="Images\lost_soul_Dead.png" />
+    <None Include="Images\soul_clot_0.png" />
+    <None Include="Images\soul_clot_c_0.png" />
+    <None Include="Images\soul_explosion_0.png" />
+    <None Include="Images\soul_explosion_c_0.png" />
     <Content Include="SLILCursorDefault.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

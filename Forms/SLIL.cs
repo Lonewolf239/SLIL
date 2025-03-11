@@ -571,7 +571,8 @@ namespace SLIL
             BarrelExplosion = new PlaySound(MainMenu.CGFReader.GetFile("barrel_explosion.wav"), false),
             BreakdownDoors = new PlaySound(MainMenu.CGFReader.GetFile("breakdown_doors.wav"), false),
             LiftingAmmoBox = new PlaySound(MainMenu.CGFReader.GetFile("lifting_ammo_box.wav"), false),
-            VoidStalkerScreamer = new PlaySound(MainMenu.CGFReader.GetFile("void_stalker_screamer.wav"), false);
+            VoidStalkerScreamer = new PlaySound(MainMenu.CGFReader.GetFile("void_stalker_screamer.wav"), false),
+            Kick = new PlaySound(MainMenu.CGFReader.GetFile("kick.wav"), false);
         internal static PlaySound[] Climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
         internal static PlaySound[] Door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
@@ -1820,6 +1821,10 @@ namespace SLIL
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.IsPetting)
                 {
                     if (player.InTransport || player.UseItem || Controller.InBackrooms()) return;
+                    if (e.KeyCode == Bind.Kick)
+                    {
+                        Controller.DidKick();
+                    }
                     if (e.KeyCode == Bind.Flashlight)
                     {
                         if (player.GetCurrentGun() is Flashlight) TakeFlashlight(false);
@@ -2247,15 +2252,9 @@ namespace SLIL
 
         private void GetCoordinateWithoutWall(ref double x, ref double y)
         {
-            List<double> offsets = new List<double>();
-            for (double i = 0; i < 4; i += 0.5)
+            for (double offsetX = -3.5; offsetX <= 3.5; offsetX += 0.5)
             {
-                offsets.Add(i);
-                offsets.Add(-i);
-            }
-            foreach (double offsetX in offsets)
-            {
-                foreach (double offsetY in offsets)
+                for (double offsetY = -3.5; offsetY <= 3.5; offsetY += 0.5)
                 {
                     if (!HasImpassibleCells(GetCoordinate(x + offsetX, y + offsetY)))
                     {
@@ -3418,6 +3417,8 @@ namespace SLIL
             }
             else if (player.InParkour)
                 imageToDraw = Properties.Resources.player_parkour;
+            else if (player.DoesKick)
+                imageToDraw = Properties.Resources.missing;
             else if (player.UseItem)
                 imageToDraw = GunsImagesDict[player.DisposableItem.GetType()][player.DisposableItem.GetLevel(), player.ItemFrame];
             else
@@ -3425,7 +3426,7 @@ namespace SLIL
             int safeXOffset = Math.Max(0, Math.Min((int)xOffset, imageToDraw.Width - WEAPON.Width));
             int safeYOffset = Math.Max(0, Math.Min((int)yOffset, imageToDraw.Height - WEAPON.Height));
             Rectangle sourceRect = new Rectangle(safeXOffset, safeYOffset, WEAPON.Width, WEAPON.Height);
-            if (player.InParkour || player.Aiming)
+            if (player.DoesKick || player.InParkour || player.Aiming)
                 sourceRect.X = sourceRect.Y = 0;
             Rectangle destRect = new Rectangle(0, 0, WEAPON.Width, WEAPON.Height);
             if (sourceRect.Right > imageToDraw.Width) sourceRect.Width = imageToDraw.Width - sourceRect.X;
@@ -4291,6 +4292,7 @@ namespace SLIL
             BreakdownDoors?.Stop();
             LiftingAmmoBox?.Stop();
             VoidStalkerScreamer?.Stop();
+            Kick?.Stop();
         }
 
         private static void StopTwoDimensionalSoundsArray(PlaySound[,] array)

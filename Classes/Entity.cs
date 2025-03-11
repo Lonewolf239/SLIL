@@ -24,10 +24,15 @@ namespace SLIL.Classes
         internal bool HasStaticAnimation { get; set; }
         internal bool HasSpriteRotation { get; set; }
         internal bool CanHitByTransport { get; set; }
+        internal bool MightBeKicked { get; set; }
+        internal bool CanHitByKick { get; set; }
+        internal bool Stunned { get; set; }
+        internal double KnockbackDirection { get; set; }
+        internal double KnockbackPower { get; set; }
+        internal double PowerResetKnockbackPower { get; set; }
         protected readonly Random Rand;
 
         protected abstract int GetEntityID();
-
         protected abstract int GetTexture();
         protected abstract double GetEntityWidth();
         internal virtual int Interaction() => 0;
@@ -47,6 +52,10 @@ namespace SLIL.Classes
             HasStaticAnimation = false;
             HasSpriteRotation = false;
             CanHitByTransport = false;
+            MightBeKicked = false;
+            CanHitByKick = false;
+            Stunned = false;
+            PowerResetKnockbackPower = 0.1;
             X = x;
             Y = y;
             IntX = (int)x;
@@ -67,6 +76,10 @@ namespace SLIL.Classes
             HasStaticAnimation = false;
             HasSpriteRotation = false;
             CanHitByTransport = false;
+            MightBeKicked = false;
+            CanHitByKick = false;
+            Stunned = false;
+            PowerResetKnockbackPower = 0.1;
             X = x;
             Y = y;
             IntX = (int)x;
@@ -85,6 +98,14 @@ namespace SLIL.Classes
             this.X = reader.GetDouble();
             this.Y = reader.GetDouble();
             this.A = reader.GetDouble();
+        }
+
+        internal void KnockbackBlow(double knockbackDirection, double knockbackPower)
+        {
+            if (!MightBeKicked) return;
+            KnockbackDirection = knockbackDirection;
+            KnockbackPower = knockbackPower;
+            Stunned = true;
         }
 
         protected void AnimationsToStatic() => HasStaticAnimation = true;
@@ -217,6 +238,13 @@ namespace SLIL.Classes
             }
             IntX = (int)X;
             IntY = (int)Y;
+            if (KnockbackPower <= 0) Stunned = false;
+            if (Stunned)
+            {
+                newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                KnockbackPower -= PowerResetKnockbackPower;
+            }
             if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                 || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
@@ -275,7 +303,10 @@ namespace SLIL.Classes
         internal NPC(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => RespondsToFlashlight = false;
         internal NPC(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => RespondsToFlashlight = false;
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0) { }
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        {
+            if (Stunned) base.UpdateCoordinates(map, playerX, playerY);
+        }
     }
 
     internal abstract class Pet : Friend
@@ -361,6 +392,13 @@ namespace SLIL.Classes
             newY += Math.Cos(A) * move;
             IntX = (int)X;
             IntY = (int)Y;
+            if (KnockbackPower <= 0) Stunned = false;
+            if (Stunned)
+            {
+                newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                KnockbackPower -= PowerResetKnockbackPower;
+            }
             if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                 || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
@@ -441,6 +479,8 @@ namespace SLIL.Classes
         {
             CanHitByTransport = true;
             CanHit = true;
+            MightBeKicked = true;
+            CanHitByKick = true;
         }
 
         internal void SetDamage(double offset)
@@ -488,6 +528,13 @@ namespace SLIL.Classes
             double tempY = Y;
             newX += Math.Sin(A) * move;
             newY += Math.Cos(A) * move;
+            if (KnockbackPower <= 0) Stunned = false;
+            if (Stunned)
+            {
+                newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                KnockbackPower -= PowerResetKnockbackPower;
+            }
             if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                 || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
@@ -519,6 +566,8 @@ namespace SLIL.Classes
         {
             CanHit = true;
             CanHitByTransport = true;
+            MightBeKicked = true;
+            CanHitByKick = true;
             HP = 2.5;
         }
 
@@ -551,7 +600,12 @@ namespace SLIL.Classes
         internal Transport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
         internal Transport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
 
-        private void Init() => A = Rand.NextDouble();
+        private void Init()
+        {
+            MightBeKicked = true;
+            CanHitByKick = true;
+            A = Rand.NextDouble();
+        }
 
         internal bool DealDamage(double damage)
         {
@@ -715,7 +769,7 @@ namespace SLIL.Classes
 
         private void Init()
         {
-            Texture = 27;
+            Texture = 47;
             MinDamage = 10;
             MaxDamage = 25;
             HitDistance = 1.75;
@@ -756,6 +810,7 @@ namespace SLIL.Classes
         private void Init()
         {
             Texture = 44;
+            MightBeKicked = true;
             base.AnimationsToStatic();
         }
     }
@@ -768,6 +823,7 @@ namespace SLIL.Classes
         private void Init()
         {
             Dead = true;
+            MightBeKicked = true;
             Texture = 28;
             base.AnimationsToStatic();
         }
@@ -1091,6 +1147,13 @@ namespace SLIL.Classes
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
+                if (KnockbackPower <= 0) Stunned = false;
+                if (Stunned)
+                {
+                    newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                    newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                    KnockbackPower -= PowerResetKnockbackPower;
+                }
                 if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                     || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
@@ -1185,6 +1248,13 @@ namespace SLIL.Classes
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
+                if (KnockbackPower <= 0) Stunned = false;
+                if (Stunned)
+                {
+                    newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                    newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                    KnockbackPower -= PowerResetKnockbackPower;
+                }
                 if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                     || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
@@ -1278,6 +1348,13 @@ namespace SLIL.Classes
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
+                if (KnockbackPower <= 0) Stunned = false;
+                if (Stunned)
+                {
+                    newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                    newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                    KnockbackPower -= PowerResetKnockbackPower;
+                }
                 if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                     || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
@@ -1370,12 +1447,18 @@ namespace SLIL.Classes
                 double tempX = X;
                 double tempY = Y;
                 A = angleToPlayer;
-
                 if (ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y)) <= EntityWidth) return;
                 newX += Math.Sin(A) * move;
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
+                if (KnockbackPower <= 0) Stunned = false;
+                if (Stunned)
+                {
+                    newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                    newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                    KnockbackPower -= PowerResetKnockbackPower;
+                }
                 if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                     || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
@@ -1479,6 +1562,13 @@ namespace SLIL.Classes
                 newY += Math.Cos(A) * move;
                 IntX = (int)X;
                 IntY = (int)Y;
+                if (KnockbackPower <= 0) Stunned = false;
+                if (Stunned)
+                {
+                    newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                    newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                    KnockbackPower -= PowerResetKnockbackPower;
+                }
                 if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                     || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                     tempX = newX;
@@ -1665,6 +1755,13 @@ namespace SLIL.Classes
             newY += Math.Cos(A) * move;
             IntX = (int)X;
             IntY = (int)Y;
+            if (KnockbackPower <= 0) Stunned = false;
+            if (Stunned)
+            {
+                newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                KnockbackPower -= PowerResetKnockbackPower;
+            }
             if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                 || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;
@@ -1800,6 +1897,13 @@ namespace SLIL.Classes
             newY += Math.Cos(A) * move;
             IntX = (int)X;
             IntY = (int)Y;
+            if (KnockbackPower <= 0) Stunned = false;
+            if (Stunned)
+            {
+                newX = X + Math.Sin(KnockbackDirection) * (KnockbackPower / 2);
+                newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
+                KnockbackPower -= PowerResetKnockbackPower;
+            }
             if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
                 || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
                 tempX = newX;

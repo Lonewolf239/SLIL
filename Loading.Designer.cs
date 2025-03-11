@@ -142,7 +142,6 @@
             this.Name = "Loading";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Loading...";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Loading_FormClosing);
             this.Load += new System.EventHandler(this.Loading_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Loading_MouseDown);

@@ -7,7 +7,6 @@ using LiteNetLib.Utils;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Org.BouncyCastle.Asn1.X509;
 
 namespace SLIL.Classes
 {
@@ -164,6 +163,8 @@ namespace SLIL.Classes
                                             PlayGameSound(SLIL.DeathSounds[c.DeathSound, rand.Next(0, SLIL.DeathSounds.GetLength(1))], GetCoordinate(c.X, c.Y));
                                     }
                                 }
+                                KickEntity(c, playerOnTransport, 1.2);
+                                playerOnTransport.MoveSpeed = 0.5;
                             }
                         }
                     }
@@ -242,7 +243,8 @@ namespace SLIL.Classes
                             }
                         }
                     }
-                    if (entity is Enemy)
+                    if (entity is Creature creature1 && creature1.Stunned) creature1.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                    else if (entity is Enemy)
                     {
                         if (distance <= 22)
                         {
@@ -1963,6 +1965,70 @@ namespace SLIL.Classes
         {
             TimeSpan timeSpan = TimeSpan.FromSeconds(TotalTime);
             return timeSpan.ToString(@"hh\:mm\:ss");
+        }
+
+        internal void DidKick(int playerID)
+        {
+            Player p = GetPlayer(playerID);
+            if (p == null || p.Stamine < 200) return;
+            if (p.EffectCheck(3)) return;
+            if (p.InTransport) return;
+            PlayGameSound(playerID, SLIL.Kick);
+            p.ReducesStamine(150);
+            p.DoesKick = true;
+            p.Look = 0;
+            p.KickState = 0;
+            p.CanUnblockCamera = false;
+            p.BlockCamera = p.BlockInput = true;
+            p.PlayerMoveStyle = Directions.WALK;
+            p.CanShoot = false;
+            new Thread(() =>
+            {
+                FindEntityForKick(p);
+                Thread.Sleep(150);
+                StopKick(playerID);
+                p.KickState++;
+            }).Start();
+        }
+
+        private void FindEntityForKick(Entity ent)
+        {
+            double distance = 0;
+            double kickX = Math.Sin(ent.A);
+            double kickY = Math.Cos(ent.A);
+            while (distance <= 0.6)
+            {
+                distance += 0.1;
+                double testX = ent.X + kickX * distance;
+                double testY = ent.Y + kickY * distance;
+                for (int i = 0; i < Entities.Count; i++)
+                {
+                    if (Entities[i] is Player || !Entities[i].HasAI) continue;
+                    var entity = Entities[i];
+                    if (!entity.MightBeKicked) continue;
+                    if (ML.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(ent.X, ent.Y)) > 1.5) continue;
+                    if (Math.Abs(entity.X - testX) > 0.5 || Math.Abs(entity.Y - testY) > 0.5) continue;
+                    KickEntity(entity, ent, 0.8);
+                    return;
+                }
+            }
+        }
+
+        private void KickEntity(Entity entity, Entity attacker, double power)
+        {
+            entity.KnockbackBlow(attacker.A, power);
+            if (entity is Creature creature && creature.CanHitByKick)
+                DealDamageFromPlayerToCreature(creature, 1, attacker);
+        }
+
+        private void StopKick(int playerID)
+        {
+            Player p = GetPlayer(playerID);
+            if (p == null) return;
+            p.DoesKick = false;
+            p.BlockInput = false;
+            p.BlockCamera = false;
+            if (!p.InTransport) p.CanShoot = true;
         }
 
         internal void DrawItem(int playerID)

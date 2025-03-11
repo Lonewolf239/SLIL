@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using CGFReader;
-using IniReader;
 using Play_Sound;
 using System.Net;
 using System.Text;
@@ -58,6 +57,7 @@ namespace SLIL
             { "run", Keys.ShiftKey },
             { "climb", Keys.Space },
             { "inventory", Keys.I },
+            { "kick", Keys.C },
         };
         internal static Dictionary<string, Keys> BindControls = new Dictionary<string, Keys>()
         {
@@ -77,6 +77,7 @@ namespace SLIL
             { "run", Keys.ShiftKey },
             { "climb", Keys.Space },
             { "inventory", Keys.I },
+            { "kick", Keys.C },
         };
         internal static int smoothing = 1, scope_type = 0, scope_color = 0, interface_size = 2, difficulty = 2;
         internal static bool hight_fps = true, ShowFPS = false, ShowMiniMap = true, IsTutorial = false;
@@ -221,10 +222,7 @@ namespace SLIL
         {
             using (WebClient client = new WebClient())
             {
-                try
-                {
-                    client.DownloadFile(new Uri(url), outputPath);
-                }
+                try { client.DownloadFile(new Uri(url), outputPath); }
                 catch { }
             }
         }
@@ -274,6 +272,8 @@ namespace SLIL
             mouse_settings.Controls.Add(new Separator());
             mouse_settings.Controls.Add(sensitivity_panel);
             keyboard_settings.Controls.Clear();
+            keyboard_settings.Controls.Add(kick_panel);
+            keyboard_settings.Controls.Add(new Separator());
             keyboard_settings.Controls.Add(inventory_panel);
             keyboard_settings.Controls.Add(new Separator());
             keyboard_settings.Controls.Add(climb_panel);
@@ -359,7 +359,6 @@ namespace SLIL
         {
             if (ChangeControlButton)
             {
-                e.Handled = true;
                 Keys key = e.KeyCode;
                 if (key == Keys.Escape)
                 {
@@ -381,6 +380,7 @@ namespace SLIL
                     press_any_btn_panel.Visible = false;
                     Program.iniReader.SetKey("SLIL", SelectButtonName, key);
                 }
+                e.Handled = true;
             }
         }
 
@@ -462,6 +462,7 @@ namespace SLIL
             BindControls["run"] = Program.iniReader.GetKeys("HOTKEYS", "run", Keys.ShiftKey);
             BindControls["climb"] = Program.iniReader.GetKeys("HOTKEYS", "climb", Keys.Space);
             BindControls["inventory"] = Program.iniReader.GetKeys("HOTKEYS", "inventory", Keys.I);
+            BindControls["kick"] = Program.iniReader.GetKeys("HOTKEYS", "kick", Keys.C);
             SLIL_v0_1_LOOK_SPEED = Program.iniReader.GetDouble("SLIL_V0_0_1", "look_speed", 1.75);
             SLIL_v0_1_difficulty = Program.iniReader.GetInt("SLIL_V0_0_1", "difficulty", 1);
             interface_size = ML.Clamp(interface_size, 0, 3);
@@ -514,6 +515,7 @@ namespace SLIL
             Program.iniReader.SetKey("HOTKEYS", "run", BindControls["run"]);
             Program.iniReader.SetKey("HOTKEYS", "climb", BindControls["climb"]);
             Program.iniReader.SetKey("HOTKEYS", "inventory", BindControls["inventory"]);
+            Program.iniReader.SetKey("HOTKEYS", "kick", BindControls["kick"]);
             Program.iniReader.SetKey("SLIL_V0_0_1", "look_speed", SLIL_v0_1_LOOK_SPEED);
             Program.iniReader.SetKey("SLIL_V0_0_1", "difficulty", difficulty);
         }
@@ -597,23 +599,27 @@ namespace SLIL
             DownloadedLocalizationList = true;
         }
 
+        private string GetBtnName(string name) => BindControls[name].ToString().Replace("Key", null).Replace("Return", "Enter");
+
         private void SetVisualSettings()
         {
-            screenshot_btn_c.Text = BindControls["screenshot"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            reloading_btn_c.Text = BindControls["reloading"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            forward_btn_c.Text = BindControls["forward"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            back_btn_c.Text = BindControls["back"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            left_btn_c.Text = BindControls["left"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            right_btn_c.Text = BindControls["right"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            interaction_0_btn_c.Text = BindControls["interaction_0"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            interaction_1_btn_c.Text = BindControls["interaction_1"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            show_map_0_btn_c.Text = BindControls["show_map_0"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            show_map_1_btn_c.Text = BindControls["show_map_1"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            flashlight_btn_c.Text = BindControls["flashlight"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            item_btn_c.Text = BindControls["item"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            select_item_btn_c.Text = BindControls["select_item"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            run_btn_c.Text = BindControls["run"].ToString().Replace("Key", null).Replace("Return", "Enter");
-            climb_btn_c.Text = BindControls["climb"].ToString().Replace("Key", null).Replace("Return", "Enter");
+            screenshot_btn_c.Text = GetBtnName("screenshot");
+            reloading_btn_c.Text = GetBtnName("reloading");
+            forward_btn_c.Text = GetBtnName("forward");
+            back_btn_c.Text = GetBtnName("back");
+            left_btn_c.Text = GetBtnName("left");
+            right_btn_c.Text = GetBtnName("right");
+            interaction_0_btn_c.Text = GetBtnName("interaction_0");
+            interaction_1_btn_c.Text = GetBtnName("interaction_1");
+            show_map_0_btn_c.Text = GetBtnName("show_map_0");
+            show_map_1_btn_c.Text = GetBtnName("show_map_1");
+            flashlight_btn_c.Text = GetBtnName("flashlight");
+            item_btn_c.Text = GetBtnName("item");
+            select_item_btn_c.Text = GetBtnName("select_item");
+            run_btn_c.Text = GetBtnName("run");
+            climb_btn_c.Text = GetBtnName("climb");
+            inventory_btn_c.Text = GetBtnName("inventory");
+            kick_btn_c.Text = GetBtnName("kick");
             language_list.SelectedIndex = language_list.Items.IndexOf(Language);
             show_tutorial.Checked = show_hilf_mir.Checked;
             localization_error_pic.Visible = !DownloadedLocalizationList;
@@ -768,6 +774,7 @@ namespace SLIL
             {
                 smoothing_list.Items.AddRange(new string[] { "No Antialiasing", "Default", "High Quality", "High Speed" });
                 inventory_label.Text = "Inventory";
+                kick_label.Text = "Kick";
                 localization_update_btn.Text = "Update language list";
                 smoothing_label.Text = "Smoothing";
                 console_label.Text = "Developer console";
@@ -1212,9 +1219,8 @@ namespace SLIL
             LOOK_SPEED = 6.5;
             MusicVolume = EffectsVolume = Volume = 0.4f;
             Gamma = 100;
-            BindControls.Clear();
             foreach (var kvp in ClassicBindControls)
-                BindControls.Add(kvp.Key, kvp.Value);
+                BindControls[kvp.Key] = kvp.Value;
             SetVisualSettings();
         }
 

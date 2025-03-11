@@ -144,6 +144,9 @@
             this.sensitivity = new System.Windows.Forms.TrackBar();
             this.sensitivity_label = new System.Windows.Forms.Label();
             this.keyboard_settings = new System.Windows.Forms.TabPage();
+            this.kick_panel = new System.Windows.Forms.Panel();
+            this.kick_label = new System.Windows.Forms.Label();
+            this.kick_btn_c = new System.Windows.Forms.Button();
             this.inventory_panel = new System.Windows.Forms.Panel();
             this.inventory_label = new System.Windows.Forms.Label();
             this.inventory_btn_c = new System.Windows.Forms.Button();
@@ -307,6 +310,7 @@
             this.sensitivity_panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sensitivity)).BeginInit();
             this.keyboard_settings.SuspendLayout();
+            this.kick_panel.SuspendLayout();
             this.inventory_panel.SuspendLayout();
             this.climb_panel.SuspendLayout();
             this.run_panel.SuspendLayout();
@@ -1595,10 +1599,10 @@
             // 
             this.controls_settings.BackColor = System.Drawing.Color.Black;
             this.controls_settings.Controls.Add(this.controls_tabcontrol);
-            this.controls_settings.Location = new System.Drawing.Point(4, 22);
+            this.controls_settings.Location = new System.Drawing.Point(4, 33);
             this.controls_settings.Name = "controls_settings";
             this.controls_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.controls_settings.Size = new System.Drawing.Size(482, 194);
+            this.controls_settings.Size = new System.Drawing.Size(482, 183);
             this.controls_settings.TabIndex = 3;
             this.controls_settings.Text = "Управление";
             // 
@@ -1610,7 +1614,7 @@
             this.controls_tabcontrol.Location = new System.Drawing.Point(3, 3);
             this.controls_tabcontrol.Name = "controls_tabcontrol";
             this.controls_tabcontrol.SelectedIndex = 0;
-            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 188);
+            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 177);
             this.controls_tabcontrol.TabIndex = 0;
             // 
             // mouse_settings
@@ -1624,7 +1628,7 @@
             this.mouse_settings.Location = new System.Drawing.Point(4, 33);
             this.mouse_settings.Name = "mouse_settings";
             this.mouse_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.mouse_settings.Size = new System.Drawing.Size(468, 151);
+            this.mouse_settings.Size = new System.Drawing.Size(468, 140);
             this.mouse_settings.TabIndex = 0;
             this.mouse_settings.Text = "Мышь";
             // 
@@ -1736,6 +1740,7 @@
             // 
             this.keyboard_settings.AutoScroll = true;
             this.keyboard_settings.BackColor = System.Drawing.Color.Black;
+            this.keyboard_settings.Controls.Add(this.kick_panel);
             this.keyboard_settings.Controls.Add(this.inventory_panel);
             this.keyboard_settings.Controls.Add(this.climb_panel);
             this.keyboard_settings.Controls.Add(this.run_panel);
@@ -1753,12 +1758,45 @@
             this.keyboard_settings.Controls.Add(this.fire_panel);
             this.keyboard_settings.Controls.Add(this.screenshot_panel);
             this.keyboard_settings.ForeColor = System.Drawing.Color.White;
-            this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
+            this.keyboard_settings.Location = new System.Drawing.Point(4, 33);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 140);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
+            // 
+            // kick_panel
+            // 
+            this.kick_panel.BackColor = System.Drawing.Color.Black;
+            this.kick_panel.Controls.Add(this.kick_label);
+            this.kick_panel.Controls.Add(this.kick_btn_c);
+            this.kick_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.kick_panel.Location = new System.Drawing.Point(3, 547);
+            this.kick_panel.Name = "kick_panel";
+            this.kick_panel.Size = new System.Drawing.Size(445, 34);
+            this.kick_panel.TabIndex = 17;
+            // 
+            // kick_label
+            // 
+            this.kick_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.kick_label.Location = new System.Drawing.Point(0, 0);
+            this.kick_label.Name = "kick_label";
+            this.kick_label.Size = new System.Drawing.Size(306, 34);
+            this.kick_label.TabIndex = 0;
+            this.kick_label.Text = "Пинок";
+            this.kick_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // kick_btn_c
+            // 
+            this.kick_btn_c.Dock = System.Windows.Forms.DockStyle.Right;
+            this.kick_btn_c.Location = new System.Drawing.Point(362, 0);
+            this.kick_btn_c.Name = "kick_btn_c";
+            this.kick_btn_c.Size = new System.Drawing.Size(83, 34);
+            this.kick_btn_c.TabIndex = 2;
+            this.kick_btn_c.TabStop = false;
+            this.kick_btn_c.Text = "C";
+            this.kick_btn_c.UseVisualStyleBackColor = false;
+            this.kick_btn_c.Click += new System.EventHandler(this.ChangeControl_Click);
             // 
             // inventory_panel
             // 
@@ -3160,6 +3198,7 @@
             this.sensitivity_panel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sensitivity)).EndInit();
             this.keyboard_settings.ResumeLayout(false);
+            this.kick_panel.ResumeLayout(false);
             this.inventory_panel.ResumeLayout(false);
             this.climb_panel.ResumeLayout(false);
             this.run_panel.ResumeLayout(false);
@@ -3436,5 +3475,8 @@
         private System.Windows.Forms.Label maru_about;
         private System.Windows.Forms.Button maru_web;
         private System.Windows.Forms.Label maru_name;
+        private System.Windows.Forms.Panel kick_panel;
+        private System.Windows.Forms.Label kick_label;
+        private System.Windows.Forms.Button kick_btn_c;
     }
 }

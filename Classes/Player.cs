@@ -31,7 +31,9 @@ namespace SLIL.Classes
         internal double CurseCureChance { get; set; }
         internal bool IsPetting { get; set; }
         internal bool InParkour { get; set; }
+        internal bool DoesKick { get; set; }
         internal int ParkourState { get; set; }
+        internal int KickState { get; set; }
         internal bool CuteMode { get; set; }
         internal int TotalEnemiesKilled { get; set; }
         internal int EnemiesKilled { get; set; }
@@ -609,6 +611,7 @@ namespace SLIL.Classes
             LevelUpdated = false;
             IsPetting = false;
             InParkour = false;
+            DoesKick = false;
             InSelectingMode = false;
             BlockInput = false;
             if (!InTransport)
@@ -619,6 +622,7 @@ namespace SLIL.Classes
                 CanUnblockCamera = true;
             }
             ParkourState = 0;
+            KickState = 0;
             Stamine = MaxStamine;
             PreviousGun = CurrentGun = 2;
             if (Guns.Count == 0)
@@ -634,7 +638,7 @@ namespace SLIL.Classes
             if (EffectCheck(6)) return 3.25;
             if (EffectCheck(8)) return 5;
             if (InTransport) return Depth + 2;
-            if (InParkour) return Depth;
+            if (InParkour || DoesKick) return Depth;
             return Depth + (Aiming || GetCurrentGun() is Flashlight ? GetCurrentGun().AimingFactor : 0);
         }
 
@@ -676,17 +680,13 @@ namespace SLIL.Classes
             double walk = 0.075, transport = 0.05;
             if (!InTransport)
             {
-                if (StrafeSpeed > MaxStrafeSpeed)
-                    StrafeSpeed -= walk;
-                if (MoveSpeed > MaxMoveSpeed)
-                    MoveSpeed -= walk;
+                if (StrafeSpeed > MaxStrafeSpeed) StrafeSpeed -= walk;
+                if (MoveSpeed > MaxMoveSpeed) MoveSpeed -= walk;
             }
             else
             {
-                if (StrafeSpeed > MaxStrafeSpeed)
-                    StrafeSpeed -= transport * 1.75;
-                if (MoveSpeed > MaxMoveSpeed)
-                    MoveSpeed -= transport * 1.75;
+                if (StrafeSpeed > MaxStrafeSpeed) StrafeSpeed -= transport * 1.75;
+                if (MoveSpeed > MaxMoveSpeed) MoveSpeed -= transport * 1.75;
             }
             switch (StrafeDirection)
             {

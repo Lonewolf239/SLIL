@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace SLIL.Classes
 {
@@ -21,6 +21,7 @@ namespace SLIL.Classes
         public Keys Run { get; set; }
         public Keys Climb { get; set; }
         public Keys Inventory { get; set; }
+        public Keys Kick { get; set; }
 
         public BindControls(Dictionary<string, Keys> BindControls)
         {
@@ -40,6 +41,7 @@ namespace SLIL.Classes
             Run = BindControls["run"];
             Climb = BindControls["climb"];
             Inventory = BindControls["inventory"];
+            Kick = BindControls["kick"];
         }
 
         public Keys GetKey(string name_properties)
@@ -62,6 +64,7 @@ namespace SLIL.Classes
                 case "run": return Run;
                 case "climb": return Climb;
                 case "inventory": return Inventory;
+                case "kick": return Kick;
                 default: return Keys.None;
             }
         }
@@ -85,7 +88,8 @@ namespace SLIL.Classes
                 case "select_item":
                 case "run":
                 case "climb":
-                case "inventory": return true;
+                case "inventory":
+                case "kick": return true;
                 default: return false;
             }
         }
