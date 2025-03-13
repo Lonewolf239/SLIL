@@ -575,9 +575,10 @@ namespace SLIL
             BarrelExplosion = new PlaySound(MainMenu.CGFReader.GetFile("barrel_explosion.wav"), false),
             BreakdownDoors = new PlaySound(MainMenu.CGFReader.GetFile("breakdown_doors.wav"), false),
             LiftingAmmoBox = new PlaySound(MainMenu.CGFReader.GetFile("lifting_ammo_box.wav"), false),
+            LiftingMoneyPile = new PlaySound(MainMenu.CGFReader.GetFile("lifting_money_pile.wav"), false),
             VoidStalkerScreamer = new PlaySound(MainMenu.CGFReader.GetFile("void_stalker_screamer.wav"), false),
             Kick = new PlaySound(MainMenu.CGFReader.GetFile("kick.wav"), false),
-            DamnKick = new PlaySound(MainMenu.CGFReader.GetFile("kick.wav"), false);
+            DamnKick = new PlaySound(MainMenu.CGFReader.GetFile("damn_kick.wav"), false);
         internal static PlaySound[] Climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
         internal static PlaySound[] Door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
@@ -1048,6 +1049,10 @@ namespace SLIL
                 case 28:
                     //barrel explosion
                     entity = new BarrelExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    break;
+                case 29:
+                    //dummy
+                    entity = new Dummy(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
                     break;
             }
             if (entity == null) return false;
@@ -4323,6 +4328,7 @@ namespace SLIL
             BarrelExplosion?.Stop();
             BreakdownDoors?.Stop();
             LiftingAmmoBox?.Stop();
+            LiftingMoneyPile?.Stop();
             VoidStalkerScreamer?.Stop();
             Kick?.Stop();
             DamnKick?.Stop();

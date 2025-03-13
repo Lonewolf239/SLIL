@@ -340,6 +340,12 @@
     <Compile Include="UserControls\EditorElementSelector.Designer.cs">
       <DependentUpon>EditorElementSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Inventory\CostToolTip.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\Inventory\CostToolTip.Designer.cs">
+      <DependentUpon>CostToolTip.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Inventory\InfoToolTip.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -437,6 +443,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\EditorElementSelector.resx">
       <DependentUpon>EditorElementSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\Inventory\CostToolTip.resx">
+      <DependentUpon>CostToolTip.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\Inventory\InfoToolTip.resx">
       <DependentUpon>InfoToolTip.cs</DependentUpon>
@@ -1569,6 +1578,8 @@
     <None Include="Images\soul_clot_c_0.png" />
     <None Include="Images\soul_explosion_0.png" />
     <None Include="Images\soul_explosion_c_0.png" />
+    <None Include="Images\money_pile.png" />
+    <None Include="Images\dummy.png" />
     <Content Include="SLILCursorDefault.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

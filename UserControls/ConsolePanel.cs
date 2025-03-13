@@ -128,6 +128,7 @@ namespace SLIL.UserControls
                      "~│~ -IMHONEST-    ~│~ Disable cheats                              ~│~\n" +
                      "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                      "~│~ -DEBUG-       ~│~ Go to debug map                             ~│~\n" +
+                     "~│~ -DUMMY-       ~│~ Spawn a dummy                               ~│~\n" +
                      "~│~ -DEBUG_BOSS-  ~│~ Go to boss debug map                        ~│~\n" +
                      "~│~ -DEBUG_BIKE-  ~│~ Go to bike debug map                        ~│~\n" +
                      "~│~ -DEBUG_SPEED- ~│~ Show/hide debug player speed                ~│~\n" +
@@ -666,6 +667,16 @@ namespace SLIL.UserControls
                     message = "Incorrect data entered! X is not a number.";
                 }
             }
+            else if (cheat == "DUMMY")
+            {
+                if (parent.SpawnEntity(29, true))
+                    message = $"Dummy successfully spawned";
+                else
+                {
+                    color = Color.Red;
+                    message = $"There was an error while spawning a dummy. Most likely a wall got in the way.";
+                }
+            }
             else if (!ImHonest)
             {
                 if (cheat == "EFFECTS")
@@ -890,7 +901,7 @@ namespace SLIL.UserControls
                     {
                         if (ML.WithinOne(x))
                         {
-                            message += $"Set chance of damn kick to {x * 100:0.##}% *Default: 1%*";
+                            message += $"Set chance of damn kick to {x * 100:0.##}% *Default: 4%*";
                             player.CurseKickChance = x;
                         }
                         else
@@ -994,7 +1005,8 @@ namespace SLIL.UserControls
                                  "LostSoul",
                                  "SoulExplosion",
                                  "ExplodingBarrel",
-                                 "BarrelExplosion"
+                                 "BarrelExplosion",
+                                 "Dummy",
                             };
                     for (int i = 0; i < entities.Length; i++)
                     {
@@ -1014,7 +1026,7 @@ namespace SLIL.UserControls
                         {
                             int x = Convert.ToInt32(cheat.Split('_')[1]);
                             int y = Convert.ToInt32(cheat.Split('_')[3]);
-                            if (ML.OutOfLimits(x, 29))
+                            if (ML.OutOfLimits(x, 30))
                             {
                                 color = Color.Red;
                                 message = $"There is no entity under ID {x}";
@@ -1031,7 +1043,7 @@ namespace SLIL.UserControls
                                     else
                                     {
                                         color = Color.Red;
-                                        message = $"There was an error while spawning the enemy. Most likely a wall got in the way.";
+                                        message = $"There was an error while spawning the entity. Most likely a wall got in the way.";
                                     }
                                 }
                                 else
@@ -1051,7 +1063,7 @@ namespace SLIL.UserControls
                     {
                         if (int.TryParse(cheat.Split('_')[1], out int x))
                         {
-                            if (ML.OutOfLimits(x, 29))
+                            if (ML.OutOfLimits(x, 30))
                             {
                                 color = Color.Red;
                                 message = $"There is no entity under ID {x}";
@@ -1063,7 +1075,7 @@ namespace SLIL.UserControls
                                 else
                                 {
                                     color = Color.Red;
-                                    message = $"There was an error while spawning the enemy. Most likely a wall got in the way.";
+                                    message = $"There was an error while spawning the entity. Most likely a wall got in the way.";
                                 }
                             }
                         }

@@ -11,12 +11,35 @@ namespace SLIL.UserControls
         internal Player Player;
         private WeaponToolTip WeaponToolTip;
         private InfoToolTip InfoToolTip;
+        private CostToolTip CostToolTip;
         private int CurrentMoney, CurrentAmmo = 0;
+        private int _DowngradeCost = 0;
+        private int DowngradeCost { get { if (Pistol.Level == Levels.LV1) return 0; return _DowngradeCost; } set => _DowngradeCost = value; }
         private Gun Pistol { get => Player.Guns[2]; }
+        private FirstAidKit FirstAidKit { get => (FirstAidKit)Player.GUNS[10]; }
+        private Helmet Helmet { get => (Helmet)Player.GUNS[14]; }
+        private Adrenalin Adrenalin { get => (Adrenalin)Player.GUNS[13]; }
+        private MedicalKit MedicalKit { get => (MedicalKit)Player.GUNS[17]; }
 
         internal StartShopInterface(Player player)
         {
             InitializeComponent();
+            if (MainMenu.DownloadedLocalizationList)
+            {
+                start_shop_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-24");
+                pistol_label.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "3-4");
+                level_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-26");
+                items_title.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-22");
+                stop_start_shop_btn.Text = MainMenu.Localizations.GetLString(MainMenu.Language, "2-27");
+            }
+            else
+            {
+                start_shop_title.Text = "Starting purchase";
+                pistol_label.Text = "Pistol";
+                level_title.Text = "Level";
+                items_title.Text = "Items";
+                stop_start_shop_btn.Text = "READY";
+            }
             Player = player;
             CurrentMoney = player.Money;
         }
@@ -54,6 +77,7 @@ namespace SLIL.UserControls
             if (CurrentMoney - Pistol.UpdateCost < 0) return;
             if (!Pistol.CanUpdate()) return;
             CurrentMoney -= Pistol.UpdateCost;
+            DowngradeCost = Pistol.UpdateCost;
             Pistol.LevelUpdate();
             UpdateInfo();
         }
@@ -64,14 +88,20 @@ namespace SLIL.UserControls
             if (!Pistol.CanDowngrade()) return;
             Pistol.LevelDowngrade();
             CurrentMoney += Pistol.UpdateCost;
+            DowngradeCost = Pistol.UpdateCost;            
             UpdateInfo();
+        }
+
+        private void RemoveToolTip(Control toolTip)
+        {
+            if (start_shop_panel.Controls.Contains(toolTip))
+                start_shop_panel.Controls.Remove(toolTip);
+            toolTip?.Dispose();
         }
 
         private void Pistol_icon_MouseEnter(object sender, EventArgs e)
         {
-            if (start_shop_panel.Controls.Contains(WeaponToolTip))
-                start_shop_panel.Controls.Remove(WeaponToolTip);
-            WeaponToolTip?.Dispose();
+            RemoveToolTip(WeaponToolTip);
             WeaponToolTip = new WeaponToolTip
             {
                 Weapon = Pistol,
@@ -82,46 +112,39 @@ namespace SLIL.UserControls
             WeaponToolTip.BringToFront();
         }
 
-        private void Pistol_icon_MouseLeave(object sender, EventArgs e)
-        {
-            if (start_shop_panel.Controls.Contains(WeaponToolTip))
-                start_shop_panel.Controls.Remove(WeaponToolTip);
-            WeaponToolTip?.Dispose();
-        }
+        private void Pistol_icon_MouseLeave(object sender, EventArgs e) => RemoveToolTip(WeaponToolTip);
 
         private void Info_icon_MouseEnter(object sender, EventArgs e)
         {
-            if (start_shop_panel.Controls.Contains(InfoToolTip))
-                start_shop_panel.Controls.Remove(InfoToolTip);
-            InfoToolTip?.Dispose();
+            RemoveToolTip(InfoToolTip);
             string description;
             if (((Control)sender).Name == "medkit_icon")
             {
                 if (MainMenu.DownloadedLocalizationList)
-                    description = MainMenu.Localizations.GetLString(MainMenu.Language, ((FirstAidKit)Player.GUNS[10]).Description[0]);
+                    description = MainMenu.Localizations.GetLString(MainMenu.Language, FirstAidKit.Description[0]);
                 else
-                    description = ((FirstAidKit)Player.GUNS[10]).Description[1];
+                    description = FirstAidKit.Description[1];
             }
             else if (((Control)sender).Name == "helmet_icon")
             {
                 if (MainMenu.DownloadedLocalizationList)
-                    description = MainMenu.Localizations.GetLString(MainMenu.Language, ((Helmet)Player.GUNS[14]).Description[0]);
+                    description = MainMenu.Localizations.GetLString(MainMenu.Language, Helmet.Description[0]);
                 else
-                    description = ((Helmet)Player.GUNS[14]).Description[1];
+                    description = Helmet.Description[1];
             }
             else if (((Control)sender).Name == "adrenalin_icon")
             {
                 if (MainMenu.DownloadedLocalizationList)
-                    description = MainMenu.Localizations.GetLString(MainMenu.Language, ((Adrenalin)Player.GUNS[13]).Description[0]);
+                    description = MainMenu.Localizations.GetLString(MainMenu.Language, Adrenalin.Description[0]);
                 else
-                    description = ((Adrenalin)Player.GUNS[13]).Description[1];
+                    description = Adrenalin.Description[1];
             }
             else
             {
                 if (MainMenu.DownloadedLocalizationList)
-                    description = MainMenu.Localizations.GetLString(MainMenu.Language, ((MedicalKit)Player.GUNS[17]).Description[0]);
+                    description = MainMenu.Localizations.GetLString(MainMenu.Language, MedicalKit.Description[0]);
                 else
-                    description = ((MedicalKit)Player.GUNS[17]).Description[1];
+                    description = MedicalKit.Description[1];
             }
             InfoToolTip = new InfoToolTip(description) { Left = 0 };
             InfoToolTip.Top = start_shop_panel.Height - InfoToolTip.Height;
@@ -129,12 +152,7 @@ namespace SLIL.UserControls
             InfoToolTip.BringToFront();
         }
 
-        private void Info_icon_MouseLeave(object sender, EventArgs e)
-        {
-            if (start_shop_panel.Controls.Contains(InfoToolTip))
-                start_shop_panel.Controls.Remove(InfoToolTip);
-            InfoToolTip?.Dispose();
-        }
+        private void Info_icon_MouseLeave(object sender, EventArgs e) => RemoveToolTip(InfoToolTip);
 
         private void Medkit_plus_btn_Click(object sender, EventArgs e) => BuyItem(0);
 
@@ -178,13 +196,41 @@ namespace SLIL.UserControls
                 CurrentMoney += Pistol.AmmoCost;
                 CurrentAmmo--;
             }
-            money_count.Text = $"Деньги {CurrentMoney}$";
+            if (MainMenu.DownloadedLocalizationList) money_count.Text = $"{MainMenu.Localizations.GetLString(MainMenu.Language, "2-28")} {CurrentMoney}$";
+            else money_count.Text = $"Money {CurrentMoney}$";
             pistol_ammo_count.Text = $"{Pistol.AmmoInStock + (Pistol.CartridgesClip * CurrentAmmo)}/{Pistol.AmmoCount}";
             pistol_icon.Image = SLIL.IconDict[Pistol.GetType()][Pistol.GetLevel()];
             medkit_count.Text = $"{Player.DisposableItems[0].MaxCount}/{Player.DisposableItems[0].Count}";
             adrenalin_count.Text = $"{Player.DisposableItems[1].MaxCount}/{Player.DisposableItems[1].Count}";
             helmet_count.Text = $"{Player.DisposableItems[2].MaxCount}/{Player.DisposableItems[2].Count}";
             medical_kit_count.Text = $"{Player.DisposableItems[3].MaxCount}/{Player.DisposableItems[3].Count}";
+        }
+
+        private void Plus_btn_MouseLeave(object sender, EventArgs e) => RemoveToolTip(CostToolTip);
+
+        private void Plus_btn_MouseEnter(object sender, EventArgs e)
+        {
+            RemoveToolTip(CostToolTip);
+            int cost;
+            switch (((Control)sender).Name)
+            {
+                case "plus_ammo_btn": cost = -Pistol.AmmoCost; break;
+                case "minus_ammo_btn": cost = Pistol.AmmoCost; break;
+                case "plus_level_btn": cost = -Pistol.UpdateCost; break;
+                case "minus_level_btn": cost = DowngradeCost; break;
+                case "medkit_plus_btn": cost = -FirstAidKit.GunCost; break;
+                case "medkit_minus_btn": cost = FirstAidKit.GunCost; break;
+                case "adrenalin_plus_btn": cost = -Adrenalin.GunCost; break;
+                case "adrenalin_minus_btn": cost = Adrenalin.GunCost; break;
+                case "helmet_plus_btn": cost = -Helmet.GunCost; break;
+                case "helmet_minus_btn": cost = Helmet.GunCost; break;
+                case "medical_kit_plus_btn": cost = -MedicalKit.GunCost; break;
+                default: cost = MedicalKit.GunCost; break;
+            }
+            CostToolTip = new CostToolTip(cost) { Left = 0 };
+            CostToolTip.Top = start_shop_panel.Height - CostToolTip.Height;
+            start_shop_panel.Controls.Add(CostToolTip);
+            CostToolTip.BringToFront();
         }
 
         private void Stop_start_shop_btn_Click(object sender, EventArgs e)

@@ -1064,25 +1064,25 @@ namespace SLIL
                     if (DownloadedLocalizationList)
                         difficulty_label.Text = Localizations.GetLString(Language, "0-65") + Localizations.GetLString(Language, "0-113");
                     else
-                        difficulty_label.Text = "Starting weapon: Pistol Lvl 1\nEnemies respawn every 60 seconds\nEnemies deal 25% more damage";
+                        difficulty_label.Text = "Initial amount: 15$\nEnemies are reborn every 60 seconds\nEnemies deal 75% more damage";
                     break;
                 case 1:
                     if (DownloadedLocalizationList)
                         difficulty_label.Text = Localizations.GetLString(Language, "0-66") + Localizations.GetLString(Language, "0-114");
                     else
-                        difficulty_label.Text = "Starting weapon: Pistol Lvl 1\nEnemies deal 25% more damage";
+                        difficulty_label.Text = "Initial amount: 15$\nEnemies deal 25% more damage";
                     break;
                 case 2:
                     if (DownloadedLocalizationList)
                         difficulty_label.Text = Localizations.GetLString(Language, "0-67") + Localizations.GetLString(Language, "0-129");
                     else
-                        difficulty_label.Text = "Starting weapon: Pistol Lvl 2\nYou will have 2 first aid kits";
+                        difficulty_label.Text = "Initial amount: 75$\nThe starting purchase is available";
                     break;
                 case 3:
                     if (DownloadedLocalizationList)
                         difficulty_label.Text = Localizations.GetLString(Language, "0-68") + Localizations.GetLString(Language, "0-115") + Localizations.GetLString(Language, "0-129");
                     else
-                        difficulty_label.Text = "Starting weapon: Pistol lvl 2\nEnemies give more money\nEnemies deal 25% less damage\nYou will have 2 first aid kits";
+                        difficulty_label.Text = "Initial amount: 150$\nEnemies give more money\nEnemies deal 25% less damage\nThe starting purchase is available";
                     break;
                 default:
                     if (DownloadedLocalizationList)
@@ -1529,7 +1529,12 @@ namespace SLIL
                 if (sounds) fade_timer.Start();
                 SLIL form = new SLIL(textureCache) { PlayerName = "Player" };
                 form.ShowDialog();
-                if (sounds) MainMenuTheme.Play(MusicVolume);
+                if (sounds)
+                {
+                    fade_timer.Stop();
+                    MainMenuTheme.SetVolume(MusicVolume);
+                    MainMenuTheme.Play(MusicVolume);
+                }
                 difficulty_panel.Visible = false;
             }
             else
@@ -1668,7 +1673,12 @@ namespace SLIL
             SLIL form = new SLIL(textureCache, true, tutorialMap, 8, 8, 3.5, 3.5) { PlayerName = "Player" };
             form.ShowDialog();
             hilf_mir_panel.Visible = difficulty_panel.Visible = false;
-            if (sounds) MainMenuTheme.Play(MusicVolume);
+            if (sounds)
+            {
+                fade_timer.Stop();
+                MainMenuTheme.SetVolume(MusicVolume);
+                MainMenuTheme.Play(MusicVolume);
+            }
         }
 
         private void Show_hilf_mir_CheckedChanged(object sender, EventArgs e)

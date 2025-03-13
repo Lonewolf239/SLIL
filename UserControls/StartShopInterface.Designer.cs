@@ -52,7 +52,7 @@
             this.pistol_panel = new System.Windows.Forms.Panel();
             this.minus_level_btn = new System.Windows.Forms.Button();
             this.plus_level_btn = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.level_title = new System.Windows.Forms.Label();
             this.minus_ammo_btn = new System.Windows.Forms.Button();
             this.plus_ammo_btn = new System.Windows.Forms.Button();
             this.pistol_ammo_icon = new System.Windows.Forms.PictureBox();
@@ -149,6 +149,8 @@
             this.medical_kit_minus_btn.Text = "-";
             this.medical_kit_minus_btn.UseVisualStyleBackColor = true;
             this.medical_kit_minus_btn.Click += new System.EventHandler(this.Medical_kit_minus_btn_Click);
+            this.medical_kit_minus_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.medical_kit_minus_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // medical_kit_plus_btn
             // 
@@ -165,6 +167,8 @@
             this.medical_kit_plus_btn.Text = "+";
             this.medical_kit_plus_btn.UseVisualStyleBackColor = true;
             this.medical_kit_plus_btn.Click += new System.EventHandler(this.Medical_kit_plus_btn_Click);
+            this.medical_kit_plus_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.medical_kit_plus_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // helmet_minus_btn
             // 
@@ -181,6 +185,8 @@
             this.helmet_minus_btn.Text = "-";
             this.helmet_minus_btn.UseVisualStyleBackColor = true;
             this.helmet_minus_btn.Click += new System.EventHandler(this.Helmet_minus_btn_Click);
+            this.helmet_minus_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.helmet_minus_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // helmet_plus_btn
             // 
@@ -197,6 +203,8 @@
             this.helmet_plus_btn.Text = "+";
             this.helmet_plus_btn.UseVisualStyleBackColor = true;
             this.helmet_plus_btn.Click += new System.EventHandler(this.Helmet_plus_btn_Click);
+            this.helmet_plus_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.helmet_plus_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // adrenalin_minus_btn
             // 
@@ -213,6 +221,8 @@
             this.adrenalin_minus_btn.Text = "-";
             this.adrenalin_minus_btn.UseVisualStyleBackColor = true;
             this.adrenalin_minus_btn.Click += new System.EventHandler(this.Adrenalin_minus_btn_Click);
+            this.adrenalin_minus_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.adrenalin_minus_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // adrenalin_plus_btn
             // 
@@ -229,6 +239,8 @@
             this.adrenalin_plus_btn.Text = "+";
             this.adrenalin_plus_btn.UseVisualStyleBackColor = true;
             this.adrenalin_plus_btn.Click += new System.EventHandler(this.Adrenalin_plus_btn_Click);
+            this.adrenalin_plus_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.adrenalin_plus_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // medkit_minus_btn
             // 
@@ -245,6 +257,8 @@
             this.medkit_minus_btn.Text = "-";
             this.medkit_minus_btn.UseVisualStyleBackColor = true;
             this.medkit_minus_btn.Click += new System.EventHandler(this.Medkit_minus_btn_Click);
+            this.medkit_minus_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.medkit_minus_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // medkit_plus_btn
             // 
@@ -261,6 +275,8 @@
             this.medkit_plus_btn.Text = "+";
             this.medkit_plus_btn.UseVisualStyleBackColor = true;
             this.medkit_plus_btn.Click += new System.EventHandler(this.Medkit_plus_btn_Click);
+            this.medkit_plus_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.medkit_plus_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // medical_kit_count
             // 
@@ -374,7 +390,7 @@
             // 
             this.pistol_panel.Controls.Add(this.minus_level_btn);
             this.pistol_panel.Controls.Add(this.plus_level_btn);
-            this.pistol_panel.Controls.Add(this.label1);
+            this.pistol_panel.Controls.Add(this.level_title);
             this.pistol_panel.Controls.Add(this.minus_ammo_btn);
             this.pistol_panel.Controls.Add(this.plus_ammo_btn);
             this.pistol_panel.Controls.Add(this.pistol_ammo_icon);
@@ -401,6 +417,8 @@
             this.minus_level_btn.Text = "-";
             this.minus_level_btn.UseVisualStyleBackColor = true;
             this.minus_level_btn.Click += new System.EventHandler(this.Minus_level_btn_Click);
+            this.minus_level_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.minus_level_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // plus_level_btn
             // 
@@ -417,18 +435,20 @@
             this.plus_level_btn.Text = "+";
             this.plus_level_btn.UseVisualStyleBackColor = true;
             this.plus_level_btn.Click += new System.EventHandler(this.Plus_level_btn_Click);
+            this.plus_level_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.plus_level_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
-            // label1
+            // level_title
             // 
-            this.label1.AutoEllipsis = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(326, 94);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(120, 24);
-            this.label1.TabIndex = 45;
-            this.label1.Text = "Уровень";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.level_title.AutoEllipsis = true;
+            this.level_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.level_title.ForeColor = System.Drawing.Color.White;
+            this.level_title.Location = new System.Drawing.Point(326, 94);
+            this.level_title.Name = "level_title";
+            this.level_title.Size = new System.Drawing.Size(120, 24);
+            this.level_title.TabIndex = 45;
+            this.level_title.Text = "Уровень";
+            this.level_title.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // minus_ammo_btn
             // 
@@ -445,6 +465,8 @@
             this.minus_ammo_btn.Text = "-";
             this.minus_ammo_btn.UseVisualStyleBackColor = true;
             this.minus_ammo_btn.Click += new System.EventHandler(this.Minus_ammo_btn_Click);
+            this.minus_ammo_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.minus_ammo_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // plus_ammo_btn
             // 
@@ -461,6 +483,8 @@
             this.plus_ammo_btn.Text = "+";
             this.plus_ammo_btn.UseVisualStyleBackColor = true;
             this.plus_ammo_btn.Click += new System.EventHandler(this.Plus_ammo_btn_Click);
+            this.plus_ammo_btn.MouseEnter += new System.EventHandler(this.Plus_btn_MouseEnter);
+            this.plus_ammo_btn.MouseLeave += new System.EventHandler(this.Plus_btn_MouseLeave);
             // 
             // pistol_ammo_icon
             // 
@@ -564,7 +588,7 @@
         private System.Windows.Forms.Label items_title;
         internal System.Windows.Forms.Button minus_level_btn;
         internal System.Windows.Forms.Button plus_level_btn;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label level_title;
         private System.Windows.Forms.Label medical_kit_count;
         private System.Windows.Forms.PictureBox medical_kit_icon;
         private System.Windows.Forms.Label helmet_count;

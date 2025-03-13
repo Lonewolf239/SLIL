@@ -27,7 +27,7 @@ namespace SLIL.Classes
         private double EnemyDamageOffset = 1;
         private const double playerWidth = 0.4;
         private bool GameStarted = false;
-        private readonly Random rand;
+        private readonly Random Rand;
         private int difficulty;
         private int MAP_WIDTH, MAP_HEIGHT;
         private bool CUSTOM = false;
@@ -57,7 +57,7 @@ namespace SLIL.Classes
             TRANSPORTS = transports;
             MAP_WIDTH = 16;
             MAP_HEIGHT = 16;
-            rand = new Random(Guid.NewGuid().GetHashCode());
+            Rand = new Random(Guid.NewGuid().GetHashCode());
             difficulty = MainMenu.difficulty;
             RespawnTimer = new System.Windows.Forms.Timer
             {
@@ -120,8 +120,8 @@ namespace SLIL.Classes
             Entities.Add(player);
             if (difficulty == 0) player.Money = 15;
             else if (difficulty == 1) player.Money = 15;
-            else if (difficulty == 2) player.Money = 15;
-            else if (difficulty == 3) player.Money = 915;
+            else if (difficulty == 2) player.Money = 75;
+            else if (difficulty == 3) player.Money = 150;
             if (isTutorial) player.Money = 500;
             if (inDebug != 0) player.Money = 1234;
             return MaxEntityID - 1;
@@ -150,7 +150,7 @@ namespace SLIL.Classes
                         {
                             bool playerCanHitc = true;
                             if (!playerOnTransport.InTransport || playerOnTransport.MoveSpeed < 2.5) playerCanHitc = false;
-                            if (Math.Abs(c.X - playerOnTransport.X) > 0.5|| Math.Abs(c.Y - playerOnTransport.Y) > 0.5) playerCanHitc = false;
+                            if (Math.Abs(c.X - playerOnTransport.X) > 0.5 || Math.Abs(c.Y - playerOnTransport.Y) > 0.5) playerCanHitc = false;
                             if (playerCanHitc)
                             {
                                 if (DealDamageFromPlayerToCreature(c, 5, playerOnTransport))
@@ -158,12 +158,12 @@ namespace SLIL.Classes
                                     if (c.DeathSound != -1)
                                     {
                                         if (playerOnTransport.CuteMode)
-                                            PlayGameSound(SLIL.CuteDeathSounds[c.DeathSound, rand.Next(0, SLIL.DeathSounds.GetLength(1))], GetCoordinate(c.X, c.Y));
+                                            PlayGameSound(SLIL.CuteDeathSounds[c.DeathSound, Rand.Next(0, SLIL.DeathSounds.GetLength(1))], GetCoordinate(c.X, c.Y));
                                         else
-                                            PlayGameSound(SLIL.DeathSounds[c.DeathSound, rand.Next(0, SLIL.DeathSounds.GetLength(1))], GetCoordinate(c.X, c.Y));
+                                            PlayGameSound(SLIL.DeathSounds[c.DeathSound, Rand.Next(0, SLIL.DeathSounds.GetLength(1))], GetCoordinate(c.X, c.Y));
                                     }
                                 }
-                                KickEntity(c, playerOnTransport, 1.2);
+                                KickCreature(c, playerOnTransport, 1.2, 1.75);
                                 playerOnTransport.MoveSpeed = 0.5;
                             }
                         }
@@ -173,7 +173,7 @@ namespace SLIL.Classes
                         entity.LifeTime++;
                         entity.CurrentFrame++;
                         if (entity.LifeTime >= entity.TotalLifeTime)
-                        {                            
+                        {
                             Entities.Remove(entity);
                             i--;
                             continue;
@@ -205,7 +205,7 @@ namespace SLIL.Classes
                                         if (explosion.CanHitOnlyPlayer && !(ent is Player)) continue;
                                         double distanceSquared = ML.GetDistance(new TPoint(ent.X, ent.Y), new TPoint(explosion.X, explosion.Y));
                                         if (distanceSquared > explosion.HitDistance) continue;
-                                        double damage = rand.Next(explosion.MinDamage, explosion.MaxDamage);
+                                        double damage = Rand.Next(explosion.MinDamage, explosion.MaxDamage);
                                         if (ent is Player playerTarget)
                                         {
                                             if (playerTarget.InTransport) PlaySoundHandle(SLIL.hit[1], playerTarget.X, playerTarget.Y);
@@ -261,7 +261,7 @@ namespace SLIL.Classes
                                             else if (playerTarget.CuteMode) PlaySoundHandle(SLIL.hungry, target.X, target.Y);
                                             else PlaySoundHandle(SLIL.hit[0], target.X, target.Y);
                                             GiveDebaf(playerTarget, entity);
-                                            playerTarget.DealDamage(rand.Next(entity.MinDamage, entity.MaxDamage), true);
+                                            playerTarget.DealDamage(Rand.Next(entity.MinDamage, entity.MaxDamage), true);
                                             if (playerTarget.HP <= 0)
                                             {
                                                 Entities.Add(new PlayerDeadBody(target.X, target.Y, MAP_WIDTH, ref MaxEntityID));
@@ -281,7 +281,7 @@ namespace SLIL.Classes
                                     entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
                                     if (entity.Fast) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
                                     if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
-                                        coveringTarget.DealDamage(rand.Next(entity.MinDamage, entity.MaxDamage));
+                                        coveringTarget.DealDamage(Rand.Next(entity.MinDamage, entity.MaxDamage));
                                 }
                             }
                             if (entity is Stalker stalker && stalker.Dead)
@@ -290,8 +290,8 @@ namespace SLIL.Classes
                                 int iteration = 0;
                                 while (true)
                                 {
-                                    int x = rand.Next(0, MAP_WIDTH);
-                                    int y = rand.Next(0, MAP_HEIGHT);
+                                    int x = Rand.Next(0, MAP_WIDTH);
+                                    int y = Rand.Next(0, MAP_HEIGHT);
                                     spawnDistance = ML.GetDistance(new TPoint(target.X, target.Y), new TPoint(x, y));
                                     if (MAP[GetCoordinate(x, y)] == '.')
                                     {
@@ -344,7 +344,7 @@ namespace SLIL.Classes
                                                     if (player.InTransport) PlaySoundHandle(SLIL.hit[1], player.X, player.Y);
                                                     else if (player.CuteMode) PlaySoundHandle(SLIL.hungry, player.X, player.Y);
                                                     else PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
-                                                    player.DealDamage(rand.Next(shooter.MinDamage, shooter.MaxDamage), true);
+                                                    player.DealDamage(Rand.Next(shooter.MinDamage, shooter.MaxDamage), true);
                                                     if (player.HP <= 0)
                                                     {
                                                         Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
@@ -422,28 +422,37 @@ namespace SLIL.Classes
                             }
                         }
                     }
-                    else if (entity is AmmoBox ammoBox)
+                    else if (entity is Bonus bonus)
                     {
                         if (target is Player p)
                         {
-                            if (Math.Abs(ammoBox.X - p.X) <= 0.5 && Math.Abs(ammoBox.Y - p.Y) <= 0.5)
+                            if (ML.GetDistance(new TPoint(bonus.X, bonus.Y), new TPoint(p.X, p.Y)) < (p.EntityWidth + bonus.EntityWidth) * (p.EntityWidth + bonus.EntityWidth))
                             {
-                                if (ammoBox.WeaponType == null) continue;
-                                int weaponIndex = -1;
-                                for (int j = 0; j < p.Guns.Count; j++)
+                                if (bonus is AmmoBox ammoBox)
                                 {
-                                    if (p.Guns[j].GetType() == ammoBox.WeaponType)
+                                    if (ammoBox.WeaponType == null) continue;
+                                    int weaponIndex = -1;
+                                    for (int j = 0; j < p.Guns.Count; j++)
                                     {
-                                        weaponIndex = j;
-                                        break;
+                                        if (p.Guns[j].GetType() == ammoBox.WeaponType)
+                                        {
+                                            weaponIndex = j;
+                                            break;
+                                        }
                                     }
+                                    if (weaponIndex == -1) continue;
+                                    int ammo = p.Guns[weaponIndex].CartridgesClip + p.Guns[weaponIndex].AmmoInStock;
+                                    if (ammo > p.Guns[weaponIndex].MaxAmmo) continue;
+                                    PlayGameSound(SLIL.LiftingAmmoBox, GetCoordinate(p.X, p.Y));
+                                    p.Guns[weaponIndex].AmmoInStock = ammo;
                                 }
-                                if (weaponIndex == -1) continue;
-                                int ammo = p.Guns[weaponIndex].CartridgesClip + p.Guns[weaponIndex].AmmoInStock;
-                                if (ammo > p.Guns[weaponIndex].MaxAmmo) continue;
-                                PlayGameSound(SLIL.LiftingAmmoBox, GetCoordinate(p.X, p.Y));
-                                p.Guns[weaponIndex].AmmoInStock = ammo;
-                                Entities.Remove(entity);
+                                else if (bonus is MoneyPile pile)
+                                {
+                                    if (p.Money == 9999) continue;
+                                    p.ChangeMoney(pile.MoneyCount);
+                                    PlayGameSound(SLIL.LiftingMoneyPile, GetCoordinate(p.X, p.Y));
+                                }
+                                Entities.Remove(bonus);
                                 i--;
                             }
                         }
@@ -1567,7 +1576,7 @@ namespace SLIL.Classes
             x += 0.5; y += 0.5;
             if (type == -1)
             {
-                double dice = rand.NextDouble();
+                double dice = Rand.NextDouble();
                 Entity entity;
                 if (dice <= 0.25) // 25%
                 {
@@ -1607,13 +1616,13 @@ namespace SLIL.Classes
                 }
                 else // 10%
                 {
-                    if (rand.NextDouble() <= 0.2)
+                    if (Rand.NextDouble() <= 0.2)
                         entity = new Vine(x, y, size, ref MaxEntityID);
-                    else if (rand.NextDouble() <= 0.4)
+                    else if (Rand.NextDouble() <= 0.4)
                         entity = new Lamp(x, y, size, ref MaxEntityID);
-                    else if (rand.NextDouble() <= 0.6)
+                    else if (Rand.NextDouble() <= 0.6)
                         entity = new Box(x, y, size, ref MaxEntityID);
-                    else if(rand.NextDouble() <= 0.8)
+                    else if(Rand.NextDouble() <= 0.8)
                         entity = new Barrel(x, y, size, ref MaxEntityID);
                     else 
                         entity = new ExplodingBarrel(x, y, size, ref MaxEntityID);
@@ -1725,7 +1734,7 @@ namespace SLIL.Classes
                     double multiplier = 1;
                     if (difficulty == 3)
                         multiplier = 1.5;
-                    attackerPlayer.ChangeMoney(rand.Next((int)(20 * multiplier), (int)(30 * multiplier)));
+                    attackerPlayer.ChangeMoney(Rand.Next((int)(20 * multiplier), (int)(30 * multiplier)));
                     attackerPlayer.EnemiesKilled++;
                     attackerPlayer.TotalEnemiesKilled++;
                     return true;
@@ -1762,7 +1771,7 @@ namespace SLIL.Classes
                         return true;
                     }
                     double multiplier = difficulty == 3 ? 1.5 : 1;
-                    attackerPlayer.ChangeMoney(rand.Next((int)(c.MinMoney * multiplier), (int)(c.MaxMoney * multiplier)));
+                    attackerPlayer.ChangeMoney(Rand.Next((int)(c.MinMoney * multiplier), (int)(c.MaxMoney * multiplier)));
                     if (c is Enemy)
                     {
                         attackerPlayer.EnemiesKilled++;
@@ -1783,21 +1792,23 @@ namespace SLIL.Classes
                 return;
             }
             if (box.BoxWithMoney)
-                p.ChangeMoney(rand.Next(5, 11));
+                AddEntity(new MoneyPile(box.X, box.Y, MAP_WIDTH, ref MaxEntityID) { MoneyCount = Rand.Next(5, 15) });
             else if (!p.CuteMode)
             {
                 Type type = null;
                 Gun gun;
-                for (int i = 0; i < 5; i++)
+                if (Rand.Next(100) > 15)
                 {
-                    gun = p.Guns[rand.Next(p.Guns.Count)];
-                    if (gun.CanGetAmmoFromBox)
+                    for (int i = 0; i < 5; i++)
                     {
-                        type = gun.GetType();
-                        break;
+                        gun = p.Guns[Rand.Next(p.Guns.Count)];
+                        if (gun.CanGetAmmoFromBox)
+                        {
+                            type = gun.GetType();
+                            break;
+                        }
                     }
                 }
-                if (rand.Next(100) <= 15) type = null;
                 AmmoBox ammoBox = new AmmoBox(box.X, box.Y, MAP_WIDTH, ref MaxEntityID) { WeaponType = type };
                 if (type == null) ammoBox.Texture = 45;
                 AddEntity(ammoBox);
@@ -1820,7 +1831,7 @@ namespace SLIL.Classes
                 {
                     if (player.Invulnerable) player.InvulnerableEnd();
                     player.UpdateEffectsTime();
-                    if (player.IncreasingFear()) PlayGameSound(player.ID, SLIL.scary_sounds[rand.Next(SLIL.scary_sounds.Length)]);
+                    if (player.IncreasingFear()) PlayGameSound(player.ID, SLIL.scary_sounds[Rand.Next(SLIL.scary_sounds.Length)]);
                     Pet playerPet = player.PET;
                     if (playerPet != null && playerPet.IsInstantAbility != 1)
                     {
@@ -1979,20 +1990,22 @@ namespace SLIL.Classes
             if (p == null || p.Stamine < 200) return;
             if (p.EffectCheck(3)) return;
             if (p.InTransport) return;
-            bool damnKick = rand.NextDouble() <= p.CurseKickChance;
+            bool damnKick = Rand.NextDouble() <= p.CurseKickChance;
             if (damnKick) PlayGameSound(playerID, SLIL.DamnKick);
             else PlayGameSound(playerID, SLIL.Kick);
-            p.ReducesStamine(150);
+            if (damnKick) p.ReducesStamine(600);
+            else p.ReducesStamine(150);
             p.DoesKick = true;
             p.Look = 0;
-            p.KickState = 0;
+            p.KickType = 0;
             p.CanUnblockCamera = false;
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
             p.CanShoot = false;
-            p.KickState = damnKick ? 1 : 0;
+            p.KickType = damnKick ? 1 : 0;
             new Thread(() =>
             {
+                if (damnKick) Thread.Sleep(325);
                 FindEntityForKick(p, damnKick);
                 Thread.Sleep(150);
                 StopKick(playerID);
@@ -2001,10 +2014,11 @@ namespace SLIL.Classes
 
         private void FindEntityForKick(Entity ent, bool damnKick = false)
         {
+            double maxDistance = damnKick ? 2.5 : 0.6;
             double distance = 0;
             double kickX = Math.Sin(ent.A);
             double kickY = Math.Cos(ent.A);
-            while (distance <= 0.6)
+            while (distance <= maxDistance)
             {
                 distance += 0.1;
                 double testX = ent.X + kickX * distance;
@@ -2013,20 +2027,22 @@ namespace SLIL.Classes
                 {
                     if (Entities[i] is Player || !Entities[i].HasAI) continue;
                     var entity = Entities[i];
-                    if (!entity.MightBeKicked) continue;
-                    if (ML.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(ent.X, ent.Y)) > 1.5) continue;
-                    if (Math.Abs(entity.X - testX) > 0.5 || Math.Abs(entity.Y - testY) > 0.5) continue;
-                    KickEntity(entity, ent, damnKick ? 2 : 0.8);
-                    return;
+                    if (entity is Creature creature)
+                    {
+                        if (!creature.MightBeKicked) continue;
+                        if (ML.GetDistance(new TPoint(creature.X, creature.Y), new TPoint(ent.X, ent.Y)) > maxDistance + 1) continue;
+                        if (Math.Abs(creature.X - testX) > 0.5 || Math.Abs(creature.Y - testY) > 0.5) continue;
+                        KickCreature(creature, ent, damnKick ? 2 : 0.8, damnKick ? 15 : 1);
+                        return;
+                    }
                 }
             }
         }
 
-        private void KickEntity(Entity entity, Entity attacker, double power)
+        private void KickCreature(Creature creature, Entity attacker, double power, double damage)
         {
-            entity.KnockbackBlow(attacker.A, power);
-            if (entity is Creature creature && creature.CanHitByKick)
-                DealDamageFromPlayerToCreature(creature, 1, attacker);
+            creature.KnockbackBlow(attacker.A, power);
+            if (creature.CanHitByKick) DealDamageFromPlayerToCreature(creature, damage, attacker);
         }
 
         private void StopKick(int playerID)
@@ -2049,9 +2065,9 @@ namespace SLIL.Classes
                     p.DisposableItem.Level = Levels.LV4;
                 else
                 {
-                    if (rand.NextDouble() <= p.CurseCureChance)
+                    if (Rand.NextDouble() <= p.CurseCureChance)
                     {
-                        if (rand.NextDouble() <= 0.5)
+                        if (Rand.NextDouble() <= 0.5)
                             p.DisposableItem.Level = Levels.LV2;
                         else
                             p.DisposableItem.Level = Levels.LV3;

@@ -723,6 +723,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap dummy {
+            get {
+                object obj = ResourceManager.GetObject("dummy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap durability {
             get {
                 object obj = ResourceManager.GetObject("durability", resourceCulture);
@@ -1976,6 +1986,16 @@ namespace SLIL.Properties {
         internal static System.Drawing.Bitmap money {
             get {
                 object obj = ResourceManager.GetObject("money", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap money_pile {
+            get {
+                object obj = ResourceManager.GetObject("money_pile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -170,6 +170,10 @@ namespace SLIL.Classes
             //SoulExplosion
             { (47, SpriteStates.StepForward_0), Properties.Resources.soul_explosion_0},
             { (47, SpriteStates.StepForward_1), Properties.Resources.exploding_barrel_1},
+            //MoneyPile
+            { (48, SpriteStates.Static), Properties.Resources.money_pile},
+            //Dummy
+            { (49, SpriteStates.Static), Properties.Resources.dummy},
         };
         private Dictionary<(int , SpriteStates), Image> cute_textures = new Dictionary<(int, SpriteStates), Image>()
         {
@@ -309,6 +313,10 @@ namespace SLIL.Classes
             //SoulExplosion
             { (47, SpriteStates.StepForward_0), Properties.Resources.soul_explosion_c_0},
             { (47, SpriteStates.StepForward_1), Properties.Resources.exploding_barrel_1},
+            //MoneyPile
+            { (48, SpriteStates.Static), Properties.Resources.money_pile},
+            //Dummy
+            { (49, SpriteStates.Static), Properties.Resources.dummy},
         };
         private readonly Color[] COLORS =
         {

@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace SLIL.SLIL_Localization
 {
-    public class Localization
+    internal class Localization
     {
         private readonly List<SLILLocalization> SLILLocalizations;
 
-        public Localization() => SLILLocalizations = new List<SLILLocalization>();
+        internal Localization() => SLILLocalizations = new List<SLILLocalization>();
 
-        public async Task DownloadLocalization(string language)
+        internal async Task DownloadLocalization(string language)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -25,9 +25,7 @@ namespace SLIL.SLIL_Localization
                         ProcessDownloadedData(language, result);
                     }
                     else
-                    {
                         throw new HttpRequestException($"Request failed with status code: {response.StatusCode}");
-                    }
                 }
                 catch (HttpRequestException e)
                 {
@@ -36,10 +34,7 @@ namespace SLIL.SLIL_Localization
                     else
                         throw new Exception($"An error occurred while downloading the localization: {e.Message}");
                 }
-                catch (Exception e)
-                {
-                    throw new Exception($"An unexpected error occurred: {e.Message}");
-                }
+                catch (Exception e) { throw new Exception($"An unexpected error occurred: {e.Message}"); }
             }
         }
 
@@ -67,7 +62,7 @@ namespace SLIL.SLIL_Localization
             }
         }
 
-        public async Task<string> GetString(string language, string index)
+        private async Task<string> GetString(string language, string index)
         {
             bool all_ok = false;
             int i = 0;
@@ -86,9 +81,9 @@ namespace SLIL.SLIL_Localization
             return SLILLocalizations[i].GetString(index);
         }
 
-        public string GetLString(string language, string index) => GetString(language, index).Result;
+        internal string GetLString(string language, string index) => GetString(language, index).Result;
 
-        public void RemoveDuplicates()
+        internal void RemoveDuplicates()
         {
             List<SLILLocalization> temp = new List<SLILLocalization>(SLILLocalizations);
             SLILLocalizations.Clear();

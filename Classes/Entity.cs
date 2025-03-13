@@ -24,12 +24,6 @@ namespace SLIL.Classes
         internal bool HasStaticAnimation { get; set; }
         internal bool HasSpriteRotation { get; set; }
         internal bool CanHitByTransport { get; set; }
-        internal bool MightBeKicked { get; set; }
-        internal bool CanHitByKick { get; set; }
-        internal bool Stunned { get; set; }
-        internal double KnockbackDirection { get; set; }
-        internal double KnockbackPower { get; set; }
-        internal double PowerResetKnockbackPower { get; set; }
         protected readonly Random Rand;
 
         protected abstract int GetEntityID();
@@ -52,10 +46,6 @@ namespace SLIL.Classes
             HasStaticAnimation = false;
             HasSpriteRotation = false;
             CanHitByTransport = false;
-            MightBeKicked = false;
-            CanHitByKick = false;
-            Stunned = false;
-            PowerResetKnockbackPower = 0.1;
             X = x;
             Y = y;
             IntX = (int)x;
@@ -76,10 +66,6 @@ namespace SLIL.Classes
             HasStaticAnimation = false;
             HasSpriteRotation = false;
             CanHitByTransport = false;
-            MightBeKicked = false;
-            CanHitByKick = false;
-            Stunned = false;
-            PowerResetKnockbackPower = 0.1;
             X = x;
             Y = y;
             IntX = (int)x;
@@ -98,14 +84,6 @@ namespace SLIL.Classes
             this.X = reader.GetDouble();
             this.Y = reader.GetDouble();
             this.A = reader.GetDouble();
-        }
-
-        internal void KnockbackBlow(double knockbackDirection, double knockbackPower)
-        {
-            if (!MightBeKicked) return;
-            KnockbackDirection = knockbackDirection;
-            KnockbackPower = knockbackPower;
-            Stunned = true;
         }
 
         protected void AnimationsToStatic() => HasStaticAnimation = true;
@@ -157,6 +135,12 @@ namespace SLIL.Classes
         protected int MapWidth { get; set; }
         protected int MaxHP { get; set; }
         internal int DeathSound { get; set; }
+        internal bool MightBeKicked { get; set; }
+        internal bool CanHitByKick { get; set; }
+        internal bool Stunned { get; set; }
+        internal double KnockbackDirection { get; set; }
+        internal double KnockbackPower { get; set; }
+        internal double PowerResetKnockbackPower { get; set; }
         protected const int RespawnTime = 60;
 
         protected abstract int GetMaxHP();
@@ -195,6 +179,10 @@ namespace SLIL.Classes
             ImpassibleCells = this.GetImpassibleCells();
             MovesInARow = this.GetMovesInARow();
             NumberOfMovesLeft = MovesInARow;
+            MightBeKicked = false;
+            CanHitByKick = false;
+            Stunned = false;
+            PowerResetKnockbackPower = 0.1;
             HP = MaxHP;
             A = Rand.NextDouble();
             MapWidth = mapWidth;
@@ -220,6 +208,14 @@ namespace SLIL.Classes
             Dead = false;
         }
 
+        internal void KnockbackBlow(double knockbackDirection, double knockbackPower)
+        {
+            if (!MightBeKicked) return;
+            KnockbackDirection = knockbackDirection;
+            KnockbackPower = knockbackPower;
+            Stunned = true;
+        }
+
         internal virtual void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
         {
             double move = this.GetMove();
@@ -235,7 +231,7 @@ namespace SLIL.Classes
             {
                 A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
-            }
+    }
             IntX = (int)X;
             IntY = (int)Y;
             if (KnockbackPower <= 0) Stunned = false;
@@ -597,15 +593,8 @@ namespace SLIL.Classes
         internal double Speed { get; set; } //max: 7.5
         internal int Controllability { get; set; } //90-175
 
-        internal Transport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Transport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
-
-        private void Init()
-        {
-            MightBeKicked = true;
-            CanHitByKick = true;
-            A = Rand.NextDouble();
-        }
+        internal Transport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => A = Rand.NextDouble();
+        internal Transport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => A = Rand.NextDouble();
 
         internal bool DealDamage(double damage)
         {
@@ -634,6 +623,34 @@ namespace SLIL.Classes
             Temporarily = true;
             Animated = true;
             ExplosionOccurred = false;
+        }
+    }
+
+    internal abstract class Bonus : GameObject
+    {
+        protected override double GetEntityWidth() => 0.3;
+
+        internal Bonus(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) { }
+        internal Bonus(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) { }
+    }
+
+    internal class Dummy : NPC
+    {
+        protected override int GetEntityID() => 33;
+
+        internal Dummy(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        internal Dummy(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        internal override bool DealDamage(double damage) => false;
+
+        private void Init()
+        {
+            CanHit = true;
+            MightBeKicked = true;
+            CanHitByKick = true;
+            CanHitByTransport = true;
+            Texture = 49;
+            base.AnimationsToStatic();
         }
     }
 
@@ -689,7 +706,6 @@ namespace SLIL.Classes
             Index = 0;
             CanJump = true;
             AddToShop = true;
-            //HasSpriteRotation = true;
             Cost = 150;
             TransportHP = 150;
             Speed = 2.35;
@@ -797,12 +813,11 @@ namespace SLIL.Classes
         }
     }
 
-    internal class AmmoBox : GameObject
+    internal class AmmoBox : Bonus
     {
         internal Type WeaponType;
 
         protected override int GetEntityID() => 31;
-        protected override double GetEntityWidth() => 0.4;
 
         internal AmmoBox(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
         internal AmmoBox(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
@@ -810,7 +825,22 @@ namespace SLIL.Classes
         private void Init()
         {
             Texture = 44;
-            MightBeKicked = true;
+            base.AnimationsToStatic();
+        }
+    }
+
+    internal class MoneyPile : Bonus
+    {
+        internal int MoneyCount;
+
+        protected override int GetEntityID() => 32;
+
+        internal MoneyPile(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
+        internal MoneyPile(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+
+        private void Init()
+        {
+            Texture = 48;
             base.AnimationsToStatic();
         }
     }

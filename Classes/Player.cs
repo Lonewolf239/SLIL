@@ -34,7 +34,7 @@ namespace SLIL.Classes
         internal bool InParkour { get; set; }
         internal bool DoesKick { get; set; }
         internal int ParkourState { get; set; }
-        internal int KickState { get; set; }
+        internal int KickType { get; set; }
         internal bool CuteMode { get; set; }
         internal int TotalEnemiesKilled { get; set; }
         internal int EnemiesKilled { get; set; }
@@ -578,7 +578,7 @@ namespace SLIL.Classes
                 for (int i = 0; i < DisposableItems.Count; i++)
                     DisposableItems[i].SetDefault();
                 CurseCureChance = 0.08;
-                CurseKickChance = 0.01;
+                CurseKickChance = 0.04;
                 TotalEnemiesKilled = 0;
                 WeaponSlot_0 = WeaponSlot_1 = -1;
                 MaxMoveSpeed = 1.8;
@@ -624,7 +624,7 @@ namespace SLIL.Classes
                 CanUnblockCamera = true;
             }
             ParkourState = 0;
-            KickState = 0;
+            KickType = 0;
             Stamine = MaxStamine;
             PreviousGun = CurrentGun = 2;
             if (Guns.Count == 0)
