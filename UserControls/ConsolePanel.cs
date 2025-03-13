@@ -15,8 +15,8 @@ namespace SLIL.UserControls
     internal partial class ConsolePanel : UserControl
     {
         private static bool ImHonest = false;
-        private int cheat_index = 0, color_index = 0;
-        private readonly Effect[] effects =
+        private int CheatIndex = 0, ColorIndex = 0;
+        private readonly Effect[] Effects =
         {
             new Regeneration(), new Adrenaline(),
             new Protection(), new Fatigue(),
@@ -24,18 +24,18 @@ namespace SLIL.UserControls
             new Blindness(), new Stunned(),
             new VoidE(), new God()
         };
-        private readonly List<string> previous_cheat = new List<string>();
+        private readonly List<string> History = new List<string>();
         internal List<Entity> Entities;
         internal Player player;
-        internal string command = "";
-        private readonly Dictionary<string, Color> colorMap = new Dictionary<string, Color>
+        internal string Command = "";
+        private readonly Dictionary<string, Color> ColorMap = new Dictionary<string, Color>
         {
             { "-", Color.Yellow },
             { "*", Color.Tomato },
             { "~", Color.Cyan },
             { "<", Color.White }
         };
-        private readonly Color[] foreColors = 
+        private readonly Color[] ForeColors = 
         {
             Color.Lime, Color.White, Color.Magenta, 
             Color.Teal,Color.DeepSkyBlue, Color.SlateGray, 
@@ -57,11 +57,11 @@ namespace SLIL.UserControls
             if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
             {
                 if (console.Text[console.Text.Length - 2] == ':' && console.Text[console.Text.Length - 1] == ' ') return;
-                if (command.Length > 0)
+                if (Command.Length > 0)
                 {
-                    int start = command.Length - 1;
+                    int start = Command.Length - 1;
                     if (start < 0) start = 0;
-                    command = command.Remove(start);
+                    Command = Command.Remove(start);
                 }
                 ConsoleDeleteText(1);
                 return;
@@ -72,7 +72,7 @@ namespace SLIL.UserControls
         {
             e.SuppressKeyPress = true;
             e.Handled = true;
-            if (e.KeyCode == Keys.Enter && command.Length > 0) DidCommand();
+            if (e.KeyCode == Keys.Enter && Command.Length > 0) DidCommand();
             else if (e.KeyCode != Keys.Up && e.KeyCode != Keys.Down)
             {
                 if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
@@ -85,39 +85,39 @@ namespace SLIL.UserControls
                 else if (e.KeyCode == Keys.Space) c = ' ';
                 else if (e.KeyCode.ToString().StartsWith("Oem") || e.KeyCode == Keys.Divide || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Add)
                     return;
-                command += c.ToString();
+                Command += c.ToString();
                 ConsoleAppendColoredText(c.ToString(), Color.Cyan);
             }
             if (e.KeyCode == Keys.Up)
             {
-                if (previous_cheat.Count == 0) return;
+                if (History.Count == 0) return;
                 ClearCommand();
-                command = previous_cheat[cheat_index];
-                cheat_index--;
-                if (cheat_index < 0)
-                    cheat_index = previous_cheat.Count - 1;
-                ConsoleAppendColoredText(command, Color.Cyan);
+                Command = History[CheatIndex];
+                CheatIndex--;
+                if (CheatIndex < 0)
+                    CheatIndex = History.Count - 1;
+                ConsoleAppendColoredText(Command, Color.Cyan);
             }
             if (e.KeyCode == Keys.Down)
             {
-                if (previous_cheat.Count == 0) return;
+                if (History.Count == 0) return;
                 ClearCommand();
-                command = previous_cheat[cheat_index];
-                cheat_index++;
-                if (cheat_index >= previous_cheat.Count)
-                    cheat_index = 0;
-                ConsoleAppendColoredText(command, Color.Cyan);
+                Command = History[CheatIndex];
+                CheatIndex++;
+                if (CheatIndex >= History.Count)
+                    CheatIndex = 0;
+                ConsoleAppendColoredText(Command, Color.Cyan);
             }
         }
 
         private void DidCommand()
         {
             SLIL parent = (SLIL)Parent.FindForm();
-            Color color = foreColors[color_index];
+            Color color = ForeColors[ColorIndex];
             bool show_date = true, show_message = true;
             string message = null, time = null;
-            string cheat = command.ToUpper().Trim(' ').Replace("`", null);
-            command = "";
+            string cheat = Command.ToUpper().Trim(' ').Replace("`", null);
+            Command = "";
             if (cheat == "HELP")
             {
                 show_date = false;
@@ -384,7 +384,7 @@ namespace SLIL.UserControls
                 catch { }
                 if (selected == null)
                 {
-                    cheat_index = previous_cheat.Count - 1;
+                    CheatIndex = History.Count - 1;
                     color = Color.Red;
                     message += "There is no enemy under this index.";
                 }
@@ -433,7 +433,7 @@ namespace SLIL.UserControls
                 }
                 if (selected == null)
                 {
-                    cheat_index = previous_cheat.Count - 1;
+                    CheatIndex = History.Count - 1;
                     color = Color.Red;
                     message += "This weapon is not on the list.";
                 }
@@ -485,7 +485,7 @@ namespace SLIL.UserControls
             else if (cheat == "SLC")
             {
                 show_message = false;
-                previous_cheat.Clear();
+                History.Clear();
             }
             else if (cheat == "SAY GEX") message += "GAY SEX";
             else if (cheat.StartsWith("SAY "))
@@ -653,8 +653,8 @@ namespace SLIL.UserControls
                     }
                     else
                     {
-                        color_index = x;
-                        color = foreColors[color_index];
+                        ColorIndex = x;
+                        color = ForeColors[ColorIndex];
                         show_date = false;
                         console.Text = null;
                         message = "SLIL console *v1.6*\nType \"-HELP-\" for a list of commands...";
@@ -686,11 +686,11 @@ namespace SLIL.UserControls
                          "~┌─────┬──────────────────┬─────────────────────────────────────┐~\n" +
                          "~│~ *ID*  ~│~ *Effect*           ~│~ *Description*                         ~│~\n" +
                          "~├─────┼──────────────────┼─────────────────────────────────────┤~\n";
-                    for (int i = 0; i < effects.Length; i++)
+                    for (int i = 0; i < Effects.Length; i++)
                     {
-                        string id = effects[i].ID.ToString().PadRight(4);
-                        string name = effects[i].Name.PadRight(17);
-                        string description = effects[i].Description.PadRight(36);
+                        string id = Effects[i].ID.ToString().PadRight(4);
+                        string name = Effects[i].Name.PadRight(17);
+                        string description = Effects[i].Description.PadRight(36);
                         message += $"~│~ *{id}*~│~ -{name}-~│~ {description}~│~\n";
                     }
                     message += "~└─────┴──────────────────┴─────────────────────────────────────┘~";
@@ -702,9 +702,9 @@ namespace SLIL.UserControls
                 }
                 else if (cheat == "EFALLGV")
                 {
-                    for (int i = 0; i < effects.Length; i++)
+                    for (int i = 0; i < Effects.Length; i++)
                     {
-                        if (!effects[i].CanIssuedByConsole) continue;
+                        if (!Effects[i].CanIssuedByConsole) continue;
                         if (!player.EffectCheck(i) && i != 4 && i != 8)
                             player.GiveEffect(i, true);
                     }
@@ -714,7 +714,7 @@ namespace SLIL.UserControls
                 {
                     if (int.TryParse(cheat.Split('_')[1], out int x))
                     {
-                        if (ML.OutOfLimits(x, effects.Length))
+                        if (ML.OutOfLimits(x, Effects.Length))
                         {
                             color = Color.Red;
                             message = $"There is no effect under ID {x}";
@@ -728,7 +728,7 @@ namespace SLIL.UserControls
                             }
                             else
                             {
-                                if (!effects[x].CanIssuedByConsole)
+                                if (!Effects[x].CanIssuedByConsole)
                                 {
                                     color = Color.Red;
                                     message = $"It is impossible to issue this effect with the command";
@@ -751,7 +751,7 @@ namespace SLIL.UserControls
                 {
                     if (int.TryParse(cheat.Split('_')[1], out int x))
                     {
-                        if (ML.OutOfLimits(x, effects.Length))
+                        if (ML.OutOfLimits(x, Effects.Length))
                         {
                             color = Color.Red;
                             message = $"There is no effect under ID {x}";
@@ -765,7 +765,7 @@ namespace SLIL.UserControls
                             }
                             else
                             {
-                                if (!effects[x].CanIssuedByConsole)
+                                if (!Effects[x].CanIssuedByConsole)
                                 {
                                     color = Color.Red;
                                     message = $"It is impossible to issue this effect with the command";
@@ -790,7 +790,7 @@ namespace SLIL.UserControls
                     {
                         int x = Convert.ToInt32(cheat.Split('_')[1]);
                         int y = Convert.ToInt32(cheat.Split('_')[3]);
-                        if (ML.OutOfLimits(x, effects.Length))
+                        if (ML.OutOfLimits(x, Effects.Length))
                         {
                             color = Color.Red;
                             message = $"There is no effect under ID {x}";
@@ -804,7 +804,7 @@ namespace SLIL.UserControls
                             }
                             else
                             {
-                                if (!effects[x].CanIssuedByConsole)
+                                if (!Effects[x].CanIssuedByConsole)
                                 {
                                     color = Color.Red;
                                     message = $"It is impossible to issue this effect with the command";
@@ -1268,14 +1268,14 @@ namespace SLIL.UserControls
                 }
                 else
                 {
-                    cheat_index = previous_cheat.Count - 1;
+                    CheatIndex = History.Count - 1;
                     color = Color.Red;
                     message = $"Unknown command: {cheat}";
                 }
             }
             else
             {
-                cheat_index = previous_cheat.Count - 1;
+                CheatIndex = History.Count - 1;
                 color = Color.Red;
                 message = $"Unknown command: {cheat}";
             }
@@ -1283,17 +1283,17 @@ namespace SLIL.UserControls
             if (show_message) ConsoleAppendText($"\n{time}{message}", color);
             if (color != Color.Red)
             {
-                previous_cheat.Add(cheat);
-                cheat_index = previous_cheat.Count - 1;
+                History.Add(cheat);
+                CheatIndex = History.Count - 1;
             }
-            ConsoleAppendText("\n\nEnter the command: ", foreColors[color_index]);
+            ConsoleAppendText("\n\nEnter the command: ", ForeColors[ColorIndex]);
             console.ScrollToCaret();
         }
 
         internal void ClearCommand()
         {
-            ConsoleDeleteText(command.Length);
-            command = "";
+            ConsoleDeleteText(Command.Length);
+            Command = "";
         }
 
         private void ConsoleDeleteText(int count)
@@ -1309,13 +1309,13 @@ namespace SLIL.UserControls
 
         private void ConsoleAppendText(string text, Color color)
         {
-            string pattern = string.Join("|", colorMap.Keys.Select(k => $@"(\{k}.*?\{k})"));
+            string pattern = string.Join("|", ColorMap.Keys.Select(k => $@"(\{k}.*?\{k})"));
             string[] parts = Regex.Split(text, pattern);
             foreach (string part in parts)
             {
                 if (string.IsNullOrEmpty(part))
                     continue;
-                var colorPair = colorMap.FirstOrDefault(pair => part.StartsWith(pair.Key) && part.EndsWith(pair.Key));
+                var colorPair = ColorMap.FirstOrDefault(pair => part.StartsWith(pair.Key) && part.EndsWith(pair.Key));
                 if (colorPair.Key != null)
                 {
                     string word = part.Trim(colorPair.Key.ToCharArray());
@@ -1341,7 +1341,7 @@ namespace SLIL.UserControls
             BringToFront();
             if (player != null)
                 player.Look = 0;
-            cheat_index = previous_cheat.Count - 1;
+            CheatIndex = History.Count - 1;
         }
 
         private void Console_TextChanged(object sender, EventArgs e)
@@ -1349,9 +1349,9 @@ namespace SLIL.UserControls
             if (console.Text.Length == console.MaxLength)
             {
                 console.Clear();
-                ConsoleAppendText("SLIL console *v1.6*\nType \"-HELP-\" for a list of commands...", foreColors[color_index]);
-                ConsoleAppendText("*The console was cleared due to a buffer overflow*", foreColors[color_index]);
-                ConsoleAppendText("\n\nEnter the command: ", foreColors[color_index]);
+                ConsoleAppendText("SLIL console *v1.6*\nType \"-HELP-\" for a list of commands...", ForeColors[ColorIndex]);
+                ConsoleAppendText("*The console was cleared due to a buffer overflow*", ForeColors[ColorIndex]);
+                ConsoleAppendText("\n\nEnter the command: ", ForeColors[ColorIndex]);
                 console.Refresh();
             }
         }
@@ -1376,7 +1376,7 @@ namespace SLIL.UserControls
             if (lineIndex < 0 || lineIndex >= console.Lines.Length) return;
             string line = console.Lines[lineIndex];
             int charPositionInLine = charIndex - console.GetFirstCharIndexFromLine(lineIndex);
-            string pattern = @"screenshots\\screenshot_\d{4}_\d{2}_\d{2}__\d{2}_\d{2}_\d{2}\.png";
+            const string pattern = @"screenshots\\screenshot_\d{4}_\d{2}_\d{2}__\d{2}_\d{2}_\d{2}\.png";
             Match match = Regex.Match(line, pattern);
             if (match.Success)
             {
@@ -1387,14 +1387,8 @@ namespace SLIL.UserControls
                 {
                     if (File.Exists(filePath))
                     {
-                        try
-                        {
-                            Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
-                        }
-                        catch (Exception ex)
-                        {
-                            Log($"Error opening file: {ex.Message}", true, true, Color.Red);
-                        }
+                        try { Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true }); }
+                        catch (Exception ex) { Log($"Error opening file: {ex.Message}", true, true, Color.Red); }
                     }
                     else
                         Log($"File not found: {filePath}", true, true, Color.Red);

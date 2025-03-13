@@ -1063,7 +1063,11 @@ namespace SLIL
 
         //  #====    SLIL methods   ====#
 
-        private void SLIL_Activated(object sender, EventArgs e) => active = true;
+        private void SLIL_Activated(object sender, EventArgs e)
+        {
+            TopMost = true;
+            active = true;
+        }
 
         private void SLIL_Deactivate(object sender, EventArgs e)
         {
@@ -1075,6 +1079,8 @@ namespace SLIL
                 player.PlayerMoveStyle = Directions.WALK;
             }
             RunKeyPressed = false;
+            if (!Paused) Pause();
+            TopMost = false;
             active = false;
         }
 
@@ -3847,7 +3853,11 @@ namespace SLIL
                         Entity entity = Entities[spriteInfo[i].Order];
                         if (!entity.HasAI) continue;
                         Creature creature = null;
-                        if (entity is Creature c) creature = c;
+                        if (entity is Creature c)
+                        {
+                            if (c.Dead || !c.CanHit) continue;
+                            creature = c;
+                        }
                         double spriteX = entity.X - player.X;
                         double spriteY = entity.Y - player.Y;
                         double transformX = invDet * (dirY * spriteX - dirX * spriteY);
