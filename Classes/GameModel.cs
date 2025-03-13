@@ -1973,7 +1973,9 @@ namespace SLIL.Classes
             if (p == null || p.Stamine < 200) return;
             if (p.EffectCheck(3)) return;
             if (p.InTransport) return;
-            PlayGameSound(playerID, SLIL.Kick);
+            bool damnKick = rand.NextDouble() <= p.CurseKickChance;
+            if (damnKick) PlayGameSound(playerID, SLIL.DamnKick);
+            else PlayGameSound(playerID, SLIL.Kick);
             p.ReducesStamine(150);
             p.DoesKick = true;
             p.Look = 0;
@@ -1982,16 +1984,16 @@ namespace SLIL.Classes
             p.BlockCamera = p.BlockInput = true;
             p.PlayerMoveStyle = Directions.WALK;
             p.CanShoot = false;
+            p.KickState = damnKick ? 1 : 0;
             new Thread(() =>
             {
-                FindEntityForKick(p);
+                FindEntityForKick(p, damnKick);
                 Thread.Sleep(150);
                 StopKick(playerID);
-                p.KickState++;
             }).Start();
         }
 
-        private void FindEntityForKick(Entity ent)
+        private void FindEntityForKick(Entity ent, bool damnKick = false)
         {
             double distance = 0;
             double kickX = Math.Sin(ent.A);
@@ -2008,7 +2010,7 @@ namespace SLIL.Classes
                     if (!entity.MightBeKicked) continue;
                     if (ML.GetDistance(new TPoint(entity.X, entity.Y), new TPoint(ent.X, ent.Y)) > 1.5) continue;
                     if (Math.Abs(entity.X - testX) > 0.5 || Math.Abs(entity.Y - testY) > 0.5) continue;
-                    KickEntity(entity, ent, 0.8);
+                    KickEntity(entity, ent, damnKick ? 2 : 0.8);
                     return;
                 }
             }

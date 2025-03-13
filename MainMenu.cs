@@ -688,6 +688,7 @@ namespace SLIL
                     Localizations.GetLString(Language, "0-64")
                 };
                 smoothing_list.Items.AddRange(smooth_list);
+                kick_label.Text = Localizations.GetLString(Language, "0-134");
                 inventory_label.Text = Localizations.GetLString(Language, "0-130");
                 localization_update_btn.Text = Localizations.GetLString(Language, "0-90");
                 smoothing_label.Text = Localizations.GetLString(Language, "0-1");
@@ -773,6 +774,7 @@ namespace SLIL
             else
             {
                 smoothing_list.Items.AddRange(new string[] { "No Antialiasing", "Default", "High Quality", "High Speed" });
+                kick_label.Text = "Kick";
                 inventory_label.Text = "Inventory";
                 kick_label.Text = "Kick";
                 localization_update_btn.Text = "Update language list";

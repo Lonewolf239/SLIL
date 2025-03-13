@@ -576,7 +576,8 @@ namespace SLIL
             BreakdownDoors = new PlaySound(MainMenu.CGFReader.GetFile("breakdown_doors.wav"), false),
             LiftingAmmoBox = new PlaySound(MainMenu.CGFReader.GetFile("lifting_ammo_box.wav"), false),
             VoidStalkerScreamer = new PlaySound(MainMenu.CGFReader.GetFile("void_stalker_screamer.wav"), false),
-            Kick = new PlaySound(MainMenu.CGFReader.GetFile("kick.wav"), false);
+            Kick = new PlaySound(MainMenu.CGFReader.GetFile("kick.wav"), false),
+            DamnKick = new PlaySound(MainMenu.CGFReader.GetFile("kick.wav"), false);
         internal static PlaySound[] Climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
         internal static PlaySound[] Door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
@@ -3431,8 +3432,11 @@ namespace SLIL
             }
             else if (player.InParkour)
                 imageToDraw = Properties.Resources.player_parkour;
-            else if (player.DoesKick)
-                imageToDraw = Properties.Resources.missing;
+            //else if (player.DoesKick)
+            //{
+            //    if (player.KickState == 0) imageToDraw = Properties.Resources.kick;
+            //    else imageToDraw = Properties.Resources.damn_kick;
+            //}
             else if (player.UseItem)
                 imageToDraw = GunsImagesDict[player.DisposableItem.GetType()][player.DisposableItem.GetLevel(), player.ItemFrame];
             else
@@ -4307,6 +4311,7 @@ namespace SLIL
             LiftingAmmoBox?.Stop();
             VoidStalkerScreamer?.Stop();
             Kick?.Stop();
+            DamnKick?.Stop();
         }
 
         private static void StopTwoDimensionalSoundsArray(PlaySound[,] array)

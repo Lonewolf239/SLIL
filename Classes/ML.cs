@@ -30,5 +30,17 @@ namespace SLIL.Classes
         internal static double Clamp(double value, double min, double max) => Math.Max(min, Math.Min(max, value));
         internal static float Clamp(float value, float min, float max) => Math.Max(min, Math.Min(max, value));
         internal static int Clamp(int value, int min, int max) => Math.Max(min, Math.Min(max, value));
+
+        internal static bool OutOfLimits(double value, double max) => OutOfLimits(value, 0, max);
+        internal static bool OutOfLimits(float value, float max) => OutOfLimits(value, 0, max);
+        internal static bool OutOfLimits(int value, int max) => OutOfLimits(value, 0, max);
+
+        internal static bool OutOfLimits(double value, double min, double max) => value < min || value > max;
+        internal static bool OutOfLimits(float value, float min, float max) => value < min || value > max;
+        internal static bool OutOfLimits(int value, int min, int max) => value < min || value > max;
+
+        internal static bool WithinOne(double value) => value >= 0 && value <= 1;
+        internal static bool WithinOne(float value) => value >= 0 && value <= 1;
+        internal static bool WithinOne(int value) => value >= 0 && value <= 1;
     }
 }

@@ -9,7 +9,6 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace SLIL.UserControls
 {
@@ -151,7 +150,7 @@ namespace SLIL.UserControls
                      "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                      "~│~ -PLAYER-      ~│~ View player information                     ~│~\n" +
                      "~│~ -GUNS-        ~│~ Viewing weapon parameters                   ~│~\n" +
-                     "~│~ -ENEMIES-      ~│~ View list of enemies                        ~│~\n" +
+                     "~│~ -ENEMIES-     ~│~ View list of enemies                        ~│~\n" +
                      "~│~ -OSTS-        ~│~ View a list of game background music        ~│~\n" +
                      "~│~ -CHEATS-      ~│~ View list of cheats                         ~│~\n" +
                      "~└─────────────┴─────────────────────────────────────────────┘~";
@@ -207,7 +206,8 @@ namespace SLIL.UserControls
                          "~├─────────────┼─────────────────────────────────────────────┤~\n" +
                          "~│~ -IMHONEST-    ~│~ Disable cheats                              ~│~\n" +
                          "~├─────────────┼─────────────────────────────────────────────┤~\n" +
-                         "~│~ -CCHANC_-*X*    ~│~ Set the probability of cursed treatment     ~│~\n" +
+                         "~│~ -CHSCH_-*X*     ~│~ Set the probability of cursed treatment     ~│~\n" +
+                         "~│~ -DKSCH_-*X*     ~│~ Set the probability of a cursed kick        ~│~\n" +
                          "~│~ -MONEY_-*X*     ~│~ Change the amount of money to X             ~│~\n" +
                          "~│~ -SOTLG-       ~│~ Maximum amount of money                     ~│~\n" +
                          "~├─────────────┼─────────────────────────────────────────────┤~\n" +
@@ -278,22 +278,21 @@ namespace SLIL.UserControls
             }
             else if (cheat.StartsWith("OST_"))
             {
-                try
+                if (int.TryParse(cheat.Split('_')[1], out int x))
                 {
-                    int x = Convert.ToInt32(cheat.Split('_')[1]);
-                    if (x > -1 && x < 5)
+                    if (ML.OutOfLimits(x, 4))
+                    {
+                        color = Color.Red;
+                        message = "Incorrect value! X must be in the range from 0 to 4.";
+                    }
+                    else
                     {
                         message += $"Now the track slil_ost_{x} is playing.";
                         SLIL.PrevOst = x;
                         SLIL.ChangeOst(x);
                     }
-                    else
-                    {
-                        color = Color.Red;
-                        message = "Incorrect value! X must be in the range from 0 to 4.";
-                    }
                 }
-                catch
+                else
                 {
                     color = Color.Red;
                     message = "Incorrect data entered! X is not a number.";
@@ -514,10 +513,9 @@ namespace SLIL.UserControls
             }
             else if (cheat.StartsWith("MVOL_"))
             {
-                try
+                if (float.TryParse(cheat.Split('_')[1].Replace('.', ','), out float x))
                 {
-                    float x = Convert.ToSingle(cheat.Split('_')[1].Replace('.', ','));
-                    if (x >= 0 && x <= 1)
+                    if (ML.WithinOne(x))
                     {
                         message += $"Current music volume is now {x}. *Default: 0,4*";
                         SLIL.MusicVolume = x;
@@ -529,7 +527,7 @@ namespace SLIL.UserControls
                         message = "Incorrect value! X must be in the range from 0 to 1.";
                     }
                 }
-                catch
+                else
                 {
                     color = Color.Red;
                     message = "Incorrect data entered! X is not a number.";
@@ -537,10 +535,9 @@ namespace SLIL.UserControls
             }
             else if (cheat.StartsWith("EVOL_"))
             {
-                try
+                if (float.TryParse(cheat.Split('_')[1].Replace('.', ','), out float x))
                 {
-                    float x = Convert.ToSingle(cheat.Split('_')[1].Replace('.', ','));
-                    if (x >= 0 && x <= 1)
+                    if (ML.WithinOne(x))
                     {
                         message += $"Current effects volume is now {x}. *Default: 0,4*";
                         SLIL.EffectsVolume = x;
@@ -551,7 +548,7 @@ namespace SLIL.UserControls
                         message = "Incorrect value! X must be in the range from 0 to 1.";
                     }
                 }
-                catch
+                else
                 {
                     color = Color.Red;
                     message = "Incorrect data entered! X is not a number.";
@@ -559,10 +556,9 @@ namespace SLIL.UserControls
             }
             else if (cheat.StartsWith("VOL_"))
             {
-                try
+                if (float.TryParse(cheat.Split('_')[1].Replace('.', ','), out float x))
                 {
-                    float x = Convert.ToSingle(cheat.Split('_')[1].Replace('.', ','));
-                    if (x >= 0 && x <= 1)
+                    if (ML.WithinOne(x))
                     {
                         message += $"Current volume is now {x}. *Default: 0,4*";
                         SLIL.Volume = x;
@@ -573,7 +569,7 @@ namespace SLIL.UserControls
                         message = "Incorrect value! X must be in the range from 0 to 1.";
                     }
                 }
-                catch
+                else
                 {
                     color = Color.Red;
                     message = "Incorrect data entered! X is not a number.";
@@ -581,22 +577,21 @@ namespace SLIL.UserControls
             }
             else if (cheat.StartsWith("SCOPE_"))
             {
-                try
+                if (int.TryParse(cheat.Split('_')[1], out int x))
                 {
-                    int x = Convert.ToInt32(cheat.Split('_')[1]);
-                    if (x > -1 && x < 5)
+                    if (ML.OutOfLimits(x, 4))
+                    {
+                        color = Color.Red;
+                        message = "Incorrect value! X must be in the range from 0 to 4.";
+                    }
+                    else
                     {
                         message += $"Current crosshair is now {x}. *Default: 0*";
                         SLIL.ScopeType = x;
                         Program.iniReader.SetKey("SLIL", "scope_type", x);
                     }
-                    else
-                    {
-                        color = Color.Red;
-                        message = "Incorrect value! X must be in the range from 0 to 4.";
-                    }
                 }
-                catch
+                else
                 {
                     color = Color.Red;
                     message = "Incorrect data entered! X is not a number.";
@@ -604,22 +599,21 @@ namespace SLIL.UserControls
             }
             else if (cheat.StartsWith("SCOPECOL_"))
             {
-                try
+                if (int.TryParse(cheat.Split('_')[1], out int x))
                 {
-                    int x = Convert.ToInt32(cheat.Split('_')[1]);
-                    if (x > -1 && x < 9)
+                    if (ML.OutOfLimits(x, 8))
+                    {
+                        color = Color.Red;
+                        message = "Incorrect value! X must be in the range from 0 to 8.";
+                    }
+                    else
                     {
                         message += $"Current crosshair color is now {x}. *Default: 0*";
                         SLIL.ScopeColor = x;
                         Program.iniReader.SetKey("SLIL", "scope_color", x);
                     }
-                    else
-                    {
-                        color = Color.Red;
-                        message = "Incorrect value! X must be in the range from 0 to 8.";
-                    }
                 }
-                catch
+                else
                 {
                     color = Color.Red;
                     message = "Incorrect data entered! X is not a number.";
@@ -627,10 +621,9 @@ namespace SLIL.UserControls
             }
             else if (cheat.StartsWith("LOOK_"))
             {
-                try
+                if (double.TryParse(cheat.Split('_')[1].Replace('.', ','), out double x))
                 {
-                    double x = Convert.ToDouble(cheat.Split('_')[1].Replace('.', ','));
-                    if (x < 2.5 || x > 10)
+                    if (ML.OutOfLimits(x, 2.5, 10))
                     {
                         color = Color.Red;
                         message = "Incorrect range specified! Instead of X, enter a number between 2,5 and 10.";
@@ -642,7 +635,7 @@ namespace SLIL.UserControls
                         Program.iniReader.SetKey("SLIL", "look_speed", x);
                     }
                 }
-                catch
+                else
                 {
                     color = Color.Red;
                     message = "Incorrect data entered! X is not a number.";
@@ -650,10 +643,9 @@ namespace SLIL.UserControls
             }
             else if (cheat.StartsWith("COLOR_"))
             {
-                try
+                if (int.TryParse(cheat.Split('_')[1], out int x))
                 {
-                    int x = Convert.ToInt32(cheat.Split('_')[1]);
-                    if (x < 0 || x > 10)
+                    if (ML.OutOfLimits(x, 10))
                     {
                         color = Color.Red;
                         message = "Incorrect range specified! Instead of X, enter a number between 0 and 10.";
@@ -668,7 +660,7 @@ namespace SLIL.UserControls
                         console.Refresh();
                     }
                 }
-                catch
+                else
                 {
                     color = Color.Red;
                     message = "Incorrect data entered! X is not a number.";
@@ -709,10 +701,14 @@ namespace SLIL.UserControls
                 }
                 else if (cheat.StartsWith("EFGIVE_"))
                 {
-                    try
+                    if (int.TryParse(cheat.Split('_')[1], out int x))
                     {
-                        int x = Convert.ToInt32(cheat.Split('_')[1]);
-                        if (x >= 0 && x < effects.Length)
+                        if (ML.OutOfLimits(x, effects.Length))
+                        {
+                            color = Color.Red;
+                            message = $"There is no effect under ID {x}";
+                        }
+                        else
                         {
                             if (player.EffectCheck(x))
                             {
@@ -733,13 +729,8 @@ namespace SLIL.UserControls
                                 }
                             }
                         }
-                        else
-                        {
-                            color = Color.Red;
-                            message = $"There is no effect under ID {x}";
-                        }
                     }
-                    catch
+                    else
                     {
                         color = Color.Red;
                         message = "Incorrect data entered! X is not a number.";
@@ -747,10 +738,14 @@ namespace SLIL.UserControls
                 }
                 else if (cheat.StartsWith("EFGINF_"))
                 {
-                    try
+                    if (int.TryParse(cheat.Split('_')[1], out int x))
                     {
-                        int x = Convert.ToInt32(cheat.Split('_')[1]);
-                        if (x >= 0 && x < effects.Length)
+                        if (ML.OutOfLimits(x, effects.Length))
+                        {
+                            color = Color.Red;
+                            message = $"There is no effect under ID {x}";
+                        }
+                        else
                         {
                             if (player.EffectCheck(x))
                             {
@@ -771,13 +766,8 @@ namespace SLIL.UserControls
                                 }
                             }
                         }
-                        else
-                        {
-                            color = Color.Red;
-                            message = $"There is no effect under ID {x}";
-                        }
                     }
-                    catch
+                    else
                     {
                         color = Color.Red;
                         message = "Incorrect data entered! X is not a number.";
@@ -789,12 +779,17 @@ namespace SLIL.UserControls
                     {
                         int x = Convert.ToInt32(cheat.Split('_')[1]);
                         int y = Convert.ToInt32(cheat.Split('_')[3]);
-                        if (x >= 0 && x < effects.Length)
+                        if (ML.OutOfLimits(x, effects.Length))
                         {
-                            if (y < 5 || y > 9999)
+                            color = Color.Red;
+                            message = $"There is no effect under ID {x}";
+                        }
+                        else
+                        {
+                            if (ML.OutOfLimits(y, 5, 999))
                             {
                                 color = Color.Red;
-                                message = "Incorrect value! Y must be in the range from 5 to 9999.";
+                                message = "Incorrect value! Y must be in the range from 5 to 999.";
                             }
                             else
                             {
@@ -809,11 +804,6 @@ namespace SLIL.UserControls
                                     message = $"Effect at ID {x} was issued for {y} seconds";
                                 }
                             }
-                        }
-                        else
-                        {
-                            color = Color.Red;
-                            message = $"There is no effect under ID {x}";
                         }
                     }
                     catch
@@ -878,38 +868,46 @@ namespace SLIL.UserControls
                         message = "Code not applied! You already have \"Podseratel\".";
                     }
                 }
-                else if (cheat.StartsWith("CCHANC_"))
+                else if (cheat.StartsWith("CHSCH_"))
                 {
-                    double x = 0.08;
-                    bool error = false;
-                    try
+                    if (double.TryParse(cheat.Split('_')[1].Replace('.', ','), out double x))
                     {
-                        x = Convert.ToDouble(cheat.Split('_')[1].Replace('.', ','));
+                        if (ML.WithinOne(x))
+                        {
+                            message += $"Set chance of curse healing to {x * 100:0.##}% *Default: 8%*";
+                            player.CurseCureChance = x;
+                        }
+                        else
+                        {
+                            color = Color.Red;
+                            message = "Incorrect range specified! Instead of X, enter a number between 0 and 1.";
+                        }
                     }
-                    catch
+                }
+                else if (cheat.StartsWith("DKSCH_"))
+                {
+                    if (double.TryParse(cheat.Split('_')[1].Replace('.', ','), out double x))
                     {
-                        error = true;
-                    }
-                    if (error || x < 0 || x > 1)
-                    {
-                        color = Color.Red;
-                        message = "Incorrect range specified! Instead of X, enter a number between 0 and 1.";
-                    }
-                    else
-                    {
-                        message += $"Set chance of curse healing to {x * 100:0.##}% *Default: 8%*";
-                        player.CurseCureChance = x;
+                        if (ML.WithinOne(x))
+                        {
+                            message += $"Set chance of damn kick to {x * 100:0.##}% *Default: 1%*";
+                            player.CurseKickChance = x;
+                        }
+                        else
+                        {
+                            color = Color.Red;
+                            message = "Incorrect range specified! Instead of X, enter a number between 0 and 1.";
+                        }
                     }
                 }
                 else if (cheat.StartsWith("MONEY_"))
                 {
-                    try
+                    if (int.TryParse(cheat.Split('_')[1], out int x))
                     {
-                        int x = Convert.ToInt32(cheat.Split('_')[1]);
                         message += $"The amount of money has been changed to {x}";
                         player.ChangeMoney(x);
                     }
-                    catch
+                    else
                     {
                         color = Color.Red;
                         message = "Incorrect data entered! X is not a number.";
@@ -917,22 +915,21 @@ namespace SLIL.UserControls
                 }
                 else if (cheat.StartsWith("STAMIN_"))
                 {
-                    try
+                    if (int.TryParse(cheat.Split('_')[1], out int x))
                     {
-                        int x = Convert.ToInt32(cheat.Split('_')[1]);
-                        if (x >= 100 && x <= 5000)
+                        if (ML.OutOfLimits(x, 100, 5000))
+                        {
+                            color = Color.Red;
+                            message = "Incorrect value! X must be in the range from 100 to 5000.";
+                        }
+                        else
                         {
                             message += $"Player stamina is now {x}. *Default: 650*";
                             player.MaxStamine = x;
                             player.Stamine = x;
                         }
-                        else
-                        {
-                            color = Color.Red;
-                            message = "Incorrect value! X must be in the range from 100 to 5000.";
-                        }
                     }
-                    catch
+                    else
                     {
                         color = Color.Red;
                         message = "Incorrect data entered! X is not a number.";
@@ -940,22 +937,21 @@ namespace SLIL.UserControls
                 }
                 else if (cheat.StartsWith("SPEED_"))
                 {
-                    try
+                    if (double.TryParse(cheat.Split('_')[1], out double x))
                     {
-                        double x = Convert.ToDouble(cheat.Split('_')[1]);
-                        if (x >= 0.1 && x <= 20)
+                        if (ML.OutOfLimits(x, 0.1, 20))
+                        {
+                            color = Color.Red;
+                            message = "Incorrect value! X must be in the range from 0,1 to 20.";
+                        }
+                        else
                         {
                             message += $"Player speed is now {x}. *Default: 1,8*";
                             player.MaxMoveSpeed = x;
                             player.MaxStrafeSpeed = x / 2;
                         }
-                        else
-                        {
-                            color = Color.Red;
-                            message = "Incorrect value! X must be in the range from 0,1 to 20.";
-                        }
                     }
-                    catch
+                    else
                     {
                         color = Color.Red;
                         message = "Incorrect data entered! X is not a number.";
@@ -1018,14 +1014,14 @@ namespace SLIL.UserControls
                         {
                             int x = Convert.ToInt32(cheat.Split('_')[1]);
                             int y = Convert.ToInt32(cheat.Split('_')[3]);
-                            if (x >= 0 && x < 29)
+                            if (ML.OutOfLimits(x, 29))
                             {
-                                if (y < 0 || y > 1)
-                                {
-                                    color = Color.Red;
-                                    message = "Incorrect value! Y must be 0 or 1";
-                                }
-                                else
+                                color = Color.Red;
+                                message = $"There is no entity under ID {x}";
+                            }
+                            else
+                            {
+                                if (ML.WithinOne(y))
                                 {
                                     if (parent.SpawnEntity(x, y == 1))
                                     {
@@ -1038,11 +1034,11 @@ namespace SLIL.UserControls
                                         message = $"There was an error while spawning the enemy. Most likely a wall got in the way.";
                                     }
                                 }
-                            }
-                            else
-                            {
-                                color = Color.Red;
-                                message = $"There is no entity under ID {x}";
+                                else
+                                {
+                                    color = Color.Red;
+                                    message = "Incorrect value! Y must be 0 or 1";
+                                }
                             }
                         }
                         catch
@@ -1053,10 +1049,14 @@ namespace SLIL.UserControls
                     }
                     else
                     {
-                        try
+                        if (int.TryParse(cheat.Split('_')[1], out int x))
                         {
-                            int x = Convert.ToInt32(cheat.Split('_')[1]);
-                            if (x >= 0 && x < 29)
+                            if (ML.OutOfLimits(x, 29))
+                            {
+                                color = Color.Red;
+                                message = $"There is no entity under ID {x}";
+                            }
+                            else
                             {
                                 if (parent.SpawnEntity(x, true))
                                     message = $"Creature with ID {x} successfully spawned with AI enabled";
@@ -1066,13 +1066,8 @@ namespace SLIL.UserControls
                                     message = $"There was an error while spawning the enemy. Most likely a wall got in the way.";
                                 }
                             }
-                            else
-                            {
-                                color = Color.Red;
-                                message = $"There is no entity under ID {x}";
-                            }
                         }
-                        catch
+                        else
                         {
                             color = Color.Red;
                             message = "Incorrect data entered! X or Y is not a number.";

@@ -64,7 +64,7 @@ namespace SLIL
                 title_form_label.Text = "Login...";
                 title_label.Text = "To start playing, please log in to your account";
                 login_btn_r.Text = "Login";
-                create_account_l.Text = "Create account";
+                create_account_l.Text = "Buy the key";
                 status_label.Text = "Invalid or already used key!";
                 nickname_input_label.Text = "Username:";
                 error_label.Text = $"Something went wrong. Error code: {Error}";

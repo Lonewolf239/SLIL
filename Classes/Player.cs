@@ -29,6 +29,7 @@ namespace SLIL.Classes
         internal int MoveStyle { get; set; }
         internal bool LevelUpdated { get; set; }
         internal double CurseCureChance { get; set; }
+        internal double CurseKickChance { get; set; }
         internal bool IsPetting { get; set; }
         internal bool InParkour { get; set; }
         internal bool DoesKick { get; set; }
@@ -577,6 +578,7 @@ namespace SLIL.Classes
                 for (int i = 0; i < DisposableItems.Count; i++)
                     DisposableItems[i].SetDefault();
                 CurseCureChance = 0.08;
+                CurseKickChance = 0.01;
                 TotalEnemiesKilled = 0;
                 WeaponSlot_0 = WeaponSlot_1 = -1;
                 MaxMoveSpeed = 1.8;
