@@ -1,8 +1,9 @@
 ﻿using System;
-using System.IO;
 using CSCore;
-using CSCore.Codecs.WAV;
+using System.IO;
+using SLIL.Classes;
 using CSCore.SoundOut;
+using CSCore.Codecs.WAV;
 
 namespace Play_Sound
 {
@@ -91,12 +92,14 @@ namespace Play_Sound
 
         private void Stoped(object sender, PlaybackStoppedEventArgs e) => Dispose();
 
+        public float GetVolume() => playing.Volume;
+
         public void LoopPlay(float volume) => Play(volume);
 
         public void SetVolume(float value)
         {
-            if (playing != null)
-                playing.Volume = value;
+            if (!ML.WithinOne(value)) return;
+            if (playing != null) playing.Volume = value;
         }
 
         public long Check() => file?.Position ?? 0;

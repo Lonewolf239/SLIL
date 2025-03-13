@@ -108,6 +108,7 @@ namespace SLIL
             this.pistol_label = new System.Windows.Forms.Label();
             this.pistol_ammo_count = new System.Windows.Forms.Label();
             this.inventory_panel = new System.Windows.Forms.Panel();
+            this.fade_timer = new System.Windows.Forms.Timer(this.components);
             this.shop_panel.SuspendLayout();
             this.ShopInterface_panel.SuspendLayout();
             this.shop_tab_control.SuspendLayout();
@@ -961,6 +962,12 @@ namespace SLIL
             this.inventory_panel.TabIndex = 0;
             this.inventory_panel.Visible = false;
             // 
+            // fade_timer
+            // 
+            this.fade_timer.Enabled = true;
+            this.fade_timer.Interval = 35;
+            this.fade_timer.Tick += new System.EventHandler(this.Fade_timer_Tick);
+            // 
             // SLIL
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1100,5 +1107,6 @@ namespace SLIL
         private Label pistol_label;
         private Label pistol_ammo_count;
         private Panel inventory_panel;
+        private Timer fade_timer;
     }
 }

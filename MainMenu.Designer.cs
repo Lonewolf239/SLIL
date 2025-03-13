@@ -256,6 +256,7 @@
             this.errors_panel = new System.Windows.Forms.Panel();
             this.SLIL_v0_1_btn_c = new System.Windows.Forms.Button();
             this.secret_btn_timer = new System.Windows.Forms.Timer(this.components);
+            this.fade_timer = new System.Windows.Forms.Timer(this.components);
             this.buttons_panel.SuspendLayout();
             this.button_background.SuspendLayout();
             this.developers_panel.SuspendLayout();
@@ -1156,10 +1157,10 @@
             this.sounds_settings.Controls.Add(this.music_volume_panel);
             this.sounds_settings.Controls.Add(this.sound_panel);
             this.sounds_settings.ForeColor = System.Drawing.Color.White;
-            this.sounds_settings.Location = new System.Drawing.Point(4, 33);
+            this.sounds_settings.Location = new System.Drawing.Point(4, 22);
             this.sounds_settings.Name = "sounds_settings";
             this.sounds_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.sounds_settings.Size = new System.Drawing.Size(482, 183);
+            this.sounds_settings.Size = new System.Drawing.Size(482, 194);
             this.sounds_settings.TabIndex = 4;
             this.sounds_settings.Text = "Звуки";
             // 
@@ -1311,10 +1312,10 @@
             this.video_settings.Controls.Add(this.fps_panel);
             this.video_settings.Controls.Add(this.smoothing_panel);
             this.video_settings.ForeColor = System.Drawing.Color.White;
-            this.video_settings.Location = new System.Drawing.Point(4, 33);
+            this.video_settings.Location = new System.Drawing.Point(4, 22);
             this.video_settings.Name = "video_settings";
             this.video_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.video_settings.Size = new System.Drawing.Size(482, 183);
+            this.video_settings.Size = new System.Drawing.Size(482, 194);
             this.video_settings.TabIndex = 1;
             this.video_settings.Text = "Графика";
             // 
@@ -1599,10 +1600,10 @@
             // 
             this.controls_settings.BackColor = System.Drawing.Color.Black;
             this.controls_settings.Controls.Add(this.controls_tabcontrol);
-            this.controls_settings.Location = new System.Drawing.Point(4, 33);
+            this.controls_settings.Location = new System.Drawing.Point(4, 22);
             this.controls_settings.Name = "controls_settings";
             this.controls_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.controls_settings.Size = new System.Drawing.Size(482, 183);
+            this.controls_settings.Size = new System.Drawing.Size(482, 194);
             this.controls_settings.TabIndex = 3;
             this.controls_settings.Text = "Управление";
             // 
@@ -1614,7 +1615,7 @@
             this.controls_tabcontrol.Location = new System.Drawing.Point(3, 3);
             this.controls_tabcontrol.Name = "controls_tabcontrol";
             this.controls_tabcontrol.SelectedIndex = 0;
-            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 177);
+            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 188);
             this.controls_tabcontrol.TabIndex = 0;
             // 
             // mouse_settings
@@ -1628,7 +1629,7 @@
             this.mouse_settings.Location = new System.Drawing.Point(4, 33);
             this.mouse_settings.Name = "mouse_settings";
             this.mouse_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.mouse_settings.Size = new System.Drawing.Size(468, 140);
+            this.mouse_settings.Size = new System.Drawing.Size(468, 151);
             this.mouse_settings.TabIndex = 0;
             this.mouse_settings.Text = "Мышь";
             // 
@@ -1758,10 +1759,10 @@
             this.keyboard_settings.Controls.Add(this.fire_panel);
             this.keyboard_settings.Controls.Add(this.screenshot_panel);
             this.keyboard_settings.ForeColor = System.Drawing.Color.White;
-            this.keyboard_settings.Location = new System.Drawing.Point(4, 33);
+            this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 140);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
@@ -3086,6 +3087,11 @@
             this.secret_btn_timer.Interval = 50;
             this.secret_btn_timer.Tick += new System.EventHandler(this.Secret_btn_timer_Tick);
             // 
+            // fade_timer
+            // 
+            this.fade_timer.Interval = 35;
+            this.fade_timer.Tick += new System.EventHandler(this.Fade_timer_Tick);
+            // 
             // MainMenu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3478,5 +3484,6 @@
         private System.Windows.Forms.Panel kick_panel;
         private System.Windows.Forms.Label kick_label;
         private System.Windows.Forms.Button kick_btn_c;
+        private System.Windows.Forms.Timer fade_timer;
     }
 }

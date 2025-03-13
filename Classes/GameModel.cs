@@ -192,12 +192,7 @@ namespace SLIL.Classes
                                             if (k < 0 || k > MAP_WIDTH || l < 0 || l > MAP_HEIGHT) continue;
                                             double dis = ML.GetDistance(new TPoint(explosion.X, explosion.Y), new TPoint(k, l));
                                             if (dis > explosion.HitDistance) continue;
-                                            if (MAP[GetCoordinate(k, l)] == 'd')
-                                            {
-                                                MAP[GetCoordinate(k, l)] = 'R';
-                                                PlayGameSound(SLIL.BreakdownDoors, GetCoordinate(k, l));
-                                                Entities.Add(new BrokenDoor(k + 0.5, l + 0.5, MAP_WIDTH, ref MaxEntityID));
-                                            }
+                                            if (MAP[GetCoordinate(k, l)] == 'd') BrokeDoor(k, l);
                                         }
                                     }
                                 }
@@ -243,7 +238,11 @@ namespace SLIL.Classes
                             }
                         }
                     }
-                    if (entity is Creature creature1 && creature1.Stunned) creature1.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                    if (entity is Creature creature1 && creature1.Stunned)
+                    {
+                        creature1.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                        continue;
+                    }
                     else if (entity is Enemy)
                     {
                         if (distance <= 22)
@@ -451,6 +450,13 @@ namespace SLIL.Classes
                     }
                 }
             }
+        }
+
+        private void BrokeDoor(double x, double y)
+        {
+            MAP[GetCoordinate(x, y)] = 'R';
+            PlayGameSound(SLIL.BreakdownDoors, GetCoordinate(x, y));
+            Entities.Add(new BrokenDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID));
         }
 
         private void SpawnExplotion(Entity entity)

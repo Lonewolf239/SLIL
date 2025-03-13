@@ -1505,12 +1505,28 @@ namespace SLIL
 
         private void Go_tutorial_btn_cp_Click(object sender, EventArgs e) => GoToTutorial();
 
+        private void Fade_timer_Tick(object sender, EventArgs e)
+        {
+            float volume = MainMenuTheme.GetVolume();
+            if (volume <= 0.01)
+            {
+                fade_timer.Stop();
+                MainMenuTheme?.Stop();
+                MainMenuTheme.SetVolume(MusicVolume);
+            }
+            else
+            {
+                volume -= 0.01f;
+                MainMenuTheme.SetVolume(volume);
+            }
+        }
+
         private void Start_game_btn_Click(object sender, EventArgs e)
         {
             lose_focus.Focus();
             if (difficulty != 4)
             {
-                MainMenuTheme.Stop();
+                if (sounds) fade_timer.Start();
                 SLIL form = new SLIL(textureCache) { PlayerName = "Player" };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(MusicVolume);
@@ -1518,7 +1534,7 @@ namespace SLIL
             }
             else
             {
-                MainMenuTheme.Stop();
+                MainMenuTheme?.Stop();
                 Editor = new SLIL_Editor
                 {
                     Owner = this,
@@ -1527,7 +1543,7 @@ namespace SLIL
                 };
                 Editor.FormClosing += EditorForm_FormClosing;
                 Editor.ShowDialog();
-                if (sounds) MainMenuTheme.Play(MusicVolume);
+                if (sounds) MainMenuTheme.SetVolume(MusicVolume);
             }
         }
 
@@ -1620,7 +1636,7 @@ namespace SLIL
 
         private void GoToTutorial()
         {
-            MainMenuTheme.Stop();
+            if (sounds) fade_timer.Start();
             StringBuilder tutorialMap = new StringBuilder(
             "#########################" +
             "#.....######.....########" +
