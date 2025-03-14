@@ -158,9 +158,9 @@ namespace SLIL.Classes
                                     if (c.DeathSound != -1)
                                     {
                                         if (playerOnTransport.CuteMode)
-                                            PlayGameSound(SLIL.CuteDeathSounds[c.DeathSound, Rand.Next(0, SLIL.DeathSounds.GetLength(1))], GetCoordinate(c.X, c.Y));
+                                            PlayGameSound(SLIL.CuteDeathSounds[c.DeathSound, Rand.Next(0, SLIL.DeathSounds.GetLength(1))], c.X, c.Y);
                                         else
-                                            PlayGameSound(SLIL.DeathSounds[c.DeathSound, Rand.Next(0, SLIL.DeathSounds.GetLength(1))], GetCoordinate(c.X, c.Y));
+                                            PlayGameSound(SLIL.DeathSounds[c.DeathSound, Rand.Next(0, SLIL.DeathSounds.GetLength(1))], c.X, c.Y);
                                     }
                                 }
                                 KickCreature(c, playerOnTransport, 1.2, 1.75);
@@ -208,9 +208,9 @@ namespace SLIL.Classes
                                         double damage = Rand.Next(explosion.MinDamage, explosion.MaxDamage);
                                         if (ent is Player playerTarget)
                                         {
-                                            if (playerTarget.InTransport) PlaySoundHandle(SLIL.hit[1], playerTarget.X, playerTarget.Y);
-                                            else if (playerTarget.CuteMode) PlaySoundHandle(SLIL.hungry, playerTarget.X, playerTarget.Y);
-                                            else PlaySoundHandle(SLIL.hit[0], playerTarget.X, playerTarget.Y);
+                                            if (playerTarget.InTransport) PlayGameSound(SLIL.HitTransport);
+                                            else if (playerTarget.CuteMode) PlayGameSound(SLIL.Hungry);
+                                            else PlayGameSound(SLIL.Hit[Rand.Next(SLIL.Hit.Length)]);
                                             playerTarget.DealDamage(damage, true);
                                             if (playerTarget.HP <= 0)
                                             {
@@ -225,7 +225,7 @@ namespace SLIL.Classes
                                         {
                                             if (npc.DealDamage(damage) && npc is ExplodingBarrel)
                                             {
-                                                PlayGameSound(SLIL.BarrelExplosion, (int)npc.Y * MAP_WIDTH + (int)npc.X);
+                                                PlayGameSound(SLIL.BarrelExplosion, npc.X, npc.Y);
                                                 SpawnExplotion(npc);
                                             }
                                         }
@@ -251,15 +251,16 @@ namespace SLIL.Classes
                             {
                                 if (!entity.Dead && !playerTarget.Dead)
                                 {
-                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A);
-                                    if (entity.Fast) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A);
+                                    bool extraVision = IsExtraVision(playerTarget);
+                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A, extraVision);
+                                    if (entity.Fast) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A, extraVision);
                                     if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
                                     {
                                         if (!playerTarget.Invulnerable)
                                         {
-                                            if (playerTarget.InTransport) PlaySoundHandle(SLIL.hit[1], target.X, target.Y);
-                                            else if (playerTarget.CuteMode) PlaySoundHandle(SLIL.hungry, target.X, target.Y);
-                                            else PlaySoundHandle(SLIL.hit[0], target.X, target.Y);
+                                            if (playerTarget.InTransport) PlayGameSound(SLIL.HitTransport);
+                                            else if (playerTarget.CuteMode) PlayGameSound(SLIL.Hungry);
+                                            else PlayGameSound(SLIL.Hit[SLIL.Hit.Length]);
                                             GiveDebaf(playerTarget, entity);
                                             playerTarget.DealDamage(Rand.Next(entity.MinDamage, entity.MaxDamage), true);
                                             if (playerTarget.HP <= 0)
@@ -313,7 +314,7 @@ namespace SLIL.Classes
                                 double shotAY = Math.Cos(range.ShotA);
                                 if (range is Shooter shooter)
                                 {
-                                    PlaySoundHandle(SLIL.SoundsofShotsEnemies[0, ((Player)target).CuteMode ? 1 : 0], shooter.X, shooter.Y);
+                                    PlayGameSound(SLIL.SoundsofShotsEnemies[0, ((Player)target).CuteMode ? 1 : 0], shooter.X, shooter.Y);
                                     HashSet<char> impassibleCells = new HashSet<char> { '#', 'D', 'd', 'W', 'S', 'R' };
                                     double shotDistance = 0;
                                     const double shotStep = 0.01d;
@@ -341,9 +342,9 @@ namespace SLIL.Classes
                                             {
                                                 if (Math.Abs(point.Item1 - player.X) <= 0.5 && Math.Abs(point.Item2 - player.Y) <= 0.5 && !player.Invulnerable)
                                                 {
-                                                    if (player.InTransport) PlaySoundHandle(SLIL.hit[1], player.X, player.Y);
-                                                    else if (player.CuteMode) PlaySoundHandle(SLIL.hungry, player.X, player.Y);
-                                                    else PlaySoundHandle(SLIL.hit[0], player.X, player.Y);
+                                                    if (player.InTransport) PlayGameSound(SLIL.HitTransport);
+                                                    else if (player.CuteMode) PlayGameSound(SLIL.Hungry);
+                                                    else PlayGameSound(SLIL.Hit[Rand.Next(SLIL.Hit.Length)]);
                                                     player.DealDamage(Rand.Next(shooter.MinDamage, shooter.MaxDamage), true);
                                                     if (player.HP <= 0)
                                                     {
@@ -363,7 +364,7 @@ namespace SLIL.Classes
                                 }
                                 if (range is LostSoul soul)
                                 {
-                                    PlaySoundHandle(SLIL.SoundsofShotsEnemies[1, ((Player)target).CuteMode ? 1 : 0], soul.X, soul.Y);
+                                    PlayGameSound(SLIL.SoundsofShotsEnemies[1, ((Player)target).CuteMode ? 1 : 0], soul.X, soul.Y);
                                     SpawnRockets(soul.X, soul.Y, 1, soul.ShotA);
                                 }
                                 range.DidShot = false;
@@ -404,7 +405,7 @@ namespace SLIL.Classes
                             Entities.Remove(entity);
                             i--;
                             SpawnExplotion(rocket);
-                            PlayGameSound(SLIL.RPGExplosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
+                            PlayGameSound(SLIL.RPGExplosion, entity.X, entity.Y);
                         }
                         if (!Entities.Contains(entity)) continue;
                         foreach (Entity ent in Entities)
@@ -417,7 +418,7 @@ namespace SLIL.Classes
                                 Entities.Remove(entity);
                                 i--;
                                 SpawnExplotion(rocket);
-                                PlayGameSound(SLIL.RPGExplosion, (int)entity.Y * MAP_WIDTH + (int)entity.X);
+                                PlayGameSound(SLIL.RPGExplosion, entity.X, entity.Y);
                                 return;
                             }
                         }
@@ -443,14 +444,14 @@ namespace SLIL.Classes
                                     if (weaponIndex == -1) continue;
                                     int ammo = p.Guns[weaponIndex].CartridgesClip + p.Guns[weaponIndex].AmmoInStock;
                                     if (ammo > p.Guns[weaponIndex].MaxAmmo) continue;
-                                    PlayGameSound(SLIL.LiftingAmmoBox, GetCoordinate(p.X, p.Y));
+                                    PlayGameSound(SLIL.LiftingAmmoBox);
                                     p.Guns[weaponIndex].AmmoInStock = ammo;
                                 }
                                 else if (bonus is MoneyPile pile)
                                 {
                                     if (p.Money == 9999) continue;
                                     p.ChangeMoney(pile.MoneyCount);
-                                    PlayGameSound(SLIL.LiftingMoneyPile, GetCoordinate(p.X, p.Y));
+                                    PlayGameSound(SLIL.LiftingMoneyPile);
                                 }
                                 Entities.Remove(bonus);
                                 i--;
@@ -461,10 +462,16 @@ namespace SLIL.Classes
             }
         }
 
+        private static bool IsExtraVision(Player p)
+        {
+            if (p.GetCurrentGun() is Flashlight) return true;
+            return false;
+        }
+
         private void BrokeDoor(double x, double y)
         {
             MAP[GetCoordinate(x, y)] = 'R';
-            PlayGameSound(SLIL.BreakdownDoors, GetCoordinate(x, y));
+            PlayGameSound(SLIL.BreakdownDoors, x, y);
             Entities.Add(new BrokenDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID));
         }
 
@@ -1037,6 +1044,7 @@ namespace SLIL.Classes
             }
             else
             {
+                PlayGameSound(SLIL.PlayerDeathSound);
                 EntityTimer.Stop();
                 RespawnTimer.Stop();
                 TimeRemain.Stop();
@@ -1085,7 +1093,7 @@ namespace SLIL.Classes
                         (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=' && (!p.TRANSPORT.CanJump || p.EffectCheck(3))))
                     {
                         p.MoveSpeed = 0.5;
-                        PlaySoundHandle(SLIL.hit[1], p.X, p.Y);
+                        PlayGameSound(SLIL.HitTransport);
                         p.DealDamage(5, false);
                     }
                 }
@@ -1745,7 +1753,7 @@ namespace SLIL.Classes
             if (target is Transport t)
             {
                 if (t.TransportHP <= 0) return false;
-                PlaySoundHandle(SLIL.hit[1], t.X, t.Y);
+                PlayGameSound(SLIL.HitTransport, t.X, t.Y);
                 if (t.DealDamage(damage))
                 {
                     int coordinate = GetCoordinate(t.X, t.Y);
@@ -1787,7 +1795,7 @@ namespace SLIL.Classes
         {
             if (box is ExplodingBarrel barrel)
             {
-                PlayGameSound(SLIL.BarrelExplosion, (int)barrel.Y * MAP_WIDTH + (int)barrel.X);
+                PlayGameSound(SLIL.BarrelExplosion, barrel.X, barrel.Y);
                 SpawnExplotion(barrel);
                 return;
             }
@@ -1831,7 +1839,7 @@ namespace SLIL.Classes
                 {
                     if (player.Invulnerable) player.InvulnerableEnd();
                     player.UpdateEffectsTime();
-                    if (player.IncreasingFear()) PlayGameSound(player.ID, SLIL.scary_sounds[Rand.Next(SLIL.scary_sounds.Length)]);
+                    if (player.IncreasingFear()) PlayGameSound(SLIL.ScarySounds[Rand.Next(SLIL.ScarySounds.Length)]);
                     Pet playerPet = player.PET;
                     if (playerPet != null && playerPet.IsInstantAbility != 1)
                     {
@@ -1991,8 +1999,8 @@ namespace SLIL.Classes
             if (p.EffectCheck(3)) return;
             if (p.InTransport) return;
             bool damnKick = Rand.NextDouble() <= p.CurseKickChance;
-            if (damnKick) PlayGameSound(playerID, SLIL.DamnKick);
-            else PlayGameSound(playerID, SLIL.Kick);
+            if (damnKick) PlayGameSound(SLIL.DamnKick);
+            else PlayGameSound(SLIL.Kick);
             if (damnKick) p.ReducesStamine(600);
             else p.ReducesStamine(150);
             p.DoesKick = true;
@@ -2015,6 +2023,8 @@ namespace SLIL.Classes
         private void FindEntityForKick(Entity ent, bool damnKick = false)
         {
             double maxDistance = damnKick ? 2.5 : 0.6;
+            int maxCountKickEntity = damnKick ? 6 : 2;
+            int kickCount = 0;
             double distance = 0;
             double kickX = Math.Sin(ent.A);
             double kickY = Math.Cos(ent.A);
@@ -2033,7 +2043,8 @@ namespace SLIL.Classes
                         if (ML.GetDistance(new TPoint(creature.X, creature.Y), new TPoint(ent.X, ent.Y)) > maxDistance + 1) continue;
                         if (Math.Abs(creature.X - testX) > 0.5 || Math.Abs(creature.Y - testY) > 0.5) continue;
                         KickCreature(creature, ent, damnKick ? 2 : 0.8, damnKick ? 15 : 1);
-                        return;
+                        kickCount++;
+                        if (kickCount == maxCountKickEntity) return;
                     }
                 }
             }
@@ -2126,8 +2137,8 @@ namespace SLIL.Classes
             Player p = GetPlayer(playerID);
             if (p == null || p.Stamine < 200) return;
             if (p.EffectCheck(3)) return;
-            if (p.InTransport) PlayGameSound(playerID, SLIL.Climb[1]);
-            else PlayGameSound(playerID, SLIL.Climb[0]);
+            if (p.InTransport) PlayGameSound(SLIL.Climb[1]);
+            else PlayGameSound(SLIL.Climb[0]);
             p.InParkour = true;
             p.ParkourState = 0;
             p.X = x + 0.5;
@@ -2172,7 +2183,7 @@ namespace SLIL.Classes
             if (p.EffectCheck(3)) return;
             double distance = 0;
             char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't', 'R' };
-            PlayGameSound(playerID, SLIL.Climb[0]);
+            PlayGameSound(SLIL.Climb[0]);
             p.ReducesStamine(150);
             new Thread(() =>
             {
@@ -2277,19 +2288,16 @@ namespace SLIL.Classes
             }
         }
 
-        internal void PlayGameSound(int playerID, PlaySound sound)
-        {
-            Player p = GetPlayer(playerID);
-            if (p == null || !MainMenu.sounds) return;
-            PlaySoundHandle(sound, p.X, p.Y);
-        }
-
-        internal void PlayGameSound(PlaySound sound, int coordinate)
+        internal void PlayGameSound(PlaySound sound, double X, double Y)
         {
             if (!MainMenu.sounds) return;
-            double X = coordinate % MAP_HEIGHT;
-            double Y = (coordinate - X) / MAP_WIDTH;
-            PlaySoundHandle(sound, X, Y);
+            PlaySoundHandle(sound, X, Y, true);
+        }
+
+        internal void PlayGameSound(PlaySound sound)
+        {
+            if (!MainMenu.sounds) return;
+            PlaySoundHandle(sound, 0, 0, false);
         }
 
         internal void InteractingWithDoors(int coordinate)
@@ -2299,12 +2307,12 @@ namespace SLIL.Classes
             if (MAP[coordinate] == 'o')
             {
                 MAP[coordinate] = 'd';
-                PlaySoundHandle(SLIL.Door[1], X, Y);
+                PlayGameSound(SLIL.Door[1], X, Y);
             }
             else
             {
                 MAP[coordinate] = 'o';
-                PlaySoundHandle(SLIL.Door[0], X, Y);
+                PlayGameSound(SLIL.Door[0], X, Y);
             }
         }
 

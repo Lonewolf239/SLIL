@@ -216,7 +216,7 @@ namespace SLIL.Classes
             Stunned = true;
         }
 
-        internal virtual void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        internal virtual void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             double move = this.GetMove();
             double newX = X;
@@ -299,9 +299,9 @@ namespace SLIL.Classes
         internal NPC(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => RespondsToFlashlight = false;
         internal NPC(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => RespondsToFlashlight = false;
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
-            if (Stunned) base.UpdateCoordinates(map, playerX, playerY);
+            if (Stunned) base.UpdateCoordinates(map, playerX, playerY, playerA, extraVision);
         }
     }
 
@@ -350,7 +350,7 @@ namespace SLIL.Classes
 
         internal int GetPetAbility() => PetAbility;
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             Stoped = false;
             bool isPlayerVisible = true;
@@ -515,7 +515,7 @@ namespace SLIL.Classes
         internal Rockets(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => CanHit = false;
 
         internal void SetA(double value) => A = value;
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             double move = this.GetMove();
             double newX = X;
@@ -1127,11 +1127,12 @@ namespace SLIL.Classes
             //HasSpriteRotation = true;
             base.SetAnimations(1, 0);
         }
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
-            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange + (extraVision ? 4 : 0)) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1153,7 +1154,7 @@ namespace SLIL.Classes
             }
             if (Stage == Stages.Roaming)
             {
-                base.UpdateCoordinates(map, playerX, playerY);
+                base.UpdateCoordinates(map, playerX, playerY, playerA, extraVision);
                 if (isPlayerVisible)
                     Stage = Stages.Chasing;
                 return;
@@ -1228,11 +1229,12 @@ namespace SLIL.Classes
             Fast = true;
             base.SetAnimations(1, 0);
         }
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
-            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange + (extraVision ? 4 : 0)) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1254,7 +1256,7 @@ namespace SLIL.Classes
             }
             if (Stage == Stages.Roaming)
             {
-                base.UpdateCoordinates(map, playerX, playerY);
+                base.UpdateCoordinates(map, playerX, playerY, playerA, extraVision);
                 if (isPlayerVisible)
                     Stage = Stages.Chasing;
                 return;
@@ -1328,11 +1330,12 @@ namespace SLIL.Classes
             DetectionRange = 8;
             base.SetAnimations(2, 0);
         }
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
-            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange + (extraVision ? 4 : 0)) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1354,7 +1357,7 @@ namespace SLIL.Classes
             }
             if (Stage == Stages.Roaming)
             {
-                base.UpdateCoordinates(map, playerX, playerY);
+                base.UpdateCoordinates(map, playerX, playerY, playerA, extraVision);
                 if (isPlayerVisible)
                     Stage = Stages.Chasing;
                 return;
@@ -1432,11 +1435,11 @@ namespace SLIL.Classes
             base.SetAnimations(1, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
-            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange + (extraVision ? 4 : 0)) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1458,7 +1461,7 @@ namespace SLIL.Classes
             }
             if (Stage == Stages.Roaming)
             {
-                base.UpdateCoordinates(map, playerX, playerY);
+                base.UpdateCoordinates(map, playerX, playerY, playerA, extraVision);
                 if (isPlayerVisible)
                     Stage = Stages.Chasing;
                 return;
@@ -1536,7 +1539,7 @@ namespace SLIL.Classes
             base.SetAnimations(2, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;            
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
@@ -1562,7 +1565,7 @@ namespace SLIL.Classes
             }
             if (Stage == Stages.Roaming)
             {
-                base.UpdateCoordinates(map, playerX, playerY);
+                base.UpdateCoordinates(map, playerX, playerY, playerA, extraVision);
                 RoamingTime--;
                 if (RoamingTime < 0)
                 {
@@ -1663,7 +1666,7 @@ namespace SLIL.Classes
             return true;
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             if (PlayerSees)
             {
@@ -1735,12 +1738,12 @@ namespace SLIL.Classes
             base.SetAnimations(1, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             if (DidShot) return;
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
-            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange + (extraVision ? 4 : 0)) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1763,7 +1766,7 @@ namespace SLIL.Classes
             if (!ShotLogic(isPlayerVisible, distanceToPlayer, angleToPlayer)) return;
             if (Stage == Stages.Roaming)
             {
-                base.UpdateCoordinates(map, playerX, playerY);
+                base.UpdateCoordinates(map, playerX, playerY, playerA, extraVision);
                 if (isPlayerVisible) Stage = Stages.Chasing;
                 return;
             }
@@ -1879,11 +1882,11 @@ namespace SLIL.Classes
             base.SetAnimations(1, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0)
+        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
-            if (distanceToPlayer > DetectionRange) isPlayerVisible = false;
+            if (distanceToPlayer > DetectionRange + (extraVision ? 4 : 0)) isPlayerVisible = false;
             double angleToPlayer = Math.Atan2(X - playerX, Y - playerY) - Math.PI;
             if (isPlayerVisible)
             {
@@ -1906,7 +1909,7 @@ namespace SLIL.Classes
             if (!ShotLogic(isPlayerVisible, distanceToPlayer, angleToPlayer)) return;
             if (Stage == Stages.Roaming)
             {
-                base.UpdateCoordinates(map, playerX, playerY);
+                base.UpdateCoordinates(map, playerX, playerY, playerA, extraVision);
                 if (isPlayerVisible) Stage = Stages.Chasing;
                 return;
             }

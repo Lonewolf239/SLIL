@@ -320,25 +320,22 @@ namespace SLIL.UserControls
             else if (cheat == "ENEMIES")
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine("\n~|───────────────────────|~");
+                sb.AppendLine("\n~|────────────────────────|~");
                 sb.AppendLine("~|~      *Enemies List*      ~|~");
-                sb.AppendLine("~|───────────────────────|~");
-                int maxLength = 21;
+                sb.AppendLine("~|────────────────────────|~");
                 if (Entities.Count == 1)
-                    sb.AppendLine("~|~      *No enemies.*      ~|~");
+                    sb.AppendLine("~|~      *No enemies.*       ~|~");
                 for (int i = 0; i < Entities.Count; i++)
                 {
-                    if (Entities[i] is Creature)
+                    if (Entities[i] is Enemy enemy)
                     {
-                        Creature creature = Entities[i] as Creature;
-                        if (!(creature is Enemy)) continue;
                         string dead = "";
-                        if (creature.Dead) dead = "[Dead]";
-                        string paddedName = $"Enemy #{i} {dead}".PadRight(maxLength);
+                        if (enemy.Dead) dead = "[Dead]";
+                        string paddedName = $"Enemy #{i} {dead}".PadRight(22);
                         sb.AppendLine($"~|~ -{paddedName}- ~|~");
                     }
                 }
-                sb.AppendLine("~|───────────────────────|~");
+                sb.AppendLine("~|────────────────────────|~");
                 sb.AppendLine("To select an enemy write Enemy_*EnemyIndex*");
                 show_date = false;
                 message = sb.ToString();
@@ -375,13 +372,11 @@ namespace SLIL.UserControls
             else if (cheat.StartsWith("ENEMY_"))
             {
                 Enemy selected = null;
-                try
+                if (int.TryParse(cheat.Split('_')[1], out int index))
                 {
-                    int index = Convert.ToInt32(cheat.Split('_')[1]);
                     if (Entities[index] is Enemy enemy && Entities.Contains(Entities[index]))
                         selected = enemy;
                 }
-                catch { }
                 if (selected == null)
                 {
                     CheatIndex = History.Count - 1;

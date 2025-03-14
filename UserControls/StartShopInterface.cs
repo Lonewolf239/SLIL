@@ -1,4 +1,5 @@
 ﻿using System;
+using Play_Sound;
 using SLIL.Classes;
 using System.Drawing;
 using System.Windows.Forms;
@@ -9,6 +10,8 @@ namespace SLIL.UserControls
     internal partial class StartShopInterface : UserControl
     {
         internal Player Player;
+        private static readonly PlaySound PlusBtnSound = new PlaySound(MainMenu.CGFReader.GetFile("ss_plus_btn.wav"), false),
+            MinusBtnSound = new PlaySound(MainMenu.CGFReader.GetFile("ss_minus_btn.wav"), false);
         private WeaponToolTip WeaponToolTip;
         private InfoToolTip InfoToolTip;
         private CostToolTip CostToolTip;
@@ -59,6 +62,7 @@ namespace SLIL.UserControls
                 CurrentAmmo++;
                 CurrentMoney -= Pistol.AmmoCost;
             }
+            PlusBtnSound.Play(SLIL.EffectsVolume);
             UpdateInfo();
         }
 
@@ -68,6 +72,7 @@ namespace SLIL.UserControls
             if (CurrentAmmo <= 0) return;
             CurrentAmmo--;
             CurrentMoney += Pistol.AmmoCost;
+            MinusBtnSound.Play(SLIL.EffectsVolume);
             UpdateInfo();
         }
 
@@ -79,6 +84,7 @@ namespace SLIL.UserControls
             CurrentMoney -= Pistol.UpdateCost;
             DowngradeCost = Pistol.UpdateCost;
             Pistol.LevelUpdate();
+            PlusBtnSound.Play(SLIL.EffectsVolume);
             UpdateInfo();
         }
 
@@ -88,7 +94,8 @@ namespace SLIL.UserControls
             if (!Pistol.CanDowngrade()) return;
             Pistol.LevelDowngrade();
             CurrentMoney += Pistol.UpdateCost;
-            DowngradeCost = Pistol.UpdateCost;            
+            DowngradeCost = Pistol.UpdateCost;
+            MinusBtnSound.Play(SLIL.EffectsVolume);
             UpdateInfo();
         }
 
@@ -177,6 +184,7 @@ namespace SLIL.UserControls
             if (!Player.DisposableItems[index].CanBuy()) return;
             CurrentMoney -= Player.DisposableItems[index].GunCost;
             Player.DisposableItems[index].AddItem();
+            PlusBtnSound.Play(SLIL.EffectsVolume);
             UpdateInfo();
         }
 
@@ -186,6 +194,7 @@ namespace SLIL.UserControls
             if (Player.DisposableItems[index].Count == 0) return;
             Player.DisposableItems[index].RemoveItem();
             CurrentMoney += Player.DisposableItems[index].GunCost;
+            MinusBtnSound.Play(SLIL.EffectsVolume);
             UpdateInfo();
         }
 

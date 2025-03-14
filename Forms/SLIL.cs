@@ -22,7 +22,7 @@ namespace SLIL
     internal delegate void StartGameDelegate();
     internal delegate void StopGameDelegate(int win);
     internal delegate void InitPlayerDelegate();
-    internal delegate void PlaySoundDelegate(PlaySound sound, double X, double Y);
+    internal delegate void PlaySoundDelegate(PlaySound sound, double X, double Y, bool setVolume);
     internal delegate void CloseFormDelegate();
 
     internal partial class SLIL : Form
@@ -73,7 +73,7 @@ namespace SLIL
         private double ElapsedTime = 0, PreviousTime, DeltaTime;
         private DateTime TotalTime = DateTime.Now;
         private List<int> soundIndices = new List<int> { 0, 1, 2, 3, 4 };
-        private int currentIndex = 0;
+        private int CurrentIndex = 0;
         private bool active = true;
         private bool Paused = false, RunKeyPressed = false;
         internal static readonly Dictionary<Type, Image> ScreenEffectsIcons = new Dictionary<Type, Image>()
@@ -371,12 +371,18 @@ namespace SLIL
             { typeof(Bike), Properties.Resources.bike_icon}
         };
         private readonly BindControls Bind;
-        private readonly TextureCache textureCache;
-        private readonly List<ScreenEffects> screenEffects;
-        internal static PlaySound[] hit = { new PlaySound(MainMenu.CGFReader.GetFile("hit_player.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("hit_transport.wav"), false) };
-        internal static PlaySound hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
-        private PlaySound step, transport_step;
-        internal static PlaySound[] scary_sounds = new PlaySound[]
+        private readonly TextureCache Textures;
+        private readonly List<ScreenEffects> ScreenEffects;
+        internal static PlaySound[] Hit =
+        {
+            new PlaySound(MainMenu.CGFReader.GetFile("hit_player_0.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("hit_player_1.wav"), false),
+            new PlaySound(MainMenu.CGFReader.GetFile("hit_player_2.wav"), false)
+        };
+        internal static PlaySound HitTransport = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
+        internal static PlaySound Hungry = new PlaySound(MainMenu.CGFReader.GetFile("hungry_player.wav"), false);
+        private PlaySound Step, TransportStep;
+        internal static PlaySound[] ScarySounds = new PlaySound[]
         {
             new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_0.wav"), false),
             new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_1.wav"), false),
@@ -389,7 +395,7 @@ namespace SLIL
             new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_8.wav"), false),
             new PlaySound(MainMenu.CGFReader.GetFile("scary_sound_9.wav"), false)
         };
-        internal static PlaySound[,] steps = new PlaySound[,]
+        internal static PlaySound[,] Steps = new PlaySound[,]
         {
             {
                 new PlaySound(MainMenu.CGFReader.GetFile("step_0.wav"), false),
@@ -448,7 +454,7 @@ namespace SLIL
                 new PlaySound(MainMenu.CGFReader.GetFile("step_run_void_4.wav"), false)
             },
         };
-        internal static PlaySound[] ost = new PlaySound[]
+        internal static PlaySound[] Ost = new PlaySound[]
         {
             new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_0.wav"), true),
             new PlaySound(MainMenu.CGFReader.GetFile("slil_ost_1.wav"), true),
@@ -578,7 +584,8 @@ namespace SLIL
             LiftingMoneyPile = new PlaySound(MainMenu.CGFReader.GetFile("lifting_money_pile.wav"), false),
             VoidStalkerScreamer = new PlaySound(MainMenu.CGFReader.GetFile("void_stalker_screamer.wav"), false),
             Kick = new PlaySound(MainMenu.CGFReader.GetFile("kick.wav"), false),
-            DamnKick = new PlaySound(MainMenu.CGFReader.GetFile("damn_kick.wav"), false);
+            DamnKick = new PlaySound(MainMenu.CGFReader.GetFile("damn_kick.wav"), false),
+            PlayerDeathSound = new PlaySound(MainMenu.CGFReader.GetFile("player_death_sound.wav"), false);
         internal static PlaySound[] Climb = new PlaySound[] { new PlaySound(MainMenu.CGFReader.GetFile("climb.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("climb_bike.wav"), false) };
         internal static PlaySound[] Door = { new PlaySound(MainMenu.CGFReader.GetFile("door_opened.wav"), false), new PlaySound(MainMenu.CGFReader.GetFile("door_closed.wav"), false) };
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
@@ -588,7 +595,7 @@ namespace SLIL
         private int BurstShots = 0, ReloadFrames = 0;
         internal static int OstIndex = 0;
         internal static int PrevOst;
-        private Image scope_hit = null;
+        private Image ScopeHit = null;
         private readonly Image[] Scope =
         {
             Properties.Resources.scope,
@@ -631,7 +638,7 @@ namespace SLIL
         private float xOffset = 0, yOffset = 0, xOffsetDirection = 0.25f, yOffsetDirection = 0.25f;
         private double RecoilY = 0, RecoilLX = 0, RecoilRX = 0;
         private double RecoilOY = 0, RecoilLOX = 0, RecoilROX = 0;
-        private const double RecoilRecoverySpeed = 9.5f;
+        private const float RecoilRecoverySpeed = 9.5f;
         private Display SLILDisplay;
         private Bitmap map;
         private ConsolePanel ConsolePanel;
@@ -665,9 +672,9 @@ namespace SLIL
             Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
             Rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
-            screenEffects = new List<ScreenEffects>();
+            ScreenEffects = new List<ScreenEffects>();
             SetParameters();
-            textureCache = textures;
+            Textures = textures;
             Controller.StartGame();
         }
         internal SLIL(TextureCache textures, bool custom, StringBuilder customMap, int mazeWidth, int mazeHeight, double customX, double customY)
@@ -681,9 +688,9 @@ namespace SLIL
             Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
             Rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
-            screenEffects = new List<ScreenEffects>();
+            ScreenEffects = new List<ScreenEffects>();
             SetParameters();
-            textureCache = textures;
+            Textures = textures;
             CUSTOM = custom;
             CUSTOM_MAP = customMap;
             CustomMazeWidth = mazeWidth;
@@ -707,9 +714,9 @@ namespace SLIL
             //Controller = new GameController(adress, port, password, StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle, CloseFormHandle, PlayerName);
             Rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
-            screenEffects = new List<ScreenEffects>();
+            ScreenEffects = new List<ScreenEffects>();
             SetParameters();
-            textureCache = textures;
+            Textures = textures;
         }
         internal SLIL() { }
 
@@ -837,10 +844,7 @@ namespace SLIL
                     this.StartGame();
                 });
             }
-            else
-            {
-                this.StartGame();
-            }
+            else this.StartGame();
         }
 
         internal void StartGameInvokerMultiPlayer()
@@ -884,14 +888,17 @@ namespace SLIL
             }
         }
 
-        internal void PlaySoundInvoker(PlaySound sound, double X, double Y)
+        internal void PlaySoundInvoker(PlaySound sound, double X, double Y, bool setVolume)
         {
             Player player = GetPlayer();
             if (player == null) return;
-            float distance = (float)Math.Sqrt((player.X - X) * (player.X - X) + (player.Y - Y) * (player.Y - Y));
-            if (distance > 14) return;
             float vol = Volume;
-            if (distance > 1) vol /= (float)Math.Pow(distance, 0.87);
+            if (setVolume)
+            {
+                float distance = (float)Math.Sqrt((player.X - X) * (player.X - X) + (player.Y - Y) * (player.Y - Y));
+                if (distance > 14) return;
+                if (distance > 1) vol /= (float)Math.Pow(distance, 0.87);
+            }
             if (this.InvokeRequired && this.IsHandleCreated)
             {
                 this.BeginInvoke((MethodInvoker)delegate
@@ -921,7 +928,7 @@ namespace SLIL
 
         //  #====  Console methods  ====#
 
-        internal static void SetVolume() => ost[OstIndex].SetVolume(MusicVolume);
+        internal static void SetVolume() => Ost[OstIndex].SetVolume(MusicVolume);
 
         internal bool OnOffNoClip() => Controller.OnOffNoClip();
 
@@ -938,15 +945,14 @@ namespace SLIL
         internal static void ChangeOst(int index)
         {
             if (!MainMenu.sounds) return;
-            ost[OstIndex]?.Stop();
+            Ost[OstIndex]?.Stop();
             OstIndex = index;
-            ost[OstIndex].LoopPlay(MusicVolume);
+            Ost[OstIndex].LoopPlay(MusicVolume);
         }
 
         internal void KillFromConsole()
         {
-            if (Controller.IsMultiplayer())
-                Controller.DealDamage(GetPlayer(), 9999);
+            if (Controller.IsMultiplayer()) Controller.DealDamage(GetPlayer(), 9999);
             else Controller.StopGame(0);
         }
 
@@ -1181,35 +1187,35 @@ namespace SLIL
             Player player = GetPlayer();
             if (player == null) return;
             if (!player.InTransport || player.TRANSPORT == null)
-                transport_step?.Stop();
-            if ((player.MoveSpeed != 0 || (player.StrafeSpeed != 0 && !player.InTransport)) && !player.InParkour && !player.Aiming && (step == null || !step.IsPlaying))
+                TransportStep?.Stop();
+            if ((player.MoveSpeed != 0 || (player.StrafeSpeed != 0 && !player.InTransport)) && !player.InParkour && !player.Aiming && (Step == null || !Step.IsPlaying))
             {
-                if (currentIndex >= soundIndices.Count)
+                if (CurrentIndex >= soundIndices.Count)
                 {
                     soundIndices = soundIndices.OrderBy(x => Rand.Next()).ToList();
-                    currentIndex = 0;
+                    CurrentIndex = 0;
                 }
                 int i = player.PlayerMoveStyle == Directions.RUN || player.Fast ? 1 : 0;
                 if (player.InTransport && player.TRANSPORT != null)
                 {
                     if (player.PlayerDirection == Directions.STOP || player.MoveSpeed < 0 ||
                         (player.PlayerDirection == Directions.BACK && player.MoveSpeed > 0)) //stopping
-                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][1];
+                        Step = TransportsSoundsDict[player.TRANSPORT.GetType()][1];
                     else //full speed
-                        step = TransportsSoundsDict[player.TRANSPORT.GetType()][2];
-                    if (transport_step == null || transport_step != step)
+                        Step = TransportsSoundsDict[player.TRANSPORT.GetType()][2];
+                    if (TransportStep == null || TransportStep != Step)
                     {
-                        transport_step?.Stop();
-                        transport_step = step;
-                        Controller.PlayGameSound(transport_step);
+                        TransportStep?.Stop();
+                        TransportStep = Step;
+                        Controller.PlayGameSound(TransportStep);
                     }
                     else
                     {
-                        if (transport_step.GetRemainTime() <= 0)
+                        if (TransportStep.GetRemainTime() <= 0)
                         {
-                            transport_step?.Stop();
-                            transport_step = step;
-                            Controller.PlayGameSound(transport_step);
+                            TransportStep?.Stop();
+                            TransportStep = Step;
+                            Controller.PlayGameSound(TransportStep);
                         }
                     }
                 }
@@ -1223,31 +1229,31 @@ namespace SLIL
                         else index = i + 6;
                     }
                     else if (player.CuteMode) index = i + 2;
-                    step = steps[index, soundIndices[currentIndex]];
-                    step.PlayWithWait(Volume);
+                    Step = Steps[index, soundIndices[CurrentIndex]];
+                    Step.PlayWithWait(Volume);
                 }
-                currentIndex++;
+                CurrentIndex++;
             }
             else if (player.InTransport && player.TRANSPORT != null && player.MoveSpeed == 0)
             {
                 //IDLE
-                step = TransportsSoundsDict[player.TRANSPORT.GetType()][0];
-                if (transport_step == null || transport_step != step)
+                Step = TransportsSoundsDict[player.TRANSPORT.GetType()][0];
+                if (TransportStep == null || TransportStep != Step)
                 {
-                    transport_step?.Stop();
-                    transport_step = step;
-                    Controller.PlayGameSound(transport_step);
+                    TransportStep?.Stop();
+                    TransportStep = Step;
+                    Controller.PlayGameSound(TransportStep);
                 }
                 else
                 {
-                    if (transport_step.GetRemainTime() <= 0)
+                    if (TransportStep.GetRemainTime() <= 0)
                     {
-                        transport_step?.Stop();
-                        transport_step = step;
-                        Controller.PlayGameSound(transport_step);
+                        TransportStep?.Stop();
+                        TransportStep = Step;
+                        Controller.PlayGameSound(TransportStep);
                     }
                 }
-                currentIndex++;
+                CurrentIndex++;
             }
         }
 
@@ -1363,7 +1369,7 @@ namespace SLIL
                 if (BurstShots >= player.GetCurrentGun().BurstShots)
                     shot_timer.Stop();
                 if (!shot_timer.Enabled || player.GetCurrentGun().FireType == FireTypes.Single)
-                    scope_hit = null;
+                    ScopeHit = null;
             }
             catch { }
         }
@@ -1372,7 +1378,7 @@ namespace SLIL
         {
             try
             {
-                scope_hit = null;
+                ScopeHit = null;
                 if (GameStarted)
                 {
                     int index = 1;
@@ -1481,17 +1487,17 @@ namespace SLIL
                 int dice = Rand.Next(100);
                 if (player.CuteMode)
                 {
-                    if (dice < 25) screenEffects.Add(new CuteBloodEffect1());
-                    else if (dice < 50) screenEffects.Add(new CuteBloodEffect2());
-                    else if (dice < 75) screenEffects.Add(new CuteBloodEffect3());
-                    else screenEffects.Add(new CuteBloodEffect4());
+                    if (dice < 25) ScreenEffects.Add(new CuteBloodEffect1());
+                    else if (dice < 50) ScreenEffects.Add(new CuteBloodEffect2());
+                    else if (dice < 75) ScreenEffects.Add(new CuteBloodEffect3());
+                    else ScreenEffects.Add(new CuteBloodEffect4());
                 }
                 else
                 {
-                    if (dice < 25) screenEffects.Add(new BloodEffect1());
-                    else if (dice < 50) screenEffects.Add(new BloodEffect2());
-                    else if (dice < 75) screenEffects.Add(new BloodEffect3());
-                    else screenEffects.Add(new BloodEffect4());
+                    if (dice < 25) ScreenEffects.Add(new BloodEffect1());
+                    else if (dice < 50) ScreenEffects.Add(new BloodEffect2());
+                    else if (dice < 75) ScreenEffects.Add(new BloodEffect3());
+                    else ScreenEffects.Add(new BloodEffect4());
                 }
             }
             shop_money.Text = $"$: {player.Money}";
@@ -1619,8 +1625,8 @@ namespace SLIL
 
         private void Screen_effects_timer_Tick(object sender, EventArgs e)
         {
-            for (int i = 0; i < screenEffects.Count; i++)
-                screenEffects[i].ReducingTimeRemaining();
+            for (int i = 0; i < ScreenEffects.Count; i++)
+                ScreenEffects[i].ReducingTimeRemaining();
         }
 
         private void Fade_timer_Tick(object sender, EventArgs e)
@@ -1634,7 +1640,7 @@ namespace SLIL
                     MusicVolume = MainMenu.MusicVolume;
                     fade_timer.Stop();
                 }
-                ost[OstIndex].SetVolume(MusicVolume);
+                Ost[OstIndex].SetVolume(MusicVolume);
             }
         }
 
@@ -2759,7 +2765,7 @@ namespace SLIL
                 if (y < 0) y += textureSize;
             }
             bool cuteMode = !Controller.InBackrooms() && player.CuteMode;
-            return textureCache.IsTransparent(pixel.TextureId, pixel.SpriteState, x, y, cuteMode);
+            return Textures.IsTransparent(pixel.TextureId, pixel.SpriteState, x, y, cuteMode);
         }
 
         private SpriteStates GetSpriteRotation(Entity entity, long timeNow, bool useTimeNow = true, bool returnStopState = false)
@@ -2846,7 +2852,7 @@ namespace SLIL
                 if (y < 0) y += textureSize;
             }
             bool cuteMode = !Controller.InBackrooms() && player.CuteMode;
-            return textureCache.GetTextureColor(pixel.TextureId, pixel.SpriteState, x, y, pixel.Blackout, cuteMode);
+            return Textures.GetTextureColor(pixel.TextureId, pixel.SpriteState, x, y, pixel.Blackout, cuteMode);
         }
 
         private void DrawRaysOnScreen(Pixel[][] rays)
@@ -3228,7 +3234,7 @@ namespace SLIL
 
         private void DrawScope(Player player)
         {
-            if (player.GetCurrentGun().ShowScope && !player.IsPetting && !player.InParkour && !player.InTransport && !player.InSelectingMode)
+            if (player.GetCurrentGun().ShowScope && !player.DoesKick && !player.IsPetting && !player.InParkour && !player.InTransport && !player.InSelectingMode)
             {
                 if (Resolution == 0)
                 {
@@ -3245,8 +3251,8 @@ namespace SLIL
                         graphicsWeapon.DrawImage(HScope[ScopeType], 0, 0, WEAPON.Width, WEAPON.Height);
                 }
             }
-            if (player.GetCurrentGun().ShowHitScope && scope_hit != null)
-                graphicsWeapon.DrawImage(scope_hit, 0, 0, WEAPON.Width, WEAPON.Height);
+            if (player.GetCurrentGun().ShowHitScope && ScopeHit != null)
+                graphicsWeapon.DrawImage(ScopeHit, 0, 0, WEAPON.Width, WEAPON.Height);
         }
 
         private void SaveGraphicsWeaponSmoothing(out SmoothingMode save)
@@ -3307,9 +3313,9 @@ namespace SLIL
         {
             if (player.EffectCheck(2))
                 graphicsWeapon.DrawImage(Properties.Resources.helmet_on_head, 0, 0, WEAPON.Width, WEAPON.Height);
-            for (int i = 0; i < screenEffects.Count; i++)
+            for (int i = 0; i < ScreenEffects.Count; i++)
             {
-                var screenEffect = screenEffects[i];
+                var screenEffect = ScreenEffects[i];
                 float timeRatio = ML.Clamp((float)screenEffect.TimeRemaining / screenEffect.TotalTime, 0, 1);
                 using (var attributes = new ImageAttributes())
                 {
@@ -3336,7 +3342,7 @@ namespace SLIL
                 if (screenEffect.TimeRemaining < 0)
                 {
                     if (screenEffect is ScreenShot screenShot) screenShot.SSImage?.Dispose();
-                    screenEffects.RemoveAt(i);
+                    ScreenEffects.RemoveAt(i);
                     i--;
                 }
             }
@@ -3789,7 +3795,7 @@ namespace SLIL
 
         private void BulletRayCasting()
         {
-            scope_hit = null;
+            ScopeHit = null;
             Player player = GetPlayer();
             if (player == null || !GameStarted) return;
             List<Entity> Entities = Controller.GetEntities();
@@ -3912,24 +3918,24 @@ namespace SLIL
                                                     if (creature.DeathSound != -1)
                                                     {
                                                         if (player.CuteMode)
-                                                            Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
+                                                            Controller.PlayGameSound(CuteDeathSounds[creature.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], creature.X, creature.Y);
                                                         else
-                                                            Controller.PlayGameSound(DeathSounds[creature.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(creature.X, creature.Y));
+                                                            Controller.PlayGameSound(DeathSounds[creature.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], creature.X, creature.Y);
                                                     }
                                                 }
                                                 if (!player.CuteMode)
                                                 {
                                                     if (Resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_hit;
+                                                        ScopeHit = Properties.Resources.scope_hit;
                                                     else
-                                                        scope_hit = Properties.Resources.h_scope_hit;
+                                                        ScopeHit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
                                                     if (Resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_c_hit;
+                                                        ScopeHit = Properties.Resources.scope_c_hit;
                                                     else
-                                                        scope_hit = Properties.Resources.h_scope_c_hit;
+                                                        ScopeHit = Properties.Resources.h_scope_c_hit;
                                                 }
                                                 bullet[k, 0] = -1;
                                                 bullet[k, 1] = -1;
@@ -3941,23 +3947,23 @@ namespace SLIL
                                                 if (Controller.DealDamage(targetPlayer, damage * 5))
                                                 {
                                                     if (player.CuteMode)
-                                                        Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                        Controller.PlayGameSound(CuteDeathSounds[targetPlayer.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], targetPlayer.X, targetPlayer.Y);
                                                     else
-                                                        Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], GetCoordinate(targetPlayer.X, targetPlayer.Y));
+                                                        Controller.PlayGameSound(DeathSounds[targetPlayer.DeathSound, Rand.Next(0, DeathSounds.GetLength(1))], targetPlayer.X, targetPlayer.Y);
                                                 }
                                                 if (!player.CuteMode)
                                                 {
                                                     if (Resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_hit;
+                                                        ScopeHit = Properties.Resources.scope_hit;
                                                     else
-                                                        scope_hit = Properties.Resources.h_scope_hit;
+                                                        ScopeHit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
                                                     if (Resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_c_hit;
+                                                        ScopeHit = Properties.Resources.scope_c_hit;
                                                     else
-                                                        scope_hit = Properties.Resources.h_scope_c_hit;
+                                                        ScopeHit = Properties.Resources.h_scope_c_hit;
                                                 }
                                                 bullet[k, 0] = -1;
                                                 bullet[k, 1] = -1;
@@ -3970,16 +3976,16 @@ namespace SLIL
                                                 if (!player.CuteMode)
                                                 {
                                                     if (Resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_hit;
+                                                        ScopeHit = Properties.Resources.scope_hit;
                                                     else
-                                                        scope_hit = Properties.Resources.h_scope_hit;
+                                                        ScopeHit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
                                                     if (Resolution == 0)
-                                                        scope_hit = Properties.Resources.scope_c_hit;
+                                                        ScopeHit = Properties.Resources.scope_c_hit;
                                                     else
-                                                        scope_hit = Properties.Resources.h_scope_c_hit;
+                                                        ScopeHit = Properties.Resources.h_scope_c_hit;
                                                 }
                                                 bullet[k, 0] = -1;
                                                 bullet[k, 1] = -1;
@@ -4092,9 +4098,8 @@ namespace SLIL
             string path = GetPath();
             if (BUFFER != null)
             {
-                const int scaleFactor = 4;
-                int newWidth = BUFFER.Width * scaleFactor;
-                int newHeight = BUFFER.Height * scaleFactor;
+                int newWidth = BUFFER.Width * 4;
+                int newHeight = BUFFER.Height * 4;
                 using (Bitmap resizedImage = new Bitmap(newWidth, newHeight))
                 {
                     using (Graphics g = Graphics.FromImage(resizedImage))
@@ -4106,7 +4111,7 @@ namespace SLIL
                     using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
                         resizedImage.Save(fileStream, ImageFormat.Png);
                 }
-                screenEffects.Add(new ScreenShot(BUFFER.Clone(new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), BUFFER.PixelFormat)));
+                ScreenEffects.Add(new ScreenShot(BUFFER.Clone(new Rectangle(0, 0, BUFFER.Width, BUFFER.Height), BUFFER.PixelFormat)));
                 ConsolePanel.Log($"Screenshot successfully created and saved to path:\n<{path}<", true, true, Color.Lime);
             }
             else ConsolePanel.Log("Error: BUFFER is null. Cannot take screenshot.", true, true, Color.Red);
@@ -4291,7 +4296,7 @@ namespace SLIL
                 }
                 else if (!player.CuteMode)
                 {
-                    PrevOst = Rand.Next(ost.Length - 5);
+                    PrevOst = Rand.Next(Ost.Length - 5);
                     ChangeOst(PrevOst);
                 }
                 else ChangeOst(7);
@@ -4300,11 +4305,11 @@ namespace SLIL
 
         private void StopAllSounds()
         {
-            foreach (var ostTrack in ost) ostTrack?.Stop();
-            foreach (var hitSound in hit) hitSound?.Stop();
+            foreach (var ostTrack in Ost) ostTrack?.Stop();
+            foreach (var hitSound in Hit) hitSound?.Stop();
             foreach (var climbSound in Climb) climbSound?.Stop();
             foreach (var doorSound in Door) doorSound?.Stop();
-            StopTwoDimensionalSoundsArray(steps);
+            StopTwoDimensionalSoundsArray(Steps);
             StopTwoDimensionalSoundsArray(DeathSounds);
             StopTwoDimensionalSoundsArray(CuteDeathSounds);
             StopTwoDimensionalSoundsArray(SoundsofShotsEnemies);
@@ -4323,10 +4328,11 @@ namespace SLIL
                 foreach (var transportSound in transportSoundDict)
                     transportSound?.Stop();
             }
-            foreach (var scary_sound in scary_sounds) scary_sound?.Stop();
-            hungry?.Stop();
-            step?.Stop();
-            transport_step?.Stop();
+            foreach (var scary_sound in ScarySounds) scary_sound?.Stop();
+            HitTransport?.Stop();
+            Hungry?.Stop();
+            Step?.Stop();
+            TransportStep?.Stop();
             Draw?.Stop();
             Buy?.Stop();
             Wall?.Stop();
@@ -4342,6 +4348,7 @@ namespace SLIL
             VoidStalkerScreamer?.Stop();
             Kick?.Stop();
             DamnKick?.Stop();
+            PlayerDeathSound?.Stop();
         }
 
         private static void StopTwoDimensionalSoundsArray(PlaySound[,] array)
@@ -4808,7 +4815,7 @@ namespace SLIL
             }
             else if (OstIndex == 7)
             {
-                PrevOst = Rand.Next(ost.Length - 5);
+                PrevOst = Rand.Next(Ost.Length - 5);
                 ChangeOst(PrevOst);
             }
         }

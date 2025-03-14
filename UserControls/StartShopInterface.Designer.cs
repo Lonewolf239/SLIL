@@ -445,10 +445,10 @@
             this.level_title.ForeColor = System.Drawing.Color.White;
             this.level_title.Location = new System.Drawing.Point(326, 94);
             this.level_title.Name = "level_title";
-            this.level_title.Size = new System.Drawing.Size(120, 24);
+            this.level_title.Size = new System.Drawing.Size(241, 24);
             this.level_title.TabIndex = 45;
             this.level_title.Text = "Уровень";
-            this.level_title.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.level_title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // minus_ammo_btn
             // 
@@ -503,10 +503,10 @@
             this.pistol_label.ForeColor = System.Drawing.Color.White;
             this.pistol_label.Location = new System.Drawing.Point(326, 3);
             this.pistol_label.Name = "pistol_label";
-            this.pistol_label.Size = new System.Drawing.Size(199, 24);
+            this.pistol_label.Size = new System.Drawing.Size(241, 24);
             this.pistol_label.TabIndex = 6;
             this.pistol_label.Text = "Пистолет";
-            this.pistol_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.pistol_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pistol_ammo_count
             // 

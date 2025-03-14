@@ -661,17 +661,17 @@ namespace SLIL.Classes
         internal void PlayGameSound(PlaySound sound)
         {
             //if (peer == null)
-            Game.PlayGameSound(playerID, sound);
+            Game.PlayGameSound(sound);
             //else
             //{
             //    //TODO:
             //}
         }
 
-        internal void PlayGameSound(PlaySound sound, int coordinate)
+        internal void PlayGameSound(PlaySound sound, double x, double y)
         {
             //if (peer == null)
-            Game.PlayGameSound(sound, coordinate);
+            Game.PlayGameSound(sound, x, y);
             //else
             //{
             //    //TODO:
