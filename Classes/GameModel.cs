@@ -260,7 +260,7 @@ namespace SLIL.Classes
                                         {
                                             if (playerTarget.InTransport) PlayGameSound(SLIL.HitTransport);
                                             else if (playerTarget.CuteMode) PlayGameSound(SLIL.Hungry);
-                                            else PlayGameSound(SLIL.Hit[SLIL.Hit.Length]);
+                                            else PlayGameSound(SLIL.Hit[Rand.Next(SLIL.Hit.Length)]);
                                             GiveDebaf(playerTarget, entity);
                                             playerTarget.DealDamage(Rand.Next(entity.MinDamage, entity.MaxDamage), true);
                                             if (playerTarget.HP <= 0)
