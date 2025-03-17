@@ -471,7 +471,7 @@ namespace SLIL.Classes
         private void BrokeDoor(double x, double y)
         {
             MAP[GetCoordinate(x, y)] = 'R';
-            PlayGameSound(SLIL.BreakdownDoors, x, y);
+            PlayGameSound(SLIL.BreakdownDoor, x, y);
             Entities.Add(new BrokenDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID));
         }
 

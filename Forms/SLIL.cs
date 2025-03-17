@@ -580,7 +580,7 @@ namespace SLIL
             Starter = new PlaySound(MainMenu.CGFReader.GetFile("starter.wav"), false),
             RPGExplosion = new PlaySound(MainMenu.CGFReader.GetFile("explosion.wav"), false),
             BarrelExplosion = new PlaySound(MainMenu.CGFReader.GetFile("barrel_explosion.wav"), false),
-            BreakdownDoors = new PlaySound(MainMenu.CGFReader.GetFile("breakdown_doors.wav"), false),
+            BreakdownDoor = new PlaySound(MainMenu.CGFReader.GetFile("breakdown_door.wav"), false),
             LiftingAmmoBox = new PlaySound(MainMenu.CGFReader.GetFile("lifting_ammo_box.wav"), false),
             LiftingMoneyPile = new PlaySound(MainMenu.CGFReader.GetFile("lifting_money_pile.wav"), false),
             VoidStalkerScreamer = new PlaySound(MainMenu.CGFReader.GetFile("void_stalker_screamer.wav"), false),
@@ -4409,7 +4409,7 @@ namespace SLIL
             Starter?.Stop();
             RPGExplosion?.Stop();
             BarrelExplosion?.Stop();
-            BreakdownDoors?.Stop();
+            BreakdownDoor?.Stop();
             LiftingAmmoBox?.Stop();
             LiftingMoneyPile?.Stop();
             VoidStalkerScreamer?.Stop();
