@@ -9,6 +9,7 @@ using System.Drawing;
 using Convert_Bitmap;
 using System.Threading;
 using SLIL.UserControls;
+using Accord.Video.FFMPEG;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Drawing.Imaging;
@@ -643,6 +644,10 @@ namespace SLIL
         private Bitmap map;
         private ConsolePanel ConsolePanel;
         private const double playerWidth = 0.4;
+        private bool ScreenRecording = false;
+        private VideoFileWriter VideoWriter;
+        private const int SavesWidth = 912;
+        private const int SavesHeight = 512;
         private bool GameStarted = false, CorrectExit = false;
         private bool HoldLMB = false;
         private WeaponToolTip InventoryWeaponToolTip;
@@ -1178,6 +1183,7 @@ namespace SLIL
                 }
                 else DrawCamera();
                 UpdateDisplay();
+                DoingScreenRecording();
             }
             catch { }
         }
@@ -1855,6 +1861,7 @@ namespace SLIL
             if (GameStarted && !Paused && !ConsolePanel.Visible && !ShopOpen)
             {
                 if (e.KeyCode == Bind.Screenshot) DoScreenshot();
+                if (e.KeyCode == Bind.ScreenRecording) StartStopScreenRecording();
                 if ((e.KeyCode == Bind.Show_map_0 || e.KeyCode == Bind.Show_map_1) && !player.BlockInput)
                 {
                     if (!ShowSing)
@@ -1867,10 +1874,7 @@ namespace SLIL
                 if (!shot_timer.Enabled && !reload_timer.Enabled && !shotgun_pull_timer.Enabled && !player.BlockInput && !player.IsPetting)
                 {
                     if (player.InTransport || player.UseItem || Controller.InBackrooms()) return;
-                    if (e.KeyCode == Bind.Kick)
-                    {
-                        Controller.DidKick();
-                    }
+                    if (e.KeyCode == Bind.Kick) Controller.DidKick();
                     if (e.KeyCode == Bind.Flashlight)
                     {
                         if (player.GetCurrentGun() is Flashlight) TakeFlashlight(false);
@@ -3114,6 +3118,7 @@ namespace SLIL
                 }
             }
             ShowDebugs(player);
+            if (ScreenRecording) graphicsWeapon.DrawImage(Properties.Resources.record, (WEAPON.Width - 40) / 2, 0, 40, 15);
             if (Resolution == 1)
             {
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
@@ -4095,18 +4100,16 @@ namespace SLIL
 
         private void DoScreenshot()
         {
-            string path = GetPath();
+            string path = GetScreenshotPath();
             if (BUFFER != null)
             {
-                int newWidth = BUFFER.Width * 4;
-                int newHeight = BUFFER.Height * 4;
-                using (Bitmap resizedImage = new Bitmap(newWidth, newHeight))
+                using (Bitmap resizedImage = new Bitmap(SavesWidth, SavesHeight))
                 {
                     using (Graphics g = Graphics.FromImage(resizedImage))
                     {
                         g.InterpolationMode = InterpolationMode.NearestNeighbor;
                         g.Clear(Color.Black);
-                        g.DrawImage(BUFFER, 0, 0, newWidth, newHeight);
+                        g.DrawImage(BUFFER, 0, 0, SavesWidth, SavesHeight);
                     }
                     using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
                         resizedImage.Save(fileStream, ImageFormat.Png);
@@ -4118,12 +4121,76 @@ namespace SLIL
             Controller.PlayGameSound(Screenshot);
         }
 
-        private string GetPath()
+        private string GetScreenshotPath()
         {
-            DateTime dateTime = DateTime.Now;
-            string path = Path.Combine("screenshots", $"screenshot_{dateTime:yyyy_MM_dd}__{dateTime:HH_mm_ss}.png");
+            var dateTime = DateTime.Now;
+            var path = Path.Combine("saves", $"screenshot_{dateTime:yyyy_MM_dd}__{dateTime:HH_mm_ss}.png");
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             return path;
+        }
+
+        //  #====  ScreenRecording  ====#
+
+        private void StartStopScreenRecording()
+        {
+            ScreenRecording = !ScreenRecording;
+            if (ScreenRecording)
+            {
+                DisposeVideoWriter();
+                try
+                {
+                    VideoWriter = new VideoFileWriter();
+                    VideoWriter.Open(GetScreenRecordingPath(), SavesWidth, SavesHeight, 30, VideoCodec.MPEG4, 8400000);
+                }
+                catch (Exception ex)
+                {
+                    ScreenRecording = false;
+                    ConsolePanel.Log($"An error occurred while opening the video: {ex.Message}", true, true, Color.Red);
+                    DisposeVideoWriter();
+                }
+            }
+            else DisposeVideoWriter();
+        }
+
+        private void DisposeVideoWriter()
+        {
+            if (VideoWriter != null)
+            {
+                try
+                {
+                    VideoWriter.Close();
+                    VideoWriter.Dispose();
+                }
+                catch (Exception ex) { ConsolePanel.Log($"An error occurred while disposing the video writer: {ex.Message}", true, true, Color.Red); }
+                finally { VideoWriter = null; }
+            }
+        }
+
+        private string GetScreenRecordingPath()
+        {
+            var dateTime = DateTime.Now;
+            var path = Path.Combine("saves", $"screen_recording_{dateTime:yyyy_MM_dd}__{dateTime:HH_mm_ss}.mp4");
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            return path;
+        }
+
+        private void DoingScreenRecording()
+        {
+            if (!ScreenRecording) return;
+            using (var frame = new Bitmap(SavesWidth, SavesHeight))
+            {
+                using (var g = Graphics.FromImage(frame))
+                {
+                    g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                    g.Clear(Color.Black);
+                    if (BUFFER != null) g.DrawImage(BUFFER, 0, 0, SavesWidth, SavesHeight);
+                    const string recordingTitle = "Recorded in SLIL (Game by. Lonewolf239)";
+                    var titleSize = graphicsWeapon.MeasureString(recordingTitle, ConsolasFont[0, 2]);
+                    g.DrawString(recordingTitle, ConsolasFont[0, 2], WhiteBrush, (SavesWidth - titleSize.Width) / 2, 60);
+                }
+                try { VideoWriter.WriteVideoFrame(frame); }
+                catch { }
+            }
         }
 
         //  #====       Scope       ====#

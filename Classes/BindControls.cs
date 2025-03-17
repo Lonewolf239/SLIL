@@ -6,6 +6,7 @@ namespace SLIL.Classes
     public class BindControls
     {
         public Keys Screenshot { get; set; }
+        public Keys ScreenRecording { get; set; }
         public Keys Reloading { get; set; }
         public Keys Forward { get; set; }
         public Keys Back { get; set; }
@@ -26,6 +27,7 @@ namespace SLIL.Classes
         public BindControls(Dictionary<string, Keys> BindControls)
         {
             Screenshot = BindControls["screenshot"];
+            ScreenRecording = BindControls["screen_recording"];
             Reloading = BindControls["reloading"];
             Forward = BindControls["forward"];
             Back = BindControls["back"];
@@ -49,6 +51,7 @@ namespace SLIL.Classes
             switch (name_properties.ToLower())
             {
                 case "screenshot": return Screenshot;
+                case "screen_recording": return ScreenRecording;
                 case "reloading": return Reloading;
                 case "forward": return Forward;
                 case "back": return Back;
@@ -74,6 +77,7 @@ namespace SLIL.Classes
             switch (name_properties.ToLower())
             {
                 case "screenshot":
+                case "screen_recording":
                 case "reloading":
                 case "forward":
                 case "back":

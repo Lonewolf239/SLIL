@@ -42,6 +42,7 @@ namespace SLIL
         private readonly Dictionary<string, Keys> ClassicBindControls = new Dictionary<string, Keys>()
         {
             { "screenshot", Keys.F12 },
+            { "screen_recording", Keys.F9 },
             { "reloading", Keys.R },
             { "forward", Keys.W },
             { "back", Keys.S },
@@ -62,6 +63,7 @@ namespace SLIL
         internal static Dictionary<string, Keys> BindControls = new Dictionary<string, Keys>()
         {
             { "screenshot", Keys.F12 },
+            { "screen_recording", Keys.F9 },
             { "reloading", Keys.R },
             { "forward", Keys.W },
             { "back", Keys.S },
@@ -304,6 +306,8 @@ namespace SLIL
             keyboard_settings.Controls.Add(new Separator());
             keyboard_settings.Controls.Add(fire_panel);
             keyboard_settings.Controls.Add(new Separator());
+            keyboard_settings.Controls.Add(screen_recording_panel);
+            keyboard_settings.Controls.Add(new Separator());
             keyboard_settings.Controls.Add(screenshot_panel);
         }
 
@@ -447,6 +451,7 @@ namespace SLIL
             smoothing = Program.iniReader.GetInt("SLIL", "smoothing", 1);
             hight_fps = Program.iniReader.GetBool("SLIL", "hight_fps", true);
             BindControls["screenshot"] = Program.iniReader.GetKeys("HOTKEYS", "screenshot", Keys.F12);
+            BindControls["screen_recording"] = Program.iniReader.GetKeys("HOTKEYS", "screen_recording", Keys.F9);
             BindControls["reloading"] = Program.iniReader.GetKeys("HOTKEYS", "reloading", Keys.R);
             BindControls["forward"] = Program.iniReader.GetKeys("HOTKEYS", "forward", Keys.W);
             BindControls["back"] = Program.iniReader.GetKeys("HOTKEYS", "back", Keys.S);
@@ -500,6 +505,7 @@ namespace SLIL
             Program.iniReader.SetKey("SLIL", "inv_y", inv_y);
             Program.iniReader.SetKey("SLIL", "inv_x", inv_x);
             Program.iniReader.SetKey("HOTKEYS", "screenshot", BindControls["screenshot"]);
+            Program.iniReader.SetKey("HOTKEYS", "screen_recording", BindControls["screen_recording"]);
             Program.iniReader.SetKey("HOTKEYS", "reloading", BindControls["reloading"]);
             Program.iniReader.SetKey("HOTKEYS", "forward", BindControls["forward"]);
             Program.iniReader.SetKey("HOTKEYS", "back", BindControls["back"]);
@@ -604,6 +610,7 @@ namespace SLIL
         private void SetVisualSettings()
         {
             screenshot_btn_c.Text = GetBtnName("screenshot");
+            screen_recording_btn_c.Text = GetBtnName("screen_recording");
             reloading_btn_c.Text = GetBtnName("reloading");
             forward_btn_c.Text = GetBtnName("forward");
             back_btn_c.Text = GetBtnName("back");
@@ -750,6 +757,7 @@ namespace SLIL
                 cant_use_panel.Text = Localizations.GetLString(Language, "0-107");
                 interface_size_label.Text = Localizations.GetLString(Language, "0-108") + GetInterfaceSize();
                 screenshot_label.Text = Localizations.GetLString(Language, "0-46");
+                screen_recording_label.Text = Localizations.GetLString(Language, "0-135");
                 fire_btn_c.Text = Localizations.GetLString(Language, "0-47");
                 aim_btn_c.Text = Localizations.GetLString(Language, "0-48");
                 reloading_label.Text = Localizations.GetLString(Language, "0-49");
@@ -837,6 +845,7 @@ namespace SLIL
                 cant_use_panel.Text = "This button can't be used!";
                 interface_size_label.Text = "Interface size: " + GetInterfaceSize();
                 screenshot_label.Text = "Screenshot";
+                screen_recording_label.Text = "Screen recording";
                 fire_btn_c.Text = "LMB";
                 aim_btn_c.Text = "RMB";
                 reloading_label.Text = "Reloading";

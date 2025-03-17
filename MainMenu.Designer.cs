@@ -194,6 +194,9 @@
             this.fire_panel = new System.Windows.Forms.Panel();
             this.fire_btn_c = new System.Windows.Forms.Button();
             this.fire_label = new System.Windows.Forms.Label();
+            this.screen_recording_panel = new System.Windows.Forms.Panel();
+            this.screen_recording_btn_c = new System.Windows.Forms.Button();
+            this.screen_recording_label = new System.Windows.Forms.Label();
             this.screenshot_panel = new System.Windows.Forms.Panel();
             this.screenshot_btn_c = new System.Windows.Forms.Button();
             this.screenshot_label = new System.Windows.Forms.Label();
@@ -327,6 +330,7 @@
             this.reloading_panel.SuspendLayout();
             this.aim_panel.SuspendLayout();
             this.fire_panel.SuspendLayout();
+            this.screen_recording_panel.SuspendLayout();
             this.screenshot_panel.SuspendLayout();
             this.close_settings_panel.SuspendLayout();
             this.press_any_btn_panel.SuspendLayout();
@@ -1600,10 +1604,10 @@
             // 
             this.controls_settings.BackColor = System.Drawing.Color.Black;
             this.controls_settings.Controls.Add(this.controls_tabcontrol);
-            this.controls_settings.Location = new System.Drawing.Point(4, 22);
+            this.controls_settings.Location = new System.Drawing.Point(4, 33);
             this.controls_settings.Name = "controls_settings";
             this.controls_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.controls_settings.Size = new System.Drawing.Size(482, 194);
+            this.controls_settings.Size = new System.Drawing.Size(482, 183);
             this.controls_settings.TabIndex = 3;
             this.controls_settings.Text = "Управление";
             // 
@@ -1615,7 +1619,7 @@
             this.controls_tabcontrol.Location = new System.Drawing.Point(3, 3);
             this.controls_tabcontrol.Name = "controls_tabcontrol";
             this.controls_tabcontrol.SelectedIndex = 0;
-            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 188);
+            this.controls_tabcontrol.Size = new System.Drawing.Size(476, 177);
             this.controls_tabcontrol.TabIndex = 0;
             // 
             // mouse_settings
@@ -1629,7 +1633,7 @@
             this.mouse_settings.Location = new System.Drawing.Point(4, 33);
             this.mouse_settings.Name = "mouse_settings";
             this.mouse_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.mouse_settings.Size = new System.Drawing.Size(468, 151);
+            this.mouse_settings.Size = new System.Drawing.Size(468, 140);
             this.mouse_settings.TabIndex = 0;
             this.mouse_settings.Text = "Мышь";
             // 
@@ -1757,12 +1761,13 @@
             this.keyboard_settings.Controls.Add(this.reloading_panel);
             this.keyboard_settings.Controls.Add(this.aim_panel);
             this.keyboard_settings.Controls.Add(this.fire_panel);
+            this.keyboard_settings.Controls.Add(this.screen_recording_panel);
             this.keyboard_settings.Controls.Add(this.screenshot_panel);
             this.keyboard_settings.ForeColor = System.Drawing.Color.White;
-            this.keyboard_settings.Location = new System.Drawing.Point(4, 22);
+            this.keyboard_settings.Location = new System.Drawing.Point(4, 33);
             this.keyboard_settings.Name = "keyboard_settings";
             this.keyboard_settings.Padding = new System.Windows.Forms.Padding(3);
-            this.keyboard_settings.Size = new System.Drawing.Size(468, 162);
+            this.keyboard_settings.Size = new System.Drawing.Size(468, 140);
             this.keyboard_settings.TabIndex = 2;
             this.keyboard_settings.Text = "Клавиатура";
             // 
@@ -1805,7 +1810,7 @@
             this.inventory_panel.Controls.Add(this.inventory_label);
             this.inventory_panel.Controls.Add(this.inventory_btn_c);
             this.inventory_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.inventory_panel.Location = new System.Drawing.Point(3, 513);
+            this.inventory_panel.Location = new System.Drawing.Point(3, 547);
             this.inventory_panel.Name = "inventory_panel";
             this.inventory_panel.Size = new System.Drawing.Size(445, 34);
             this.inventory_panel.TabIndex = 16;
@@ -1838,7 +1843,7 @@
             this.climb_panel.Controls.Add(this.climb_label);
             this.climb_panel.Controls.Add(this.climb_btn_c);
             this.climb_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.climb_panel.Location = new System.Drawing.Point(3, 479);
+            this.climb_panel.Location = new System.Drawing.Point(3, 513);
             this.climb_panel.Name = "climb_panel";
             this.climb_panel.Size = new System.Drawing.Size(445, 34);
             this.climb_panel.TabIndex = 15;
@@ -1871,7 +1876,7 @@
             this.run_panel.Controls.Add(this.run_label);
             this.run_panel.Controls.Add(this.run_btn_c);
             this.run_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.run_panel.Location = new System.Drawing.Point(3, 445);
+            this.run_panel.Location = new System.Drawing.Point(3, 479);
             this.run_panel.Name = "run_panel";
             this.run_panel.Size = new System.Drawing.Size(445, 34);
             this.run_panel.TabIndex = 11;
@@ -1903,7 +1908,7 @@
             this.select_item_panel.Controls.Add(this.select_item_btn_c);
             this.select_item_panel.Controls.Add(this.select_item_label);
             this.select_item_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.select_item_panel.Location = new System.Drawing.Point(3, 411);
+            this.select_item_panel.Location = new System.Drawing.Point(3, 445);
             this.select_item_panel.Name = "select_item_panel";
             this.select_item_panel.Size = new System.Drawing.Size(445, 34);
             this.select_item_panel.TabIndex = 14;
@@ -1935,7 +1940,7 @@
             this.medkit_panel.Controls.Add(this.item_btn_c);
             this.medkit_panel.Controls.Add(this.medkit_label);
             this.medkit_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.medkit_panel.Location = new System.Drawing.Point(3, 377);
+            this.medkit_panel.Location = new System.Drawing.Point(3, 411);
             this.medkit_panel.Name = "medkit_panel";
             this.medkit_panel.Size = new System.Drawing.Size(445, 34);
             this.medkit_panel.TabIndex = 10;
@@ -1968,7 +1973,7 @@
             this.flashlight_panel.Controls.Add(this.flashlight_label);
             this.flashlight_panel.Controls.Add(this.flashlight_btn_c);
             this.flashlight_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flashlight_panel.Location = new System.Drawing.Point(3, 343);
+            this.flashlight_panel.Location = new System.Drawing.Point(3, 377);
             this.flashlight_panel.Name = "flashlight_panel";
             this.flashlight_panel.Size = new System.Drawing.Size(445, 34);
             this.flashlight_panel.TabIndex = 9;
@@ -2001,7 +2006,7 @@
             this.show_map_panel.Controls.Add(this.show_map_1_btn_c);
             this.show_map_panel.Controls.Add(this.show_map_label);
             this.show_map_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.show_map_panel.Location = new System.Drawing.Point(3, 309);
+            this.show_map_panel.Location = new System.Drawing.Point(3, 343);
             this.show_map_panel.Name = "show_map_panel";
             this.show_map_panel.Size = new System.Drawing.Size(445, 34);
             this.show_map_panel.TabIndex = 8;
@@ -2047,7 +2052,7 @@
             this.interaction_panel.Controls.Add(this.interaction_label);
             this.interaction_panel.Controls.Add(this.interaction_1_btn_c);
             this.interaction_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.interaction_panel.Location = new System.Drawing.Point(3, 275);
+            this.interaction_panel.Location = new System.Drawing.Point(3, 309);
             this.interaction_panel.Name = "interaction_panel";
             this.interaction_panel.Size = new System.Drawing.Size(445, 34);
             this.interaction_panel.TabIndex = 7;
@@ -2091,7 +2096,7 @@
             this.right_panel.Controls.Add(this.right_btn_c);
             this.right_panel.Controls.Add(this.right_label);
             this.right_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.right_panel.Location = new System.Drawing.Point(3, 241);
+            this.right_panel.Location = new System.Drawing.Point(3, 275);
             this.right_panel.Name = "right_panel";
             this.right_panel.Size = new System.Drawing.Size(445, 34);
             this.right_panel.TabIndex = 6;
@@ -2124,7 +2129,7 @@
             this.left_panel.Controls.Add(this.left_btn_c);
             this.left_panel.Controls.Add(this.left_label);
             this.left_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.left_panel.Location = new System.Drawing.Point(3, 207);
+            this.left_panel.Location = new System.Drawing.Point(3, 241);
             this.left_panel.Name = "left_panel";
             this.left_panel.Size = new System.Drawing.Size(445, 34);
             this.left_panel.TabIndex = 5;
@@ -2156,7 +2161,7 @@
             this.back_panel.Controls.Add(this.back_btn_c);
             this.back_panel.Controls.Add(this.back_label);
             this.back_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.back_panel.Location = new System.Drawing.Point(3, 173);
+            this.back_panel.Location = new System.Drawing.Point(3, 207);
             this.back_panel.Name = "back_panel";
             this.back_panel.Size = new System.Drawing.Size(445, 34);
             this.back_panel.TabIndex = 4;
@@ -2189,7 +2194,7 @@
             this.forward_panel.Controls.Add(this.forward_btn_c);
             this.forward_panel.Controls.Add(this.forward_label);
             this.forward_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.forward_panel.Location = new System.Drawing.Point(3, 139);
+            this.forward_panel.Location = new System.Drawing.Point(3, 173);
             this.forward_panel.Name = "forward_panel";
             this.forward_panel.Size = new System.Drawing.Size(445, 34);
             this.forward_panel.TabIndex = 3;
@@ -2222,7 +2227,7 @@
             this.reloading_panel.Controls.Add(this.reloading_btn_c);
             this.reloading_panel.Controls.Add(this.reloading_label);
             this.reloading_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.reloading_panel.Location = new System.Drawing.Point(3, 105);
+            this.reloading_panel.Location = new System.Drawing.Point(3, 139);
             this.reloading_panel.Name = "reloading_panel";
             this.reloading_panel.Size = new System.Drawing.Size(445, 34);
             this.reloading_panel.TabIndex = 12;
@@ -2254,7 +2259,7 @@
             this.aim_panel.Controls.Add(this.aim_btn_c);
             this.aim_panel.Controls.Add(this.aim_label);
             this.aim_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.aim_panel.Location = new System.Drawing.Point(3, 71);
+            this.aim_panel.Location = new System.Drawing.Point(3, 105);
             this.aim_panel.Name = "aim_panel";
             this.aim_panel.Size = new System.Drawing.Size(445, 34);
             this.aim_panel.TabIndex = 2;
@@ -2286,7 +2291,7 @@
             this.fire_panel.Controls.Add(this.fire_btn_c);
             this.fire_panel.Controls.Add(this.fire_label);
             this.fire_panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fire_panel.Location = new System.Drawing.Point(3, 37);
+            this.fire_panel.Location = new System.Drawing.Point(3, 71);
             this.fire_panel.Name = "fire_panel";
             this.fire_panel.Size = new System.Drawing.Size(445, 34);
             this.fire_panel.TabIndex = 1;
@@ -2311,6 +2316,38 @@
             this.fire_label.TabIndex = 0;
             this.fire_label.Text = "Выстрел";
             this.fire_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // screen_recording_panel
+            // 
+            this.screen_recording_panel.BackColor = System.Drawing.Color.Black;
+            this.screen_recording_panel.Controls.Add(this.screen_recording_btn_c);
+            this.screen_recording_panel.Controls.Add(this.screen_recording_label);
+            this.screen_recording_panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.screen_recording_panel.Location = new System.Drawing.Point(3, 37);
+            this.screen_recording_panel.Name = "screen_recording_panel";
+            this.screen_recording_panel.Size = new System.Drawing.Size(445, 34);
+            this.screen_recording_panel.TabIndex = 17;
+            // 
+            // screen_recording_btn_c
+            // 
+            this.screen_recording_btn_c.Dock = System.Windows.Forms.DockStyle.Right;
+            this.screen_recording_btn_c.Location = new System.Drawing.Point(362, 0);
+            this.screen_recording_btn_c.Name = "screen_recording_btn_c";
+            this.screen_recording_btn_c.Size = new System.Drawing.Size(83, 34);
+            this.screen_recording_btn_c.TabIndex = 1;
+            this.screen_recording_btn_c.TabStop = false;
+            this.screen_recording_btn_c.Text = "F9";
+            this.screen_recording_btn_c.UseVisualStyleBackColor = false;
+            // 
+            // screen_recording_label
+            // 
+            this.screen_recording_label.Dock = System.Windows.Forms.DockStyle.Left;
+            this.screen_recording_label.Location = new System.Drawing.Point(0, 0);
+            this.screen_recording_label.Name = "screen_recording_label";
+            this.screen_recording_label.Size = new System.Drawing.Size(226, 34);
+            this.screen_recording_label.TabIndex = 0;
+            this.screen_recording_label.Text = "Запись экрана";
+            this.screen_recording_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // screenshot_panel
             // 
@@ -3220,6 +3257,7 @@
             this.reloading_panel.ResumeLayout(false);
             this.aim_panel.ResumeLayout(false);
             this.fire_panel.ResumeLayout(false);
+            this.screen_recording_panel.ResumeLayout(false);
             this.screenshot_panel.ResumeLayout(false);
             this.close_settings_panel.ResumeLayout(false);
             this.close_settings_panel.PerformLayout();
@@ -3485,5 +3523,8 @@
         private System.Windows.Forms.Label kick_label;
         private System.Windows.Forms.Button kick_btn_c;
         private System.Windows.Forms.Timer fade_timer;
+        private System.Windows.Forms.Panel screen_recording_panel;
+        private System.Windows.Forms.Button screen_recording_btn_c;
+        private System.Windows.Forms.Label screen_recording_label;
     }
 }
