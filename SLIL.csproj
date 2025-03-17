@@ -1589,8 +1589,8 @@
     <None Include="Images\soul_explosion_c_0.png" />
     <None Include="Images\money_pile.png" />
     <None Include="Images\dummy.png" />
-	<None Include="Images\record.png" />
-	<Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
+    <None Include="Images\record.png" />
+    <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
     <Content Include="SLILCursorDefault.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
