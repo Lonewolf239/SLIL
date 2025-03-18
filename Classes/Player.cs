@@ -32,6 +32,7 @@ namespace SLIL.Classes
         internal double CurseKickChance { get; set; }
         internal bool IsPetting { get; set; }
         internal bool InParkour { get; set; }
+        internal bool Dodge { get; set; }
         internal bool DoesKick { get; set; }
         internal int ParkourState { get; set; }
         internal int KickType { get; set; }
@@ -613,6 +614,7 @@ namespace SLIL.Classes
             LevelUpdated = false;
             IsPetting = false;
             InParkour = false;
+            Dodge = false;
             DoesKick = false;
             InSelectingMode = false;
             BlockInput = false;

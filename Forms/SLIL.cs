@@ -1108,7 +1108,7 @@ namespace SLIL
 
         private void SLIL_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //Controller.CloseConnection();
+            if (ScreenRecording) StartStopScreenRecording();
             if (!CorrectExit)
             {
                 e.Cancel = true;
@@ -3045,6 +3045,7 @@ namespace SLIL
             graphicsWeapon.Clear(Color.Transparent);
             DrawWeapon(player, 0);
             ShowDebugs(player);
+            DrawScreenRecordingIcon();
         }
 
         private void DrawGameInterface()
@@ -3118,13 +3119,15 @@ namespace SLIL
                 }
             }
             ShowDebugs(player);
-            if (ScreenRecording) graphicsWeapon.DrawImage(Properties.Resources.record, (WEAPON.Width - 40) / 2, 0, 40, 15);
+            DrawScreenRecordingIcon();
             if (Resolution == 1)
             {
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), 0, WEAPON.Height - 1, WEAPON.Width, WEAPON.Height - 1);
                 graphicsWeapon.DrawLine(new Pen(Color.Black, 1), WEAPON.Width - 1, 0, WEAPON.Width - 1, WEAPON.Height - 1);
             }
         }
+
+        private void DrawScreenRecordingIcon() { if (ScreenRecording) graphicsWeapon.DrawImage(Properties.Resources.record, (WEAPON.Width - 40) / 2, 0, 40, 15); }
 
         /*
         private void DrawSpectatorInterface()
@@ -3748,8 +3751,8 @@ namespace SLIL
         {
             RecoilY += player.GetCurrentGun().RecoilY;
             double recoilX = player.GetCurrentGun().GetRecoilX(Rand.NextDouble());
-            if (recoilX < 0) RecoilLX += (float)(-recoilX);
-            else RecoilRX += (float)recoilX;
+            if (recoilX < 0) RecoilLX += -recoilX;
+            else RecoilRX += recoilX;
         }
 
         private bool Shoot(Player player)
@@ -4140,7 +4143,7 @@ namespace SLIL
                 try
                 {
                     VideoWriter = new VideoFileWriter();
-                    VideoWriter.Open(GetScreenRecordingPath(), SavesWidth, SavesHeight, 30, VideoCodec.MPEG4, 8400000);
+                    VideoWriter.Open(GetScreenRecordingPath(), SavesWidth, SavesHeight, HightFps ? 60 : 30, VideoCodec.MPEG4, 8400000);
                 }
                 catch (Exception ex)
                 {
@@ -4236,19 +4239,19 @@ namespace SLIL
             Player player = GetPlayer();
             return player.GetCurrentGun().CanRun && !player.InParkour &&
                 !player.Fast && !player.IsPetting && !player.Aiming &&
-                !shot_timer.Enabled && !reload_timer.Enabled &&
+                !shot_timer.Enabled && !reload_timer.Enabled && !player.Dodge &&
                 !shotgun_pull_timer.Enabled && !chill_timer.Enabled &&
-                !mouse_hold_timer.Enabled && !player.UseItem;
+                !mouse_hold_timer.Enabled && !player.UseItem && !player.DoesKick;
         }
 
         private bool PlayerCanDodge()
         {
             Player player = GetPlayer();
             return player.GetCurrentGun().CanRun && !player.InParkour &&
-                !player.IsPetting && !player.Aiming &&
+                !player.IsPetting && !player.Aiming && !player.Dodge &&
                 !shot_timer.Enabled && !reload_timer.Enabled &&
                 !shotgun_pull_timer.Enabled && !chill_timer.Enabled &&
-                !mouse_hold_timer.Enabled && !player.UseItem;
+                !mouse_hold_timer.Enabled && !player.UseItem && !player.DoesKick;
         }
 
         private void StartGame()

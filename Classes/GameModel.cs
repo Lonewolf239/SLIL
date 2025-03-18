@@ -1995,7 +1995,7 @@ namespace SLIL.Classes
         internal void DidKick(int playerID)
         {
             Player p = GetPlayer(playerID);
-            if (p == null || p.Stamine < 200 || p.DoesKick) return;
+            if (p == null || p.Stamine < 200 || p.DoesKick || p.Dodge) return;
             if (p.EffectCheck(3)) return;
             if (p.InTransport) return;
             bool damnKick = Rand.NextDouble() <= p.CurseKickChance;
