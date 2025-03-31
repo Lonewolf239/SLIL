@@ -1215,14 +1215,11 @@ namespace SLIL
                         TransportStep = Step;
                         Controller.PlayGameSound(TransportStep);
                     }
-                    else
+                    else if (TransportStep.GetRemainTime() <= 0)
                     {
-                        if (TransportStep.GetRemainTime() <= 0)
-                        {
-                            TransportStep?.Stop();
-                            TransportStep = Step;
-                            Controller.PlayGameSound(TransportStep);
-                        }
+                        TransportStep?.Stop();
+                        TransportStep = Step;
+                        Controller.PlayGameSound(TransportStep);
                     }
                 }
                 else
@@ -4402,7 +4399,9 @@ namespace SLIL
             HitTransport?.Stop();
             Hungry?.Stop();
             Step?.Stop();
+            Step = null;
             TransportStep?.Stop();
+            TransportStep = null;
             Draw?.Stop();
             Buy?.Stop();
             Wall?.Stop();
