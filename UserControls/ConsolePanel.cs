@@ -1369,26 +1369,22 @@ namespace SLIL.UserControls
             int lineIndex = console.GetLineFromCharIndex(charIndex);
             if (lineIndex < 0 || lineIndex >= console.Lines.Length) return;
             string line = console.Lines[lineIndex].Trim();
-            int charPositionInLine = charIndex - console.GetFirstCharIndexFromLine(lineIndex);
             const string screenshotPattern = @"screenshot_\d{4}_\d{2}_\d{2}__\d{2}_\d{2}_\d{2}\.png";
             const string screenRecordingPattern = @"screen_recording_\d{4}_\d{2}_\d{2}__\d{2}_\d{2}_\d{2}\.mp4";
-            if (!OpenFile(line, screenshotPattern, charPositionInLine)) OpenFile(line, screenRecordingPattern, charPositionInLine);
+            if (!OpenFile(line, screenshotPattern)) OpenFile(line, screenRecordingPattern);
         }
 
-        private bool OpenFile(string line, string pattern, int charPositionInLine)
+        private bool OpenFile(string line, string pattern)
         {
             Match match = Regex.Match(line, pattern);
             if (match.Success)
             {
-                if (charPositionInLine >= 0 && charPositionInLine < line.Length)
+                if (File.Exists(line))
                 {
-                    if (File.Exists(line))
-                    {
-                        try { Process.Start(new ProcessStartInfo(line) { UseShellExecute = true }); }
-                        catch (Exception ex) { Log($"Error opening file: {ex.Message}", true, true, Color.Red); }
-                    }
-                    else Log($"File not found: {line}", true, true, Color.Red);
+                    try { Process.Start(new ProcessStartInfo(line) { UseShellExecute = true }); }
+                    catch (Exception ex) { Log($"Error opening file: {ex.Message}", true, true, Color.Red); }
                 }
+                else Log($"File not found: {line}", true, true, Color.Red);
             }
             return match.Success;
         }
