@@ -14,13 +14,20 @@ namespace SLIL
     {
         internal static Mutex mutex;
         internal static Cursor SLILCursorDefault, SLILCursorHelp;
+        internal static string SLILFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SLIL\\";
         internal static string current_version = "|1.3.1|";
-        internal static INIReader iniReader = new INIReader("config.ini");
+        internal static INIReader iniReader;
 
         [STAThread]
         internal static void Main()
         {
             mutex = new Mutex(true, "SLIL_Unique_Mutex");
+            Directory.CreateDirectory(SLILFolder);
+            if (File.Exists("config.ini")) File.Move("config.ini", $"{SLILFolder}config.ini");
+            if (File.Exists("data.enc")) File.Delete("data.enc");
+            MoveFiles("saves");
+            MoveFiles("screenshots");
+            iniReader = new INIReader($"{SLILFolder}config.ini");
             if (!mutex.WaitOne(TimeSpan.Zero, true)) return;
             if (!CheckWindows())
             {
@@ -66,6 +73,20 @@ namespace SLIL
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Loading());
             mutex.ReleaseMutex();
+        }
+
+        private static void MoveFiles(string path)
+        {
+            if (!Directory.Exists(path)) return;
+            foreach (var file in Directory.GetFiles(path))
+            {
+                string fileName = Path.GetFileName(file);
+                bool isScreenRecording = fileName.Contains("screen_recording");
+                if (isScreenRecording) Directory.CreateDirectory($"{SLILFolder}records");
+                else Directory.CreateDirectory($"{SLILFolder}screenshots");
+                File.Move(file, Path.Combine(SLILFolder + (isScreenRecording ? "records" : "screenshots"), fileName));
+            }
+            Directory.Delete(path, true);
         }
 
         private static bool HasEnoughMemory()

@@ -645,6 +645,7 @@ namespace SLIL
         private ConsolePanel ConsolePanel;
         private const double playerWidth = 0.4;
         private bool ScreenRecording = false;
+        private string ScreenRecordingPath;
         private VideoFileWriter VideoWriter;
         private const int SavesWidth = 912;
         private const int SavesHeight = 512;
@@ -4124,7 +4125,7 @@ namespace SLIL
         private string GetScreenshotPath()
         {
             var dateTime = DateTime.Now;
-            var path = Path.Combine("saves", $"screenshot_{dateTime:yyyy_MM_dd}__{dateTime:HH_mm_ss}.png");
+            var path = Path.Combine($"{Program.SLILFolder}screenshots", $"screenshot_{dateTime:yyyy_MM_dd}__{dateTime:HH_mm_ss}.png");
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             return path;
         }
@@ -4140,7 +4141,8 @@ namespace SLIL
                 try
                 {
                     VideoWriter = new VideoFileWriter();
-                    VideoWriter.Open(GetScreenRecordingPath(), SavesWidth, SavesHeight, HightFps ? 60 : 30, VideoCodec.MPEG4, 8400000);
+                    ScreenRecordingPath = GetScreenRecordingPath();
+                    VideoWriter.Open(ScreenRecordingPath, SavesWidth, SavesHeight, HightFps ? 60 : 30, VideoCodec.MPEG4, 8400000);
                 }
                 catch (Exception ex)
                 {
@@ -4149,7 +4151,11 @@ namespace SLIL
                     DisposeVideoWriter();
                 }
             }
-            else DisposeVideoWriter();
+            else
+            {
+                ConsolePanel.Log($"Screen recording successfully created and saved to path:\n<{ScreenRecordingPath}<", true, true, Color.Lime);
+                DisposeVideoWriter();
+            }
         }
 
         private void DisposeVideoWriter()
@@ -4169,7 +4175,7 @@ namespace SLIL
         private string GetScreenRecordingPath()
         {
             var dateTime = DateTime.Now;
-            var path = Path.Combine("saves", $"screen_recording_{dateTime:yyyy_MM_dd}__{dateTime:HH_mm_ss}.mp4");
+            var path = Path.Combine($"{Program.SLILFolder}records", $"screen_recording_{dateTime:yyyy_MM_dd}__{dateTime:HH_mm_ss}.mp4");
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             return path;
         }

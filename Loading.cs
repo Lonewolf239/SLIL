@@ -497,7 +497,7 @@ namespace SLIL
 
         private async void Loading_Load(object sender, EventArgs e)
         {
-            if (!File.Exists("data.enc")) await DownloadFileAsync(@"https://base-escape.ru/downloads/SLIL/data.enc", "data.enc");
+            if (!File.Exists($"{Program.SLILFolder}data.enc")) await DownloadFileAsync(@"https://base-escape.ru/downloads/SLIL/data.enc", $"{Program.SLILFolder}data.enc");
             await LoadingMainMenu();
         }
 

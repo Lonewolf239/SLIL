@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 
 namespace SLIL.UserControls
 {
@@ -1354,10 +1355,8 @@ namespace SLIL.UserControls
         internal void Log(string message, bool newline, bool showTime, Color color)
         {
             string nline = "", time = $"-<{DateTime.Now:HH:mm}>- ";
-            if (newline)
-                nline = "\n";
-            if (!showTime)
-                time = "";
+            if (newline) nline = "\n";
+            if (!showTime) time = "";
             ConsoleAppendText($"{nline}{time}{message}", color);
         }
 
@@ -1369,26 +1368,29 @@ namespace SLIL.UserControls
             if (charIndex < 0 || charIndex >= console.TextLength) return;
             int lineIndex = console.GetLineFromCharIndex(charIndex);
             if (lineIndex < 0 || lineIndex >= console.Lines.Length) return;
-            string line = console.Lines[lineIndex];
+            string line = console.Lines[lineIndex].Trim();
             int charPositionInLine = charIndex - console.GetFirstCharIndexFromLine(lineIndex);
-            const string pattern = @"screenshots\\screenshot_\d{4}_\d{2}_\d{2}__\d{2}_\d{2}_\d{2}\.png";
+            const string screenshotPattern = @"screenshot_\d{4}_\d{2}_\d{2}__\d{2}_\d{2}_\d{2}\.png";
+            const string screenRecordingPattern = @"screen_recording_\d{4}_\d{2}_\d{2}__\d{2}_\d{2}_\d{2}\.mp4";
+            if (!OpenFile(line, screenshotPattern, charPositionInLine)) OpenFile(line, screenRecordingPattern, charPositionInLine);
+        }
+
+        private bool OpenFile(string line, string pattern, int charPositionInLine)
+        {
             Match match = Regex.Match(line, pattern);
             if (match.Success)
             {
-                string filePath = match.Value;
-                int startIndex = match.Index;
-                int endIndex = startIndex + filePath.Length;
-                if (charPositionInLine >= startIndex && charPositionInLine < endIndex)
+                if (charPositionInLine >= 0 && charPositionInLine < line.Length)
                 {
-                    if (File.Exists(filePath))
+                    if (File.Exists(line))
                     {
-                        try { Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true }); }
+                        try { Process.Start(new ProcessStartInfo(line) { UseShellExecute = true }); }
                         catch (Exception ex) { Log($"Error opening file: {ex.Message}", true, true, Color.Red); }
                     }
-                    else
-                        Log($"File not found: {filePath}", true, true, Color.Red);
+                    else Log($"File not found: {line}", true, true, Color.Red);
                 }
             }
+            return match.Success;
         }
 
         private void Console_Load(object sender, EventArgs e) => console.Refresh();
