@@ -12,12 +12,13 @@ namespace SLIL.Classes
 {
     internal class GameModel : INetSerializable
     {
-        private StringBuilder MAP = new StringBuilder();
+        private Map Map;
+        private Map CustomMap;
         private const string bossMap = @"#########################...............##F###.................####..##...........##..###...=...........=...###...=.....E.....=...###...................###...................###.........#.........###...##.........##...###....#.........#....###...................###..#...##.#.##...#..####.....#.....#.....######...............##############d####################...#################E=...=E#################...#################$D.P.D$#################...################################",
             debugMap = @"##########################.......................##.......................##..WWWW..7.6.4.3.2.1.#..##..WE.W.................##..W.EW.................##..WWWW...........b..d..##.......................##.......................##.................B..=..##.......................##..#....................##..#b.......P.....L..F..##..####X................##..#B...................##..#..............l..b..##..####.................##..X....................##....................B..##.......................##......b=5#D#...##d#=#####...======#$#L###X.#....##.....=B..###.#B#....#..##...............L..l##.f##########################",
             bikeMap = @"############################......######..555..#####........####.........###.......................##.......................##....####......####....=##...######....######...=##...######====#dd###...=##...##$###....#dd###...=##...##D###....######...=##...##.b##.....####....=##WWW##..##..............##EEE#F...d..............##WWW##..##..............##...##.B##.....####.....##...##D###....######....##...##$###....###dd#====##...######....###dd#....##...######....######....##....####......####.....##.......................##.......................###........####.......P.#####......######..555..############################",
-            backroomsMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..V###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#..0..#....##########################",
-            emptyMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..F###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##......#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#..0..#....##########################";
+            backroomsMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..V###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##..P...#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#..0..#....##########################",
+            emptyMap = @"##########################....#.#..##.#..........##..#...##.#......#...#..###...###.......#.####.####.#.........#..#...#..#.##..F###....#.#..##......##..##.#..#......#....#..##...#...#..###.####...####.#.#...#.......#.......##.#...#....#..###.####..##.##.#....##..#.#..#.#..##....##.........##.#.##.##..#..#.##..P...#....#..##........#......######..##.###....##...#.........##...###.......#.#.......##.#..#..#...#....##..#.#####..#.##...#....#...#####.......##.##.#....#.#..##.#.#....#..#......#.#..##...##.#....#.....#.....##....#....#.....#.....#.###.#.##...#..#.##..##.#.##..#....#.#..#..0..#....##########################";
         private int inDebug = 0;
         private readonly Pet[] PETS;
         private readonly Transport[] TRANSPORTS;
@@ -29,13 +30,10 @@ namespace SLIL.Classes
         private bool GameStarted = false;
         private readonly Random Rand;
         private int difficulty;
-        private int MAP_WIDTH, MAP_HEIGHT;
-        private bool CUSTOM = false;
+        private bool Custom = false;
         private int BackroomsStage = 0;
         private bool inBackrooms = false, BackroomsCompleted = false, isTutorial = false;
         private int CustomMazeHeight, CustomMazeWidth;
-        private StringBuilder CUSTOM_MAP = new StringBuilder();
-        private double CUSTOM_X, CUSTOM_Y;
         private readonly StopGameDelegate StopGameHandle;
         private readonly PlaySoundDelegate PlaySoundHandle;
         private readonly SetPlayerIDDelegate SetPlayerID;
@@ -44,35 +42,25 @@ namespace SLIL.Classes
         private static System.Windows.Forms.Timer EntityTimer;
         private static System.Windows.Forms.Timer TimeRemain;
         internal int MaxEntityID;
-        
+
         internal GameModel(StopGameDelegate stopGame, SetPlayerIDDelegate setPlayerID, PlaySoundDelegate playSound)
         {
             StopGameHandle = stopGame;
             SetPlayerID = setPlayerID;
-            Pet[] pets = { new SillyCat(0, 0, 0, 0), new GreenGnome(0, 0, 0, 0), new EnergyDrink(0, 0, 0, 0), new Pyro(0, 0, 0, 0) };
+            Pet[] pets = { new SillyCat(0, 0, 0), new GreenGnome(0, 0, 0), new EnergyDrink(0, 0, 0), new Pyro(0, 0, 0) };
             DisposableItem[] items = { new FirstAidKit(), new Adrenalin(), new Helmet() };
-            Transport[] transports = { new Bike(0, 0, 0, 0) };
+            Transport[] transports = { new Bike(0, 0, 0) };
+            Map = new Map();
             PETS = pets;
             ITEMS = items;
             TRANSPORTS = transports;
-            MAP_WIDTH = 16;
-            MAP_HEIGHT = 16;
             Rand = new Random(Guid.NewGuid().GetHashCode());
             difficulty = MainMenu.difficulty;
-            RespawnTimer = new System.Windows.Forms.Timer
-            {
-                Interval = 1000
-            };
+            RespawnTimer = new System.Windows.Forms.Timer { Interval = 1000 };
             RespawnTimer.Tick += RespawnTimer_Tick;
-            EntityTimer = new System.Windows.Forms.Timer
-            {
-                Interval = 100
-            };
+            EntityTimer = new System.Windows.Forms.Timer { Interval = 100 };
             EntityTimer.Tick += EntityTimer_Tick;
-            TimeRemain = new System.Windows.Forms.Timer
-            {
-                Interval = 1000
-            };
+            TimeRemain = new System.Windows.Forms.Timer { Interval = 1000 };
             TimeRemain.Tick += TimeRemain_Tick;
             PlaySoundHandle = playSound;
         }
@@ -97,8 +85,8 @@ namespace SLIL.Classes
         {
             if (inDebug == 0) difficulty = SLIL.difficulty;
             else difficulty = 5;
+            if (Map.Empty) InitMap();
             if (Entities.Count == 0) SetPlayerID(AddPlayer());
-            if (MAP.Length == 0) InitMap();
             GameStarted = true;
             DeathCause = -1;
             if (startTimers && !IsMultiplayer)
@@ -116,7 +104,8 @@ namespace SLIL.Classes
         internal int AddPlayer()
         {
             TotalTime = Stage = TotalKilled = 0;
-            Player player = new Player(3, 3, MAP_WIDTH, ref MaxEntityID);
+            var playerCoordinates = Map.FindCharAndReplace('P', '.');
+            Player player = new Player(playerCoordinates.X + 0.5, playerCoordinates.Y + 0.5, ref MaxEntityID);
             Entities.Add(player);
             if (difficulty == 0) player.Money = 15;
             else if (difficulty == 1) player.Money = 15;
@@ -189,10 +178,10 @@ namespace SLIL.Classes
                                     {
                                         for (int l = (int)explosion.Y - explosinDistance; l <= (int)explosion.Y + explosinDistance; l++)
                                         {
-                                            if (k < 0 || k > MAP_WIDTH || l < 0 || l > MAP_HEIGHT) continue;
+                                            if (k < 0 || k > Map.Width || l < 0 || l > Map.Height) continue;
                                             double dis = ML.GetDistance(new TPoint(explosion.X, explosion.Y), new TPoint(k, l));
                                             if (dis > explosion.HitDistance) continue;
-                                            if (MAP[GetCoordinate(k, l)] == 'd') BrokeDoor(k, l);
+                                            if (Map.GetChar(k, l) == 'd') BrokeDoor(k, l);
                                         }
                                     }
                                 }
@@ -214,7 +203,7 @@ namespace SLIL.Classes
                                             playerTarget.DealDamage(damage, true);
                                             if (playerTarget.HP <= 0)
                                             {
-                                                Entities.Add(new PlayerDeadBody(playerTarget.X, playerTarget.Y, MAP_WIDTH, ref MaxEntityID));
+                                                Entities.Add(new PlayerDeadBody(playerTarget.X, playerTarget.Y, ref MaxEntityID));
                                                 TotalKilled = playerTarget.TotalEnemiesKilled;
                                                 DeathCause = SetDeathCause(entity);
                                                 GameOver(0);
@@ -240,7 +229,7 @@ namespace SLIL.Classes
                     }
                     if (entity is Creature creature1 && creature1.Stunned)
                     {
-                        creature1.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                        creature1.UpdateCoordinates(Map, target.X, target.Y);
                         continue;
                     }
                     else if (entity is Enemy)
@@ -252,8 +241,8 @@ namespace SLIL.Classes
                                 if (!entity.Dead && !playerTarget.Dead)
                                 {
                                     bool extraVision = IsExtraVision(playerTarget);
-                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A, extraVision);
-                                    if (entity.Fast) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y, target.A, extraVision);
+                                    entity.UpdateCoordinates(Map, target.X, target.Y, target.A, extraVision);
+                                    if (entity.Fast) entity.UpdateCoordinates(Map, target.X, target.Y, target.A, extraVision);
                                     if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
                                     {
                                         if (!playerTarget.Invulnerable)
@@ -265,7 +254,7 @@ namespace SLIL.Classes
                                             playerTarget.DealDamage(Rand.Next(entity.MinDamage, entity.MaxDamage), true);
                                             if (playerTarget.HP <= 0)
                                             {
-                                                Entities.Add(new PlayerDeadBody(target.X, target.Y, MAP_WIDTH, ref MaxEntityID));
+                                                Entities.Add(new PlayerDeadBody(target.X, target.Y, ref MaxEntityID));
                                                 TotalKilled = playerTarget.TotalEnemiesKilled;
                                                 DeathCause = SetDeathCause(entity);
                                                 GameOver(0);
@@ -279,8 +268,8 @@ namespace SLIL.Classes
                             {
                                 if (!entity.Dead && !coveringTarget.Broken)
                                 {
-                                    entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
-                                    if (entity.Fast) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                                    entity.UpdateCoordinates(Map, target.X, target.Y);
+                                    if (entity.Fast) entity.UpdateCoordinates(Map, target.X, target.Y);
                                     if (Math.Abs(entity.X - target.X) <= 0.5 && Math.Abs(entity.Y - target.Y) <= 0.5)
                                         coveringTarget.DealDamage(Rand.Next(entity.MinDamage, entity.MaxDamage));
                                 }
@@ -291,10 +280,10 @@ namespace SLIL.Classes
                                 int iteration = 0;
                                 while (true)
                                 {
-                                    int x = Rand.Next(0, MAP_WIDTH);
-                                    int y = Rand.Next(0, MAP_HEIGHT);
+                                    int x = Rand.Next(0, Map.Width);
+                                    int y = Rand.Next(0, Map.Height);
                                     spawnDistance = ML.GetDistance(new TPoint(target.X, target.Y), new TPoint(x, y));
-                                    if (MAP[GetCoordinate(x, y)] == '.')
+                                    if (Map.GetChar(x, y) == '.')
                                     {
                                         if (spawnDistance >= 14 || (iteration > 10000 && spawnDistance > 3))
                                         {
@@ -325,7 +314,7 @@ namespace SLIL.Classes
                                         int pX = (int)(shooter.X + shotAX * shotDistance);
                                         int pY = (int)(shooter.Y + shotAY * shotDistance);
                                         points.Add((pX, pY));
-                                        if (impassibleCells.Contains(MAP[pY * MAP_WIDTH + pX]))
+                                        if (impassibleCells.Contains(Map.GetChar(pX, pY)))
                                         {
                                             AddHittingTheWall(shooter.X + shotAX * (shotDistance - 0.5), shooter.Y + shotAY * (shotDistance - 0.5), 1);
                                             hit = true;
@@ -348,7 +337,7 @@ namespace SLIL.Classes
                                                     player.DealDamage(Rand.Next(shooter.MinDamage, shooter.MaxDamage), true);
                                                     if (player.HP <= 0)
                                                     {
-                                                        Entities.Add(new PlayerDeadBody(player.X, player.Y, MAP_WIDTH, ref MaxEntityID));
+                                                        Entities.Add(new PlayerDeadBody(player.X, player.Y, ref MaxEntityID));
                                                         TotalKilled = player.TotalEnemiesKilled;
                                                         DeathCause = SetDeathCause(entity);
                                                         GameOver(0);
@@ -388,19 +377,19 @@ namespace SLIL.Classes
                             }
                         }
                         if (distance > 1 && !(owner.GetCurrentGun() is Flashlight && entity.RespondsToFlashlight))
-                            entity.UpdateCoordinates(MAP.ToString(), owner.X, owner.Y);
+                            entity.UpdateCoordinates(Map, owner.X, owner.Y);
                         else entity.Stoped = true;
                     }
                     else if (entity is Rockets rocket)
                     {
-                        if (!entity.Dead) entity.UpdateCoordinates(MAP.ToString(), target.X, target.Y);
+                        if (!entity.Dead) entity.UpdateCoordinates(Map, target.X, target.Y);
                         char[] ImpassibleCells = rocket.GetInpassibleRocketCells();
                         double newX = entity.X + entity.GetMove() * Math.Sin(entity.A);
                         double newY = entity.Y + entity.GetMove() * Math.Cos(entity.A);
-                        if (ImpassibleCells.Contains(MAP[(int)newY * MAP_WIDTH + (int)(newX + entity.EntityWidth / 2)])
-                        || ImpassibleCells.Contains(MAP[(int)newY * MAP_WIDTH + (int)(newX - entity.EntityWidth / 2)])
-                        || ImpassibleCells.Contains(MAP[(int)(newY + entity.EntityWidth / 2) * MAP_WIDTH + (int)newX])
-                        || ImpassibleCells.Contains(MAP[(int)(newY - entity.EntityWidth / 2) * MAP_WIDTH + (int)newX]))
+                        if (ImpassibleCells.Contains(Map.GetChar((int)newY, (int)(newX + entity.EntityWidth / 2)))
+                            || ImpassibleCells.Contains(Map.GetChar((int)newY, (int)(newX - entity.EntityWidth / 2)))
+                            || ImpassibleCells.Contains(Map.GetChar((int)(newY + entity.EntityWidth / 2), (int)newX))
+                            || ImpassibleCells.Contains(Map.GetChar((int)(newY - entity.EntityWidth / 2), (int)newX)))
                         {
                             Entities.Remove(entity);
                             i--;
@@ -470,22 +459,22 @@ namespace SLIL.Classes
 
         private void BrokeDoor(double x, double y)
         {
-            MAP[GetCoordinate(x, y)] = 'R';
+            Map.ChangeChar('R', x, y);
             PlayGameSound(SLIL.BreakdownDoor, x, y);
-            Entities.Add(new BrokenDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID));
+            Entities.Add(new BrokenDoor(x + 0.5, y + 0.5, ref MaxEntityID));
         }
 
         private void SpawnExplotion(Entity entity)
         {
             if (entity is Rockets rocket)
             {
-                if (rocket.ExplosionID == 0) Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
-                if (rocket.ExplosionID == 1) Entities.Add(new SoulExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                if (rocket.ExplosionID == 0) Entities.Add(new RpgExplosion(entity.X, entity.Y, ref MaxEntityID));
+                if (rocket.ExplosionID == 1) Entities.Add(new SoulExplosion(entity.X, entity.Y, ref MaxEntityID));
             }
             else
             {
-                if (entity is ExplodingBarrel) Entities.Add(new BarrelExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
-                else Entities.Add(new RpgExplosion(entity.X, entity.Y, MAP_WIDTH, ref MaxEntityID));
+                if (entity is ExplodingBarrel) Entities.Add(new BarrelExplosion(entity.X, entity.Y, ref MaxEntityID));
+                else Entities.Add(new RpgExplosion(entity.X, entity.Y, ref MaxEntityID));
             }
         }
 
@@ -555,21 +544,16 @@ namespace SLIL.Classes
             });
         }
 
-        internal void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, double customX, double customY)
+        internal void SetCustom(bool custom, Map customMap)
         {
-            CUSTOM = custom;
-            CustomMazeWidth = CustomWidth;
-            CustomMazeHeight = CustomHeight;
-            CUSTOM_MAP = new StringBuilder(CustomMap);
-            CUSTOM_X = customX;
-            CUSTOM_Y = customY;
+            Custom = custom;
+            CustomMazeWidth = customMap.Width;
+            CustomMazeHeight = customMap.Height;
+            CustomMap = customMap;
         }
 
         public void Serialize(NetDataWriter writer)
         {
-            writer.Put(MAP.ToString());
-            writer.Put(MAP_WIDTH);
-            writer.Put(MAP_HEIGHT);
             writer.Put(Entities.Count);
             foreach (var entity in Entities)
             {
@@ -581,9 +565,6 @@ namespace SLIL.Classes
 
         public void Deserialize(NetDataReader reader)
         {
-            MAP = new StringBuilder(reader.GetString());
-            MAP_WIDTH = reader.GetInt();
-            MAP_HEIGHT = reader.GetInt();
             int entCount = reader.GetInt();
             List<Entity> tempEntities = new List<Entity>();
             for (int i = 0; i < entCount; i++)
@@ -593,131 +574,131 @@ namespace SLIL.Classes
                 switch (entityID)
                 {
                     case 0:
-                        Player p = new Player(0, 0, MAP_WIDTH, ID);
+                        Player p = new Player(0, 0, ID);
                         p.Deserialize(reader);
                         tempEntities.Add(p);
                         break;
                     case 1:
-                        Zombie man = new Zombie(0, 0, MAP_WIDTH, ID);
+                        Zombie man = new Zombie(0, 0, ID);
                         man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
                         break;
                     case 2:
-                        Dog dog = new Dog(0, 0, MAP_WIDTH, ID);
+                        Dog dog = new Dog(0, 0, ID);
                         dog.SetDamage(EnemyDamageOffset);
                         dog.Deserialize(reader);
                         tempEntities.Add(dog);
                         break;
                     case 3:
-                        Ogr abomination = new Ogr(0, 0, MAP_WIDTH, ID);
+                        Ogr abomination = new Ogr(0, 0, ID);
                         abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
                         break;
                     case 4:
-                        Bat bat = new Bat(0, 0, MAP_WIDTH, ID);
+                        Bat bat = new Bat(0, 0, ID);
                         bat.SetDamage(EnemyDamageOffset);
                         bat.Deserialize(reader);
                         tempEntities.Add(bat);
                         break;
                     case 5:
-                        SillyCat sillyCat = new SillyCat(0, 0, MAP_WIDTH, ID);
+                        SillyCat sillyCat = new SillyCat(0, 0, ID);
                         sillyCat.Deserialize(reader);
                         tempEntities.Add(sillyCat);
                         break;
                     case 6:
-                        GreenGnome greenGnome = new GreenGnome(0, 0, MAP_WIDTH, ID);
+                        GreenGnome greenGnome = new GreenGnome(0, 0, ID);
                         greenGnome.Deserialize(reader);
                         tempEntities.Add(greenGnome);
                         break;
                     case 7:
-                        EnergyDrink energyDrink = new EnergyDrink(0, 0, MAP_WIDTH, ID);
+                        EnergyDrink energyDrink = new EnergyDrink(0, 0, ID);
                         energyDrink.Deserialize(reader);
                         tempEntities.Add(energyDrink);
                         break;
                     case 8:
-                        Pyro pyro = new Pyro(0, 0, MAP_WIDTH, ID);
+                        Pyro pyro = new Pyro(0, 0, ID);
                         pyro.Deserialize(reader);
                         tempEntities.Add(pyro);
                         break;
                     case 9:
-                        Teleport teleport = new Teleport(0, 0, MAP_WIDTH, ID);
+                        Teleport teleport = new Teleport(0, 0, ID);
                         teleport.Deserialize(reader);
                         tempEntities.Add(teleport);
                         break;
                     case 10:
-                        HittingTheWall hittingTheWall = new HittingTheWall(0, 0, MAP_WIDTH, ID);
+                        HittingTheWall hittingTheWall = new HittingTheWall(0, 0, ID);
                         hittingTheWall.Deserialize(reader);
                         tempEntities.Add(hittingTheWall);
                         break;
                     case 11:
-                        ShopDoor shopDoor = new ShopDoor(0, 0, MAP_WIDTH, ID);
+                        ShopDoor shopDoor = new ShopDoor(0, 0, ID);
                         shopDoor.Deserialize(reader);
                         tempEntities.Add(shopDoor);
                         break;
                     case 12:
-                        ShopMan shopMan = new ShopMan(0, 0, MAP_WIDTH, ID);
+                        ShopMan shopMan = new ShopMan(0, 0, ID);
                         shopMan.Deserialize(reader);
                         tempEntities.Add(shopMan);
                         break;
                     case 13:
-                        PlayerDeadBody playerDeadBody = new PlayerDeadBody(0, 0, MAP_WIDTH, ID);
+                        PlayerDeadBody playerDeadBody = new PlayerDeadBody(0, 0, ID);
                         playerDeadBody.Deserialize(reader);
                         tempEntities.Add(playerDeadBody);
                         break;
                     case 14:
-                        Box box = new Box(0, 0, MAP_WIDTH, ID);
+                        Box box = new Box(0, 0, ID);
                         box.Deserialize(reader);
                         tempEntities.Add(box);
                         break;
                     case 15:
-                        Barrel barrel = new Barrel(0, 0, MAP_WIDTH, ID);
+                        Barrel barrel = new Barrel(0, 0, ID);
                         barrel.Deserialize(reader);
                         tempEntities.Add(barrel);
                         break;
                     case 16:
-                        RpgRocket rpgRocket = new RpgRocket(0, 0, MAP_WIDTH, ID);
+                        RpgRocket rpgRocket = new RpgRocket(0, 0, ID);
                         rpgRocket.Deserialize(reader);
                         tempEntities.Add(rpgRocket);
                         break;
                     case 17:
-                        RpgExplosion explosion = new RpgExplosion(0, 0, MAP_WIDTH, ID);
+                        RpgExplosion explosion = new RpgExplosion(0, 0, ID);
                         explosion.Deserialize(reader);
                         tempEntities.Add(explosion);
                         break;
                     case 18:
-                        Bike bike = new Bike(0, 0, MAP_WIDTH, ID);
+                        Bike bike = new Bike(0, 0, ID);
                         bike.Deserialize(reader);
                         tempEntities.Add(bike);
                         break;
                     case 19:
-                        Vine vine = new Vine(0, 0, MAP_WIDTH, ID);
+                        Vine vine = new Vine(0, 0, ID);
                         vine.Deserialize(reader);
                         tempEntities.Add(vine);
                         break;
                     case 20:
-                        Lamp lamp = new Lamp(0, 0, MAP_WIDTH, ID);
+                        Lamp lamp = new Lamp(0, 0, ID);
                         lamp.Deserialize(reader);
                         tempEntities.Add(lamp);
                         break;
                     case 21:
-                        BackroomsTeleport backroomsTeleport = new BackroomsTeleport(0, 0, MAP_WIDTH, ID);
+                        BackroomsTeleport backroomsTeleport = new BackroomsTeleport(0, 0, ID);
                         backroomsTeleport.Deserialize(reader);
                         tempEntities.Add(backroomsTeleport);
                         break;
                     case 22:
-                        Covering covering = new Covering(0, 0, MAP_WIDTH, ID);
+                        Covering covering = new Covering(0, 0, ID);
                         covering.Deserialize(reader);
                         tempEntities.Add(covering);
                         break;
                     case 23:
-                        VoidTeleport emptyTeleport = new VoidTeleport(0, 0, MAP_WIDTH, ID);
+                        VoidTeleport emptyTeleport = new VoidTeleport(0, 0, ID);
                         emptyTeleport.Deserialize(reader);
                         tempEntities.Add(emptyTeleport);
                         break;
                     case 24:
-                        VoidStalker voidStalker = new VoidStalker(0, 0, MAP_WIDTH, ID);
+                        VoidStalker voidStalker = new VoidStalker(0, 0, ID);
                         voidStalker.Deserialize(reader);
                         tempEntities.Add(voidStalker);
                         break;
@@ -730,9 +711,6 @@ namespace SLIL.Classes
 
         public void Deserialize(NetDataReader reader, int playerID)
         {
-            MAP = new StringBuilder(reader.GetString());
-            MAP_WIDTH = reader.GetInt();
-            MAP_HEIGHT = reader.GetInt();
             int entCount = reader.GetInt();
             List<Entity> tempEntities = new List<Entity>();
             for (int i = 0; i < entCount; i++)
@@ -756,131 +734,131 @@ namespace SLIL.Classes
                 switch (entityID)
                 {
                     case 0:
-                        Player p = new Player(0, 0, MAP_WIDTH, ID);
+                        Player p = new Player(0, 0, ID);
                         p.Deserialize(reader);
                         tempEntities.Add(p);
                         break;
                     case 1:
-                        Zombie man = new Zombie(0, 0, MAP_WIDTH, ID);
+                        Zombie man = new Zombie(0, 0, ID);
                         man.SetDamage(EnemyDamageOffset);
                         man.Deserialize(reader);
                         tempEntities.Add(man);
                         break;
                     case 2:
-                        Dog dog = new Dog(0, 0, MAP_WIDTH, ID);
+                        Dog dog = new Dog(0, 0, ID);
                         dog.SetDamage(EnemyDamageOffset);
                         dog.Deserialize(reader);
                         tempEntities.Add(dog);
                         break;
                     case 3:
-                        Ogr abomination = new Ogr(0, 0, MAP_WIDTH, ID);
+                        Ogr abomination = new Ogr(0, 0, ID);
                         abomination.SetDamage(EnemyDamageOffset);
                         abomination.Deserialize(reader);
                         tempEntities.Add(abomination);
                         break;
                     case 4:
-                        Bat bat = new Bat(0, 0, MAP_WIDTH, ID);
+                        Bat bat = new Bat(0, 0, ID);
                         bat.SetDamage(EnemyDamageOffset);
                         bat.Deserialize(reader);
                         tempEntities.Add(bat);
                         break;
                     case 5:
-                        SillyCat sillyCat = new SillyCat(0, 0, MAP_WIDTH, ID);
+                        SillyCat sillyCat = new SillyCat(0, 0, ID);
                         sillyCat.Deserialize(reader);
                         tempEntities.Add(sillyCat);
                         break;
                     case 6:
-                        GreenGnome greenGnome = new GreenGnome(0, 0, MAP_WIDTH, ID);
+                        GreenGnome greenGnome = new GreenGnome(0, 0, ID);
                         greenGnome.Deserialize(reader);
                         tempEntities.Add(greenGnome);
                         break;
                     case 7:
-                        EnergyDrink energyDrink = new EnergyDrink(0, 0, MAP_WIDTH, ID);
+                        EnergyDrink energyDrink = new EnergyDrink(0, 0, ID);
                         energyDrink.Deserialize(reader);
                         tempEntities.Add(energyDrink);
                         break;
                     case 8:
-                        Pyro pyro = new Pyro(0, 0, MAP_WIDTH, ID);
+                        Pyro pyro = new Pyro(0, 0, ID);
                         pyro.Deserialize(reader);
                         tempEntities.Add(pyro);
                         break;
                     case 9:
-                        Teleport teleport = new Teleport(0, 0, MAP_WIDTH, ID);
+                        Teleport teleport = new Teleport(0, 0, ID);
                         teleport.Deserialize(reader);
                         tempEntities.Add(teleport);
                         break;
                     case 10:
-                        HittingTheWall hittingTheWall = new HittingTheWall(0, 0, MAP_WIDTH, ID);
+                        HittingTheWall hittingTheWall = new HittingTheWall(0, 0, ID);
                         hittingTheWall.Deserialize(reader);
                         tempEntities.Add(hittingTheWall);
                         break;
                     case 11:
-                        ShopDoor shopDoor = new ShopDoor(0, 0, MAP_WIDTH, ID);
+                        ShopDoor shopDoor = new ShopDoor(0, 0, ID);
                         shopDoor.Deserialize(reader);
                         tempEntities.Add(shopDoor);
                         break;
                     case 12:
-                        ShopMan shopMan = new ShopMan(0, 0, MAP_WIDTH, ID);
+                        ShopMan shopMan = new ShopMan(0, 0, ID);
                         shopMan.Deserialize(reader);
                         tempEntities.Add(shopMan);
                         break;
                     case 13:
-                        PlayerDeadBody playerDeadBody = new PlayerDeadBody(0, 0, MAP_WIDTH, ID);
+                        PlayerDeadBody playerDeadBody = new PlayerDeadBody(0, 0, ID);
                         playerDeadBody.Deserialize(reader);
                         tempEntities.Add(playerDeadBody);
                         break;
                     case 14:
-                        Box box = new Box(0, 0, MAP_WIDTH, ID);
+                        Box box = new Box(0, 0, ID);
                         box.Deserialize(reader);
                         tempEntities.Add(box);
                         break;
                     case 15:
-                        Barrel barrel = new Barrel(0, 0, MAP_WIDTH, ID);
+                        Barrel barrel = new Barrel(0, 0, ID);
                         barrel.Deserialize(reader);
                         tempEntities.Add(barrel);
                         break;
                     case 16:
-                        RpgRocket rpgRocket = new RpgRocket(0, 0, MAP_WIDTH, ID);
+                        RpgRocket rpgRocket = new RpgRocket(0, 0, ID);
                         rpgRocket.Deserialize(reader);
                         tempEntities.Add(rpgRocket);
                         break;
                     case 17:
-                        RpgExplosion explosion = new RpgExplosion(0, 0, MAP_WIDTH, ID);
+                        RpgExplosion explosion = new RpgExplosion(0, 0, ID);
                         explosion.Deserialize(reader);
                         tempEntities.Add(explosion);
                         break;
                     case 18:
-                        Bike bike = new Bike(0, 0, MAP_WIDTH, ID);
+                        Bike bike = new Bike(0, 0, ID);
                         bike.Deserialize(reader);
                         tempEntities.Add(bike);
                         break;
                     case 19:
-                        Vine vine = new Vine(0, 0, MAP_WIDTH, ID);
+                        Vine vine = new Vine(0, 0, ID);
                         vine.Deserialize(reader);
                         tempEntities.Add(vine);
                         break;
                     case 20:
-                        Lamp lamp = new Lamp(0, 0, MAP_WIDTH, ID);
+                        Lamp lamp = new Lamp(0, 0, ID);
                         lamp.Deserialize(reader);
                         tempEntities.Add(lamp);
                         break;
                     case 21:
-                        BackroomsTeleport backroomsTeleport = new BackroomsTeleport(0, 0, MAP_WIDTH, ID);
+                        BackroomsTeleport backroomsTeleport = new BackroomsTeleport(0, 0, ID);
                         backroomsTeleport.Deserialize(reader);
                         tempEntities.Add(backroomsTeleport);
                         break;
                     case 22:
-                        Covering covering = new Covering(0, 0, MAP_WIDTH, ID);
+                        Covering covering = new Covering(0, 0, ID);
                         covering.Deserialize(reader);
                         tempEntities.Add(covering);
                         break;
                     case 23:
-                        VoidTeleport emptyTeleport = new VoidTeleport(0, 0, MAP_WIDTH, ID);
+                        VoidTeleport emptyTeleport = new VoidTeleport(0, 0, ID);
                         emptyTeleport.Deserialize(reader);
                         tempEntities.Add(emptyTeleport);
                         break;
                     case 24:
-                        VoidStalker voidStalker = new VoidStalker(0, 0, MAP_WIDTH, ID);
+                        VoidStalker voidStalker = new VoidStalker(0, 0, ID);
                         voidStalker.Deserialize(reader);
                         tempEntities.Add(voidStalker);
                         break;
@@ -896,19 +874,19 @@ namespace SLIL.Classes
             Player p = GetPlayer(playerID);
             if (p == null) return;
             Transport transport = null;
-            if (index == 0) transport = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID);
+            if (index == 0) transport = new Bike(p.X, p.Y, MaxEntityID);
             if (transport != null)
             {
-                AddTransportOnMap(transport.Index, (int)p.Y * MAP_WIDTH + (int)p.X);
+                AddTransportOnMap(transport.Index, (int)p.X, (int)p.Y);
                 p.ChangeMoney(-transport.Cost);
                 AddEntity(transport);
             }
         }
 
-        private void AddTransportOnMap(int index, int map_index)
+        private void AddTransportOnMap(int index, int x, int y)
         {
-            if (MAP[map_index] != '.') return;
-            if (index == 0) MAP[map_index] = '5';
+            if (Map.GetChar(x, y) != '.') return;
+            if (index == 0) Map.ChangeChar('5', x, y);
         }
 
         internal void AddPet(int playerID, int index)
@@ -1008,7 +986,7 @@ namespace SLIL.Classes
                 return;
             if (player.PET == null)
                 return;
-            player.PET.SetNewParametrs(player.X + 0.1, player.Y + 0.1, MAP_WIDTH);
+            player.PET.SetNewParametrs(player.X + 0.1, player.Y + 0.1);
             Entities.Add(player.PET);
         }
 
@@ -1018,7 +996,7 @@ namespace SLIL.Classes
             RespawnTimer.Stop();
             TimeRemain.Stop();
             GameStarted = false;
-            MAP.Clear();
+            Map.Clear();
             if (win == 1)
             {
                 foreach (Entity ent in Entities.ToArray())
@@ -1070,7 +1048,7 @@ namespace SLIL.Classes
                 double extendedY = p.Y + Math.Cos(p.A) * 0.3;
                 if (p.TRANSPORT.CanJump && !p.EffectCheck(3))
                 {
-                    if (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=')
+                    if(Map.GetChar(extendedX, extendedY) == '=')
                     {
                         double distance = 1;
                         while (distance <= 2)
@@ -1078,7 +1056,7 @@ namespace SLIL.Classes
                             distance += 0.1d;
                             int x1 = (int)(p.X + Math.Sin(p.A) * distance);
                             int y1 = (int)(p.Y + Math.Cos(p.A) * distance);
-                            if (!HasImpassibleCells(playerID, y1 * MAP_WIDTH + x1))
+                            if (!HasImpassibleCells(x1, y1, playerID))
                             {
                                 DoParkour(playerID, (int)extendedY, (int)extendedX);
                                 return;
@@ -1089,8 +1067,8 @@ namespace SLIL.Classes
                 if (p.MoveSpeed >= 2.5)
                 {
                     char[] c = { '#', 'd', 'D', 'S', 'R' };
-                    if (c.Contains(MAP[(int)extendedY * MAP_WIDTH + (int)extendedX]) ||
-                        (MAP[(int)extendedY * MAP_WIDTH + (int)extendedX] == '=' && (!p.TRANSPORT.CanJump || p.EffectCheck(3))))
+                    if (c.Contains(Map.GetChar((int)extendedY, (int)extendedX)) ||
+                        (Map.GetChar((int)extendedY, (int)extendedX) == '=' && (!p.TRANSPORT.CanJump || p.EffectCheck(3))))
                     {
                         p.MoveSpeed = 0.5;
                         PlayGameSound(SLIL.HitTransport);
@@ -1098,7 +1076,7 @@ namespace SLIL.Classes
                     }
                 }
             }
-            if (MAP[(int)p.Y * MAP_WIDTH + (int)p.X] == 'F')
+            if (Map.GetChar(p.X, p.Y) == 'F')
             {
                 if (!IsMultiplayer)
                 {
@@ -1111,7 +1089,7 @@ namespace SLIL.Classes
                     GameOver(1);
                 }
             }
-            if (MAP[(int)p.Y * MAP_WIDTH + (int)p.X] == 'f')
+            if (Map.GetChar(p.X, p.Y) == 'f')
             {
                 if (!IsMultiplayer)
                 {
@@ -1122,7 +1100,7 @@ namespace SLIL.Classes
                     GameOver(1);
                 }
             }
-            if (MAP[(int)p.Y * MAP_WIDTH + (int)p.X] == 'V')
+            if (Map.GetChar(p.X, p.Y) == 'V')
             {
                 if (!IsMultiplayer)
                 {
@@ -1144,432 +1122,192 @@ namespace SLIL.Classes
             switch (c)
             {
                 case 'F':
-                    entity = new Teleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new Teleport(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case 'f':
-                    entity = new BackroomsTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new BackroomsTeleport(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case 'V':
-                    entity = new VoidTeleport(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new VoidTeleport(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case 'D':
-                    entity = new ShopDoor(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new ShopDoor(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case '$':
-                    entity = new ShopMan(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new ShopMan(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case 'b':
-                    entity = new Box(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new Box(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case 'B':
-                    entity = new Barrel(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new Barrel(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case 'X':
-                    entity = new ExplodingBarrel(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new ExplodingBarrel(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case 'L':
-                    entity = new Vine(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new Vine(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case 'l':
-                    entity = new Lamp(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID); ;
+                    entity = new Lamp(x + 0.5, y + 0.5, ref MaxEntityID); ;
                     break;
                 case 'E':
-                    SpawnEnemis(x, y, MAP_WIDTH);
-                    MAP[y * MAP_WIDTH + x] = '.';
+                    SpawnEnemis(x, y);
+                    Map.ClearChar(x, y);
                     break;
                 case 'e':
-                    SpawnEnemis(x, y, MAP_WIDTH, false);
-                    MAP[y * MAP_WIDTH + x] = '.';
+                    SpawnEnemis(x, y, false);
+                    Map.ClearChar(x, y);
                     break;
                 case '1':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 0);
-                    MAP[y * MAP_WIDTH + x] = '.';
+                    SpawnEnemis(x, y, false, 0);
+                    Map.ClearChar(x, y);
                     break;
                 case '2':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 1);
-                    MAP[y * MAP_WIDTH + x] = '.';
+                    SpawnEnemis(x, y, false, 1);
+                    Map.ClearChar(x, y);
                     break;
                 case '3':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 2);
-                    MAP[y * MAP_WIDTH + x] = '.';
+                    SpawnEnemis(x, y, false, 2);
+                    Map.ClearChar(x, y);
                     break;
                 case '4':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 3);
-                    MAP[y * MAP_WIDTH + x] = '.';
+                    SpawnEnemis(x, y, false, 3);
+                    Map.ClearChar(x, y);
                     break;
                 case '5':
-                    entity = new Bike(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
+                    entity = new Bike(x + 0.5, y + 0.5, ref MaxEntityID);
                     break;
                 case '6':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 4);
-                    MAP[y * MAP_WIDTH + x] = '.';
+                    SpawnEnemis(x, y, false, 4);
+                    Map.ClearChar(x, y);
                     break;
                 case '7':
-                    SpawnEnemis(x, y, MAP_WIDTH, false, 5);
-                    MAP[y * MAP_WIDTH + x] = '.';
+                    SpawnEnemis(x, y, false, 5);
+                    Map.ClearChar(x, y);
                     break;
                 case '0':
                     if (inBackrooms)
                     {
-                        if (BackroomsStage == 0) entity = new Stalker(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                        else entity = new VoidStalker(x + 0.5, y + 0.5, MAP_WIDTH, ref MaxEntityID);
-                        MAP[y * MAP_WIDTH + x] = '.';
+                        if (BackroomsStage == 0) entity = new Stalker(x + 0.5, y + 0.5, ref MaxEntityID);
+                        else entity = new VoidStalker(x + 0.5, y + 0.5, ref MaxEntityID);
+                        Map.ClearChar(x, y);
                     }
                     break;
             }
             return entity;
         }
 
+        private char[,] StringToCharArray(string input, int width, int height)
+        {
+            char[,] charArray = new char[height, width];
+            int inputIndex = 0;
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    if (inputIndex < input.Length)
+                    {
+                        charArray[i, j] = input[inputIndex];
+                        inputIndex++;
+                    }
+                    else charArray[i, j] = ' ';
+                }
+            }
+            return charArray;
+        }
+
         internal void InitMap()
         {
-            double enemy_count = 0;
-            int MazeWidth = 0, MazeHeight = 0, MAX_SHOP_COUNT = 1;
+            int MazeWidth = 0, MazeHeight = 0;
+            int RoomsCount = 0;
             if (inBackrooms)
             {
-                if (BackroomsStage == 0)
-                    MazeHeight = MazeWidth = 25;
-                else
-                    MazeHeight = MazeWidth = 25;
+                if (BackroomsStage == 0) MazeHeight = MazeWidth = 25;
+                else MazeHeight = MazeWidth = 25;
             }
             else
             {
-                if (difficulty == 0)
-                    enemy_count = 0.07;
-                else if (difficulty == 1)
-                    enemy_count = 0.065;
-                else if (difficulty == 2)
-                    enemy_count = 0.055;
-                else if (difficulty == 3)
-                    enemy_count = 0.045;
-                else if (difficulty == 4)
+                if (difficulty == 4)
                 {
                     MazeHeight = CustomMazeHeight;
                     MazeWidth = CustomMazeWidth;
-                    enemy_count = 0.06;
-                    MAX_SHOP_COUNT = 5;
                 }
                 else
                 {
-                    if (inDebug == 1)
-                    {
-                        MazeHeight = 25;
-                        MazeWidth = 25;
-                    }
-                    else if (inDebug == 2)
-                    {
-                        MazeHeight = 22;
-                        MazeWidth = 22;
-                    }
-                    else if (inDebug == 3)
-                    {
-                        MazeHeight = 25;
-                        MazeWidth = 25;
-                    }
+                    if (inDebug == 1) { MazeHeight = 25; MazeWidth = 25; }
+                    else if (inDebug == 2) { MazeHeight = 22; MazeWidth = 22; }
+                    else if (inDebug == 3) { MazeHeight = 25; MazeWidth = 25; }
                 }
                 if (difficulty < 4)
                 {
-                    MazeHeight = MazeWidth = 10;
-                    MAX_SHOP_COUNT = 2;
+                    if (Stage == 0) RoomsCount = 16;
+                    else if (Stage == 1) RoomsCount = 32;
+                    else if (Stage == 2) RoomsCount = 64;
+                    else if (Stage == 3) RoomsCount = 128;
+                    else RoomsCount = 256;
                 }
             }
-            foreach (Entity ent in Entities)
-            {
-                if (!(ent is Player player)) continue;
-                if (inBackrooms)
-                {
-                    if (BackroomsStage == 0)
-                    {
-                        player.X = player.Y = 12.5;
-                        MazeHeight = MazeWidth = 25;
-                    }
-                    else
-                    {
-                        player.X = player.Y = 12.5;
-                        MazeHeight = MazeWidth = 25;
-                    }
-                }
-                else
-                {
-                    if (difficulty == 0)
-                        enemy_count = 0.07;
-                    else if (difficulty == 1)
-                        enemy_count = 0.065;
-                    else if (difficulty == 2)
-                        enemy_count = 0.055;
-                    else if (difficulty == 3)
-                        enemy_count = 0.045;
-                    else if (difficulty == 4)
-                    {
-                        MazeHeight = CustomMazeHeight;
-                        MazeWidth = CustomMazeWidth;
-                        enemy_count = 0.06;
-                        MAX_SHOP_COUNT = 5;
-                    }
-                    else
-                    {
-                        if (inDebug == 1)
-                        {
-                            player.X = 12.5;
-                            player.Y = 12.5;
-                            MazeHeight = 25;
-                            MazeWidth = 25;
-                        }
-                        else if (inDebug == 2)
-                        {
-                            player.X = 10.5;
-                            player.Y = 19.5;
-                            MazeHeight = 22;
-                            MazeWidth = 22;
-                        }
-                        else if (inDebug == 3)
-                        {
-                            player.X = 21.5;
-                            player.Y = 22.5;
-                            MazeHeight = 25;
-                            MazeWidth = 25;
-                        }
-                    }
-                    if (difficulty < 4)
-                    {
-                        if (Stage == 0)
-                        {
-                            MazeHeight = MazeWidth = 10;
-                            MAX_SHOP_COUNT = 2;
-                        }
-                        else if (Stage == 1)
-                        {
-                            MazeHeight = MazeWidth = 15;
-                            MAX_SHOP_COUNT = 4;
-                        }
-                        else if (Stage == 2)
-                        {
-                            MazeHeight = MazeWidth = 20;
-                            MAX_SHOP_COUNT = 6;
-                        }
-                        else if (Stage == 3)
-                        {
-                            MazeHeight = MazeWidth = 25;
-                            MAX_SHOP_COUNT = 8;
-                        }
-                        else
-                        {
-                            MazeHeight = MazeWidth = 25;
-                            MAX_SHOP_COUNT = 8;
-                        }
-                    }
-                }
-            }
-            if (difficulty == 5 || inBackrooms)
-            {
-                MAP_WIDTH = MazeWidth;
-                MAP_HEIGHT = MazeHeight;
-            }
-            else
-            {
-                MAP_WIDTH = MazeWidth * 3 + 1;
-                MAP_HEIGHT = MazeHeight * 3 + 1;
-            }
-            MAP.Clear();
+            Map.Clear();
             if (difficulty == 5 || inBackrooms)
             {
                 if (inBackrooms)
                 {
                     if (BackroomsStage == 0)
-                        MAP.Append(backroomsMap);
+                        Map = new Map(StringToCharArray(backroomsMap, MazeWidth, MazeHeight), MazeWidth, MazeHeight, 0);
                     else
-                        MAP.Append(emptyMap);
+                        Map = new Map(StringToCharArray(emptyMap, MazeWidth, MazeHeight), MazeWidth, MazeHeight, 0);
                 }
                 else if (inDebug == 1)
-                    MAP.AppendLine(debugMap);
+                    Map = new Map(StringToCharArray(debugMap, MazeWidth, MazeHeight), MazeWidth, MazeHeight, 0);
                 else if (inDebug == 2)
-                    MAP.AppendLine(bossMap);
+                    Map = new Map(StringToCharArray(bossMap, MazeWidth, MazeHeight), MazeWidth, MazeHeight, 0);
                 else if (inDebug == 3)
-                    MAP.AppendLine(bikeMap);
-                for (int x = 0; x < MAP_WIDTH; x++)
+                    Map = new Map(StringToCharArray(bikeMap, MazeWidth, MazeHeight), MazeWidth, MazeHeight, 0);
+                for (int x = 0; x < Map.Width; x++)
                 {
-                    for (int y = 0; y < MAP_HEIGHT; y++)
+                    for (int y = 0; y < Map.Height; y++)
                     {
-                        Entity entity = GetEntityForInitMap(MAP[y * MAP_WIDTH + x], x, y);
-                        if (entity != null)
-                            Entities.Add(entity);
+                        Entity entity = GetEntityForInitMap(Map.GetChar(x, y), x, y);
+                        if (entity != null) Entities.Add(entity);
                     }
                 }
             }
             else
             {
-                if (!CUSTOM)
+                if (!Custom)
                 {
-                    Random random = new Random(Guid.NewGuid().GetHashCode());
-                    StringBuilder sb = new StringBuilder();
-                    char[,] map = (new Maze()).GenerateCharMap(MazeWidth, MazeHeight, '#', '=', 'd', '.', 'F', MAX_SHOP_COUNT);
-                    map[1, 1] = 'P';
-                    List<int[]> shops = new List<int[]>();
-                    for (int y = 0; y < map.GetLength(1); y++)
+                    Map = new Generator().GenerateMap(RoomsCount);
+                    for (int y = 0; y < Map.Height; y++)
                     {
-                        for (int x = 0; x < map.GetLength(0); x++)
+                        for (int x = 0; x < Map.Width; x++)
                         {
-                            try
-                            {
-                                if ((map[x, y] == '.' || map[x, y] == '=' || map[x, y] == 'D') &&
-                                    (map[x + 1, y] == '#' || map[x + 1, y] == '=' || map[x + 1, y] == 'D') &&
-                                    (map[x, y + 1] == '#' || map[x, y + 1] == '=' || map[x, y + 1] == 'D') &&
-                                    ((map[x + 2, y] == '#' || map[x + 2, y] == '=' || map[x + 2, y] == 'D') ||
-                                    (map[x, y + 2] == '#' || map[x, y + 2] == '=' || map[x, y + 2] == 'D')))
-                                    map[x, y] = '#';
-                            }
-                            catch { }
-                            if (map[x, y] == '$')
-                                shops.Add(new int[] { x, y });
-                            if (BackroomsCompleted && map[x, y] == 'f')
-                                map[x, y] = '.';
-                        }
-                    }
-                    if (shops.Count == 0)
-                    {
-                        if (map[3, 1] == '#')
-                        {
-                            map[3, 1] = '$';
-                            shops.Add(new int[] { 3, 1 });
-                        }
-                        else if (map[1, 3] == '#')
-                        {
-                            map[1, 3] = '$';
-                            shops.Add(new int[] { 1, 3 });
-                        }
-                    }
-                    for (int i = 0; i < shops.Count; i++)
-                    {
-                        int[] shop = shops[i];
-                        int shop_x = shop[0];
-                        int shop_y = shop[1];
-                        for (int x = shop_x - 1; x <= shop_x + 1; x++)
-                        {
-                            for (int y = shop_y - 1; y <= shop_y + 1; y++)
-                            {
-                                if (y >= 0 && y >= map.GetLength(0) && x >= 0 && x >= map.GetLength(1))
-                                    continue;
-                                if (x == shop_x && y == shop_y)
-                                    continue;
-                                if (map[x, y] != 'F')
-                                    map[x, y] = '#';
-                            }
-                        }
-                        bool spawned = false;
-                        if (shop_y >= 2 && shop_y < map.GetLength(0) - 2 && shop_x >= 0 && shop_x < map.GetLength(1) && map[shop_x, shop_y - 2] == '.')
-                        {
-                            try
-                            {
-                                if (!spawned)
-                                {
-                                    map[shop_x, shop_y - 1] = 'D';
-                                    spawned = true;
-                                }
-                            }
-                            catch { }
-                        }
-                        if (shop_y >= 0 && shop_y < map.GetLength(0) - 2 && shop_x >= 0 && shop_x < map.GetLength(1) && map[shop_x, shop_y + 2] == '.')
-                        {
-                            try
-                            {
-                                if (!spawned)
-                                {
-                                    map[shop_x, shop_y + 1] = 'D';
-                                    spawned = true;
-                                }
-                            }
-                            catch { }
-                        }
-                        if (shop_y >= 0 && shop_y < map.GetLength(0) && shop_x >= 2 && shop_x < map.GetLength(1) - 2 && map[shop_x - 2, shop_y] == '.')
-                        {
-                            try
-                            {
-                                if (!spawned)
-                                {
-                                    map[shop_x - 1, shop_y] = 'D';
-                                    spawned = true;
-                                }
-                            }
-                            catch { }
-                        }
-                        if (shop_y >= 0 && shop_y < map.GetLength(0) && shop_x >= 0 && shop_x < map.GetLength(1) - 2 && map[shop_x + 2, shop_y] == '.')
-                        {
-                            try
-                            {
-                                if (!spawned)
-                                {
-                                    map[shop_x + 1, shop_y] = 'D';
-                                    spawned = true;
-                                }
-                            }
-                            catch { }
-                        }
-                        if (!spawned)
-                        {
-                            if (shop_y - 1 > 0)
-                                map[shop_x, shop_y - 1] = 'D';
-                            if (shop_y + 1 < map.GetLength(0) - 1)
-                                map[shop_x, shop_y + 1] = 'D';
-                            if (shop_x - 1 > 0)
-                                map[shop_x - 1, shop_y] = 'D';
-                            if (shop_x + 1 < map.GetLength(1) - 1)
-                                map[shop_x + 1, shop_y] = 'D';
-                        }
-                    }
-                    for (int y = 0; y < map.GetLength(1); y++)
-                    {
-                        for (int x = 0; x < map.GetLength(0); x++)
-                        {
-                            if (map[x, y] == '.' && random.NextDouble() <= enemy_count && x > 5 && y > 5)
-                                SpawnEnemis(x, y, MAP_WIDTH);
-                            else
-                            {
-                                Entity entity = GetEntityForInitMap(map[x, y], x, y);
-                                if (entity != null) Entities.Add(entity);
-                            }
-                            sb.Append(map[x, y]);
-                        }
-                    }
-                    MAP = sb;
-                }
-                else
-                {
-                    MAP.Append(CUSTOM_MAP);
-                    for (int x = 0; x < CustomMazeWidth * 3 + 1; x++)
-                    {
-                        for (int y = 0; y < CustomMazeHeight * 3 + 1; y++)
-                        {
-                            Entity entity = GetEntityForInitMap(MAP[y * (CustomMazeWidth * 3 + 1) + x], x, y);
+                            Entity entity = GetEntityForInitMap(Map.GetChar(x, y), x, y);
                             if (entity != null) Entities.Add(entity);
                         }
                     }
                 }
-                for (int i = 0; i < MAP.Length; i++)
+                else
                 {
-                    if (MAP[i] == 'o') MAP[i] = 'd';
+                    Map = CustomMap;
+                    for (int x = 0; x < CustomMazeWidth; x++)
+                    {
+                        for (int y = 0; y < CustomMazeHeight; y++)
+                        {
+                            Entity entity = GetEntityForInitMap(Map.GetChar(x, y), x, y);
+                            if (entity != null) Entities.Add(entity);
+                        }
+                    }
                 }
+                Map.FindAndReplace('o', 'd');
             }
-            foreach (Entity ent in Entities)
-            {
-                if (!(ent is Player player)) continue;
-                if (CUSTOM)
-                {
-                    player.X = CUSTOM_X;
-                    player.Y = CUSTOM_Y;
-                    continue;
-                }
-                if (difficulty != 5 && !inBackrooms)
-                {
-                    player.X = 1.5;
-                    player.Y = 1.5;
-                }
-            };
         }
 
         internal void SpawnRockets(double x, double y, int id, double a)
         {
             Rockets rocket = null;
-            if (id == 0) rocket = new RpgRocket(x, y, MAP_WIDTH, ref MaxEntityID);
-            else if (id == 1) rocket = new SoulClot(x, y, MAP_WIDTH, ref MaxEntityID);
+            if (id == 0) rocket = new RpgRocket(x, y, ref MaxEntityID);
+            else if (id == 1) rocket = new SoulClot(x, y, ref MaxEntityID);
             rocket.X += Math.Sin(a);
             rocket.Y += Math.Cos(a);
             if (rocket != null)
@@ -1579,7 +1317,7 @@ namespace SLIL.Classes
             }
         }
 
-        private void SpawnEnemis(double x, double y, int size, bool ai = true, int type = -1)
+        private void SpawnEnemis(double x, double y, bool ai = true, int type = -1)
         {
             x += 0.5; y += 0.5;
             if (type == -1)
@@ -1588,93 +1326,93 @@ namespace SLIL.Classes
                 Entity entity;
                 if (dice <= 0.25) // 25%
                 {
-                    entity = new Zombie(x, y, size, ref MaxEntityID);
+                    entity = new Zombie(x, y, ref MaxEntityID);
                     ((Enemy)entity).SetDamage(EnemyDamageOffset);
                     entity.HasAI = ai;
                 }
                 else if (dice <= 0.40) // 15%
                 {
-                    entity = new Dog(x, y, size, ref MaxEntityID);
+                    entity = new Dog(x, y, ref MaxEntityID);
                     ((Enemy)entity).SetDamage(EnemyDamageOffset);
                     entity.HasAI = ai;
                 }
                 else if (dice <= 0.55) // 15%
                 {
-                    entity = new Bat(x, y, size, ref MaxEntityID);
+                    entity = new Bat(x, y, ref MaxEntityID);
                     ((Enemy)entity).SetDamage(EnemyDamageOffset);
                     entity.HasAI = ai;
                 }
                 else if (dice <= 0.65) // 10%
                 {
-                    entity = new Ogr(x, y, size, ref MaxEntityID);
+                    entity = new Ogr(x, y, ref MaxEntityID);
                     ((Enemy)entity).SetDamage(EnemyDamageOffset);
                     entity.HasAI = ai;
                 }
                 else if (dice <= 0.85) // 20%
                 {
-                    entity = new Shooter(x, y, size, ref MaxEntityID);
+                    entity = new Shooter(x, y, ref MaxEntityID);
                     ((Enemy)entity).SetDamage(EnemyDamageOffset);
                     entity.HasAI = ai;
                 }
                 else if (dice <= 0.90) // 5%
                 {
-                    entity = new LostSoul(x, y, size, ref MaxEntityID);
+                    entity = new LostSoul(x, y, ref MaxEntityID);
                     ((Enemy)entity).SetDamage(EnemyDamageOffset);
                     entity.HasAI = ai;
                 }
                 else // 10%
                 {
                     if (Rand.NextDouble() <= 0.2)
-                        entity = new Vine(x, y, size, ref MaxEntityID);
+                        entity = new Vine(x, y, ref MaxEntityID);
                     else if (Rand.NextDouble() <= 0.4)
-                        entity = new Lamp(x, y, size, ref MaxEntityID);
+                        entity = new Lamp(x, y, ref MaxEntityID);
                     else if (Rand.NextDouble() <= 0.6)
-                        entity = new Box(x, y, size, ref MaxEntityID);
+                        entity = new Box(x, y, ref MaxEntityID);
                     else if(Rand.NextDouble() <= 0.8)
-                        entity = new Barrel(x, y, size, ref MaxEntityID);
+                        entity = new Barrel(x, y, ref MaxEntityID);
                     else 
-                        entity = new ExplodingBarrel(x, y, size, ref MaxEntityID);
+                        entity = new ExplodingBarrel(x, y, ref MaxEntityID);
                 }
                 Entities.Add(entity);
             }
             else if (type == 0)
             {
-                Zombie enemy = new Zombie(x, y, size, ref MaxEntityID);
+                Zombie enemy = new Zombie(x, y, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
             }
             else if (type == 1)
             {
-                Dog enemy = new Dog(x, y, size, ref MaxEntityID);
+                Dog enemy = new Dog(x, y, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
             }
             else if (type == 2)
             {
-                Ogr enemy = new Ogr(x, y, size, ref MaxEntityID);
+                Ogr enemy = new Ogr(x, y, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
             }
             else if (type == 3)
             {
-                Bat enemy = new Bat(x, y, size, ref MaxEntityID);
+                Bat enemy = new Bat(x, y, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
             }
             else if (type == 4)
             {
-                Shooter enemy = new Shooter(x, y, size, ref MaxEntityID);
+                Shooter enemy = new Shooter(x, y, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
             }
             else if (type == 5)
             {
-                LostSoul enemy = new LostSoul(x, y, size, ref MaxEntityID);
+                LostSoul enemy = new LostSoul(x, y, ref MaxEntityID);
                 enemy.SetDamage(EnemyDamageOffset);
                 enemy.HasAI = ai;
                 Entities.Add(enemy);
@@ -1711,17 +1449,19 @@ namespace SLIL.Classes
 
         internal bool InBackrooms() => inBackrooms;
 
-        internal StringBuilder GetMap() => MAP;
+        internal Map GetMap() => Map;
 
-        internal void ChangeMapChar(int coordinate, char c) => MAP[coordinate] = c;
+        internal void ChangeMapChar(char c, int x, int y) => Map.ChangeChar(c, x, y);
+
+        internal void ChangeMapChar(char c,double x, double y) => Map.ChangeChar(c, x, y);
 
         internal Pet[] GetPets() => PETS;
 
         internal Transport[] GetTransports() => TRANSPORTS;
 
-        internal int GetMapWidth() => MAP_WIDTH;
+        internal int GetMapWidth() => Map.Width;
 
-        internal int GetMapHeight() => MAP_HEIGHT;
+        internal int GetMapHeight() => Map.Height;
 
         internal List<Entity> GetEntities() => Entities;
 
@@ -1756,9 +1496,8 @@ namespace SLIL.Classes
                 PlayGameSound(SLIL.HitTransport, t.X, t.Y);
                 if (t.DealDamage(damage))
                 {
-                    int coordinate = GetCoordinate(t.X, t.Y);
                     RemoveEntity(t.ID);
-                    ChangeMapChar(coordinate, '.');
+                    ChangeMapChar('.', t.X, t.Y);
                     return true;
                 }
                 return false;
@@ -1800,7 +1539,7 @@ namespace SLIL.Classes
                 return;
             }
             if (box.BoxWithMoney)
-                AddEntity(new MoneyPile(box.X, box.Y, MAP_WIDTH, ref MaxEntityID) { MoneyCount = Rand.Next(5, 15) });
+                AddEntity(new MoneyPile(box.X, box.Y, ref MaxEntityID) { MoneyCount = Rand.Next(5, 15) });
             else if (!p.CuteMode)
             {
                 Type type = null;
@@ -1817,7 +1556,7 @@ namespace SLIL.Classes
                         }
                     }
                 }
-                AmmoBox ammoBox = new AmmoBox(box.X, box.Y, MAP_WIDTH, ref MaxEntityID) { WeaponType = type };
+                AmmoBox ammoBox = new AmmoBox(box.X, box.Y, ref MaxEntityID) { WeaponType = type };
                 if (type == null) ammoBox.Texture = 45;
                 AddEntity(ammoBox);
             }
@@ -1876,7 +1615,7 @@ namespace SLIL.Classes
 
         internal void AddHittingTheWall(double X, double Y, double vMove)
         {
-            HittingTheWall hittingTheWall = new HittingTheWall(X, Y, MAP_WIDTH, ref MaxEntityID)
+            HittingTheWall hittingTheWall = new HittingTheWall(X, Y, ref MaxEntityID)
             {
                 VMove = vMove
             };
@@ -1955,7 +1694,7 @@ namespace SLIL.Classes
             if (p == null || p.BlockInput) return;
             Transport transport = null;
             if (p.TRANSPORT is Bike)
-                transport = new Bike(p.X, p.Y, MAP_WIDTH, MaxEntityID)
+                transport = new Bike(p.X, p.Y, MaxEntityID)
                 {
                     TransportHP = p.TransportHP,
                     A = p.A
@@ -1965,19 +1704,19 @@ namespace SLIL.Classes
             {
                 if (add_transport)
                 {
-                    AddTransportOnMap(transport.Index, (int)p.Y * MAP_WIDTH + (int)p.X);
+                    AddTransportOnMap(transport.Index, (int)p.X, (int)p.Y);
                     AddEntity(transport);
                 }
             }
         }
 
-        internal bool HasImpassibleCells(int index, int playerID)
+        internal bool HasImpassibleCells(int x, int y, int playerID)
         {
             Player p = GetPlayer(playerID);
             if (p == null) return false;
             char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'R' };
             if (HasNoClip(playerID) || p.InParkour) return false;
-            return impassibleCells.Contains(GetMap()[index]);
+            return impassibleCells.Contains(Map.GetChar(x, y));
         }
 
         internal int GetDeathCause() => DeathCause;
@@ -2164,7 +1903,7 @@ namespace SLIL.Classes
             double new_y = p.Y + Math.Cos(p.A);
             p.InParkour = false;
             p.ReducesStamine(150);
-            while (HasImpassibleCells((int)new_y * MAP_WIDTH + (int)(new_x), playerID))
+            while (HasImpassibleCells((int)new_x, (int)new_y, playerID))
             {
                 new_x += Math.Sin(p.A) / 4;
                 new_y += Math.Cos(p.A) / 4;
@@ -2192,7 +1931,7 @@ namespace SLIL.Classes
                     distance += 0.01d;
                     double x = p.X + dodgeX * distance;
                     double y = p.Y + dodgeY * distance;
-                    char test_wall = GetMap()[GetCoordinate(x, y)];
+                    char test_wall = Map.GetChar(x, y);
                     if (impassibleCells.Contains(test_wall)) return;
                     p.X = x;
                     p.Y = y;
@@ -2300,19 +2039,17 @@ namespace SLIL.Classes
             PlaySoundHandle(sound, 0, 0, false);
         }
 
-        internal void InteractingWithDoors(int coordinate)
+        internal void InteractingWithDoors(int x, int y)
         {
-            double X = coordinate % MAP_HEIGHT;
-            double Y = (coordinate - X) / MAP_WIDTH;
-            if (MAP[coordinate] == 'o')
+            if (Map.GetChar(x,y) == 'o')
             {
-                MAP[coordinate] = 'd';
-                PlayGameSound(SLIL.Door[1], X, Y);
+                Map.ChangeChar('d', x, y);
+                PlayGameSound(SLIL.Door[1], x, y);
             }
             else
             {
-                MAP[coordinate] = 'o';
-                PlayGameSound(SLIL.Door[0], X, Y);
+                Map.ChangeChar('o', x, y);
+                PlayGameSound(SLIL.Door[0], x, y);
             }
         }
 
@@ -2325,8 +2062,8 @@ namespace SLIL.Classes
             Entity entity = GetEntity(ID);
             if (entity != null)
             {
-                if (MAP[(int)entity.Y * MAP_WIDTH + (int)entity.X] == '5')
-                    MAP[(int)entity.Y * MAP_WIDTH + (int)entity.X] = '.';
+                if (Map.GetChar(entity.X, entity.Y) == '5')
+                    Map.ClearChar(entity.X, entity.Y);
                 p.TRANSPORT = (Transport)entity;
                 p.TransportHP = ((Transport)entity).TransportHP;
                 p.A = ((Transport)entity).A;
@@ -2349,13 +2086,6 @@ namespace SLIL.Classes
                     return;
                 }
             }
-        }
-
-        internal int GetCoordinate(double x, double y)
-        {
-            if (y < 0 || x < 0 || y > GetMapHeight() || x > GetMapWidth())
-                return 0;
-            return (int)y * GetMapWidth() + (int)x;
         }
     }
 }

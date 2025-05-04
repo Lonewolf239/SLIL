@@ -1,5 +1,4 @@
 ﻿using LiteNetLib.Utils;
-using System;
 using System.Collections.Generic;
 
 namespace SLIL.Classes
@@ -80,8 +79,8 @@ namespace SLIL.Classes
         internal double MaxHP { get; set; }
         internal double MaxStamine { get; set; }
 
-        internal Player(double x, double y, int map_width, ref int maxEntityID) : base(x, y, map_width, ref maxEntityID) => InitPlayer();
-        internal Player(double x, double y, int map_width, int maxEntityID) : base(x, y, map_width, maxEntityID) => InitPlayer();
+        internal Player(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => InitPlayer();
+        internal Player(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => InitPlayer();
 
         public override void Serialize(NetDataWriter writer)
         {

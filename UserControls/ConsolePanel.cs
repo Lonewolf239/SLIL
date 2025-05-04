@@ -9,7 +9,6 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
 
 namespace SLIL.UserControls
 {

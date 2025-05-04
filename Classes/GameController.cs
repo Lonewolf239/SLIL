@@ -1,5 +1,5 @@
 ﻿using Play_Sound;
-using System.Text;
+using MazeGenerator;
 using System.Collections.Generic;
 
 namespace SLIL.Classes
@@ -194,9 +194,9 @@ namespace SLIL.Classes
 
         internal bool InBackrooms() => Game.InBackrooms();
 
-        internal StringBuilder GetMap() => Game.GetMap();
+        internal Map GetMap() => Game.GetMap();
 
-        internal void ChangeMapChar(int coordinate, char c) => Game.ChangeMapChar(coordinate, c);
+        internal void ChangeMapChar(char c, int x, int y) => Game.ChangeMapChar(c, x, y);
 
         internal int GetMapWidth() => Game.GetMapWidth();
 
@@ -305,8 +305,8 @@ namespace SLIL.Classes
 
         public void StartGame()
         {
-            if (GetPlayer() == null) playerID = Game.AddPlayer();
             Game.StartGame(true);
+            if (GetPlayer() == null) playerID = Game.AddPlayer();
             InitPlayerHandle();
             StartGameHandle();
         }
@@ -390,7 +390,7 @@ namespace SLIL.Classes
 
         internal void StopGame(int win) => Game.StopGame(win);
 
-        public void SetCustom(bool custom, int CustomWidth, int CustomHeight, string CustomMap, double customX, double customY) => Game.SetCustom(custom, CustomWidth, CustomHeight, CustomMap, customX, customY);
+        public void SetCustom(bool custom, Map customMap) => Game.SetCustom(custom, customMap);
 
         public int GetPing()
         {
@@ -689,10 +689,10 @@ namespace SLIL.Classes
             //}
         }
 
-        internal void InteractingWithDoors(int coordinate)
+        internal void InteractingWithDoors(int x, int y)
         {
             //if (peer == null)
-            Game.InteractingWithDoors(coordinate);
+            Game.InteractingWithDoors(x, y);
             //else
             //{
             //    NetDataWriter writer = new NetDataWriter();
@@ -716,7 +716,5 @@ namespace SLIL.Classes
             //    peer.Send(writer, DeliveryMethod.ReliableOrdered);
             //}
         }
-
-        internal int GetCoordinate(double x, double y) => Game.GetCoordinate(x, y);
     }
 }

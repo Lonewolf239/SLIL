@@ -260,6 +260,10 @@
     <Compile Include="LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MazeGenerator\Generator.cs" />
+    <Compile Include="MazeGenerator\Map.cs" />
+    <Compile Include="MazeGenerator\Rooms\Coordinates.cs" />
+    <Compile Include="MazeGenerator\Rooms\Room.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -286,9 +290,6 @@
     <Compile Include="Forms\SLIL_Editor.Designer.cs">
       <DependentUpon>SLIL_Editor.cs</DependentUpon>
     </Compile>
-    <Compile Include="MazeGenerator\Enum\Direction.cs" />
-    <Compile Include="MazeGenerator\Maze.cs" />
-    <Compile Include="MazeGenerator\Room.cs" />
     <Compile Include="Forms\SLIL.cs">
       <SubType>Form</SubType>
     </Compile>

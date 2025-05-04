@@ -5,23 +5,20 @@ using MazeGenerator;
 using System.Drawing;
 using SLIL.UserControls;
 using System.Windows.Forms;
-using System.Collections.Generic;
 
 namespace SLIL
 {
-    public partial class SLIL_Editor : Form
+    internal partial class SLIL_Editor : Form
     {
-        public int MazeHeight, MazeWidth;
+        internal int MazeHeight, MazeWidth;
         private int old_MazeHeight;
         private int old_MazeWidth;
-        public static double x, y;
         private int x_panel, y_panel;
         private Panel[,] panels;
         private bool playerExist = false;
         private int finishCount = 0;
-        public StringBuilder MAP;
-        public bool OK = false;
-        private readonly Random rand;
+        internal Map MAP;
+        internal bool OK = false;
         private Panel panel;
         private int Element = -1;
         private const int ElementsCount = 14;
@@ -57,11 +54,10 @@ namespace SLIL
              Color.Purple,
         };
 
-        public SLIL_Editor()
+        internal SLIL_Editor()
         {
             InitializeComponent();
             Cursor = Program.SLILCursorDefault;
-            rand = new Random(Guid.NewGuid().GetHashCode());
         }
 
         private void SLIL_Editor_MouseEnter(object sender, EventArgs e) => panel = null;
@@ -383,7 +379,7 @@ namespace SLIL
             Location = new Point(centerX, centerY);
         }
 
-        private StringBuilder GenerateMap()
+        private Map GenerateMap()
         {
             StringBuilder MAP = new StringBuilder();
             for (int i = 0; i < panels.GetLength(0); i++)
@@ -411,11 +407,7 @@ namespace SLIL
                     else if (panels[i, j].BackColor == Color.RosyBrown)
                         MAP.Append("B");
                     else if (panels[i, j].BackColor == Color.Red)
-                    {
-                        x = j + 0.5;
-                        y = i + 0.5;
                         MAP.Append("P");
-                    }
                     else if (panels[i, j].BackColor == Color.Navy)
                         MAP.Append("E");
                     else if (panels[i, j].BackColor == Color.Yellow)
@@ -428,7 +420,7 @@ namespace SLIL
                         MAP.Append("X");
                 }
             }
-            return MAP;
+                return new Map(MAP.ToString(), panels.GetLength(1), panels.GetLength(0), 0);
         }
 
         private void Panels_MouseEnter(object sender, EventArgs e)
@@ -454,83 +446,16 @@ namespace SLIL
             finishCount = 0;
             playerExist = true;
             StringBuilder sb = new StringBuilder();
-            Maze MazeGenerator = new Maze();
-            char[,] map = MazeGenerator.GenerateCharMap((MazeWidth - 1) / 3, (MazeHeight - 1) / 3, '#', '=', 'd', '.', 'F');
-            map[1, 1] = 'P';
-            List<int[]> shops = new List<int[]>();
-            for (int y = 0; y < map.GetLength(1); y++)
+            var map = new Generator().GenerateMap(12);
+            MazeWidth = map.Width;
+            MazeHeight = map.Height;
+            for (int y = 0; y < map.Height; y++)
             {
-                for (int x = 0; x < map.GetLength(0); x++)
+                for (int x = 0; x < map.Width; x++)
                 {
-                    try
-                    {
-                        if ((map[x, y] == '.' || map[x, y] == '=' || map[x, y] == 'D') &&
-                            (map[x + 1, y] == '#' || map[x + 1, y] == '=' || map[x + 1, y] == 'D') &&
-                            (map[x, y + 1] == '#' || map[x, y + 1] == '=' || map[x, y + 1] == 'D') &&
-                            ((map[x + 2, y] == '#' || map[x + 2, y] == '=' || map[x + 2, y] == 'D') ||
-                            (map[x, y + 2] == '#' || map[x, y + 2] == '=' || map[x, y + 2] == 'D')))
-                            map[x, y] = '#';
-                        if (map[x, y] == '$')
-                            shops.Add(new int[] { x, y });
-                        if (map[x, y] == '.' && rand.NextDouble() <= 0.015 && x > 5 && y > 5)
-                            map[x, y] = 'E';
-                    }
-                    catch { }
-                    if (map[x, y] == 'F')
-                        finishCount++;
+                    if (map.GetChar(x, y) == 'F') finishCount++;
+                    sb.Append(map.GetChar(x, y));
                 }
-            }
-            if (shops.Count == 0)
-            {
-                if (map[3, 1] == '#')
-                {
-                    map[3, 1] = '$';
-                    shops.Add(new int[] { 3, 1 });
-                }
-                else if (map[1, 3] == '#')
-                {
-                    map[1, 3] = '$';
-                    shops.Add(new int[] { 1, 3 });
-                }
-            }
-            for (int i = 0; i < shops.Count; i++)
-            {
-                int[] shop = shops[i];
-                int shop_x = shop[0];
-                int shop_y = shop[1];
-                for (int x = shop_x - 1; x <= shop_x + 1; x++)
-                {
-                    for (int y = shop_y - 1; y <= shop_y + 1; y++)
-                    {
-                        if (y < 0 && y >= map.GetLength(0) && x < 0 && x >= map.GetLength(1))
-                            continue;
-                        if (x == shop_x && y == shop_y)
-                            continue;
-                        if (map[x, y] != 'F')
-                            map[x, y] = '#';
-                    }
-                }
-                try
-                {
-                    if (shop_x == 3 && shop_y == 1 && map[shop_x - 1, shop_y] == '.')
-                        map[shop_x - 1, shop_y] = 'D';
-                    else if (shop_x == 1 && shop_y == 3 && map[shop_x, shop_y - 1] == '.')
-                        map[shop_x, shop_y - 1] = 'D';
-                    else if (shop_y >= 2 && shop_y < map.GetLength(0) - 2 && shop_x >= 0 && shop_x < map.GetLength(1) && map[shop_x, shop_y - 2] == '.')
-                        map[shop_x, shop_y - 1] = 'D';
-                    else if (shop_y >= 0 && shop_y < map.GetLength(0) - 2 && shop_x >= 0 && shop_x < map.GetLength(1) && map[shop_x, shop_y + 2] == '.')
-                        map[shop_x, shop_y + 1] = 'D';
-                    else if (shop_y >= 0 && shop_y < map.GetLength(0) && shop_x >= 2 && shop_x < map.GetLength(1) - 2 && map[shop_x - 2, shop_y] == '.')
-                        map[shop_x - 1, shop_y] = 'D';
-                    else if (shop_y >= 0 && shop_y < map.GetLength(0) && shop_x >= 0 && shop_x < map.GetLength(1) - 2 && map[shop_x + 2, shop_y] == '.')
-                        map[shop_x + 1, shop_y] = 'D';
-                }
-                catch { }
-            }
-            for (int y = 0; y < map.GetLength(1); y++)
-            {
-                for (int x = 0; x < map.GetLength(0); x++)
-                    sb.Append(map[x, y]);
             }
             GenerateField(sb.ToString());
         }

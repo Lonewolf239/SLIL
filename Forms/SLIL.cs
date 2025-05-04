@@ -3,8 +3,8 @@ using System.IO;
 using Play_Sound;
 using System.Data;
 using System.Linq;
-using System.Text;
 using SLIL.Classes;
+using MazeGenerator;
 using System.Drawing;
 using Convert_Bitmap;
 using System.Threading;
@@ -31,15 +31,13 @@ namespace SLIL
         private readonly GameController Controller;
         internal string PlayerName;
         private bool isCursorVisible = true;
-        internal int CustomMazeHeight, CustomMazeWidth;
-        internal bool CUSTOM = false, ShowFPS = true, ShowMiniMap = true;
+        internal bool Custom = false, ShowFPS = true, ShowMiniMap = true;
         internal bool ShowDebugSpeed = false, ShowPositongDebug = false, ShowGameDebug = false;
         internal bool InvY = false, InvX = false;
         internal static int difficulty = 1;
         private int inDebug = 0;
         internal static double LookSpeed = 2.5;
-        internal StringBuilder CUSTOM_MAP = new StringBuilder();
-        internal double CUSTOM_X, CUSTOM_Y;
+        internal Map CustomMap;
         private readonly Random Rand;
         private const int TexWidth = 128;
         private readonly int SCREEN_HEIGHT = 128, SCREEN_WIDTH = 228;
@@ -56,7 +54,7 @@ namespace SLIL
         private float StageOpacity = 1;
         internal static bool HightFps = true;
         private const double FOV = Math.PI / 3;
-        private static readonly StringBuilder DISPLAYED_MAP = new StringBuilder();
+        private static char[,] DisplayedMap;
         private Bitmap SCREEN, WEAPON, BUFFER;
         private ImageAttributes imageAttributes, imageCuteAttributes;
         private readonly Font[,] ConsolasFont =
@@ -633,7 +631,8 @@ namespace SLIL
         internal static int ScopeColor = 0, ScopeType = 0;
         internal static bool ShowMap = false;
         private bool ShowSing = false, ShowInventory = false;
-        private int SingID, scrollPosition = 0;
+        private int[] SingID = { 0, 0 };
+        private int scrollPosition = 0;
         private const int ScrollBarWidth = 4, ScrollPadding = 5;
         private bool ShopOpen = false, StartShopOpen = false, PressedR = false, CancelReload = false;
         private float xOffset = 0, yOffset = 0, xOffsetDirection = 0.25f, yOffsetDirection = 0.25f;
@@ -675,7 +674,8 @@ namespace SLIL
             InitPlayerHandle = InitPlayerInvoker;
             PlaySoundHandle = PlaySoundInvoker;
             Controller = new GameController(StartGameHandle, InitPlayerHandle, StopGameHandle, PlaySoundHandle);
-            Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
+            CustomMap = new Map();
+            Controller.SetCustom(Custom, CustomMap);
             Rand = new Random(Guid.NewGuid().GetHashCode());
             Bind = new BindControls(MainMenu.BindControls);
             ScreenEffects = new List<ScreenEffects>();
@@ -683,7 +683,7 @@ namespace SLIL
             Textures = textures;
             Controller.StartGame();
         }
-        internal SLIL(TextureCache textures, bool custom, StringBuilder customMap, int mazeWidth, int mazeHeight, double customX, double customY)
+        internal SLIL(TextureCache textures, bool custom, Map customMap)
         {
             InitializeComponent();
             SetLocalization();
@@ -697,13 +697,9 @@ namespace SLIL
             ScreenEffects = new List<ScreenEffects>();
             SetParameters();
             Textures = textures;
-            CUSTOM = custom;
-            CUSTOM_MAP = customMap;
-            CustomMazeWidth = mazeWidth;
-            CustomMazeHeight = mazeHeight;
-            CUSTOM_X = customX;
-            CUSTOM_Y = customY;
-            Controller.SetCustom(CUSTOM, CustomMazeWidth, CustomMazeHeight, CUSTOM_MAP.ToString(), CUSTOM_X, CUSTOM_Y);
+            Custom = custom;
+            CustomMap = customMap;
+            Controller.SetCustom(Custom, CustomMap);
             if (IsTutorial) Controller.ToTutorial();
             Controller.StartGame();
         }
@@ -970,101 +966,101 @@ namespace SLIL
             double moveCos = Math.Cos(player.A) * 3;
             double x = player.X + moveSin;
             double y = player.Y + moveCos;
-            if (Controller.GetMap()[GetCoordinate(x, y)] != '.') return false;
+            if (Controller.GetMap().GetChar(x, y) != '.') return false;
             switch (id)
             {
                 case 0: // player dead
-                    entity = new PlayerDeadBody(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new PlayerDeadBody(x, y, Controller.GetMaxEntityID());
                     break;
                 case 1: // zombie
-                    entity = new Zombie(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Zombie(x, y, Controller.GetMaxEntityID());
                     break;
                 case 2: // dog
-                    entity = new Dog(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Dog(x, y, Controller.GetMaxEntityID());
                     break;
                 case 3: // abomination
-                    entity = new Ogr(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Ogr(x, y, Controller.GetMaxEntityID());
                     break;
                 case 4: // bat
-                    entity = new Bat(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Bat(x, y, Controller.GetMaxEntityID());
                     break;
                 case 5: // box
-                    entity = new Box(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Box(x, y, Controller.GetMaxEntityID());
                     break;
                 case 6: // barrel
-                    entity = new Barrel(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Barrel(x, y, Controller.GetMaxEntityID());
                     break;
                 case 7: // shop door
-                    entity = new ShopDoor(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new ShopDoor(x, y, Controller.GetMaxEntityID());
                     break;
                 case 8: // shop man
-                    entity = new ShopMan(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new ShopMan(x, y, Controller.GetMaxEntityID());
                     break;
                 case 9: // teleport
-                    entity = new Teleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Teleport(x, y, Controller.GetMaxEntityID());
                     break;
                 case 10: // hitting the wall
-                    entity = new HittingTheWall(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new HittingTheWall(x, y, Controller.GetMaxEntityID());
                     break;
                 case 11: // rpg rocket
-                    entity = new RpgRocket(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new RpgRocket(x, y, Controller.GetMaxEntityID());
                     break;
                 case 12: // rpg explosion
-                    entity = new RpgExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new RpgExplosion(x, y, Controller.GetMaxEntityID());
                     break;
                 case 13: // silly cat
-                    entity = new SillyCat(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new SillyCat(x, y, Controller.GetMaxEntityID());
                     break;
                 case 14: // green gnome
-                    entity = new GreenGnome(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new GreenGnome(x, y, Controller.GetMaxEntityID());
                     break;
                 case 15: // energy drink
-                    entity = new EnergyDrink(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new EnergyDrink(x, y, Controller.GetMaxEntityID());
                     break;
                 case 16: // pyro
-                    entity = new Pyro(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Pyro(x, y, Controller.GetMaxEntityID());
                     break;
                 case 17: // bike
-                    entity = new Bike(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Bike(x, y, Controller.GetMaxEntityID());
                     break;
                 case 18: // vine
-                    entity = new Vine(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Vine(x, y, Controller.GetMaxEntityID());
                     break;
                 case 19: // lamp
-                    entity = new Lamp(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Lamp(x, y, Controller.GetMaxEntityID());
                     break;
                 case 20: // backrooms teleport
-                    entity = new BackroomsTeleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new BackroomsTeleport(x, y, Controller.GetMaxEntityID());
                     break;
                 case 21: // void teleport
-                    entity = new VoidTeleport(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new VoidTeleport(x, y, Controller.GetMaxEntityID());
                     break;
                 case 22: // void stalker
-                    entity = new VoidStalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new VoidStalker(x, y, Controller.GetMaxEntityID());
                     break;
                 case 23: // stalker
-                    entity = new Stalker(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Stalker(x, y, Controller.GetMaxEntityID());
                     break;
                 case 24: // shooter
-                    entity = new Shooter(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Shooter(x, y, Controller.GetMaxEntityID());
                     break;
                 case 25: // lost soul
-                    entity = new LostSoul(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new LostSoul(x, y, Controller.GetMaxEntityID());
                     break;
                 case 26: // soul explosion
-                    entity = new SoulExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new SoulExplosion(x, y, Controller.GetMaxEntityID());
                     break;
                 case 27:
                     //exploding barrel
-                    entity = new ExplodingBarrel(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new ExplodingBarrel(x, y, Controller.GetMaxEntityID());
                     break;
                 case 28:
                     //barrel explosion
-                    entity = new BarrelExplosion(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new BarrelExplosion(x, y, Controller.GetMaxEntityID());
                     break;
                 case 29:
                     //dummy
-                    entity = new Dummy(x, y, Controller.GetMapWidth(), Controller.GetMaxEntityID());
+                    entity = new Dummy(x, y, Controller.GetMaxEntityID());
                     break;
             }
             if (entity == null) return false;
@@ -1174,8 +1170,8 @@ namespace SLIL
                 double[] ZBuffer = new double[SCREEN_WIDTH];
                 double[] ZBufferWindow = new double[SCREEN_WIDTH];
                 Pixel[][] rays = CastRaysParallel(ZBuffer, ZBufferWindow);
-                DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<int> enemiesCoords);
-                foreach (int i in enemiesCoords) DISPLAYED_MAP[i] = 'E';
+                DrawSprites(ref rays, ref ZBuffer, ref ZBufferWindow, out List<(int, int)> enemiesCoords);
+                foreach (var i in enemiesCoords) DisplayedMap[i.Item1, i.Item2] = 'E';
                 DrawRaysOnScreen(rays);
                 if (!Controller.InBackrooms())
                 {
@@ -1815,8 +1811,7 @@ namespace SLIL
                 {
                     if (player.InTransport)
                     {
-                        if (player.TRANSPORT is Bike)
-                            DISPLAYED_MAP[GetCoordinate(player.X, player.Y)] = '5';
+                        if (player.TRANSPORT is Bike) DisplayedMap[(int)player.Y, (int)player.X] = '5';
                         Controller.GettingOffTheTransport();
                     }
                     else
@@ -1890,7 +1885,7 @@ namespace SLIL
                             distance += 0.1d;
                             int x = (int)(player.X + ray_x * distance);
                             int y = (int)(player.Y + ray_y * distance);
-                            char test_wall = Controller.GetMap()[GetCoordinate(x, y)];
+                            char test_wall = Controller.GetMap().GetChar(x, y);
                             switch (test_wall)
                             {
                                 case '=':
@@ -1900,7 +1895,7 @@ namespace SLIL
                                         distance += 0.1d;
                                         int x1 = (int)(player.X + ray_x * distance);
                                         int y1 = (int)(player.Y + ray_y * distance);
-                                        if (!HasImpassibleCells(GetCoordinate(x1, y1)))
+                                        if (!HasImpassibleCells(x1, y1))
                                         {
                                             Controller.DoParkour(y, x);
                                             break;
@@ -2060,7 +2055,7 @@ namespace SLIL
                             distance += 0.1d;
                             int x = (int)(player.X + ray_x * distance);
                             int y = (int)(player.Y + ray_y * distance);
-                            char test_wall = Controller.GetMap()[GetCoordinate(x, y)];
+                            char test_wall = Controller.GetMap().GetChar(x, y);
                             switch (test_wall)
                             {
                                 case '#':
@@ -2075,16 +2070,16 @@ namespace SLIL
                                     break;
                                 case 'd':
                                     hit = true;
-                                    Controller.InteractingWithDoors(GetCoordinate(x, y));
+                                    Controller.InteractingWithDoors(x, y);
                                     break;
                                 case 'o':
                                     hit = true;
                                     if (distance < playerWidth || ((int)player.X == x && (int)player.Y == y)) break;
-                                    Controller.InteractingWithDoors(GetCoordinate(x, y));
+                                    Controller.InteractingWithDoors(x, y);
                                     break;
                                 case 'S':
                                     hit = true;
-                                    SingID = GetCoordinate(x, y);
+                                    SingID = new int[] { y, x };
                                     scrollPosition = 0;
                                     ShowSing = player.BlockInput = player.BlockCamera = true;
                                     break;
@@ -2209,28 +2204,23 @@ namespace SLIL
 
         //  #====    Move Player    ====#
 
-        private bool HasImpassibleCells(int index)
+        private bool HasImpassibleCells(int x, int y)
         {
             char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't', 'R' };
             if (Controller.HasNoClip() || GetPlayer().InParkour) return false;
-            if (index < 0 || index > Controller.GetMap().Length) return true;
-            return impassibleCells.Contains(Controller.GetMap()[index]);
+            if (Controller.GetMap().OutOfBounds(x, y)) return true;
+            return impassibleCells.Contains(Controller.GetMap().GetChar(x, y));
         }
 
         private void PlayerMove()
         {
             Player player = GetPlayer();
             if (player == null || player.Aiming) return;
-            if (Controller.GetMap()[GetCoordinate(player.X, player.Y)] == 'P')
-            {
-                Controller.GetMap()[GetCoordinate(player.X, player.Y)] = '.';
-                DISPLAYED_MAP[GetCoordinate(player.X, player.Y)] = '.';
-            }
             if (player.X < 0) player.X = 1.5;
             if (player.X >= Controller.GetMapWidth() - 0.5) player.X = Controller.GetMapWidth() - 1.5;
             if (player.Y < 0) player.Y = 1.5;
             if (player.Y >= Controller.GetMapHeight() - 0.5) player.Y = Controller.GetMapHeight() - 1.5;
-            if (HasImpassibleCells(GetCoordinate(player.X, player.Y)))
+            if (HasImpassibleCells((int)player.X, (int)player.Y))
             {
                 double x = player.X;
                 double y = player.Y;
@@ -2241,7 +2231,13 @@ namespace SLIL
                         Controller.MovePlayer(x - player.X, y - player.Y);
                 }
             }
-            DISPLAYED_MAP.Replace('P', '.');
+            for (int i = 0; i < DisplayedMap.GetLength(0); i++)
+            {
+                for (int j = 0; j < DisplayedMap.GetLength(1); j++)
+                {
+                    if (DisplayedMap[i, j] == 'P') DisplayedMap[i, j] = '.';
+                }
+            }
             player.ChangeSpeed();
             double move = player.GetMoveSpeed(ElapsedTime);
             double strafe = player.GetStrafeSpeed(ElapsedTime);
@@ -2275,27 +2271,27 @@ namespace SLIL
                     turnAmount = (player.StrafeSpeed) / player.TRANSPORT.Controllability;
                 Controller.ChangePlayerA(turnAmount * DeltaTime * 60);
             }
-            if (!(HasImpassibleCells(GetCoordinate(newX + playerWidth / 2, newY))
-                || HasImpassibleCells(GetCoordinate(newX - playerWidth / 2, newY))))
+            if (!(HasImpassibleCells((int)(newX + playerWidth / 2), (int)newY)
+                || HasImpassibleCells((int)(newX - playerWidth / 2), (int)newY)))
                 tempX = newX;
-            if (!(HasImpassibleCells(GetCoordinate(newX, newY + playerWidth / 2))
-                || HasImpassibleCells(GetCoordinate(newX, newY - playerWidth / 2))))
+            if (!(HasImpassibleCells((int)newX, (int)(newY + playerWidth / 2))
+                || HasImpassibleCells((int)newX, (int)(newY - playerWidth / 2))))
                 tempY = newY;
-            if (HasImpassibleCells(GetCoordinate(tempX + playerWidth / 2, tempY)))
+            if (HasImpassibleCells((int)(tempX + playerWidth / 2), (int)tempY))
                 tempX -= playerWidth / 2 - (1 - tempX % 1);
-            if (HasImpassibleCells(GetCoordinate(tempX - playerWidth / 2, tempY)))
+            if (HasImpassibleCells((int)(tempX - playerWidth / 2), (int)tempY))
                 tempX += playerWidth / 2 - (tempX % 1);
-            if (HasImpassibleCells(GetCoordinate(tempX, tempY + playerWidth / 2)))
+            if (HasImpassibleCells((int)tempX, (int)(tempY + playerWidth / 2)))
                 tempY -= playerWidth / 2 - (1 - tempY % 1);
-            if (HasImpassibleCells(GetCoordinate(tempX, tempY - playerWidth / 2)))
+            if (HasImpassibleCells((int)tempX, (int)(tempY - playerWidth / 2)))
                 tempY += playerWidth / 2 - (tempY % 1);
             if (Math.Abs(tempX - player.X) > 0.001 || Math.Abs(tempY - player.Y) > 0.001)
             {
                 if (!player.BlockInput)
                     Controller.MovePlayer(tempX - player.X, tempY - player.Y);
             }
-            if (Controller.GetMap()[GetCoordinate(player.X, player.Y)] == '.')
-                DISPLAYED_MAP[GetCoordinate(player.X, player.Y)] = 'P';
+            if (Controller.GetMap().GetChar(player.X, player.Y) == '.')
+                DisplayedMap[(int)player.Y, (int)player.X] = 'P';
         }
 
         private void GetCoordinateWithoutWall(ref double x, ref double y)
@@ -2304,7 +2300,7 @@ namespace SLIL
             {
                 for (double offsetY = -3.5; offsetY <= 3.5; offsetY += 0.5)
                 {
-                    if (!HasImpassibleCells(GetCoordinate(x + offsetX, y + offsetY)))
+                    if (!HasImpassibleCells((int)(x + offsetX), (int)(y + offsetY)))
                     {
                         x += offsetX;
                         y += offsetY;
@@ -2321,7 +2317,11 @@ namespace SLIL
             Player player = GetPlayer();
             if (player == null)
             {
-                for (int i = 0; i < DISPLAYED_MAP.Length; i++) DISPLAYED_MAP[i] = '.';
+                for (int i = 0; i < DisplayedMap.GetLength(0); i++)
+                {
+                    for (int j = 0; j < DisplayedMap.GetLength(1); j++)
+                        DisplayedMap[i, j] = '.';
+                }
                 return;
             }
             int radius = 30;
@@ -2329,9 +2329,8 @@ namespace SLIL
             {
                 for (int x = Math.Max(0, (int)player.X - radius); x < Math.Min(Controller.GetMapWidth(), (int)player.X + radius + 1); x++)
                 {
-                    int index = GetCoordinate(x, y);
-                    if (DISPLAYED_MAP[index] == '*' || DISPLAYED_MAP[index] == 'E')
-                        DISPLAYED_MAP[index] = '.';
+                    if (DisplayedMap[y, x] == '*' || DisplayedMap[y, x] == 'E')
+                        DisplayedMap[y, x] = '.';
                 }
             }
         }
@@ -2356,13 +2355,12 @@ namespace SLIL
             planeY = Math.Cos(player.A - Math.PI / 2) * Math.Tan(FOV / 2);
             int mapX = (int)(player.X);
             int mapY = (int)(player.Y);
-            StringBuilder MAP = Controller.GetMap();
-            int MAP_WIDTH = Controller.GetMapWidth();
-            Parallel.For(0, SCREEN_WIDTH, x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, mapX, mapY, ref player, ref MAP, MAP_WIDTH));
+            var Map = Controller.GetMap();
+            Parallel.For(0, SCREEN_WIDTH, x => rays[x] = CastRay(x, ZBuffer, ZBufferWindow, mapX, mapY, ref player, ref Map));
             return rays;
         }
 
-        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int mapX, int mapY, ref Player player, ref StringBuilder MAP, int MAP_WIDTH)
+        private Pixel[] CastRay(int x, double[] ZBuffer, double[] ZBufferWindow, int mapX, int mapY, ref Player player, ref Map MAP)
         {
             Pixel[] result = new Pixel[SCREEN_HEIGHT];
             double cameraX = 2 * x / (double)SCREEN_WIDTH - 1;
@@ -2410,16 +2408,14 @@ namespace SLIL
                     sideDistX += deltaDistX;
                     mapX += stepX;
                     wallSide = 0;
-                    if (!hit_window)
-                        windowSide = 0;
+                    if (!hit_window)                        windowSide = 0;
                 }
                 else
                 {
                     sideDistY += deltaDistY;
                     mapY += stepY;
                     wallSide = 1;
-                    if (!hit_window)
-                        windowSide = 1;
+                    if (!hit_window)                        windowSide = 1;
                 }
                 if (wallSide == 0) distance = (sideDistX - deltaDistX);
                 else distance = (sideDistY - deltaDistY);
@@ -2434,32 +2430,32 @@ namespace SLIL
                     distance = player.GetDrawDistance();
                     continue;
                 }
-                char test_wall = MAP[mapY * MAP_WIDTH + mapX];
+                char test_wall = MAP.GetChar(mapX, mapY);
                 switch (test_wall)
                 {
                     case '#':
                         hit_wall = 0;
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '#';
+                        DisplayedMap[mapY, mapX] = '#';
                         break;
                     case '=':
                         hit_window = true;
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = '=';
+                        DisplayedMap[mapY, mapX] = '=';
                         break;
                     case 'S':
                         hit_wall = 1;
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'S';
+                        DisplayedMap[mapY, mapX] = 'S';
                         break;
                     case 'd':
                         hit_door = true;
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'D';
+                        DisplayedMap[mapY, mapX] = 'D';
                         break;
                     case '@':
                         hit_wall = 2;
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = 'T';
+                        DisplayedMap[mapY, mapX] = 'T';
                         break;
                     default:
                         if (test_wall == '.') test_wall = '*';
-                        DISPLAYED_MAP[mapY * MAP_WIDTH + mapX] = test_wall;
+                        DisplayedMap[mapY, mapX] = test_wall;
                         break;
                 }
             }
@@ -2622,10 +2618,10 @@ namespace SLIL
             return true;
         }
 
-        private void DrawSprites(ref Pixel[][] rays, ref double[] ZBuffer, ref double[] ZBufferWindow, out List<int> enemiesCoords)
+        private void DrawSprites(ref Pixel[][] rays, ref double[] ZBuffer, ref double[] ZBufferWindow, out List<(int, int)> enemiesCoords)
         {
             Player player = GetPlayer();
-            enemiesCoords = new List<int>();
+            enemiesCoords = new List<(int, int)>();
             if (player == null) return;
             invDet = 1.0 / (planeX * dirY - dirX * planeY);
             Entity[] Entities = new Entity[Controller.GetEntities().Count];
@@ -2702,9 +2698,8 @@ namespace SLIL
                                         {
                                             if (stalker.ISeeU()) Controller.PlayGameSound(VoidStalkerScreamer);
                                         }
-                                        int coords = (int)entity.Y * mapWidth + (int)entity.X;
-                                        if (!enemiesCoords.Contains(coords))
-                                            enemiesCoords.Add(coords);
+                                        if (!enemiesCoords.Contains(((int)entity.Y, (int)entity.X)))
+                                            enemiesCoords.Add(((int)entity.Y, (int)entity.X));
                                     }
                                 }
                                 else
@@ -2956,82 +2951,106 @@ namespace SLIL
         {
             if (IsTutorial)
             {
-                switch (SingID)
+                if (SingID[0] == 10 && SingID[1] == 3)
                 {
-                    case 253:
-                        if (MainMenu.DownloadedLocalizationList)
-                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-0"));
-                        return DetectingHotkeysInString("About the game:\n" +
-                            "SLIL is a game where you'll explore procedurally generated labyrinths, battle dangerous enemies, and find a portal to advance to the next level.\n" +
-                            "Arm yourself, be cautious, and don't let the creatures stop your progress towards the goal.");
-                    case 255:
-                        if (MainMenu.DownloadedLocalizationList)
-                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-1"));
-                        return DetectingHotkeysInString("How to play:\n" +
-                            "The controls are done using the *forward*, *back*, *left*, and *right* buttons, as well as the mouse.\n" +
-                            "To shoot, use the left mouse button, and to aim (for sniper rifles only), use the right mouse button.\n" +
-                            "To interact, use the *interaction_0* or *interaction_1* buttons.\n" +
-                            "To open/close the map, press *show_map_0* or *show_map_1*.");
-                    case 257:
-                        if (MainMenu.DownloadedLocalizationList)
-                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-2"));
-                        return DetectingHotkeysInString("Weaponry:\n" +
-                            "The game has a large arsenal of weapons, pets, and consumables.\n" +
-                            "All of these can be purchased at stores that appear randomly on the map and are displayed in pink.\n" +
-                            "Pets are companions that follow the player and provide certain bonuses.\n" +
-                            "Consumables are one-time-use items that temporarily affect the player.\n" +
-                            "To select an item, press *select_item* and hover the mouse cursor over the desired item, and to use it, press *item*.");
-                    case 259:
-                        if (MainMenu.DownloadedLocalizationList)
-                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-3"));
-                        return DetectingHotkeysInString("Stores:\n" +
-                            "In the stores, you'll find everything you need for a successful labyrinth run.\n" +
-                            "Go inside and stock up on weapons, pets, and consumables.\n" +
-                            "For training, you're provided with $500 so you can equip yourself well.\n" +
-                            "The store is located across from this sign.");
-                    case 166:
-                        if (MainMenu.DownloadedLocalizationList)
-                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-4"));
-                        return DetectingHotkeysInString("Supplies:\n" +
-                            "In the game, there are crates and barrels. By destroying them, you can obtain ammunition or money.\n" +
-                            "Crates have a 75% chance to drop ammunition and a 25% chance to drop money.\n" +
-                            "Barrels have a 25% chance to drop ammunition and a 75% chance to drop money.");
-                    case 170:
-                        if (MainMenu.DownloadedLocalizationList)
-                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-5"));
-                        return DetectingHotkeysInString("Portal:\n" +
-                            "Go through it to advance to the next level.\n" +
-                            "Upon transitioning to the next level, you'll receive a cash reward.");
-                    case 369:
-                        if (MainMenu.DownloadedLocalizationList)
-                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-6"));
-                        return DetectingHotkeysInString("Darkness:\n" +
-                            "The catacombs are quite a dark place, but you have a flashlight.\n" +
-                            "Using the flashlight, you'll see a smaller area but at greater distances.\n" +
-                            "To use the flashlight, press *flashlight*.");
-                    case 391:
-                        if (MainMenu.DownloadedLocalizationList)
-                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-7"));
-                        return DetectingHotkeysInString("Monsters:\n" +
-                            "On your path, you'll encounter creatures of evil and chaos.\n" +
-                            "Enemy types:\n" +
-                            "Zombies - flesh possessed by dark forces (slow and weak foe).\n" +
-                            "Rabid dogs - feral beings that have lost their minds (fast but not durable).\n" +
-                            "Orcs - a warlike race thirsting for blood (sluggish but durable foe).\n" +
-                            "Bats - nocturnal creatures of darkness (fast and stealthy threat).");
-                    case 359:
-                        if (MainMenu.DownloadedLocalizationList)
-                            return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-8"));
-                        return DetectingHotkeysInString("Battle:\n" +
-                            "Behind this door awaits a small arena with a couple of opponents.\n" +
-                            "Test your might in real combat.\n" +
-                            "If you didn't buy any weapons at the store, go back and do so.\n" +
-                            "Going into battle with just a Makarov pistol is a bad idea... ");
-                    default: return $"Error getting text from the table\nSingID = {SingID}";
+                    //253
+                    if (MainMenu.DownloadedLocalizationList)
+                        return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-0"));
+                    return DetectingHotkeysInString("About the game:\n" +
+                        "SLIL is a game where you'll explore procedurally generated labyrinths, battle dangerous enemies, and find a portal to advance to the next level.\n" +
+                        "Arm yourself, be cautious, and don't let the creatures stop your progress towards the goal.");
                 }
+                if (SingID[0] == 10 && SingID[1] == 5)
+                {
+                    //255
+                    if (MainMenu.DownloadedLocalizationList)
+                        return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-1"));
+                    return DetectingHotkeysInString("How to play:\n" +
+                        "The controls are done using the *forward*, *back*, *left*, and *right* buttons, as well as the mouse.\n" +
+                        "To shoot, use the left mouse button, and to aim (for sniper rifles only), use the right mouse button.\n" +
+                        "To interact, use the *interaction_0* or *interaction_1* buttons.\n" +
+                        "To open/close the map, press *show_map_0* or *show_map_1*.");
+                }
+                if (SingID[0] == 10 && SingID[1] == 7)
+                {
+                    //257
+                    if (MainMenu.DownloadedLocalizationList)
+                        return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-2"));
+                    return DetectingHotkeysInString("Weaponry:\n" +
+                        "The game has a large arsenal of weapons, pets, and consumables.\n" +
+                        "All of these can be purchased at stores that appear randomly on the map and are displayed in pink.\n" +
+                        "Pets are companions that follow the player and provide certain bonuses.\n" +
+                        "Consumables are one-time-use items that temporarily affect the player.\n" +
+                        "To select an item, press *select_item* and hover the mouse cursor over the desired item, and to use it, press *item*.");
+                }
+                if (SingID[0] == 10 && SingID[1] == 9)
+                {
+                    //259
+                    if (MainMenu.DownloadedLocalizationList)
+                        return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-3"));
+                    return DetectingHotkeysInString("Stores:\n" +
+                        "In the stores, you'll find everything you need for a successful labyrinth run.\n" +
+                        "Go inside and stock up on weapons, pets, and consumables.\n" +
+                        "For training, you're provided with $500 so you can equip yourself well.\n" +
+                        "The store is located across from this sign.");
+                }
+                if (SingID[0] == 6 && SingID[1] == 16)
+                {
+                    //166
+                    if (MainMenu.DownloadedLocalizationList)
+                        return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-4"));
+                    return DetectingHotkeysInString("Supplies:\n" +
+                        "In the game, there are crates and barrels. By destroying them, you can obtain ammunition or money.\n" +
+                        "Crates have a 75% chance to drop ammunition and a 25% chance to drop money.\n" +
+                        "Barrels have a 25% chance to drop ammunition and a 75% chance to drop money.");
+                }
+                if (SingID[0] == 6 && SingID[1] == 20)
+                {
+                    //170
+                    if (MainMenu.DownloadedLocalizationList)
+                        return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-5"));
+                    return DetectingHotkeysInString("Portal:\n" +
+                        "Go through it to advance to the next level.\n" +
+                        "Upon transitioning to the next level, you'll receive a cash reward.");
+                }
+                if (SingID[0] == 14 && SingID[1] == 19)
+                {
+                    //369
+                    if (MainMenu.DownloadedLocalizationList)
+                        return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-6"));
+                    return DetectingHotkeysInString("Darkness:\n" +
+                        "The catacombs are quite a dark place, but you have a flashlight.\n" +
+                        "Using the flashlight, you'll see a smaller area but at greater distances.\n" +
+                        "To use the flashlight, press *flashlight*.");
+                }
+                if (SingID[0] == 15 && SingID[1] == 16)
+                {
+                    //391
+                    if (MainMenu.DownloadedLocalizationList)
+                        return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-7"));
+                    return DetectingHotkeysInString("Monsters:\n" +
+                        "On your path, you'll encounter creatures of evil and chaos.\n" +
+                        "Enemy types:\n" +
+                        "Zombies - flesh possessed by dark forces (slow and weak foe).\n" +
+                        "Rabid dogs - feral beings that have lost their minds (fast but not durable).\n" +
+                        "Orcs - a warlike race thirsting for blood (sluggish but durable foe).\n" +
+                        "Bats - nocturnal creatures of darkness (fast and stealthy threat).");
+                }
+                if (SingID[0] == 14 && SingID[1] == 9)
+                {
+                    //359
+                    if (MainMenu.DownloadedLocalizationList)
+                        return DetectingHotkeysInString(MainMenu.Localizations.GetLString(MainMenu.Language, "6-8"));
+                    return DetectingHotkeysInString("Battle:\n" +
+                        "Behind this door awaits a small arena with a couple of opponents.\n" +
+                        "Test your might in real combat.\n" +
+                        "If you didn't buy any weapons at the store, go back and do so.\n" +
+                        "Going into battle with just a Makarov pistol is a bad idea... ");
+                }
+                return $"Error getting text from the table\nSingID = {SingID[0]}|{SingID[1]}";
             }
-            if (inDebug == 1) return $"Hello, World!\nSingID = {SingID}";
-            return $"Error getting text from the table\nSingID = {SingID}";
+            if (inDebug == 1) return $"Hello, World!\nSingID = {SingID[0]}|{SingID[1]}";
+            return $"Error getting text from the table\nSingID = {SingID[0]}|{SingID[1]}";
         }
 
         //  #====   GameInterface   ====#
@@ -3509,7 +3528,7 @@ namespace SLIL
                     Color pixelColor;
                     if (mapX >= 0 && mapX < Controller.GetMapWidth() && mapY >= 0 && mapY < Controller.GetMapHeight())
                     {
-                        char mapChar = DISPLAYED_MAP[GetCoordinate(mapX, mapY)];
+                        char mapChar = DisplayedMap[mapY, mapX];
                         pixelColor = GetColorForMapChar(mapChar);
                     }
                     else pixelColor = Color.Black;
@@ -3592,7 +3611,7 @@ namespace SLIL
                 for (int x = 0; x < Controller.GetMapWidth(); x++)
                 {
                     int i = (y * data.Stride) + (x * bytesPerPixel);
-                    char mapChar = DISPLAYED_MAP[GetCoordinate(x, y)];
+                    char mapChar = DisplayedMap[y, x];
                     color = GetColorForMapChar(mapChar);
                     pixels[i] = color.B;
                     pixels[i + 1] = color.G;
@@ -3817,7 +3836,7 @@ namespace SLIL
                 {
                     int test_x = (int)(player.X + rayAngleX * shotDistance);
                     int test_y = (int)(player.Y + rayAngleY * shotDistance);
-                    if (impassibleCells.Contains(Controller.GetMap()[GetCoordinate(test_x, test_y)]))
+                    if (impassibleCells.Contains(Controller.GetMap().GetChar(test_x, test_y)))
                         break;
                     foreach (Entity ent in Entities)
                     {
@@ -3931,17 +3950,13 @@ namespace SLIL
                                                 }
                                                 if (!player.CuteMode)
                                                 {
-                                                    if (Resolution == 0)
-                                                        ScopeHit = Properties.Resources.scope_hit;
-                                                    else
-                                                        ScopeHit = Properties.Resources.h_scope_hit;
+                                                    if (Resolution == 0) ScopeHit = Properties.Resources.scope_hit;
+                                                    else ScopeHit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
-                                                    if (Resolution == 0)
-                                                        ScopeHit = Properties.Resources.scope_c_hit;
-                                                    else
-                                                        ScopeHit = Properties.Resources.h_scope_c_hit;
+                                                    if (Resolution == 0) ScopeHit = Properties.Resources.scope_c_hit;
+                                                    else ScopeHit = Properties.Resources.h_scope_c_hit;
                                                 }
                                                 bullet[k, 0] = -1;
                                                 bullet[k, 1] = -1;
@@ -3959,17 +3974,13 @@ namespace SLIL
                                                 }
                                                 if (!player.CuteMode)
                                                 {
-                                                    if (Resolution == 0)
-                                                        ScopeHit = Properties.Resources.scope_hit;
-                                                    else
-                                                        ScopeHit = Properties.Resources.h_scope_hit;
+                                                    if (Resolution == 0) ScopeHit = Properties.Resources.scope_hit;
+                                                    else ScopeHit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
-                                                    if (Resolution == 0)
-                                                        ScopeHit = Properties.Resources.scope_c_hit;
-                                                    else
-                                                        ScopeHit = Properties.Resources.h_scope_c_hit;
+                                                    if (Resolution == 0) ScopeHit = Properties.Resources.scope_c_hit;
+                                                    else ScopeHit = Properties.Resources.h_scope_c_hit;
                                                 }
                                                 bullet[k, 0] = -1;
                                                 bullet[k, 1] = -1;
@@ -3981,17 +3992,13 @@ namespace SLIL
                                                 Controller.DealDamage(transport, damage * 1.5);
                                                 if (!player.CuteMode)
                                                 {
-                                                    if (Resolution == 0)
-                                                        ScopeHit = Properties.Resources.scope_hit;
-                                                    else
-                                                        ScopeHit = Properties.Resources.h_scope_hit;
+                                                    if (Resolution == 0) ScopeHit = Properties.Resources.scope_hit;
+                                                    else ScopeHit = Properties.Resources.h_scope_hit;
                                                 }
                                                 else
                                                 {
-                                                    if (Resolution == 0)
-                                                        ScopeHit = Properties.Resources.scope_c_hit;
-                                                    else
-                                                        ScopeHit = Properties.Resources.h_scope_c_hit;
+                                                    if (Resolution == 0) ScopeHit = Properties.Resources.scope_c_hit;
+                                                    else ScopeHit = Properties.Resources.h_scope_c_hit;
                                                 }
                                                 bullet[k, 0] = -1;
                                                 bullet[k, 1] = -1;
@@ -4027,7 +4034,7 @@ namespace SLIL
                         if (test_x < 0 || test_x >= player.GetCurrentGun().FiringRange + player.X || test_y < 0 || test_y >= player.GetCurrentGun().FiringRange + player.Y) hit = true;
                         else
                         {
-                            char test_wall = Controller.GetMap()[GetCoordinate(test_x, test_y)];
+                            char test_wall = Controller.GetMap().GetChar(test_x, test_y);
                             double celling = (SCREEN_HEIGHT - player.Look) / 2.25d - (SCREEN_HEIGHT * FOV) / distance;
                             double floor = SCREEN_HEIGHT - (celling + player.Look);
                             double mid = (celling + floor) / 2;
@@ -4235,8 +4242,6 @@ namespace SLIL
 
         //  #====   Game methods    ====#
 
-        private int GetCoordinate(double x, double y) => Controller.GetCoordinate(x, y);
-
         private bool PlayerCanRun()
         {
             Player player = GetPlayer();
@@ -4282,18 +4287,18 @@ namespace SLIL
             }
             UpdateBitmap();
             Activate();
-            ResetDefault(player);
+            if(player!=null)                ResetDefault(player);
             ShopToDefault();
             InitMap();
             try
             {
-                if (Controller.GetMap()[GetCoordinate(player.X, player.Y + 2)] == '.')
+                if (Controller.GetMap().GetChar(player.X, player.Y + 2) == '.')
                     player.A = 0;
-                else if (Controller.GetMap()[GetCoordinate(player.X, player.Y - 2)] == '.')
+                else if (Controller.GetMap().GetChar(player.X, player.Y - 2) == '.')
                     player.A = 3;
-                else if (Controller.GetMap()[GetCoordinate(player.X + 2, player.Y)] == '.')
+                else if (Controller.GetMap().GetChar(player.X + 2, player.Y) == '.')
                     player.A = 1;
-                else if (Controller.GetMap()[GetCoordinate(player.X - 2, player.Y)] == '.')
+                else if (Controller.GetMap().GetChar(player.X - 2, player.Y) == '.')
                     player.A = 4;
             }
             catch { player.A = 0; }
@@ -4305,7 +4310,7 @@ namespace SLIL
             game_over_panel.Visible = false;
             SLILDisplay.BringToFront();
             SLILDisplay.Focus();
-            StartShop(player);
+            if (player != null) StartShop(player);
         }
 
         private void GameOver(int win)
@@ -4472,19 +4477,27 @@ namespace SLIL
 
         private void InitMap()
         {
-            DISPLAYED_MAP.Clear();
-            string DMAP = "";
-            for (int i = 0; i < Controller.GetMap().Length; i++) DMAP += '.';
-            if (difficulty < 5 || Controller.InBackrooms())
-                DISPLAYED_MAP.Append(DMAP);
+            char[,] dmap = new char[Controller.GetMapHeight(), Controller.GetMapWidth()];
+            for (int i = 0; i < dmap.GetLength(0); i++) { for (int j = 0; j < dmap.GetLength(1); j++) dmap[i, j] = '.'; }
+            if (difficulty < 5 || Controller.InBackrooms()) DisplayedMap = dmap;
             else
             {
-                if (inDebug == 1)
-                    DISPLAYED_MAP.Append(debugMap);
-                else if (inDebug == 2)
-                    DISPLAYED_MAP.Append(bossMap);
-                else if (inDebug == 3)
-                    DISPLAYED_MAP.Append(bikeMap);
+                string toAdd = "";
+                if (inDebug == 1) toAdd = debugMap;
+                else if (inDebug == 2) toAdd = bossMap;
+                else if (inDebug == 3) toAdd = bikeMap;
+                if (toAdd != "")
+                {
+                    int index = 0;
+                    for (int i = 0; i < dmap.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < dmap.GetLength(1); j++)
+                        {
+                            dmap[i, j] = toAdd[index];
+                            index++;
+                        }
+                    }
+                }
             }
         }
 
@@ -4939,19 +4952,19 @@ namespace SLIL
             switch (index)
             {
                 case 0:
-                    SillyCat cat = new SillyCat(0, 0, 0, 0);
+                    SillyCat cat = new SillyCat(0, 0, 0);
                     cost = cat.Cost;
                     break;
                 case 1:
-                    GreenGnome gnome = new GreenGnome(0, 0, 0, 0);
+                    GreenGnome gnome = new GreenGnome(0, 0, 0);
                     cost = gnome.Cost;
                     break;
                 case 2:
-                    EnergyDrink drink = new EnergyDrink(0, 0, 0, 0);
+                    EnergyDrink drink = new EnergyDrink(0, 0, 0);
                     cost = drink.Cost;
                     break;
                 case 3:
-                    Pyro pyro = new Pyro(0, 0, 0, 0);
+                    Pyro pyro = new Pyro(0, 0, 0);
                     cost = pyro.Cost;
                     break;
             }

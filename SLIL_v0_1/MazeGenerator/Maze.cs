@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using MazeGenerator.Enum;
+using SLIL_v0_1.MazeGenerator.Enum;
+using System.Collections.Generic;
 
 namespace SLIL_v0_1.MazeGenerator
 {

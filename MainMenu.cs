@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Linq;
 using SLIL.Classes;
+using MazeGenerator;
 using System.Drawing;
 using SLIL.SLIL_v0_1;
 using System.Net.Http;
@@ -1566,7 +1567,7 @@ namespace SLIL
             if (Editor != null && Editor.OK)
             {
                 MainMenuTheme.Stop();
-                SLIL form = new SLIL(textureCache, true, Editor.MAP, (Editor.MazeWidth - 1) / 3, (Editor.MazeHeight - 1) / 3, SLIL_Editor.x, SLIL_Editor.y) { PlayerName = "Player" };
+                SLIL form = new SLIL(textureCache, true, Editor.MAP) { PlayerName = "Player" };
                 form.ShowDialog();
                 if (sounds) MainMenuTheme.Play(MusicVolume);
                 Editor = null;
@@ -1651,7 +1652,7 @@ namespace SLIL
         private void GoToTutorial()
         {
             if (sounds) fade_timer.Start();
-            StringBuilder tutorialMap = new StringBuilder(
+            const string tutorialMap =
             "#########################" +
             "#.....######.....########" +
             "#.....######.b.B.####...#" +
@@ -1676,10 +1677,11 @@ namespace SLIL
             "#...E...##.1.2.3.4.##...#" +
             "#.E...E.##.........##.e.#" +
             "#.E...E.##.........##...#" +
-            "#########################");
+            "#########################";
             IsTutorial = true;
             difficulty = 4;
-            SLIL form = new SLIL(textureCache, true, tutorialMap, 8, 8, 3.5, 3.5) { PlayerName = "Player" };
+            var map = new Map(tutorialMap.ToString(), 25, 25, 0);
+            SLIL form = new SLIL(textureCache, true, map) { PlayerName = "Player" };
             form.ShowDialog();
             hilf_mir_panel.Visible = difficulty_panel.Visible = false;
             if (sounds)

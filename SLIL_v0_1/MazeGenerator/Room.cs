@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MazeGenerator.Enum;
+using SLIL_v0_1.MazeGenerator.Enum;
 
 namespace SLIL_v0_1.MazeGenerator
 {

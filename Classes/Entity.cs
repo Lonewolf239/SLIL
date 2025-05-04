@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using MazeGenerator;
 using LiteNetLib.Utils;
 
 namespace SLIL.Classes
@@ -31,7 +32,7 @@ namespace SLIL.Classes
         protected abstract double GetEntityWidth();
         internal virtual int Interaction() => 0;
 
-        internal Entity(double x, double y, int mapWidth, ref int maxEntityID)
+        internal Entity(double x, double y, ref int maxEntityID)
         {
             ID = maxEntityID;
             maxEntityID++;
@@ -51,7 +52,7 @@ namespace SLIL.Classes
             IntX = (int)x;
             IntY = (int)y;
         }
-        internal Entity(double x, double y, int mapWidth, int maxEntityID)
+        internal Entity(double x, double y, int maxEntityID)
         {
             ID = maxEntityID;
             EntityID = this.GetEntityID();
@@ -132,7 +133,6 @@ namespace SLIL.Classes
         internal int MinMoney { get; set; }
         internal int MaxDamage { get; set; }
         internal int MinDamage { get; set; }
-        protected int MapWidth { get; set; }
         protected int MaxHP { get; set; }
         internal int DeathSound { get; set; }
         internal bool MightBeKicked { get; set; }
@@ -152,8 +152,8 @@ namespace SLIL.Classes
         protected abstract int GetMovesInARow();
         internal abstract double GetMove();
 
-        internal Creature(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init(mapWidth);
-        internal Creature(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init(mapWidth);
+        internal Creature(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Creature(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         public override void Serialize(NetDataWriter writer)
         {
@@ -169,7 +169,7 @@ namespace SLIL.Classes
             this.Dead = reader.GetBool();
         }
 
-        private void Init(int mapWidth)
+        private void Init()
         {
             MaxHP = this.GetMaxHP();
             MaxMoney = this.GetMAX_MONEY();
@@ -185,7 +185,6 @@ namespace SLIL.Classes
             PowerResetKnockbackPower = 0.1;
             HP = MaxHP;
             A = Rand.NextDouble();
-            MapWidth = mapWidth;
             DeathSound = -1;
         }
 
@@ -216,7 +215,7 @@ namespace SLIL.Classes
             Stunned = true;
         }
 
-        internal virtual void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal virtual void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             double move = this.GetMove();
             double newX = X;
@@ -231,7 +230,7 @@ namespace SLIL.Classes
             {
                 A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
-    }
+            }
             IntX = (int)X;
             IntY = (int)Y;
             if (KnockbackPower <= 0) Stunned = false;
@@ -241,31 +240,31 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
             {
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
                 A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
             {
                 tempX += EntityWidth / 2 - (tempX % 1);
                 A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
             {
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
                 A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
             {
                 tempY += EntityWidth / 2 - (tempY % 1);
                 A = Rand.NextDouble() * (Math.PI * 2);
@@ -278,8 +277,8 @@ namespace SLIL.Classes
 
     internal abstract class Friend : Creature
     {
-        internal Friend(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => CanHit = false;
-        internal Friend(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => CanHit = false;
+        internal Friend(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => CanHit = false;
+        internal Friend(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => CanHit = false;
     }
 
     internal abstract class NPC : Friend
@@ -296,10 +295,10 @@ namespace SLIL.Classes
         protected override int GetMIN_DAMAGE() => 0;
 
 
-        internal NPC(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => RespondsToFlashlight = false;
-        internal NPC(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => RespondsToFlashlight = false;
+        internal NPC(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => RespondsToFlashlight = false;
+        internal NPC(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => RespondsToFlashlight = false;
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             if (Stunned) base.UpdateCoordinates(map, playerX, playerY, playerA, extraVision);
         }
@@ -330,8 +329,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 0;
         protected override int GetMIN_DAMAGE() => 0;
 
-        internal Pet(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Pet(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Pet(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Pet(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -341,16 +340,11 @@ namespace SLIL.Classes
             detectionRange = 8.0;
         }
 
-        internal void SetNewParametrs(double x, double y, int mapWidth)
-        {
-            X = x;
-            Y = y;
-            MapWidth = mapWidth;
-        }
+        internal void SetNewParametrs(double x, double y) { X = x; Y = y; }
 
         internal int GetPetAbility() => PetAbility;
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             Stoped = false;
             bool isPlayerVisible = true;
@@ -369,7 +363,7 @@ namespace SLIL.Classes
                     int test_y = (int)(Y + rayAngleY * distance);
                     if (test_x == (int)playerX && test_y == (int)playerY)
                         break;
-                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
+                    if (ImpassibleCells.Contains(map.GetChar(test_x, test_y)))
                     {
                         isPlayerVisible = false;
                         break;
@@ -395,19 +389,19 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
                 tempY += EntityWidth / 2 - (tempY % 1);
             if (isPlayerVisible)
             {
@@ -435,8 +429,8 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.4;
         protected override int GetTexture() => Texture;
 
-        internal GameObject(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal GameObject(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal GameObject(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal GameObject(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -450,8 +444,8 @@ namespace SLIL.Classes
 
     internal abstract class Decoration : GameObject
     {
-        internal Decoration(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) { }
-        internal Decoration(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) { }
+        internal Decoration(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) { }
+        internal Decoration(double x, double y, int maxEntityID) : base(x, y, maxEntityID) { }
     }
 
     internal abstract class Enemy : Creature
@@ -468,8 +462,8 @@ namespace SLIL.Classes
             return new char[] { '#', 'D', 'd', '=', 'W', 'S', 'R' };
         }
 
-        internal Enemy(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Enemy(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Enemy(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Enemy(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -496,8 +490,8 @@ namespace SLIL.Classes
         internal double ShotA = 0;
         internal bool ReadyToShot = false, DidShot = false;
 
-        internal RangeEnemy(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal RangeEnemy(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal RangeEnemy(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal RangeEnemy(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init() => ShotPause = TotalShotPause;
 
@@ -511,11 +505,11 @@ namespace SLIL.Classes
         internal bool CanHitOnlyPlayer = false;
         internal int ExplosionID { get; set; }
 
-        internal Rockets(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => CanHit = false;
-        internal Rockets(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => CanHit = false;
+        internal Rockets(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => CanHit = false;
+        internal Rockets(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => CanHit = false;
 
         internal void SetA(double value) => A = value;
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             double move = this.GetMove();
             double newX = X;
@@ -531,19 +525,19 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
                 tempY += EntityWidth / 2 - (tempY % 1);
             X = tempX;
             Y = tempY;
@@ -555,8 +549,8 @@ namespace SLIL.Classes
         internal bool BoxWithMoney { get; set; }
         internal double MoneyChance { get; set; }
 
-        internal Boxes(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Boxes(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Boxes(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Boxes(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -593,8 +587,8 @@ namespace SLIL.Classes
         internal double Speed { get; set; } //max: 7.5
         internal int Controllability { get; set; } //90-175
 
-        internal Transport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => A = Rand.NextDouble();
-        internal Transport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => A = Rand.NextDouble();
+        internal Transport(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => A = Rand.NextDouble();
+        internal Transport(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => A = Rand.NextDouble();
 
         internal bool DealDamage(double damage)
         {
@@ -613,8 +607,8 @@ namespace SLIL.Classes
         internal double HitDistance { get; set; }
         internal bool ExplosionOccurred { get; set; }
 
-        internal Explosions(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Explosions(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Explosions(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Explosions(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -630,16 +624,16 @@ namespace SLIL.Classes
     {
         protected override double GetEntityWidth() => 0.3;
 
-        internal Bonus(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) { }
-        internal Bonus(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) { }
+        internal Bonus(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) { }
+        internal Bonus(double x, double y, int maxEntityID) : base(x, y, maxEntityID) { }
     }
 
     internal class Dummy : NPC
     {
         protected override int GetEntityID() => 33;
 
-        internal Dummy(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Dummy(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Dummy(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Dummy(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         internal override bool DealDamage(double damage) => false;
 
@@ -660,8 +654,8 @@ namespace SLIL.Classes
         internal bool Broken { get; set; }
         protected override int GetEntityID() => 22;
 
-        internal Covering(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Covering(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Covering(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Covering(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -697,8 +691,8 @@ namespace SLIL.Classes
 
     internal class Bike : Transport
     {
-        internal Bike(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Bike(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Bike(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Bike(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -725,8 +719,8 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.25;
         internal override double GetMove() => 0.6;
 
-        internal RpgRocket(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal RpgRocket(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal RpgRocket(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal RpgRocket(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -744,8 +738,8 @@ namespace SLIL.Classes
         protected override double GetEntityWidth() => 0.25;
         internal override double GetMove() => 0.4;
 
-        internal SoulClot(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal SoulClot(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal SoulClot(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal SoulClot(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -761,8 +755,8 @@ namespace SLIL.Classes
         protected override int GetEntityID() => 17;
         protected override double GetEntityWidth() => 0.4;
 
-        internal RpgExplosion(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal RpgExplosion(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal RpgExplosion(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal RpgExplosion(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -780,8 +774,8 @@ namespace SLIL.Classes
         protected override int GetEntityID() => 29;
         protected override double GetEntityWidth() => 0.4;
 
-        internal SoulExplosion(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal SoulExplosion(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal SoulExplosion(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal SoulExplosion(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -799,8 +793,8 @@ namespace SLIL.Classes
         protected override int GetEntityID() => 30;
         protected override double GetEntityWidth() => 0.4;
 
-        internal BarrelExplosion(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal BarrelExplosion(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal BarrelExplosion(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal BarrelExplosion(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -819,8 +813,8 @@ namespace SLIL.Classes
 
         protected override int GetEntityID() => 31;
 
-        internal AmmoBox(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal AmmoBox(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal AmmoBox(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal AmmoBox(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -835,8 +829,8 @@ namespace SLIL.Classes
 
         protected override int GetEntityID() => 32;
 
-        internal MoneyPile(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal MoneyPile(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal MoneyPile(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal MoneyPile(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -847,8 +841,8 @@ namespace SLIL.Classes
 
     internal class PlayerDeadBody : NPC
     {
-        internal PlayerDeadBody(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal PlayerDeadBody(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal PlayerDeadBody(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal PlayerDeadBody(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -862,8 +856,8 @@ namespace SLIL.Classes
 
     internal class SillyCat : Pet
     {
-        internal SillyCat(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal SillyCat(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal SillyCat(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal SillyCat(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -884,8 +878,8 @@ namespace SLIL.Classes
 
     internal class GreenGnome : Pet
     {
-        internal GreenGnome(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal GreenGnome(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal GreenGnome(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal GreenGnome(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -905,8 +899,8 @@ namespace SLIL.Classes
 
     internal class EnergyDrink : Pet
     {
-        internal EnergyDrink(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal EnergyDrink(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal EnergyDrink(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal EnergyDrink(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -929,8 +923,8 @@ namespace SLIL.Classes
         protected override int GetEntityID() => 8;
         protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S', 'R' };
 
-        internal Pyro(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Pyro(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Pyro(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Pyro(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -952,8 +946,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 23;
 
-        internal VoidTeleport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal VoidTeleport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal VoidTeleport(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal VoidTeleport(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -967,8 +961,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 21;
 
-        internal BackroomsTeleport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal BackroomsTeleport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal BackroomsTeleport(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal BackroomsTeleport(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -982,8 +976,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 9;
 
-        internal Teleport(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Teleport(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Teleport(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Teleport(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -997,8 +991,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 14;
 
-        internal Box(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Box(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Box(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Box(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1014,8 +1008,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 15;
 
-        internal Barrel(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Barrel(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Barrel(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Barrel(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1031,8 +1025,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 29;
 
-        internal ExplodingBarrel(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal ExplodingBarrel(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal ExplodingBarrel(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal ExplodingBarrel(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1045,8 +1039,8 @@ namespace SLIL.Classes
     internal class HittingTheWall : GameObject
     {
         protected override int GetEntityID() => 10;
-        internal HittingTheWall(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal HittingTheWall(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal HittingTheWall(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal HittingTheWall(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         public override void Deserialize(NetDataReader reader)
         {
@@ -1074,8 +1068,8 @@ namespace SLIL.Classes
     internal class ShopDoor : GameObject
     {
         protected override int GetEntityID() => 11;
-        internal ShopDoor(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal ShopDoor(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal ShopDoor(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal ShopDoor(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1090,8 +1084,8 @@ namespace SLIL.Classes
     {
         protected override int GetEntityID() => 12;
 
-        internal ShopMan(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal ShopMan(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal ShopMan(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal ShopMan(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1116,8 +1110,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 35;
         protected override int GetMIN_DAMAGE() => 15;
 
-        internal Zombie(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Zombie(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Zombie(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Zombie(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1128,7 +1122,7 @@ namespace SLIL.Classes
             base.SetAnimations(1, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
@@ -1144,7 +1138,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
+                    if (ImpassibleCells.Contains(map.GetChar(test_x, test_y)))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1185,19 +1179,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                    || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1218,8 +1212,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 15;
         protected override int GetMIN_DAMAGE() => 10;
 
-        internal Dog(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Dog(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Dog(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Dog(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1230,7 +1224,7 @@ namespace SLIL.Classes
             base.SetAnimations(1, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
@@ -1246,7 +1240,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
+                    if (ImpassibleCells.Contains(map.GetChar(test_x, test_y)))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1287,19 +1281,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                   || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1320,8 +1314,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 35;
         protected override int GetMIN_DAMAGE() => 25;
 
-        internal Ogr(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Ogr(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Ogr(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Ogr(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1331,7 +1325,7 @@ namespace SLIL.Classes
             base.SetAnimations(2, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
@@ -1347,7 +1341,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
+                    if (ImpassibleCells.Contains(map.GetChar(test_x, test_y)))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1388,19 +1382,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                   || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1421,8 +1415,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 8;
         protected override int GetMIN_DAMAGE() => 3;
 
-        internal Bat(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Bat(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Bat(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Bat(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1435,7 +1429,7 @@ namespace SLIL.Classes
             base.SetAnimations(1, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
@@ -1451,7 +1445,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
+                    if (ImpassibleCells.Contains(map.GetChar(test_x, test_y)))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1492,19 +1486,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                    || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1527,8 +1521,8 @@ namespace SLIL.Classes
         private const int TotalLifeTime = 180; //18 sec
         private int RoamingTime = TotalLifeTime * 2, LifeTime = TotalLifeTime;
 
-        internal Stalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Stalker(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Stalker(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Stalker(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1539,7 +1533,7 @@ namespace SLIL.Classes
             base.SetAnimations(2, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;            
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
@@ -1555,7 +1549,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
+                    if (ImpassibleCells.Contains(map.GetChar(test_x, test_y)))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1602,19 +1596,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                    || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                   || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                    || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1646,8 +1640,8 @@ namespace SLIL.Classes
         private bool IsFirstTime = true;
         internal bool PlayerSees = false, DidTP = false;
 
-        internal VoidStalker(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal VoidStalker(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal VoidStalker(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal VoidStalker(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1666,7 +1660,7 @@ namespace SLIL.Classes
             return true;
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             if (PlayerSees)
             {
@@ -1701,13 +1695,11 @@ namespace SLIL.Classes
             }
         }
 
-        private bool CheckCollision(string map, double x, double y)
-        {
-            return ImpassibleCells.Contains(map[(int)y * MapWidth + (int)(x + EntityWidth / 2)]) ||
-                   ImpassibleCells.Contains(map[(int)y * MapWidth + (int)(x - EntityWidth / 2)]) ||
-                   ImpassibleCells.Contains(map[(int)(y + EntityWidth / 2) * MapWidth + (int)x]) ||
-                   ImpassibleCells.Contains(map[(int)(y - EntityWidth / 2) * MapWidth + (int)x]);
-        }
+        private bool CheckCollision(Map map, double x, double y) =>
+            ImpassibleCells.Contains(map.GetChar((int)y, (int)(x + EntityWidth / 2))) ||
+            ImpassibleCells.Contains(map.GetChar((int)y, (int)(x - EntityWidth / 2))) ||
+            ImpassibleCells.Contains(map.GetChar((int)(y + EntityWidth / 2), (int)x)) ||
+            ImpassibleCells.Contains(map.GetChar((int)(y - EntityWidth / 2), (int)x));
     }
 
     internal class Shooter : RangeEnemy
@@ -1723,8 +1715,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 15;
         protected override int GetMIN_DAMAGE() => 8;
 
-        internal Shooter(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Shooter(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Shooter(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Shooter(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1738,7 +1730,7 @@ namespace SLIL.Classes
             base.SetAnimations(1, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             if (DidShot) return;
             bool isPlayerVisible = true;
@@ -1755,7 +1747,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
+                    if (ImpassibleCells.Contains(map.GetChar(test_x, test_y)))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1795,19 +1787,19 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
                 tempY += EntityWidth / 2 - (tempY % 1);
             X = tempX;
             Y = tempY;
@@ -1864,8 +1856,8 @@ namespace SLIL.Classes
         protected override int GetMAX_DAMAGE() => 8;
         protected override int GetMIN_DAMAGE() => 3;
 
-        internal LostSoul(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal LostSoul(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal LostSoul(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal LostSoul(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -1882,7 +1874,7 @@ namespace SLIL.Classes
             base.SetAnimations(1, 0);
         }
 
-        internal override void UpdateCoordinates(string map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
+        internal override void UpdateCoordinates(Map map, double playerX, double playerY, double playerA = 0, bool extraVision = false)
         {
             bool isPlayerVisible = true;
             double distanceToPlayer = ML.GetDistance(new TPoint(playerX, playerY), new TPoint(X, Y));
@@ -1898,7 +1890,7 @@ namespace SLIL.Classes
                 {
                     int test_x = (int)(X + rayAngleX * distance);
                     int test_y = (int)(Y + rayAngleY * distance);
-                    if (ImpassibleCells.Contains(map[test_y * MapWidth + test_x]))
+                    if (ImpassibleCells.Contains(map.GetChar(test_x, test_y)))
                     {
                         isPlayerVisible = false;
                         break;
@@ -1937,19 +1929,19 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX + EntityWidth / 2)])
-                || ImpassibleCells.Contains(map[(int)newY * MapWidth + (int)(newX - EntityWidth / 2)])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map[(int)(newY + EntityWidth / 2) * MapWidth + (int)newX])
-                || ImpassibleCells.Contains(map[(int)(newY - EntityWidth / 2) * MapWidth + (int)newX])))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
+                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX + EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)tempY * MapWidth + (int)(tempX - EntityWidth / 2)]))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY + EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map[(int)(tempY - EntityWidth / 2) * MapWidth + (int)tempX]))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
                 tempY += EntityWidth / 2 - (tempY % 1);
             X = tempX;
             Y = tempY;
@@ -1986,8 +1978,8 @@ namespace SLIL.Classes
 
     internal class Vine : Decoration
     {
-        internal Vine(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Vine(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Vine(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Vine(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -2000,8 +1992,8 @@ namespace SLIL.Classes
 
     internal class Lamp : Decoration
     {
-        internal Lamp(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal Lamp(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal Lamp(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal Lamp(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
@@ -2014,8 +2006,8 @@ namespace SLIL.Classes
 
     internal class BrokenDoor : Decoration
     {
-        internal BrokenDoor(double x, double y, int mapWidth, ref int maxEntityID) : base(x, y, mapWidth, ref maxEntityID) => Init();
-        internal BrokenDoor(double x, double y, int mapWidth, int maxEntityID) : base(x, y, mapWidth, maxEntityID) => Init();
+        internal BrokenDoor(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
+        internal BrokenDoor(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
 
         private void Init()
         {
