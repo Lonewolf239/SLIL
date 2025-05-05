@@ -69,7 +69,7 @@ namespace SLIL
                 c == 'B' || c == 'F' || c == 'P' ||
                 c == 'E' || c == '$' || c == 'W' ||
                 c == 'L' || c == 'l' || c == '5' ||
-                c == 'X';
+                c == 'X' || c == '!';
         }
 
         private string GetElementsName(int index)

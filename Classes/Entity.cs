@@ -240,31 +240,31 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+                || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
             {
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
                 A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
             {
                 tempX += EntityWidth / 2 - (tempX % 1);
                 A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
             {
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
                 A = Rand.NextDouble() * (Math.PI * 2);
                 NumberOfMovesLeft = MovesInARow;
             }
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
             {
                 tempY += EntityWidth / 2 - (tempY % 1);
                 A = Rand.NextDouble() * (Math.PI * 2);
@@ -284,7 +284,7 @@ namespace SLIL.Classes
     internal abstract class NPC : Friend
     {
         protected override double GetEntityWidth() => 0.4;
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S', 'R' };
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'W', 'S', 'R', '!' };
         protected override int GetMovesInARow() => 0;
         protected override int GetMaxHP() => 0;
         protected override int GetTexture() => Texture;
@@ -319,7 +319,7 @@ namespace SLIL.Classes
         internal int AbilityTimer { get; set; }
         protected int PetAbility { get; set; }
         protected override double GetEntityWidth() => 0.1;
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'S', 'R' };
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'S', 'R', '!' };
         protected override int GetMovesInARow() => 0;
         protected override int GetMaxHP() => 0;
         protected override int GetTexture() => Texture;
@@ -389,19 +389,19 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+                || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
                 tempY += EntityWidth / 2 - (tempY % 1);
             if (isPlayerVisible)
             {
@@ -458,8 +458,8 @@ namespace SLIL.Classes
 
         protected override char[] GetImpassibleCells()
         {
-            if (Flying) return new char[] { '#', 'D', 'd', 'W', 'S', 'R' };
-            return new char[] { '#', 'D', 'd', '=', 'W', 'S', 'R' };
+            if (Flying) return new char[] { '#', 'D', 'd', 'W', 'S', 'R', '!' };
+            return new char[] { '#', 'D', 'd', '=', 'W', 'S', 'R', '!' };
         }
 
         internal Enemy(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
@@ -500,7 +500,7 @@ namespace SLIL.Classes
 
     internal abstract class Rockets : NPC
     {
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S', 'R' };
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S', 'R', '!' };
         internal abstract char[] GetInpassibleRocketCells();
         internal bool CanHitOnlyPlayer = false;
         internal int ExplosionID { get; set; }
@@ -525,19 +525,19 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+                || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
                 tempY += EntityWidth / 2 - (tempY % 1);
             X = tempX;
             Y = tempY;
@@ -713,7 +713,7 @@ namespace SLIL.Classes
 
     internal class RpgRocket : Rockets
     {
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'S', 'R' };
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', '=', 'S', 'R', '!' };
         internal override char[] GetInpassibleRocketCells() => GetImpassibleCells();
         protected override int GetEntityID() => 16;
         protected override double GetEntityWidth() => 0.25;
@@ -732,7 +732,7 @@ namespace SLIL.Classes
 
     internal class SoulClot : Rockets
     {
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S', 'R' };
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S', 'R', '!' };
         internal override char[] GetInpassibleRocketCells() => GetImpassibleCells();
         protected override int GetEntityID() => 28;
         protected override double GetEntityWidth() => 0.25;
@@ -921,7 +921,7 @@ namespace SLIL.Classes
     internal class Pyro : Pet
     {
         protected override int GetEntityID() => 8;
-        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S', 'R' };
+        protected override char[] GetImpassibleCells() => new char[] { '#', 'D', 'd', 'S', 'R', '!' };
 
         internal Pyro(double x, double y, ref int maxEntityID) : base(x, y, ref maxEntityID) => Init();
         internal Pyro(double x, double y, int maxEntityID) : base(x, y, maxEntityID) => Init();
@@ -1179,19 +1179,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                    || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+                    || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                    || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1281,19 +1281,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                   || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+                   || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                    || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1382,19 +1382,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                   || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+                   || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                    || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1486,19 +1486,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                    || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+                   || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                    || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1596,19 +1596,19 @@ namespace SLIL.Classes
                     newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                     KnockbackPower -= PowerResetKnockbackPower;
                 }
-                if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                   || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+                   || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                     tempX = newX;
-                if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                    || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+                if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                    || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                     tempY = newY;
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
                     tempX -= EntityWidth / 2 - (1 - tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+                if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
                     tempX += EntityWidth / 2 - (tempX % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
                     tempY -= EntityWidth / 2 - (1 - tempY % 1);
-                if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+                if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
                     tempY += EntityWidth / 2 - (tempY % 1);
                 X = tempX;
                 Y = tempY;
@@ -1696,10 +1696,10 @@ namespace SLIL.Classes
         }
 
         private bool CheckCollision(Map map, double x, double y) =>
-            ImpassibleCells.Contains(map.GetChar((int)y, (int)(x + EntityWidth / 2))) ||
-            ImpassibleCells.Contains(map.GetChar((int)y, (int)(x - EntityWidth / 2))) ||
-            ImpassibleCells.Contains(map.GetChar((int)(y + EntityWidth / 2), (int)x)) ||
-            ImpassibleCells.Contains(map.GetChar((int)(y - EntityWidth / 2), (int)x));
+            ImpassibleCells.Contains(map.GetChar((int)(x + EntityWidth / 2), (int)y)) ||
+            ImpassibleCells.Contains(map.GetChar((int)(x - EntityWidth / 2), (int)y)) ||
+            ImpassibleCells.Contains(map.GetChar((int)x, (int)(y + EntityWidth / 2))) ||
+            ImpassibleCells.Contains(map.GetChar((int)x, (int)(y - EntityWidth / 2)));
     }
 
     internal class Shooter : RangeEnemy
@@ -1787,19 +1787,19 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+               || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
                 tempY += EntityWidth / 2 - (tempY % 1);
             X = tempX;
             Y = tempY;
@@ -1929,19 +1929,19 @@ namespace SLIL.Classes
                 newY = Y + Math.Cos(KnockbackDirection) * (KnockbackPower / 2);
                 KnockbackPower -= PowerResetKnockbackPower;
             }
-            if (!(ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX + EntityWidth / 2)))
-                || ImpassibleCells.Contains(map.GetChar((int)newY, (int)(newX - EntityWidth / 2)))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)(newX + EntityWidth / 2), (int)newY))
+               || ImpassibleCells.Contains(map.GetChar((int)(newX - EntityWidth / 2), (int)newY))))
                 tempX = newX;
-            if (!(ImpassibleCells.Contains(map.GetChar((int)(newY + EntityWidth / 2), (int)newX))
-                || ImpassibleCells.Contains(map.GetChar((int)(newY - EntityWidth / 2), (int)newX))))
+            if (!(ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY + EntityWidth / 2)))
+                || ImpassibleCells.Contains(map.GetChar((int)newX, (int)(newY - EntityWidth / 2)))))
                 tempY = newY;
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX + EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX + EntityWidth / 2), (int)tempY)))
                 tempX -= EntityWidth / 2 - (1 - tempX % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)tempY, (int)(tempX - EntityWidth / 2))))
+            if (ImpassibleCells.Contains(map.GetChar((int)(tempX - EntityWidth / 2), (int)tempY)))
                 tempX += EntityWidth / 2 - (tempX % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY + EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY + EntityWidth / 2))))
                 tempY -= EntityWidth / 2 - (1 - tempY % 1);
-            if (ImpassibleCells.Contains(map.GetChar((int)(tempY - EntityWidth / 2), (int)tempX)))
+            if (ImpassibleCells.Contains(map.GetChar((int)tempX, (int)(tempY - EntityWidth / 2))))
                 tempY += EntityWidth / 2 - (tempY % 1);
             X = tempX;
             Y = tempY;

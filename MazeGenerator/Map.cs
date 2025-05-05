@@ -102,7 +102,7 @@ namespace MazeGenerator
         internal char GetChar(int x, int y)
         {
             if (Empty) throw new System.Exception("map is empty");
-            if (OutOfBounds(x, y)) return '#';
+            if (OutOfBounds(x, y)) throw new System.Exception($"out of bounds x: {x} y: {y} h: {Height} w: {Width}");
             return MapArray[y, x];
         }
 

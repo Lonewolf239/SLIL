@@ -1592,6 +1592,7 @@
     <None Include="Images\dummy.png" />
     <None Include="Images\record.png" />
     <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
+    <None Include="Images\outOfBounds.jpg" />
     <Content Include="SLILCursorDefault.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

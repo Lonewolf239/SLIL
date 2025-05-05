@@ -233,7 +233,7 @@ namespace MazeGenerator
                 int shiftX = minX < 0 ? -minX + 1 : 0;
                 int shiftY = minY < 0 ? -minY + 1 : 0;
                 foreach (var room in rooms)
-                    room.Coordinates = new Coordinates(room.Coordinates.X + shiftX, room.Coordinates.Y + shiftY);
+                    room.Coordinates = new Coordinates(room.Coordinates.X + shiftX + 1, room.Coordinates.Y + shiftY + 1);
             }
             return rooms.ToArray();
         }
@@ -248,6 +248,7 @@ namespace MazeGenerator
                 totalHeight = Math.Max(totalHeight, room.Bottom + 3);
                 totalWidth = Math.Max(totalWidth, room.Right + 3);
             }
+            totalHeight += 2; totalWidth += 2;
             char[,] map = new char[totalHeight, totalWidth];
             for (int i = 0; i < totalHeight; i++)
             {
@@ -300,9 +301,9 @@ namespace MazeGenerator
             {
                 for (int x = 0; x < map.GetLength(1); x++)
                 {
-                    if (x == 0 || y == 0 || y == map.GetLength(0) - 1 || x == map.GetLength(1) - 1)
-                        map[y, x] = '#';
                     if (map[y, x] == '!' || map[y, x] == 'Q') map[y, x] = '#';
+                    if (x == 0 || y == 0 || y == map.GetLength(0) - 1 || x == map.GetLength(1) - 1)
+                        map[y, x] = '!';
                 }
             }
             return map;

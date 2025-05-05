@@ -174,6 +174,8 @@ namespace SLIL.Classes
             { (48, SpriteStates.Static), Properties.Resources.money_pile},
             //Dummy
             { (49, SpriteStates.Static), Properties.Resources.dummy},
+            //OutOfBounds
+            { (50, SpriteStates.Static), Properties.Resources.outOfBounds },
         };
         private Dictionary<(int , SpriteStates), Image> cute_textures = new Dictionary<(int, SpriteStates), Image>()
         {
@@ -317,6 +319,8 @@ namespace SLIL.Classes
             { (48, SpriteStates.Static), Properties.Resources.money_pile},
             //Dummy
             { (49, SpriteStates.Static), Properties.Resources.dummy},
+            //OutOfBounds
+            { (50, SpriteStates.Static), Properties.Resources.outOfBounds },
         };
         private readonly Color[] COLORS =
         {

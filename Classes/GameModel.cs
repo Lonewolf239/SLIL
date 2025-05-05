@@ -304,7 +304,7 @@ namespace SLIL.Classes
                                 if (range is Shooter shooter)
                                 {
                                     PlayGameSound(SLIL.SoundsofShotsEnemies[0, ((Player)target).CuteMode ? 1 : 0], shooter.X, shooter.Y);
-                                    HashSet<char> impassibleCells = new HashSet<char> { '#', 'D', 'd', 'W', 'S', 'R' };
+                                    HashSet<char> impassibleCells = new HashSet<char> { '#', 'D', 'd', 'W', 'S', 'R', '!' };
                                     double shotDistance = 0;
                                     const double shotStep = 0.01d;
                                     bool hit = false;
@@ -386,10 +386,10 @@ namespace SLIL.Classes
                         char[] ImpassibleCells = rocket.GetInpassibleRocketCells();
                         double newX = entity.X + entity.GetMove() * Math.Sin(entity.A);
                         double newY = entity.Y + entity.GetMove() * Math.Cos(entity.A);
-                        if (ImpassibleCells.Contains(Map.GetChar((int)newY, (int)(newX + entity.EntityWidth / 2)))
-                            || ImpassibleCells.Contains(Map.GetChar((int)newY, (int)(newX - entity.EntityWidth / 2)))
-                            || ImpassibleCells.Contains(Map.GetChar((int)(newY + entity.EntityWidth / 2), (int)newX))
-                            || ImpassibleCells.Contains(Map.GetChar((int)(newY - entity.EntityWidth / 2), (int)newX)))
+                        if (ImpassibleCells.Contains(Map.GetChar((int)(newX + entity.EntityWidth / 2), (int)newY))
+                            || ImpassibleCells.Contains(Map.GetChar((int)(newX - entity.EntityWidth / 2), (int)newY))
+                            || ImpassibleCells.Contains(Map.GetChar((int)newX, (int)(newY + entity.EntityWidth / 2)))
+                            || ImpassibleCells.Contains(Map.GetChar((int)newX, (int)(newY - entity.EntityWidth / 2))))
                         {
                             Entities.Remove(entity);
                             i--;
@@ -1066,9 +1066,9 @@ namespace SLIL.Classes
                 }
                 if (p.MoveSpeed >= 2.5)
                 {
-                    char[] c = { '#', 'd', 'D', 'S', 'R' };
-                    if (c.Contains(Map.GetChar((int)extendedY, (int)extendedX)) ||
-                        (Map.GetChar((int)extendedY, (int)extendedX) == '=' && (!p.TRANSPORT.CanJump || p.EffectCheck(3))))
+                    char[] c = { '#', 'd', 'D', 'S', 'R', '!' };
+                    if (c.Contains(Map.GetChar((int)extendedX, (int)extendedY)) ||
+                        (Map.GetChar((int)extendedX, (int)extendedY) == '=' && (!p.TRANSPORT.CanJump || p.EffectCheck(3))))
                     {
                         p.MoveSpeed = 0.5;
                         PlayGameSound(SLIL.HitTransport);
@@ -1714,7 +1714,7 @@ namespace SLIL.Classes
         {
             Player p = GetPlayer(playerID);
             if (p == null) return false;
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'R' };
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'R', '!' };
             if (HasNoClip(playerID) || p.InParkour) return false;
             return impassibleCells.Contains(Map.GetChar(x, y));
         }
@@ -1921,7 +1921,7 @@ namespace SLIL.Classes
             if (p == null || p.Stamine < 200) return;
             if (p.EffectCheck(3)) return;
             double distance = 0;
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't', 'R' };
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't', 'R', '!' };
             PlayGameSound(SLIL.Climb[0]);
             p.ReducesStamine(150);
             new Thread(() =>
@@ -2041,7 +2041,7 @@ namespace SLIL.Classes
 
         internal void InteractingWithDoors(int x, int y)
         {
-            if (Map.GetChar(x,y) == 'o')
+            if (Map.GetChar(x, y) == 'o')
             {
                 Map.ChangeChar('d', x, y);
                 PlayGameSound(SLIL.Door[1], x, y);

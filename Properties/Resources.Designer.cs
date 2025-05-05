@@ -2023,6 +2023,16 @@ namespace SLIL.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap outOfBounds {
+            get {
+                object obj = ResourceManager.GetObject("outOfBounds", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap pet_animation {
             get {
                 object obj = ResourceManager.GetObject("pet_animation", resourceCulture);

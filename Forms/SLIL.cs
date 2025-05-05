@@ -1904,6 +1904,7 @@ namespace SLIL
                                     hit = true;
                                     break;
                                 case '#':
+                                case '!':
                                 case 'F':
                                 case 'D':
                                 case 'd':
@@ -2059,6 +2060,7 @@ namespace SLIL
                             switch (test_wall)
                             {
                                 case '#':
+                                case '!':
                                 case '=':
                                 case 'F':
                                     hit = true;
@@ -2206,7 +2208,8 @@ namespace SLIL
 
         private bool HasImpassibleCells(int x, int y)
         {
-            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't', 'R' };
+            char[] impassibleCells = { '#', 'D', '=', 'd', 'S', '$', 'T', 't', 'R', '!' };
+            if (Controller.GetMap().GetChar(x, y) == '!') return true;
             if (Controller.HasNoClip() || GetPlayer().InParkour) return false;
             if (Controller.GetMap().OutOfBounds(x, y)) return true;
             return impassibleCells.Contains(Controller.GetMap().GetChar(x, y));
@@ -2437,6 +2440,10 @@ namespace SLIL
                         hit_wall = 0;
                         DisplayedMap[mapY, mapX] = '#';
                         break;
+                    case '!':
+                        hit_wall = 3;
+                        DisplayedMap[mapY, mapX] = '#';
+                        break;
                     case '=':
                         hit_window = true;
                         DisplayedMap[mapY, mapX] = '=';
@@ -2520,6 +2527,7 @@ namespace SLIL
                     }
                     if (hit_wall == 1) textureId = 20;
                     if (hit_wall == 2) textureId = 1;
+                    if (hit_wall == 3) textureId = 50;
                     if (hit_door) textureId = 5;
                     if (is_bound)
                     {
@@ -3831,7 +3839,7 @@ namespace SLIL
                 double step = 0.01;
                 double rayAngleX = Math.Sin(player.A);
                 double rayAngleY = Math.Cos(player.A);
-                char[] impassibleCells = { '#', '=', 'd', 'D', 'S', 'R' };
+                char[] impassibleCells = { '#', '=', 'd', 'D', 'S', 'R', '!' };
                 while (shotDistance <= player.GetCurrentGun().FiringRange)
                 {
                     int test_x = (int)(player.X + rayAngleX * shotDistance);
@@ -4038,7 +4046,7 @@ namespace SLIL
                             double celling = (SCREEN_HEIGHT - player.Look) / 2.25d - (SCREEN_HEIGHT * FOV) / distance;
                             double floor = SCREEN_HEIGHT - (celling + player.Look);
                             double mid = (celling + floor) / 2;
-                            if (test_wall == '#' || test_wall == 'S' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT / 2 >= mid))
+                            if (test_wall == '#' || test_wall == '!' || test_wall == 'S' || test_wall == 'd' || test_wall == 'D' || (test_wall == '=' && SCREEN_HEIGHT / 2 >= mid))
                             {
                                 hit = true;
                                 distance -= 0.2;
@@ -4287,7 +4295,7 @@ namespace SLIL
             }
             UpdateBitmap();
             Activate();
-            if(player!=null)                ResetDefault(player);
+            ResetDefault(player);
             ShopToDefault();
             InitMap();
             try
@@ -4310,7 +4318,7 @@ namespace SLIL
             game_over_panel.Visible = false;
             SLILDisplay.BringToFront();
             SLILDisplay.Focus();
-            if (player != null) StartShop(player);
+            StartShop(player);
         }
 
         private void GameOver(int win)
