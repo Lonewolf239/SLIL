@@ -23,3 +23,12 @@ We are constantly working on improving the game and adding new features. If you 
 
 ### Disclaimer
 All similarities with other products are completely coincidental!
+
+## See also
+
+- NeoIni - A fully-featured C# library for working with INI files that provides secure, thread-safe read/write configuration with built-in integrity checking (checksum) and optional AES encryption.
+  - Github: https://github.com/Lonewolf239/NeoIni
+  - NuGet: https://www.nuget.org/packages/NeoIni
+- BeautifulConsole - A powerful .NET library for building beautiful console applications with true‑color support, cross‑platform clipboard, advanced window customization, and a clean, black‑box API.
+  - GitHub: https://github.com/Lonewolf239/BeautifulConsole
+  - NuGet: https://www.nuget.org/packages/BeautifulConsole
